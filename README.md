@@ -1,2 +1,4 @@
 # tqec
-Design automation software tools for Toological Quantum Error Eorrection
+Design automation software tools for Topological Quantum Error Error Correction
+
+# https://groups.google.com/g/tqec-design-automation
