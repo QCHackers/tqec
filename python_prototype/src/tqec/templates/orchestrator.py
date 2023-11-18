@@ -1,3 +1,4 @@
+from tqec.errors import TemplateNotInOrchestrator
 from tqec.templates.base import Template, TemplateWithPlaquettes
 from tqec.enums import (
     TemplateRelativePositionEnum,
@@ -31,7 +32,7 @@ class TemplateOrchestrator(Template):
             anchor = anchor.template
         # IDs of the template and anchor in the internal graph
         template_id = len(self._templates)
-        anchor_id = self._templates.index(anchor)
+        anchor_id = self._find_template_id(anchor)
         # Add the new template to the data structure
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(
@@ -39,14 +40,7 @@ class TemplateOrchestrator(Template):
         )
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
-        self._relative_position_graph.add_edge(
-            anchor_id, template_id, relative_position=relative_position
-        )
-        self._relative_position_graph.add_edge(
-            template_id,
-            anchor_id,
-            relative_position=opposite_relative_position(relative_position),
-        )
+        self._add_edges_between_template(template_id, relative_position, anchor_id)
         return self
 
     def and_also(
@@ -60,18 +54,52 @@ class TemplateOrchestrator(Template):
         # IDs of the template and anchor in the internal graph
         # Minus 1 here as the template has already been inserted.
         template_id = len(self._templates) - 1
-        anchor_id = self._templates.index(anchor)
+        anchor_id = self._find_template_id(anchor)
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
+        self._add_edges_between_template(template_id, relative_position, anchor_id)
+        return self
+
+    def add_relation(
+        self,
+        template_to_position: Template | TemplateWithPlaquettes,
+        relative_position: TemplateRelativePositionEnum,
+        anchor: Template | TemplateWithPlaquettes,
+    ) -> "TemplateOrchestrator":
+        # Recovering the Template instances, we do not care about the plaquettes here.
+        if isinstance(template_to_position, TemplateWithPlaquettes):
+            template_to_position = template_to_position.template
+        if isinstance(anchor, TemplateWithPlaquettes):
+            anchor = anchor.template
+        # IDs of the template and anchor in the internal graph
+        # Minus 1 here as the template has already been inserted.
+        template_id = self._find_template_id(template_to_position)
+        anchor_id = self._find_template_id(anchor)
+        # Add 2 symmetric edges on the graph to encode the relative positioning information
+        # provided by the user by calling this methods.
+        self._add_edges_between_template(template_id, relative_position, anchor_id)
+        return self
+
+    def _find_template_id(self, template: Template) -> int:
+        try:
+            return self._templates.index(template)
+        except ValueError:
+            raise TemplateNotInOrchestrator(self, template)
+
+    def _add_edges_between_template(
+        self,
+        template_to_position_id: int,
+        relative_position: TemplateRelativePositionEnum,
+        anchor_id: int,
+    ) -> None:
         self._relative_position_graph.add_edge(
-            anchor_id, template_id, relative_position=relative_position
+            anchor_id, template_to_position_id, relative_position=relative_position
         )
         self._relative_position_graph.add_edge(
-            template_id,
+            template_to_position_id,
             anchor_id,
             relative_position=opposite_relative_position(relative_position),
         )
-        return self
 
     def _compute_ul_absolute_position(self) -> dict[int, tuple[int, int]]:
         ul_positions: dict[int, tuple[int, int]] = {0: (0, 0)}
