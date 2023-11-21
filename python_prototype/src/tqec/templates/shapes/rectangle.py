@@ -1,4 +1,5 @@
 from tqec.templates.base import Template
+import typing as ty
 
 import numpy
 
@@ -30,3 +31,6 @@ class Rectangle(Template):
         else:
             self._height = k
         return self
+
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {"type": "rectangle", "width": self._width, "height": self._height}

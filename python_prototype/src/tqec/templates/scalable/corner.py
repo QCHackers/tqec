@@ -1,4 +1,3 @@
-from tqec.templates.scalable.base import ScalableTemplate
 from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.base import TemplateWithPlaquettes
 from tqec.templates.scalable.rectangle import ScalableRectangle
@@ -12,10 +11,8 @@ from tqec.enums import CornerPositionEnum, ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-class ScalableCorner(ScalableTemplate, TemplateOrchestrator):
+class ScalableCorner(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
-        ScalableTemplate.__init__(self)
-
         self._template_instances = [
             # 0-th entry to nothing to adhere to the numbering on the slide.
             None,

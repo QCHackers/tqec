@@ -29,6 +29,9 @@ class AlternatingSquare(Template):
         self._dimension = k
         return self
 
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {"type": "square", "dimension": self._dimension}
+
 
 class AlternatingCornerSquare(AlternatingSquare):
     _TRANSFORMATIONS: dict[
@@ -85,3 +88,8 @@ class AlternatingCornerSquare(AlternatingSquare):
                         ret[i, j] = x_plaquette_flipped
         # Correct ret and return
         return self._TRANSFORMATIONS[self._corner_position](ret)
+
+    def to_dict(self) -> dict[str, ty.Any]:
+        ret = super().to_dict()
+        ret.update({"corner": self._corner_position})
+        return ret

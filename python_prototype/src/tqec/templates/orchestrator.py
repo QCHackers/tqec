@@ -1,3 +1,5 @@
+import typing as ty
+
 from tqec.errors import TemplateNotInOrchestrator
 from tqec.templates.base import Template, TemplateWithPlaquettes
 from tqec.enums import (
@@ -209,3 +211,14 @@ class TemplateOrchestrator(Template):
     @property
     def shape(self) -> tuple[int, int]:
         return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
+
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {
+            "templates": [t.to_dict() for t in self._templates],
+            "connections": [
+                {"source_idx": source, "target_idx": target, "direction": direction}
+                for source, target, direction in self._relative_position_graph.edges.data(
+                    "relative_position"
+                )
+            ],
+        }
