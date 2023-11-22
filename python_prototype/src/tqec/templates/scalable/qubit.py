@@ -7,7 +7,7 @@ from tqec.templates.orchestrator import TemplateOrchestrator
 
 class ScalableQubitSquare(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
-        self._template_instances = [
+        _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
@@ -19,23 +19,20 @@ class ScalableQubitSquare(TemplateOrchestrator):
             # Bottom rectangle, containing plaquettes of type 6 only
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 6]),
         ]
-        TemplateOrchestrator.__init__(self, self._template_instances[1])
-        self._construct()
-
-    def _construct(self) -> None:
-        self.add_template(self.ti(1), ABOVE_OF, self.ti(0)).add_template(
-            self.ti(2), LEFT_OF, self.ti(0)
-        ).add_template(self.ti(3), RIGHT_OF, self.ti(0)).add_template(
-            self.ti(4), BELOW_OF, self.ti(0)
-        )
-
-    def ti(self, index: int) -> TemplateWithPlaquettes:
-        return self._template_instances[index]
+        _relations = [
+            (1, ABOVE_OF, 0),
+            (2, LEFT_OF, 0),
+            (3, RIGHT_OF, 0),
+            (4, BELOW_OF, 0),
+        ]
+        TemplateOrchestrator.__init__(self, _templates)
+        for source, relpos, target in _relations:
+            self.add_relation(source, relpos, target)
 
 
 class ScalableQubitRectangle(TemplateOrchestrator):
     def __init__(self, width: int, height: int) -> None:
-        self._template_instances = [
+        _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithPlaquettes(ScalableRectangle(width, height), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
@@ -47,15 +44,12 @@ class ScalableQubitRectangle(TemplateOrchestrator):
             # Bottom rectangle, containing plaquettes of type 6 only
             TemplateWithPlaquettes(ScalableRectangle(width, 1), [0, 6]),
         ]
-        TemplateOrchestrator.__init__(self, self._template_instances[1])
-        self._construct()
-
-    def _construct(self) -> None:
-        self.add_template(self.ti(1), ABOVE_OF, self.ti(0)).add_template(
-            self.ti(2), LEFT_OF, self.ti(0)
-        ).add_template(self.ti(3), RIGHT_OF, self.ti(0)).add_template(
-            self.ti(4), BELOW_OF, self.ti(0)
-        )
-
-    def ti(self, index: int) -> TemplateWithPlaquettes:
-        return self._template_instances[index]
+        _relations = [
+            (1, ABOVE_OF, 0),
+            (2, LEFT_OF, 0),
+            (3, RIGHT_OF, 0),
+            (4, BELOW_OF, 0),
+        ]
+        TemplateOrchestrator.__init__(self, _templates)
+        for source, relpos, target in _relations:
+            self.add_relation(source, relpos, target)

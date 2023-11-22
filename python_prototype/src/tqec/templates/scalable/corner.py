@@ -13,9 +13,7 @@ from tqec.templates.orchestrator import TemplateOrchestrator
 
 class ScalableCorner(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
-        self._template_instances = [
-            # 0-th entry to nothing to adhere to the numbering on the slide.
-            None,
+        _templates = [
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 1]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [2, 3]),
@@ -42,47 +40,28 @@ class ScalableCorner(TemplateOrchestrator):
             TemplateWithPlaquettes(FixedRectangle(2, 1), [0, 12]),
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 12]),
         ]
-        TemplateOrchestrator.__init__(self, self._template_instances[1])
-        self._construct()
-
-    def _construct(self) -> None:
-        self.add_template(self.ti(3), BELOW_OF, self.ti(1)).add_template(
-            self.ti(2), LEFT_OF, self.ti(3)
-        ).add_template(self.ti(4), RIGHT_OF, self.ti(3)).add_template(
-            self.ti(5), BELOW_OF, self.ti(2)
-        ).add_template(
-            self.ti(6), BELOW_OF, self.ti(3)
-        ).and_also(
-            RIGHT_OF, self.ti(5)
-        ).add_template(
-            self.ti(7), RIGHT_OF, self.ti(6)
-        ).and_also(
-            BELOW_OF, self.ti(4)
-        ).add_template(
-            self.ti(10), BELOW_OF, self.ti(6)
-        ).add_template(
-            self.ti(9), BELOW_OF, self.ti(5)
-        ).and_also(
-            LEFT_OF, self.ti(10)
-        ).add_template(
-            self.ti(14), BELOW_OF, self.ti(10)
-        ).add_template(
-            self.ti(11), RIGHT_OF, self.ti(10)
-        ).add_template(
-            self.ti(15), RIGHT_OF, self.ti(14)
-        ).and_also(
-            BELOW_OF, self.ti(11)
-        ).add_template(
-            self.ti(12), RIGHT_OF, self.ti(11)
-        ).add_template(
-            self.ti(8), ABOVE_OF, self.ti(12)
-        ).add_template(
-            self.ti(16), BELOW_OF, self.ti(12)
-        ).and_also(
-            RIGHT_OF, self.ti(15)
-        ).add_template(
-            self.ti(13), RIGHT_OF, self.ti(12)
-        )
-
-    def ti(self, index: int) -> TemplateWithPlaquettes:
-        return self._template_instances[index]
+        _relations = [
+            (0, ABOVE_OF, 2),
+            (1, LEFT_OF, 2),
+            (3, RIGHT_OF, 2),
+            (4, BELOW_OF, 1),
+            (5, BELOW_OF, 2),
+            # For the moment, 6 is encoded as a FixedRectangle of size 2
+            # as follow:
+            #   0
+            #   X
+            # where X is the provided plaquette number.
+            (6, RIGHT_OF, 5),
+            (9, BELOW_OF, 5),
+            (8, LEFT_OF, 9),
+            (13, BELOW_OF, 9),
+            (10, RIGHT_OF, 9),
+            (11, RIGHT_OF, 10),
+            (7, ABOVE_OF, 11),
+            (12, RIGHT_OF, 11),
+            (15, BELOW_OF, 11),
+            (14, RIGHT_OF, 15),
+        ]
+        TemplateOrchestrator.__init__(self, _templates)
+        for source, relpos, target in _relations:
+            self.add_relation(source, relpos, target)

@@ -16,70 +16,42 @@ import numpy
 
 
 class TemplateOrchestrator(Template):
-    def __init__(self, first_template: TemplateWithPlaquettes) -> None:
-        self._templates: list[Template] = [first_template.template]
+    def __init__(self, templates: list[TemplateWithPlaquettes]) -> None:
+        self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
-        self._relative_position_graph.add_node(
-            0, plaquette_indices=first_template.plaquettes
-        )
+        self.add_templates(templates)
 
     def add_template(
         self,
         template_to_insert: TemplateWithPlaquettes,
-        relative_position: TemplateRelativePositionEnum,
-        anchor: Template | TemplateWithPlaquettes,
-    ) -> "TemplateOrchestrator":
-        # Recovering the Template instance, we do not care about the plaquettes of the anchor.
-        if isinstance(anchor, TemplateWithPlaquettes):
-            anchor = anchor.template
-        # IDs of the template and anchor in the internal graph
-        template_id = len(self._templates)
-        anchor_id = self._find_template_id(anchor)
+    ) -> int:
         # Add the new template to the data structure
+        template_id: int = len(self._templates)
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(
             template_id, plaquette_indices=template_to_insert.plaquettes
         )
-        # Add 2 symmetric edges on the graph to encode the relative positioning information
-        # provided by the user by calling this methods.
-        self._add_edges_between_template(template_id, relative_position, anchor_id)
-        return self
+        return template_id
 
-    def and_also(
+    def add_templates(
         self,
-        relative_position: TemplateRelativePositionEnum,
-        anchor: Template | TemplateWithPlaquettes,
-    ) -> "TemplateOrchestrator":
-        # Recovering the Template instance, we do not care about the plaquettes of the anchor.
-        if isinstance(anchor, TemplateWithPlaquettes):
-            anchor = anchor.template
-        # IDs of the template and anchor in the internal graph
-        # Minus 1 here as the template has already been inserted.
-        template_id = len(self._templates) - 1
-        anchor_id = self._find_template_id(anchor)
-        # Add 2 symmetric edges on the graph to encode the relative positioning information
-        # provided by the user by calling this methods.
-        self._add_edges_between_template(template_id, relative_position, anchor_id)
-        return self
+        templates_to_insert: list[TemplateWithPlaquettes],
+    ) -> list[int]:
+        return [self.add_template(template) for template in templates_to_insert]
 
     def add_relation(
         self,
-        template_to_position: Template | TemplateWithPlaquettes,
+        template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
-        anchor: Template | TemplateWithPlaquettes,
+        anchor_id: int,
     ) -> "TemplateOrchestrator":
-        # Recovering the Template instances, we do not care about the plaquettes here.
-        if isinstance(template_to_position, TemplateWithPlaquettes):
-            template_to_position = template_to_position.template
-        if isinstance(anchor, TemplateWithPlaquettes):
-            anchor = anchor.template
-        # IDs of the template and anchor in the internal graph
-        # Minus 1 here as the template has already been inserted.
-        template_id = self._find_template_id(template_to_position)
-        anchor_id = self._find_template_id(anchor)
+        assert template_id_to_position < len(self._templates)
+        assert anchor_id < len(self._templates)
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
-        self._add_edges_between_template(template_id, relative_position, anchor_id)
+        self._add_edges_between_template(
+            template_id_to_position, relative_position, anchor_id
+        )
         return self
 
     def _find_template_id(self, template: Template) -> int:
