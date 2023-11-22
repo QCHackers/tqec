@@ -6,6 +6,7 @@ from tqec.templates.scalable.square import (
     ScalableAlternatingSquare,
 )
 from tqec.templates.fixed.rectangle import FixedRectangle
+from tqec.templates.fixed.square import FixedRawSquare
 from tqec.enums import CornerPositionEnum, ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 
 from tqec.templates.orchestrator import TemplateOrchestrator
@@ -20,7 +21,7 @@ class ScalableCorner(TemplateOrchestrator):
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [0, 5]),
             TemplateWithPlaquettes(FixedRectangle(1, 2), [2, 0]),
             TemplateWithPlaquettes(ScalableRectangle(dim, 2), [3, 2]),
-            TemplateWithPlaquettes(FixedRectangle(1, 2), [0, 6]),
+            TemplateWithPlaquettes(FixedRawSquare([[0, 0], [1, 0]]), [0, 6]),
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [7, 0]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithPlaquettes(
