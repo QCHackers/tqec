@@ -62,27 +62,25 @@ from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import ScalableAlternatingSquare
 from tqec.templates.orchestrator import TemplateOrchestrator
 
-dim: int = 4
 template_instances = [
     # Central square, containing plaquettes of types 3 and 4
-    TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [3, 4]),
+    TemplateWithPlaquettes(ScalableAlternatingSquare(4), [3, 4]),
     # Top rectangle, containing plaquettes of type 1 only
-    TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 1]),
+    TemplateWithPlaquettes(ScalableRectangle(4, 1), [0, 1]),
     # Left rectangle, containing plaquettes of type 2 only
-    TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
+    TemplateWithPlaquettes(ScalableRectangle(1, 4), [2, 0]),
     # Right rectangle, containing plaquettes of type 5 only
-    TemplateWithPlaquettes(ScalableRectangle(1, dim), [0, 5]),
+    TemplateWithPlaquettes(ScalableRectangle(1, 4), [0, 5]),
     # Bottom rectangle, containing plaquettes of type 6 only
-    TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 6]),
+    TemplateWithPlaquettes(ScalableRectangle(4, 1), [0, 6]),
 ]
 # Alias to avoid clutter
-ti = template_instances
 orchestrator = (
-    TemplateOrchestrator(ti[0])
-    .add_template(ti[1], ABOVE_OF, ti[0])
-    .add_template(ti[2], LEFT_OF, ti[0])
-    .add_template(ti[3], RIGHT_OF, ti[0])
-    .add_template(ti[4], BELOW_OF, ti[0])
+    TemplateOrchestrator(template_instances)
+    .add_relation(1, ABOVE_OF, 0)
+    .add_relation(2, LEFT_OF, 0)
+    .add_relation(3, RIGHT_OF, 0)
+    .add_relation(4, BELOW_OF, 0)
 )
 print(orchestrator.scale_to(4).instanciate())
 # [[0 0 1 0 1 0]
