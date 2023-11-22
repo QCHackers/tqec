@@ -1,4 +1,4 @@
-from tqec.templates.scalable.corner import ScalableCorner
+from tqec.constructions.corner import ScalableCorner
 from tqec.display import display
 
 # Distance 4 corner
