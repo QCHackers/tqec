@@ -218,7 +218,7 @@ class TemplateOrchestrator(Template):
             "connections": [
                 {"source_idx": source, "target_idx": target, "direction": direction}
                 for source, target, direction in self._relative_position_graph.edges.data(
-                    "relative_position"
+                    "relative_position"  # type: ignore
                 )
             ],
         }
