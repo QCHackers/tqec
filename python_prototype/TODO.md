@@ -81,11 +81,14 @@ I can see a two-scale process:
 
 This would require changing the interface of `Template` to include a way to ask for it to check itself and a way to access information about the plaquettes on its border, but seems manageable.
 
-## [Should be done] Think about unit squares
+## Think about unit squares
 
 > [!WARNING]
 > Currently, two neighbouring templates have to share a dimension. 
 > In particular, this means that some 1x1 squares are (in theory) not encodable. 
+
+> [!IMPORTANT]
+> This should be fixed by allowing both relative positioning of templates (as before) AND corner positioning (as introduced in the same commit that introduced this text).
 
 ### Example
 The 1x1 square highlighted in the image below is concerned by this limitation.

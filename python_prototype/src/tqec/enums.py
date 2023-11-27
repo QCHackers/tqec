@@ -2,10 +2,11 @@ from enum import Enum, auto
 
 
 class CornerPositionEnum(Enum):
-    LOWER_LEFT = auto()
-    LOWER_RIGHT = auto()
-    UPPER_LEFT = auto()
-    UPPER_RIGHT = auto()
+    # Shapes and positions are stored as (y, x)
+    LOWER_LEFT = (1, 0)
+    LOWER_RIGHT = (1, 1)
+    UPPER_LEFT = (0, 0)
+    UPPER_RIGHT = (0, 1)
 
 
 class TemplateRelativePositionEnum(Enum):
