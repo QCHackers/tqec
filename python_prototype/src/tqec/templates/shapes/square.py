@@ -15,10 +15,10 @@ class AlternatingSquare(Template):
         ret = numpy.zeros(self.shape, dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
-        ret[even, odd] = x_plaquette
-        ret[odd, even] = x_plaquette
-        ret[even, even] = z_plaquette
-        ret[odd, odd] = z_plaquette
+        ret[even, odd] = z_plaquette
+        ret[odd, even] = z_plaquette
+        ret[even, even] = x_plaquette
+        ret[odd, odd] = x_plaquette
         return ret
 
     @property
