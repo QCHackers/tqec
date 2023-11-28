@@ -11,6 +11,7 @@ from tqec.enums import (
     LEFT_OF,
     RIGHT_OF,
 )
+from tqec.position import Position, Shape
 
 import networkx as nx
 import numpy
@@ -21,18 +22,18 @@ type RelativePosition = TemplateRelativePositionEnum | tuple[
 
 
 def get_corner_position(
-    position: tuple[int, int],
+    position: Position,
     position_corner: CornerPositionEnum,
-    shape: tuple[int, int],
+    shape: Shape,
     expected_corner: CornerPositionEnum,
-) -> tuple[int, int]:
+) -> Position:
     transformation: tuple[int, int] = (
-        expected_corner.value[0] - position_corner.value[0],
-        expected_corner.value[1] - position_corner.value[1],
+        expected_corner.value.x - position_corner.value.x,
+        expected_corner.value.y - position_corner.value.y,
     )
-    return (
-        position[0] + transformation[0] * shape[0],
-        position[1] + transformation[1] * shape[1],
+    return Position(
+        position.x + transformation[0] * shape.x,
+        position.y + transformation[1] * shape.y,
     )
 
 
@@ -112,8 +113,8 @@ class TemplateOrchestrator(Template):
         except ValueError:
             raise TemplateNotInOrchestrator(self, template)
 
-    def _compute_ul_absolute_position(self) -> dict[int, tuple[int, int]]:
-        ul_positions: dict[int, tuple[int, int]] = {0: (0, 0)}
+    def _compute_ul_absolute_position(self) -> dict[int, Position]:
+        ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
         dest: int
         # Compute the upper-left (ul) position of all the templates
@@ -128,40 +129,32 @@ class TemplateOrchestrator(Template):
             ), f"Found an edge from {src} to {dest} that does not have a relative position."
             # Getting the positions and shape that will be needed to compute the ul_position
             # for dest.
-            src_position = ul_positions[src]
-            src_shape = self._templates[src].shape
-            dest_shape = self._templates[dest].shape
-            # The convention for tuples is that they encode coordinates in (y, x).
-            # This is to adhere to numpy array indexing for regular 2-dimensional arrays
-            # that are indexed as arr[y, x].
+            src_ul_position = ul_positions[src]
+            # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
+            # for a numpy array corresponds to what we qualify as the y dimension here.
+            src_shape = Shape(*tuple(reversed(self._templates[src].shape)))
+            dest_shape = Shape(*tuple(reversed(self._templates[dest].shape)))
             if isinstance(relative_position, TemplateRelativePositionEnum):
-                if relative_position == ABOVE_OF:
-                    ul_positions[dest] = (
-                        src_position[0] - dest_shape[0],
-                        src_position[1],
+                if relative_position == ABOVE_OF or relative_position == LEFT_OF:
+                    ul_positions[dest] = Position(
+                        src_ul_position.x + relative_position.value.x * dest_shape.x,
+                        src_ul_position.y + relative_position.value.y * dest_shape.y,
                     )
-                elif relative_position == BELOW_OF:
-                    ul_positions[dest] = (
-                        src_position[0] + src_shape[0],
-                        src_position[1],
-                    )
-                elif relative_position == LEFT_OF:
-                    ul_positions[dest] = (
-                        src_position[0],
-                        src_position[1] - dest_shape[1],
-                    )
-                else:  # relative_position == RIGHT_OF:
-                    ul_positions[dest] = (
-                        src_position[0],
-                        src_position[1] + src_shape[1],
+                else:  # relative_position == RIGHT_OF or relative_position == BELOW_OF:
+                    ul_positions[dest] = Position(
+                        src_ul_position.x + relative_position.value.x * src_shape.x,
+                        src_ul_position.y + relative_position.value.y * src_shape.y,
                     )
             else:  # isinstance(relative_position, tuple[CornerPositionEnum, CornerPositionEnum])
                 src_corner: CornerPositionEnum
                 dest_corner: CornerPositionEnum
                 src_corner, dest_corner = relative_position
                 # Compute the anchor corner
-                anchor_position: tuple[int, int] = get_corner_position(
-                    src_position, CornerPositionEnum.UPPER_LEFT, src_shape, src_corner
+                anchor_position: Position = get_corner_position(
+                    src_ul_position,
+                    CornerPositionEnum.UPPER_LEFT,
+                    src_shape,
+                    src_corner,
                 )
                 # Compute the upper-left position of the destination
                 ul_positions[dest] = get_corner_position(
@@ -174,33 +167,28 @@ class TemplateOrchestrator(Template):
         return ul_positions
 
     def _get_bounding_box_from_ul_positions(
-        self, ul_positions: dict[int, tuple[int, int]]
-    ) -> tuple[tuple[int, int], tuple[int, int]]:
+        self, ul_positions: dict[int, Position]
+    ) -> tuple[Position, Position]:
         # ul: upper-left
         # br: bottom-right
-        ul, br = (0, 0), (0, 0)
-        # Tuple convention is (y, x)
+        ul, br = Position(0, 0), Position(0, 0)
         # tid: template id
-        # ulx: upper-left x coordinate
-        # uly: upper-left y coordinate
-        for tid, (uly, ulx) in ul_positions.items():
+        # tulx: template upper-left
+        for tid, tul in ul_positions.items():
             # tshape: template shape
-            tshape = self._templates[tid].shape
-            ul = (min(ul[0], uly), min(ul[1], ulx))
-            br = (max(br[0], uly + tshape[0]), max(br[1], ulx + tshape[1]))
+            # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
+            # for a numpy array corresponds to what we qualify as the y dimension here.
+            tshape = Shape(*list(reversed(self._templates[tid].shape)))
+            ul = Position(min(ul.x, tul.x), min(ul.y, tul.y))
+            br = Position(max(br.x, tul.x + tshape.x), max(br.y, tul.y + tshape.y))
         return ul, br
 
-    def _get_shape_from_bounding_box(
-        self, ul: tuple[int, int], br: tuple[int, int]
-    ) -> tuple[int, int]:
+    def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape:
         # ul: upper-left
         # br: bottom-right
-        # Tuple convention is (y, x)
-        return (br[0] - ul[0], br[1] - ul[1])
+        return Shape(br.x - ul.x, br.y - ul.y)
 
-    def _get_shape_from_ul_positions(
-        self, ul_positions: dict[int, tuple[int, int]]
-    ) -> tuple[int, int]:
+    def _get_shape_from_ul_positions(self, ul_positions: dict[int, Position]) -> Shape:
         # ul: upper-left
         # br: bottom-right
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
@@ -214,22 +202,21 @@ class TemplateOrchestrator(Template):
         bbul, bbbr = self._get_bounding_box_from_ul_positions(ul_positions)
         shape = self._get_shape_from_bounding_box(bbul, bbbr)
 
-        ret = numpy.zeros(shape, dtype=int)
-        # Tuple convention is (y, x)
+        ret = numpy.zeros(shape.to_numpy_shape(), dtype=int)
         # tid: template id
-        # ulx: upper-left x coordinate
-        # uly: upper-left y coordinate
-        for tid, (uly, ulx) in ul_positions.items():
+        # tul: template upper-left
+        for tid, tul in ul_positions.items():
             template = self._templates[tid]
+            # Numpy shapes are returned as (y, x) in our coordinate system convention.
             # tshapex: template shape x coordinate
             # tshapey: template shape y coordinate
             tshapey, tshapex = template.shape
             plaquette_indices: list[int] = self._relative_position_graph.nodes[tid][
                 "plaquette_indices"
             ]
-            # Tuple convention is (y, x)
-            y = uly - bbul[0]
-            x = ulx - bbul[1]
+            x = tul.x - bbul.x
+            y = tul.y - bbul.y
+            # Numpy indexing is (y, x) in our coordinate system convention.
             ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
                 *plaquette_indices
             )
@@ -248,7 +235,9 @@ class TemplateOrchestrator(Template):
 
     @property
     def shape(self) -> tuple[int, int]:
-        return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
+        return self._get_shape_from_ul_positions(
+            self._compute_ul_absolute_position()
+        ).to_numpy_shape()
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
