@@ -15,30 +15,34 @@ from tqec.templates.orchestrator import TemplateOrchestrator
 class ScalableCorner(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
         _templates = [
+            # 0
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 1]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
-            TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [2, 3]),
+            TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [3, 4]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [0, 5]),
             TemplateWithPlaquettes(FixedRectangle(1, 2), [2, 0]),
-            TemplateWithPlaquettes(ScalableRectangle(dim, 2), [3, 2]),
+            # 5
+            TemplateWithPlaquettes(ScalableRectangle(dim, 2), [3, 4]),
             TemplateWithPlaquettes(FixedRaw([[0, 0], [1, 0]]), [0, 6]),
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [7, 0]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithPlaquettes(
                 ScalableAlternatingCornerSquare(dim, CornerPositionEnum.LOWER_LEFT),
                 [
-                    2,
                     3,
+                    4,
                     8,
                     9,
                     11,
                 ],
             ),
+            # 10
             TemplateWithPlaquettes(ScalableRectangle(2, dim), [9, 8]),
             TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [9, 8]),
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [10, 0]),
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 12]),
             TemplateWithPlaquettes(FixedRectangle(2, 1), [0, 12]),
+            # 15
             TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 12]),
         ]
         _relations = [

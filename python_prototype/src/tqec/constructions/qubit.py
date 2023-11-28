@@ -17,7 +17,7 @@ class ScalableQubitSquare(TemplateOrchestrator):
             # Right rectangle, containing plaquettes of type 5 only
             TemplateWithPlaquettes(ScalableRectangle(1, dim), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 6]),
+            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
