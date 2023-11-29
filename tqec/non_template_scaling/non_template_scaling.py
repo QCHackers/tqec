@@ -1,12 +1,10 @@
-import time
 import matplotlib.pyplot as plt
 
 from tqec.non_template_scaling.display_data import generate_coordinates, plot_quiver
 
 
-#A class for edges
+# A class for edges
 class Edge:
-
     def __init__(self):
         self.length = None
         self.turning = None
@@ -21,9 +19,9 @@ class Edge:
     def set_next_edge(self, next_edge):
         self.next_edge = next_edge
 
-#A class for whole patches of surface code
-class Patch:
 
+# A class for whole patches of surface code
+class Patch:
     def __init__(self, edge_data):
 
         self.edges = []
@@ -67,10 +65,10 @@ class Patch:
     def make_plot(self):
 
         initial_edge_data = self.generate_edge_data()
-        initial_edge_coords=generate_coordinates(initial_edge_data)
+        initial_edge_coords = generate_coordinates(initial_edge_data)
         x_pos, y_pos, x_dir, y_dir = initial_edge_coords
 
-        plot_quiver(x_pos, y_pos, x_dir, y_dir, initial_edge_coords, label='Data', pause_time=0.2)
+        plot_quiver(x_pos, y_pos, x_dir, y_dir, initial_edge_coords, label="Data", pause_time=0.2)
 
     def animate_scaling(self):
 
@@ -89,9 +87,12 @@ class Patch:
                 edge_data = self.generate_edge_data()
                 x_pos, y_pos, x_dir, y_dir = generate_coordinates(edge_data)
 
-                plot_quiver(x_pos, y_pos, x_dir, y_dir, initial_edge_coords, label='Data', pause_time=0.2)
+                plot_quiver(
+                    x_pos, y_pos, x_dir, y_dir, initial_edge_coords, label="Data", pause_time=0.2
+                )
 
-#Here are a bunch of examples of the code in action
+
+# Here are a bunch of examples of the code in action
 
 # test_edge_data = [[3, +1], [3, -1], [2, -1], [3, +1], [3, +1], [3, -1],
 #                     [2, -1], [3, +1], [3, +1], [8, +1], [13, +1], [8, +1]]
@@ -151,7 +152,3 @@ plt.show()"""
 P3 = Patch(test_edge_data_4)
 P3.animate_scaling()
 plt.show()"""
-
-
-
-
