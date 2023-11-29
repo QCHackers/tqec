@@ -1,44 +1,32 @@
 from tqec.templates.base import Template
+from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.base import ScalableTemplate
-from tqec.templates.shapes.square import AlternatingSquare, AlternatingCornerSquare
+from tqec.templates.shapes.square import AlternatingCornerSquare
 from tqec.enums import CornerPositionEnum
 import typing as ty
 
 
-class ScalableAlternatingSquare(ScalableTemplate, AlternatingSquare):
+class ScalableAlternatingSquare(ScalableRectangle):
     def __init__(
         self, dimension: int, scale_func: ty.Callable[[int], int] = lambda x: x
     ) -> None:
-        ScalableTemplate.__init__(self, scale_func)
-        AlternatingSquare.__init__(self, dimension)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        ret = ScalableTemplate.to_dict(self)
-        ret.update(AlternatingSquare.to_dict(self))
-        return ret
-
-    def scale_to(self, k: int) -> Template:
-        return AlternatingSquare.scale_to(
-            self, ScalableTemplate.get_scaled_scale(self, k)
-        )
+        super().__init__(dimension, dimension, scale_func)
 
 
-class ScalableAlternatingCornerSquare(ScalableTemplate, AlternatingCornerSquare):
+class ScalableAlternatingCornerSquare(ScalableTemplate):
     def __init__(
         self,
         dimension: int,
         corner_position: CornerPositionEnum,
         scale_func: ty.Callable[[int], int] = lambda x: x,
     ) -> None:
-        ScalableTemplate.__init__(self, scale_func)
-        AlternatingCornerSquare.__init__(self, dimension, corner_position)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        ret = ScalableTemplate.to_dict(self)
-        ret.update(AlternatingCornerSquare.to_dict(self))
-        return ret
+        super().__init__(
+            AlternatingCornerSquare(dimension, corner_position), scale_func
+        )
 
     def scale_to(self, k: int) -> Template:
-        return AlternatingCornerSquare.scale_to(
-            self, ScalableTemplate.get_scaled_scale(self, k)
-        )
+        # Get the actual scale
+        new_dimension: int = self.get_scaled_scale(k)
+        # Change the underlying rectangle shape parameters
+        self.shape_instance.set_parameters((new_dimension,))
+        return self

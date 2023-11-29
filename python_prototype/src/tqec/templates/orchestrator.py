@@ -239,13 +239,13 @@ class TemplateOrchestrator(Template):
             self._compute_ul_absolute_position()
         ).to_numpy_shape()
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {
-            "templates": [t.to_dict() for t in self._templates],
-            "connections": [
-                {"source_idx": source, "target_idx": target, "direction": direction}
-                for source, target, direction in self._relative_position_graph.edges.data(
-                    "relative_position"  # type: ignore
-                )
-            ],
-        }
+    # def to_dict(self) -> dict[str, ty.Any]:
+    #     return {
+    #         "templates": [t.to_dict() for t in self._templates],
+    #         "connections": [
+    #             {"source_idx": source, "target_idx": target, "direction": direction}
+    #             for source, target, direction in self._relative_position_graph.edges.data(
+    #                 "relative_position"  # type: ignore
+    #             )
+    #         ],
+    #     }

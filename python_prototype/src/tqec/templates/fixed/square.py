@@ -1,14 +1,7 @@
-import typing as ty
 from tqec.templates.fixed.base import FixedTemplate
 from tqec.templates.shapes.square import AlternatingSquare
 
 
-class FixedAlternatingSquare(FixedTemplate, AlternatingSquare):
+class FixedAlternatingSquare(FixedTemplate):
     def __init__(self, dim: int) -> None:
-        FixedTemplate.__init__(self)
-        AlternatingSquare.__init__(self, dim)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        ret = FixedTemplate.to_dict(self)
-        ret.update(AlternatingSquare.to_dict(self))
-        return ret
+        super().__init__(AlternatingSquare(dim))

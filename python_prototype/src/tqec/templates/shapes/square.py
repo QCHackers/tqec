@@ -1,4 +1,4 @@
-from tqec.templates.base import Template
+from tqec.templates.shapes.rectangle import Rectangle
 from tqec.enums import CornerPositionEnum
 
 import typing as ty
@@ -6,31 +6,18 @@ import typing as ty
 import numpy
 
 
-class AlternatingSquare(Template):
+class AlternatingSquare(Rectangle):
     def __init__(self, dimension: int) -> None:
-        super().__init__()
-        self._dimension = dimension
+        super().__init__(dimension, dimension)
 
-    def instanciate(self, x_plaquette: int, z_plaquette: int, *_: int) -> numpy.ndarray:
-        ret = numpy.zeros(self.shape, dtype=int)
-        odd = slice(0, None, 2)
-        even = slice(1, None, 2)
-        ret[even, odd] = z_plaquette
-        ret[odd, even] = z_plaquette
-        ret[even, even] = x_plaquette
-        ret[odd, odd] = x_plaquette
-        return ret
+    def get_parameters(self) -> tuple[int, ...]:
+        dimension, _ = super().get_parameters()
+        return (dimension,)
 
-    @property
-    def shape(self) -> tuple[int, int]:
-        return (self._dimension, self._dimension)
-
-    def scale_to(self, k: int) -> Template:
-        self._dimension = k
-        return self
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {"type": "square", "dimension": self._dimension}
+    def set_parameters(self, parameters: tuple[int, ...]) -> None:
+        assert len(parameters) == 1
+        dimension: int = parameters[0]
+        super().set_parameters((dimension, dimension))
 
 
 class AlternatingCornerSquare(AlternatingSquare):
@@ -72,8 +59,9 @@ class AlternatingCornerSquare(AlternatingSquare):
         ret = numpy.zeros(self.shape, dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette
-        for i in range(self._dimension):
-            for j in range(self._dimension):
+        dimension = super().get_parameters()[0]
+        for i in range(dimension):
+            for j in range(dimension):
                 if i == j == 0:
                     ret[i, j] = corner_plaquette
                 elif i > j:
@@ -88,8 +76,3 @@ class AlternatingCornerSquare(AlternatingSquare):
                         ret[i, j] = x_plaquette_flipped
         # Correct ret and return
         return self._TRANSFORMATIONS[self._corner_position](ret)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        ret = super().to_dict()
-        ret.update({"corner": self._corner_position})
-        return ret

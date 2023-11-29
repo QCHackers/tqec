@@ -1,13 +1,12 @@
-from tqec.templates.base import Template
+from tqec.templates.shapes.base import Shape
 import typing as ty
 
 import numpy
 
 
-class Rectangle(Template):
+class Rectangle(Shape):
     def __init__(self, width: int, height: int) -> None:
         super().__init__()
-        assert width != height, "Both width and height are equal, use a square."
         self._width = width
         self._height = height
 
@@ -25,12 +24,38 @@ class Rectangle(Template):
     def shape(self) -> tuple[int, int]:
         return (self._height, self._width)
 
-    def scale_to(self, k: int) -> Template:
-        if self._width > self._height:
-            self._width = k
-        else:
-            self._height = k
-        return self
-
     def to_dict(self) -> dict[str, ty.Any]:
         return {"type": "rectangle", "width": self._width, "height": self._height}
+
+    def get_parameters(self) -> tuple[int, ...]:
+        return (self._width, self._height)
+
+    def set_parameters(self, parameters: tuple[int, ...]) -> None:
+        assert len(parameters) == 2
+        self._width, self._height = parameters
+
+
+class RawRectangle(Rectangle):
+    def __init__(self, indices: list[list[int]]) -> None:
+        width: int
+        height: int
+        if len(indices) == 0:
+            width, height = 0, 0
+        else:
+            width, height = len(indices[0]), len(indices)
+        super().__init__(width, height)
+        self._indices = indices
+
+    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+        try:
+            return numpy.array(plaquette_indices)[self._indices]
+        except IndexError as e:
+            e.add_note(
+                "RawRectangle instances should be constructed with 2-dimensional arrays "
+                "that contain indices that will index the plaquette_indices provided to "
+                "this method. The bigest index you provided at this instance creation is "
+                f"{max(max(l) for l in self._indices)} "
+                f"but you provided only {len(plaquette_indices)} plaquette indices "
+                "when calling this method."
+            )
+            raise e
