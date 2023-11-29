@@ -18,7 +18,7 @@ class ScalableRectangle(ScalableTemplate):
         # Scale the parameters
         if width > height:
             width = new_dimension
-        elif width == new_dimension:
+        elif width == height:
             width = new_dimension
             height = new_dimension
         else:  # width < height
