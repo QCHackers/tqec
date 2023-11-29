@@ -65,7 +65,7 @@ class ScalableCorner(TemplateOrchestrator):
             (7, ABOVE_OF, 11),
             (12, RIGHT_OF, 11),
             (15, BELOW_OF, 11),
-            (14, RIGHT_OF, 15),
+            (14, LEFT_OF, 15),
         ]
         TemplateOrchestrator.__init__(self, _templates)
         for source, relpos, target in _relations:
