@@ -21,9 +21,7 @@ requirements = [r.strip() for r in requirements]
 dev_requirements = open("dev-requirements.txt").readlines()
 dev_requirements = [r.strip() for r in dev_requirements]
 
-symbolic_packages = ["tqec"] + [
-    "tqec." + package for package in find_packages(where="tqec")
-]
+symbolic_packages = ["tqec"] + ["tqec." + package for package in find_packages(where="tqec")]
 
 # Sanity check
 assert __version__, "Version string cannot be empty"
