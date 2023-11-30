@@ -8,7 +8,7 @@ from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.templates.shapes.base import BaseShape
 
 
-def json_encoding_default(obj) -> str | dict | None:
+def _json_encoding_default(obj) -> str | dict | None:
     if isinstance(obj, CornerPositionEnum):
         return f"{obj.name}"
     elif isinstance(obj, TemplateRelativePositionEnum):
@@ -41,7 +41,7 @@ class Template(ABC):
 
     def to_json(self, **kwargs) -> str:
         assert "default" not in kwargs, "No default allowed!"
-        return json.dumps(self.to_dict(), default=json_encoding_default, **kwargs)
+        return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
     @property
     def shape_instance(self) -> BaseShape:
