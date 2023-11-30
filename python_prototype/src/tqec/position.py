@@ -8,7 +8,7 @@ class Position:
 
 
 @dataclass
-class Shape:
+class Shape2D:
     x: int
     y: int
 

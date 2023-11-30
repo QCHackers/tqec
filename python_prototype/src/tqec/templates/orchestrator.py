@@ -6,7 +6,7 @@ from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
 )
-from tqec.position import Position, Shape
+from tqec.position import Position, Shape2D
 
 import networkx as nx
 import numpy
@@ -15,7 +15,7 @@ import numpy
 def get_corner_position(
     position: Position,
     position_corner: CornerPositionEnum,
-    shape: Shape,
+    shape: Shape2D,
     expected_corner: CornerPositionEnum,
 ) -> Position:
     transformation: tuple[int, int] = (
@@ -136,8 +136,8 @@ class TemplateOrchestrator(Template):
             src_ul_position = ul_positions[src]
             # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
             # for a numpy array corresponds to what we qualify as the y dimension here.
-            src_shape = Shape(*tuple(reversed(self._templates[src].shape)))
-            dest_shape = Shape(*tuple(reversed(self._templates[dest].shape)))
+            src_shape = Shape2D(*tuple(reversed(self._templates[src].shape)))
+            dest_shape = Shape2D(*tuple(reversed(self._templates[dest].shape)))
 
             src_corner: CornerPositionEnum
             dest_corner: CornerPositionEnum
@@ -171,17 +171,19 @@ class TemplateOrchestrator(Template):
             # tshape: template shape
             # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
             # for a numpy array corresponds to what we qualify as the y dimension here.
-            tshape = Shape(*list(reversed(self._templates[tid].shape)))
+            tshape = Shape2D(*list(reversed(self._templates[tid].shape)))
             ul = Position(min(ul.x, tul.x), min(ul.y, tul.y))
             br = Position(max(br.x, tul.x + tshape.x), max(br.y, tul.y + tshape.y))
         return ul, br
 
-    def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape:
+    def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape2D:
         # ul: upper-left
         # br: bottom-right
-        return Shape(br.x - ul.x, br.y - ul.y)
+        return Shape2D(br.x - ul.x, br.y - ul.y)
 
-    def _get_shape_from_ul_positions(self, ul_positions: dict[int, Position]) -> Shape:
+    def _get_shape_from_ul_positions(
+        self, ul_positions: dict[int, Position]
+    ) -> Shape2D:
         # ul: upper-left
         # br: bottom-right
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
