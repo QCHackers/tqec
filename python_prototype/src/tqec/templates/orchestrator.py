@@ -134,10 +134,8 @@ class TemplateOrchestrator(Template):
             # Getting the positions and shape that will be needed to compute the ul_position
             # for dest.
             src_ul_position = ul_positions[src]
-            # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
-            # for a numpy array corresponds to what we qualify as the y dimension here.
-            src_shape = Shape2D(*tuple(reversed(self._templates[src].shape)))
-            dest_shape = Shape2D(*tuple(reversed(self._templates[dest].shape)))
+            src_shape = self._templates[src].shape
+            dest_shape = self._templates[dest].shape
 
             src_corner: CornerPositionEnum
             dest_corner: CornerPositionEnum
@@ -169,9 +167,7 @@ class TemplateOrchestrator(Template):
         # tulx: template upper-left
         for tid, tul in ul_positions.items():
             # tshape: template shape
-            # Shapes are reversed because arr.shape is returning the (y, x) shape as the first dimension
-            # for a numpy array corresponds to what we qualify as the y dimension here.
-            tshape = Shape2D(*list(reversed(self._templates[tid].shape)))
+            tshape = self._templates[tid].shape
             ul = Position(min(ul.x, tul.x), min(ul.y, tul.y))
             br = Position(max(br.x, tul.x + tshape.x), max(br.y, tul.y + tshape.y))
         return ul, br
@@ -202,10 +198,9 @@ class TemplateOrchestrator(Template):
         # tul: template upper-left
         for tid, tul in ul_positions.items():
             template = self._templates[tid]
-            # Numpy shapes are returned as (y, x) in our coordinate system convention.
             # tshapex: template shape x coordinate
             # tshapey: template shape y coordinate
-            tshapey, tshapex = template.shape
+            tshapey, tshapex = template.shape.to_numpy_shape()
             plaquette_indices: list[int] = self._relative_position_graph.nodes[tid][
                 "plaquette_indices"
             ]

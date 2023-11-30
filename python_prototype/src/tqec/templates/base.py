@@ -5,6 +5,7 @@ import typing as ty
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.position import Shape2D
 from tqec.templates.shapes.base import BaseShape
 
 
@@ -25,7 +26,7 @@ class Template(ABC):
         return self._shape_instance.instanciate(*plaquette_indices)
 
     @property
-    def shape(self) -> tuple[int, int]:
+    def shape(self) -> Shape2D:
         return self._shape_instance.shape
 
     @abstractmethod

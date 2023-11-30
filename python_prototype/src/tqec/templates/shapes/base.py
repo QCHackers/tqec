@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import typing as ty
-
 import numpy
+from tqec.position import Shape2D
 
 
 class BaseShape(ABC):
@@ -14,7 +14,7 @@ class BaseShape(ABC):
 
     @property
     @abstractmethod
-    def shape(self) -> tuple[int, int]:
+    def shape(self) -> Shape2D:
         pass
 
     @abstractmethod

@@ -1,3 +1,4 @@
+from tqec.position import Shape2D
 from tqec.templates.shapes.base import BaseShape
 import typing as ty
 
@@ -11,7 +12,7 @@ class Rectangle(BaseShape):
         self._height = height
 
     def instanciate(self, x_plaquette: int, z_plaquette: int, *_: int) -> numpy.ndarray:
-        ret = numpy.zeros(self.shape, dtype=int)
+        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
         ret[even, odd] = z_plaquette
@@ -21,8 +22,8 @@ class Rectangle(BaseShape):
         return ret
 
     @property
-    def shape(self) -> tuple[int, int]:
-        return (self._height, self._width)
+    def shape(self) -> Shape2D:
+        return Shape2D(self._width, self._height)
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {

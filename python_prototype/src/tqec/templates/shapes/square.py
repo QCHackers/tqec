@@ -62,7 +62,7 @@ class AlternatingCornerSquare(AlternatingSquare):
         corner_plaquette: int,
         *_: int,
     ) -> numpy.ndarray:
-        ret = numpy.zeros(self.shape, dtype=int)
+        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette
         dimension = super().get_parameters()[0]
