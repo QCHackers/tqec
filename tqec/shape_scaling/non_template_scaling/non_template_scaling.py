@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
-
-from tqec.non_template_scaling.display_data import generate_coordinates, plot_quiver
+from tqec.shape_scaling.non_template_scaling.display_data import generate_coordinates, plot_quiver
 
 
 # A class for edges
