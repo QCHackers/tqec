@@ -16,10 +16,6 @@ from tqec.position import Position, Shape
 import networkx as nx
 import numpy
 
-type RelativePosition = TemplateRelativePositionEnum | tuple[
-    CornerPositionEnum, CornerPositionEnum
-]
-
 
 def get_corner_position(
     position: Position,
@@ -70,19 +66,32 @@ class TemplateOrchestrator(Template):
         assert template_id_to_position < len(self._templates)
         assert anchor_id < len(self._templates)
         assert isinstance(relative_position, TemplateRelativePositionEnum)
-        # Add 2 symmetric edges on the graph to encode the relative positioning information
-        # provided by the user by calling this methods.
-        self._relative_position_graph.add_edge(
-            anchor_id,
-            template_id_to_position,
-            relative_position=relative_position,
+
+        anchor_corner: CornerPositionEnum
+        template_corner: CornerPositionEnum
+        if relative_position == TemplateRelativePositionEnum.ABOVE_OF:
+            anchor_corner, template_corner = (
+                CornerPositionEnum.UPPER_LEFT,
+                CornerPositionEnum.LOWER_LEFT,
+            )
+        elif relative_position == TemplateRelativePositionEnum.BELOW_OF:
+            anchor_corner, template_corner = (
+                CornerPositionEnum.LOWER_LEFT,
+                CornerPositionEnum.UPPER_LEFT,
+            )
+        elif relative_position == TemplateRelativePositionEnum.RIGHT_OF:
+            anchor_corner, template_corner = (
+                CornerPositionEnum.UPPER_RIGHT,
+                CornerPositionEnum.UPPER_LEFT,
+            )
+        else:  # relative_position == TemplateRelativePositionEnum.LEFT_OF:
+            anchor_corner, template_corner = (
+                CornerPositionEnum.UPPER_LEFT,
+                CornerPositionEnum.UPPER_RIGHT,
+            )
+        return self.add_corner_relation(
+            (template_id_to_position, template_corner), (anchor_id, anchor_corner)
         )
-        self._relative_position_graph.add_edge(
-            template_id_to_position,
-            anchor_id,
-            relative_position=opposite_relative_position(relative_position),
-        )
-        return self
 
     def add_corner_relation(
         self,
@@ -119,7 +128,7 @@ class TemplateOrchestrator(Template):
         dest: int
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
-            relative_position: RelativePosition | None = (
+            relative_position: CornerPositionEnum | None = (
                 self._relative_position_graph.get_edge_data(src, dest).get(
                     "relative_position"
                 )
@@ -134,35 +143,24 @@ class TemplateOrchestrator(Template):
             # for a numpy array corresponds to what we qualify as the y dimension here.
             src_shape = Shape(*tuple(reversed(self._templates[src].shape)))
             dest_shape = Shape(*tuple(reversed(self._templates[dest].shape)))
-            if isinstance(relative_position, TemplateRelativePositionEnum):
-                if relative_position == ABOVE_OF or relative_position == LEFT_OF:
-                    ul_positions[dest] = Position(
-                        src_ul_position.x + relative_position.value.x * dest_shape.x,
-                        src_ul_position.y + relative_position.value.y * dest_shape.y,
-                    )
-                else:  # relative_position == RIGHT_OF or relative_position == BELOW_OF:
-                    ul_positions[dest] = Position(
-                        src_ul_position.x + relative_position.value.x * src_shape.x,
-                        src_ul_position.y + relative_position.value.y * src_shape.y,
-                    )
-            else:  # isinstance(relative_position, tuple[CornerPositionEnum, CornerPositionEnum])
-                src_corner: CornerPositionEnum
-                dest_corner: CornerPositionEnum
-                src_corner, dest_corner = relative_position
-                # Compute the anchor corner
-                anchor_position: Position = get_corner_position(
-                    src_ul_position,
-                    CornerPositionEnum.UPPER_LEFT,
-                    src_shape,
-                    src_corner,
-                )
-                # Compute the upper-left position of the destination
-                ul_positions[dest] = get_corner_position(
-                    anchor_position,
-                    dest_corner,
-                    dest_shape,
-                    CornerPositionEnum.UPPER_LEFT,
-                )
+
+            src_corner: CornerPositionEnum
+            dest_corner: CornerPositionEnum
+            src_corner, dest_corner = relative_position
+            # Compute the anchor corner
+            anchor_position: Position = get_corner_position(
+                src_ul_position,
+                CornerPositionEnum.UPPER_LEFT,
+                src_shape,
+                src_corner,
+            )
+            # Compute the upper-left position of the destination
+            ul_positions[dest] = get_corner_position(
+                anchor_position,
+                dest_corner,
+                dest_shape,
+                CornerPositionEnum.UPPER_LEFT,
+            )
 
         return ul_positions
 
