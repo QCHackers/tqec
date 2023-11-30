@@ -1,12 +1,16 @@
-from enum import Enum, auto
+from enum import Enum
 from tqec.position import Position
 
 
 class CornerPositionEnum(Enum):
-    # Corner positions are stored as coordinates in the coordinate system with:
-    # - the origin on the upper-left corner
-    # - the X-axis that goes from the origin to the upper-right corner
-    # - the Y-axis that goes from the origin to the lower-left corner
+    """Represents a corner.
+
+    Corner positions are stored as coordinates in the coordinate system with:
+    - the origin on the upper-left corner
+    - the X-axis that goes from the origin to the upper-right corner
+    - the Y-axis that goes from the origin to the lower-left corner
+    """
+
     LOWER_LEFT = Position(0, 1)
     LOWER_RIGHT = Position(1, 1)
     UPPER_LEFT = Position(0, 0)
@@ -14,9 +18,13 @@ class CornerPositionEnum(Enum):
 
 
 class TemplateRelativePositionEnum(Enum):
-    # Template relative positions are stored as the relative displacement needed to
-    # encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
-    # on the left is one unit backwards on the X-axis.
+    """Represent a relative position between two Template instances.
+
+    Template relative positions are stored as the relative displacement needed to
+    encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
+    on the left is one unit backwards on the X-axis.
+    """
+
     LEFT_OF = Position(-1, 0)
     RIGHT_OF = Position(1, 0)
     ABOVE_OF = Position(0, -1)
