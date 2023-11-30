@@ -5,11 +5,6 @@ from tqec.templates.base import Template, TemplateWithPlaquettes
 from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
-    opposite_relative_position,
-    ABOVE_OF,
-    BELOW_OF,
-    LEFT_OF,
-    RIGHT_OF,
 )
 from tqec.position import Position, Shape
 
