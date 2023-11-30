@@ -19,6 +19,12 @@ class AlternatingSquare(Rectangle):
         dimension: int = parameters[0]
         super().set_parameters((dimension, dimension))
 
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {
+            "type": self.__class__.__name__,
+            "kwargs": {"dimension": self.get_parameters()[0]},
+        }
+
 
 class AlternatingCornerSquare(AlternatingSquare):
     _TRANSFORMATIONS: dict[

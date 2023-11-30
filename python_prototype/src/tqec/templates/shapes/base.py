@@ -17,9 +17,9 @@ class Shape(ABC):
     def shape(self) -> tuple[int, int]:
         pass
 
-    # @abstractmethod
-    # def to_dict(self) -> dict[str, ty.Any]:
-    #     pass
+    @abstractmethod
+    def to_dict(self) -> dict[str, ty.Any]:
+        pass
 
     @abstractmethod
     def get_parameters(self) -> tuple[int, ...]:

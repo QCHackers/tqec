@@ -25,7 +25,13 @@ class Rectangle(Shape):
         return (self._height, self._width)
 
     def to_dict(self) -> dict[str, ty.Any]:
-        return {"type": "rectangle", "width": self._width, "height": self._height}
+        return {
+            "type": self.__class__.__name__,
+            "kwargs": {
+                "width": self._width,
+                "height": self._height,
+            },
+        }
 
     def get_parameters(self) -> tuple[int, ...]:
         return (self._width, self._height)
@@ -59,3 +65,6 @@ class RawRectangle(Rectangle):
                 "when calling this method."
             )
             raise e
+
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {"type": self.__class__.__name__, "kwargs": {"indices": self._indices}}

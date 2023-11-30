@@ -237,13 +237,27 @@ class TemplateOrchestrator(Template):
             self._compute_ul_absolute_position()
         ).to_numpy_shape()
 
-    # def to_dict(self) -> dict[str, ty.Any]:
-    #     return {
-    #         "templates": [t.to_dict() for t in self._templates],
-    #         "connections": [
-    #             {"source_idx": source, "target_idx": target, "direction": direction}
-    #             for source, target, direction in self._relative_position_graph.edges.data(
-    #                 "relative_position"  # type: ignore
-    #             )
-    #         ],
-    #     }
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {
+            # __class__ is "TemplateOrchestrator" here, whatever the type of self is. This is different
+            # from what is done in the Template base class. This is done to avoid users subclassing this
+            # class and having a subclass name we do not control in the "type" entry.
+            "type": __class__.__name__,
+            "kwargs": {
+                "templates": [t.to_dict() for t in self._templates],
+            },
+            "connections": [
+                {
+                    "source_idx": source,
+                    "target_idx": target,
+                    "source_corner": source_corner,
+                    "target_corner": target_corner,
+                }
+                for source, target, (
+                    source_corner,
+                    target_corner,
+                ) in self._relative_position_graph.edges.data(
+                    "relative_position"  # type: ignore
+                )
+            ],
+        }

@@ -32,13 +32,16 @@ class Template(ABC):
     def scale_to(self, k: int) -> "Template":
         pass
 
-    # @abstractmethod
-    # def to_dict(self) -> dict[str, ty.Any]:
-    #     pass
+    def to_dict(self) -> dict[str, ty.Any]:
+        # self.__class__ is the type of the instance this method is called on, taking into
+        # account inheritance. So this is not always "Template" here, as a subclass of 
+        # Template could use this method and self.__class__ would be this subclass type.
+        # This is intentional.
+        return {"type": self.__class__.__name__, "shape": self.shape_instance.to_dict()}
 
-    # def to_json(self, **kwargs) -> str:
-    #     assert "default" not in kwargs, "No default allowed!"
-    #     return json.dumps(self.to_dict(), default=json_encoding_default, **kwargs)
+    def to_json(self, **kwargs) -> str:
+        assert "default" not in kwargs, "No default allowed!"
+        return json.dumps(self.to_dict(), default=json_encoding_default, **kwargs)
 
     @property
     def shape_instance(self) -> Shape:
