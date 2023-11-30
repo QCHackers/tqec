@@ -5,7 +5,7 @@ import typing as ty
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
-from tqec.templates.shapes.base import Shape
+from tqec.templates.shapes.base import BaseShape
 
 
 def json_encoding_default(obj) -> str | dict | None:
@@ -17,7 +17,7 @@ def json_encoding_default(obj) -> str | dict | None:
 
 
 class Template(ABC):
-    def __init__(self, shape: Shape) -> None:
+    def __init__(self, shape: BaseShape) -> None:
         super().__init__()
         self._shape_instance = shape
 
@@ -44,7 +44,7 @@ class Template(ABC):
         return json.dumps(self.to_dict(), default=json_encoding_default, **kwargs)
 
     @property
-    def shape_instance(self) -> Shape:
+    def shape_instance(self) -> BaseShape:
         return self._shape_instance
 
 

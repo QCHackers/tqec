@@ -4,7 +4,7 @@ import typing as ty
 import numpy
 
 
-class Shape(ABC):
+class BaseShape(ABC):
     def __init__(self) -> None:
         super().__init__()
 

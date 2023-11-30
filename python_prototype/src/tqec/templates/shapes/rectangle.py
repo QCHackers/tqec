@@ -1,10 +1,10 @@
-from tqec.templates.shapes.base import Shape
+from tqec.templates.shapes.base import BaseShape
 import typing as ty
 
 import numpy
 
 
-class Rectangle(Shape):
+class Rectangle(BaseShape):
     def __init__(self, width: int, height: int) -> None:
         super().__init__()
         self._width = width
