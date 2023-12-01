@@ -111,12 +111,6 @@ class TemplateOrchestrator(Template):
         )
         return self
 
-    def _find_template_id(self, template: Template) -> int:
-        try:
-            return self._templates.index(template)
-        except ValueError:
-            raise TemplateNotInOrchestrator(self, template)
-
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
