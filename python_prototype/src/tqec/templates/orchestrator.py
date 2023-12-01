@@ -18,6 +18,31 @@ def get_corner_position(
     shape: Shape2D,
     expected_corner: CornerPositionEnum,
 ) -> Position:
+    """Get the position of a template corner.
+
+    This function helps in computing the position of any corner of a given
+    template as long as we have the position of one of its corners.
+
+    Examples:
+    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
+    Position(x=0, y=0)
+    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_LEFT)
+    Position(x=0, y=2)
+    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_RIGHT)
+    Position(x=2, y=0)
+    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_RIGHT)
+    Position(x=2, y=2)
+    >>> get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
+    Position(x=-2, y=-2)
+
+
+    :param position: position of the "anchor" corner.
+    :param position_corner: corner which position is given as first argument.
+    :param shape: 2-dimensional shape of the considerer template.
+    :param expected_corner: the corner we want to compute the position of.
+    :returns: the position of the expected_corner of a template of the given shape,
+        knowing that the corner position_corner is at the given position.
+    """
     transformation: tuple[int, int] = (
         expected_corner.value.x - position_corner.value.x,
         expected_corner.value.y - position_corner.value.y,
@@ -30,6 +55,47 @@ def get_corner_position(
 
 class TemplateOrchestrator(JSONEncodable):
     def __init__(self, templates: list[TemplateWithPlaquettes]) -> None:
+        """Manages templates positionned relatively to each other.
+
+        This class manages a list of user-provided templates and user-provided relative
+        positions to build and scale quantum error correction code.
+
+        Template instances are stored in an ordered list. Relative positioning of these
+        templates are stored in an oriented graph with:
+        - vertices that are integers, representing indices of Template instances stored
+          in the ordered list stored alongside the graph,
+        - edges that are connecting two vertices (i.e., two Template instances) that
+          are relatively positionned between each other.
+
+        The relative position is internally stored as a tuple of corners that should
+        represent the same underlying qubit. Each edge between vertices A and B should
+        have a "weight" (as per networkx definition of the term) under the key
+        "relative_position" that is a tuple[CornerPositionEnum, CornerPositionEnum].
+        If an edge from A to B has a "relative_position" weight of (corner1, corner2),
+        that means that corner1 over the template A and corner2 of the template B are
+        on the same location (i.e., same physical qubit).
+
+        The main logic in this class is located in the (private) method
+        _compute_ul_absolute_position that, as its name indicate, computes the upper-left
+        absolute position of each template (i.e., absolute position of the upper-left
+        corner of each template).
+
+        The coordinate system used internally by this class is:
+               x-axis
+          0 ------------>
+          |
+        y |
+        | |
+        a |
+        x |
+        i |
+        s |
+          |
+          V
+
+        :param templates: a list of templates forwarded to the add_templates method
+            at the end of instance initialisation.
+        """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self.add_templates(templates)
@@ -38,7 +104,7 @@ class TemplateOrchestrator(JSONEncodable):
         self,
         template_to_insert: TemplateWithPlaquettes,
     ) -> int:
-        # Add the new template to the data structure
+        """Add the provided template to the data structure."""
         template_id: int = len(self._templates)
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(
@@ -50,6 +116,7 @@ class TemplateOrchestrator(JSONEncodable):
         self,
         templates_to_insert: list[TemplateWithPlaquettes],
     ) -> list[int]:
+        """Add the provided templates to the data structure."""
         return [self.add_template(template) for template in templates_to_insert]
 
     def add_relation(
@@ -58,6 +125,23 @@ class TemplateOrchestrator(JSONEncodable):
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
     ) -> "TemplateOrchestrator":
+        """Add a relative positioning between two templates.
+
+        This method has the same effect as add_corner_relation (it internally calls it), but
+        provide another interface to add a relation between two templates.
+
+        This method is kept in the interface because the interface it provides is simpler
+        to use and read than add_corner_relation.
+
+        :param template_id_to_position: index of the template that should be positionned relatively
+            to the provided anchor.
+        :param relative_position: the relative position of the template provided as first parameter
+            with respect to the anchor provided as third parameter. Can be any of LEFT_OF, RIGHT_OF,
+            BELOW_OF and ABOVE_OF.
+        :param anchor_id: index of the anchor template, i.e., the template with respect to which the
+            template provided in first parameter will be positioned.
+        :returns: self, to be able to chain calls to this method.
+        """
         assert template_id_to_position < len(self._templates)
         assert anchor_id < len(self._templates)
         assert isinstance(relative_position, TemplateRelativePositionEnum)
@@ -93,6 +177,16 @@ class TemplateOrchestrator(JSONEncodable):
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
     ) -> "TemplateOrchestrator":
+        """Add a relative positioning between two templates.
+
+        :param template_id_to_position_corner: a tuple containing the index of the template that
+            should be positionned relatively to the provided anchor and the corner that should be
+            considered.
+        :param anchor_id_corner: a tuple containing the index of the (anchor) template that
+            should be used to position the template instance provided in the first parameter,
+            and the corner that should be considered.
+        :returns: self, to be able to chain calls to this method.
+        """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
         assert template_id < len(self._templates)
@@ -112,6 +206,21 @@ class TemplateOrchestrator(JSONEncodable):
         return self
 
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
+        """Computes the absolute position of each template upper-left corner.
+
+        This is the main method of the TemplateOrchestrator class. It explores templates
+        by performing a BFS on the graph of relations between templates, starting by the
+        first template inserted (but any template connected to the others should work
+        fine).
+
+        The first template upper-left corner is arbitrarily positioned at the (0, 0)
+        position, and each template upper-left corner is then computed from this position.
+        This means in particular that this method can return positions with negative
+        coordinates.
+
+        :returns: a mapping between templates indices and their upper-left corner absolute
+            position.
+        """
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
         dest: int
@@ -127,6 +236,7 @@ class TemplateOrchestrator(JSONEncodable):
             ), f"Found an edge from {src} to {dest} that does not have a relative position."
             # Getting the positions and shape that will be needed to compute the ul_position
             # for dest.
+            # ul_positions[src] is guaranteed to exist due to the BFS exploration order.
             src_ul_position = ul_positions[src]
             src_shape = self._templates[src].shape
             dest_shape = self._templates[dest].shape
@@ -154,6 +264,13 @@ class TemplateOrchestrator(JSONEncodable):
     def _get_bounding_box_from_ul_positions(
         self, ul_positions: dict[int, Position]
     ) -> tuple[Position, Position]:
+        """Get the bounding box containing all the templates from their upper-left corner position.
+
+        :param ul_positions: a mapping between templates indices and their upper-left corner absolute
+            position.
+        :returns: a tuple (upper-left position, bottom-right position) representing the bounding box.
+            Coordinates in each positions are not guaranteed to be positive.
+        """
         # ul: upper-left
         # br: bottom-right
         ul, br = Position(0, 0), Position(0, 0)
@@ -167,6 +284,11 @@ class TemplateOrchestrator(JSONEncodable):
         return ul, br
 
     def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape2D:
+        """Get the shape of the represented code from the bounding box.
+
+        :param ul: upper-left corner position of the bounding box.
+        :param br: bottom-right corner position of the bounding box.
+        """
         # ul: upper-left
         # br: bottom-right
         return Shape2D(br.x - ul.x, br.y - ul.y)
@@ -174,6 +296,7 @@ class TemplateOrchestrator(JSONEncodable):
     def _get_shape_from_ul_positions(
         self, ul_positions: dict[int, Position]
     ) -> Shape2D:
+        """Get the shape of the represented code from the upper-left corner positions of each template."""
         # ul: upper-left
         # br: bottom-right
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
@@ -198,6 +321,8 @@ class TemplateOrchestrator(JSONEncodable):
             plaquette_indices: list[int] = self._relative_position_graph.nodes[tid][
                 "plaquette_indices"
             ]
+            # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
+            # the represented code to the axes and avoid having negative indices.
             x = tul.x - bbul.x
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
