@@ -117,10 +117,10 @@ class TemplateOrchestrator(Template):
         dest: int
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
-            relative_position: CornerPositionEnum | None = (
-                self._relative_position_graph.get_edge_data(src, dest).get(
-                    "relative_position"
-                )
+            relative_position: tuple[
+                CornerPositionEnum, CornerPositionEnum
+            ] | None = self._relative_position_graph.get_edge_data(src, dest).get(
+                "relative_position"
             )
             assert (
                 relative_position is not None
