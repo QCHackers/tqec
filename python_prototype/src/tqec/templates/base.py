@@ -26,7 +26,28 @@ def _json_encoding_default(obj) -> str | dict | None:
     raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
 
 
-class Template(ABC):
+class JSONEncodable(ABC):
+    @abstractmethod
+    def to_dict(self) -> dict[str, ty.Any]:
+        """Returns a dict-like representation of the instance.
+
+        Used to implement to_json.
+        """
+        pass
+
+    def to_json(self, **kwargs) -> str:
+        """Returns a JSON representation of the instance.
+
+        :param kwargs: keyword arguments forwarded to the json.dumps function. The "default"
+            keyword argument should NOT be present.
+        :returns: the JSON representation of the instance.
+        :raises AssertionError: if the "default" key is present in kwargs.
+        """
+        assert "default" not in kwargs, "No default allowed!"
+        return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
+
+
+class Template(JSONEncodable):
     def __init__(self, shape: BaseShape) -> None:
         """Base class for all the templates.
 
@@ -91,17 +112,6 @@ class Template(ABC):
         # Template could use this method and self.__class__ would be this subclass type.
         # This is intentional.
         return {"type": self.__class__.__name__, "shape": self.shape_instance.to_dict()}
-
-    def to_json(self, **kwargs) -> str:
-        """Returns a JSON representation of the instance.
-
-        :param kwargs: keyword arguments forwarded to the json.dumps function. The "default"
-            keyword argument should NOT be present.
-        :returns: the JSON representation of the instance.
-        :raises AssertionError: if the "default" key is present in kwargs.
-        """
-        assert "default" not in kwargs, "No default allowed!"
-        return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
     @property
     def shape_instance(self) -> BaseShape:

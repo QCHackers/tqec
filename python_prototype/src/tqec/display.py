@@ -1,7 +1,8 @@
 from tqec.templates.base import Template
+from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-def display(template: Template, *plaquette_indices: int) -> None:
+def display(template: Template | TemplateOrchestrator, *plaquette_indices: int) -> None:
     """Display a template instance with ASCII output.
 
     :param template: the Template instance to display.

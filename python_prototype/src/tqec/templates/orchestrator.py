@@ -1,7 +1,7 @@
 import typing as ty
 
 from tqec.errors import TemplateNotInOrchestrator
-from tqec.templates.base import Template, TemplateWithPlaquettes
+from tqec.templates.base import JSONEncodable, Template, TemplateWithPlaquettes
 from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
@@ -28,7 +28,7 @@ def get_corner_position(
     )
 
 
-class TemplateOrchestrator(Template):
+class TemplateOrchestrator(JSONEncodable):
     def __init__(self, templates: list[TemplateWithPlaquettes]) -> None:
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
