@@ -1,0 +1,55 @@
+<!doctype html>
+    <head>
+      <title>Learning jqPlot</title>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="/css/jquery.jqplot.min.css">
+     <script src="http://code.jquery.com/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.9/jquery.jqplot.min.js"></script>
+
+      <div id="firstChart" style="width:600px"></div>
+      <input id = "btnSubmit" type="submit" value="Create tile"/>
+
+
+    </head>
+    <script>
+        $(document).ready(function(){
+          var plot = $.jqplot ('firstChart', [[null]], function() { }); 
+        });
+
+        function getClickPosition(e) {
+  var p = {
+    x: e.clientX,
+    y: e.clientY
+  }
+  drawAt(p);
+  return p
+}
+
+function drawAt(point) {
+  var dotSize = 10; // in px
+  var div = document.createElement('div');
+  div.style.backgroundColor = "#000"
+  div.style.width = dotSize + "px";
+  div.style.height = dotSize + "px"
+  div.style.position = "absolute"
+  div.style.left = (point.x - dotSize / 2) + "px"
+  div.style.top = (point.y - dotSize / 2) + "px"
+  div.style.borderRadius = "50%"
+  firstChart.appendChild(div);
+}
+
+document.getElementById("firstChart").addEventListener('click', function(e) {
+  getClickPosition(e);
+});
+
+
+$(document).ready(function() {
+    $("#btnSubmit").click(function(){
+        console.log("button");
+    }); 
+});
+
+
+        </script>
+    <body>
+
