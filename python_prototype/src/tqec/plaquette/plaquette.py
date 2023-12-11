@@ -14,10 +14,17 @@ class Plaquette:
 
     def to_qubit_array(self) -> numpy.ndarray:
         """Should be specialised for specific plaquette types"""
-        maxx = max(qubit.position.x for qubit in self.qubits)
-        maxy = max(qubit.position.y for qubit in self.qubits)
-        shape = Shape2D(maxx + 1, maxy + 1)
+        shape = self.shape
         array = numpy.zeros(shape.to_numpy_shape(), dtype=bool)
         for qubit in self.qubits:
             array[qubit.position.y, qubit.position.x] = True
         return array
+
+    def get_layer(self, index: int) -> Circuit:
+        return self.layer_circuits[index]
+
+    @property
+    def shape(self) -> tuple[int, int]:
+        maxx = max(qubit.position.x for qubit in self.qubits)
+        maxy = max(qubit.position.y for qubit in self.qubits)
+        return Shape2D(maxx + 1, maxy + 1)
