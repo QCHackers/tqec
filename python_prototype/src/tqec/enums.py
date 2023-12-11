@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 from tqec.position import Position
 
 
@@ -35,3 +35,8 @@ LEFT_OF = TemplateRelativePositionEnum.LEFT_OF
 RIGHT_OF = TemplateRelativePositionEnum.RIGHT_OF
 ABOVE_OF = TemplateRelativePositionEnum.ABOVE_OF
 BELOW_OF = TemplateRelativePositionEnum.BELOW_OF
+
+
+class PlaquetteQubitType(Enum):
+    DATA = auto()
+    SYNDROME = auto()
