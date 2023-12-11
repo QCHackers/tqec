@@ -53,3 +53,12 @@ def compute_qubit_array(
                 y_origin : y_origin + pqay, x_origin : x_origin + pqax
             ] = plaquettes_qubit_array[plaquette_index - 1]
     return final_array
+
+
+def get_qubit_array_str(
+    array: numpy.ndarray, qubit_str: str = "x", nothing_str: str = " "
+) -> str:
+    return "\n".join(
+        "".join(qubit_str if boolean else nothing_str for boolean in line)
+        for line in array
+    )
