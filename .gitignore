@@ -161,3 +161,7 @@ cython_debug/
 
 # Mac files
 .DS_Store
+
+
+# node_modules should be ignored by default
+node_modules/
