@@ -5,6 +5,32 @@ from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
+# As plaquettes are overlapping, there is a bit of math to do. For each dimension:
+#   the 2 plaquettes on both ends will overlap with only one plaquette
+#   all the other plaquettes will overlap with 2 plaquettes
+
+
+def compute_qubit_array_shape(number_of_plaquettes: int, plaquette_size: int) -> int:
+    """Computes the underlying qubit array shape.
+
+    This function computes the shape of the array that represent the qubits needed
+    by a template that needs number_of_plaquettes plaquettes in the dimension of
+    interest, each plaquette having plaquette_size qubits in this dimension.
+
+    It takes into account the fact that plaquettes are sharing qubits at their
+    interfaces.
+    If we consider that a qubit shared by 2 plaquettes is owned by the plaquette
+    before it (in the dimension of interest) then:
+    - the first plaquette owns template_size qubits.
+    - each following plaquettes owns template_size - 1 qubits.
+    """
+    return plaquette_size + (number_of_plaquettes - 1) * (plaquette_size - 1)
+
+
+def get_plaquette_starting_index(plaquette_size: int, index: int) -> int:
+    return index * (plaquette_size - 1)
+
+
 def compute_qubit_array(
     template: Template | TemplateOrchestrator, plaquettes: list[Plaquette]
 ) -> numpy.ndarray:
@@ -26,25 +52,16 @@ def compute_qubit_array(
     assert all(pqa.shape == (pqax, pqay) for pqa in plaquettes_qubit_array)
 
     # Instanciate the final array
-    # As plaquettes are overlapping, there is a bit of math to do. For each dimension:
-    #   the 2 plaquettes on both ends will overlap with only one plaquette
-    #   all the other plaquettes will overlap with 2 plaquettes
-    # If we consider that a qubit shared by 2 plaquettes is owned by the plaquette
-    # on the left (resp. top) then:
-    # - the first plaquette owns template_size qubits.
-    # - each following plaquettes owns template_size - 1 qubits.
-    def compute_shape(number_of_templates: int, template_size: int) -> int:
-        return template_size + (number_of_templates - 1) * (template_size - 1)
 
-    def get_global_index(template_size: int, index: int) -> int:
-        return index * (template_size - 1)
-
-    final_shape = (compute_shape(stiy, pqay), compute_shape(stix, pqax))
+    final_shape = (
+        compute_qubit_array_shape(stiy, pqay),
+        compute_qubit_array_shape(stix, pqax),
+    )
     final_array = numpy.zeros(final_shape, dtype=bool)
     for y, line in enumerate(scalable_template_instanciation):
         for x, plaquette_index in enumerate(line):
-            y_origin = get_global_index(pqay, y)
-            x_origin = get_global_index(pqax, x)
+            y_origin = get_plaquette_starting_index(pqay, y)
+            x_origin = get_plaquette_starting_index(pqax, x)
             # plaquettes indices start at 1 and 0 means no plaquette.
             # So if we find a 0, there is no plaquette, we avoid.
             if plaquette_index == 0:
