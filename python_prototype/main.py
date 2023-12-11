@@ -1,7 +1,11 @@
-from tqec.constructions.corner import ScalableCorner
-from tqec.display import display
+from tqec.templates.scalable.square import ScalableAlternatingSquare
+from tqec.plaquette.library.xxxx import XXXXPlaquette
+from tqec.plaquette.library.zzzz import ZZZZPlaquette
+from tqec.generation.circuit import generate_circuit
 
-# Distance 4 corner
-corner = ScalableCorner(4)
-display(corner.scale_to(6))
-print(corner.to_json(indent=2))
+template = ScalableAlternatingSquare(4)
+plaquettes = [XXXXPlaquette, ZZZZPlaquette]
+
+circuit = generate_circuit(template, plaquettes)
+
+print(circuit)
