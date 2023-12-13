@@ -4,7 +4,7 @@ from tqec.plaquette.library.zzzz import ZZZZPlaquette
 from tqec.generation.circuit import generate_circuit
 
 template = ScalableAlternatingSquare(4)
-plaquettes = [XXXXPlaquette, ZZZZPlaquette]
+plaquettes = [XXXXPlaquette(), ZZZZPlaquette()]
 
 circuit = generate_circuit(template, plaquettes)
 
