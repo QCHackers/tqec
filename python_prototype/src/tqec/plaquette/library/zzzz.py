@@ -5,7 +5,6 @@ from tqec.position import Position
 
 import cirq
 from cirq.circuits.circuit import Circuit
-from cirq import GridQubit
 
 
 class ZZZZPlaquette(Plaquette):
