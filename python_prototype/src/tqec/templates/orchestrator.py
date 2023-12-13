@@ -1,6 +1,5 @@
 import typing as ty
 
-from tqec.errors import TemplateNotInOrchestrator
 from tqec.templates.base import JSONEncodable, Template, TemplateWithPlaquettes
 from tqec.enums import (
     CornerPositionEnum,
