@@ -97,6 +97,7 @@ class TemplateOrchestrator(JSONEncodable):
         """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
+        self._maximum_plaquette_mapping_index: int = 0
         self.add_templates(templates)
 
     def add_template(
@@ -105,9 +106,11 @@ class TemplateOrchestrator(JSONEncodable):
     ) -> int:
         """Add the provided template to the data structure."""
         template_id: int = len(self._templates)
+        indices = template_to_insert.indices
         self._templates.append(template_to_insert.template)
-        self._relative_position_graph.add_node(
-            template_id, plaquette_indices=template_to_insert.indices
+        self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
+        self._maximum_plaquette_mapping_index = max(
+            self._maximum_plaquette_mapping_index, max(indices)
         )
         return template_id
 
@@ -369,3 +372,7 @@ class TemplateOrchestrator(JSONEncodable):
                 )
             ],
         }
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        return self._maximum_plaquette_mapping_index + 1
