@@ -26,7 +26,7 @@ XXXXPlaquette = Plaquette(
                 [cirq.CX(GridQubit(1, 1), GridQubit(0, 2))],
                 [cirq.CX(GridQubit(1, 1), GridQubit(2, 2))],
                 [cirq.H(GridQubit(1, 1))],
-                [cirq.M(GridQubit(1, 1))],
+                [cirq.M(GridQubit(1, 1), key="XXXX")],
             )
         )
     ],

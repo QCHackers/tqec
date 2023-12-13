@@ -29,7 +29,7 @@ ZZZZPlaquette = Plaquette(
                 [cirq.CX(GridQubit(2, 0), GridQubit(1, 1))],
                 [cirq.CX(GridQubit(2, 2), GridQubit(1, 1))],
                 [cirq.I(GridQubit(1, 1))],
-                [cirq.M(GridQubit(1, 1))],
+                [cirq.M(GridQubit(1, 1), key="ZZZZ")],
             )
         )
     ],
