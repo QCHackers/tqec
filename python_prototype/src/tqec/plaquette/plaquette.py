@@ -24,7 +24,7 @@ class Plaquette:
         return self.layer_circuits[index]
 
     @property
-    def shape(self) -> tuple[int, int]:
+    def shape(self) -> Shape2D:
         maxx = max(qubit.position.x for qubit in self.qubits)
         maxy = max(qubit.position.y for qubit in self.qubits)
         return Shape2D(maxx + 1, maxy + 1)
