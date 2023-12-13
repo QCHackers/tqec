@@ -1,5 +1,5 @@
 from tqec.templates.orchestrator import TemplateOrchestrator
-from tqec.templates.base import TemplateWithPlaquettes
+from tqec.templates.base import TemplateWithIndices
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import (
     ScalableAlternatingCornerSquare,
@@ -16,17 +16,17 @@ class ScalableCorner(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
         _templates = [
             # 0
-            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 1]),
-            TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
-            TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [3, 4]),
-            TemplateWithPlaquettes(ScalableRectangle(1, dim), [0, 5]),
-            TemplateWithPlaquettes(FixedRectangle(1, 2), [2, 0]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
+            TemplateWithIndices(FixedRectangle(1, 2), [2, 0]),
             # 5
-            TemplateWithPlaquettes(ScalableRectangle(dim, 2), [3, 4]),
-            TemplateWithPlaquettes(FixedRaw([[0, 0], [1, 0]]), [0, 6]),
-            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [7, 0]),
-            TemplateWithPlaquettes(ScalableRectangle(1, dim), [2, 0]),
-            TemplateWithPlaquettes(
+            TemplateWithIndices(ScalableRectangle(dim, 2), [3, 4]),
+            TemplateWithIndices(FixedRaw([[0, 0], [1, 0]]), [0, 6]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [7, 0]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(
                 ScalableAlternatingCornerSquare(dim, CornerPositionEnum.LOWER_LEFT),
                 [
                     3,
@@ -37,13 +37,13 @@ class ScalableCorner(TemplateOrchestrator):
                 ],
             ),
             # 10
-            TemplateWithPlaquettes(ScalableRectangle(2, dim), [9, 8]),
-            TemplateWithPlaquettes(ScalableAlternatingSquare(dim), [9, 8]),
-            TemplateWithPlaquettes(ScalableRectangle(1, dim), [10, 0]),
-            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 12]),
-            TemplateWithPlaquettes(FixedRectangle(2, 1), [0, 12]),
+            TemplateWithIndices(ScalableRectangle(2, dim), [9, 8]),
+            TemplateWithIndices(ScalableAlternatingSquare(dim), [9, 8]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [10, 0]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
+            TemplateWithIndices(FixedRectangle(2, 1), [0, 12]),
             # 15
-            TemplateWithPlaquettes(ScalableRectangle(dim, 1), [0, 12]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
         ]
         _relations = [
             (0, ABOVE_OF, 2),

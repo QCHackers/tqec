@@ -1,7 +1,6 @@
 import typing as ty
 
-from tqec.errors import TemplateNotInOrchestrator
-from tqec.templates.base import JSONEncodable, Template, TemplateWithPlaquettes
+from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
 from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
@@ -54,7 +53,7 @@ def get_corner_position(
 
 
 class TemplateOrchestrator(JSONEncodable):
-    def __init__(self, templates: list[TemplateWithPlaquettes]) -> None:
+    def __init__(self, templates: list[TemplateWithIndices]) -> None:
         """Manages templates positionned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
@@ -98,23 +97,26 @@ class TemplateOrchestrator(JSONEncodable):
         """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
+        self._maximum_plaquette_mapping_index: int = 0
         self.add_templates(templates)
 
     def add_template(
         self,
-        template_to_insert: TemplateWithPlaquettes,
+        template_to_insert: TemplateWithIndices,
     ) -> int:
         """Add the provided template to the data structure."""
         template_id: int = len(self._templates)
+        indices = template_to_insert.indices
         self._templates.append(template_to_insert.template)
-        self._relative_position_graph.add_node(
-            template_id, plaquette_indices=template_to_insert.plaquettes
+        self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
+        self._maximum_plaquette_mapping_index = max(
+            self._maximum_plaquette_mapping_index, max(indices)
         )
         return template_id
 
     def add_templates(
         self,
-        templates_to_insert: list[TemplateWithPlaquettes],
+        templates_to_insert: list[TemplateWithIndices],
     ) -> list[int]:
         """Add the provided templates to the data structure."""
         return [self.add_template(template) for template in templates_to_insert]
@@ -302,7 +304,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def build_array(self) -> numpy.ndarray:
+    def build_array(self, indices_map: list[int]) -> numpy.ndarray:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left
@@ -318,8 +320,9 @@ class TemplateOrchestrator(JSONEncodable):
             # tshapex: template shape x coordinate
             # tshapey: template shape y coordinate
             tshapey, tshapex = template.shape.to_numpy_shape()
-            plaquette_indices: list[int] = self._relative_position_graph.nodes[tid][
-                "plaquette_indices"
+            plaquette_indices: list[int] = [
+                indices_map[i]
+                for i in self._relative_position_graph.nodes[tid]["plaquette_indices"]
             ]
             # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
             # the represented code to the axes and avoid having negative indices.
@@ -332,10 +335,7 @@ class TemplateOrchestrator(JSONEncodable):
         return ret
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        assert (
-            len(plaquette_indices) == 0
-        ), "Orchestrator instances should not need any plaquette indices to call instantiate."
-        return self.build_array()
+        return self.build_array(plaquette_indices)
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         for t in self._templates:
@@ -372,3 +372,7 @@ class TemplateOrchestrator(JSONEncodable):
                 )
             ],
         }
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        return self._maximum_plaquette_mapping_index + 1
