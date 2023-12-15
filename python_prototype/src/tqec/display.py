@@ -1,4 +1,4 @@
-from tqec.plaquette.qubit import get_qubit_array_str
+from tqec.generation.topology import get_qubit_array_str
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
