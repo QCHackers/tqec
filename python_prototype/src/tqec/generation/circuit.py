@@ -18,7 +18,7 @@ def map_moment_to_qubits(moment: Moment, qubit_map: dict[Qid, Qid]) -> Moment:
 
 
 def generate_circuit(
-    template: Template | TemplateOrchestrator,
+    template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
     layer_index: int = 0,
 ) -> Circuit:
@@ -33,7 +33,7 @@ def generate_circuit(
     ), "All plaquettes should have exactly the same shape for the moment."
 
     # Compute the data that will be needed to generate the moments of the final circuit.
-    _indices = list(range(1, len(plaquettes) + 1))
+    _indices = list(range(len(plaquettes) + 1))
     template_plaquettes = template.instanciate(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
