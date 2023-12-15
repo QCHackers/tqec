@@ -40,3 +40,10 @@ BELOW_OF = TemplateRelativePositionEnum.BELOW_OF
 class PlaquetteQubitType(Enum):
     DATA = auto()
     SYNDROME = auto()
+
+
+class PlaquetteOrientation(Enum):
+    RIGHT = auto()
+    LEFT = auto()
+    DOWN = auto()
+    UP = auto()
