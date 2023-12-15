@@ -1,5 +1,6 @@
 from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
@@ -36,36 +37,30 @@ def generate_circuit(
     template_plaquettes = template.instanciate(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
-    plaquette_circuits = [Circuit()] + [p.get_layer(layer_index) for p in plaquettes]
+    plaquette_circuits = [ScheduledCircuit(Circuit())] + [
+        p.get_layer(layer_index) for p in plaquettes
+    ]
     # Assert that all the circuits are defined on 2-dimensional grids.
     assert all(
         isinstance(qubit, GridQubit)
         for circuit in plaquette_circuits
-        for qubit in circuit.all_qubits()
+        for qubit in circuit.raw_circuit.all_qubits()
     ), "Qubits used in plaquette layers should be instances of cirq.GridQubit."
 
-    # Compute the number of moment that will be needed for the final circuit.
-    number_of_moments: int = max(len(circ.moments) for circ in plaquette_circuits)
+    # Generate the ScheduledCircuit instances for each plaquette instanciation
+    all_scheduled_circuits: list[ScheduledCircuit] = list()
+    plaquette_index: int
+    for y, line in enumerate(template_plaquettes):
+        for x, plaquette_index in enumerate(line):
+            qubit_x_index = get_plaquette_starting_index(plaquette_shape.x, x)
+            qubit_y_index = get_plaquette_starting_index(plaquette_shape.y, y)
+            scheduled_circuit = plaquette_circuits[plaquette_index].copy()
+            qubit_map = {
+                qubit: qubit + (qubit_y_index, qubit_x_index)
+                for qubit in scheduled_circuit.raw_circuit.all_qubits()
+            }
+            scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
+            all_scheduled_circuits.append(scheduled_circuit)
 
-    final_moments: list[Moment] = []
-
-    for moment_index in range(number_of_moments):
-        # Recover all the operations that need to happen at this moment and
-        # map them to the correct qubits.
-        operations: list[cirq.ops.Operation] = []
-        for y, line in enumerate(template_plaquettes):
-            for x, plaquette_index in enumerate(line):
-                current_circuit = plaquette_circuits[plaquette_index]
-                current_template_moment: Moment = current_circuit[moment_index]
-                qubit_x_index = get_plaquette_starting_index(plaquette_shape.x, x)
-                qubit_y_index = get_plaquette_starting_index(plaquette_shape.y, y)
-                qubit_map = {
-                    qubit: qubit + (qubit_y_index, qubit_x_index)
-                    for qubit in current_template_moment.qubits
-                }
-                operations.extend(
-                    map_moment_to_qubits(current_template_moment, qubit_map=qubit_map)
-                )
-        # We now have all the operations of this specific moment, create it.
-        final_moments.append(Moment.from_ops(*operations))
-    return Circuit(final_moments)
+    # Merge everything!
+    return merge_scheduled_circuits(all_scheduled_circuits)
