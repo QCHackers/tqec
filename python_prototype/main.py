@@ -48,7 +48,11 @@ def to_noisy_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
     return circuit
 
 
-template = ScalableQubitSquare(4)
+repetitions: int = 100
+code_distance: int = 5
+dimension: int = code_distance - 1
+
+template = ScalableQubitSquare(dimension)
 plaquettes = [
     XXPlaquette(PlaquetteOrientation.UP),
     ZZPlaquette(PlaquetteOrientation.LEFT),
@@ -58,18 +62,22 @@ plaquettes = [
     XXPlaquette(PlaquetteOrientation.DOWN),
 ]
 
-display(template)
+layer_modificators = {
+    1: lambda circ: cirq.CircuitOperation(circ.freeze()).repeat(repetitions)
+}
+
+# display(template)
 circuit = cirq.Circuit()
 for layer_index in range(3):
     layer_circuit = generate_circuit(template, plaquettes, layer_index=layer_index)
     layer_circuit = normalise_circuit(layer_circuit)
-    circuit += layer_circuit
+    circuit += layer_modificators.get(layer_index, lambda circ: circ)(layer_circuit)
 
 print(circuit)
 
 noisy_circuit = to_noisy_circuit(circuit)
 
-print(noisy_circuit)
+# print(noisy_circuit)
 
 from stimcirq import cirq_circuit_to_stim_circuit
 
