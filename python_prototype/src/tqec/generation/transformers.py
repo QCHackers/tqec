@@ -32,7 +32,7 @@ def merge_adjacent(
     return cirq.merge_operations(
         circuit,
         merge_func=merge_func,
-        deep=context.deep if context else False,
+        deep=context.deep if context else True,  # default to deep transformation
         tags_to_ignore=context.tags_to_ignore if context else (),
     )
 
@@ -58,7 +58,7 @@ def remove_tag(
     return cirq.map_operations(
         circuit,
         map_func=map_func,
-        deep=context.deep if context else False,
+        deep=context.deep if context else True,  # default to deep transformation
         tags_to_ignore=context.tags_to_ignore if context else (),
     )
 
