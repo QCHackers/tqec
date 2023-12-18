@@ -1,8 +1,11 @@
 from typing import Sequence
+
 import cirq
 
+from tqec.noise_models import BaseNoiseModel
 
-class DepolarizingNoiseOnIdlingQubit(cirq.NoiseModel):
+
+class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
     def __init__(self, p: float):
         self._p = p
         super().__init__()
@@ -15,13 +18,20 @@ class DepolarizingNoiseOnIdlingQubit(cirq.NoiseModel):
             return moment
 
         system_qubits = set(system_qubits)
-        assert moment.qubits.issubset(
-            system_qubits
-        ), f"Found a moment containing illegal qubits: {moment.qubits.difference(system_qubits)}"
+        illegal_qubits = moment.qubits.difference(system_qubits)
+        assert (
+            not illegal_qubits
+        ), f"Found a moment containing illegal qubits: {illegal_qubits}"
+
+        # Apply recursively the noise model to CircuitOperation instances
+        moment = cirq.Moment.from_ops(
+            *[self.recurse_in_operation_if_CircuitOperation(op) for op in moment]
+        )
+        # Apply the noise model to the moment at hand, not recursing into any CircuitOperation instances
         if any(len(op.qubits) > 1 for op in moment):
             idle_qubits = system_qubits.difference(moment.qubits)
-            return moment.with_operations(
+            moment = moment.with_operations(
                 cirq.depolarize(self._p).on(qubit) for qubit in idle_qubits
             )
-        else:
-            return moment
+        # Return the modified moment
+        return moment

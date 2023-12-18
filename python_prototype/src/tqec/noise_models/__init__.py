@@ -1,3 +1,4 @@
+from .base import BaseNoiseModel
 from .measurement import XNoiseBeforeMeasurement
 from .multi_qubit_gates import MultiQubitDepolarizingNoiseAfterMultiQubitGate
 from .reset import XNoiseAfterReset
