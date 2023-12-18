@@ -64,8 +64,20 @@ class ScheduledCircuits:
     def has_pending_operation(self) -> bool:
         return any(self._has_operation(i) for i in range(len(self._circuits)))
 
+    def has_pending_multi_qubit_operation(self) -> bool:
+        def is_multi_qubit_operation(op: Operation | None) -> bool:
+            return op is not None and len(op.qubits) > 1
+
+        return any(
+            is_multi_qubit_operation(self._peek_operation(i))
+            for i in range(len(self._circuits))
+        )
+
     def _has_operation(self, index: int) -> bool:
         return self._current_operations[index] is not None
+
+    def _peek_operation(self, index: int) -> Operation | None:
+        return self._current_operations[index]
 
     def _pop_operation(self, index: int) -> Operation:
         ret = self._current_operations[index]
@@ -91,9 +103,8 @@ class ScheduledCircuits:
                 continue
             current_operation = self._current_operations[circuit_index]
             operation_qubit_number = len(current_operation.qubits)
-            assert (
-                operation_qubit_number > 1
-            ), "Found 1-qubit operation! Please call collect_1q_operations before!"
+            if operation_qubit_number <= 1:
+                continue
             scheduled_time = scheduled_circuit.schedule[
                 self._number_of_multi_qubit_operations_poped[circuit_index]
             ]
@@ -110,16 +121,35 @@ class ScheduledCircuits:
 
 
 def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
-    circuit = Circuit()
     scheduled_circuits = ScheduledCircuits(circuits)
+    # Merge the initial 1-qubit operations.
+    one_qubit_operations = scheduled_circuits.collect_1q_operations()
+    initial_one_qubit_operations_circuit = Circuit()
+    initial_one_qubit_operations_circuit.append(one_qubit_operations)
 
-    while scheduled_circuits.has_pending_operation():
-        one_qubit_operations = scheduled_circuits.collect_1q_operations()
-        circuit.append(one_qubit_operations)
+    multi_qubit_operations_circuit = Circuit()
+    while scheduled_circuits.has_pending_multi_qubit_operation():
         multi_qubit_gates = (
             scheduled_circuits.collect_multi_qubit_gates_with_same_schedule()
         )
         # Explicitely use a Moment to avoid overlapping gates.
-        circuit.append(Moment(*multi_qubit_gates))
+        multi_qubit_operations_circuit.append(Moment(*multi_qubit_gates))
 
-    return circuit
+    # Merge the final 1-qubit operations.
+    one_qubit_operations = scheduled_circuits.collect_1q_operations()
+    final_one_qubit_operations_circuit = Circuit()
+    final_one_qubit_operations_circuit.append(one_qubit_operations)
+    final_one_qubit_operations_circuit = cirq.align_right(
+        final_one_qubit_operations_circuit
+    )
+    assert not scheduled_circuits.has_pending_operation(), (
+        "For the moment, ScheduledCircuit instances should be composed of "
+        "1) layer(s) of 1-qubit gates, 2) layer(s) of multi-qubit gates and "
+        "3) layer(s) of 1-qubit gate. Any other circuit is considered invalid"
+    )
+
+    return (
+        initial_one_qubit_operations_circuit
+        + multi_qubit_operations_circuit
+        + final_one_qubit_operations_circuit
+    )
