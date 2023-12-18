@@ -37,7 +37,7 @@ class ScheduledCircuit:
         def remap_qubits(op: Operation) -> Operation:
             op = op.transform_qubits(qubit_map)
             if isinstance(op.gate, cirq.MeasurementGate):
-                return cirq.measure(*op.qubits)
+                return cirq.measure(*op.qubits).with_tags(*op.tags)
             else:
                 return op
 

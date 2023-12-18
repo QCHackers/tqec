@@ -47,5 +47,5 @@ class XXXXPlaquette(Plaquette):
             [cirq.CX(syndrome_qubits[0], data_qubits[2])],
             [cirq.CX(syndrome_qubits[0], data_qubits[3])],
             [cirq.H(syndrome_qubits[0])],
-            [cirq.M(syndrome_qubits[0], key="XXXX")],
+            [cirq.M(syndrome_qubits[0]).with_tags(self._MERGEABLE_TAG)],
         ]

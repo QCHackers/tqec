@@ -9,6 +9,8 @@ import cirq
 
 
 class Plaquette(ABC):
+    _MERGEABLE_TAG: str = "tqec_can_be_merged"
+
     def __init__(
         self,
         qubits: list[PlaquetteQubit],
@@ -72,7 +74,7 @@ class Plaquette(ABC):
                 cirq.Circuit(
                     (
                         # Reset everything
-                        [cirq.R(q) for q in all_qubits],
+                        [cirq.R(q).with_tags(self._MERGEABLE_TAG) for q in all_qubits],
                         *self.error_correction_round_with_measurement(
                             data_qubits, syndrome_qubits
                         ),
@@ -85,7 +87,10 @@ class Plaquette(ABC):
                 cirq.Circuit(
                     (
                         # Only reset syndrome qubit
-                        [cirq.R(sq) for sq in syndrome_qubits],
+                        [
+                            cirq.R(sq).with_tags(self._MERGEABLE_TAG)
+                            for sq in syndrome_qubits
+                        ],
                         *self.error_correction_round_with_measurement(
                             data_qubits, syndrome_qubits
                         ),
@@ -98,7 +103,7 @@ class Plaquette(ABC):
                 cirq.Circuit(
                     (
                         # Only measure every qubit
-                        [cirq.M(q) for q in all_qubits],
+                        [cirq.M(q).with_tags(self._MERGEABLE_TAG) for q in all_qubits],
                     )
                 ),
             ),

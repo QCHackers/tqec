@@ -45,7 +45,7 @@ class ZZPlaquette(Plaquette):
         return [
             [cirq.CX(data_qubits[0], syndrome_qubits[0])],
             [cirq.CX(data_qubits[1], syndrome_qubits[0])],
-            [cirq.M(syndrome_qubits[0], key="ZZ")],
+            [cirq.M(syndrome_qubits[0]).with_tags(self._MERGEABLE_TAG)],
         ]
 
     def get_cnot_schedule(self) -> list[int]:

@@ -47,7 +47,7 @@ class XXPlaquette(Plaquette):
             [cirq.CX(syndrome_qubits[0], data_qubits[0])],
             [cirq.CX(syndrome_qubits[0], data_qubits[1])],
             [cirq.H(syndrome_qubits[0])],
-            [cirq.M(syndrome_qubits[0], key="XX")],
+            [cirq.M(syndrome_qubits[0]).with_tags(self._MERGEABLE_TAG)],
         ]
 
     def get_cnot_schedule(self) -> list[int]:

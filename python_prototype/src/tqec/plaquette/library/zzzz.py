@@ -45,5 +45,5 @@ class ZZZZPlaquette(Plaquette):
             [cirq.CX(data_qubits[1], syndrome_qubits[0])],
             [cirq.CX(data_qubits[2], syndrome_qubits[0])],
             [cirq.CX(data_qubits[3], syndrome_qubits[0])],
-            [cirq.M(syndrome_qubits[0], key="ZZZZ")],
+            [cirq.M(syndrome_qubits[0]).with_tags(self._MERGEABLE_TAG)],
         ]
