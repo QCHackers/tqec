@@ -103,7 +103,7 @@ class Plaquette(ABC):
                 cirq.Circuit(
                     (
                         # Only measure every qubit
-                        [cirq.M(q).with_tags(self._MERGEABLE_TAG) for q in all_qubits],
+                        [cirq.M(q).with_tags(self._MERGEABLE_TAG) for q in data_qubits],
                     )
                 ),
             ),
