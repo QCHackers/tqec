@@ -12,11 +12,6 @@ from cirq.circuits.moment import Moment
 from cirq import GridQubit
 
 
-def map_moment_to_qubits(moment: Moment, qubit_map: dict[Qid, Qid]) -> Moment:
-    # TODO: we might want to remap measurements key here.
-    return moment.transform_qubits(qubit_map)
-
-
 def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
