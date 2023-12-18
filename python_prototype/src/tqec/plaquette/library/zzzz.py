@@ -1,11 +1,11 @@
 from tqec.enums import PlaquetteQubitType
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
-from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
 
 import cirq
-from cirq.circuits.circuit import Circuit
+from cirq.devices import GridQubit
+from cirq.ops import Operation
 
 
 class ZZZZPlaquette(Plaquette):
@@ -20,24 +20,30 @@ class ZZZZPlaquette(Plaquette):
             PlaquetteQubitType.SYNDROME, Position(1, 1)
         )
 
-        sq = syndrome_plaquette_qubit.to_grid_qubit()
-        dq = [data_qubit.to_grid_qubit() for data_qubit in data_plaquette_qubits]
-
-        circuit = ScheduledCircuit(
-            Circuit(
-                (
-                    # List of moments
-                    [cirq.R(sq)],
-                    [cirq.CX(sq, dq[0])],
-                    [cirq.CX(sq, dq[1])],
-                    [cirq.CX(sq, dq[2])],
-                    [cirq.CX(sq, dq[3])],
-                    [cirq.M(sq)],
-                )
-            ),
-            [1, 2, 3, 4],
-        )
         super().__init__(
             qubits=[*data_plaquette_qubits, syndrome_plaquette_qubit],
-            layer_circuits=[circuit],
+            layer_circuits=self.get_default_layers(
+                [data_qubit.to_grid_qubit() for data_qubit in data_plaquette_qubits],
+                [syndrome_plaquette_qubit.to_grid_qubit()],
+            ),
         )
+
+    def get_cnot_schedule(self) -> list[int]:
+        return [1, 2, 3, 4]
+
+    def error_correction_round_with_measurement(
+        self, data_qubits: list[GridQubit], syndrome_qubits: list[GridQubit]
+    ) -> list[list[Operation]]:
+        assert (
+            len(data_qubits) == 4
+        ), f"Expected 4 data qubits, found {len(data_qubits)}: {data_qubits}"
+        assert (
+            len(syndrome_qubits) == 1
+        ), f"Expected 1 syndrome qubit, found {len(syndrome_qubits)}: {syndrome_qubits}"
+        return [
+            [cirq.CX(data_qubits[0], syndrome_qubits[0])],
+            [cirq.CX(data_qubits[1], syndrome_qubits[0])],
+            [cirq.CX(data_qubits[2], syndrome_qubits[0])],
+            [cirq.CX(data_qubits[3], syndrome_qubits[0])],
+            [cirq.M(syndrome_qubits[0], key="ZZZZ")],
+        ]

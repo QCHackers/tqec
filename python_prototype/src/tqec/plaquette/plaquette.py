@@ -1,11 +1,14 @@
+from abc import abstractmethod, ABC
 import numpy
 
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Shape2D
 
+import cirq
 
-class Plaquette:
+
+class Plaquette(ABC):
     def __init__(
         self,
         qubits: list[PlaquetteQubit],
@@ -48,3 +51,55 @@ class Plaquette:
     @property
     def qubits(self) -> list[PlaquetteQubit]:
         return self._qubits
+
+    @abstractmethod
+    def error_correction_round_with_measurement(
+        self, data_qubits: list[cirq.GridQubit], syndrome_qubits: list[cirq.GridQubit]
+    ) -> list[list[cirq.Operation]]:
+        pass
+
+    @abstractmethod
+    def get_cnot_schedule(self) -> list[int]:
+        pass
+
+    def get_default_layers(
+        self, data_qubits: list[cirq.GridQubit], syndrome_qubits: list[cirq.GridQubit]
+    ) -> tuple[ScheduledCircuit, ScheduledCircuit, ScheduledCircuit]:
+        all_qubits = data_qubits + syndrome_qubits
+        return [
+            # Initial layer, reset everything and perform one syndrome measurement.
+            ScheduledCircuit(
+                cirq.Circuit(
+                    (
+                        # Reset everything
+                        [cirq.R(q) for q in all_qubits],
+                        *self.error_correction_round_with_measurement(
+                            data_qubits, syndrome_qubits
+                        ),
+                    )
+                ),
+                self.get_cnot_schedule(),
+            ),
+            # Repeated layer, only reset syndrome qubits and perform one syndrome measurement.
+            ScheduledCircuit(
+                cirq.Circuit(
+                    (
+                        # Only reset syndrome qubit
+                        [cirq.R(sq) for sq in syndrome_qubits],
+                        *self.error_correction_round_with_measurement(
+                            data_qubits, syndrome_qubits
+                        ),
+                    )
+                ),
+                self.get_cnot_schedule(),
+            ),
+            # Final layer, measure everything.
+            ScheduledCircuit(
+                cirq.Circuit(
+                    (
+                        # Only measure every qubit
+                        [cirq.M(q) for q in all_qubits],
+                    )
+                ),
+            ),
+        ]
