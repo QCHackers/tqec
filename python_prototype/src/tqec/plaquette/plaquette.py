@@ -27,6 +27,19 @@ class Plaquette:
         return self._layer_circuits[index]
 
     @property
+    def number_of_layers(self) -> int:
+        return len(self._layer_circuits)
+
+    def append_layer(self, scheduled_circuit: ScheduledCircuit) -> None:
+        self._layer_circuits.append(scheduled_circuit)
+
+    def set_existing_layer(
+        self, scheduled_circuit: ScheduledCircuit, index: int
+    ) -> None:
+        assert index < len(self._layer_circuits)
+        self._layer_circuits[index] = scheduled_circuit
+
+    @property
     def shape(self) -> Shape2D:
         maxx = max(qubit.position.x for qubit in self.qubits)
         maxy = max(qubit.position.y for qubit in self.qubits)
