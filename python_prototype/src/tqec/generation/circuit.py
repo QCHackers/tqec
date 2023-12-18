@@ -2,13 +2,9 @@ from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Shape2D
-from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
-import cirq
-from cirq.ops.raw_types import Qid
 from cirq.circuits.circuit import Circuit
-from cirq.circuits.moment import Moment
 from cirq import GridQubit
 
 
