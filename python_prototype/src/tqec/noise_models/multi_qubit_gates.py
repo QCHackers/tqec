@@ -5,6 +5,9 @@ from tqec.noise_models import BaseNoiseModel
 
 class MultiQubitDepolarizingNoiseAfterMultiQubitGate(BaseNoiseModel):
     def __init__(self, p: float):
+        cirq.value.validate_probability(
+            p, "multi-qubit depolarizing noise after multi-qubit operation probability"
+        )
         self._p = p
         super().__init__()
 

@@ -5,6 +5,7 @@ from tqec.noise_models import BaseNoiseModel
 
 class XNoiseAfterReset(BaseNoiseModel):
     def __init__(self, p: float):
+        cirq.value.validate_probability(p, "bitflip noise after reset probability")
         self._p = p
         super().__init__()
 

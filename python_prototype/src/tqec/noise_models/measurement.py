@@ -5,6 +5,9 @@ from tqec.noise_models import BaseNoiseModel
 
 class XNoiseBeforeMeasurement(BaseNoiseModel):
     def __init__(self, p: float):
+        cirq.value.validate_probability(
+            p, "bitflip noise before measurement probability"
+        )
         self._p = p
         super().__init__()
 
