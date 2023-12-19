@@ -248,35 +248,32 @@ def remove_duplicate_operations(
 
 def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
     scheduled_circuits = ScheduledCircuits(circuits)
+    all_moments: list[Moment] = list()
 
     # Collect and remove duplicates for the initial reset operations
     reset_operations = remove_duplicate_operations(
         scheduled_circuits.collect_specific_operations({cirq.ResetChannel})
     )
+    all_moments.extend(Circuit(reset_operations).moments)
+
     # Merge the initial 1-qubit operations.
     one_qubit_operations = scheduled_circuits.collect_1q_operations(
         avoided_gate_types={cirq.MeasurementGate}
     )
-    initial_one_qubit_operations_circuit = Circuit()
-    initial_one_qubit_operations_circuit.append(one_qubit_operations)
+    all_moments.extend(Circuit(one_qubit_operations).moments)
 
-    multi_qubit_operations_circuit = Circuit()
     while scheduled_circuits.has_multi_qubit_operation_ready_to_be_collected():
         multi_qubit_gates = (
             scheduled_circuits.collect_multi_qubit_gates_with_same_schedule()
         )
         # Explicitely use a Moment to avoid overlapping gates.
-        multi_qubit_operations_circuit.append(Moment(*multi_qubit_gates))
+        all_moments.append(Moment(*multi_qubit_gates))
 
     # Merge the final 1-qubit operations.
     one_qubit_operations = scheduled_circuits.collect_1q_operations(
         avoided_gate_types={cirq.MeasurementGate}
     )
-    final_one_qubit_operations_circuit = Circuit()
-    final_one_qubit_operations_circuit.append(one_qubit_operations)
-    final_one_qubit_operations_circuit = cirq.align_right(
-        final_one_qubit_operations_circuit
-    )
+    all_moments.extend(cirq.align_right(Circuit(one_qubit_operations)).moments)
 
     # Removing duplicate measurements by using the set data-structure.
     final_measurement_operations = remove_duplicate_operations(
@@ -289,16 +286,12 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
         len(op.qubits) == 1 for op in final_measurement_operations
     ), "Found a measurement that is not applied on exactly 1 qubit."
     final_measurement_operations.sort(key=lambda op: op.qubits[0])
+    all_moments.extend(Circuit(final_measurement_operations).moments)
+
     assert not scheduled_circuits.has_pending_operation(), (
         "For the moment, ScheduledCircuit instances should be composed of "
         "1) layer(s) of 1-qubit gates, 2) layer(s) of multi-qubit gates and "
         "3) layer(s) of 1-qubit gate. Any other circuit is considered invalid"
     )
 
-    return (
-        reset_operations
-        + initial_one_qubit_operations_circuit
-        + multi_qubit_operations_circuit
-        + final_one_qubit_operations_circuit
-        + final_measurement_operations
-    )
+    return Circuit(all_moments)
