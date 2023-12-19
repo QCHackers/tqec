@@ -25,9 +25,6 @@ import cirq
 
 def normalise_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
     ordered_transformers = [
-        merge_adjacent_resets,
-        merge_adjacent_measurements,
-        remove_mergeable_tag,
         cirq.synchronize_terminal_measurements,
         cirq.drop_empty_moments,
     ]
