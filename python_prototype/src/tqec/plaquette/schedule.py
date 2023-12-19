@@ -6,12 +6,31 @@ import cirq
 
 class ScheduledCircuit:
     def __init__(self, circuit: Circuit, schedule: list[int] | None = None) -> None:
+        """Represent a quantum circuit with scheduled multi-qubit gates.
+
+        This class aims at representing a Circuit instance that has all its multi-qubit
+        gates scheduled, i.e., associated with a time slice.
+
+        :param circuit: the instance of Circuit that is scheduled.
+        :param schedule: a sorted list of time slices indices. The list should contain
+            as much indices as there are multi-qubit gates in the provided Circuit instance.
+            If the list is None, it default to list(range(number_of_multi_qubit_gates)).
+
+        :raises AssertionError: if the indices in the schedule list are not sorted.
+        :raises AssertionError: if the number of provided indices in the schedule list does
+            not match exactly with the number of multi-qubit gates in the circuit.
+        """
         number_of_gates_to_schedule: int = sum(
             len(op.qubits) > 1 for op in circuit.all_operations()
         )
         if schedule is None:
             schedule = list(range(number_of_gates_to_schedule))
-
+        else:
+            assert len(schedule) == number_of_gates_to_schedule, (
+                f"Cannot create a ScheduledCircuit instance with a different number "
+                f"of multi-qubit gates ({number_of_gates_to_schedule}) and time slices "
+                f"in the provided schedule ({len(schedule)})."
+            )
         assert all(
             schedule[i] <= schedule[i + 1] for i in range(len(schedule) - 1)
         ), "Given schedule should be a sorted list of integers."
@@ -34,6 +53,20 @@ class ScheduledCircuit:
     def map_to_qubits(
         self, qubit_map: dict[Qid, Qid], inplace: bool = False
     ) -> "ScheduledCircuit":
+        """Map the qubits the ScheduledCircuit instance is applied on.
+
+        This method forwards most of its logic to the underlying raw_circuit
+        map_operations method, but additionnally takes care of forwarding tags
+        and changing measurements key by re-creating the correct measurements.
+
+        :param qubit_map: the map used to modify the qubits.
+        :param inplace: if True, perform the modification in place and return
+            self. Else, perform the modification in a copy and return the copy.
+
+        :returns: a modified instance of ScheduledCircuit (a copy if inplace is
+            True, else self).
+        """
+
         def remap_qubits(op: Operation) -> Operation:
             op = op.transform_qubits(qubit_map)
             if isinstance(op.gate, cirq.MeasurementGate):
@@ -54,6 +87,15 @@ class ScheduledCircuit:
 
 class ScheduledCircuits:
     def __init__(self, circuits: list[ScheduledCircuit]) -> None:
+        """Represents a collection of ScheduledCircuit instances.
+
+        This class aims at providing accessors for several instances of ScheduledCircuit.
+        It allows to iterate on gates globally, for all the managed instances of
+        ScheduledCircuit, and implement a few other accessor methods to help with the
+        task of merging multiple ScheduledCircuit together.
+
+        :param circuits: the instances that should be managed.
+        """
         self._circuits = circuits
         self._iterators = [
             circuit.raw_circuit.all_operations() for circuit in self._circuits
@@ -62,9 +104,16 @@ class ScheduledCircuits:
         self._number_of_multi_qubit_operations_poped: list[int] = [0 for _ in circuits]
 
     def has_pending_operation(self) -> bool:
+        """Checks if any of the managed instances has a pending operation.
+
+        Any operation that has not been collected by using either collect_1q_operations or
+        collect_multi_qubit_gates_with_same_schedule is considered to be pending.
+        """
         return any(self._has_operation(i) for i in range(len(self._circuits)))
 
-    def has_pending_multi_qubit_operation(self) -> bool:
+    def has_multi_qubit_operation_ready_to_be_collected(self) -> bool:
+        """Checks if any of the managed instances has a mutli-qubit operation ready to be executed."""
+
         def is_multi_qubit_operation(op: Operation | None) -> bool:
             return op is not None and len(op.qubits) > 1
 
@@ -74,12 +123,18 @@ class ScheduledCircuits:
         )
 
     def _has_operation(self, index: int) -> bool:
+        """Check if the managed instance at the given index has a pending operation."""
         return self._current_operations[index] is not None
 
     def _peek_operation(self, index: int) -> Operation | None:
+        """Recover **without collecting** the pending operation for the instance at the given index."""
         return self._current_operations[index]
 
     def _pop_operation(self, index: int) -> Operation:
+        """Recover and mark as collected the pending operation for the instance at the given index.
+
+        :raises AssertionError: if not self.has_pending_operation(index).
+        """
         ret = self._current_operations[index]
         assert ret is not None, "No operation to pop!"
         self._current_operations[index] = next(self._iterators[index], None)
@@ -87,21 +142,39 @@ class ScheduledCircuits:
         return ret
 
     def collect_1q_operations(self) -> list[Operation]:
+        """Collect all the 1-qubit operations that can be collected.
+
+        This method collects and returns a list of all the 1-qubit operations that can
+        be eagerly collected. It stops when there is no 1-qubit operation left pending,
+        either because the managed circuits have no more pending operation or because the
+        only pending operations are multi-qubit gates.
+
+        :returns: a list of 1-qubit operations.
+        """
         operations: list[Operation] = list()
         for circuit_index in range(len(self._circuits)):
             while (
                 self._has_operation(circuit_index)
-                and len(self._current_operations[circuit_index].qubits) == 1
+                and len(self._peek_operation(circuit_index).qubits) == 1
             ):
                 operations.append(self._pop_operation(circuit_index))
         return operations
 
     def collect_multi_qubit_gates_with_same_schedule(self) -> list[Operation]:
+        """Collect all the multi-qubit operations that can be collected.
+
+        This method collects and returns a list of all the multi-qubit operations that can
+        be eagerly collected. It stops when there is no multi-qubit operation left pending,
+        either because the managed circuits have no more pending operation or because the
+        only pending operations are 1-qubit gates.
+
+        :returns: a list of multi-qubit operations.
+        """
         schedules: dict[int, list[int]] = dict()
         for circuit_index, scheduled_circuit in enumerate(self._circuits):
             if not self._has_operation(circuit_index):
                 continue
-            current_operation = self._current_operations[circuit_index]
+            current_operation = self._peek_operation(circuit_index)
             operation_qubit_number = len(current_operation.qubits)
             if operation_qubit_number <= 1:
                 continue
@@ -128,7 +201,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
     initial_one_qubit_operations_circuit.append(one_qubit_operations)
 
     multi_qubit_operations_circuit = Circuit()
-    while scheduled_circuits.has_pending_multi_qubit_operation():
+    while scheduled_circuits.has_multi_qubit_operation_ready_to_be_collected():
         multi_qubit_gates = (
             scheduled_circuits.collect_multi_qubit_gates_with_same_schedule()
         )
