@@ -19,7 +19,6 @@ import cirq
 
 def normalise_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
     ordered_transformers = [
-        cirq.synchronize_terminal_measurements,
         cirq.drop_empty_moments,
     ]
     for transformer in ordered_transformers:
