@@ -8,12 +8,6 @@ from tqec.plaquette.library import (
 )
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
-
-from tqec.generation.transformers import (
-    merge_adjacent_measurements,
-    merge_adjacent_resets,
-    remove_mergeable_tag,
-)
 from tqec.noise_models import (
     XNoiseBeforeMeasurement,
     XNoiseAfterReset,
