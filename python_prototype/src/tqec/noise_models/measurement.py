@@ -9,10 +9,17 @@ class XNoiseBeforeMeasurement(BaseNoiseModel):
             p, "bitflip noise before measurement probability"
         )
         self._p = p
+        self._noisy_gate: cirq.BitFlipChannel = cirq.bit_flip(self._p)
         super().__init__()
 
     def noisy_operation(self, op: cirq.Operation) -> cirq.OP_TREE:
         if isinstance(op.gate, cirq.MeasurementGate):
-            return [cirq.bit_flip(self._p).on_each(*op.qubits), op]
+            return [
+                [
+                    self._noisy_gate.on(qubit).with_tags(cirq.VirtualTag())
+                    for qubit in op.qubits
+                ],
+                op,
+            ]
         else:
             return self.recurse_in_operation_if_CircuitOperation(op)

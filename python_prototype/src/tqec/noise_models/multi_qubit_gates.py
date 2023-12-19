@@ -17,9 +17,12 @@ class MultiQubitDepolarizingNoiseAfterMultiQubitGate(BaseNoiseModel):
             if isinstance(op, cirq.CircuitOperation):
                 return self.recurse_in_operation_if_CircuitOperation(op)
             else:
+                noisy_gate: cirq.DepolarizingChannel = cirq.depolarize(
+                    self._p, qubit_number
+                )
                 return [
                     op,
-                    cirq.depolarize(self._p, qubit_number).on(*op.qubits),
+                    noisy_gate.on(*op.qubits).with_tags(cirq.VirtualTag()),
                 ]
 
         return op

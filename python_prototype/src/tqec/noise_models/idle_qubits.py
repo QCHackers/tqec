@@ -11,6 +11,7 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
             p, "depolarizing noise on idling qubits probability"
         )
         self._p = p
+        self._noisy_operation: cirq.DepolarizingChannel = cirq.depolarize(self._p)
         super().__init__()
 
     def noisy_moment(
@@ -20,21 +21,22 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
         if self.is_virtual_moment(moment):
             return moment
 
-        system_qubits = set(system_qubits)
-        illegal_qubits = moment.qubits.difference(system_qubits)
+        system_qubits_set = set(system_qubits)
+        illegal_qubits = moment.qubits.difference(system_qubits_set)
         assert (
             not illegal_qubits
         ), f"Found a moment containing illegal qubits: {illegal_qubits}"
 
         # Apply recursively the noise model to CircuitOperation instances
-        moment = cirq.Moment.from_ops(
-            *[self.recurse_in_operation_if_CircuitOperation(op) for op in moment]
+        moment = cirq.Moment(
+            self.recurse_in_operation_if_CircuitOperation(op) for op in moment
         )
         # Apply the noise model to the moment at hand, not recursing into any CircuitOperation instances
         if any(len(op.qubits) > 1 for op in moment):
-            idle_qubits = system_qubits.difference(moment.qubits)
+            idle_qubits = system_qubits_set.difference(moment.qubits)
             moment = moment.with_operations(
-                cirq.depolarize(self._p).on(qubit) for qubit in idle_qubits
+                self._noisy_operation.on(qubit).with_tags(cirq.VirtualTag())
+                for qubit in idle_qubits
             )
         # Return the modified moment
         return moment
