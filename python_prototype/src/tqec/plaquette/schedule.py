@@ -149,16 +149,42 @@ class ScheduledCircuits:
         either because the managed circuits have no more pending operation or because the
         only pending operations are multi-qubit gates.
 
-        :returns: a list of 1-qubit operations.
+        :returns: a list of 1-qubit operations that are not measurements.
         """
         operations: list[Operation] = list()
         for circuit_index in range(len(self._circuits)):
             while (
                 self._has_operation(circuit_index)
                 and len(self._peek_operation(circuit_index).qubits) == 1
+                # Avoid measurements here, they are handled separately with collect_measurement_operations
+                and not isinstance(
+                    self._peek_operation(circuit_index).gate, cirq.MeasurementGate
+                )
             ):
                 operations.append(self._pop_operation(circuit_index))
         return operations
+
+    def collect_measurement_operations(self) -> list[Operation]:
+        """Collect all the 1-qubit operations that can be collected.
+
+        This method collects and returns a list of all the 1-qubit operations that can
+        be eagerly collected. It stops when there is no 1-qubit operation left pending,
+        either because the managed circuits have no more pending operation or because the
+        only pending operations are multi-qubit gates.
+
+        :returns: a list of 1-qubit measurement operations.
+        """
+        measurement_operations: list[Operation] = list()
+        for circuit_index in range(len(self._circuits)):
+            while (
+                self._has_operation(circuit_index)
+                and len(self._peek_operation(circuit_index).qubits) == 1
+                and isinstance(
+                    self._peek_operation(circuit_index).gate, cirq.MeasurementGate
+                )
+            ):
+                measurement_operations.append(self._pop_operation(circuit_index))
+        return measurement_operations
 
     def collect_multi_qubit_gates_with_same_schedule(self) -> list[Operation]:
         """Collect all the multi-qubit operations that can be collected.
@@ -215,6 +241,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
     final_one_qubit_operations_circuit = cirq.align_right(
         final_one_qubit_operations_circuit
     )
+    final_measurement_operations = scheduled_circuits.collect_measurement_operations()
     assert not scheduled_circuits.has_pending_operation(), (
         "For the moment, ScheduledCircuit instances should be composed of "
         "1) layer(s) of 1-qubit gates, 2) layer(s) of multi-qubit gates and "
@@ -225,4 +252,5 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
         initial_one_qubit_operations_circuit
         + multi_qubit_operations_circuit
         + final_one_qubit_operations_circuit
+        + final_measurement_operations
     )
