@@ -71,7 +71,7 @@ class ZZPlaquette(Plaquette):
             [cirq.CX(data_qubits[1], syndrome_qubit)],
             [cirq.M(syndrome_qubit).with_tags(self._MERGEABLE_TAG)],
         ]
-        return [
+        return (
             # Initial layer, reset everything and perform one syndrome measurement.
             ScheduledCircuit(
                 cirq.Circuit(
@@ -120,12 +120,14 @@ class ZZPlaquette(Plaquette):
                         [
                             DetectorGate(
                                 syndrome_qubit,
-                                [(syndrome_qubit, -1)]
-                                + [(dq, -1) for dq in data_qubits],
+                                [
+                                    (syndrome_qubit, -1),
+                                    *[(dq, -1) for dq in data_qubits],
+                                ],
                                 time_coordinate=1,
                             ).on(syndrome_qubit)
                         ],
                     )
                 ),
             ),
-        ]
+        )

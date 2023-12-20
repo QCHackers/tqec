@@ -1,3 +1,4 @@
+from copy import deepcopy
 from cirq.circuits.circuit import Circuit
 from cirq.ops.raw_types import Qid, Operation
 from cirq.circuits.moment import Moment
@@ -75,7 +76,11 @@ class ScheduledCircuit:
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
             elif isinstance(op.gate, DetectorGate):
                 # Re-create the operation from the gate
-                return op.gate.on(*op.qubits, add_virtual_tag=False).with_tags(*op.tags)
+                return (
+                    deepcopy(op)
+                    .gate.on(*op.qubits, add_virtual_tag=False)
+                    .with_tags(*op.tags)
+                )
             else:
                 return op
 

@@ -31,9 +31,13 @@ def _fill_in_detectors_global_record_indices_impl(
                 )
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
             elif isinstance(operation.gate, DetectorGate):
+                assert len(operation.qubits) == 1, (
+                    f"Cannot apply a {DetectorGate.__class__.__name__} to more than "
+                    f"1 qubits ({len(operation.qubits)} qubits given)."
+                )
                 new_operation = deepcopy(operation)
-                new_operation.gate: DetectorGate
-                new_operation.gate.compute_global_measurements_loopback_offsets(
+                detector_gate: DetectorGate = new_operation.gate
+                detector_gate.compute_global_measurements_loopback_offsets(
                     global_measurement_map, current_moment_index
                 )
                 operations.append(new_operation)
