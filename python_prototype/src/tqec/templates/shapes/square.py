@@ -1,9 +1,9 @@
-from tqec.templates.shapes.rectangle import Rectangle
-from tqec.enums import CornerPositionEnum
-
 import typing as ty
 
 import numpy
+
+from tqec.enums import CornerPositionEnum
+from tqec.templates.shapes.rectangle import Rectangle
 
 
 class AlternatingSquare(Rectangle):

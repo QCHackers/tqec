@@ -2,6 +2,7 @@ import typing as ty
 from functools import partial
 
 import cirq
+
 from tqec.plaquette.plaquette import Plaquette
 
 GateSubclass = ty.TypeVar("GateSubclass", bound=cirq.Gate)
@@ -18,8 +19,8 @@ def merge_adjacent(
         op_left: cirq.Operation, op_right: cirq.Operation
     ) -> cirq.Operation | None:
         both_mergeable: bool = (
-            Plaquette._MERGEABLE_TAG in op_left.tags
-            and Plaquette._MERGEABLE_TAG in op_right.tags
+            Plaquette.get_mergeable_tag() in op_left.tags
+            and Plaquette.get_mergeable_tag() in op_right.tags
         )
         same_gate: bool = isinstance(op_left.gate, gate_type) and isinstance(
             op_right.gate, gate_type
@@ -63,4 +64,4 @@ def remove_tag(
     )
 
 
-remove_mergeable_tag = partial(remove_tag, tag=Plaquette._MERGEABLE_TAG)
+remove_mergeable_tag = partial(remove_tag, tag=Plaquette.get_mergeable_tag())

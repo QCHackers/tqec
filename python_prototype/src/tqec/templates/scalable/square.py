@@ -1,8 +1,8 @@
-from tqec.templates.base import Template
-from tqec.templates.scalable.rectangle import ScalableRectangle
-from tqec.templates.scalable.base import ScalableTemplate
-from tqec.templates.shapes.square import AlternatingCornerSquare
 from tqec.enums import CornerPositionEnum
+from tqec.templates.base import Template
+from tqec.templates.scalable.base import ScalableTemplate
+from tqec.templates.scalable.rectangle import ScalableRectangle
+from tqec.templates.shapes.square import AlternatingCornerSquare
 
 
 class ScalableAlternatingSquare(ScalableRectangle):

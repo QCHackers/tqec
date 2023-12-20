@@ -1,8 +1,8 @@
+import numpy
+
 from tqec.generation.topology import get_qubit_array_str
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
-
-import numpy
 
 
 def display(template: Template | TemplateOrchestrator, *plaquette_indices: int) -> None:
@@ -13,7 +13,7 @@ def display(template: Template | TemplateOrchestrator, *plaquette_indices: int) 
         call to template.instanciate to get the actual template representation.
     """
     if isinstance(template, TemplateOrchestrator) and len(plaquette_indices) == 0:
-        plaquette_indices = list(range(template.expected_plaquettes_number))
+        plaquette_indices = tuple(range(template.expected_plaquettes_number))
     arr = template.instanciate(*plaquette_indices)
     for line in arr:
         for element in line:

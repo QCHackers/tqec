@@ -1,14 +1,14 @@
 from copy import deepcopy
-from cirq.circuits.circuit import Circuit
-from cirq.ops.raw_types import Qid, Operation
-from cirq.circuits.moment import Moment
+
 import cirq
 
 from tqec.detectors.gate import DetectorGate
 
 
 class ScheduledCircuit:
-    def __init__(self, circuit: Circuit, schedule: list[int] | None = None) -> None:
+    def __init__(
+        self, circuit: cirq.Circuit, schedule: list[int] | None = None
+    ) -> None:
         """Represent a quantum circuit with scheduled multi-qubit gates.
 
         This class aims at representing a Circuit instance that has all its multi-qubit
@@ -46,15 +46,15 @@ class ScheduledCircuit:
         return self._schedule
 
     @property
-    def raw_circuit(self) -> Circuit:
+    def raw_circuit(self) -> cirq.Circuit:
         return self._raw_circuit
 
     @raw_circuit.setter
-    def raw_circuit(self, other: Circuit) -> None:
+    def raw_circuit(self, other: cirq.Circuit) -> None:
         self._raw_circuit = other
 
     def map_to_qubits(
-        self, qubit_map: dict[Qid, Qid], inplace: bool = False
+        self, qubit_map: dict[cirq.Qid, cirq.Qid], inplace: bool = False
     ) -> "ScheduledCircuit":
         """Map the qubits the ScheduledCircuit instance is applied on.
 
@@ -70,16 +70,15 @@ class ScheduledCircuit:
             True, else self).
         """
 
-        def remap_qubits(op: Operation) -> Operation:
+        def remap_qubits(op: cirq.Operation) -> cirq.Operation:
             op = op.transform_qubits(qubit_map)
             if isinstance(op.gate, cirq.MeasurementGate):
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
             elif isinstance(op.gate, DetectorGate):
                 # Re-create the operation from the gate
-                return (
-                    deepcopy(op)
-                    .gate.on(*op.qubits, add_virtual_tag=False)
-                    .with_tags(*op.tags)
+                detector_gate: DetectorGate = deepcopy(op.gate)
+                return detector_gate.on(*op.qubits, add_virtual_tag=False).with_tags(
+                    *op.tags
                 )
             else:
                 return op
@@ -124,7 +123,7 @@ class ScheduledCircuits:
     def has_multi_qubit_operation_ready_to_be_collected(self) -> bool:
         """Checks if any of the managed instances has a mutli-qubit operation ready to be executed."""
 
-        def is_multi_qubit_operation(op: Operation | None) -> bool:
+        def is_multi_qubit_operation(op: cirq.Operation | None) -> bool:
             return op is not None and len(op.qubits) > 1
 
         return any(
@@ -136,11 +135,11 @@ class ScheduledCircuits:
         """Check if the managed instance at the given index has a pending operation."""
         return self._current_operations[index] is not None
 
-    def _peek_operation(self, index: int) -> Operation | None:
+    def _peek_operation(self, index: int) -> cirq.Operation | None:
         """Recover **without collecting** the pending operation for the instance at the given index."""
         return self._current_operations[index]
 
-    def _pop_operation(self, index: int) -> Operation:
+    def _pop_operation(self, index: int) -> cirq.Operation:
         """Recover and mark as collected the pending operation for the instance at the given index.
 
         :raises AssertionError: if not self.has_pending_operation(index).
@@ -153,7 +152,7 @@ class ScheduledCircuits:
 
     def collect_1q_operations(
         self, avoided_gate_types: set[type] | None = None
-    ) -> list[Operation]:
+    ) -> list[cirq.Operation]:
         """Collect all the 1-qubit operations that can be collected.
 
         This method collects and returns a list of all the 1-qubit operations that can
@@ -165,20 +164,22 @@ class ScheduledCircuits:
         """
         if avoided_gate_types is None:
             avoided_gate_types = set()
-        operations: list[Operation] = list()
+        operations: list[cirq.Operation] = list()
         for circuit_index in range(len(self._circuits)):
             while (
-                self._has_operation(circuit_index)
-                and len(self._peek_operation(circuit_index).qubits) == 1
+                (current_operation := self._peek_operation(circuit_index)) is not None
+                and len(current_operation.qubits) == 1
                 and all(
-                    not isinstance(self._peek_operation(circuit_index).gate, gate_type)
+                    not isinstance(current_operation.gate, gate_type)
                     for gate_type in avoided_gate_types
                 )
             ):
                 operations.append(self._pop_operation(circuit_index))
         return operations
 
-    def collect_specific_operations(self, gate_types: set[type]) -> list[Operation]:
+    def collect_specific_operations(
+        self, gate_types: set[type]
+    ) -> list[cirq.Operation]:
         """Collect all the 1-qubit operations that can be collected.
 
         This method collects and returns a list of all the 1-qubit operations that can
@@ -188,20 +189,20 @@ class ScheduledCircuits:
 
         :returns: a list of 1-qubit measurement operations.
         """
-        operations: list[Operation] = list()
+        operations: list[cirq.Operation] = list()
         for circuit_index in range(len(self._circuits)):
             while (
-                self._has_operation(circuit_index)
-                and len(self._peek_operation(circuit_index).qubits) == 1
+                (current_operation := self._peek_operation(circuit_index)) is not None
+                and len(current_operation.qubits) == 1
                 and any(
-                    isinstance(self._peek_operation(circuit_index).gate, gate_type)
+                    isinstance(current_operation.gate, gate_type)
                     for gate_type in gate_types
                 )
             ):
                 operations.append(self._pop_operation(circuit_index))
         return operations
 
-    def collect_multi_qubit_gates_with_same_schedule(self) -> list[Operation]:
+    def collect_multi_qubit_gates_with_same_schedule(self) -> list[cirq.Operation]:
         """Collect all the multi-qubit operations that can be collected.
 
         This method collects and returns a list of all the multi-qubit operations that can
@@ -213,9 +214,9 @@ class ScheduledCircuits:
         """
         schedules: dict[int, list[int]] = dict()
         for circuit_index, scheduled_circuit in enumerate(self._circuits):
-            if not self._has_operation(circuit_index):
-                continue
             current_operation = self._peek_operation(circuit_index)
+            if current_operation is None:
+                continue
             operation_qubit_number = len(current_operation.qubits)
             if operation_qubit_number <= 1:
                 continue
@@ -243,47 +244,47 @@ def remove_duplicate_operations(
     mergeable_operations: list[cirq.Operation] = list()
     final_operations: list[cirq.Operation] = list()
     for operation in operations:
-        if Plaquette._MERGEABLE_TAG in operation.tags:
+        if Plaquette.get_mergeable_tag() in operation.tags:
             mergeable_operations.append(operation)
         else:
             final_operations.append(operation)
     # Remove mergeable measurements with the set data-structure
     for merged_operation in set(mergeable_operations):
         tags = set(merged_operation.tags)
-        if Plaquette._MERGEABLE_TAG in tags:
-            tags.remove(Plaquette._MERGEABLE_TAG)
+        if Plaquette.get_mergeable_tag() in tags:
+            tags.remove(Plaquette.get_mergeable_tag())
         final_operations.append(merged_operation.untagged.with_tags(*tags))
     return final_operations
 
 
-def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
+def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     scheduled_circuits = ScheduledCircuits(circuits)
-    all_moments: list[Moment] = list()
+    all_moments: list[cirq.Moment] = list()
 
     # Collect and remove duplicates for the initial reset operations
     reset_operations = remove_duplicate_operations(
         scheduled_circuits.collect_specific_operations({cirq.ResetChannel})
     )
-    all_moments.extend(Circuit(reset_operations).moments)
+    all_moments.extend(cirq.Circuit(reset_operations).moments)
 
     # Merge the initial 1-qubit operations.
     one_qubit_operations = scheduled_circuits.collect_1q_operations(
         avoided_gate_types={cirq.MeasurementGate}
     )
-    all_moments.extend(Circuit(one_qubit_operations).moments)
+    all_moments.extend(cirq.Circuit(one_qubit_operations).moments)
 
     while scheduled_circuits.has_multi_qubit_operation_ready_to_be_collected():
         multi_qubit_gates = (
             scheduled_circuits.collect_multi_qubit_gates_with_same_schedule()
         )
         # Explicitely use a Moment to avoid overlapping gates.
-        all_moments.append(Moment(*multi_qubit_gates))
+        all_moments.append(cirq.Moment(*multi_qubit_gates))
 
     # Merge the final 1-qubit operations.
     one_qubit_operations = scheduled_circuits.collect_1q_operations(
         avoided_gate_types={cirq.MeasurementGate}
     )
-    all_moments.extend(cirq.align_right(Circuit(one_qubit_operations)).moments)
+    all_moments.extend(cirq.align_right(cirq.Circuit(one_qubit_operations)).moments)
 
     # Removing duplicate measurements by using the set data-structure.
     final_measurement_operations = remove_duplicate_operations(
@@ -296,7 +297,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
         len(op.qubits) == 1 for op in final_measurement_operations
     ), "Found a measurement that is not applied on exactly 1 qubit."
     final_measurement_operations.sort(key=lambda op: op.qubits[0])
-    all_moments.extend(Circuit(final_measurement_operations).moments)
+    all_moments.extend(cirq.Circuit(final_measurement_operations).moments)
 
     # Also adding detectors, not removing duplicates as there should be none, detectors being
     # applied on syndrome qubits and not data qubits.
@@ -308,7 +309,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
         len(op.qubits) == 1 for op in final_detectors_operations
     ), "Found a detector that is not applied on exactly 1 qubit."
     final_detectors_operations.sort(key=lambda op: op.qubits[0])
-    all_moments.extend(Circuit(final_detectors_operations).moments)
+    all_moments.extend(cirq.Circuit(final_detectors_operations).moments)
 
     assert not scheduled_circuits.has_pending_operation(), (
         "For the moment, ScheduledCircuit instances should be composed of "
@@ -316,4 +317,4 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
         "3) layer(s) of 1-qubit gate. Any other circuit is considered invalid"
     )
 
-    return Circuit(all_moments)
+    return cirq.Circuit(all_moments)

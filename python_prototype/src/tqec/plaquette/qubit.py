@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from tqec.position import Position
-from tqec.enums import PlaquetteQubitType
-
 from cirq import GridQubit
+
+from tqec.enums import PlaquetteQubitType
+from tqec.position import Position
 
 
 @dataclass

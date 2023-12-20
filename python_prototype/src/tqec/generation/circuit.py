@@ -1,21 +1,20 @@
+import cirq
+
 from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Shape2D
 from tqec.templates.orchestrator import TemplateOrchestrator
 
-from cirq.circuits.circuit import Circuit
-from cirq import GridQubit
-
 
 def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
     layer_index: int = 0,
-) -> Circuit:
+) -> cirq.Circuit:
     # If no plaquettes are given, we only generate an empty circuit.
     if not plaquettes:
-        return Circuit()
+        return cirq.Circuit()
 
     # Check that all the given plaquettes have the same shape. If not, this is an issue.
     plaquette_shape: Shape2D = plaquettes[0].shape
@@ -28,12 +27,12 @@ def generate_circuit(
     template_plaquettes = template.instanciate(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
-    plaquette_circuits = [ScheduledCircuit(Circuit())] + [
+    plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
         p.get_layer(layer_index) for p in plaquettes
     ]
     # Assert that all the circuits are defined on 2-dimensional grids.
     assert all(
-        isinstance(qubit, GridQubit)
+        isinstance(qubit, cirq.GridQubit)
         for circuit in plaquette_circuits
         for qubit in circuit.raw_circuit.all_qubits()
     ), "Qubits used in plaquette layers should be instances of cirq.GridQubit."

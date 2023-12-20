@@ -4,7 +4,6 @@ from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
-
 # As plaquettes are overlapping, there is a bit of math to do. For each dimension:
 #   the 2 plaquettes on both ends will overlap with only one plaquette
 #   all the other plaquettes will overlap with 2 plaquettes

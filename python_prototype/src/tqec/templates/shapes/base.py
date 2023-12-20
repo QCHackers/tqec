@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod
 import typing as ty
+from abc import ABC, abstractmethod
+
 import numpy
+
 from tqec.position import Shape2D
 
 

@@ -1,8 +1,9 @@
-from tqec.position import Shape2D
-from tqec.templates.shapes.base import BaseShape
 import typing as ty
 
 import numpy
+
+from tqec.position import Shape2D
+from tqec.templates.shapes.base import BaseShape
 
 
 class Rectangle(BaseShape):

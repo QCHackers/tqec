@@ -1,9 +1,9 @@
 from copy import deepcopy
 
 import cirq
-from cirq.ops.raw_types import Operation, Qid
-import stim
 import numpy
+import stim
+
 from tqec.detectors.measurement_map import CircuitMeasurementMap
 
 
@@ -19,7 +19,7 @@ class ShiftCoordsGate(cirq.Gate):
         # Set to the identity as this is not really a gate.
         return numpy.array([[1, 0], [0, 1]], dtype=float)
 
-    def on(self, *qubits: Qid) -> Operation:
+    def on(self, *qubits: cirq.Qid) -> cirq.Operation:
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
         return super().on(*qubits).with_tags(cirq.VirtualTag())
 
@@ -38,7 +38,7 @@ class ShiftCoordsGate(cirq.Gate):
         # The indices of qubits the gate is operating on.
         targets: list[int],
         # Forward compatibility with future arguments.
-        **kwargs,
+        **_,
     ):
         edit_circuit.append("SHIFT_COORDS", [], self._args)
 
@@ -141,7 +141,7 @@ class DetectorGate(cirq.Gate):
             self._time_coordinate,
         )
 
-    def on(self, *qubits: cirq.GridQubit, add_virtual_tag: bool = True) -> Operation:
+    def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
         assert len(qubits) == 1, (
             f"Cannot apply a {self.__class__.__name__} to more than "
@@ -165,7 +165,7 @@ class DetectorGate(cirq.Gate):
         # The indices of qubits the gate is operating on.
         targets: list[int],
         # Forward compatibility with future arguments.
-        **kwargs,
+        **_,
     ):
         assert self._global_measurements_loopback_offsets, (
             "Global measurement loopback offsets have not been computed."

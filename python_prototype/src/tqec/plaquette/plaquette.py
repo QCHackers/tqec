@@ -1,4 +1,6 @@
-from abc import abstractmethod, ABC
+import typing as ty
+from abc import ABC, abstractmethod
+
 import numpy
 
 from tqec.plaquette.qubit import PlaquetteQubit
@@ -9,14 +11,18 @@ from tqec.position import Shape2D
 class Plaquette(ABC):
     _MERGEABLE_TAG: str = "tqec_can_be_merged"
 
+    @staticmethod
+    def get_mergeable_tag() -> str:
+        return Plaquette._MERGEABLE_TAG
+
     def __init__(
         self,
         qubits: list[PlaquetteQubit],
-        layer_circuits: list[ScheduledCircuit],
+        layer_circuits: ty.Sequence[ScheduledCircuit],
     ) -> None:
         """Represents a QEC plaquette"""
         self._qubits = qubits
-        self._layer_circuits = layer_circuits
+        self._layer_circuits = list(layer_circuits)
 
     def to_qubit_array(self) -> numpy.ndarray:
         """Should be specialised for specific plaquette types"""

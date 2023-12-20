@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import cirq
+
 from tqec.detectors.gate import DetectorGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
 
@@ -9,7 +10,7 @@ def _fill_in_detectors_global_record_indices_impl(
     circuit: cirq.AbstractCircuit,
     global_measurement_map: CircuitMeasurementMap,
     current_moment_index_offset: int,
-) -> tuple[cirq.AbstractCircuit, int]:
+) -> tuple[cirq.Circuit, int]:
     moments: list[cirq.Moment] = list()
     current_moment_index: int = current_moment_index_offset
 
@@ -55,11 +56,11 @@ def fill_in_detectors_global_record_indices(
     *,
     context: cirq.TransformerContext | None = None,
     measurement_map: CircuitMeasurementMap | None = None,
-) -> cirq.AbstractCircuit:
+) -> cirq.Circuit:
     """Compute and replace global measurement indices in detectors."""
     measurement_map = CircuitMeasurementMap(circuit)
     (
         filled_in_circuit,
-        moment_number,
+        _,
     ) = _fill_in_detectors_global_record_indices_impl(circuit, measurement_map, 0)
     return filled_in_circuit

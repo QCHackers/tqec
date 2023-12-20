@@ -5,7 +5,7 @@ class CircuitMeasurementMap:
     def __init__(self, circuit: cirq.AbstractCircuit) -> None:
         (
             global_measurement_indices,
-            number_of_moments,
+            _,
         ) = CircuitMeasurementMap._get_global_measurement_index(circuit)
         self._global_measurement_indices = global_measurement_indices
 
@@ -39,9 +39,7 @@ class CircuitMeasurementMap:
             measurements_in_moment = self._global_measurement_indices[moment_index]
             if measurements_in_moment:
                 return max(measurements_in_moment.values())
-        assert (
-            False
-        ), f"Cannot find any measurements in or before the {current_moment_index}-th moment."
+        assert False, f"Cannot find any measurements in or before the {current_moment_index}-th moment."
 
     @staticmethod
     def _get_global_measurement_index(

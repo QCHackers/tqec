@@ -1,13 +1,11 @@
+import cirq
+
 from tqec.detectors.gate import DetectorGate
 from tqec.enums import PlaquetteQubitType
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
-
-import cirq
-from cirq.devices import GridQubit
-from cirq.ops import Operation
 
 
 class ZZZZPlaquette(Plaquette):

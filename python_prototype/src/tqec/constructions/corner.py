@@ -1,15 +1,13 @@
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.base import TemplateWithIndices
+from tqec.templates.fixed.base import FixedRaw
+from tqec.templates.fixed.rectangle import FixedRectangle
+from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import (
     ScalableAlternatingCornerSquare,
     ScalableAlternatingSquare,
 )
-from tqec.templates.fixed.rectangle import FixedRectangle
-from tqec.templates.fixed.base import FixedRaw
-from tqec.enums import CornerPositionEnum, ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
-
-from tqec.templates.orchestrator import TemplateOrchestrator
 
 
 class ScalableCorner(TemplateOrchestrator):

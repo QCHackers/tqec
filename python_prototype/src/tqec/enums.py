@@ -1,4 +1,5 @@
 from enum import Enum, auto
+
 from tqec.position import Position
 
 

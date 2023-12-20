@@ -10,14 +10,14 @@ class XNoiseAfterReset(BaseNoiseModel):
         self._noisy_gate: cirq.BitFlipChannel = cirq.bit_flip(self._p)
         super().__init__()
 
-    def noisy_operation(self, op: cirq.Operation) -> cirq.OP_TREE:
-        if isinstance(op.gate, cirq.ResetChannel):
+    def noisy_operation(self, operation: cirq.Operation) -> cirq.OP_TREE:
+        if isinstance(operation.gate, cirq.ResetChannel):
             return [
-                op,
+                operation,
                 [
                     self._noisy_gate.on(qubit).with_tags(cirq.VirtualTag())
-                    for qubit in op.qubits
+                    for qubit in operation.qubits
                 ],
             ]
         else:
-            return self.recurse_in_operation_if_CircuitOperation(op)
+            return self.recurse_in_operation_if_CircuitOperation(operation)
