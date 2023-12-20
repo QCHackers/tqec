@@ -1,22 +1,22 @@
+import cirq
+
+from tqec.constructions.qubit import ScalableQubitSquare
 from tqec.detectors.gate import ShiftCoordsGate
 from tqec.detectors.transformer import fill_in_detectors_global_record_indices
-from tqec.display import display
-from tqec.constructions.qubit import ScalableQubitSquare
-from tqec.plaquette.library import (
-    XXXXPlaquette,
-    ZZZZPlaquette,
-    XXPlaquette,
-    ZZPlaquette,
-)
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.noise_models import (
-    XNoiseBeforeMeasurement,
-    XNoiseAfterReset,
-    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
     DepolarizingNoiseOnIdlingQubit,
+    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
+    XNoiseAfterReset,
+    XNoiseBeforeMeasurement,
 )
-import cirq
+from tqec.plaquette.library import (
+    XXPlaquette,
+    XXXXPlaquette,
+    ZZPlaquette,
+    ZZZZPlaquette,
+)
 
 
 def normalise_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
@@ -41,7 +41,7 @@ def to_noisy_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
 
 
 repetitions: int = 100
-code_distance: int = 3
+code_distance: int = 5
 dimension: int = code_distance - 1
 
 template = ScalableQubitSquare(dimension)
@@ -69,14 +69,11 @@ def make_repeated_layer(circuit: cirq.Circuit) -> cirq.Circuit:
 
 layer_modificators = {1: make_repeated_layer}
 
-display(template)
 circuit = cirq.Circuit()
 for layer_index in range(3):
     layer_circuit = generate_circuit(template, plaquettes, layer_index=layer_index)
     layer_circuit = normalise_circuit(layer_circuit)
     circuit += layer_modificators.get(layer_index, lambda circ: circ)(layer_circuit)
-
-print(circuit)
 
 circuit_with_detectors = fill_in_detectors_global_record_indices(circuit)
 
