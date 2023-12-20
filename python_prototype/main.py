@@ -1,3 +1,5 @@
+from tqec.detectors.gate import ShiftCoordsGate
+from tqec.detectors.transformer import fill_in_detectors_global_record_indices
 from tqec.display import display
 from tqec.constructions.qubit import ScalableQubitSquare
 from tqec.plaquette.library import (
@@ -39,7 +41,7 @@ def to_noisy_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
 
 
 repetitions: int = 100
-code_distance: int = 5
+code_distance: int = 3
 dimension: int = code_distance - 1
 
 template = ScalableQubitSquare(dimension)
@@ -52,11 +54,22 @@ plaquettes = [
     XXPlaquette(PlaquetteOrientation.DOWN),
 ]
 
-layer_modificators = {
-    1: lambda circ: cirq.CircuitOperation(circ.freeze()).repeat(repetitions)
-}
 
-# display(template)
+def make_repeated_layer(circuit: cirq.Circuit) -> cirq.Circuit:
+    any_qubit = next(iter(circuit.all_qubits()), None)
+    assert (
+        any_qubit is not None
+    ), "Could not find any qubit in the given Circuit instance."
+    circuit_to_repeat = cirq.Circuit([ShiftCoordsGate(0, 0, 1).on(any_qubit)]) + circuit
+    repeated_circuit_operation = cirq.CircuitOperation(
+        circuit_to_repeat.freeze()
+    ).repeat(repetitions)
+    return cirq.Circuit([repeated_circuit_operation])
+
+
+layer_modificators = {1: make_repeated_layer}
+
+display(template)
 circuit = cirq.Circuit()
 for layer_index in range(3):
     layer_circuit = generate_circuit(template, plaquettes, layer_index=layer_index)
@@ -65,7 +78,9 @@ for layer_index in range(3):
 
 print(circuit)
 
-noisy_circuit = to_noisy_circuit(circuit)
+circuit_with_detectors = fill_in_detectors_global_record_indices(circuit)
+
+noisy_circuit = to_noisy_circuit(circuit_with_detectors)
 
 # print(noisy_circuit)
 
