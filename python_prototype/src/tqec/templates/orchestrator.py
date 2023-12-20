@@ -1,14 +1,14 @@
 import typing as ty
 
-from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
+import networkx as nx
+import numpy
+
 from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
 )
 from tqec.position import Position, Shape2D
-
-import networkx as nx
-import numpy
+from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
 
 
 def get_corner_position(
@@ -304,7 +304,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def build_array(self, indices_map: list[int]) -> numpy.ndarray:
+    def build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left

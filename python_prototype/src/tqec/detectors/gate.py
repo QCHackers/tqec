@@ -147,6 +147,7 @@ class DetectorGate(cirq.Gate):
             f"Cannot apply a {self.__class__.__name__} to more than "
             f"1 qubits ({len(qubits)} qubits given)."
         )
+        assert isinstance(qubits[0], cirq.GridQubit), "Expecting a GridQubit instance."
         self._set_origin(qubits[0])
         tag = [cirq.VirtualTag()] if add_virtual_tag else []
         return super().on(*qubits).with_tags(*tag)

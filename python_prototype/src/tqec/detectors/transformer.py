@@ -37,6 +37,9 @@ def _fill_in_detectors_global_record_indices_impl(
                     f"1 qubits ({len(operation.qubits)} qubits given)."
                 )
                 new_operation = deepcopy(operation)
+                assert isinstance(
+                    new_operation.gate, DetectorGate
+                ), "Expected a DetectorGate."
                 detector_gate: DetectorGate = new_operation.gate
                 detector_gate.compute_global_measurements_loopback_offsets(
                     global_measurement_map, current_moment_index
