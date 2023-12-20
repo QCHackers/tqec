@@ -3,6 +3,8 @@ from cirq.ops.raw_types import Qid, Operation
 from cirq.circuits.moment import Moment
 import cirq
 
+from tqec.detectors.gate import DetectorGate
+
 
 class ScheduledCircuit:
     def __init__(self, circuit: Circuit, schedule: list[int] | None = None) -> None:
@@ -71,6 +73,9 @@ class ScheduledCircuit:
             op = op.transform_qubits(qubit_map)
             if isinstance(op.gate, cirq.MeasurementGate):
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
+            elif isinstance(op.gate, DetectorGate):
+                # Re-create the operation from the gate
+                return op.gate.on(*op.qubits, add_virtual_tag=False).with_tags(*op.tags)
             else:
                 return op
 
@@ -287,6 +292,18 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> Circuit:
     ), "Found a measurement that is not applied on exactly 1 qubit."
     final_measurement_operations.sort(key=lambda op: op.qubits[0])
     all_moments.extend(Circuit(final_measurement_operations).moments)
+
+    # Also adding detectors, not removing duplicates as there should be none, detectors being
+    # applied on syndrome qubits and not data qubits.
+    final_detectors_operations = scheduled_circuits.collect_specific_operations(
+        gate_types={DetectorGate}
+    )
+    # Sorting detectors according to the order on the qubits they are applied on.
+    assert all(
+        len(op.qubits) == 1 for op in final_detectors_operations
+    ), "Found a detector that is not applied on exactly 1 qubit."
+    final_detectors_operations.sort(key=lambda op: op.qubits[0])
+    all_moments.extend(Circuit(final_detectors_operations).moments)
 
     assert not scheduled_circuits.has_pending_operation(), (
         "For the moment, ScheduledCircuit instances should be composed of "
