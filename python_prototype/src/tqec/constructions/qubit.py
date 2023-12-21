@@ -1,12 +1,23 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 from tqec.templates.base import TemplateWithIndices
+from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import ScalableAlternatingSquare
-from tqec.templates.orchestrator import TemplateOrchestrator
 
 
 class ScalableQubitSquare(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
+        """A scalable error-corrected qubit
+
+        ```text
+        .  .  1  .  1  .
+        2  3  4  3  4  .
+        .  4  3  4  3  5
+        2  3  4  3  4  .
+        .  4  3  4  3  5
+        .  6  .  6  .  .
+        ```
+        """
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
