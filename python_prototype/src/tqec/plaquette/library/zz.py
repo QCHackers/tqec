@@ -10,10 +10,12 @@ from tqec.position import Position, Shape2D
 
 class ZZPlaquette(Plaquette):
     def __init__(
-        self, orientation: PlaquetteOrientation, include_initial_detector: bool = True
+        self,
+        orientation: PlaquetteOrientation,
+        include_initial_and_final_detectors: bool = True,
     ):
         self._orientation = orientation
-        self._include_initial_detector = include_initial_detector
+        self._include_initial_and_final_detectors = include_initial_and_final_detectors
         _full_data_plaquette_qubits = [
             None,  # To have a 1-based indexing of this internal list.
             PlaquetteQubit(PlaquetteQubitType.DATA, Position(0, 0)),
@@ -79,6 +81,14 @@ class ZZPlaquette(Plaquette):
             [(syndrome_qubit, -1)],
             time_coordinate=0,
         ).on(syndrome_qubit)
+        final_detector = DetectorGate(
+            syndrome_qubit,
+            [
+                (syndrome_qubit, -1),
+                *[(dq, -1) for dq in data_qubits],
+            ],
+            time_coordinate=1,
+        ).on(syndrome_qubit)
         return (
             # Initial layer, reset everything and perform one syndrome measurement.
             ScheduledCircuit(
@@ -87,7 +97,9 @@ class ZZPlaquette(Plaquette):
                         # Reset everything
                         [cirq.R(q).with_tags(self._MERGEABLE_TAG) for q in all_qubits],
                         *syndrome_operations,
-                        [initial_detector] if self._include_initial_detector else [],
+                        [initial_detector]
+                        if self._include_initial_and_final_detectors
+                        else [],
                     )
                 ),
                 self.get_cnot_schedule(),
@@ -119,16 +131,9 @@ class ZZPlaquette(Plaquette):
                     (
                         # Only measure every qubit
                         [cirq.M(q).with_tags(self._MERGEABLE_TAG) for q in data_qubits],
-                        [
-                            DetectorGate(
-                                syndrome_qubit,
-                                [
-                                    (syndrome_qubit, -1),
-                                    *[(dq, -1) for dq in data_qubits],
-                                ],
-                                time_coordinate=1,
-                            ).on(syndrome_qubit)
-                        ],
+                        [final_detector]
+                        if self._include_initial_and_final_detectors
+                        else [],
                     )
                 ),
             ),
