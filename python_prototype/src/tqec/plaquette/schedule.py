@@ -265,6 +265,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     reset_operations = remove_duplicate_operations(
         scheduled_circuits.collect_specific_operations({cirq.ResetChannel})
     )
+    reset_operations.sort(key=lambda op: op.qubits[0])
     all_moments.extend(cirq.Circuit(reset_operations).moments)
 
     # Merge the initial 1-qubit operations.
