@@ -64,24 +64,21 @@ class DetectorGate(cirq.Gate):
         role of the cirq.Operation class".
         And this is fine in theory as a DetectorGate should only store:
         - a time coordinate
-        - offsets from the origin qubit, that should be provided with the "on" method to create an instance
-          of cirq.Operation.
+        - offsets from the origin qubit (origin qubit that should be provided with the "on" method to
+          create an instance of cirq.Operation).
 
-        But Stim interface ONLY visit cirq.Gate instances, and not cirq.Operation instances. Stim API
-        provides the qubits as integers, and there is no way of getting back the cirq.Qid instance from
-        it, making the Qid-based computations unusable.
+        Resolving measurement offsets could be done inside the _stim_conversion_ method thanks to:
+        - the fact that qubit coordinates can be recovered with stim.Circuit.get_final_qubit_coordinates,
+        - the fact that detectors only reference past measurements, already in the stim.Circuit instance.
 
-        The potential solutions I see to this problem:
-        1. Make the DetectorGate instance knows about the qubits it is applied on. This requires a lot of
-           tracking to avoid inconsistencies between the DetectorGate instance and its related Operation
-           instance. Moreover, cirq internals are not aware of that strong dependence, so it might simply
-           not work due to assumptions in cirq.
-        2. Find a way to communicate more data to the _stim_conversion_ method. This method is an interface
-           with Stim and is part of the stimcirq library. A DetectorGate instance just need to know the
-           relative negative offsets of measurements it needs to compute the parity of.
-        3. Try to use _stim_conversion_ parameters to convey the information.
+        But the second point above is not always true: if a repetition is found (i.e., stim.CircuitRepeatBlock),
+        the stim.Circuit instance given to the _stim_conversion_ method is bounded to the stim.Circuit instance
+        in the stim.CircuitRepeatBlock and has no way of accessing the parent stim.Circuit instance.
+        This makes impossible to reliably compute measurement offsets, **even by considering that the measurement
+        schedule in the repeat-block is consistent with the one just before the repeat block**.
+        One solution to that would be to give access to parent stim.Circuit instances, that should be doable but
+        requires a change directly in Stim.
 
-        For the moment, option 1 is implemented and seems to work.
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
             along with measurement gates.
         :param measurements_loopback_offsets: a list of measurements that are part of the detector. The
