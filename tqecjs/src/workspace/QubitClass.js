@@ -1,4 +1,4 @@
-import { Graphics, Circle, Text } from 'pixi.js';
+import { Graphics, Text } from 'pixi.js';
 
 /**
  * Qubit class
@@ -19,7 +19,6 @@ export default class Qubit extends Graphics {
 		this._createCircle(x, y, radius, color);
 		// QC properties
 		this.quantumState = '0'; // NOTE: In javascript, becareful updating values such as "this", "state", etc.
-		this.qubitType = 'data'; // data or measurement
 		this.neighbors = [];
 		this.isQubit = true;
 	}
@@ -53,13 +52,14 @@ export default class Qubit extends Graphics {
 		const distance = Math.sqrt(
 			Math.pow(eventX - this.globalX, 2) + Math.pow(eventY - this.globalY, 2)
 		);
-
 		// Define a threshold to determine the hit area
 		if (distance <= threshold) {
-			console.log('distance', distance);
 			// Create a text element
 			if (this.children.length > 0) return true; // If there is already a text element, don't create another one
-			const text = new Text('Sample Text', { fill: 'white', fontSize: 10 }); // White text color
+			const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
+				fill: 'white',
+				fontSize: 10,
+			}); // White text color
 			text.anchor.set(0.5);
 			text.position.set(eventX, eventY + 10);
 			this._onPointerOver();
