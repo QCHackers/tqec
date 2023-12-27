@@ -10,7 +10,7 @@ import { Graphics, Text, Container } from 'pixi.js';
  * @param {*} text'
  * @description This function shows a notification on the screen.
  */
-export default function showNotification(app, text) {
+export default function notification(app, text) {
 	// Create a container for the notification
 	const notificationContainer = new Container();
 
