@@ -17,5 +17,8 @@ export const makeGrid = (app, gridSize = 50) => {
 		grid.moveTo(0, y);
 		grid.lineTo(app.screen.width, y);
 	}
+	// NOTE: The grid is not added to the stage yet
+	// Name the grid
+	grid.name = 'grid';
 	return grid;
 };
