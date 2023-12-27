@@ -8,7 +8,7 @@ import { Graphics, Text } from 'pixi.js';
  * @param {number} y - The y position of the qubit
  */
 export default class Qubit extends Graphics {
-	constructor(x, y, radius = 5, color = 0x000000) {
+	constructor(x, y, radius = 5, color = 0x000000, gridSize = 50) {
 		super();
 		// UI properties
 		this.eventMode = 'static';
@@ -17,9 +17,12 @@ export default class Qubit extends Graphics {
 		this.globalX = x;
 		this.globalY = y;
 		this._createCircle(x, y, radius, color);
+		this.maxNeighborDist = 2 * this.gridSize;
+		this.neighbors = [];
+		this.gridSize = gridSize;
+		// Adjacent (degree 1) qubits
 		// QC properties
 		this.quantumState = '0'; // NOTE: In javascript, becareful updating values such as "this", "state", etc.
-		this.neighbors = [];
 		this.isQubit = true;
 	}
 	_onPointerOver = () => {
@@ -80,4 +83,48 @@ export default class Qubit extends Graphics {
 	setQuantumState(state) {
 		this.quantumState = state;
 	}
+
+	/**
+	 * Find neighbors of the qubit
+	 * There are 4 neighbors, top, bottom, left, right, does not consider diagonal neighbors
+	 */
+	setNeighbors = () => {
+		// Get surrounding qubits, this is specific to the grid we have built, needs to be generalized to find qubits within a maxDistance efficiently
+		const topQubitPos = {
+			x: this.globalX,
+			y: this.globalY - 2 * this.gridSize,
+		};
+		const bottomQubitPos = {
+			x: this.globalX,
+			y: this.globalY + 2 * this.gridSize,
+		};
+		const leftQubitPos = {
+			x: this.globalX - 2 * this.gridSize,
+			y: this.globalY,
+		};
+		const rightQubitPos = {
+			x: this.globalX + 2 * this.gridSize,
+			y: this.globalY,
+		};
+		// For readability
+		const neighborArr = [
+			topQubitPos,
+			bottomQubitPos,
+			leftQubitPos,
+			rightQubitPos,
+		];
+		// console.log(this.parent.children[100]);
+		for (const q in neighborArr) {
+			// Check if the qubit is within the workspace
+			const qubit = this.parent.getChildByName(
+				`${neighborArr[q].x}_${neighborArr[q].y}`
+			);
+			if (qubit) {
+				// Set the neighbors
+				this.neighbors.push(qubit);
+			}
+		}
+		// console.log(this.neighbors);
+		return this.neighbors;
+	};
 }
