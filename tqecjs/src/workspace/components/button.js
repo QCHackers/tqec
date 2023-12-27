@@ -1,7 +1,7 @@
 import { Text, Container, Graphics } from 'pixi.js';
 import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
-export const Button = (text, x, y, color = 0x000000) => {
+export const button = (text, x, y, color = 0x000000) => {
 	// Create the button container
 	const button = new Container();
 	// Create the button text
