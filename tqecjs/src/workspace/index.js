@@ -1,10 +1,9 @@
 import { useApp } from '@pixi/react';
-import { Container, Graphics } from 'pixi.js';
+import { Container } from 'pixi.js';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
-import Plaquette from './plaquettes/PlaquetteClass';
 import Tile from './TileClass';
-import { Button } from './components/button';
+import { button } from './components/button';
 
 export default function TQECApp() {
 	// Initialize the app
@@ -14,6 +13,7 @@ export default function TQECApp() {
 	const gridSize = 50;
 	// Let's create the workspace
 	const workspace = new Container();
+	workspace.name = 'workspace';
 	// Create the grid container
 	const grid = makeGrid(app, gridSize);
 
@@ -26,37 +26,33 @@ export default function TQECApp() {
 			if (x % (gridSize * 2) === gridSize && y % (gridSize * 2) === gridSize)
 				continue;
 			// Create a qubit
-			const qubit = new Qubit(x, y, 5);
+			const qubit = new Qubit(x, y, 5, gridSize);
+			// Name the qubit according to its position
+			qubit.name = `${x}_${y}`;
 			workspace.addChild(qubit);
 		}
 	}
+	// Give the qubit its neighbors
+	for (const q in workspace.children) {
+		if (workspace.children[q].isQubit === true) {
+			workspace.children[q].setNeighbors();
+		}
+	}
+
 	let selectedQubits = [];
-	const tile = new Tile();
-	// Create the plaquettes
-	const createPlaquette = (e) => {
-		// Render the plaquette
-		const plaquette = new Plaquette(selectedQubits); // Remove the container
-		if (!plaquette.plaquetteMade) return;
-		// Add the plaquette to the tile container
-		tile.addChild(plaquette);
-		tile.plaquette = plaquette;
-		// Add the tile container to the workspace
-		workspace.addChild(tile);
-		// For each qubit, remove the text
-		selectedQubits.forEach((qubit) => {
-			qubit.removeChildren();
-		});
+	// Create the button
+	const plaquetteButton = button('Create plaquette', 100, 100);
+	plaquetteButton.on('click', (_e) => {
+		// Create the plaquettes and tile
+		const tile = new Tile(selectedQubits, app);
+		tile.createPlaquette();
+		workspace.addChild(tile.container);
 		// Clear the selected qubits
 		selectedQubits = [];
 		// Hide the button
-		button.visible = false;
-		// Remove the text
-	};
-
-	// Create the button
-	const button = Button('Create plaquette', 100, 100);
-	button.on('click', createPlaquette);
-	button.visible = false;
+		plaquetteButton.visible = false;
+	});
+	plaquetteButton.visible = false;
 
 	// Select qubits
 	const selectQubit = (e) => {
@@ -78,19 +74,20 @@ export default function TQECApp() {
 			// Remove the qubit from the selected qubits
 			selectedQubits = selectedQubits.filter((q) => q !== qubit);
 			// Hide the button
-			button.visible = false;
+			plaquetteButton.visible = false;
 			return;
 		}
 		selectedQubits.push(qubit);
 		if (selectedQubits.length > 2) {
 			// Show the button
-			button.visible = true;
+			plaquetteButton.visible = true;
 		}
 	};
 
-	workspace.addChild(button);
+	workspace.addChild(plaquetteButton);
 	workspace.visible = true;
 	app.view.addEventListener('click', selectQubit);
 	app.stage.addChild(workspace);
+
 	return;
 }
