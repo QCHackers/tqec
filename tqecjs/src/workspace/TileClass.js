@@ -1,62 +1,46 @@
-import { Graphics } from 'pixi.js';
+import { Container } from 'pixi.js';
+import Plaquette from './plaquettes/PlaquetteClass';
+import notification from './components/notifier';
 
-export default class Tile extends Graphics {
-	constructor(plaquette) {
-		super();
-		this.plaquette = plaquette;
+export default class Tile {
+	constructor(selectedQubits, app) {
+		// UI Properties
+		this.container = new Container();
+		this.buttonMode = true;
+		this.interactive = true;
+		this.cursor = 'pointer';
+		this.mode = 'static';
 		this.isDragging = false;
 		this.prevMouseX = 0;
 		this.prevMouseY = 0;
-	}
-	_onDragStart(event) {
-		this.isDragging = true;
-	}
+		this.app = app;
 
-	_onDragMove(event) {
-		if (this.isDragging) {
-			// Determine which position the pointer is moving to
-			const currentMouseX = event.data.global.x;
-			const currentMouseY = event.data.global.y;
-			// Calculate the change in mouse position
-			const deltaX = currentMouseX - this.prevMouseX;
-			const deltaY = currentMouseY - this.prevMouseY;
-
-			// Update the previous mouse position
-			this.prevMouseX = currentMouseX;
-			this.prevMouseY = currentMouseY;
-
-			// Create a new plaquette
-			// Get the leftmost qubit
-
-			if (
-				deltaX > 0 &&
-				currentMouseX > this.plaquette.mostRightQubit().globalX
-			) {
-				console.log('Mouse is moving right');
-				// Get the selected qubits
-				const newPlaquette = this.plaquette.clone();
-				// Set the new plaquette's position
-				newPlaquette.position.set(
-					this.plaquette.mostRightQubit().globalX + 50,
-					this.plaquette.mostRightQubit().globalY
-				);
-				// Add the new plaquette to the workspace
-				this.plaquette.parent.addChild(newPlaquette);
-				// Remove the old plaquette
-			} else if (deltaX < 0) {
-				console.log('Mouse is moving left');
-			}
-
-			if (deltaY > 0) {
-				console.log('Mouse is moving down');
-			} else if (deltaY < 0) {
-				console.log('Mouse is moving up');
-			}
-		}
+		// Quantum
+		this.selectedQubits = selectedQubits || [];
+		this.plaquette = null;
 	}
 
 	makeTile() {
-		this.on('pointerdown', this._onDragStart);
-		this.on('pointermove', this._onDragMove);
+		// Get the plaquette
+		if (this.plaquette) {
+			this.container.addChild(this.plaquette.onDragMove());
+		} else {
+			notification(this.container, this.app);
+		}
 	}
+
+	// Create the plaquettes that are
+	createPlaquette = () => {
+		const workspace = this.app.stage.getChildByName('workspace');
+		// Render the plaquette
+		const plaquette = new Plaquette(this.selectedQubits, workspace); // Remove the container
+		if (!plaquette.plaquetteMade) return;
+		// Add the plaquette to the tile container
+		this.container.addChild(plaquette);
+		this.container.plaquette = plaquette;
+		// For each qubit, remove the text
+		this.selectedQubits.forEach((qubit) => {
+			qubit.removeChildren();
+		});
+	};
 }
