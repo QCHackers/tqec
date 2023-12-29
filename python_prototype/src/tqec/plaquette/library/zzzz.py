@@ -1,6 +1,6 @@
 import cirq
 
-from tqec.detectors.gate import DetectorGate
+from tqec.detectors.gate import DetectorGate, RelativeMeasurement
 from tqec.enums import PlaquetteQubitType
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
@@ -56,16 +56,17 @@ class ZZZZPlaquette(Plaquette):
             [cirq.CX(data_qubits[3], syndrome_qubit)],
             [cirq.M(syndrome_qubit).with_tags(self._MERGEABLE_TAG)],
         ]
+        no_qubit_offset = cirq.GridQubit(0, 0)
         initial_detector = DetectorGate(
             syndrome_qubit,
-            [(syndrome_qubit, -1)],
+            [RelativeMeasurement(no_qubit_offset, -1)],
             time_coordinate=0,
         ).on(syndrome_qubit)
         final_detector = DetectorGate(
             syndrome_qubit,
             [
-                (syndrome_qubit, -1),
-                *[(dq, -1) for dq in data_qubits],
+                RelativeMeasurement(no_qubit_offset, -1),
+                *[RelativeMeasurement(dq - syndrome_qubit, -1) for dq in data_qubits],
             ],
             time_coordinate=1,
         ).on(syndrome_qubit)
@@ -97,7 +98,10 @@ class ZZZZPlaquette(Plaquette):
                         [
                             DetectorGate(
                                 syndrome_qubit,
-                                [(syndrome_qubit, -2), (syndrome_qubit, -1)],
+                                [
+                                    RelativeMeasurement(no_qubit_offset, -2),
+                                    RelativeMeasurement(no_qubit_offset, -1),
+                                ],
                                 time_coordinate=0,
                             ).on(syndrome_qubit)
                         ],

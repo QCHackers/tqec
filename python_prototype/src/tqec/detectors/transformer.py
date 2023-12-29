@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import cirq
 
-from tqec.detectors.gate import DetectorGate
+from tqec.detectors.gate import DetectorGate, RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
 
 
@@ -31,17 +31,17 @@ def _fill_in_detectors_global_record_indices_impl(
                     index_of_last_explored_moment - current_moment_index
                 )
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
-            elif isinstance(operation.gate, DetectorGate):
+            elif isinstance(operation.gate, RelativeMeasurementGate):
                 assert len(operation.qubits) == 1, (
                     f"Cannot apply a {DetectorGate.__class__.__name__} to more than "
                     f"1 qubits ({len(operation.qubits)} qubits given)."
                 )
                 new_operation = deepcopy(operation)
                 assert isinstance(
-                    new_operation.gate, DetectorGate
-                ), "Expected a DetectorGate."
-                detector_gate: DetectorGate = new_operation.gate
-                detector_gate.compute_global_measurements_loopback_offsets(
+                    new_operation.gate, RelativeMeasurementGate
+                ), "Expected a RelativeMeasurementGate."
+                relative_measurement_gate: RelativeMeasurementGate = new_operation.gate
+                relative_measurement_gate.compute_global_measurements_loopback_offsets(
                     global_measurement_map, current_moment_index
                 )
                 operations.append(new_operation)
@@ -54,7 +54,7 @@ def _fill_in_detectors_global_record_indices_impl(
 
 
 @cirq.transformer
-def fill_in_detectors_global_record_indices(
+def fill_in_global_record_indices(
     circuit: cirq.AbstractCircuit,
     *,
     context: cirq.TransformerContext | None = None,

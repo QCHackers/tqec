@@ -1,4 +1,5 @@
 from copy import deepcopy
+from dataclasses import dataclass
 
 import cirq
 import numpy
@@ -43,14 +44,19 @@ class ShiftCoordsGate(cirq.Gate):
         edit_circuit.append("SHIFT_COORDS", [], self._args)
 
 
-class DetectorGate(cirq.Gate):
+@dataclass
+class RelativeMeasurement:
+    relative_qubit_positioning: cirq.GridQubit
+    relative_measurement_offset: int
+
+
+class RelativeMeasurementGate(cirq.Gate):
     def __init__(
         self,
         qubit_coordinate_system_origin: cirq.GridQubit,
-        measurements_loopback_offsets: list[tuple[cirq.GridQubit, int]],
-        time_coordinate: int = 0,
+        relative_measurements_loopback_offsets: list[RelativeMeasurement],
     ) -> None:
-        """Gate representing a detector.
+        """Gate representing a Stim instruction with relative measurements as targets.
 
         Issue with this class: cirq expectations for a subclass of cirq.Gate is the following (from cirq
         documentation https://quantumai.google/cirq/build/gates):
@@ -62,10 +68,8 @@ class DetectorGate(cirq.Gate):
 
         I understand that as "cirq.Gate instances should not have any qubit-specific knowledge as this is the
         role of the cirq.Operation class".
-        And this is fine in theory as a DetectorGate should only store:
-        - a time coordinate
-        - offsets from the origin qubit (origin qubit that should be provided with the "on" method to
-          create an instance of cirq.Operation).
+        And this is fine in theory as a RelativeMeasurementGate should only store offsets from the origin qubit
+        (origin qubit that should be provided with the "on" method to create an instance of cirq.Operation).
 
         Resolving measurement offsets could be done inside the _stim_conversion_ method thanks to:
         - the fact that qubit coordinates can be recovered with stim.Circuit.get_final_qubit_coordinates,
@@ -78,6 +82,93 @@ class DetectorGate(cirq.Gate):
         schedule in the repeat-block is consistent with the one just before the repeat block**.
         One solution to that would be to give access to parent stim.Circuit instances, that should be doable but
         requires a change directly in Stim.
+
+        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
+            along with measurement gates.
+        :param measurements_loopback_offsets: a list of measurements that are part of the gate. The
+            measurements are given as a tuple with the following entries:
+
+            1. a qubit offset, that is considered relative to the qubit this gate will be applied on, and that
+               represent the qubit the measurement we want to access has been performed on,
+            2. a **local**, **negative** offset, representing the n-th measurement on the qubit given in the
+               first entry of the tuple, going backward **from the predecessor of the Moment containing this
+               gate** (this is where the **local** comes from).
+
+            The tuple [cirq.GridQubit(1, 1), -1] means the last measurement that is:
+            1. located before the Moment this gate is in, and
+            2. applied on the qubit "origin + cirq.GridQubit(1, 1)", where "origin" is the qubit given to
+               the "on" method to construct an operation.
+        """
+        self._qubit_coordinate_system_origin = qubit_coordinate_system_origin
+        self._local_measurements_loopback_offsets_relative_to_origin = (
+            relative_measurements_loopback_offsets
+        )
+        self._global_measurements_loopback_offsets: list[int] = []
+        super().__init__()
+
+    def __deepcopy__(self, memo: dict) -> "RelativeMeasurementGate":
+        return RelativeMeasurementGate(
+            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
+            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
+        )
+
+    def __copy__(self) -> "RelativeMeasurementGate":
+        # Force the deepcopy to avoid any issue from shared reference. This is a safety measure to mitigate
+        # potential issues caused by the fact that this class does not follow the spirit of cirq.Gate interface.
+        return self.__deepcopy__({})
+
+    def _num_qubits_(self):
+        return 1
+
+    def _unitary_(self):
+        return numpy.array([[1, 0], [0, 1]], dtype=float)
+
+    def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
+        # Add the virtual tag to explicitely mark this gate as "not a real gate"
+        assert len(qubits) == 1, (
+            f"Cannot apply a {self.__class__.__name__} to more than "
+            f"1 qubits ({len(qubits)} qubits given)."
+        )
+        assert isinstance(qubits[0], cirq.GridQubit), "Expecting a GridQubit instance."
+        self._set_origin(qubits[0])
+        tag = [cirq.VirtualTag()] if add_virtual_tag else []
+        return super().on(*qubits).with_tags(*tag)
+
+    def _set_origin(self, new_origin: cirq.GridQubit) -> None:
+        self._qubit_coordinate_system_origin = new_origin
+
+    def compute_global_measurements_loopback_offsets(
+        self,
+        measurement_map: CircuitMeasurementMap,
+        current_moment_index: int,
+    ) -> None:
+        self._global_measurements_loopback_offsets.clear()
+        for (
+            relative_measurement
+        ) in self._local_measurements_loopback_offsets_relative_to_origin:
+            qubit = (
+                self._qubit_coordinate_system_origin
+                + relative_measurement.relative_qubit_positioning
+            )
+            self._global_measurements_loopback_offsets.append(
+                measurement_map.get_measurement_relative_offset(
+                    current_moment_index,
+                    qubit,
+                    relative_measurement.relative_measurement_offset,
+                )
+            )
+
+
+class DetectorGate(RelativeMeasurementGate):
+    def __init__(
+        self,
+        qubit_coordinate_system_origin: cirq.GridQubit,
+        measurements_loopback_offsets: list[RelativeMeasurement],
+        time_coordinate: int = 0,
+    ) -> None:
+        """Gate representing a detector.
+
+        Issue with this class: see RelativeMeasurementGate docstring.
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
             along with measurement gates.
@@ -97,22 +188,13 @@ class DetectorGate(cirq.Gate):
         :param time_coordinate: an annotation that will be forwarded to the DETECTOR Stim structure as the
             last coordinate.
         """
-        self._qubit_coordinate_system_origin = qubit_coordinate_system_origin
-        self._local_measurements_loopback_offsets_relative_to_origin = [
-            (qubit - qubit_coordinate_system_origin, offset)
-            for qubit, offset in measurements_loopback_offsets
-        ]
-        self._global_measurements_loopback_offsets: list[int] = []
+        super().__init__(qubit_coordinate_system_origin, measurements_loopback_offsets)
         self._time_coordinate = time_coordinate
-        super().__init__()
 
     def __deepcopy__(self, memo: dict) -> "DetectorGate":
         return DetectorGate(
             deepcopy(self._qubit_coordinate_system_origin, memo=memo),
-            [
-                (qubit + self._qubit_coordinate_system_origin, offset)
-                for qubit, offset in self._local_measurements_loopback_offsets_relative_to_origin
-            ],
+            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
             self._time_coordinate,
         )
 
@@ -120,12 +202,6 @@ class DetectorGate(cirq.Gate):
         # Force the deepcopy to avoid any issue from shared reference. This is a safety measure to mitigate
         # potential issues caused by the fact that this class does not follow the spirit of cirq.Gate interface.
         return self.__deepcopy__({})
-
-    def _num_qubits_(self):
-        return 1
-
-    def _unitary_(self):
-        return numpy.array([[1, 0], [0, 1]], dtype=float)
 
     def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs):
         return "D"
@@ -137,20 +213,6 @@ class DetectorGate(cirq.Gate):
             self._qubit_coordinate_system_origin.col,
             self._time_coordinate,
         )
-
-    def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
-        # Add the virtual tag to explicitely mark this gate as "not a real gate"
-        assert len(qubits) == 1, (
-            f"Cannot apply a {self.__class__.__name__} to more than "
-            f"1 qubits ({len(qubits)} qubits given)."
-        )
-        assert isinstance(qubits[0], cirq.GridQubit), "Expecting a GridQubit instance."
-        self._set_origin(qubits[0])
-        tag = [cirq.VirtualTag()] if add_virtual_tag else []
-        return super().on(*qubits).with_tags(*tag)
-
-    def _set_origin(self, new_origin: cirq.GridQubit) -> None:
-        self._qubit_coordinate_system_origin = new_origin
 
     def _stim_conversion_(
         self,
@@ -175,19 +237,75 @@ class DetectorGate(cirq.Gate):
             self.coordinates,
         )
 
-    def compute_global_measurements_loopback_offsets(
+
+class ObservableGate(RelativeMeasurementGate):
+    def __init__(
         self,
-        measurement_map: CircuitMeasurementMap,
-        current_moment_index: int,
+        qubit_coordinate_system_origin: cirq.GridQubit,
+        measurements_loopback_offsets: list[RelativeMeasurement],
+        observable_index: int = 0,
     ) -> None:
-        self._global_measurements_loopback_offsets.clear()
-        for (
-            qubit_offset,
-            loopback_offset,
-        ) in self._local_measurements_loopback_offsets_relative_to_origin:
-            qubit = self._qubit_coordinate_system_origin + qubit_offset
-            self._global_measurements_loopback_offsets.append(
-                measurement_map.get_measurement_relative_offset(
-                    current_moment_index, qubit, loopback_offset
-                )
-            )
+        """Gate representing an observable.
+
+        Issue with this class: see RelativeMeasurementGate docstring.
+
+        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move observables
+            along with measurement gates.
+        :param measurements_loopback_offsets: a list of measurements that are part of the observable. The
+            measurements are given as a tuple with the following entries:
+
+            1. a qubit offset, that is considered relative to the qubit this gate will be applied on, and that
+               represent the qubit the measurement we want to access has been performed on,
+            2. a **local**, **negative** offset, representing the n-th measurement on the qubit given in the
+               first entry of the tuple, going backward **from the predecessor of the Moment containing this
+               gate** (this is where the **local** comes from).
+
+            The tuple [cirq.GridQubit(1, 1), -1] means the last measurement that is:
+            1. located before the Moment this gate is in, and
+            2. applied on the qubit "origin + cirq.GridQubit(1, 1)", where "origin" is the qubit given to
+               the "on" method to construct an operation.
+        """
+        super().__init__(qubit_coordinate_system_origin, measurements_loopback_offsets)
+        self._observable_index = observable_index
+
+    def __deepcopy__(self, memo: dict) -> "ObservableGate":
+        return ObservableGate(
+            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
+            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
+            self._observable_index,
+        )
+
+    def __copy__(self) -> "ObservableGate":
+        # Force the deepcopy to avoid any issue from shared reference. This is a safety measure to mitigate
+        # potential issues caused by the fact that this class does not follow the spirit of cirq.Gate interface.
+        return self.__deepcopy__({})
+
+    def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs):
+        return "O"
+
+    @property
+    def coordinates(self) -> tuple[int, ...]:
+        return (self._observable_index,)
+
+    def _stim_conversion_(
+        self,
+        # The stim circuit being built. Add onto it.
+        edit_circuit: stim.Circuit,
+        # Metadata about measurement groupings needed by stimcirq.StimSampler.
+        # If your gate contains a measurement, it has to append how many qubits
+        # that measurement measures (and its key) into this list.
+        edit_measurement_key_lengths: list[tuple[str, int]],
+        # The indices of qubits the gate is operating on.
+        targets: list[int],
+        # Forward compatibility with future arguments.
+        **_,
+    ):
+        assert self._global_measurements_loopback_offsets, (
+            "Global measurement loopback offsets have not been computed."
+            " Please call compute_global_measurements_loopback_offsets."
+        )
+        edit_circuit.append(
+            "OBSERVABLE_INCLUDE",
+            [stim.target_rec(i) for i in self._global_measurements_loopback_offsets],
+            self.coordinates,
+        )
