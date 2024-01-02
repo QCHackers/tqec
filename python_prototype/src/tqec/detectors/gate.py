@@ -104,7 +104,9 @@ class RelativeMeasurementGate(cirq.Gate):
     def __deepcopy__(self, memo: dict) -> "RelativeMeasurementGate":
         return RelativeMeasurementGate(
             deepcopy(self._qubit_coordinate_system_origin, memo=memo),
-            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
+            deepcopy(
+                self._local_measurements_loopback_offsets_relative_to_origin, memo=memo
+            ),
         )
 
     def __copy__(self) -> "RelativeMeasurementGate":
