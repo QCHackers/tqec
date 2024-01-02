@@ -10,10 +10,9 @@ from tqec.detectors.transformer import fill_in_global_record_indices
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.noise_models import (
-    DepolarizingNoiseOnIdlingQubit,
-    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
-    XNoiseAfterReset,
-    XNoiseBeforeMeasurement,
+    AfterCliffordDepolarizingNoise,
+    AfterResetFlipNoise,
+    BeforeMeasurementFlipNoise,
 )
 from tqec.plaquette.library import (
     XXXXPlaquette,
@@ -35,10 +34,9 @@ def normalise_circuit(circuit: cirq.Circuit) -> cirq.Circuit:
 
 def to_noisy_circuit(circuit: cirq.Circuit, noise_level: float) -> cirq.Circuit:
     noise_models = [
-        XNoiseBeforeMeasurement(noise_level),
-        MultiQubitDepolarizingNoiseAfterMultiQubitGate(noise_level),
-        XNoiseAfterReset(noise_level),
-        DepolarizingNoiseOnIdlingQubit(noise_level),
+        AfterCliffordDepolarizingNoise(noise_level),
+        AfterResetFlipNoise(noise_level),
+        BeforeMeasurementFlipNoise(noise_level),
     ]
     for nm in noise_models:
         circuit = circuit.with_noise(nm)

@@ -2,6 +2,12 @@ import cirq
 
 
 class BaseNoiseModel(cirq.NoiseModel):
+    def __init__(self, probability: float) -> None:
+        self._p = cirq.value.validate_probability(
+            probability, "noise model probability"
+        )
+        super().__init__()
+
     def recurse_in_operation_if_CircuitOperation(
         self, operation: cirq.Operation
     ) -> cirq.OP_TREE:
@@ -14,3 +20,10 @@ class BaseNoiseModel(cirq.NoiseModel):
             )
             return operation.replace(circuit=noisy_circuit)
         return operation
+
+    def is_in_effect(self) -> bool:
+        return self._p > 1e-12
+
+    @property
+    def prob(self) -> float:
+        return self._p

@@ -7,12 +7,7 @@ from tqec.noise_models import BaseNoiseModel
 
 class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
     def __init__(self, p: float):
-        cirq.value.validate_probability(
-            p, "depolarizing noise on idling qubits probability"
-        )
-        self._p = p
-        self._noisy_operation: cirq.DepolarizingChannel = cirq.depolarize(self._p)
-        super().__init__()
+        super().__init__(p)
 
     def noisy_moment(
         self, moment: cirq.Moment, system_qubits: Sequence[cirq.Qid]
@@ -35,7 +30,7 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
         if any(len(op.qubits) > 1 for op in moment):
             idle_qubits = system_qubits_set.difference(moment.qubits)
             moment = moment.with_operations(
-                self._noisy_operation.on(qubit).with_tags(cirq.VirtualTag())
+                cirq.depolarize(self.prob).on(qubit).with_tags(cirq.VirtualTag())
                 for qubit in idle_qubits
             )
         # Return the modified moment
