@@ -4,7 +4,7 @@ export const makeGrid = (app, gridSize = 50) => {
 	// Create a PIXI.Graphics object for the grid
 	const grid = new Graphics();
 	// Set the line style for the grid lines
-	grid.lineStyle(1, 0x000000);
+	grid.lineStyle(1, 'black');
 
 	// Draw vertical lines
 	for (let x = 0; x <= app.screen.width; x += gridSize) {

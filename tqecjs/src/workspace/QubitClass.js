@@ -8,7 +8,7 @@ import { Graphics, Text } from 'pixi.js';
  * @param {number} y - The y position of the qubit
  */
 export default class Qubit extends Graphics {
-	constructor(x, y, radius = 5, color = 0x000000, gridSize = 50) {
+	constructor(x, y, radius = 5, color = 'black', gridSize = 50) {
 		super();
 		// UI properties
 		this.eventMode = 'static';
@@ -22,7 +22,6 @@ export default class Qubit extends Graphics {
 		this.gridSize = gridSize;
 		// Adjacent (degree 1) qubits
 		// QC properties
-		this.quantumState = '0'; // NOTE: In javascript, becareful updating values such as "this", "state", etc.
 		this.isQubit = true;
 	}
 	_onPointerOver = () => {

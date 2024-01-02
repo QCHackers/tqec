@@ -7,7 +7,6 @@ export default class Tile {
 		// UI Properties
 		this.container = new Container();
 		this.buttonMode = true;
-		this.interactive = true;
 		this.cursor = 'pointer';
 		this.mode = 'static';
 		this.isDragging = false;
@@ -29,7 +28,7 @@ export default class Tile {
 		}
 	}
 
-	// Create the plaquettes that are
+	// Create the plaquettes that are assigned to the tile
 	createPlaquette = () => {
 		const workspace = this.app.stage.getChildByName('workspace');
 		// Render the plaquette

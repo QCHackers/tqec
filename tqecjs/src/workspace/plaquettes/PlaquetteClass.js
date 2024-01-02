@@ -1,5 +1,6 @@
 import { Graphics, Container } from 'pixi.js';
 import { button } from '../components/button';
+import notification from '../components/notifier';
 
 export default class Plaquette extends Graphics {
 	constructor(qubits, workspace, gridSize = 50, color = 'purple') {
@@ -16,7 +17,7 @@ export default class Plaquette extends Graphics {
 		this.controlPanel = new Container();
 		this.controlPanel.name = 'control_panel';
 		this.controlPanel.visible = false;
-		this.rotateButton = button('Rotate', 200, 200, 0x000000);
+		this.rotateButton = button('Rotate', 200, 200, 'black');
 		this.clearButton = button('Clear', 200, 275, 'red');
 		this.colorButton = button('Change color', 200, 350, 'green');
 		this.makeRotatable(); // Add the rotate button to screen
@@ -141,7 +142,7 @@ export default class Plaquette extends Graphics {
 					qubitStack.at(-2), // second from top
 					qubitStack.at(-1), // top of stack
 					qubit
-				) <= 0
+				)
 			) {
 				qubitStack.pop();
 			}
@@ -169,8 +170,8 @@ export default class Plaquette extends Graphics {
 		const v2 = { x: r.globalX - q.globalX, y: r.globalY - q.globalY };
 		// Take the cross product
 		const val = -(v1.x * v2.y - v1.y * v2.x); // If val > 0, then counterclockwise, else clockwise
-		if (val === 0) return 0; // Collinear
-		return val; // Clockwise  < 0 or counterclockwise >0
+		if (val === 0) return true; // Collinear
+		return val > 0 ? false : true;
 	};
 
 	createPlaquette = () => {
@@ -178,6 +179,8 @@ export default class Plaquette extends Graphics {
 		const nQubits = this.qubits.length;
 		if (nQubits < 3) {
 			console.log('Plaquette must have at least 3 qubits');
+			// Show a notification to the user that the plaquette must have at least 3 qubits
+			notification(this.workspace, 'Plaquette must have at least 3 qubits');
 			this.plaquetteMade = false;
 			return null;
 		}
@@ -190,7 +193,6 @@ export default class Plaquette extends Graphics {
 		this.position.set(x, y);
 		// Allow for the object to be interactive
 		this.plaquetteMade = true;
-		this.interactive = true;
 		this.cursor = 'pointer';
 		this.makeExtensible();
 		this.toggleCtrlButtons();
@@ -198,7 +200,6 @@ export default class Plaquette extends Graphics {
 
 	makeExtensible = () => {
 		// Make the plaquette extensible
-		this.interactive = true;
 		this.buttonMode = true;
 		this.on('pointerdown', this.onDragStart);
 		this.on('pointermove', this.onDragMove);
@@ -250,6 +251,7 @@ export default class Plaquette extends Graphics {
 				// Shift the qubits by the difference
 				for (const qubit of this.qubits) {
 					const q = qubit.neighbors.find(
+						// eslint-disable-next-line no-loop-func
 						(q) =>
 							q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
 					);

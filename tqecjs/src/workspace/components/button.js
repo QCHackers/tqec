@@ -1,7 +1,7 @@
 import { Text, Container, Graphics } from 'pixi.js';
 import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
-export const button = (text, x, y, color = 0x000000) => {
+export const button = (text, x, y, color = 'black') => {
 	// Create the button container
 	const button = new Container();
 	// Create the button text
@@ -28,7 +28,6 @@ export const button = (text, x, y, color = 0x000000) => {
 	buttonBackground.endFill();
 
 	// Add effects
-	button.interactive = true;
 	button.eventMode = 'static';
 	// Add hover event
 	button.on('pointerover', () => {
