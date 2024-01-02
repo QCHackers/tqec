@@ -2,7 +2,6 @@ from copy import deepcopy
 from dataclasses import dataclass
 
 import cirq
-import numpy
 import stim
 
 from tqec.detectors.measurement_map import CircuitMeasurementMap
@@ -15,10 +14,6 @@ class ShiftCoordsGate(cirq.Gate):
     def _num_qubits_(self):
         # Set to 1 to avoid any issue with a 0-qubit "gate".
         return 1
-
-    def _unitary_(self):
-        # Set to the identity as this is not really a gate.
-        return numpy.array([[1, 0], [0, 1]], dtype=float)
 
     def on(self, *qubits: cirq.Qid) -> cirq.Operation:
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
@@ -119,9 +114,6 @@ class RelativeMeasurementGate(cirq.Gate):
 
     def _num_qubits_(self):
         return 1
-
-    def _unitary_(self):
-        return numpy.array([[1, 0], [0, 1]], dtype=float)
 
     def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
