@@ -313,9 +313,14 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     all_moments.extend(cirq.Circuit(final_detectors_operations).moments)
 
     assert not scheduled_circuits.has_pending_operation(), (
-        "For the moment, ScheduledCircuit instances should be composed of "
-        "1) layer(s) of 1-qubit gates, 2) layer(s) of multi-qubit gates and "
-        "3) layer(s) of 1-qubit gate. Any other circuit is considered invalid"
+        "For the moment, ScheduledCircuit instances should be composed of:\n"
+        "1) (reset operations)\n"
+        "2) layer(s) of 1-qubit gates\n"
+        "3) layer(s) of multi-qubit gate\n"
+        "4) layer(s) of 1-qubit gates\n"
+        "5) layer(s) of measurement operations\n"
+        "6) layer(s) of detector operations\n"
+        "Any quantum circuit not in this format should be considered invalid."
     )
 
     return cirq.Circuit(all_moments)
