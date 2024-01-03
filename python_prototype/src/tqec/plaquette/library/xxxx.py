@@ -1,7 +1,6 @@
 import cirq
 
 from tqec.detectors.gate import DetectorGate, RelativeMeasurement
-from tqec.enums import PlaquetteQubitType
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
@@ -12,14 +11,12 @@ class XXXXPlaquette(Plaquette):
     def __init__(self, include_initial_and_final_detectors: bool = True):
         self._include_initial_and_final_detectors = include_initial_and_final_detectors
         data_plaquette_qubits = [
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(0, 0)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(2, 0)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(0, 2)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(2, 2)),
+            PlaquetteQubit(Position(0, 0)),
+            PlaquetteQubit(Position(2, 0)),
+            PlaquetteQubit(Position(0, 2)),
+            PlaquetteQubit(Position(2, 2)),
         ]
-        syndrome_plaquette_qubit = PlaquetteQubit(
-            PlaquetteQubitType.SYNDROME, Position(1, 1)
-        )
+        syndrome_plaquette_qubit = PlaquetteQubit(Position(1, 1))
 
         super().__init__(
             qubits=[*data_plaquette_qubits, syndrome_plaquette_qubit],

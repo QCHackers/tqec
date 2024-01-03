@@ -38,11 +38,6 @@ ABOVE_OF = TemplateRelativePositionEnum.ABOVE_OF
 BELOW_OF = TemplateRelativePositionEnum.BELOW_OF
 
 
-class PlaquetteQubitType(Enum):
-    DATA = auto()
-    SYNDROME = auto()
-
-
 class PlaquetteOrientation(Enum):
     RIGHT = auto()
     LEFT = auto()

@@ -1,7 +1,7 @@
 import cirq
 
 from tqec.detectors.gate import DetectorGate, RelativeMeasurement
-from tqec.enums import PlaquetteOrientation, PlaquetteQubitType
+from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
@@ -18,19 +18,17 @@ class ZZPlaquette(Plaquette):
         self._include_initial_and_final_detectors = include_initial_and_final_detectors
         _full_data_plaquette_qubits = [
             None,  # To have a 1-based indexing of this internal list.
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(0, 0)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(0, 2)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(2, 0)),
-            PlaquetteQubit(PlaquetteQubitType.DATA, Position(2, 2)),
+            PlaquetteQubit(Position(0, 0)),
+            PlaquetteQubit(Position(0, 2)),
+            PlaquetteQubit(Position(2, 0)),
+            PlaquetteQubit(Position(2, 2)),
         ]
 
         cnot_schedule = self.get_cnot_schedule()
         data_plaquette_qubits: list[PlaquetteQubit] = [
             _full_data_plaquette_qubits[i] for i in cnot_schedule
         ]
-        syndrome_plaquette_qubit = PlaquetteQubit(
-            PlaquetteQubitType.SYNDROME, Position(1, 1)
-        )
+        syndrome_plaquette_qubit = PlaquetteQubit(Position(1, 1))
 
         super().__init__(
             qubits=[*data_plaquette_qubits, syndrome_plaquette_qubit],
