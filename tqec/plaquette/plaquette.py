@@ -1,5 +1,4 @@
 import typing as ty
-from abc import ABC, abstractmethod
 
 import numpy
 
@@ -8,7 +7,7 @@ from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Shape2D
 
 
-class Plaquette(ABC):
+class Plaquette:
     _MERGEABLE_TAG: str = "tqec_can_be_merged"
 
     @staticmethod
@@ -57,7 +56,3 @@ class Plaquette(ABC):
     @property
     def qubits(self) -> list[PlaquetteQubit]:
         return self._qubits
-
-    @abstractmethod
-    def get_cnot_schedule(self) -> list[int]:
-        pass
