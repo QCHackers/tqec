@@ -65,7 +65,7 @@ class RawRectangle(Rectangle):
                 "RawRectangle instances should be constructed with 2-dimensional arrays "
                 "that contain indices that will index the plaquette_indices provided to "
                 "this method. The bigest index you provided at this instance creation is "
-                f"{max(max(l) for l in self._indices)} "
+                f"{max(max(index) for index in self._indices)} "
                 f"but you provided only {len(plaquette_indices)} plaquette indices "
                 "when calling this method."
             )
