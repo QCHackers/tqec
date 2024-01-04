@@ -2,8 +2,13 @@ import { Graphics, Container } from 'pixi.js';
 import { button } from '../components/button';
 import notification from '../components/notifier';
 
+const PlaquetteColors = {
+	Purple: Symbol('purple'),
+	Yellow: Symbol('yellow')
+}
+
 export default class Plaquette extends Graphics {
-	constructor(qubits, workspace, gridSize = 50, color = 'purple') {
+	constructor(qubits, workspace, gridSize = 50, color = PlaquetteColors.Purple) {
 		super();
 		// UI properties
 		this.workspace = workspace;
@@ -155,23 +160,23 @@ export default class Plaquette extends Graphics {
 			y: qubit.globalY,
 		}));
 
-		this.beginFill(this.color);
+		// Update plaquette graphics
+		this.beginFill(this.color.description);
 		// Fill the convex hull
 		this.drawPolygon(qubitPos);
 		this.cursor = 'pointer';
 		this.endFill();
-		// Assign the qubit stack to the plaquette
+		// Assign the qubit stack to the newly made convex hull	
 		this.qubitStack = qubitStack;
 	};
 
 	_ccw = (p, q, r) => {
-		// Check if the points are counterclockwise
+		// Check if the points are counterclockwise or collinear
 		const v1 = { x: q.globalX - p.globalX, y: q.globalY - p.globalY };
 		const v2 = { x: r.globalX - q.globalX, y: r.globalY - q.globalY };
 		// Take the cross product
-		const val = -(v1.x * v2.y - v1.y * v2.x); // If val > 0, then counterclockwise, else clockwise
-		if (val === 0) return true; // Collinear
-		return val > 0 ? false : true;
+		const val = -(v1.x * v2.y - v1.y * v2.x); // If val > 0, then counterclockwise, else clockwise or collinear
+		return val <= 0;
 	};
 
 	createPlaquette = () => {
@@ -192,10 +197,12 @@ export default class Plaquette extends Graphics {
 		this.pivot.set(x, y);
 		this.position.set(x, y);
 		// Allow for the object to be interactive
+		this.eventMode = 'dynamic';
 		this.plaquetteMade = true;
 		this.cursor = 'pointer';
 		this.makeExtensible();
 		this.toggleCtrlButtons();
+		console.log("Made plaquette of length ", nQubits)
 	};
 
 	makeExtensible = () => {
@@ -205,6 +212,7 @@ export default class Plaquette extends Graphics {
 		this.on('pointermove', this.onDragMove);
 		this.on('pointerup', this.onDragEnd);
 	};
+
 	onDragStart(event) {
 		this.isDragging = true;
 		this.initialPosition = event.data.getLocalPosition(this.parent);
@@ -291,9 +299,9 @@ export default class Plaquette extends Graphics {
 			}
 
 			// Create a new plaquette
-			let color = 'yellow';
-			if (this.color !== 'purple') {
-				color = 'purple';
+			let color = PlaquetteColors.Yellow;
+			if (this.color !== PlaquetteColors.Purple) {
+				color = PlaquetteColors.Purple;
 			}
 			console.log(color);
 			const newPlaquette = new Plaquette(
@@ -302,7 +310,6 @@ export default class Plaquette extends Graphics {
 				this.gridSize,
 				color
 			);
-			// Change the color of the plaquette
 
 			// Add the plaquette to the tile
 			this.addChild(newPlaquette);
@@ -350,11 +357,12 @@ export default class Plaquette extends Graphics {
 	};
 
 	changeColorButton = () => {
-		this.colorButton.on('click', (_event) => {
-			if (this.color === 'purple') this.changePlaquetteColor('yellow');
-			else {
-				this.changePlaquetteColor('purple');
-			} // Change the color of the plaquette})
+		this.colorButton.on('click', (_event) => { // Change the color of the plaquette
+			if (this.color === PlaquetteColors.Purple) {
+				this.changePlaquetteColor(PlaquetteColors.Yellow);
+			} else {
+				this.changePlaquetteColor(PlaquetteColors.Purple);
+			}
 		});
 		this.colorButton.name = 'color_button';
 		this.controlPanel.addChild(this.colorButton);
