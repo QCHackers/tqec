@@ -1,6 +1,5 @@
 matplotlib
 numpy
-notebook
 networkx
 cirq
 stim
