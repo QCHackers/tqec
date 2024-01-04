@@ -1,1 +1,5 @@
 general-superstaq[dev]~=0.3.23
+sinter
+pymatching
+jupyter
+jupyterlab
