@@ -10,5 +10,5 @@ class PlaquetteQubit:
     position: Position
 
     def to_grid_qubit(self) -> GridQubit:
-        # GridQubit are indexed as (x, y)
-        return GridQubit(self.position.x, self.position.y)
+        # GridQubit are indexed as (row, col)
+        return GridQubit(self.position.y, self.position.x)
