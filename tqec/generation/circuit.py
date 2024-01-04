@@ -47,7 +47,7 @@ def generate_circuit(
             scheduled_circuit = plaquette_circuits[plaquette_index].copy()
             qubit_map = {
                 # GridQubit are indexed as (x, y)
-                qubit: qubit + (qubit_x_index, qubit_y_index)
+                qubit: qubit + (qubit_x_index, qubit_y_index) # type: ignore
                 for qubit in scheduled_circuit.raw_circuit.all_qubits()
             }
             scheduled_circuit.map_to_qubits(qubit_map, inplace=True)

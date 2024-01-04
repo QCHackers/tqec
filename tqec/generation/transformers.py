@@ -8,7 +8,7 @@ from tqec.plaquette.plaquette import Plaquette
 GateSubclass = ty.TypeVar("GateSubclass", bound=cirq.Gate)
 
 
-@cirq.transformer
+@cirq.transformer  # type: ignore
 def merge_adjacent(
     circuit: cirq.AbstractCircuit,
     *,
@@ -43,7 +43,7 @@ merge_adjacent_measurements = partial(merge_adjacent, gate_type=cirq.Measurement
 merge_adjacent_resets = partial(merge_adjacent, gate_type=cirq.ResetChannel)
 
 
-@cirq.transformer
+@cirq.transformer  # type: ignore
 def remove_tag(
     circuit: cirq.AbstractCircuit,
     *,
