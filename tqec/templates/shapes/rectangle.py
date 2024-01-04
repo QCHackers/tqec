@@ -56,7 +56,10 @@ class RawRectangle(Rectangle):
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
         try:
-            return numpy.array(plaquette_indices)[self._indices]
+            # Use numpy indexing to instanciate the raw values.
+            plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
+            indices = numpy.array(self._indices, dtype=int)
+            return plaquette_indices_array[indices]
         except IndexError as e:
             e.add_note(
                 "RawRectangle instances should be constructed with 2-dimensional arrays "
