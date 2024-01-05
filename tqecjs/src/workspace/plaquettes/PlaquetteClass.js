@@ -206,7 +206,7 @@ export default class Plaquette extends Graphics {
 
 	makeExtensible = () => {
 		// Make the plaquette extensible
-		this.buttonMode = true; // TODO: what is this for?
+		this.buttonMode = true;
 		this.on('pointerdown', this.onDragStart);
 		this.on('pointermove', this.onDragMove);
 		this.on('pointerup', this.onDragEnd);
