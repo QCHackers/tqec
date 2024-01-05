@@ -17,7 +17,7 @@ export default function notification(app, text) {
 	// Create a text object for the notification text
 	const notificationText = new Text(text, {
 		fontSize: 15,
-		fill: 0xffffff,
+		fill: 'white',
 		fontWeight: 'bold',
 	});
 	notificationText.anchor.set(0.5);
@@ -26,7 +26,7 @@ export default function notification(app, text) {
 
 	// Create a background for the notification
 	const background = new Graphics();
-	background.beginFill(0x00ff00, 0.8);
+	background.beginFill('green', 0.8);
 	background.drawRoundedRect(
 		0,
 		0,

@@ -8,6 +8,7 @@ import { Graphics, Text } from 'pixi.js';
  * @param {number} y - The y position of the qubit
  */
 export default class Qubit extends Graphics {
+	
 	constructor(x, y, radius = 5, color = 'black', gridSize = 50) {
 		super();
 		// UI properties
@@ -24,12 +25,15 @@ export default class Qubit extends Graphics {
 		// QC properties
 		this.isQubit = true;
 	}
+
 	_onPointerOver = () => {
 		this.alpha = 0.5;
 	};
+
 	_onPointerOut = () => {
 		this.alpha = 1;
 	};
+
 	/**
 	 * Creates a circle
 	 * @param {*} x
