@@ -49,10 +49,10 @@ class ScalableCorner(TemplateOrchestrator):
             (3, RIGHT_OF, 2),
             (4, BELOW_OF, 1),
             (5, BELOW_OF, 2),
-            # For the moment, 6 is encoded as a FixedRectangle of size 2
+            # For the moment, 6 is encoded as a FixedRaw of size 2x2
             # as follow:
-            #   0
-            #   X
+            #   0 0
+            #   X 0
             # where X is the provided plaquette number.
             (6, RIGHT_OF, 5),
             (9, BELOW_OF, 5),

@@ -53,7 +53,7 @@ class ScalableQubitRectangle(TemplateOrchestrator):
             # Right rectangle, containing plaquettes of type 5 only
             TemplateWithIndices(ScalableRectangle(1, height), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(width, 1), [0, 6]),
+            TemplateWithIndices(ScalableRectangle(width, 1), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
