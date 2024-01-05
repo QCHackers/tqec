@@ -9,7 +9,7 @@ export const button = (text, x, y, color = 'black') => {
 		fontFamily: 'Arial',
 		fontSize: 15,
 		// Adjust the font size based on the width and height of the button
-		fill: 0xffffff,
+		fill: 'white',
 		align: 'center',
 	});
 	buttonText.anchor.set(0.5);

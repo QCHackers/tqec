@@ -1,7 +1,9 @@
-# Getting Started with Create React App
+# tqec-js
 
 This project was bootstrapped with
 [Create React App](https://github.com/facebook/create-react-app).
+
+This app is a frontend to the TQEC Visualizer app.
 
 ## Available Scripts
 
