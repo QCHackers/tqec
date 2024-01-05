@@ -4,10 +4,6 @@ from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
-# As plaquettes are overlapping, there is a bit of math to do. For each dimension:
-#   the 2 plaquettes on both ends will overlap with only one plaquette
-#   all the other plaquettes will overlap with 2 plaquettes
-
 
 def compute_qubit_array_shape(number_of_plaquettes: int, plaquette_size: int) -> int:
     """Computes the underlying qubit array shape.
@@ -26,8 +22,21 @@ def compute_qubit_array_shape(number_of_plaquettes: int, plaquette_size: int) ->
     return plaquette_size + (number_of_plaquettes - 1) * (plaquette_size - 1)
 
 
-def get_plaquette_starting_index(plaquette_size: int, index: int) -> int:
-    return index * (plaquette_size - 1)
+def get_plaquette_starting_index(plaquette_size: int, plaquette_index: int) -> int:
+    """Compute starting index of a given plaquette on a grid of qubits
+
+    This function assumes that **all** plaquette instances have the exact same size.
+    This assumption is currently asserted in various parts of the code, and so should
+    be valid.
+
+    This function also assumes that plaquettes are square-like shapes and share qubits
+    on their edges.
+
+    :param plaquette_size: number of qubits required by the plaquette in the dimension
+        of interest (x or y).
+    :param plaquette_index: index of the plaquette we want to know the starting index of.
+    """
+    return plaquette_index * (plaquette_size - 1)
 
 
 def compute_qubit_array(

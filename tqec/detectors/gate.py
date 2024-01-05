@@ -74,12 +74,14 @@ class RelativeMeasurementGate(cirq.Gate):
         the stim.Circuit instance given to the _stim_conversion_ method is bounded to the stim.Circuit instance
         in the stim.CircuitRepeatBlock and has no way of accessing the parent stim.Circuit instance.
         This makes impossible to reliably compute measurement offsets, **even by considering that the measurement
-        schedule in the repeat-block is consistent with the one just before the repeat block**.
-        One solution to that would be to give access to parent stim.Circuit instances, that should be doable but
-        requires a change directly in Stim.
+        schedule in the repeat-block is consistent with the one just before the repeat block** (as we would need
+        to account for measurements that are not yet in the repeated stim.Circuit instance, that is currently
+        being built).
+        One solution to that would be to give access to parent(s) stim.Circuit instances, that should be doable
+        but requires a change directly in Stim.
 
-        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
-            along with measurement gates.
+        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move instances of
+            this Gate along with plaquettes.
         :param measurements_loopback_offsets: a list of measurements that are part of the gate. The
             measurements are given as a tuple with the following entries:
 
@@ -118,13 +120,13 @@ class RelativeMeasurementGate(cirq.Gate):
         return 1
 
     def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
-        # Add the virtual tag to explicitely mark this gate as "not a real gate"
         assert len(qubits) == 1, (
             f"Cannot apply a {self.__class__.__name__} to more than "
             f"1 qubits ({len(qubits)} qubits given)."
         )
         assert isinstance(qubits[0], cirq.GridQubit), "Expecting a GridQubit instance."
         self._set_origin(qubits[0])
+        # Add the virtual tag to explicitely mark this gate as "not a real gate"
         tag = [cirq.VirtualTag()] if add_virtual_tag else []
         return super().on(*qubits).with_tags(*tag)
 
@@ -136,10 +138,21 @@ class RelativeMeasurementGate(cirq.Gate):
         measurement_map: CircuitMeasurementMap,
         current_moment_index: int,
     ) -> None:
+        """Computes, from the data in the given measurement_map, the global measurement offsets
+
+        This method uses the global data computed in the CircuitMeasurementMap instance given as
+        parameter to compute the measurement record indices for the current gate instance.
+
+        :param measurement_map: global measurement data obtained from the complete quantum circuit.
+        :param current_moment_index: index of the moment this gate instance is found in. Used to
+            recover the correct data from the given measurement_map.
+        """
         self._global_measurements_loopback_offsets.clear()
         for (
             relative_measurement
         ) in self._local_measurements_loopback_offsets_relative_to_origin:
+            # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
+            #                    coordinate system, so no issue here.
             qubit = (
                 self._qubit_coordinate_system_origin
                 + relative_measurement.relative_qubit_positioning
@@ -244,7 +257,7 @@ class ObservableGate(RelativeMeasurementGate):
         Issue with this class: see RelativeMeasurementGate docstring.
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move observables
-            along with measurement gates.
+            along with plaquettes.
         :param measurements_loopback_offsets: a list of measurements that are part of the observable. The
             measurements are given as a tuple with the following entries:
 
