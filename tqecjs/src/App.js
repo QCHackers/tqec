@@ -2,7 +2,9 @@ import './App.css';
 import { Stage } from '@pixi/react';
 import PixiApp from './workspace';
 
-const tqecBlue = 0x1099bb;
+var stageOptions = {
+	backgroundColor:0x1099bb
+}
 
 function App() {
 	return (
@@ -13,7 +15,8 @@ function App() {
 			<Stage
 				width={window.innerWidth}
 				height={window.innerHeight}
-				options={{ backgroundColor: tqecBlue }}>
+				options={stageOptions}
+				>
 				<PixiApp />
 			</Stage>
 		</div>
