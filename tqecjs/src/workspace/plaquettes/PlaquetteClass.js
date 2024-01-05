@@ -18,7 +18,6 @@ export default class Plaquette extends Graphics {
 		this.gridOffsetY = this.gridSize;
 		this.isDragging = false;
 		this.plaquetteMade = false;
-		this.showButton = false;
 		this.controlPanel = new Container();
 		this.controlPanel.name = 'control_panel';
 		this.controlPanel.visible = false;
@@ -26,15 +25,14 @@ export default class Plaquette extends Graphics {
 		this.clearButton = button('Clear', 200, 275, 'red');
 		this.colorButton = button('Change color', 200, 350, 'green');
 		this.makeRotatable(); // Add the rotate button to screen
-		this.clearPlaquette(); // Add the clearbutton to the screen
+		this.initializeClearButton(); // Add the clearbutton to the screen
 		this.changeColorButton(); // Add the change color button to the screen
-		//this.changeColorButton(); // Addh the color change button
 		// QC properties
 		this.qubits = qubits || []; // We assume that the list is the order of the qubits
 		this.qubitStack = []; // The stack of qubits that form the convex hull
 		this.createPlaquette(); // Create the plaquette
-		this.quantumCircuit = null; // Might be better to have a quantum circuit class
 		this.workspace.addChild(this.controlPanel);
+		this.lastClickTime = 0;
 	}
 
 	mostLeftQubit = () =>
@@ -138,6 +136,7 @@ export default class Plaquette extends Graphics {
 			// Return the qubit with the maximum distance
 			return qubit === maxDistQubit;
 		});
+
 		// Create the stack of qubits which contains the convex hull
 		for (const qubit of sortedPoints) {
 			// Remove qubits from the stack if the angle formed by points next-to-top, top, and qubit is not counterclockwise
@@ -216,10 +215,13 @@ export default class Plaquette extends Graphics {
 	onDragStart(event) {
 		this.isDragging = true;
 		this.initialPosition = event.data.getLocalPosition(this.parent);
-		console.log(this.initialPosition);
+		console.log("initial position " + this.initialPosition);
 	}
 
 	onDragMove = (event) => {
+		if (!this.isDragging) {
+			return;
+		}
 		let newQubits = [];
 		let diff = 0;
 		// Get current position
@@ -227,7 +229,7 @@ export default class Plaquette extends Graphics {
 		// Calculate the distance moved
 		const deltaX = newPosition.x - this.initialPosition?.x;
 		const deltaY = newPosition.y - this.initialPosition?.y;
-		console.log(deltaY, deltaY);
+		console.log(`Drag (dx, dy) = (${deltaX}, ${deltaY})`);
 		let shiftQ = null;
 		if (
 			this.isDragging &&
@@ -270,7 +272,7 @@ export default class Plaquette extends Graphics {
 					// Generate the qubits that are closest to the top
 					shiftQ = this.mostTopQubit();
 					console.log(shiftQ, 'shiftQ tq');
-					console.log(shiftQ.neighbors);
+					// console.log("SgiftQ neighbors = " + JSON.stringify(shiftQ.neighbors));
 					// Find the neighboring qubit that is closest to the top
 					const newtq = shiftQ.neighbors.find(
 						(qubit) =>
@@ -299,21 +301,22 @@ export default class Plaquette extends Graphics {
 			}
 
 			// Create a new plaquette
-			let color = PlaquetteColors.Yellow;
+			let newColor = PlaquetteColors.Yellow;
 			if (this.color !== PlaquetteColors.Purple) {
-				color = PlaquetteColors.Purple;
+				newColor = PlaquetteColors.Purple;
 			}
-			console.log(color);
+			console.log("New plaquette color = " + newColor.description);
 			const newPlaquette = new Plaquette(
 				newQubits,
 				this.workspace,
 				this.gridSize,
-				color
+				newColor
 			);
 
 			// Add the plaquette to the tile
 			this.addChild(newPlaquette);
 		}
+		
 	};
 
 	changePlaquetteColor(newColor) {
@@ -329,18 +332,13 @@ export default class Plaquette extends Graphics {
 	}
 
 	toggleCtrlButtons = () => {
-		let lastClickTime = 0;
 		this.on('click', (e) => {
 			const currentTime = Date.now();
-			if (currentTime - lastClickTime < 300) {
-				// Set the alpha of the plaquette to 0.8 to indicate
-				// Check if the plaquette is clicked, not the button
-				this.showButton = !this.showButton;
-				// this.showButton ? (this.alpha = 0.8) : (this.alpha = 1);
-				// Show or hide the buttons
-				this.controlPanel.visible = this.showButton;
+			if (currentTime - this.lastClickTime < 300) {
+				// Show or hide the control panel
+				this.controlPanel.visible = !this.controlPanel.visible;
 			}
-			lastClickTime = currentTime;
+			this.lastClickTime = currentTime;
 		});
 	};
 
@@ -349,7 +347,7 @@ export default class Plaquette extends Graphics {
 		this.rotateButton.on('click', (_event) => {
 			// Rotate the plaquette
 			this.rotation += Math.PI / 2; // Rotate 90 degrees
-			console.log(this.rotateButton.position);
+			console.log("Rotate button position = " + this.rotateButton.position);
 		});
 		this.rotateButton.name = 'rotate_button';
 		// Add the button to the control panel container
@@ -368,8 +366,9 @@ export default class Plaquette extends Graphics {
 		this.controlPanel.addChild(this.colorButton);
 	};
 
-	clearPlaquette = () => {
+	initializeClearButton = () => {
 		this.clearButton.on('click', (_event) => {
+			console.log("Destroying plaquette")
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
 			this.destroy();
