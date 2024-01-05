@@ -206,7 +206,7 @@ export default class Plaquette extends Graphics {
 
 	makeExtensible = () => {
 		// Make the plaquette extensible
-		this.buttonMode = true;
+		this.buttonMode = true; // TODO: what is this for?
 		this.on('pointerdown', this.onDragStart);
 		this.on('pointermove', this.onDragMove);
 		this.on('pointerup', this.onDragEnd);
@@ -231,10 +231,10 @@ export default class Plaquette extends Graphics {
 		const deltaY = newPosition.y - this.initialPosition?.y;
 		console.log(`Drag (dx, dy) = (${deltaX}, ${deltaY})`);
 		let shiftQ = null;
-		if (
-			this.isDragging &&
-			(deltaX >= this.gridSize * 0.4 || deltaY >= this.gridSize * 0.4)
-		) {
+		const scaleFactor = 0.5;
+		const threshold = this.gridSize * scaleFactor;
+		// If the cursor is moved meaningfully, check which direction to drag to
+		if (deltaX >= threshold || deltaY >= threshold) {
 			// Check which direction the plaquette is being dragged
 			if (Math.abs(deltaX) > Math.abs(deltaY)) {
 				// Dragging horizontally
@@ -300,23 +300,26 @@ export default class Plaquette extends Graphics {
 			}
 
 			// Create a new plaquette
-			let newColor = PlaquetteColors.Yellow;
-			if (this.color !== PlaquetteColors.Purple) {
-				newColor = PlaquetteColors.Purple;
-			}
-			console.log("New plaquette color = " + newColor.description);
-			const newPlaquette = new Plaquette(
-				newQubits,
-				this.workspace,
-				this.gridSize,
-				newColor
-			);
-
-			// Add the plaquette to the tile
-			this.addChild(newPlaquette);
+			this.createNewPlaquette(newQubits);
 		}
 		
 	};
+
+	createNewPlaquette(newQubits) {
+		let newColor = PlaquetteColors.Yellow;
+		if (this.color !== PlaquetteColors.Purple) {
+			newColor = PlaquetteColors.Purple;
+		}
+		console.log("New plaquette color = " + newColor.description);
+		const newPlaquette = new Plaquette(
+			newQubits,
+			this.workspace,
+			this.gridSize,
+			newColor
+		);
+		// Add the plaquette to parent container
+		this.parent.addChild(newPlaquette);
+	}
 
 	changePlaquetteColor(newColor) {
 		this.color = newColor;
