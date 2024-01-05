@@ -215,7 +215,7 @@ export default class Plaquette extends Graphics {
 	onDragStart(event) {
 		this.isDragging = true;
 		this.initialPosition = event.data.getLocalPosition(this.parent);
-		console.log("initial position " + this.initialPosition);
+		console.log("Initial position: " + this.initialPosition);
 	}
 
 	onDragMove = (event) => {
@@ -272,7 +272,6 @@ export default class Plaquette extends Graphics {
 					// Generate the qubits that are closest to the top
 					shiftQ = this.mostTopQubit();
 					console.log(shiftQ, 'shiftQ tq');
-					// console.log("SgiftQ neighbors = " + JSON.stringify(shiftQ.neighbors));
 					// Find the neighboring qubit that is closest to the top
 					const newtq = shiftQ.neighbors.find(
 						(qubit) =>
