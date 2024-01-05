@@ -231,13 +231,16 @@ export default class Plaquette extends Graphics {
 		const deltaY = newPosition.y - this.initialPosition?.y;
 		console.log(`Drag (dx, dy) = (${deltaX}, ${deltaY})`);
 		let shiftQ = null;
-		const scaleFactor = 0.5;
+		const scaleFactor = 0.4;
 		const threshold = this.gridSize * scaleFactor;
-		// If the cursor is moved meaningfully, check which direction to drag to
-		if (deltaX >= threshold || deltaY >= threshold) {
+		// If the cursor is moved meaningfully, check which direction to copy to
+		if (Math.abs(deltaX) >= threshold || Math.abs(deltaY) >= threshold) {
 			// Check which direction the plaquette is being dragged
 			if (Math.abs(deltaX) > Math.abs(deltaY)) {
 				// Dragging horizontally
+				if (deltaX === 0) {
+					alert("DX = 0!!")
+				}
 				if (deltaX > 0) {
 					// Moving to the right
 					shiftQ = this.mostRightQubit();
@@ -248,7 +251,7 @@ export default class Plaquette extends Graphics {
 					);
 
 					diff = newrq.globalX - shiftQ.globalX;
-				} else {
+				} else { // Moving to the left
 					// Generate the qubits that are closest to the left
 					shiftQ = this.mostLeftQubit();
 					// Find the neighboring qubit that is closest to the left
@@ -298,8 +301,6 @@ export default class Plaquette extends Graphics {
 					newQubits.push(q);
 				}
 			}
-
-			// Create a new plaquette
 			this.createNewPlaquette(newQubits);
 		}
 		
