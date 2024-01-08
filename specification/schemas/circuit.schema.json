@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/tqec/specification/schemas/circuit.schema.json",
+  "$comment": "For the moment, this field is not fixed. Anything compatible with cirq is a good input. If this is something compatible with criq, we will also need a way to get information on detectors, observables and shift_coords that are not part of cirq official gates.",
+  "title": "Quantum circuit",
+  "description": "A quantum circuit representing a quantum computation.",
+  "type": "object",
+  "properties": {}
+}

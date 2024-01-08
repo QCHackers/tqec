@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/tqec/specification/schemas/plaquette_qubit.schema.json",
+  "title": "PlaquetteQubit",
+  "description": "A qubit with local coordinates in the plaquette coordinate system.",
+  "type": "object",
+  "properties": {
+    "x": {
+      "description": "The qubit x coordinate in the local plaquette coordinate system.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "y": {
+      "description": "The qubit y coordinate in the local plaquette coordinate system.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "qubitType": {
+      "description": "Enumeration indicating if the qubit is a data or syndrome qubit (left as an enumeration to be able to add 'ancilla' if needed).",
+      "type": "string",
+      "enum": ["data", "syndrome"]
+    }
+  }
+}

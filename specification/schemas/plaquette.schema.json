@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/tqec/specification/schemas/plaquette.schema.json",
+  "title": "Plaquette",
+  "description": "A tileable plaquette.",
+  "type": "object",
+  "properties": {
+    "qubits": {
+      "description": "The qubits composing the plaquette.",
+      "type": "array",
+      "items": {
+        "$ref": "/tqec/specification/schemas/plaquette_qubit.schema.json",
+        "minItems": 1
+      }
+    },
+    "layers": {
+      "type": "array",
+      "description": "A list of scheduled circuits, each one representing a layer of the QEC code.",
+      "items": {
+        "description": "The scheduled quantum circuit representing",
+        "$ref": "/tqec/specification/schemas/scheduled_circuit.schema.json"
+      }
+    },
+    "color": {
+      "type": "array",
+      "description": "An RGB(A) color for the plaquette.",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0, "maximum": 255},
+        {"type": "integer", "minimum": 0, "maximum": 255},
+        {"type": "integer", "minimum": 0, "maximum": 255}
+      ]
+    }
+  }
+}

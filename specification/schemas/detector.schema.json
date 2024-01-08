@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/tqec/specification/schemas/detector.schema.json",
+  "title": "Detector",
+  "description": "A specific gate in a quantum circuit that acts as a detector.",
+  "type": "object",
+  "properties": {
+    "measurements": {
+      "type": "array",
+      "description": "A list of measurements that should have a constant parity when XORed together.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "qubitOffset": {
+            "type": "object",
+            "description": "A 2-dimensional vector that represents an offset from the qubit the detector is applied on.",
+            "properties": {
+              "x": {"type": "integer"},
+              "y": {"type": "integer"}
+            }
+          },
+          "measurementOffset": {
+            "type": "integer",
+            "description": "A negative offset representing the measurement we care about.",
+            "exclusiveMaximum": 0
+          }
+        }
+      }
+    }
+  }
+}

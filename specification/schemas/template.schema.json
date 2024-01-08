@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/tqec/specification/schemas/template.schema.json",
+  "title": "Template",
+  "description": "A (scalable or not) template that organizes plaquettes.",
+  "type": "object",
+  "properties": {
+    "scalable": {
+      "type": "boolean",
+      "description": "true if the template can be scaled, false if its size is fixed."
+    },
+    "shape": {
+      "type": "object",
+      "description": "The shape (and way to scale) of the template.",
+      "properties": {
+        "base_shape": {
+          "type": "string",
+          "enum": ["square", "corner_square", "rectangle", "raw_rectangle"],
+          "description": "The raw shape, without any of its potential parameters."
+        },
+        "parameters": {
+          "oneOf": [
+            {
+              "enum": ["lower_left", "lower_right", "upper_left", "upper_right"],
+              "description": "Place of the corner if the base_shape is 'corner_square'."
+            },
+            {
+              "type": "array",
+              "description": "Raw plaquette indices in the 'raw_rectangle'.",
+              "items": {
+                "type": "array",
+                "items": {"type": "integer", "description": "Plaquette indices used to instanciate the template."}
+              }
+            },
+            {
+              "type": "null",
+              "description": "For 'square' and 'rectangle', no need to have more information."
+            }
+          ]
+        }
+      }
+    },
+    "default_dimension": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Default dimension used to create the Template instance (before any call to 'scale_to') and that can be used to display an instance of the Template to the GUI user."
+    }
+  }
+}
