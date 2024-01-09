@@ -24,6 +24,8 @@ export default class Plaquette extends Graphics {
 		this.rotateButton = button('Rotate', 200, 200, 'black');
 		this.clearButton = button('Clear', 200, 275, 'red');
 		this.colorButton = button('Change color', 200, 350, 'green');
+		this.newButton = button('Add plaquette on top', 200, 425, 'blue');
+		this.initializeNewButton(); // Add the move button to screen
 		this.makeRotatable(); // Add the rotate button to screen
 		this.initializeClearButton(); // Add the clearbutton to the screen
 		this.changeColorButton(); // Add the change color button to the screen
@@ -208,7 +210,7 @@ export default class Plaquette extends Graphics {
 		// Make the plaquette extensible
 		this.buttonMode = true;
 		this.on('pointerdown', this.onDragStart);
-		this.on('pointermove', this.onDragMove);
+		// this.on('pointermove', this.onDragMove);
 		this.on('pointerup', this.onDragEnd);
 	};
 
@@ -238,9 +240,6 @@ export default class Plaquette extends Graphics {
 			// Check which direction the plaquette is being dragged
 			if (Math.abs(deltaX) > Math.abs(deltaY)) {
 				// Dragging horizontally
-				if (deltaX === 0) {
-					alert("DX = 0!!")
-				}
 				if (deltaX > 0) {
 					// Moving to the right
 					shiftQ = this.mostRightQubit();
@@ -375,10 +374,41 @@ export default class Plaquette extends Graphics {
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
 			//this.parent.removeChild(this);
+			// TODO: destroy PIXI objects
 			this.destroy({ children: true })
 			console.log("Plaquette destroyed!")
 		});
 		this.clearButton.name = 'clear_button';
 		this.controlPanel.addChild(this.clearButton);
 	};
+
+	initializeNewButton = () => {
+		this.newButton.on('click', (_event) => {
+			console.log("New button clicked")
+			this.workspace.addChild(this);
+			this.makeExtensible();
+			this.toggleCtrlButtons();
+			// Generate the qubits that are closest to the bottom
+			let shiftQ = null;
+			let newQubits = [];
+			shiftQ = this.mostBottomQubit();
+			// Find the neighboring qubit that is closest to the bottom
+			const newbq = shiftQ.neighbors.find(
+				(qubit) =>
+					qubit.globalX === shiftQ.globalX && qubit.globalY < shiftQ.globalY
+			);
+			let diff = newbq.globalY - shiftQ.globalY;
+			// Shift the qubits by the difference
+			for (const qubit of this.qubits) {
+				const q = qubit.neighbors.find(
+					(q) =>
+						q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+				);
+				newQubits.push(q);
+			}
+			this.createNewPlaquette(newQubits);
+		});
+		this.newButton.name = 'new_button';
+		this.controlPanel.addChild(this.newButton);
+	}
 }
