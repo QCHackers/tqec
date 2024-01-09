@@ -1,5 +1,4 @@
 import cirq
-import numpy
 
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.qubit import PlaquetteQubit
@@ -18,14 +17,6 @@ class Plaquette:
         """Represents a QEC plaquette"""
         self._qubits = qubits
         self._circuit = circuit
-
-    def to_qubit_array(self) -> numpy.ndarray:
-        """Should be specialised for specific plaquette types"""
-        shape = self.shape
-        array = numpy.zeros(shape.to_numpy_shape(), dtype=bool)
-        for qubit in self.qubits:
-            array[qubit.position.y, qubit.position.x] = True
-        return array
 
     @property
     def shape(self) -> Shape2D:
