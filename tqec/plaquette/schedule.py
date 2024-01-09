@@ -42,6 +42,7 @@ class ScheduledCircuit:
         if schedule is None:
             schedule = list(range(self._number_of_non_virtual_moments))
         else:
+            ScheduledCircuit._check_input_schedule_validity(schedule)
             assert len(schedule) == self._number_of_non_virtual_moments, (
                 f"Cannot create a ScheduledCircuit instance with a different number "
                 f"of non-virtual moments ({self._number_of_non_virtual_moments}) and time slices "
@@ -54,13 +55,13 @@ class ScheduledCircuit:
     @staticmethod
     def _check_input_schedule_validity(schedule: list[int]) -> None:
         assert all(
-            schedule[i] <= schedule[i + 1] for i in range(len(schedule) - 1)
-        ), "Given schedule should be a sorted list of integers."
+            schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1)
+        ), "Given schedule should be a sorted list of unique integers."
         # Ensure that ScheduledCircuit._VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
         # that can be stored.
         assert (
             len(schedule) == 0 or schedule[0] > ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
-        ), f"Moment schedules cannot be lower than {ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE}. Found {min(schedule)}."
+        ), f"Moment schedules cannot be lower than {ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE}. Found {schedule[0]}."
 
     @staticmethod
     def from_multi_qubit_moment_schedule(
@@ -71,22 +72,22 @@ class ScheduledCircuit:
         This construction method basically auto-schedules single-qubit gates from
         the schedule of multi-qubit ones.
 
-        :raises RuntimeError: if the auto-scheduling is not possible.
         """
-        is_sorted_and_unique = all(
-            multi_qubit_moment_schedule[i] < multi_qubit_moment_schedule[i + 1]
-            for i in range(len(multi_qubit_moment_schedule) - 1)
-        )
-        if not is_sorted_and_unique:
-            raise RuntimeError("Schedules are required to be sorted.")
+        ScheduledCircuit._check_input_schedule_validity(multi_qubit_moment_schedule)
 
         # Generate a list with all the multi-qubit moments scheduled
+        number_of_non_virtual_moments = (
+            ScheduledCircuit._compute_number_of_non_virtual_moments(circuit)
+        )
         _NOT_SCHEDULED: int = min(multi_qubit_moment_schedule) - len(circuit.moments)
         final_schedule: list[int] = [
-            _NOT_SCHEDULED for _ in range(len(circuit.moments))
+            _NOT_SCHEDULED for _ in range(number_of_non_virtual_moments)
         ]
         multi_qubit_moment_seen: int = 0
         for i, moment in enumerate(circuit.moments):
+            # Do not check virtual moments.
+            if ScheduledCircuit._is_virtual_moment(moment):
+                continue
             has_multi_qubit_gate = any(len(op.qubits) > 1 for op in moment.operations)
             if has_multi_qubit_gate:
                 final_schedule[i] = multi_qubit_moment_schedule[multi_qubit_moment_seen]
@@ -106,7 +107,7 @@ class ScheduledCircuit:
 
         # 2. fill-in all the holes
         index_of_next_schedule: int = first_multi_qubit_schedule + 1
-        for i in range(first_multi_qubit_moment + 1, len(circuit.moments)):
+        for i in range(first_multi_qubit_moment + 1, number_of_non_virtual_moments):
             if final_schedule[i] == _NOT_SCHEDULED:
                 final_schedule[i] = index_of_next_schedule
                 index_of_next_schedule += 1
@@ -116,14 +117,7 @@ class ScheduledCircuit:
         assert (
             _NOT_SCHEDULED not in final_schedule
         ), "Not all gates have been scheduled!"
-        is_sorted_and_unique = all(
-            final_schedule[i] < final_schedule[i + 1]
-            for i in range(len(final_schedule) - 1)
-        )
-        if is_sorted_and_unique:
-            return ScheduledCircuit(circuit, final_schedule)
-        # else:
-        raise RuntimeError("Cannot schedule the circuit from the given schedule.")
+        return ScheduledCircuit(circuit, final_schedule)
 
     @property
     def schedule(self) -> list[int]:
