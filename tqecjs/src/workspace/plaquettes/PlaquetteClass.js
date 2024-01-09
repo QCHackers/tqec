@@ -383,7 +383,7 @@ export default class Plaquette extends Graphics {
 			console.log("Destroying plaquette")
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
-			this.parent.removeChild(this);
+			this.parent?.removeChild(this);
 			// TODO: destroy PIXI objects
 			this.destroy({ children: true })
 			console.log("Plaquette destroyed!")
@@ -481,8 +481,8 @@ export default class Plaquette extends Graphics {
 	initializeNewButton = (button, name) => {
 		const buttonKindToFunction = {
 			'new_button_top': this.clonedTopQubits,
-			'new_button_right': this.clonedRightQubits,
-			'new_button_left': this.clonedLeftQubits,
+			'new_button_right': this.clonedLeftQubits,
+			'new_button_left': this.clonedRightQubits,
 			'new_button_bottom': this.clonedBottomQubits
 		}
 		button.on('click', (_event) => {
