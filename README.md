@@ -23,6 +23,7 @@ The next step is to install the package and its dependencies using
 ```sh
 python -m pip install ".[dev]"
 ```
+Installing all the dependencies might take a while.
 
 If no errors happen, the package is installed! You can try to launch a jupyter lab server 
 ```sh
