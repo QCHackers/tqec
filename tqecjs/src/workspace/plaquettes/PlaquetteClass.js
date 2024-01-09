@@ -374,7 +374,9 @@ export default class Plaquette extends Graphics {
 			console.log("Destroying plaquette")
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
-			this.destroy();
+			//this.parent.removeChild(this);
+			this.destroy({ children: true })
+			console.log("Plaquette destroyed!")
 		});
 		this.clearButton.name = 'clear_button';
 		this.controlPanel.addChild(this.clearButton);
