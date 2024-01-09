@@ -18,14 +18,25 @@ export default class Plaquette extends Graphics {
 		this.gridOffsetY = this.gridSize;
 		this.isDragging = false;
 		this.plaquetteMade = false;
+
+		// Control panel properties
 		this.controlPanel = new Container();
 		this.controlPanel.name = 'control_panel';
 		this.controlPanel.visible = false;
 		this.rotateButton = button('Rotate', 200, 200, 'black');
 		this.clearButton = button('Clear', 200, 275, 'red');
 		this.colorButton = button('Change color', 200, 350, 'green');
-		this.newButton = button('Add plaquette on top', 200, 425, 'blue');
-		this.initializeNewButton(); // Add the move button to screen
+		// New button properties
+		this.newButtonTop = button('Add plaquette on top', 200, 425, 'blue');
+		this.newButtownRight = button('Add plaquette on right', 200, 500, 'orange');
+		this.newButtonLeft = button('Add plaquette on left', 200, 575, 'purple');
+		this.newButtonBottom = button('Add plaquette on bottom', 200, 650, 'brown');
+
+		this.initializeNewButton(this.newButtonTop, 'new_button_top');
+		this.initializeNewButton(this.newButtownRight, 'new_button_right');
+		this.initializeNewButton(this.newButtonLeft, 'new_button_left');
+		this.initializeNewButton(this.newButtonBottom, 'new_button_bottom');
+
 		this.makeRotatable(); // Add the rotate button to screen
 		this.initializeClearButton(); // Add the clearbutton to the screen
 		this.changeColorButton(); // Add the change color button to the screen
@@ -273,7 +284,6 @@ export default class Plaquette extends Graphics {
 				if (deltaY > 0) {
 					// Generate the qubits that are closest to the top
 					shiftQ = this.mostTopQubit();
-					console.log(shiftQ, 'shiftQ tq');
 					// Find the neighboring qubit that is closest to the top
 					const newtq = shiftQ.neighbors.find(
 						(qubit) =>
@@ -373,7 +383,7 @@ export default class Plaquette extends Graphics {
 			console.log("Destroying plaquette")
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
-			//this.parent.removeChild(this);
+			this.parent.removeChild(this);
 			// TODO: destroy PIXI objects
 			this.destroy({ children: true })
 			console.log("Plaquette destroyed!")
@@ -382,33 +392,106 @@ export default class Plaquette extends Graphics {
 		this.controlPanel.addChild(this.clearButton);
 	};
 
-	initializeNewButton = () => {
-		this.newButton.on('click', (_event) => {
-			console.log("New button clicked")
+	clonedTopQubits = () => {
+		let shiftQ = null;
+		let newQubits = [];
+		shiftQ = this.mostBottomQubit();
+		// Find the neighboring qubit that is closest to the bottom
+		const newbq = shiftQ.neighbors.find(
+			(qubit) =>
+				qubit.globalX === shiftQ.globalX && qubit.globalY < shiftQ.globalY
+		);
+		let diff = newbq.globalY - shiftQ.globalY;
+		// Shift the qubits by the difference
+		for (const qubit of this.qubits) {
+			const q = qubit.neighbors.find(
+				(q) =>
+					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+			);
+			newQubits.push(q);
+		}
+		return newQubits;
+	}
+
+	clonedRightQubits = () => {
+		let shiftQ = null;
+		let newQubits = [];
+		shiftQ = this.mostLeftQubit();
+		// Find the neighboring qubit that is closest to the left
+		const newlq = shiftQ.neighbors.find(
+			(qubit) =>
+				qubit.globalX < shiftQ.globalX && qubit.globalY === shiftQ.globalY
+		);
+		let diff = newlq.globalX - shiftQ.globalX;
+		// Shift the qubits by the difference
+		for (const qubit of this.qubits) {
+			const q = qubit.neighbors.find(
+				(q) =>
+					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+			);
+			newQubits.push(q);
+		}
+		return newQubits;
+	}
+
+	clonedLeftQubits = () => {
+		let newQubits = [];
+		let shiftQ = this.mostRightQubit();
+		// Find the neighboring qubit that is closest to the right
+		const newrq = shiftQ.neighbors.find(
+			(qubit) =>
+				qubit.globalX > shiftQ.globalX && qubit.globalY === shiftQ.globalY
+		);
+		let diff = newrq.globalX - shiftQ.globalX;
+		// Shift the qubits by the difference
+		for (const qubit of this.qubits) {
+			const q = qubit.neighbors.find(
+				// eslint-disable-next-line no-loop-func
+				(q) =>
+					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+			);
+			newQubits.push(q);
+		}
+		return newQubits;
+	}
+
+	clonedBottomQubits = () => {
+		// Generate the qubits that are closest to the top
+		let newQubits = [];
+		let shiftQ = this.mostTopQubit();
+		// Find the neighboring qubit that is closest to the top
+		const newtq = shiftQ.neighbors.find(
+			(qubit) =>
+				qubit.globalX === shiftQ.globalX && qubit.globalY > shiftQ.globalY
+		);
+
+		let diff = newtq.globalY - shiftQ.globalY;
+
+		// Shift the qubits by the difference
+		for (const qubit of this.qubits) {
+			const q = qubit.neighbors.find(
+				(q) =>
+					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+			);
+			newQubits.push(q);
+		}
+		return newQubits;
+	}
+
+	initializeNewButton = (button, name) => {
+		const buttonKindToFunction = {
+			'new_button_top': this.clonedTopQubits,
+			'new_button_right': this.clonedRightQubits,
+			'new_button_left': this.clonedLeftQubits,
+			'new_button_bottom': this.clonedBottomQubits
+		}
+		button.on('click', (_event) => {
 			this.workspace.addChild(this);
 			this.makeExtensible();
-			this.toggleCtrlButtons();
-			// Generate the qubits that are closest to the bottom
-			let shiftQ = null;
-			let newQubits = [];
-			shiftQ = this.mostBottomQubit();
-			// Find the neighboring qubit that is closest to the bottom
-			const newbq = shiftQ.neighbors.find(
-				(qubit) =>
-					qubit.globalX === shiftQ.globalX && qubit.globalY < shiftQ.globalY
-			);
-			let diff = newbq.globalY - shiftQ.globalY;
-			// Shift the qubits by the difference
-			for (const qubit of this.qubits) {
-				const q = qubit.neighbors.find(
-					(q) =>
-						q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
-				);
-				newQubits.push(q);
-			}
-			this.createNewPlaquette(newQubits);
+			this.toggleCtrlButtons();			
+			this.createNewPlaquette(buttonKindToFunction[name]());
 		});
-		this.newButton.name = 'new_button';
-		this.controlPanel.addChild(this.newButton);
+		button.name = name;
+		this.controlPanel.addChild(button);
 	}
 }
