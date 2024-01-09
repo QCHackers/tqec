@@ -1,4 +1,5 @@
 from copy import deepcopy
+
 import cirq
 
 from tqec.generation.topology import get_plaquette_starting_index
@@ -12,6 +13,30 @@ def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
 ) -> cirq.Circuit:
+    """Generate a quantum circuit from a template and its plaquettes
+
+    This is one of the core methods of the `tqec` package. It generates a quantum circuit
+    from the description of the template that should be implemented as well as the plaquettes
+    that should be used to instanciate the provided template.
+
+    This function requires that a few pre-conditions on the inputs are met:
+    1. the number of plaquettes provided should match the number of plaquettes required by
+       the provided template.
+    2. all the provided plaquettes should have the same shape.
+    3. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
+
+    If any of the above pre-conditions is not met, the inputs are considered invalid, in which
+    case this function **might** raise an error.
+
+    :param template: spatial description of the quantum error correction experiment we want
+        to implement.
+    :param plaquettes: description of the computation that should happen at different time-slices
+        of the quantum error correction experiment (or at least part of it).
+    :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
+        represented by the provided inputs.
+
+    :raises AssertionError: if any of the pre-conditions is not met.
+    """
     # Check that the user gave enough plaquettes.
     # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
     # The user is not expected to know about this implementation detail, so we hide it.

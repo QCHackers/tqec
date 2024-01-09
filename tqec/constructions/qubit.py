@@ -7,7 +7,7 @@ from tqec.templates.scalable.square import ScalableAlternatingSquare
 
 class ScalableQubitSquare(TemplateOrchestrator):
     def __init__(self, dim: int) -> None:
-        """A scalable error-corrected qubit
+        """A scalable error-corrected qubit.
 
         ```text
         .  .  1  .  1  .
@@ -17,6 +17,8 @@ class ScalableQubitSquare(TemplateOrchestrator):
         .  4  3  4  3  5
         .  6  .  6  .  .
         ```
+
+        :param dim: dimension (code distance - 1) of the error-corrected qubit.
         """
         _templates = [
             # Central square, containing plaquettes of types 3 and 4

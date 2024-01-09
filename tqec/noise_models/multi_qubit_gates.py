@@ -5,6 +5,15 @@ from tqec.noise_models import BaseNoiseModel
 
 class MultiQubitDepolarizingNoiseAfterMultiQubitGate(BaseNoiseModel):
     def __init__(self, p: float):
+        """Applies a depolarizing noise after each multi-qubit operation.
+
+        The depolarising noise applied is a cirq.DepolarizingChannel with the
+        same number of qubits as the multi-qubit operation. For a number of
+        qubits `n > 1`, this is different from applying `n` times a 1-qubit
+        depolarizing noise to each of the involved qubits.
+
+        :param p: strength (probability of error) of the applied noise.
+        """
         super().__init__(p)
 
     def noisy_operation(self, operation: cirq.Operation) -> cirq.OP_TREE:

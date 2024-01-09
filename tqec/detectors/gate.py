@@ -9,6 +9,17 @@ from tqec.detectors.measurement_map import CircuitMeasurementMap
 
 class ShiftCoordsGate(cirq.Gate):
     def __init__(self, *args: int) -> None:
+        """A virtual gate exporting to the SHIFT_COORDS stim instruction
+
+        This gate does not have any effect on the quantum state of the qubit it is
+        applied on. It is entirely transparent, and as such can be considered an annotation
+        more than a gate.
+        The stimcirq approach of directly representing these as cirq.Operation instances (see
+        https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
+        might be better, this will be something to think about in the future.
+
+        :param args: the coordinates to shift by.
+        """
         self._args = args
 
     def _num_qubits_(self):
@@ -41,6 +52,17 @@ class ShiftCoordsGate(cirq.Gate):
 
 @dataclass
 class RelativeMeasurement:
+    """A spatially and temporally relative measurement
+
+    This class stores two attributes (relative_qubit_positioning and
+    relative_measurement_offset) that repectively represent a spatial
+    offset (a **relative** positioning with respect to some origin) and
+    a temporal offset (with respect to a given Moment index).
+
+    This class will be analysed and replaced by the fill_in_global_record_indices
+    transformer.
+    """
+
     relative_qubit_positioning: cirq.GridQubit
     relative_measurement_offset: int
 
@@ -255,6 +277,12 @@ class ObservableGate(RelativeMeasurementGate):
         """Gate representing an observable.
 
         Issue with this class: see RelativeMeasurementGate docstring.
+
+        Observables are, for the moment, represented as instances of RelativeMeasurementGate. This might
+        be undesirable as observable are inherently global (to the whole QEC code) objects and not local
+        to a given Plaquette and its neighbourhood.
+        A future task will consist in replacing this local description of observables by a more appropriate,
+        probably global, way of describing observables.
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move observables
             along with plaquettes.
