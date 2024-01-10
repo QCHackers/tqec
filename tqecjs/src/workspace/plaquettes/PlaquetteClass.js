@@ -221,7 +221,7 @@ export default class Plaquette extends Graphics {
 		// Make the plaquette extensible
 		this.buttonMode = true;
 		this.on('pointerdown', this.onDragStart);
-		// this.on('pointermove', this.onDragMove);
+		this.on('pointermove', this.onDragMove);
 		this.on('pointerup', this.onDragEnd);
 	};
 
@@ -384,7 +384,6 @@ export default class Plaquette extends Graphics {
 			const cp = this.workspace.getChildByName('control_panel');
 			cp.destroy();
 			this.parent?.removeChild(this);
-			// TODO: destroy PIXI objects
 			this.destroy({ children: true })
 			console.log("Plaquette destroyed!")
 		});
