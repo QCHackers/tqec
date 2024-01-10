@@ -21,15 +21,19 @@ You might see a `(venv)` appearing on your terminal prompt, showing that the vir
 
 The next step is to install the package and its dependencies using
 ```sh
-python -m pip install "."
+python -m pip install -e "."
 ```
+> [!NOTE]
+> For the moment, the installation only works properly with the `-e` flag. This will be fixed in future releases.
+
 Installing all the dependencies might take a while.
 
 If you want to run the [`logical_qubit_memory_experiment.ipynb`](./notebooks/logical_qubit_memory_experiment.ipynb) notebook, you will also have to install a few other packages:
 ```sh
 python -m pip install jupyterlab sinter pymatching
 ```
-It is advised to follow the above 2-step process for the installation, `pip` being quite inefficient, trying to install everything in one command will result in a very long installation time.
+> [!CAUTION]
+> It is advised to follow the above 2-step process for the installation. `pip` being quite inefficient, trying to install everything in one command will result in a (very) long installation time.
 
 If no errors happen, the package is installed! You can try to launch a jupyter lab server 
 ```sh
