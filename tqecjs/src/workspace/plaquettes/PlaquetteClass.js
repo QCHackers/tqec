@@ -1,6 +1,7 @@
 import { Graphics, Container } from 'pixi.js';
 import { button } from '../components/button';
 import notification from '../components/notifier';
+import { v4 as uuidv4 } from 'uuid';
 
 const PlaquetteColors = {
 	Purple: Symbol('purple'),
@@ -21,12 +22,13 @@ export default class Plaquette extends Graphics {
 
 		// Control panel properties
 		this.controlPanel = new Container();
-		this.controlPanel.name = 'control_panel';
-		this.controlPanel.visible = false;
+		this.controlPanel.name = `control_panel_${uuidv4()}`;
+		this.controlPanel.visible = true;
+
+		// Control panel button properties
 		this.rotateButton = button('Rotate', 200, 200, 'black');
 		this.clearButton = button('Clear', 200, 275, 'red');
 		this.colorButton = button('Change color', 200, 350, 'green');
-		// New button properties
 		this.newButtonTop = button('Add plaquette on top', 200, 425, 'blue');
 		this.newButtownRight = button('Add plaquette on right', 200, 500, 'orange');
 		this.newButtonLeft = button('Add plaquette on left', 200, 575, 'purple');
@@ -40,11 +42,11 @@ export default class Plaquette extends Graphics {
 		this.makeRotatable(); // Add the rotate button to screen
 		this.initializeClearButton(); // Add the clearbutton to the screen
 		this.changeColorButton(); // Add the change color button to the screen
+
 		// QC properties
 		this.qubits = qubits || []; // We assume that the list is the order of the qubits
 		this.qubitStack = []; // The stack of qubits that form the convex hull
 		this.createPlaquette(); // Create the plaquette
-		this.workspace.addChild(this.controlPanel);
 		this.lastClickTime = 0;
 	}
 
@@ -347,8 +349,12 @@ export default class Plaquette extends Graphics {
 		this.on('click', (e) => {
 			const currentTime = Date.now();
 			if (currentTime - this.lastClickTime < 300) {
-				// Show or hide the control panel
-				this.controlPanel.visible = !this.controlPanel.visible;
+				// Toggle this plaquette's control panel
+				if (this.workspace.getChildByName(this.controlPanel.name) == this.controlPanel) {
+					this.workspace.removeChild(this.controlPanel);
+				} else {
+					this.workspace.addChild(this.controlPanel);
+				}
 			}
 			this.lastClickTime = currentTime;
 		});
@@ -380,11 +386,12 @@ export default class Plaquette extends Graphics {
 
 	initializeClearButton = () => {
 		this.clearButton.on('click', (_event) => {
-			console.log("Destroying plaquette")
-			const cp = this.workspace.getChildByName('control_panel');
-			cp.destroy();
+			console.log("Destroying plaquette");
 			this.parent?.removeChild(this);
-			this.destroy({ children: true })
+			this.destroy({ children: true });
+			if (this.workspace.getChildByName(this.controlPanel.name) != null) {
+				this.workspace.removeChild(this.controlPanel);
+			}
 			console.log("Plaquette destroyed!")
 		});
 		this.clearButton.name = 'clear_button';
