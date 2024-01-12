@@ -1,7 +1,6 @@
 import { Graphics, Container } from 'pixi.js';
 import { button } from '../components/button';
 import notification from '../components/notifier';
-import { v4 as uuidv4 } from 'uuid';
 
 const PlaquetteColors = {
 	Purple: Symbol('purple'),
