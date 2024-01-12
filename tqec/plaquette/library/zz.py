@@ -15,6 +15,8 @@ class BaseZZPlaquette(RoundedPlaquette):
 
     @property
     def shape(self) -> Shape2D:
+        # Hack to check the pre-condition that all Plaquette instances should
+        # have the same shape.
         return Shape2D(3, 3)
 
 

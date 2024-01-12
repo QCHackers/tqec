@@ -55,9 +55,20 @@ def fill_in_global_record_indices(
     circuit: cirq.AbstractCircuit,
     *,
     context: cirq.TransformerContext | None = None,
-    measurement_map: CircuitMeasurementMap | None = None,
 ) -> cirq.Circuit:
-    """Compute and replace global measurement indices in detectors."""
+    """Compute and replace global measurement indices in detectors
+
+    This transformer iterates on all the operations contained in the provided cirq.AbstractCircuit
+    instance and calls RelativeMeasurementGate._get_global_measurement_index and all the instances
+    of RelativeMeasurementGate in order to replace their internal, local, measurement representation
+    by the global records that will be useful to stim.
+
+    :param circuit: instance containing the operations to fill-in with global measurement records
+        understandable by stim.
+    :param context: See cirq.transformer documentation.
+    :returns: a copy of the given circuit with local measurement records replaced by global ones,
+        understandable by stim.
+    """
     measurement_map = CircuitMeasurementMap(circuit)
     (
         filled_in_circuit,

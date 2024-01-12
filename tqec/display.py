@@ -1,11 +1,10 @@
-import numpy
-
-from tqec.generation.topology import get_qubit_array_str
 from tqec.templates.base import Template
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-def display_template(template: Template | TemplateOrchestrator, *plaquette_indices: int) -> None:
+def display_template(
+    template: Template | TemplateOrchestrator, *plaquette_indices: int
+) -> None:
     """Display a template instance with ASCII output.
 
     :param template: the Template instance to display.
@@ -20,10 +19,3 @@ def display_template(template: Template | TemplateOrchestrator, *plaquette_indic
             element = str(element) if element != 0 else "."
             print(f"{element:>3}", end="")
         print()
-
-
-def display_qubit_array(
-    array: numpy.ndarray, qubit_str: str = "x", nothing_str: str = " "
-) -> None:
-    """Display a qubit array with ASCII output."""
-    print(get_qubit_array_str(array, qubit_str, nothing_str))
