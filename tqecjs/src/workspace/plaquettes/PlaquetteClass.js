@@ -382,13 +382,7 @@ export default class Plaquette extends Graphics {
 
 	initializeClearButton = () => {
 		this.clearButton.on('click', (_event) => {
-			console.log("Destroying plaquette");
-			this.workspace.removeChild(this);
-			this.destroy({ children: true });
-			if (this.workspace.getChildByName(this.controlPanel.name) != null) {
-				this.workspace.removeChild(this.controlPanel);
-			}
-			console.log("Plaquette destroyed!")
+			this.workspace.removePlaquette(this);
 		});
 		this.clearButton.name = 'clear_button';
 		this.controlPanel.addChild(this.clearButton);

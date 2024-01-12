@@ -19,7 +19,7 @@ export default function TQECApp() {
 	const grid = makeGrid(app, gridSize);
 
 	workspace.addChild(grid);
-	workspace.currentPlaquette = null;
+	workspace.selectedPlaquette = null; // Used to update filters
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ export default function TQECApp() {
 	 * @returns whether the control panel changed
 	 */
 	workspace.updateSelectedPlaquette = (newPlaquette) => {
-		const currentPlaquette = workspace.currentPlaquette;
+		const currentPlaquette = workspace.selectedPlaquette;
 		if (currentPlaquette == newPlaquette) {
 			return false;
 		} else {
@@ -37,9 +37,24 @@ export default function TQECApp() {
 			newPlaquette.filters = [new AdjustmentFilter({contrast: 0.5})]
 			workspace.removeChild('control_panel')
 			workspace.addChild(newPlaquette.controlPanel);
-			workspace.currentPlaquette = newPlaquette;
+			workspace.selectedPlaquette = newPlaquette;
 			return true;
 		}
+	}
+
+	workspace.removePlaquette = (plaquette) => {
+		if (workspace.selectedPlaquette == plaquette) {
+			workspace.selectedPlaquette = null;
+		}
+		
+		// Remove control panel if it is visible
+		const currentControlPanel = workspace.getChildByName('control_panel');
+		if (currentControlPanel == plaquette.controlPanel) {
+			workspace.removeChild(currentControlPanel);
+		}
+
+		workspace.removeChild(plaquette);
+		plaquette.destroy({ children: true });
 	}
 
 	// Add the qubits to the workspace
