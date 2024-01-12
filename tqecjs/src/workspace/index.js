@@ -1,5 +1,6 @@
 import { useApp } from '@pixi/react';
 import { Container } from 'pixi.js';
+import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
 import Tile from './TileClass';
@@ -18,6 +19,29 @@ export default function TQECApp() {
 	const grid = makeGrid(app, gridSize);
 
 	workspace.addChild(grid);
+	workspace.currentPlaquette = null;
+
+	/**
+	 * 
+	 * @param {*} newPlaquette
+	 * @returns whether the control panel changed
+	 */
+	workspace.updateSelectedPlaquette = (newPlaquette) => {
+		const currentPlaquette = workspace.currentPlaquette;
+		if (currentPlaquette == newPlaquette) {
+			return false;
+		} else {
+			if (currentPlaquette != null) {
+				currentPlaquette.filters = null;
+			}
+			newPlaquette.filters = [new AdjustmentFilter({contrast: 0.5})]
+			workspace.removeChild('control_panel')
+			workspace.addChild(newPlaquette.controlPanel);
+			workspace.currentPlaquette = newPlaquette;
+			return true;
+		}
+	}
+
 	// Add the qubits to the workspace
 	for (let x = 0; x <= app.renderer.width; x += gridSize) {
 		for (let y = 0; y <= app.renderer.height; y += gridSize) {

@@ -22,7 +22,7 @@ export default class Plaquette extends Graphics {
 
 		// Control panel properties
 		this.controlPanel = new Container();
-		this.controlPanel.name = `control_panel_${uuidv4()}`;
+		this.controlPanel.name = `control_panel`;
 		this.controlPanel.visible = true;
 
 		// Control panel button properties
@@ -347,14 +347,11 @@ export default class Plaquette extends Graphics {
 
 	toggleCtrlButtons = () => {
 		this.on('click', (e) => {
+			//console.log("Click event: " + JSON.stringify(e))
 			const currentTime = Date.now();
 			if (currentTime - this.lastClickTime < 300) {
-				// Toggle this plaquette's control panel
-				if (this.workspace.getChildByName(this.controlPanel.name) == this.controlPanel) {
-					this.workspace.removeChild(this.controlPanel);
-				} else {
-					this.workspace.addChild(this.controlPanel);
-				}
+				// Tell the workspace that the current control panel should be this one.
+				this.workspace.updateSelectedPlaquette(this);
 			}
 			this.lastClickTime = currentTime;
 		});
@@ -387,7 +384,7 @@ export default class Plaquette extends Graphics {
 	initializeClearButton = () => {
 		this.clearButton.on('click', (_event) => {
 			console.log("Destroying plaquette");
-			this.parent?.removeChild(this);
+			this.workspace.removeChild(this);
 			this.destroy({ children: true });
 			if (this.workspace.getChildByName(this.controlPanel.name) != null) {
 				this.workspace.removeChild(this.controlPanel);
