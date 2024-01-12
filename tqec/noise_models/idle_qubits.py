@@ -7,6 +7,15 @@ from tqec.noise_models import BaseNoiseModel
 
 class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
     def __init__(self, p: float):
+        """Applies a depolarizing noise on all idle qubits.
+
+        Idle qubits are computed on a per-Moment basis: any qubit that has no
+        operation applied on in a Moment that contains a multi-qubit gate is
+        considered idle during this Moment and a depolarizing noise is added
+        to account for this idle time.
+
+        :param p: strength (probability of error) of the applied noise.
+        """
         super().__init__(p)
 
     def noisy_moment(
@@ -26,7 +35,8 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
         moment = cirq.Moment(
             self.recurse_in_operation_if_CircuitOperation(op) for op in moment
         )
-        # Apply the noise model to the moment at hand, not recursing into any CircuitOperation instances
+        # Apply the noise model to the moment at hand, not recursing into
+        # any CircuitOperation instances
         if any(len(op.qubits) > 1 for op in moment):
             idle_qubits = system_qubits_set.difference(moment.qubits)
             moment = moment.with_operations(
