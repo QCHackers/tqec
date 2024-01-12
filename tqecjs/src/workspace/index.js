@@ -21,15 +21,15 @@ export default function TQECApp() {
 	workspace.addChild(grid);
 	workspace.selectedPlaquette = null; // Used to update filters
 
-	/**
-	 * 
-	 * @param {*} newPlaquette
-	 * @returns whether the control panel changed
-	 */
 	workspace.updateSelectedPlaquette = (newPlaquette) => {
+		if (newPlaquette === null) {
+			return;
+		}
 		const currentPlaquette = workspace.selectedPlaquette;
-		if (currentPlaquette == newPlaquette) {
-			return false;
+		if (currentPlaquette === newPlaquette) {
+			currentPlaquette.filters = null;
+			workspace.removeChild(workspace.getChildByName('control_panel'));
+			workspace.selectedPlaquette = null;
 		} else {
 			if (currentPlaquette != null) {
 				currentPlaquette.filters = null;
@@ -38,21 +38,21 @@ export default function TQECApp() {
 			workspace.removeChild('control_panel')
 			workspace.addChild(newPlaquette.controlPanel);
 			workspace.selectedPlaquette = newPlaquette;
-			return true;
 		}
 	}
 
 	workspace.removePlaquette = (plaquette) => {
-		if (workspace.selectedPlaquette == plaquette) {
+		if (plaquette === null) {
+			return;
+		}
+		if (workspace.selectedPlaquette === plaquette) {
 			workspace.selectedPlaquette = null;
 		}
-		
 		// Remove control panel if it is visible
 		const currentControlPanel = workspace.getChildByName('control_panel');
-		if (currentControlPanel == plaquette.controlPanel) {
+		if (currentControlPanel === plaquette.controlPanel) {
 			workspace.removeChild(currentControlPanel);
 		}
-
 		workspace.removeChild(plaquette);
 		plaquette.destroy({ children: true });
 	}
