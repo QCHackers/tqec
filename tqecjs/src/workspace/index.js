@@ -128,11 +128,10 @@ export default function TQECApp() {
 
 	// Add download stim button
 	const downloadStimButton = button('Download stim file', grid.width - 100, 50);
-	const localTesting = true; // FIXME: Change this to false when deploying to production
+	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
 	const url = localTesting ? "http://127.0.0.1:5000/stim" : "https://tqec-app-mvp.uc.r.appspot.com/stim";
-	
+
 	downloadStimButton.on('click', (_e) => {
-		console.log(_e);
 		axios({
 			url: url,
 			method: 'GET',
