@@ -1,20 +1,15 @@
 import datetime
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_RESOURCES'] = {r"/stim": {"origins": "*"}}
 
 @app.route("/")
 def root():
-    # For the sake of example, use static information to inflate the template.
-    # This will be replaced with real information in later steps.
-    dummy_times = [
-        datetime.datetime(2018, 1, 1, 10, 0, 0),
-        datetime.datetime(2018, 1, 2, 10, 30, 0),
-        datetime.datetime(2018, 1, 3, 11, 0, 0),
-    ]
-
+    dummy_times = [datetime.datetime.now()]
     return render_template("index.html", times=dummy_times)
 
 
@@ -27,3 +22,8 @@ if __name__ == "__main__":
     # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
     # App Engine itself will serve those files as configured in app.yaml.
     app.run(host="127.0.0.1", port=8080, debug=True)
+
+@app.route("/stim", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def pdf():
+    return send_file("teleportation.stim")

@@ -5,6 +5,7 @@ import { makeGrid } from './grid';
 import Qubit from './QubitClass';
 import Tile from './TileClass';
 import { button } from './components/button';
+import axios from 'axios';
 
 export default function TQECApp() {
 	// Initialize the app
@@ -124,6 +125,33 @@ export default function TQECApp() {
 	};
 
 	workspace.addChild(plaquetteButton);
+
+	// Add download stim button
+	const downloadStimButton = button('Download stim file', grid.width - 100, 50);
+	const localTesting = true; // FIXME: Change this to false when deploying to production
+	const url = localTesting ? "http://127.0.0.1:5000/stim" : "https://tqec-app-mvp.uc.r.appspot.com/stim";
+	
+	downloadStimButton.on('click', (_e) => {
+		console.log(_e);
+		axios({
+			url: url,
+			method: 'GET',
+			responseType: 'blob',
+		}).then((res) => {
+			// create file link in browser's memory
+			const href = URL.createObjectURL(res.data);
+			// create "a" HTML element with href to file & click
+			const link = document.createElement('a');
+			link.href = href;
+			link.setAttribute('download', 'circuit.stim'); //or any other extension
+			document.body.appendChild(link);
+			link.click();
+			// clean up "a" element & remove ObjectURL
+			document.body.removeChild(link);
+			URL.revokeObjectURL(href);
+		}
+	)});
+	workspace.addChild(downloadStimButton);
 	workspace.visible = true;
 	app.view.addEventListener('click', selectQubit);
 	app.stage.addChild(workspace);
