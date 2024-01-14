@@ -94,6 +94,7 @@ export default function TQECApp() {
 		// Create the plaquettes and tile
 		const tile = new Tile(selectedQubits, app);
 		tile.createPlaquette();
+		tile.container.isTile = true;
 		workspace.addChild(tile.container);
 		// Clear the selected qubits
 		selectedQubits = [];
@@ -137,27 +138,47 @@ export default function TQECApp() {
 	// Add download stim button
 	const downloadStimButton = button('Download Stim file', grid.width * 0.9, 50);
 	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-	const stimURL = `${(localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL)}/stim`;
+	const stimURL = `${localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL}/stim`;
 
 	downloadStimButton.on('click', (_e) => {
+		var payload = {plaquettes: [], templates: []};
+		const tiles = workspace.children.filter((child) => child.isTile);
+		tiles.forEach((tile) => {
+			var _plaquette = {
+				id: tile.plaquette.id,
+				color: tile.plaquette.color,
+				qubits: []
+			}
+			tile.plaquette.qubits.forEach((qubit) => {
+				_plaquette.qubits.push({id: qubit.id, x : qubit.globalX, y : qubit.globalY})
+			});
+			payload.plaquettes.push(_plaquette);
+		});
 		axios({
+			method: 'POST',
 			url: stimURL,
-			method: 'GET',
-			responseType: 'blob',
+			data: JSON.stringify(payload),
+			headers: {
+				'Content-Type': 'application/json',
+				'Data-Type': 'json',
+			},
+			responseType: 'blob'
 		}).then((res) => {
 			// create file link in browser's memory
 			const href = URL.createObjectURL(res.data);
 			// create "a" HTML element with href to file & click
 			const link = document.createElement('a');
 			link.href = href;
-			link.setAttribute('download', 'circuit.stim'); //or any other extension
+			link.setAttribute('download', 'circuit.json'); //or any other extension
 			document.body.appendChild(link);
 			link.click();
 			// clean up "a" element & remove ObjectURL
 			document.body.removeChild(link);
 			URL.revokeObjectURL(href);
-		}
-	)});
+		}).catch((err) => {
+			console.log(err);
+		});
+	});
 
 	workspace.addChild(downloadStimButton);
 	workspace.visible = true;

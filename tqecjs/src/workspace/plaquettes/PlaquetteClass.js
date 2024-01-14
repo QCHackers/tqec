@@ -18,6 +18,7 @@ export default class Plaquette extends Graphics {
 		this.gridOffsetY = this.gridSize;
 		this.isDragging = false;
 		this.plaquetteMade = false;
+		this.id = "plaquette-" + Math.random().toString(36).substring(7);
 
 		// Control panel properties
 		this.controlPanel = new Container();

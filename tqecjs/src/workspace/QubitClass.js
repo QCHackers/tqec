@@ -21,6 +21,8 @@ export default class Qubit extends Graphics {
 		this.maxNeighborDist = 2 * this.gridSize;
 		this.neighbors = [];
 		this.gridSize = gridSize;
+		this.id = "qubit-" + Math.random().toString(36).substring(7);
+
 		// Adjacent (degree 1) qubits
 		// QC properties
 		this.isQubit = true;

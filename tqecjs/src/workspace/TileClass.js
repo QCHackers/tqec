@@ -17,6 +17,8 @@ export default class Tile {
 		// Quantum
 		this.selectedQubits = selectedQubits || [];
 		this.plaquette = null;
+
+		this.isTile = true;
 	}
 
 	makeTile() {

@@ -1,11 +1,13 @@
-import datetime
+import datetime, json
 
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request
 from flask_cors import CORS, cross_origin
 
+from tqec.plaquette.plaquette import PlaquetteQubit, Plaquette
+from tqec.position import Position
+
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['CORS_RESOURCES'] = {r"/stim": {"origins": "*"}}
+CORS(app)
 
 @app.route("/")
 def root():
@@ -23,7 +25,18 @@ if __name__ == "__main__":
     # App Engine itself will serve those files as configured in app.yaml.
     app.run(host="127.0.0.1", port=8080, debug=True)
 
-@app.route("/stim", methods=['GET'])
+@app.route("/stim", methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def pdf():
-    return send_file("teleportation.stim")
+def jsonToStim():
+    # Construct the plaquettes from the given file
+    plaquettes = []
+    for plaquette in request.get_json()["plaquettes"]:
+        # Construct the qubits
+        qubits = [PlaquetteQubit(Position(qubit["x"], qubit["y"])) for qubit in plaquette["qubits"]]
+        # TODO: Construct the plaquette
+
+    # TODO: deserialize templates, Invoke generate_circuit
+    filename = "circuit.stim"
+    with open(filename, "w") as f:
+        json.dump(request.get_json(), f)
+    return send_file(filename)
