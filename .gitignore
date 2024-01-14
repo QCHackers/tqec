@@ -170,3 +170,4 @@ tqec/requirements.txt
 .vscode
 
 circuit.stim
+circuit.json
