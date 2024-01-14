@@ -7,6 +7,14 @@ import Tile from './TileClass';
 import { button } from './components/button';
 import axios from 'axios';
 
+// TODO: move this to a config file
+const prodURL = "https://tqec-app-mvp.uc.r.appspot.com";
+
+const testing = {
+	ip: "127.0.0.1",
+	port: "5000",
+}
+
 export default function TQECApp() {
 	// Initialize the app
 	let app = useApp();
@@ -127,13 +135,13 @@ export default function TQECApp() {
 	workspace.addChild(plaquetteButton);
 
 	// Add download stim button
-	const downloadStimButton = button('Download stim file', grid.width - 100, 50);
+	const downloadStimButton = button('Download Stim file', grid.width - 100, 50);
 	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-	const url = localTesting ? "http://127.0.0.1:5000/stim" : "https://tqec-app-mvp.uc.r.appspot.com/stim";
+	const stimURL = `${(localTesting ? `http://${testing.ip}:${testing.port}` : prodURL)}/stim`;
 
 	downloadStimButton.on('click', (_e) => {
 		axios({
-			url: url,
+			url: stimURL,
 			method: 'GET',
 			responseType: 'blob',
 		}).then((res) => {
@@ -150,6 +158,7 @@ export default function TQECApp() {
 			URL.revokeObjectURL(href);
 		}
 	)});
+
 	workspace.addChild(downloadStimButton);
 	workspace.visible = true;
 	app.view.addEventListener('click', selectQubit);
