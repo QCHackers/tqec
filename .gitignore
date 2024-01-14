@@ -166,3 +166,5 @@ cython_debug/
 node_modules/
 
 tqec/requrements.txt
+
+.vscode
