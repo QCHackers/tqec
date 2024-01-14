@@ -165,6 +165,6 @@ cython_debug/
 # node_modules should be ignored by default
 node_modules/
 
-tqec/requrements.txt
+tqec/requirements.txt
 
 .vscode
