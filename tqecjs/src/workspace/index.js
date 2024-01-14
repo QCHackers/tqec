@@ -5,6 +5,15 @@ import { makeGrid } from './grid';
 import Qubit from './QubitClass';
 import Tile from './TileClass';
 import { button } from './components/button';
+import axios from 'axios';
+
+// TODO: move this to a config file
+const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
+
+const testingBackendURL = { // Default values from Flask
+	ip: "127.0.0.1",
+	port: "5000",
+}
 
 export default function TQECApp() {
 	// Initialize the app
@@ -124,6 +133,33 @@ export default function TQECApp() {
 	};
 
 	workspace.addChild(plaquetteButton);
+
+	// Add download stim button
+	const downloadStimButton = button('Download Stim file', grid.width * 0.9, 50);
+	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
+	const stimURL = `${(localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL)}/stim`;
+
+	downloadStimButton.on('click', (_e) => {
+		axios({
+			url: stimURL,
+			method: 'GET',
+			responseType: 'blob',
+		}).then((res) => {
+			// create file link in browser's memory
+			const href = URL.createObjectURL(res.data);
+			// create "a" HTML element with href to file & click
+			const link = document.createElement('a');
+			link.href = href;
+			link.setAttribute('download', 'circuit.stim'); //or any other extension
+			document.body.appendChild(link);
+			link.click();
+			// clean up "a" element & remove ObjectURL
+			document.body.removeChild(link);
+			URL.revokeObjectURL(href);
+		}
+	)});
+
+	workspace.addChild(downloadStimButton);
 	workspace.visible = true;
 	app.view.addEventListener('click', selectQubit);
 	app.stage.addChild(workspace);
