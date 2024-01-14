@@ -168,3 +168,5 @@ node_modules/
 tqec/requirements.txt
 
 .vscode
+
+circuit.stim
