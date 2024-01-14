@@ -1,6 +1,6 @@
-import datetime, json
+import json
 
-from flask import Flask, render_template, send_file, request
+from flask import Flask, send_file, request
 from flask_cors import CORS, cross_origin
 
 from tqec.plaquette.plaquette import PlaquetteQubit, Plaquette
@@ -11,8 +11,7 @@ CORS(app)
 
 @app.route("/")
 def root():
-    dummy_times = [datetime.datetime.now()]
-    return render_template("index.html", times=dummy_times)
+    return send_file("static/index.html")
 
 
 if __name__ == "__main__":
