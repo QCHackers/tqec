@@ -27,9 +27,12 @@ if __name__ == "__main__":
 @app.route("/stim", methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def jsonToStim():
+    _json = request.get_json()
+    if _json is None:
+        return "No JSON provided", 400
     # Construct the plaquettes from the given file
     plaquettes = []
-    for plaquette in request.get_json()["plaquettes"]:
+    for plaquette in _json["plaquettes"]:
         # Construct the qubits
         qubits = [PlaquetteQubit(Position(qubit["x"], qubit["y"])) for qubit in plaquette["qubits"]]
         # TODO: Construct the plaquette
@@ -37,5 +40,5 @@ def jsonToStim():
     # TODO: deserialize templates, Invoke generate_circuit
     filename = "circuit.stim"
     with open(filename, "w") as f:
-        json.dump(request.get_json(), f)
+        json.dump(_json, f)
     return send_file(filename)
