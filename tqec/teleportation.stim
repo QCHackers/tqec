@@ -1,0 +1,16 @@
+# Distribute a Bell Pair.
+H 0
+CNOT 0 99
+
+# Sender creates an arbitrary qubit state to send.
+H 1
+S 1
+
+# Sender performs a Bell Basis measurement.
+CNOT 0 1
+H 0
+M 0 1  # Measure both of the sender's qubits.
+
+# Receiver performs frame corrections based on measurement results.
+CZ rec[-2] 99
+CNOT rec[-1] 99

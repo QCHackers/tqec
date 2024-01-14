@@ -8,7 +8,11 @@ class CircuitMeasurementMap:
         This class provides a method to recover the global record offset of a given
         measurement from local informations about this measurement.
 
-        :param circuit: the circuit instance to analyse.
+        The provided cirq.AbstractCircuit instance should check a few pre-conditions for
+        this class to be valid. Check CircuitMeasurementMap._get_global_measurement_index
+        docstring to be aware of these pre-conditions.
+
+        :param circuit: the circuit instance to analyse. Should check the pre-conditions.
         """
         (
             global_measurement_indices,
@@ -38,6 +42,8 @@ class CircuitMeasurementMap:
             before the last measurement performed on this qubit", etc.
         :returns: the global measurement record offset, only valid for the provided
             current_moment_index.
+
+        :raises AssertionError: if any issue happens.
         """
         assert (
             measurement_offset < 0
@@ -88,7 +94,6 @@ class CircuitMeasurementMap:
 
         1. If a cirq.CircuitOperation instance is present in a given Moment, it is the only operation
            that contains measurements in this Moment.
-           This assumption is asserted in this method, so failing to check it will raise an AssertionError.
         2. If a cirq.CircuitOperation instance is present in a given Moment, it contains a
            cirq.AbstractCircuit instance that has a measurement schedule **compatible** with the Moment
            instances preceding it.
@@ -117,7 +122,8 @@ class CircuitMeasurementMap:
             - global_measurement_index is an integer representing the index of the next measurement that
               will be encountered. It is part of the return API to simplify the recursion, and should not
               be useful for the external caller.
-        :raises AssertionError: see pre-conditions in docstring.
+        :raises AssertionError: see pre-conditions in docstring. A failed pre-condition is not guaranteed to
+            raise an exception, so be careful about the pre-conditions here.
         """
         global_measurement_indices: list[dict[cirq.Qid, int]] = []
         global_measurement_index: int = _measurement_offset
