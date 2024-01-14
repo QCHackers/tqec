@@ -8,9 +8,9 @@ import { button } from './components/button';
 import axios from 'axios';
 
 // TODO: move this to a config file
-const prodURL = "https://tqec-app-mvp.uc.r.appspot.com";
+const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
 
-const testing = {
+const testingBackendURL = { // Default values from Flask
 	ip: "127.0.0.1",
 	port: "5000",
 }
@@ -137,7 +137,7 @@ export default function TQECApp() {
 	// Add download stim button
 	const downloadStimButton = button('Download Stim file', grid.width - 100, 50);
 	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-	const stimURL = `${(localTesting ? `http://${testing.ip}:${testing.port}` : prodURL)}/stim`;
+	const stimURL = `${(localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL)}/stim`;
 
 	downloadStimButton.on('click', (_e) => {
 		axios({
