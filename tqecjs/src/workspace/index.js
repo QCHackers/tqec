@@ -151,7 +151,6 @@ export default function TQECApp() {
 			}
 			tile.plaquette.qubits.forEach((qubit) => {
 				assert(qubit.globalX >= 0 && qubit.globalY >= 0, "Qubit coordinates must be non-negative")
-				console.log(qubit.qubitType)
 				assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome", "Qubit type must be either 'data' or 'syndrome'")
 				_plaquette.qubits.push({
 					x: qubit.globalX,
