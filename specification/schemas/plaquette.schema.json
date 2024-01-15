@@ -13,22 +13,9 @@
         "minItems": 1
       }
     },
-    "layers": {
-      "type": "array",
-      "description": "A list of scheduled circuits, each one representing a layer of the QEC code.",
-      "items": {
-        "description": "The scheduled quantum circuit representing",
-        "$ref": "/tqec/specification/schemas/scheduled_circuit.schema.json"
-      }
-    },
-    "color": {
-      "type": "array",
-      "description": "An RGB(A) color for the plaquette.",
-      "prefixItems": [
-        {"type": "integer", "minimum": 0, "maximum": 255},
-        {"type": "integer", "minimum": 0, "maximum": 255},
-        {"type": "integer", "minimum": 0, "maximum": 255}
-      ]
+    "circuit": {
+      "description": "The scheduled quantum circuit representing the computation made by the plaquette",
+      "$ref": "/tqec/specification/schemas/scheduled_circuit.schema.json"
     }
   }
 }
