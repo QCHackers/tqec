@@ -14,11 +14,6 @@
       "description": "The qubit y coordinate in the local plaquette coordinate system.",
       "type": "integer",
       "minimum": 0
-    },
-    "qubitType": {
-      "description": "Enumeration indicating if the qubit is a data or syndrome qubit (left as an enumeration to be able to add 'ancilla' if needed).",
-      "type": "string",
-      "enum": ["data", "syndrome"]
     }
   }
 }
