@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "/tqec/specification/schemas/scheduled_circuit.schema.json",
   "title": "ScheduledCircuit",
-  "description": "A quantum circuit with CNOT gates scheduled at specific time slices.",
+  "description": "A quantum circuit with gates scheduled at specific time slices.",
   "type": "object",
   "properties": {
     "circuit": {
@@ -10,7 +10,7 @@
       "$ref": "/tqec/specification/schemas/circuit.schema.json"
     },
     "schedule": {
-      "description": "A list of integers representing the time slice at which the corresponding CNOT should be scheduled.",
+      "description": "A list of integers representing the time slice at which the corresponding gates should be scheduled.",
       "type": "array",
       "items": {
         "type": "integer"
