@@ -1,5 +1,5 @@
 import { Container } from 'pixi.js';
-import Plaquette from './plaquettes/PlaquetteClass';
+import { Plaquette, PlaquetteColors } from './plaquettes/PlaquetteClass';
 import notification from './components/notifier';
 
 export default class Tile {
@@ -34,7 +34,7 @@ export default class Tile {
 	createPlaquette = () => {
 		const workspace = this.app.stage.getChildByName('workspace');
 		// Render the plaquette
-		const plaquette = new Plaquette(this.selectedQubits, workspace); // Remove the container
+		const plaquette = new Plaquette(this.selectedQubits, workspace, 50, PlaquetteColors.purple); // Remove the container
 		if (!plaquette.plaquetteMade) return;
 		// Add the plaquette to the tile container
 		this.container.addChild(plaquette);

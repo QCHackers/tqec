@@ -7,9 +7,9 @@ import Tile from './TileClass';
 import { button } from './components/button';
 import axios from 'axios';
 
+const assert = require('assert');
 // TODO: move this to a config file
 const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
-
 const testingBackendURL = { // Default values from Flask
 	ip: "127.0.0.1",
 	port: "5000",
@@ -74,7 +74,7 @@ export default function TQECApp() {
 			if (x % (gridSize * 2) === gridSize && y % (gridSize * 2) === gridSize)
 				continue;
 			// Create a qubit
-			const qubit = new Qubit(x, y, 5, gridSize);
+			const qubit = new Qubit(x, y, 5);
 			// Name the qubit according to its position
 			qubit.name = `${x}_${y}`;
 			workspace.addChild(qubit);
@@ -141,16 +141,23 @@ export default function TQECApp() {
 	const stimURL = `${localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL}/stim`;
 
 	downloadStimButton.on('click', (_e) => {
-		var payload = {plaquettes: [], templates: []};
+		var payload = {plaquettes: []};
 		const tiles = workspace.children.filter((child) => child.isTile);
 		tiles.forEach((tile) => {
 			var _plaquette = {
-				id: tile.plaquette.id,
-				color: tile.plaquette.color,
-				qubits: []
+				color: tile.plaquette.color.toUint8RgbArray(),
+				qubits: [],
+				layers: []
 			}
 			tile.plaquette.qubits.forEach((qubit) => {
-				_plaquette.qubits.push({id: qubit.id, x : qubit.globalX, y : qubit.globalY})
+				assert(qubit.globalX >= 0 && qubit.globalY >= 0, "Qubit coordinates must be non-negative")
+				console.log(qubit.qubitType)
+				assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome", "Qubit type must be either 'data' or 'syndrome'")
+				_plaquette.qubits.push({
+					x: qubit.globalX,
+					y: qubit.globalY,
+					qubitType: qubit.qubitType
+				})
 			});
 			payload.plaquettes.push(_plaquette);
 		});

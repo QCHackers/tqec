@@ -1,14 +1,13 @@
-import { Graphics, Container } from 'pixi.js';
+import { Graphics, Container, Color } from 'pixi.js';
 import { button } from '../components/button';
 import notification from '../components/notifier';
 
-const PlaquetteColors = {
-	Purple: Symbol('purple'),
-	Yellow: Symbol('yellow')
+export const PlaquetteColors = {
+	purple: new Color('purple'),
+	yellow: new Color('yellow'),
 }
-
-export default class Plaquette extends Graphics {
-	constructor(qubits, workspace, gridSize = 50, color = PlaquetteColors.Purple) {
+export class Plaquette extends Graphics {
+	constructor(qubits, workspace, gridSize = 50, color = PlaquetteColors.purple) {
 		super();
 		// UI properties
 		this.workspace = workspace;
@@ -175,7 +174,7 @@ export default class Plaquette extends Graphics {
 		}));
 
 		// Update plaquette graphics
-		this.beginFill(this.color.description);
+		this.beginFill(this.color);
 		// Fill the convex hull
 		this.drawPolygon(qubitPos);
 		this.cursor = 'pointer';
@@ -318,11 +317,10 @@ export default class Plaquette extends Graphics {
 	};
 
 	createNewPlaquette(newQubits) {
-		let newColor = PlaquetteColors.Yellow;
-		if (this.color !== PlaquetteColors.Purple) {
-			newColor = PlaquetteColors.Purple;
+		let newColor = PlaquetteColors.yellow;
+		if (this.color !== PlaquetteColors.purple) {
+			newColor = PlaquetteColors.purple;
 		}
-		console.log("New plaquette color = " + newColor.description);
 		const newPlaquette = new Plaquette(
 			newQubits,
 			this.workspace,
@@ -371,10 +369,10 @@ export default class Plaquette extends Graphics {
 
 	changeColorButton = () => {
 		this.colorButton.on('click', (_event) => { // Change the color of the plaquette
-			if (this.color === PlaquetteColors.Purple) {
-				this.changePlaquetteColor(PlaquetteColors.Yellow);
+			if (this.color === PlaquetteColors.purple) {
+				this.changePlaquetteColor(PlaquetteColors.yellow);
 			} else {
-				this.changePlaquetteColor(PlaquetteColors.Purple);
+				this.changePlaquetteColor(PlaquetteColors.purple);
 			}
 		});
 		this.colorButton.name = 'color_button';
