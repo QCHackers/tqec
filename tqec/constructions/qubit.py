@@ -45,6 +45,22 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
 class ScalableQubitRectangle(TemplateOrchestrator):
     def __init__(self, width: int, height: int) -> None:
+        """A scalable error-corrected "rectangle qubit".
+
+        This structure might be obtained by extending a logical qubit.
+
+        ```text
+        .  .  1  .  1  .  1  .
+        2  3  4  3  4  3  4  .
+        .  4  3  4  3  4  3  5
+        2  3  4  3  4  3  4  .
+        .  4  3  4  3  4  3  5
+        .  6  .  6  .  6  .  .
+        ```
+
+        :param width: width (in number of plaquettes) of the main rectangle.
+        :param height: height (in number of plaquettes) of the main rectangle.
+        """
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableRectangle(width, height), [3, 4]),
