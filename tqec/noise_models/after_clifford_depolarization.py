@@ -1,7 +1,7 @@
 import cirq
 import stim
 
-from tqec.noise_models import BaseNoiseModel
+from tqec.noise_models.base import BaseNoiseModel
 
 
 def is_clifford(operation: cirq.Operation) -> bool:
@@ -37,7 +37,7 @@ class AfterCliffordDepolarizingNoise(BaseNoiseModel):
     def __init__(self, p: float):
         """Applies a depolarising noise after each Clifford operation.
 
-        The depolarising noise applied is a cirq.DepolarizingChannel with the same 
+        The depolarising noise applied is a cirq.DepolarizingChannel with the same
         number of qubits as the Clifford operation. For a number of qubits `n > 1`,
         this is different from applying `n` times a 1-qubit depolarizing noise to each
         of the involved qubits.
