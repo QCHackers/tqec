@@ -12,7 +12,7 @@ const assert = require('assert');
 const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
 const testingBackendURL = { // Default values from Flask
 	ip: "127.0.0.1",
-	port: "5000",
+	port: "5001",
 }
 
 export default function TQECApp() {
@@ -74,7 +74,7 @@ export default function TQECApp() {
 			if (x % (gridSize * 2) === gridSize && y % (gridSize * 2) === gridSize)
 				continue;
 			// Create a qubit
-			const qubit = new Qubit(x, y, 5);
+			const qubit = new Qubit(x, y, 5, gridSize);
 			// Name the qubit according to its position
 			qubit.name = `${x}_${y}`;
 			workspace.addChild(qubit);

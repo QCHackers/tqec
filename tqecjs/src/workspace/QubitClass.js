@@ -9,10 +9,9 @@ import { Graphics, Text } from 'pixi.js';
  */
 export default class Qubit extends Graphics {
 	
-	constructor(x, y, radius = 5, color = 'black', gridSize = 50, qubitType = 'data') {
+	constructor(x, y, radius = 5, gridSize = 50, color = 'black',  qubitType = 'data') {
 		super();
 		// UI properties
-		console.log(x, y, radius = 5, 'black', gridSize, qubitType )
 		this.eventMode = 'static';
 		this.buttonMode = true;
 		this.cursor = 'pointer';
