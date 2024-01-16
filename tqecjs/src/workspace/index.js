@@ -136,7 +136,7 @@ export default function TQECApp() {
 	workspace.addChild(plaquetteButton);
 
 	// Add download stim button
-	const downloadStimButton = button('Download Stim file', grid.width * 0.9, 50);
+	const downloadStimButton = button('Download Stim file', 100, 50, 'white', 'black');
 	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
 	const stimURL = `${localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL}/stim`;
 
