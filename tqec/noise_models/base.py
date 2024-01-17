@@ -4,7 +4,7 @@ import cirq
 class BaseNoiseModel(cirq.NoiseModel):
     def __init__(self, probability: float) -> None:
         """Base class for all `tqec` noise models
-        
+
         :param probability: strength of the noise described by the instance.
         """
         self._p = cirq.value.validate_probability(
@@ -16,8 +16,8 @@ class BaseNoiseModel(cirq.NoiseModel):
         self, operation: cirq.Operation
     ) -> cirq.OP_TREE:
         """Helper method to handle cirq.CircuitOperation nearly transparently
-        
-        This method is here to help sub-classes handle cirq.CircuitOperation instances 
+
+        This method is here to help sub-classes handle cirq.CircuitOperation instances
         nearly transparently: they simply have to think about using this method if they stumble
         upon such an operation, and that is all!
 

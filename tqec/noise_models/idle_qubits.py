@@ -2,7 +2,7 @@ from typing import Sequence
 
 import cirq
 
-from tqec.noise_models import BaseNoiseModel
+from tqec.noise_models.base import BaseNoiseModel
 
 
 class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):

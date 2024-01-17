@@ -1,7 +1,7 @@
 import { Text, Container, Graphics } from 'pixi.js';
 import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
-export const button = (text, x, y, color = 'black') => {
+export const button = (text, x, y, buttonColor = 'black', fontColor = 'white') => {
 	// Create the button container
 	const button = new Container();
 	// Create the button text
@@ -9,7 +9,7 @@ export const button = (text, x, y, color = 'black') => {
 		fontFamily: 'Arial',
 		fontSize: 15,
 		// Adjust the font size based on the width and height of the button
-		fill: 'white',
+		fill: fontColor,
 		align: 'center',
 	});
 	buttonText.anchor.set(0.5);
@@ -17,7 +17,7 @@ export const button = (text, x, y, color = 'black') => {
 	buttonText.y = y;
 	// Create the button background
 	const buttonBackground = new Graphics();
-	buttonBackground.beginFill(color);
+	buttonBackground.beginFill(buttonColor);
 	buttonBackground.drawRoundedRect(
 		buttonText.x - buttonText.getBounds().width / 2 - 15,
 		buttonText.y - buttonText.getBounds().height / 2 - 15,

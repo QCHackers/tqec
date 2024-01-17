@@ -1,7 +1,7 @@
 import cirq
 import stim
 
-from tqec.noise_models import BaseNoiseModel
+from tqec.noise_models.base import BaseNoiseModel
 
 
 def is_clifford(operation: cirq.Operation) -> bool:
