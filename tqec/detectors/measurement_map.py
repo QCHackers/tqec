@@ -1,6 +1,19 @@
 import cirq
 
 
+def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
+    # From https://github.com/quantumlib/Cirq/issues/3783
+    if isinstance(obj, cirq.Moment):
+        flattenable = [op for op in obj if isinstance(op, cirq.CircuitOperation)]
+        if not flattenable:
+            return cirq.Circuit(obj)
+        return cirq.Circuit.zip(
+            cirq.Circuit(obj - flattenable),
+            *[flatten(e.mapped_circuit(True)) for e in flattenable],
+        )
+    return cirq.Circuit([moment for e in obj for moment in flatten(e)])
+
+
 class CircuitMeasurementMap:
     def __init__(self, circuit: cirq.AbstractCircuit) -> None:
         """Stores information about all the measurements found in the provided circuit
@@ -8,16 +21,13 @@ class CircuitMeasurementMap:
         This class provides a method to recover the global record offset of a given
         measurement from local informations about this measurement.
 
-        The provided cirq.AbstractCircuit instance should check a few pre-conditions for
-        this class to be valid. Check CircuitMeasurementMap._get_global_measurement_index
-        docstring to be aware of these pre-conditions.
-
-        :param circuit: the circuit instance to analyse. Should check the pre-conditions.
+        :param circuit: the circuit instance to analyse.
         """
+        flattened_circuit = flatten(circuit)
         (
             global_measurement_indices,
             _,
-        ) = CircuitMeasurementMap._get_global_measurement_index(circuit)
+        ) = CircuitMeasurementMap._get_global_measurement_index(flattened_circuit)
         self._global_measurement_indices = global_measurement_indices
 
     def get_measurement_relative_offset(
@@ -86,30 +96,7 @@ class CircuitMeasurementMap:
         This method API takes into account the fact that some information need to be passed
         accross recursions and so is not really user-friendly.
 
-        Measurements in repeated cirq.CircuitOperation instances are only counted once, contributing
-        to the global indexing only once.
-
-        If the given circuit contains at least one cirq.CircuitOperation instance, the following
-        pre-condition should be met for this method to output a correct result:
-
-        1. If a cirq.CircuitOperation instance is present in a given Moment, it is the only operation
-           that contains measurements in this Moment.
-        2. If a cirq.CircuitOperation instance is present in a given Moment, it contains a
-           cirq.AbstractCircuit instance that has a measurement schedule **compatible** with the Moment
-           instances preceding it.
-           This is required as:
-           - the use of CircuitOperation instances is often used to represent a repeated circuit, to
-             perform several rounds of error correction.
-           - for rounds of error correction, the first iteration of the repeated part will reference
-             measurements that happened in the previous, non-repeated, part of the circuit whereas all
-             the subsequent repetitions will reference measurements from earlier repetitions of the
-             same circuit. In order for that scheme to be valid, a certain consistency is expected
-             between the measurements performed in a repeated portion and the ones performed just before.
-             This assumption is likely a requirement for any QEC code with repeated rounds to be
-             considered valid, but it does not hurt to make that explicit for the moment.
-
-        The second assumption is not checkable easily in this method and so is not checked for the moment.
-        Any input circuit that fails to ensure these pre-conditions should be considered invalid input.
+        The provided circuit should not contain any cirq.CircuitOperation instance.
 
         :param circuit: circuit to compute the global measurements of.
         :param _measurement_offset: offset applied to the indices of each measurements. Used for the
@@ -122,50 +109,25 @@ class CircuitMeasurementMap:
             - global_measurement_index is an integer representing the index of the next measurement that
               will be encountered. It is part of the return API to simplify the recursion, and should not
               be useful for the external caller.
-        :raises AssertionError: see pre-conditions in docstring. A failed pre-condition is not guaranteed to
-            raise an exception, so be careful about the pre-conditions here.
+        :raises AssertionError: if the provided cirq.AbstractCircuit instance contains an instance of
+            cirq.CircuitOperation.
         """
         global_measurement_indices: list[dict[cirq.Qid, int]] = []
         global_measurement_index: int = _measurement_offset
         for moment in circuit:
             global_measurement_indices.append(dict())
-            moment_contains_measurement: bool = False
-            moment_contains_CircuitOperation: bool = False
             for op in moment.operations:
+                # Note that cirq.CircuitOperation instances should never be encountered here because
+                # they should all have been flattened at the MeasurementMap creation.
+                assert not isinstance(
+                    op.untagged, cirq.CircuitOperation
+                ), "cirq.CircuitOperation should be flattened before calling this method."
                 if isinstance(op.gate, cirq.MeasurementGate):
                     assert (
                         len(op.qubits) == 1
                     ), "Measurement gates should only be applied on 1 qubit."
-                    moment_contains_measurement = True
                     qubit: cirq.Qid = op.qubits[0]
                     global_measurement_indices[-1][qubit] = global_measurement_index
                     global_measurement_index += 1
-                elif isinstance(op, cirq.CircuitOperation):
-                    # See assumptions in docstring.
-                    moment_contains_CircuitOperation = True
-                    # Compute the measurement indices of the sub-circuit recursively.
-                    (
-                        indices,
-                        new_global_measurement_index,
-                    ) = CircuitMeasurementMap._get_global_measurement_index(
-                        op.circuit, global_measurement_index
-                    )
-                    # Update the current measurement index, as the recursive call might have seen
-                    # some measurements.
-                    global_measurement_index = new_global_measurement_index
-                    # Remove the last entry of global_measurement_indices (that should be empty if
-                    # assumption 1 is valid, checked at the end of the for loop) and extend it with
-                    # the computed indices.
-                    global_measurement_indices.pop()
-                    global_measurement_indices.extend(indices)
-            # Check assumption 1 of the CircuitOperation branch.
-            # Note that this does not check the full assumption: if there are 2 CircuitOperation
-            # instances, or some MeasurementAndReset gate, this assert will not raise but the
-            # output will still be invalid.
-            assert not (
-                moment_contains_measurement and moment_contains_CircuitOperation
-            ), (
-                "Found a Moment instance that contains both a MeasurementGate and a "
-                "CircuitOperation. This breaks an assumption, results will be invalid."
-            )
+
         return global_measurement_indices, global_measurement_index
