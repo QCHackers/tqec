@@ -1,6 +1,6 @@
 import cirq
 
-from tqec.noise_models import BaseNoiseModel
+from tqec.noise_models.base import BaseNoiseModel
 
 
 class BeforeRoundDataDepolarizationNoise(BaseNoiseModel):
