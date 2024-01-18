@@ -3,6 +3,7 @@ import cirq
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
     # From https://github.com/quantumlib/Cirq/issues/3783
+    # TODO: make that return a FlattenedCircuitOperation and factor it out.
     if isinstance(obj, cirq.Moment):
         flattenable = [op for op in obj if isinstance(op, cirq.CircuitOperation)]
         if not flattenable:
