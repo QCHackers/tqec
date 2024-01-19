@@ -3,14 +3,12 @@ import json
 from flask import Flask, send_file, request, Response
 from flask_cors import CORS, cross_origin
 
-from tqec.plaquette.plaquette import PlaquetteQubit
-from tqec.position import Position
-
 app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
 def root():
+    print("Root!")
     return send_file("static/index.html")
 
 
@@ -28,13 +26,7 @@ if __name__ == "__main__":
 @cross_origin(supports_credentials=True)
 def jsonToStim() -> Response:
     _json = request.get_json()
-    # Construct the plaquettes from the given file
-    plaquettes = []
-    for plaquette in _json["plaquettes"]:
-        # Construct the qubits
-        qubits = [PlaquetteQubit(Position(qubit["x"], qubit["y"])) for qubit in plaquette["qubits"]]
-        # TODO: Construct the plaquette
-
+    # TODO: Construct the plaquettes from the given file
     # TODO: deserialize templates, Invoke generate_circuit
     filename = "circuit.stim"
     with open(filename, "w") as f:
