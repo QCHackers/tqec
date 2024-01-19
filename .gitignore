@@ -165,11 +165,11 @@ cython_debug/
 # node_modules should be ignored by default
 node_modules/
 
-tqec/requirements.txt
-
+# VS Code configs
 .vscode
 
-# Backend testing files
+# Backend testing and deployment files
 tqec-backend/circuit.stim
 tqec-backend/circuit.json
-tqec-backend/tqec/*
+tqec-backend/tqec/
+tqec-backend/requirements.txt
