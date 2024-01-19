@@ -169,5 +169,7 @@ tqec/requirements.txt
 
 .vscode
 
-circuit.stim
-circuit.json
+# Backend testing files
+tqec-backend/circuit.stim
+tqec-backend/circuit.json
+tqec-backend/tqec/*

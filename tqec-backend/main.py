@@ -3,7 +3,7 @@ import json
 from flask import Flask, send_file, request
 from flask_cors import CORS, cross_origin
 
-from tqec.plaquette.plaquette import PlaquetteQubit, Plaquette
+from tqec.plaquette.plaquette import PlaquetteQubit
 from tqec.position import Position
 
 app = Flask(__name__)
@@ -22,14 +22,12 @@ if __name__ == "__main__":
     # the "static" directory. See:
     # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
     # App Engine itself will serve those files as configured in app.yaml.
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)
 
 @app.route("/stim", methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def jsonToStim():
     _json = request.get_json()
-    if _json is None:
-        return "No JSON provided", 400
     # Construct the plaquettes from the given file
     plaquettes = []
     for plaquette in _json["plaquettes"]:
