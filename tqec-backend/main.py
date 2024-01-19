@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, send_file, request
+from flask import Flask, send_file, request, Response
 from flask_cors import CORS, cross_origin
 
 from tqec.plaquette.plaquette import PlaquetteQubit
@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
 @app.route("/stim", methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def jsonToStim():
+def jsonToStim() -> Response:
     _json = request.get_json()
     # Construct the plaquettes from the given file
     plaquettes = []
