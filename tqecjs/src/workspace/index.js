@@ -141,20 +141,22 @@ export default function TQECApp() {
 	const stimURL = `${localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL}/stim`;
 
 	downloadStimButton.on('click', (_e) => {
-		var payload = {plaquettes: []};
+		const payload = {plaquettes: []};
 		const tiles = workspace.children.filter((child) => child.isTile);
 		tiles.forEach((tile) => {
-			var _plaquette = {
+			const _plaquette = {
 				color: tile.plaquette.color.toUint8RgbArray(),
 				qubits: [],
 				layers: []
 			}
+			const originQubit = tile.plaquette.qubits.toSorted((a, b) => a.globalX - b.globalX)	// leftmost qubits
+				.toSorted((a, b) => a.globalY - b.globalY)[0]; // topmost qubit
 			tile.plaquette.qubits.forEach((qubit) => {
-				assert(qubit.globalX >= 0 && qubit.globalY >= 0, "Qubit coordinates must be non-negative")
-				assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome", "Qubit type must be either 'data' or 'syndrome'")
+				assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome",
+					"Qubit type must be either 'data' or 'syndrome'")
 				_plaquette.qubits.push({
-					x: qubit.globalX,
-					y: qubit.globalY,
+					x: (originQubit.globalX - qubit.globalX) / gridSize,
+					y: (originQubit.globalY - qubit.globalY) / gridSize,
 					qubitType: qubit.qubitType
 				})
 			});
