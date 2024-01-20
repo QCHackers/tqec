@@ -8,7 +8,6 @@ CORS(app)
 
 @app.route("/")
 def root():
-    print("Root!")
     return send_file("static/index.html")
 
 
