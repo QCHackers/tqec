@@ -12,7 +12,7 @@ const assert = require('assert');
 const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
 const testingBackendURL = { // Default values from Flask
 	ip: "127.0.0.1",
-	port: "5001",
+	port: "5000",
 }
 
 export default function TQECApp() {
