@@ -24,8 +24,8 @@ export default class Qubit extends Graphics {
 		this.qubitType = qubitType;
 
 		// Adjacent (degree 1) qubits
-		// QC properties
 		this.isQubit = true;
+		this.visible = true;
 	}
 
 	_onPointerOver = () => {
@@ -132,4 +132,12 @@ export default class Qubit extends Graphics {
 		// console.log(this.neighbors);
 		return this.neighbors;
 	};
+
+	hideQubitLabels = () => {
+		this.children.forEach((child) => {
+			if (child instanceof Text) {
+				child.visible = false;
+			}
+		});
+	}
 }

@@ -7,16 +7,17 @@ export const PlaquetteColors = {
 	yellow: new Color('yellow'),
 }
 export class Plaquette extends Graphics {
-	constructor(qubits, workspace, gridSize = 50, color = PlaquetteColors.purple) {
+	constructor(qubits, workspace, color = PlaquetteColors.purple) {
 		super();
 		// UI properties
 		this.workspace = workspace;
 		this.color = color;
-		this.gridSize = gridSize;
+		this.gridSize = workspace.gridSize;
 		this.gridOffsetX = this.gridSize;
 		this.gridOffsetY = this.gridSize;
 		this.isDragging = false;
 		this.plaquetteMade = false;
+		this.name = 'plaquette';
 
 		// Control panel properties
 		this.controlPanel = new Container();
@@ -44,8 +45,13 @@ export class Plaquette extends Graphics {
 		// QC properties
 		this.qubits = qubits || []; // We assume that the list is the order of the qubits
 		this.qubitStack = []; // The stack of qubits that form the convex hull
-		this.createPlaquette(); // Create the plaquette
+		this.populatePlaquetteShapeAndInteractionFields(); // Create the plaquette
 		this.lastClickTime = 0;
+
+		// Make this plaquette's qubits invisible
+		this.qubits.forEach((qubit) => {
+			qubit.hideQubitLabels();
+		});
 	}
 
 	mostLeftQubit = () =>
@@ -191,7 +197,7 @@ export class Plaquette extends Graphics {
 		return val <= 0;
 	};
 
-	createPlaquette = () => {
+	populatePlaquetteShapeAndInteractionFields = () => {
 		// The graphic should connect the points from the qubits
 		const nQubits = this.qubits.length;
 		if (nQubits < 3) {
@@ -310,31 +316,26 @@ export class Plaquette extends Graphics {
 					newQubits.push(q);
 				}
 			}
-			this.createNewPlaquette(newQubits);
+			this.parent.addChild(this.createNewPlaquette(newQubits));
 		}
 		
 	};
 
 	createNewPlaquette(newQubits) {
-		let newColor = PlaquetteColors.yellow;
-		if (this.color !== PlaquetteColors.purple) {
-			newColor = PlaquetteColors.purple;
-		}
+		let newColor = this.color === PlaquetteColors.purple ? PlaquetteColors.yellow : PlaquetteColors.purple;
 		const newPlaquette = new Plaquette(
 			newQubits,
 			this.workspace,
-			this.gridSize,
 			newColor
 		);
-		// Add the plaquette to parent container
-		this.parent.addChild(newPlaquette);
+		return newPlaquette;
 	}
 
 	changePlaquetteColor(newColor) {
 		this.color = newColor;
 		// Update the color of the convex hull shape.
 		this.clear();
-		this.createPlaquette();
+		this.populatePlaquetteShapeAndInteractionFields();
 	}
 
 	onDragEnd() {
@@ -480,10 +481,10 @@ export class Plaquette extends Graphics {
 			'new_button_bottom': this.clonedBottomQubits
 		}
 		button.on('click', (_event) => {
-			this.workspace.addChild(this);
 			this.makeExtensible();
-			this.toggleCtrlButtons();			
-			this.createNewPlaquette(buttonKindToFunction[name]());
+			this.toggleCtrlButtons();
+			const newPlaquette = this.createNewPlaquette(buttonKindToFunction[name]());
+			this.parent.addChild(newPlaquette); // add the new plaquette to this plaquette's tile
 		});
 		button.name = name;
 		this.controlPanel.addChild(button);

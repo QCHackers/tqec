@@ -3,9 +3,10 @@ import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
-import Tile from './TileClass';
+import TileClass from './TileClass';
 import { button } from './components/button';
 import axios from 'axios';
+import { Plaquette } from './plaquettes/PlaquetteClass';
 
 const assert = require('assert');
 // TODO: move this to a config file
@@ -29,6 +30,7 @@ export default function TQECApp() {
 
 	workspace.addChild(grid);
 	workspace.selectedPlaquette = null; // Used to update filters
+	workspace.gridSize = gridSize;
 
 	workspace.updateSelectedPlaquette = (newPlaquette) => {
 		if (newPlaquette === null) {
@@ -62,7 +64,11 @@ export default function TQECApp() {
 		if (currentControlPanel === plaquette.controlPanel) {
 			workspace.removeChild(currentControlPanel);
 		}
-		workspace.removeChild(plaquette);
+		workspace.children.filter((child) => child instanceof TileClass).forEach((tile) => {
+			if (tile.getPlaquettes().includes(plaquette)) {
+				tile.removeChild(plaquette);
+			}
+		});
 		plaquette.destroy({ children: true });
 	}
 
@@ -92,10 +98,8 @@ export default function TQECApp() {
 	const plaquetteButton = button('Create plaquette', 100, 100);
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
-		const tile = new Tile(selectedQubits, app);
-		tile.createPlaquette();
-		tile.container.isTile = true;
-		workspace.addChild(tile.container);
+		const tile = new TileClass([new Plaquette(selectedQubits, workspace)], workspace);
+		workspace.addChild(tile);
 		// Clear the selected qubits
 		selectedQubits = [];
 		// Hide the button
@@ -127,6 +131,9 @@ export default function TQECApp() {
 			return;
 		}
 		selectedQubits.push(qubit);
+		selectedQubits.forEach((qubit) => {
+			qubit.visible = true;
+		});
 		if (selectedQubits.length > 2) {
 			// Show the button
 			plaquetteButton.visible = true;
@@ -142,26 +149,29 @@ export default function TQECApp() {
 
 	downloadStimButton.on('click', (_e) => {
 		const payload = {plaquettes: []};
-		const tiles = workspace.children.filter((child) => child.isTile);
-		tiles.forEach((tile) => {
-			const _plaquette = {
-				color: tile.plaquette.color.toUint8RgbArray(),
-				qubits: [],
-				layers: []
-			}
-			const originQubit = tile.plaquette.qubits.toSorted((a, b) => a.globalX - b.globalX)	// leftmost qubits
-				.toSorted((a, b) => a.globalY - b.globalY)[0]; // topmost qubit
-			tile.plaquette.qubits.forEach((qubit) => {
-				assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome",
-					"Qubit type must be either 'data' or 'syndrome'")
-				_plaquette.qubits.push({
-					x: (originQubit.globalX - qubit.globalX) / gridSize,
-					y: (originQubit.globalY - qubit.globalY) / gridSize,
-					qubitType: qubit.qubitType
-				})
+		workspace.children.filter((child) => child instanceof TileClass).forEach((tile) => {
+			tile.getPlaquettes().forEach((plaquette) => {
+				const marshalledPlaquette = {
+					color: plaquette.color.toUint8RgbArray(),
+					qubits: [],
+					layers: []
+				}
+				// marshall qubits
+				const originQubit = plaquette.qubits.toSorted((a, b) => a.globalX - b.globalX)	// leftmost qubits
+					.toSorted((a, b) => a.globalY - b.globalY)[0]; // topmost qubit
+				plaquette.qubits.forEach((qubit) => {
+					assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome",
+						"Qubit type must be either 'data' or 'syndrome'")
+					marshalledPlaquette.qubits.push({
+						x: (originQubit.globalX - qubit.globalX) / gridSize,
+						y: (originQubit.globalY - qubit.globalY) / gridSize,
+						qubitType: qubit.qubitType
+					})
+				});
+				payload.plaquettes.push(marshalledPlaquette);
 			});
-			payload.plaquettes.push(_plaquette);
 		});
+		// send request to backend
 		axios({
 			method: 'POST',
 			url: stimURL,
