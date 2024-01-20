@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # App Engine itself will serve those files as configured in app.yaml.
     app.run(host="127.0.0.1", port=5000, debug=True)
 
-@app.route("/stim", methods=['GET', 'POST'])
+@app.route("/stim", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def jsonToStim() -> Response:
     _json = request.get_json()
