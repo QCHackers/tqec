@@ -61,8 +61,7 @@ export class DownloadButton extends Button {
 			this._onClick(_e);
 		});
 		const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-		this.stimURL = `${localTesting ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
-										: config.prodBackendURL}/stim`;
+		this.stimURL = `${localTesting ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}` : config.prodBackendURL}/stim`;
 	}
 	
 	_onClick = (_e) => {
