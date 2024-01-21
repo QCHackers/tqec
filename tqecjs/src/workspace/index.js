@@ -4,17 +4,8 @@ import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
 import TileClass from './TileClass';
-import { button } from './components/button';
-import axios from 'axios';
+import { Button, DownloadButton } from './components/button';
 import { Plaquette } from './plaquettes/PlaquetteClass';
-
-const assert = require('assert');
-// TODO: move this to a config file
-const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
-const testingBackendURL = { // Default values from Flask
-	ip: "127.0.0.1",
-	port: "5000",
-}
 
 export default function TQECApp() {
 	// Initialize the app
@@ -95,7 +86,7 @@ export default function TQECApp() {
 
 	let selectedQubits = [];
 	// Create the button
-	const plaquetteButton = button('Create plaquette', 100, 100);
+	const plaquetteButton = new Button('Create plaquette', 100, 100);
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
 		const tile = new TileClass([new Plaquette(selectedQubits, workspace)], workspace);
@@ -139,66 +130,13 @@ export default function TQECApp() {
 			plaquetteButton.visible = true;
 		}
 	};
-
 	workspace.addChild(plaquetteButton);
 
 	// Add download stim button
-	const downloadStimButton = button('Download Stim file', 100, 50, 'white', 'black');
-	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-	const stimURL = `${localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL}/stim`;
-
-	downloadStimButton.on('click', (_e) => {
-		const payload = {plaquettes: []};
-		workspace.children.filter((child) => child instanceof TileClass).forEach((tile) => {
-			tile.getPlaquettes().forEach((plaquette) => {
-				const marshalledPlaquette = {
-					color: plaquette.color.toUint8RgbArray(),
-					qubits: [],
-					layers: []
-				}
-				// marshall qubits
-				const originQubit = plaquette.qubits.toSorted((a, b) => a.globalX - b.globalX)	// leftmost qubits
-					.toSorted((a, b) => a.globalY - b.globalY)[0]; // topmost qubit
-				plaquette.qubits.forEach((qubit) => {
-					assert(qubit.qubitType === "data" || qubit.qubitType === "syndrome",
-						"Qubit type must be either 'data' or 'syndrome'")
-					marshalledPlaquette.qubits.push({
-						x: (originQubit.globalX - qubit.globalX) / gridSize,
-						y: (originQubit.globalY - qubit.globalY) / gridSize,
-						qubitType: qubit.qubitType
-					})
-				});
-				payload.plaquettes.push(marshalledPlaquette);
-			});
-		});
-		// send request to backend
-		axios({
-			method: 'POST',
-			url: stimURL,
-			data: JSON.stringify(payload),
-			headers: {
-				'Content-Type': 'application/json',
-				'Data-Type': 'json',
-			},
-			responseType: 'blob'
-		}).then((res) => {
-			// create file link in browser's memory
-			const href = URL.createObjectURL(res.data);
-			// create "a" HTML element with href to file & click
-			const link = document.createElement('a');
-			link.href = href;
-			link.setAttribute('download', 'circuit.json'); //or any other extension
-			document.body.appendChild(link);
-			link.click();
-			// clean up "a" element & remove ObjectURL
-			document.body.removeChild(link);
-			URL.revokeObjectURL(href);
-		}).catch((err) => {
-			console.log(err);
-		});
-	});
-
+	const downloadStimButton = new DownloadButton(workspace, 'Download Stim file', 100, 50, 'white', 'black');
 	workspace.addChild(downloadStimButton);
+
+	// Final workspace setup
 	workspace.visible = true;
 	app.view.addEventListener('click', selectQubit);
 	app.stage.addChild(workspace);

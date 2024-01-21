@@ -1,5 +1,5 @@
 import { Graphics, Container, Color } from 'pixi.js';
-import { button } from '../components/button';
+import { Button } from '../components/button';
 import notification from '../components/notifier';
 
 export const PlaquetteColors = {
@@ -25,13 +25,13 @@ export class Plaquette extends Graphics {
 		this.controlPanel.visible = true;
 
 		// Control panel button properties
-		this.rotateButton = button('Rotate', 200, 200, 'black');
-		this.clearButton = button('Clear', 200, 275, 'red');
-		this.colorButton = button('Change color', 200, 350, 'green');
-		this.newButtonTop = button('Add plaquette on top', 200, 425, 'blue');
-		this.newButtownRight = button('Add plaquette on right', 200, 500, 'orange');
-		this.newButtonLeft = button('Add plaquette on left', 200, 575, 'purple');
-		this.newButtonBottom = button('Add plaquette on bottom', 200, 650, 'brown');
+		this.rotateButton = new Button('Rotate', 200, 200, 'black');
+		this.clearButton = new Button('Clear', 200, 275, 'red');
+		this.colorButton = new Button('Change color', 200, 350, 'green');
+		this.newButtonTop = new Button('Add plaquette on top', 200, 425, 'blue');
+		this.newButtownRight = new Button('Add plaquette on right', 200, 500, 'orange');
+		this.newButtonLeft = new Button('Add plaquette on left', 200, 575, 'purple');
+		this.newButtonBottom = new Button('Add plaquette on bottom', 200, 650, 'brown');
 
 		this.initializeNewButton(this.newButtonTop, 'new_button_top');
 		this.initializeNewButton(this.newButtownRight, 'new_button_right');
