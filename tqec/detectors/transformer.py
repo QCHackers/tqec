@@ -1,6 +1,8 @@
 from copy import deepcopy
 
 import cirq
+import numpy
+import sympy
 
 from tqec.detectors.gate import RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
@@ -19,6 +21,19 @@ def _fill_in_detectors_global_record_indices_impl(
         number_of_moments_explored: int = 1
         for operation in moment.operations:
             if isinstance(operation, cirq.CircuitOperation):
+                # Getting the number of repetitions as an integer.
+                operation_repetitions: int
+                if isinstance(operation.repetitions, int):
+                    operation_repetitions = operation.repetitions
+                elif isinstance(operation.repetitions, sympy.Expr):
+                    operation_repetitions = int(operation.repetitions.evalf())
+                elif isinstance(operation.repetitions, numpy.integer):
+                    operation_repetitions = int(operation.repetitions)
+                else:
+                    raise RuntimeError(
+                        f"Wrong type for cirq.CircuitOperation.repetitions: {type(operation.repetitions).__str__}"
+                    )
+                # Recursively fill-in the detectors.
                 (
                     modified_circuit,
                     index_of_last_explored_moment,
@@ -29,7 +44,7 @@ def _fill_in_detectors_global_record_indices_impl(
                 )
                 number_of_moments_explored = (
                     index_of_last_explored_moment - current_moment_index
-                )
+                ) * operation_repetitions
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
             elif isinstance(operation.gate, RelativeMeasurementGate):
                 assert len(operation.qubits) == 1, (
