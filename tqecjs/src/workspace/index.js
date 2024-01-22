@@ -1,19 +1,20 @@
 import { useApp } from '@pixi/react';
-import { Container } from 'pixi.js';
+import { Container, Graphics } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
-import Tile from './TileClass';
+import Template from './TemplateClass';
 import { button } from './components/button';
 import axios from 'axios';
 
 // TODO: move this to a config file
-const prodBackendURL = "https://tqec-app-mvp.uc.r.appspot.com";
+const prodBackendURL = 'https://tqec-app-mvp.uc.r.appspot.com';
 
-const testingBackendURL = { // Default values from Flask
-	ip: "127.0.0.1",
-	port: "5000",
-}
+const testingBackendURL = {
+	// Default values from Flask
+	ip: '127.0.0.1',
+	port: '5000',
+};
 
 export default function TQECApp() {
 	// Initialize the app
@@ -43,12 +44,17 @@ export default function TQECApp() {
 			if (currentPlaquette != null) {
 				currentPlaquette.filters = null;
 			}
-			newPlaquette.filters = [new AdjustmentFilter({contrast: 0.5})]
-			workspace.removeChild('control_panel')
+			newPlaquette.filters = [new AdjustmentFilter({ contrast: 0.5 })];
+			workspace.removeChild('control_panel');
 			workspace.addChild(newPlaquette.controlPanel);
 			workspace.selectedPlaquette = newPlaquette;
 		}
-	}
+	};
+	const rectangle = new Graphics();
+	rectangle.lineStyle(2, 0xff0000);
+	rectangle.drawRect(0, 0, 0, 0); // Initialize with zero dimensions
+	rectangle.visible = false;
+	app.stage.addChild(rectangle);
 
 	workspace.removePlaquette = (plaquette) => {
 		if (plaquette === null) {
@@ -64,7 +70,7 @@ export default function TQECApp() {
 		}
 		workspace.removeChild(plaquette);
 		plaquette.destroy({ children: true });
-	}
+	};
 
 	// Add the qubits to the workspace
 	for (let x = 0; x <= app.renderer.width; x += gridSize) {
@@ -88,17 +94,18 @@ export default function TQECApp() {
 	}
 
 	let selectedQubits = [];
-	// Create the button
+	const template = new Template(selectedQubits, workspace, app);
+
 	const plaquetteButton = button('Create plaquette', 100, 100);
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
-		const tile = new Tile(selectedQubits, app);
-		tile.createPlaquette();
-		workspace.addChild(tile.container);
-		// Clear the selected qubits
-		selectedQubits = [];
-		// Hide the button
-		plaquetteButton.visible = false;
+		// const tile = new Template(selectedQubits, workspace);
+		// tile.createPlaquette();
+		// workspace.addChild(tile.container);
+		// // Clear the selected qubits
+		// selectedQubits = [];
+		// // Hide the button
+		// plaquetteButton.visible = false;
 	});
 	plaquetteButton.visible = false;
 
@@ -132,32 +139,36 @@ export default function TQECApp() {
 		}
 	};
 
-	workspace.addChild(plaquetteButton);
+	// workspace.addChild(plaquetteButton);
+	workspace.addChild(template.container);
 
 	// Add download stim button
 	const downloadStimButton = button('Download Stim file', grid.width * 0.9, 50);
-	const localTesting = !window.location.href.includes("https://"); // FIXME: this is a hack
-	const stimURL = `${(localTesting ? `http://${testingBackendURL.ip}:${testingBackendURL.port}` : prodBackendURL)}/stim`;
+	const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
+	const stimURL = `${
+		localTesting
+			? `http://${testingBackendURL.ip}:${testingBackendURL.port}`
+			: prodBackendURL
+	}/stim`;
 
-	downloadStimButton.on('click', (_e) => {
-		axios({
+	downloadStimButton.on('click', async (_e) => {
+		const res = await axios({
 			url: stimURL,
 			method: 'GET',
 			responseType: 'blob',
-		}).then((res) => {
-			// create file link in browser's memory
-			const href = URL.createObjectURL(res.data);
-			// create "a" HTML element with href to file & click
-			const link = document.createElement('a');
-			link.href = href;
-			link.setAttribute('download', 'circuit.stim'); //or any other extension
-			document.body.appendChild(link);
-			link.click();
-			// clean up "a" element & remove ObjectURL
-			document.body.removeChild(link);
-			URL.revokeObjectURL(href);
-		}
-	)});
+		});
+		// create file link in browser's memory
+		const href = URL.createObjectURL(res.data);
+		// create "a" HTML element with href to file & click
+		const link = document.createElement('a');
+		link.href = href;
+		link.setAttribute('download', 'circuit.stim'); //or any other extension
+		document.body.appendChild(link);
+		link.click();
+		// clean up "a" element & remove ObjectURL
+		document.body.removeChild(link);
+		URL.revokeObjectURL(href);
+	});
 
 	workspace.addChild(downloadStimButton);
 	workspace.visible = true;
