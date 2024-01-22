@@ -1,7 +1,7 @@
 matplotlib
 numpy
 networkx
-cirq
+cirq-core
 stim
 stimcirq
 Flask==3.0.0
