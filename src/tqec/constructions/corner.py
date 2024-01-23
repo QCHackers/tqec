@@ -60,7 +60,7 @@ class ScalableCorner(TemplateOrchestrator):
                 ],
             ),
             # 10
-            TemplateWithIndices(ScalableRectangle(2, dim), [9, 8]),
+            TemplateWithIndices(ScalableRectangle(2, dim, scale_width=False), [9, 8]),
             TemplateWithIndices(ScalableAlternatingSquare(dim), [9, 8]),
             TemplateWithIndices(ScalableRectangle(1, dim), [10, 0]),
             TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
