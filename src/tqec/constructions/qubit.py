@@ -44,10 +44,10 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
 
 class ScalableQubitRectangle(TemplateOrchestrator):
-    def __init__(self, width: int, height: int) -> None:
+    def __init__(self, width: int, height: int, scale_width: bool | None = None) -> None:
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableRectangle(width, height), [3, 4]),
+            TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
             TemplateWithIndices(ScalableRectangle(width, 1), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
