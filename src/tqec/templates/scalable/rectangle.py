@@ -4,14 +4,13 @@ from tqec.templates.shapes.rectangle import Rectangle
 
 
 class ScalableRectangle(ScalableTemplate):
-    """Rectangle with scalable width **or** height."""
     def __init__(
         self, 
         width: int, 
         height: int, 
         scale_width: bool | None = None,
     ) -> None:
-        """Create an instance of ScalableRectangle.
+        """Rectangle with scalable width **or** height.
 
         A scalable rectangle can only scale its width **or** height, but not both.
 

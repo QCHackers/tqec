@@ -45,6 +45,16 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
 class ScalableQubitRectangle(TemplateOrchestrator):
     def __init__(self, width: int, height: int, scale_width: bool | None = None) -> None:
+        """A scalable rectangle error-corrected qubit.
+        
+        A scalable rectangle qubit can only scale its width **or** height, but not both.
+        
+        :param width: width of the qubit.   
+        :param height: height of the qubit.
+        :param scale_width: whether to scale the width or height. If None, the dimension
+            with the even value or the larger value will be scaled. If both dimensions
+            are even and equal, the width will be scaled by default.
+        """
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),
