@@ -88,16 +88,17 @@ class Template(JSONEncodable):
 
     @abstractmethod
     def scale_to(self, k: int) -> "Template":
-        """Scales self to the given dimension k.
+        """Scales self to the given scale k.
 
-        This function "scales to" and not "scales". This means that k is NOT a multiplicator
-        for the Template dimension, but rather the new dimensions.
-        For a 4x4 square T, T.scale_to(2) will return a 2x2 square, NOT a 8x8 one.
-
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        enforced to be even, which avoids some invalid configuration of the template.
+        
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
-        :param k: the new dimension of the template.
+        :param k: the new scale of the template.
         :returns: self, once scaled.
         """
         pass

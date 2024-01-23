@@ -12,12 +12,12 @@ class ScalableRectangle(ScalableTemplate):
         width, height = self.shape_instance.get_parameters()
         # Scale the parameters
         if width > height:
-            width = k
+            width = 2 * k
         elif width == height:
-            width = k
-            height = k
+            width = 2 * k
+            height = 2 * k
         else:  # width < height
-            height = k
+            height = 2 * k
         # Change the underlying rectangle shape parameters
         self.shape_instance.set_parameters((width, height))
         return self

@@ -338,6 +338,19 @@ class TemplateOrchestrator(JSONEncodable):
         return self.build_array(plaquette_indices)
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
+        """Scales all the scalable component templates to the given scale k.
+
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        enforced to be even, which avoids some invalid configuration of the template.
+        
+        Note that this function scales to INLINE, so the instance on which it is called is
+        modified in-place AND returned.
+
+        :param k: the new scale of the component templates.
+        :returns: self, once scaled.
+        """
         for t in self._templates:
             t.scale_to(k)
         return self
