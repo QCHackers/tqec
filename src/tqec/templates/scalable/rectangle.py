@@ -25,7 +25,7 @@ class ScalableRectangle(ScalableTemplate):
         if scale_width is None:
             scale_width = height % 2 != 0 or (width % 2 == 0 and width >= height)
         super().__init__(Rectangle(width, height))
-        self._scale_width = scale_width
+        self._scale_width: bool = scale_width
 
     def scale_to(self, k: int) -> Template:
         # Get the underlying rectangle shape parameters
