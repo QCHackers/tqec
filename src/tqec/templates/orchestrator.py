@@ -96,6 +96,15 @@ class TemplateOrchestrator(JSONEncodable):
         self._maximum_plaquette_mapping_index: int = 0
         self.add_templates(templates)
 
+    def _check_template_id(self, template_id: int) -> None:
+        if template_id < len(self._templates):
+            err = IndexError()
+            err.add_note(
+                f"Asking for element identified by {template_id} when only "
+                f"{len(self._templates)} templates have been added to the TemplateOrchestrator instance."
+            )
+            raise err
+
     def add_template(
         self,
         template_to_insert: TemplateWithIndices,
@@ -140,8 +149,8 @@ class TemplateOrchestrator(JSONEncodable):
             template provided in first parameter will be positioned.
         :returns: self, to be able to chain calls to this method.
         """
-        assert template_id_to_position < len(self._templates)
-        assert anchor_id < len(self._templates)
+        self._check_template_id(template_id_to_position)
+        self._check_template_id(anchor_id)
 
         anchor_corner: CornerPositionEnum
         template_corner: CornerPositionEnum
@@ -186,8 +195,8 @@ class TemplateOrchestrator(JSONEncodable):
         """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
-        assert template_id < len(self._templates)
-        assert anchor_id < len(self._templates)
+        self._check_template_id(template_id)
+        self._check_template_id(anchor_id)
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
         self._relative_position_graph.add_edge(
