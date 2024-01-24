@@ -1,12 +1,29 @@
 from copy import deepcopy
 
 import cirq
-
 from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Shape2D
 from tqec.templates.orchestrator import TemplateOrchestrator
+
+
+class WrongNumberOfPlaquetteProvided(Exception):
+    def __init__(self, number_provided: int, number_expected: int) -> None:
+        super().__init__(
+            f"{number_provided} plaquettes have been provided, but {number_expected} were expected."
+        )
+
+
+class CannotUsePlaquetteWithDifferentShapes(Exception):
+    def __init__(self, plaquettes: list[Plaquette]) -> None:
+        different_shapes: set[tuple[int, ...]] = set(
+            p.shape.to_numpy_shape() for p in plaquettes
+        )
+        super().__init__(
+            f"Found Plaquette instances with different shapes: {different_shapes}. "
+            "See https://github.com/QCHackers/tqec/issues/34."
+        )
 
 
 def generate_circuit(
@@ -35,23 +52,23 @@ def generate_circuit(
     :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
         represented by the provided inputs.
 
-    :raises AssertionError: if any of the pre-conditions is not met.
+    :raises CannotUsePlaquetteWithDifferentShapes: if the provided Plaquette instance do not ALL
+        have the same shape. See https://github.com/QCHackers/tqec/issues/34 for more information.
     """
     # Check that the user gave enough plaquettes.
     # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
     # The user is not expected to know about this implementation detail, so we hide it.
-    assert len(plaquettes) == template.expected_plaquettes_number - 1, (
-        f"The given template requires {template.expected_plaquettes_number - 1} plaquettes "
-        f"but only {len(plaquettes)} have been provided."
-    )
+    if len(plaquettes) != template.expected_plaquettes_number - 1:
+        raise WrongNumberOfPlaquetteProvided(
+            len(plaquettes), template.expected_plaquettes_number - 1
+        )
 
     # Check that all the given plaquettes have the same shape. If not, this is an issue.
     # The shape limitation is an assumption to simplify the code and will have to be
     # eventually lifted.
     plaquette_shape: Shape2D = plaquettes[0].shape
-    assert all(
-        p.shape == plaquette_shape for p in plaquettes
-    ), "All plaquettes should have exactly the same shape for the moment."
+    if any(p.shape != plaquette_shape for p in plaquettes):
+        raise CannotUsePlaquetteWithDifferentShapes(plaquettes)
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.

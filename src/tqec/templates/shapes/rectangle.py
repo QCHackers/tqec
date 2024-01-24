@@ -1,9 +1,8 @@
 import typing as ty
 
 import numpy
-
 from tqec.position import Shape2D
-from tqec.templates.shapes.base import BaseShape
+from tqec.templates.shapes.base import BaseShape, WrongNumberOfParameters
 
 
 class Rectangle(BaseShape):
@@ -39,7 +38,8 @@ class Rectangle(BaseShape):
         return (self._width, self._height)
 
     def set_parameters(self, parameters: tuple[int, ...]) -> None:
-        assert len(parameters) == 2
+        if len(parameters) != 2:
+            raise WrongNumberOfParameters(2, len(parameters))
         self._width, self._height = parameters
 
 

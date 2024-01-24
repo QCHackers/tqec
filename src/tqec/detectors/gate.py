@@ -3,8 +3,15 @@ from dataclasses import dataclass
 
 import cirq
 import stim
-
 from tqec.detectors.measurement_map import CircuitMeasurementMap
+from tqec.errors import QubitTypeError
+
+
+class MeasurementAppliedOnMultipleQubits(Exception):
+    def __init__(self, qubits: tuple[cirq.Qid, ...]) -> None:
+        super().__init__(
+            f"Found a measurement applied on multiple qubits ({qubits}) which should not happen."
+        )
 
 
 class ShiftCoordsGate(cirq.Gate):
@@ -142,11 +149,11 @@ class RelativeMeasurementGate(cirq.Gate):
         return 1
 
     def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
-        assert len(qubits) == 1, (
-            f"Cannot apply a {self.__class__.__name__} to more than "
-            f"1 qubits ({len(qubits)} qubits given)."
-        )
-        assert isinstance(qubits[0], cirq.GridQubit), "Expecting a GridQubit instance."
+        if len(qubits) > 1:
+            raise MeasurementAppliedOnMultipleQubits(qubits)
+        if not isinstance(qubits[0], cirq.GridQubit):
+            raise QubitTypeError(cirq.GridQubit, type(qubits[0]))
+
         self._set_origin(qubits[0])
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
         tag = [cirq.VirtualTag()] if add_virtual_tag else []
