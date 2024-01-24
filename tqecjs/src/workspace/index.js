@@ -1,5 +1,5 @@
 import { useApp } from '@pixi/react';
-import { Container, Graphics } from 'pixi.js';
+import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
@@ -89,50 +89,22 @@ export default function TQECApp() {
 	}
 
 	let selectedQubits = [];
-	const template = new Template(selectedQubits, workspace, app);
+	const plaquetteButton = button('Create plaquette', 100, 120);
+	const template = new Template(
+		selectedQubits,
+		workspace,
+		plaquetteButton,
+		app
+	);
 
-	const plaquetteButton = button('Create plaquette', 100, 100);
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
-		// const tile = new Template(template.templateQubits, workspace);
-		// tile.createPlaquette();
-		// workspace.addChild(tile.container);
-		// // Clear the selected qubits
-		// selectedQubits = [];
-		// // Hide the button
-		// plaquetteButton.visible = false;
+		template.createPlaquette();
+		workspace.addChild(template.container);
+		// Clear the selected qubits
+		selectedQubits = [];
 	});
 	plaquetteButton.visible = false;
-
-	// Select qubits
-	const selectQubit = (e) => {
-		// Check if the click was on a qubit
-		const canvasRect = app.view.getBoundingClientRect(); // Get canvas position
-
-		// Calculate the relative click position within the canvas
-		const relativeX = e.clientX - canvasRect.left;
-		const relativeY = e.clientY - canvasRect.top;
-		// Get all the qubits
-		const qubits = workspace.children.filter((child) => child.isQubit === true);
-		const qubit = qubits.find(
-			// Find the qubit that was clicked
-			(qubit) => qubit.checkHitArea(relativeX, relativeY) === true
-		);
-		if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
-		// Check that the qubit is not already selected
-		if (selectedQubits.includes(qubit)) {
-			// Remove the qubit from the selected qubits
-			selectedQubits = selectedQubits.filter((q) => q !== qubit);
-			// Hide the button
-			plaquetteButton.visible = false;
-			return;
-		}
-		selectedQubits.push(qubit);
-		if (selectedQubits.length > 2) {
-			// Show the button
-			plaquetteButton.visible = true;
-		}
-	};
 
 	// workspace.addChild(plaquetteButton);
 	workspace.addChild(template.container);
@@ -173,7 +145,7 @@ export default function TQECApp() {
 
 	workspace.addChild(downloadStimButton);
 	workspace.visible = true;
-	app.view.addEventListener('click', selectQubit);
+	// app.stage.addChild(plaquetteButton);
 	app.stage.addChild(workspace);
 
 	return;
