@@ -3,11 +3,9 @@ from copy import deepcopy
 import cirq
 import numpy
 import sympy
-from tqec.detectors.gate import (
-    MeasurementAppliedOnMultipleQubits,
-    RelativeMeasurementGate,
-)
+from tqec.detectors.gate import RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
+from tqec.errors import MeasurementAppliedOnMultipleQubits
 
 
 def _fill_in_detectors_global_record_indices_impl(

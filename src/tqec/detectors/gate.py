@@ -5,13 +5,7 @@ import cirq
 import stim
 from tqec.detectors.measurement_map import CircuitMeasurementMap
 from tqec.errors import QubitTypeError
-
-
-class MeasurementAppliedOnMultipleQubits(Exception):
-    def __init__(self, qubits: tuple[cirq.Qid, ...]) -> None:
-        super().__init__(
-            f"Found a measurement applied on multiple qubits ({qubits}) which should not happen."
-        )
+from tqec.errors import MeasurementAppliedOnMultipleQubits
 
 
 class GlobalMeasurementLoopbackMissing(Exception):
@@ -19,6 +13,22 @@ class GlobalMeasurementLoopbackMissing(Exception):
         super().__init__(
             "Global measurement loopback offsets have not been computed."
             " Please call compute_global_measurements_loopback_offsets()."
+        )
+
+
+class CannotComputeMeasurementOffsetLoopback(Exception):
+    def __init__(
+        self,
+        measurement_map: CircuitMeasurementMap,
+        current_moment_index: int,
+        qubit: cirq.Qid,
+        relative_measurement_offset: int,
+    ) -> None:
+        super().__init__(
+            "An error happened during the measurement offset loopback computation. "
+            f"You asked for the {relative_measurement_offset} measurement on {qubit} "
+            f"at the moment {current_moment_index}. The computed measurement map is"
+            f"{measurement_map}."
         )
 
 
@@ -194,13 +204,19 @@ class RelativeMeasurementGate(cirq.Gate):
                 self._qubit_coordinate_system_origin
                 + relative_measurement.relative_qubit_positioning
             )
-            self._global_measurements_loopback_offsets.append(
-                measurement_map.get_measurement_relative_offset(
+            relative_offset = measurement_map.get_measurement_relative_offset(
+                current_moment_index,
+                qubit,
+                relative_measurement.relative_measurement_offset,
+            )
+            if relative_offset is None:
+                raise CannotComputeMeasurementOffsetLoopback(
+                    measurement_map,
                     current_moment_index,
                     qubit,
                     relative_measurement.relative_measurement_offset,
                 )
-            )
+            self._global_measurements_loopback_offsets.append(relative_offset)
 
 
 class DetectorGate(RelativeMeasurementGate):
