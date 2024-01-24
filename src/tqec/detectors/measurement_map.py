@@ -117,11 +117,6 @@ class CircuitMeasurementMap:
         for moment in circuit:
             global_measurement_indices.append(dict())
             for op in moment.operations:
-                # Note that cirq.CircuitOperation instances should never be encountered here because
-                # they should all have been flattened at the MeasurementMap creation.
-                assert not isinstance(
-                    op.untagged, cirq.CircuitOperation
-                ), "cirq.CircuitOperation should be flattened before calling this method."
                 if isinstance(op.gate, cirq.MeasurementGate):
                     assert (
                         len(op.qubits) == 1
