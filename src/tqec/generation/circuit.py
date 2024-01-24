@@ -62,12 +62,6 @@ def generate_circuit(
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
         p.circuit for p in plaquettes
     ]
-    # Assert that all the circuits are defined on 2-dimensional grids.
-    assert all(
-        isinstance(qubit, cirq.GridQubit)
-        for circuit in plaquette_circuits
-        for qubit in circuit.raw_circuit.all_qubits()
-    ), "Qubits used in plaquette layers should be instances of cirq.GridQubit."
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
     all_scheduled_circuits: list[ScheduledCircuit] = list()
