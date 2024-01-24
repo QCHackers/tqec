@@ -71,6 +71,14 @@ and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
 2. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
 3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
 
-```
+## Before you commit
 
-```
+`nbstripout` is a great option for clearing the output of the jupyter notebooks.
+It can be installed using `pip install nbstripout`. For more info see below in
+[before you commit section](#beforecommit)
+
+`nbdime` is a great tool for looking at the git diff for jupyter notebooks.
+
+For jupyterlab there is a market place extension which you need to enable first
+and that will let you search and install extensions from within jupyter lab. You
+can enable the marketplace extension with the following code:
