@@ -2,11 +2,7 @@ import typing as ty
 
 import networkx as nx
 import numpy
-
-from tqec.enums import (
-    CornerPositionEnum,
-    TemplateRelativePositionEnum,
-)
+from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.position import Position, Shape2D
 from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
 
@@ -146,7 +142,6 @@ class TemplateOrchestrator(JSONEncodable):
         """
         assert template_id_to_position < len(self._templates)
         assert anchor_id < len(self._templates)
-        assert isinstance(relative_position, TemplateRelativePositionEnum)
 
         anchor_corner: CornerPositionEnum
         template_corner: CornerPositionEnum
@@ -342,9 +337,9 @@ class TemplateOrchestrator(JSONEncodable):
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
