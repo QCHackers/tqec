@@ -50,11 +50,6 @@ export default function TQECApp() {
 			workspace.selectedPlaquette = newPlaquette;
 		}
 	};
-	const rectangle = new Graphics();
-	rectangle.lineStyle(2, 0xff0000);
-	rectangle.drawRect(0, 0, 0, 0); // Initialize with zero dimensions
-	rectangle.visible = false;
-	app.stage.addChild(rectangle);
 
 	workspace.removePlaquette = (plaquette) => {
 		if (plaquette === null) {
@@ -99,7 +94,7 @@ export default function TQECApp() {
 	const plaquetteButton = button('Create plaquette', 100, 100);
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
-		// const tile = new Template(selectedQubits, workspace);
+		// const tile = new Template(template.templateQubits, workspace);
 		// tile.createPlaquette();
 		// workspace.addChild(tile.container);
 		// // Clear the selected qubits

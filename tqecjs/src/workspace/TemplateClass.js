@@ -12,10 +12,13 @@ export default class Template {
 		this.cursor = 'pointer';
 		this.mode = 'static';
 		this.isDragging = false;
-		this.prevMouseX = 0;
-		this.prevMouseY = 0;
+		this.startX = 0;
+		this.startY = 0;
+		this.plaquette = null;
+		this.templateQubits = selectedQubits || [];
+		this.rectangle = new Graphics();
 		this.workspace = workspace;
-		this.templateButton = button('Step 1: Define a Template', 50, 100);
+		this.templateButton = button('Step 1: Define a Template', 100, 100);
 		this.templateButton.on('click', (e) => {
 			// Create the template
 			this.renderTemplateControlButtons();
@@ -28,14 +31,11 @@ export default class Template {
 			// Show a notification to now select qubits within the template to make a plaquette
 		});
 		this.container.addChild(this.templateButton);
-		// Quantum
-		this.selectedQubits = selectedQubits || [];
-		this.plaquette = null;
-		this.templateQubits = selectedQubits || [];
 	}
 
 	// Render the template control buttons
 	renderTemplateControlButtons() {
+		this.isDragging = true;
 		this.container.name = 'template';
 		// Create the buttons
 		this.clearButton = button('Clear', 100, 100);
@@ -48,18 +48,46 @@ export default class Template {
 			this.templateQubits.forEach((qubit) => {
 				qubit.changeColor('black');
 			});
-			this.selectedQubits = [];
+			// Clear the template qubits
+			this.templateQubits = [];
+			// Remove listeners
+			this.app.view.removeEventListener(
+				'mousedown',
+				this.mouseDownCreateTemplateArea
+			);
+			this.app.view.removeEventListener(
+				'mousemove',
+				this.mouseDragResizeTemplateArea
+			);
+			this.app.view.removeEventListener(
+				'mouseup',
+				this.mouseUpFinishTemplateArea
+			);
+			this.rectangle.visible = false;
 		});
 
 		this.makeTileButton = button('Step 2: Confirm Tile', 100, 150, 'darkgreen');
 		this.makeTileButton.on('click', (e) => {
+			if (this.templateQubits.length === 0) {
+				notification(this.app, 'Template requires +3 qubits');
+				return;
+			}
 			this.makeTileButton.visible = false;
 			this.clearButton.visible = false;
-			this.templateButton.visible = true;
 			this.isDragging = false;
-			this.makeTileButton.visible = false;
-			// Create the plaquettes and tile
-			return this.templateQubits;
+			// Remove listeners
+			this.app.view.removeEventListener(
+				'mousedown',
+				this.mouseDownCreateTemplateArea
+			);
+			this.app.view.removeEventListener(
+				'mousemove',
+				this.mouseDragResizeTemplateArea
+			);
+			this.app.view.removeEventListener(
+				'mouseup',
+				this.mouseUpFinishTemplateArea
+			);
 		});
 
 		// Add the buttons to the container
@@ -67,82 +95,100 @@ export default class Template {
 		this.container.addChild(this.makeTileButton);
 	}
 
-	defineTemplateArea() {
-		const rectangle = new Graphics();
-		rectangle.lineStyle(2, 0xff0000);
-		rectangle.drawRect(0, 0, 0, 0); // Initialize with zero dimensions
-		rectangle.visible = false;
-		rectangle.name = 'templateArea';
-		this.app.stage.addChild(rectangle);
+	mouseDownCreateTemplateArea = (event) => {
+		// Get the canvas position
+		const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+		// Calculate the relative click position within the canvas
+		const relativeX = event.clientX - canvasRect.left;
+		const relativeY = event.clientY - canvasRect.top;
 
-		let isDragging = false;
-		let startX, startY;
+		// Check that the event does not click on th clear button or the make tile button
+		console.log(relativeX, relativeY);
 
-		this.app.renderer.view.addEventListener('mousedown', (event) => {
-			isDragging = true;
+		console.log(this.clearButton.getBounds().contains(relativeX, relativeY));
+		if (this.makeTileButton.getBounds().contains(relativeX, relativeY)) {
+			return;
+		}
+		this.isDragging = true;
 
-			// Untint the qubits
-			this.templateQubits.forEach((qubit) => {
-				qubit.changeColor('black');
-			});
+		// Untint the qubits
+		this.templateQubits.forEach((qubit) => {
+			qubit.changeColor('black');
+		});
 
+		// Set the start position
+		this.startX = event.clientX;
+		this.startY = event.clientY;
+		this.rectangle.position.set(relativeX, relativeY);
+		this.rectangle.visible = true;
+	};
+
+	mouseDragResizeTemplateArea = (event) => {
+		if (this.isDragging) {
 			// Get the canvas position
-			const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
-			// Calculate the relative click position within the canvas
-			const relativeX = event.clientX - canvasRect.left;
-			const relativeY = event.clientY - canvasRect.top;
+			const width = event.clientX - this.startX;
+			const height = event.clientY - this.startY;
+			this.rectangle.clear();
+			this.rectangle.lineStyle(2, 0xff0000);
+			this.rectangle.drawRect(0, 0, width, height);
+			// Find the qubits within the this.rectangle
+			this.workspace.children.filter((child) => {
+				const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+				// Calculate the relative click position within the canvas
+				const relativeX = this.startX - canvasRect.left;
+				const relativeY = this.startY - canvasRect.top;
 
-			// Set the start position
-			startX = event.clientX;
-			startY = event.clientY;
-			rectangle.position.set(relativeX, relativeY);
-			rectangle.visible = true;
-		});
-
-		this.app.renderer.view.addEventListener('mousemove', (event) => {
-			if (isDragging) {
-				// Get the canvas position
-				const width = event.clientX - startX;
-				const height = event.clientY - startY;
-				rectangle.clear();
-				rectangle.lineStyle(2, 0xff0000);
-				rectangle.drawRect(0, 0, width, height);
-				// Find the qubits within the rectangle
-				this.workspace.children.filter((child) => {
-					const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
-					// Calculate the relative click position within the canvas
-					const relativeX = startX - canvasRect.left;
-					const relativeY = startY - canvasRect.top;
-
-					if (child.isQubit) {
-						const qubitX = child.globalX;
-						const qubitY = child.globalY;
-						if (
-							qubitX <= relativeX + width &&
-							qubitX >= relativeX &&
-							qubitY >= relativeY &&
-							qubitY <= relativeY + height
-						) {
-							// Change the color of the qubits
-							child.changeColor('green');
-							this.templateQubits.push(child);
-							return child;
-						} else if (this.templateQubits.includes(child)) {
-							// If the qubit is no longer in the template area, remove it from the template
-							this.templateQubits = this.templateQubits.filter(
-								(qubit) => qubit !== child
-							);
-							child.changeColor('black');
-						}
+				if (child.isQubit) {
+					const qubitX = child.globalX;
+					const qubitY = child.globalY;
+					if (
+						qubitX <= relativeX + width &&
+						qubitX >= relativeX &&
+						qubitY >= relativeY &&
+						qubitY <= relativeY + height
+					) {
+						// Change the color of the qubits
+						child.changeColor('green');
+						this.templateQubits.push(child);
+						return child;
+					} else if (this.templateQubits.includes(child)) {
+						// If the qubit is no longer in the template area, remove it from the template
+						this.templateQubits = this.templateQubits.filter(
+							(qubit) => qubit !== child
+						);
+						child.changeColor('black');
 					}
-				});
-			}
-		});
+				}
+			});
+		}
+	};
 
-		this.app.renderer.view.addEventListener('mouseup', () => {
-			isDragging = false;
-			rectangle.visible = false;
-		});
+	mouseUpFinishTemplateArea = (_event) => {
+		this.isDragging = false;
+		this.rectangle.visible = false;
+	};
+
+	defineTemplateArea() {
+		this.rectangle.lineStyle(2, 0xff0000);
+		this.rectangle.drawRect(0, 0, 0, 0); // Initialize with zero dimensions
+		this.rectangle.visible = false;
+		this.rectangle.name = 'templateArea';
+		this.app.stage.addChild(this.rectangle);
+
+		this.app.renderer.view.addEventListener(
+			'mousedown',
+			this.mouseDownCreateTemplateArea
+		);
+
+		this.app.renderer.view.addEventListener(
+			'mousemove',
+			this.mouseDragResizeTemplateArea
+		);
+
+		this.app.renderer.view.addEventListener(
+			'mouseup',
+			this.mouseUpFinishTemplateArea
+		);
 		return this.templateQubits;
 		// Notify the user that the template area has been defined
 		// notification(this.workspace, 'Template area defined');
