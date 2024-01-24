@@ -4,7 +4,7 @@ import notification from './components/notifier';
 import { button } from './components/button';
 
 export default class Template {
-	constructor(selectedQubits, workspace, app) {
+	constructor(selectedQubits, workspace, plaquetteButton, app) {
 		// UI Properties
 		this.app = app;
 		this.container = new Container();
@@ -15,10 +15,12 @@ export default class Template {
 		this.startX = 0;
 		this.startY = 0;
 		this.plaquette = null;
+		this.plaquetteButton = plaquetteButton;
 		this.templateQubits = selectedQubits || [];
+		this.selectedQubits = [];
 		this.rectangle = new Graphics();
 		this.workspace = workspace;
-		this.templateButton = button('Step 1: Define a Template', 100, 100);
+		this.templateButton = button('Step 1: Define a Template', 100, 120);
 		this.templateButton.on('click', (e) => {
 			// Create the template
 			this.renderTemplateControlButtons();
@@ -31,6 +33,8 @@ export default class Template {
 			// Show a notification to now select qubits within the template to make a plaquette
 		});
 		this.container.addChild(this.templateButton);
+		this.container.addChild(this.plaquetteButton);
+		this.container.name = 'template';
 	}
 
 	// Render the template control buttons
@@ -38,7 +42,7 @@ export default class Template {
 		this.isDragging = true;
 		this.container.name = 'template';
 		// Create the buttons
-		this.clearButton = button('Clear', 100, 100);
+		this.clearButton = button('Clear', 100, 120);
 		this.clearButton.on('click', (e) => {
 			// Clear the template
 			this.clearButton.visible = false;
@@ -64,9 +68,15 @@ export default class Template {
 				this.mouseUpFinishTemplateArea
 			);
 			this.rectangle.visible = false;
+			notification(this.app, 'Step 1: Drag to define a template area');
 		});
 
-		this.makeTileButton = button('Step 2: Confirm Tile', 100, 150, 'darkgreen');
+		this.makeTileButton = button(
+			'Step 2: Confirm Template',
+			100,
+			170,
+			'darkgreen'
+		);
 		this.makeTileButton.on('click', (e) => {
 			if (this.templateQubits.length === 0) {
 				notification(this.app, 'Template requires +3 qubits');
@@ -88,6 +98,17 @@ export default class Template {
 				'mouseup',
 				this.mouseUpFinishTemplateArea
 			);
+			notification(this.app, 'Step 3: Click on 3+ qubits to make a plaquette');
+			this.app.view.addEventListener('click', this.selectQubit);
+			this.plaquetteButton.visible = true;
+			this.plaquetteButton.on('click', (_e) => {
+				// Create the plaquettes and tile
+				this.createPlaquette();
+				this.workspace.addChild(this.container);
+				// Clear the selected qubits
+				this.selectedQubits = [];
+				notification(this.app, 'Step 4: Define the circuit');
+			});
 		});
 
 		// Add the buttons to the container
@@ -102,10 +123,7 @@ export default class Template {
 		const relativeX = event.clientX - canvasRect.left;
 		const relativeY = event.clientY - canvasRect.top;
 
-		// Check that the event does not click on th clear button or the make tile button
-		console.log(relativeX, relativeY);
-
-		console.log(this.clearButton.getBounds().contains(relativeX, relativeY));
+		// Check that the event does not click on the clear button or the make tile button
 		if (this.makeTileButton.getBounds().contains(relativeX, relativeY)) {
 			return;
 		}
@@ -190,8 +208,6 @@ export default class Template {
 			this.mouseUpFinishTemplateArea
 		);
 		return this.templateQubits;
-		// Notify the user that the template area has been defined
-		// notification(this.workspace, 'Template area defined');
 	}
 
 	makeTile() {
@@ -203,21 +219,45 @@ export default class Template {
 		}
 	}
 
+	// Select qubits
+	selectQubit = (e) => {
+		// Check if the click was on a qubit
+		const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+
+		// Calculate the relative click position within the canvas
+		const relativeX = e.clientX - canvasRect.left;
+		const relativeY = e.clientY - canvasRect.top;
+		// Get all the qubits
+		const qubits = this.templateQubits.filter(
+			(child) => child.isQubit === true
+		);
+		const qubit = qubits.find(
+			// Find the qubit that was clicked
+			(qubit) => qubit.checkHitArea(relativeX, relativeY) === true
+		);
+		if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
+		// Check that the qubit is not already selected
+		if (this.selectedQubits.includes(qubit)) {
+			// Remove the qubit from the selected qubits
+			this.selectedQubits = this.selectedQubits.filter((q) => q !== qubit);
+			return;
+		}
+		this.selectedQubits.push(qubit);
+		if (this.selectedQubits.length > 2) {
+			// Show the button
+			this.plaquetteButton.visible = true;
+		}
+	};
+
 	// Create the plaquettes that are assigned to the tile
 	createPlaquette = () => {
-		const workspace = this.app.stage.getChildByName('workspace');
 		// Check that the selected qubits are part of the template area
-		for (const qubit in this.selectedQubits) {
-			if (!this.templateQubits.includes(qubit)) {
-				notification(
-					this.workspace,
-					'Please select qubits within the template area'
-				);
-				return;
-			}
+		if (this.selectedQubits.length < 3) {
+			notification(this.app, 'Plaquette requires 3+ qubits');
+			return;
 		}
 		// Render the plaquette
-		const plaquette = new Plaquette(this.selectedQubits, workspace); // Remove the container
+		const plaquette = new Plaquette(this.selectedQubits, this.workspace); // Remove the container
 		if (!plaquette.plaquetteMade) return;
 		// Add the plaquette to the tile container
 		this.container.addChild(plaquette);
@@ -225,5 +265,10 @@ export default class Template {
 		this.selectedQubits.forEach((qubit) => {
 			qubit.removeChildren();
 		});
+		// Clear the selected qubits
+		this.selectedQubits = [];
+		// Notify the user that the plaquette has been created
+		notification(this.app, 'Plaquette created');
+		this.plaquetteButton.visible = true;
 	};
 }
