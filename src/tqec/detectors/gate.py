@@ -14,6 +14,14 @@ class MeasurementAppliedOnMultipleQubits(Exception):
         )
 
 
+class GlobalMeasurementLoopbackMissing(Exception):
+    def __init__(self) -> None:
+        super().__init__(
+            "Global measurement loopback offsets have not been computed."
+            " Please call compute_global_measurements_loopback_offsets()."
+        )
+
+
 class ShiftCoordsGate(cirq.Gate):
     def __init__(self, *args: int) -> None:
         """A virtual gate exporting to the SHIFT_COORDS stim instruction
@@ -263,10 +271,8 @@ class DetectorGate(RelativeMeasurementGate):
         # Forward compatibility with future arguments.
         **_,
     ):
-        assert self._global_measurements_loopback_offsets, (
-            "Global measurement loopback offsets have not been computed."
-            " Please call compute_global_measurements_loopback_offsets."
-        )
+        if not self._global_measurements_loopback_offsets:
+            raise GlobalMeasurementLoopbackMissing()
         edit_circuit.append(
             "DETECTOR",
             [stim.target_rec(i) for i in self._global_measurements_loopback_offsets],
@@ -342,10 +348,9 @@ class ObservableGate(RelativeMeasurementGate):
         # Forward compatibility with future arguments.
         **_,
     ):
-        assert self._global_measurements_loopback_offsets, (
-            "Global measurement loopback offsets have not been computed."
-            " Please call compute_global_measurements_loopback_offsets."
-        )
+        if not self._global_measurements_loopback_offsets:
+            raise GlobalMeasurementLoopbackMissing()
+
         edit_circuit.append(
             "OBSERVABLE_INCLUDE",
             [stim.target_rec(i) for i in self._global_measurements_loopback_offsets],

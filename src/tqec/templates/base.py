@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 import json
 import typing as ty
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
@@ -26,6 +26,14 @@ def _json_encoding_default(obj) -> str | dict | None:
     raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
 
 
+class DefaultKeyInKwargs(Exception):
+    def __init__(self, value) -> None:
+        super().__init__(
+            f"The 'default' key has been found with value '{value}' in the provided kwargs."
+            " 'default' key is prohibited in the public API as it is changed internally."
+        )
+
+
 class JSONEncodable(ABC):
     @abstractmethod
     def to_dict(self) -> dict[str, ty.Any]:
@@ -41,9 +49,10 @@ class JSONEncodable(ABC):
         :param kwargs: keyword arguments forwarded to the json.dumps function. The "default"
             keyword argument should NOT be present.
         :returns: the JSON representation of the instance.
-        :raises AssertionError: if the "default" key is present in kwargs.
+        :raises DefaultKeyInKwargs: if the "default" key is present in kwargs.
         """
-        assert "default" not in kwargs, "No default allowed!"
+        if "default" in kwargs:
+            raise DefaultKeyInKwargs(kwargs.get("default"))
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
 
@@ -92,9 +101,9 @@ class Template(JSONEncodable):
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
