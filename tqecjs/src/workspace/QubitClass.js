@@ -8,7 +8,7 @@ import { Graphics, Text } from 'pixi.js';
  * @param {number} y - The y position of the qubit
  */
 export default class Qubit extends Graphics {
-	
+
 	constructor(x, y, radius = 5, color = 'black', gridSize = 50) {
 		super();
 		// UI properties
@@ -61,7 +61,12 @@ export default class Qubit extends Graphics {
 		// Define a threshold to determine the hit area
 		if (distance <= threshold) {
 			// Create a text element
-			if (this.children.length > 0) return true; // If there is already a text element, don't create another one
+			if (this.children.length > 0) {
+				// If the qubit already has a text element, remove it
+				this.removeChildren();
+				return true;
+			}
+
 			const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
 				fill: 'white',
 				fontSize: 10,
