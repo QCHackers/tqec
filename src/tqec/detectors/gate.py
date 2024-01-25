@@ -4,10 +4,14 @@ from dataclasses import dataclass
 import cirq
 import stim
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException, QubitTypeException
+from tqec.exceptions import (
+    MeasurementAppliedOnMultipleQubitsException,
+    QubitTypeException,
+    TQECException,
+)
 
 
-class GlobalMeasurementLookbackMissingException(Exception):
+class GlobalMeasurementLookbackMissingException(TQECException):
     def __init__(self) -> None:
         super().__init__(
             "Global measurement lookback offsets have not been computed."
@@ -15,7 +19,7 @@ class GlobalMeasurementLookbackMissingException(Exception):
         )
 
 
-class CannotComputeMeasurementOffsetLookbackException(Exception):
+class CannotComputeMeasurementOffsetLookbackException(TQECException):
     def __init__(
         self,
         measurement_map: CircuitMeasurementMap,

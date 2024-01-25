@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import cirq
+from tqec.exceptions import TQECException
 from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
@@ -8,14 +9,14 @@ from tqec.position import Shape2D
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-class WrongNumberOfPlaquetteProvidedException(Exception):
+class WrongNumberOfPlaquetteProvidedException(TQECException):
     def __init__(self, number_provided: int, number_expected: int) -> None:
         super().__init__(
             f"{number_provided} plaquettes have been provided, but {number_expected} were expected."
         )
 
 
-class CannotUsePlaquetteWithDifferentShapesException(Exception):
+class CannotUsePlaquetteWithDifferentShapesException(TQECException):
     def __init__(self, plaquettes: list[Plaquette]) -> None:
         different_shapes: set[tuple[int, ...]] = set(
             p.shape.to_numpy_shape() for p in plaquettes

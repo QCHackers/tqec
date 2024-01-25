@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.shapes.base import BaseShape
 
@@ -26,7 +27,7 @@ def _json_encoding_default(obj) -> str | dict | None:
     raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
 
 
-class DefaultKeyInKwargsException(Exception):
+class DefaultKeyInKwargsException(TQECException):
     def __init__(self, value) -> None:
         super().__init__(
             f"The 'default' key has been found with value '{value}' in the provided kwargs."

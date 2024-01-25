@@ -1,5 +1,5 @@
 import cirq
-from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException
+from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException, TQECException
 
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
@@ -15,7 +15,7 @@ def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
     return cirq.Circuit([moment for e in obj for moment in flatten(e)])
 
 
-class PositiveMeasurementOffsetException(Exception):
+class PositiveMeasurementOffsetException(TQECException):
     def __init__(self, measurement_offset: int) -> None:
         super().__init__(
             f"Found a positive measurement offset ({measurement_offset}). "
@@ -23,12 +23,12 @@ class PositiveMeasurementOffsetException(Exception):
         )
 
 
-class CannotFindMeasurementOffsetException(Exception):
+class CannotFindMeasurementOffsetException(TQECException):
     def __init__(self) -> None:
         super().__init__("Cannot find measurement relative offset.")
 
 
-class CannotFindLastMeasurementException(Exception):
+class CannotFindLastMeasurementException(TQECException):
     def __init__(self, moment_index: int) -> None:
         super().__init__(
             f"Cannot find any measurement performed before moment {moment_index}."

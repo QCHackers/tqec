@@ -2,10 +2,11 @@ import typing as ty
 from abc import ABC, abstractmethod
 
 import numpy
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 
 
-class WrongNumberOfParametersException(Exception):
+class WrongNumberOfParametersException(TQECException):
     def __init__(self, expected: int, provided: int) -> None:
         super().__init__(
             f"{provided} parameters were provided, but {expected} were expected."
