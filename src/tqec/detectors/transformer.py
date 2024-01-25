@@ -51,7 +51,7 @@ def _fill_in_detectors_global_record_indices_impl(
                     raise MeasurementAppliedOnMultipleQubits(operation.qubits)
                 new_operation = deepcopy(operation)
                 relative_measurement_gate: RelativeMeasurementGate = new_operation.gate  # type: ignore
-                relative_measurement_gate.compute_global_measurements_loopback_offsets(
+                relative_measurement_gate.compute_global_measurements_lookback_offsets(
                     global_measurement_map, current_moment_index
                 )
                 operations.append(new_operation)

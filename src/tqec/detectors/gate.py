@@ -4,19 +4,18 @@ from dataclasses import dataclass
 import cirq
 import stim
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.errors import QubitTypeError
-from tqec.errors import MeasurementAppliedOnMultipleQubits
+from tqec.errors import MeasurementAppliedOnMultipleQubits, QubitTypeError
 
 
-class GlobalMeasurementLoopbackMissing(Exception):
+class GlobalMeasurementLookbackMissing(Exception):
     def __init__(self) -> None:
         super().__init__(
-            "Global measurement loopback offsets have not been computed."
-            " Please call compute_global_measurements_loopback_offsets()."
+            "Global measurement lookback offsets have not been computed."
+            " Please call compute_global_measurements_lookback_offsets()."
         )
 
 
-class CannotComputeMeasurementOffsetLoopback(Exception):
+class CannotComputeMeasurementOffsetlookback(Exception):
     def __init__(
         self,
         measurement_map: CircuitMeasurementMap,
@@ -25,7 +24,7 @@ class CannotComputeMeasurementOffsetLoopback(Exception):
         relative_measurement_offset: int,
     ) -> None:
         super().__init__(
-            "An error happened during the measurement offset loopback computation. "
+            "An error happened during the measurement offset lookback computation. "
             f"You asked for the {relative_measurement_offset} measurement on {qubit} "
             f"at the moment {current_moment_index}. The computed measurement map is"
             f"{measurement_map}."
@@ -96,7 +95,7 @@ class RelativeMeasurementGate(cirq.Gate):
     def __init__(
         self,
         qubit_coordinate_system_origin: cirq.GridQubit,
-        relative_measurements_loopback_offsets: list[RelativeMeasurement],
+        relative_measurements_lookback_offsets: list[RelativeMeasurement],
     ) -> None:
         """Gate representing a Stim instruction with relative measurements as targets.
 
@@ -129,7 +128,7 @@ class RelativeMeasurementGate(cirq.Gate):
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move instances of
             this Gate along with plaquettes.
-        :param measurements_loopback_offsets: a list of measurements that are part of the gate. The
+        :param measurements_lookback_offsets: a list of measurements that are part of the gate. The
             measurements are given as a tuple with the following entries:
 
             1. a qubit offset, that is considered relative to the qubit this gate will be applied on, and that
@@ -144,17 +143,17 @@ class RelativeMeasurementGate(cirq.Gate):
                the "on" method to construct an operation.
         """
         self._qubit_coordinate_system_origin = qubit_coordinate_system_origin
-        self._local_measurements_loopback_offsets_relative_to_origin = (
-            relative_measurements_loopback_offsets
+        self._local_measurements_lookback_offsets_relative_to_origin = (
+            relative_measurements_lookback_offsets
         )
-        self._global_measurements_loopback_offsets: list[int] = []
+        self._global_measurements_lookback_offsets: list[int] = []
         super().__init__()
 
     def __deepcopy__(self, memo: dict) -> "RelativeMeasurementGate":
         return RelativeMeasurementGate(
             deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             deepcopy(
-                self._local_measurements_loopback_offsets_relative_to_origin, memo=memo
+                self._local_measurements_lookback_offsets_relative_to_origin, memo=memo
             ),
         )
 
@@ -180,7 +179,7 @@ class RelativeMeasurementGate(cirq.Gate):
     def _set_origin(self, new_origin: cirq.GridQubit) -> None:
         self._qubit_coordinate_system_origin = new_origin
 
-    def compute_global_measurements_loopback_offsets(
+    def compute_global_measurements_lookback_offsets(
         self,
         measurement_map: CircuitMeasurementMap,
         current_moment_index: int,
@@ -194,10 +193,10 @@ class RelativeMeasurementGate(cirq.Gate):
         :param current_moment_index: index of the moment this gate instance is found in. Used to
             recover the correct data from the given measurement_map.
         """
-        self._global_measurements_loopback_offsets.clear()
+        self._global_measurements_lookback_offsets.clear()
         for (
             relative_measurement
-        ) in self._local_measurements_loopback_offsets_relative_to_origin:
+        ) in self._local_measurements_lookback_offsets_relative_to_origin:
             # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
             #                    coordinate system, so no issue here.
             qubit = (
@@ -210,20 +209,20 @@ class RelativeMeasurementGate(cirq.Gate):
                 relative_measurement.relative_measurement_offset,
             )
             if relative_offset is None:
-                raise CannotComputeMeasurementOffsetLoopback(
+                raise CannotComputeMeasurementOffsetlookback(
                     measurement_map,
                     current_moment_index,
                     qubit,
                     relative_measurement.relative_measurement_offset,
                 )
-            self._global_measurements_loopback_offsets.append(relative_offset)
+            self._global_measurements_lookback_offsets.append(relative_offset)
 
 
 class DetectorGate(RelativeMeasurementGate):
     def __init__(
         self,
         qubit_coordinate_system_origin: cirq.GridQubit,
-        measurements_loopback_offsets: list[RelativeMeasurement],
+        measurements_lookback_offsets: list[RelativeMeasurement],
         time_coordinate: int = 0,
     ) -> None:
         """Gate representing a detector.
@@ -232,7 +231,7 @@ class DetectorGate(RelativeMeasurementGate):
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
             along with measurement gates.
-        :param measurements_loopback_offsets: a list of measurements that are part of the detector. The
+        :param measurements_lookback_offsets: a list of measurements that are part of the detector. The
             measurements are given as a tuple with the following entries:
 
             1. a qubit offset, that is considered relative to the qubit this gate will be applied on, and that
@@ -248,13 +247,13 @@ class DetectorGate(RelativeMeasurementGate):
         :param time_coordinate: an annotation that will be forwarded to the DETECTOR Stim structure as the
             last coordinate.
         """
-        super().__init__(qubit_coordinate_system_origin, measurements_loopback_offsets)
+        super().__init__(qubit_coordinate_system_origin, measurements_lookback_offsets)
         self._time_coordinate = time_coordinate
 
     def __deepcopy__(self, memo: dict) -> "DetectorGate":
         return DetectorGate(
             deepcopy(self._qubit_coordinate_system_origin, memo=memo),
-            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
+            deepcopy(self._local_measurements_lookback_offsets_relative_to_origin),
             self._time_coordinate,
         )
 
@@ -287,11 +286,11 @@ class DetectorGate(RelativeMeasurementGate):
         # Forward compatibility with future arguments.
         **_,
     ):
-        if not self._global_measurements_loopback_offsets:
-            raise GlobalMeasurementLoopbackMissing()
+        if not self._global_measurements_lookback_offsets:
+            raise GlobalMeasurementLookbackMissing()
         edit_circuit.append(
             "DETECTOR",
-            [stim.target_rec(i) for i in self._global_measurements_loopback_offsets],
+            [stim.target_rec(i) for i in self._global_measurements_lookback_offsets],
             self.coordinates,
         )
 
@@ -300,7 +299,7 @@ class ObservableGate(RelativeMeasurementGate):
     def __init__(
         self,
         qubit_coordinate_system_origin: cirq.GridQubit,
-        measurements_loopback_offsets: list[RelativeMeasurement],
+        measurements_lookback_offsets: list[RelativeMeasurement],
         observable_index: int = 0,
     ) -> None:
         """Gate representing an observable.
@@ -315,7 +314,7 @@ class ObservableGate(RelativeMeasurementGate):
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move observables
             along with plaquettes.
-        :param measurements_loopback_offsets: a list of measurements that are part of the observable. The
+        :param measurements_lookback_offsets: a list of measurements that are part of the observable. The
             measurements are given as a tuple with the following entries:
 
             1. a qubit offset, that is considered relative to the qubit this gate will be applied on, and that
@@ -329,13 +328,13 @@ class ObservableGate(RelativeMeasurementGate):
             2. applied on the qubit "origin + cirq.GridQubit(1, 1)", where "origin" is the qubit given to
                the "on" method to construct an operation.
         """
-        super().__init__(qubit_coordinate_system_origin, measurements_loopback_offsets)
+        super().__init__(qubit_coordinate_system_origin, measurements_lookback_offsets)
         self._observable_index = observable_index
 
     def __deepcopy__(self, memo: dict) -> "ObservableGate":
         return ObservableGate(
             deepcopy(self._qubit_coordinate_system_origin, memo=memo),
-            deepcopy(self._local_measurements_loopback_offsets_relative_to_origin),
+            deepcopy(self._local_measurements_lookback_offsets_relative_to_origin),
             self._observable_index,
         )
 
@@ -364,11 +363,11 @@ class ObservableGate(RelativeMeasurementGate):
         # Forward compatibility with future arguments.
         **_,
     ):
-        if not self._global_measurements_loopback_offsets:
-            raise GlobalMeasurementLoopbackMissing()
+        if not self._global_measurements_lookback_offsets:
+            raise GlobalMeasurementLookbackMissing()
 
         edit_circuit.append(
             "OBSERVABLE_INCLUDE",
-            [stim.target_rec(i) for i in self._global_measurements_loopback_offsets],
+            [stim.target_rec(i) for i in self._global_measurements_lookback_offsets],
             self.coordinates,
         )
