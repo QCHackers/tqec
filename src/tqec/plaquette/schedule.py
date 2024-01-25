@@ -19,21 +19,6 @@ class ScheduleWithNonIntegerEntriesException(ScheduleException):
         )
 
 
-class ScheduleNotSortedException(ScheduleException):
-    def __init__(self, schedule: list[int]) -> None:
-        super().__init__(
-            f"The provided schedule {schedule} is not sorted. "
-            "You should only provide sorted schedules."
-        )
-
-
-class CannotScheduleCircuitException(ScheduleException):
-    def __init__(self, circuit: cirq.Circuit, schedule: list[int]) -> None:
-        super().__init__(
-            f"The provided cirq.Circuit instance:\n{circuit}\n cannot be scheduled."
-        )
-
-
 class ScheduleEntryTooLowException(ScheduleException):
     def __init__(self, first_schedule_entry: int, initial_virtual_moments: int) -> None:
         super().__init__(
@@ -128,7 +113,10 @@ class ScheduledCircuit:
             schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1)
         )
         if not is_sorted:
-            raise ScheduleNotSortedException(schedule)
+            raise ScheduleException(
+                f"The provided schedule {schedule} is not sorted. "
+                "You should only provide sorted schedules."
+            )
 
         # Ensure that ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
         # that can be stored.
@@ -210,7 +198,10 @@ class ScheduledCircuit:
                 index_of_next_schedule = final_schedule[i] + 1
 
         if _NOT_SCHEDULED in final_schedule:
-            raise CannotScheduleCircuitException(circuit, final_schedule)
+            raise ScheduleException(
+                f"The provided cirq.Circuit instance:\n{circuit}\n cannot be scheduled. "
+                f"Final (invalid) schedule: {final_schedule}."
+            )
         return ScheduledCircuit(circuit, final_schedule)
 
     @property

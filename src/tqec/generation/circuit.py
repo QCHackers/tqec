@@ -9,24 +9,6 @@ from tqec.position import Shape2D
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-class WrongNumberOfPlaquetteProvidedException(TQECException):
-    def __init__(self, number_provided: int, number_expected: int) -> None:
-        super().__init__(
-            f"{number_provided} plaquettes have been provided, but {number_expected} were expected."
-        )
-
-
-class CannotUsePlaquetteWithDifferentShapesException(TQECException):
-    def __init__(self, plaquettes: list[Plaquette]) -> None:
-        different_shapes: set[tuple[int, ...]] = set(
-            p.shape.to_numpy_shape() for p in plaquettes
-        )
-        super().__init__(
-            f"Found Plaquette instances with different shapes: {different_shapes}. "
-            "See https://github.com/QCHackers/tqec/issues/34."
-        )
-
-
 def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
@@ -60,8 +42,9 @@ def generate_circuit(
     # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
     # The user is not expected to know about this implementation detail, so we hide it.
     if len(plaquettes) != template.expected_plaquettes_number - 1:
-        raise WrongNumberOfPlaquetteProvidedException(
-            len(plaquettes), template.expected_plaquettes_number - 1
+        raise TQECException(
+            f"{len(plaquettes)} plaquettes have been provided, but "
+            f"{template.expected_plaquettes_number - 1} were expected."
         )
 
     # Check that all the given plaquettes have the same shape. If not, this is an issue.
@@ -69,7 +52,11 @@ def generate_circuit(
     # eventually lifted.
     plaquette_shape: Shape2D = plaquettes[0].shape
     if any(p.shape != plaquette_shape for p in plaquettes):
-        raise CannotUsePlaquetteWithDifferentShapesException(plaquettes)
+        different_shapes = set(p.shape.to_numpy_shape() for p in plaquettes)
+        raise TQECException(
+            f"Found Plaquette instances with different shapes: {different_shapes}. "
+            "See https://github.com/QCHackers/tqec/issues/34."
+        )
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.

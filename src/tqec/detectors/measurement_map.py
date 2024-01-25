@@ -15,26 +15,6 @@ def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
     return cirq.Circuit([moment for e in obj for moment in flatten(e)])
 
 
-class PositiveMeasurementOffsetException(TQECException):
-    def __init__(self, measurement_offset: int) -> None:
-        super().__init__(
-            f"Found a positive measurement offset ({measurement_offset}). "
-            "All measurement offsets should be strictly negative integers."
-        )
-
-
-class CannotFindMeasurementOffsetException(TQECException):
-    def __init__(self) -> None:
-        super().__init__("Cannot find measurement relative offset.")
-
-
-class CannotFindLastMeasurementException(TQECException):
-    def __init__(self, moment_index: int) -> None:
-        super().__init__(
-            f"Cannot find any measurement performed before moment {moment_index}."
-        )
-
-
 class CircuitMeasurementMap:
     def __init__(self, circuit: cirq.AbstractCircuit) -> None:
         """Stores information about all the measurements found in the provided circuit
@@ -77,7 +57,10 @@ class CircuitMeasurementMap:
         :raises PositiveMeasurementOffsetError: if the provided measurement_offset value is positive.
         """
         if measurement_offset >= 0:
-            raise PositiveMeasurementOffsetException(measurement_offset)
+            raise TQECException(
+                f"Found a positive measurement offset ({measurement_offset}). "
+                "All measurement offsets should be strictly negative integers."
+            )
 
         last_performed_measurement = self._get_index_of_last_performed_measurement(
             current_moment_index
@@ -105,7 +88,9 @@ class CircuitMeasurementMap:
             measurements_in_moment = self._global_measurement_indices[moment_index]
             if measurements_in_moment:
                 return max(measurements_in_moment.values())
-        raise CannotFindLastMeasurementException(current_moment_index)
+        raise TQECException(
+            f"Cannot find any measurement performed before moment {current_moment_index}."
+        )
 
     @staticmethod
     def _get_global_measurement_index(

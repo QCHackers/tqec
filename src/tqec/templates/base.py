@@ -27,14 +27,6 @@ def _json_encoding_default(obj) -> str | dict | None:
     raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
 
 
-class DefaultKeyInKwargsException(TQECException):
-    def __init__(self, value) -> None:
-        super().__init__(
-            f"The 'default' key has been found with value '{value}' in the provided kwargs."
-            " 'default' key is prohibited in the public API as it is changed internally."
-        )
-
-
 class JSONEncodable(ABC):
     @abstractmethod
     def to_dict(self) -> dict[str, ty.Any]:
@@ -53,7 +45,10 @@ class JSONEncodable(ABC):
         :raises DefaultKeyInKwargs: if the "default" key is present in kwargs.
         """
         if "default" in kwargs:
-            raise DefaultKeyInKwargsException(kwargs.get("default"))
+            raise TQECException(
+                f"The 'default' key has been found with value '{kwargs.get("default")}' in the provided kwargs."
+                " 'default' key is prohibited in the public API as it is changed internally."
+            )
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
 
