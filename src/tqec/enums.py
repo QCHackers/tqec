@@ -43,3 +43,12 @@ class PlaquetteOrientation(Enum):
     LEFT = auto()
     DOWN = auto()
     UP = auto()
+
+
+class PlaquetteOrigin(Enum):
+    """Defines the origin of a plaquette."""
+
+    BOTTOM_RIGHT = auto()
+    CENTRAL = auto()
+    FIRST = auto()
+    USER_DEFINED = auto()
