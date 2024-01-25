@@ -1,5 +1,5 @@
 import cirq
-from tqec.errors import MeasurementAppliedOnMultipleQubits
+from tqec.errors import MeasurementAppliedOnMultipleQubitsException
 
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
@@ -15,7 +15,7 @@ def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
     return cirq.Circuit([moment for e in obj for moment in flatten(e)])
 
 
-class PositiveMeasurementOffsetError(Exception):
+class PositiveMeasurementOffsetException(Exception):
     def __init__(self, measurement_offset: int) -> None:
         super().__init__(
             f"Found a positive measurement offset ({measurement_offset}). "
@@ -23,12 +23,12 @@ class PositiveMeasurementOffsetError(Exception):
         )
 
 
-class CannotFindMeasurementOffset(Exception):
+class CannotFindMeasurementOffsetException(Exception):
     def __init__(self) -> None:
         super().__init__("Cannot find measurement relative offset.")
 
 
-class CannotFindLastMeasurement(Exception):
+class CannotFindLastMeasurementException(Exception):
     def __init__(self, moment_index: int) -> None:
         super().__init__(
             f"Cannot find any measurement performed before moment {moment_index}."
@@ -77,7 +77,7 @@ class CircuitMeasurementMap:
         :raises PositiveMeasurementOffsetError: if the provided measurement_offset value is positive.
         """
         if measurement_offset >= 0:
-            raise PositiveMeasurementOffsetError(measurement_offset)
+            raise PositiveMeasurementOffsetException(measurement_offset)
 
         last_performed_measurement = self._get_index_of_last_performed_measurement(
             current_moment_index
@@ -105,7 +105,7 @@ class CircuitMeasurementMap:
             measurements_in_moment = self._global_measurement_indices[moment_index]
             if measurements_in_moment:
                 return max(measurements_in_moment.values())
-        raise CannotFindLastMeasurement(current_moment_index)
+        raise CannotFindLastMeasurementException(current_moment_index)
 
     @staticmethod
     def _get_global_measurement_index(
@@ -140,7 +140,7 @@ class CircuitMeasurementMap:
             for op in moment.operations:
                 if isinstance(op.gate, cirq.MeasurementGate):
                     if len(op.qubits) > 1:
-                        raise MeasurementAppliedOnMultipleQubits(op.qubits)
+                        raise MeasurementAppliedOnMultipleQubitsException(op.qubits)
                     qubit: cirq.Qid = op.qubits[0]
                     global_measurement_indices[-1][qubit] = global_measurement_index
                     global_measurement_index += 1

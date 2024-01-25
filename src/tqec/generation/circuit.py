@@ -8,14 +8,14 @@ from tqec.position import Shape2D
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
-class WrongNumberOfPlaquetteProvided(Exception):
+class WrongNumberOfPlaquetteProvidedException(Exception):
     def __init__(self, number_provided: int, number_expected: int) -> None:
         super().__init__(
             f"{number_provided} plaquettes have been provided, but {number_expected} were expected."
         )
 
 
-class CannotUsePlaquetteWithDifferentShapes(Exception):
+class CannotUsePlaquetteWithDifferentShapesException(Exception):
     def __init__(self, plaquettes: list[Plaquette]) -> None:
         different_shapes: set[tuple[int, ...]] = set(
             p.shape.to_numpy_shape() for p in plaquettes
@@ -59,7 +59,7 @@ def generate_circuit(
     # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
     # The user is not expected to know about this implementation detail, so we hide it.
     if len(plaquettes) != template.expected_plaquettes_number - 1:
-        raise WrongNumberOfPlaquetteProvided(
+        raise WrongNumberOfPlaquetteProvidedException(
             len(plaquettes), template.expected_plaquettes_number - 1
         )
 
@@ -68,7 +68,7 @@ def generate_circuit(
     # eventually lifted.
     plaquette_shape: Shape2D = plaquettes[0].shape
     if any(p.shape != plaquette_shape for p in plaquettes):
-        raise CannotUsePlaquetteWithDifferentShapes(plaquettes)
+        raise CannotUsePlaquetteWithDifferentShapesException(plaquettes)
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.

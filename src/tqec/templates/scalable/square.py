@@ -1,6 +1,6 @@
 from tqec.enums import CornerPositionEnum
 from tqec.templates.base import Template
-from tqec.templates.scalable.base import DimensionNotEven, ScalableTemplate
+from tqec.templates.scalable.base import DimensionNotEvenException, ScalableTemplate
 from tqec.templates.shapes.square import AlternatingCornerSquare, AlternatingSquare
 
 
@@ -12,7 +12,7 @@ class ScalableAlternatingSquare(ScalableTemplate):
         dimension: int,
     ) -> None:
         if dimension % 2 != 0:
-            raise DimensionNotEven(dimension)
+            raise DimensionNotEvenException(dimension)
         super().__init__(AlternatingSquare(dimension))
 
     def scale_to(self, k: int) -> Template:
@@ -28,7 +28,7 @@ class ScalableAlternatingCornerSquare(ScalableTemplate):
         corner_position: CornerPositionEnum,
     ) -> None:
         if dimension % 2 != 0:
-            raise DimensionNotEven(dimension)
+            raise DimensionNotEvenException(dimension)
         super().__init__(AlternatingCornerSquare(dimension, corner_position))
 
     def scale_to(self, k: int) -> Template:

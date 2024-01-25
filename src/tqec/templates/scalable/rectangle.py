@@ -1,5 +1,5 @@
 from tqec.templates.base import Template
-from tqec.templates.scalable.base import DimensionNotEven, ScalableTemplate
+from tqec.templates.scalable.base import DimensionNotEvenException, ScalableTemplate
 from tqec.templates.shapes.rectangle import Rectangle
 
 
@@ -22,7 +22,7 @@ class ScalableRectangle(ScalableTemplate):
         :raises DimensionNotEven: if both width and height are odd numbers.
         """
         if width % 2 != 0 and height != 0:
-            raise DimensionNotEven(width, height)
+            raise DimensionNotEvenException(width, height)
 
         # Determine which dimension to scale
         if scale_width is None:

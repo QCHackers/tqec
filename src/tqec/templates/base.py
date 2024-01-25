@@ -26,7 +26,7 @@ def _json_encoding_default(obj) -> str | dict | None:
     raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
 
 
-class DefaultKeyInKwargs(Exception):
+class DefaultKeyInKwargsException(Exception):
     def __init__(self, value) -> None:
         super().__init__(
             f"The 'default' key has been found with value '{value}' in the provided kwargs."
@@ -52,7 +52,7 @@ class JSONEncodable(ABC):
         :raises DefaultKeyInKwargs: if the "default" key is present in kwargs.
         """
         if "default" in kwargs:
-            raise DefaultKeyInKwargs(kwargs.get("default"))
+            raise DefaultKeyInKwargsException(kwargs.get("default"))
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
 

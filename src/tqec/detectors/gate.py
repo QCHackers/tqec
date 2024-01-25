@@ -4,10 +4,10 @@ from dataclasses import dataclass
 import cirq
 import stim
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.errors import MeasurementAppliedOnMultipleQubits, QubitTypeError
+from tqec.errors import MeasurementAppliedOnMultipleQubitsException, QubitTypeException
 
 
-class GlobalMeasurementLookbackMissing(Exception):
+class GlobalMeasurementLookbackMissingException(Exception):
     def __init__(self) -> None:
         super().__init__(
             "Global measurement lookback offsets have not been computed."
@@ -15,7 +15,7 @@ class GlobalMeasurementLookbackMissing(Exception):
         )
 
 
-class CannotComputeMeasurementOffsetlookback(Exception):
+class CannotComputeMeasurementOffsetLookbackException(Exception):
     def __init__(
         self,
         measurement_map: CircuitMeasurementMap,
@@ -167,9 +167,9 @@ class RelativeMeasurementGate(cirq.Gate):
 
     def on(self, *qubits: cirq.Qid, add_virtual_tag: bool = True) -> cirq.Operation:
         if len(qubits) > 1:
-            raise MeasurementAppliedOnMultipleQubits(qubits)
+            raise MeasurementAppliedOnMultipleQubitsException(qubits)
         if not isinstance(qubits[0], cirq.GridQubit):
-            raise QubitTypeError(cirq.GridQubit, type(qubits[0]))
+            raise QubitTypeException(cirq.GridQubit, type(qubits[0]))
 
         self._set_origin(qubits[0])
         # Add the virtual tag to explicitely mark this gate as "not a real gate"
@@ -209,7 +209,7 @@ class RelativeMeasurementGate(cirq.Gate):
                 relative_measurement.relative_measurement_offset,
             )
             if relative_offset is None:
-                raise CannotComputeMeasurementOffsetlookback(
+                raise CannotComputeMeasurementOffsetLookbackException(
                     measurement_map,
                     current_moment_index,
                     qubit,
@@ -287,7 +287,7 @@ class DetectorGate(RelativeMeasurementGate):
         **_,
     ):
         if not self._global_measurements_lookback_offsets:
-            raise GlobalMeasurementLookbackMissing()
+            raise GlobalMeasurementLookbackMissingException()
         edit_circuit.append(
             "DETECTOR",
             [stim.target_rec(i) for i in self._global_measurements_lookback_offsets],
@@ -364,7 +364,7 @@ class ObservableGate(RelativeMeasurementGate):
         **_,
     ):
         if not self._global_measurements_lookback_offsets:
-            raise GlobalMeasurementLookbackMissing()
+            raise GlobalMeasurementLookbackMissingException()
 
         edit_circuit.append(
             "OBSERVABLE_INCLUDE",

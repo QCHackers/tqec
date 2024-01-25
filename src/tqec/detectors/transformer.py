@@ -5,7 +5,7 @@ import numpy
 import sympy
 from tqec.detectors.gate import RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.errors import MeasurementAppliedOnMultipleQubits
+from tqec.errors import MeasurementAppliedOnMultipleQubitsException
 
 
 def _fill_in_detectors_global_record_indices_impl(
@@ -48,7 +48,7 @@ def _fill_in_detectors_global_record_indices_impl(
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
             elif isinstance(operation.gate, RelativeMeasurementGate):
                 if len(operation.qubits) > 1:
-                    raise MeasurementAppliedOnMultipleQubits(operation.qubits)
+                    raise MeasurementAppliedOnMultipleQubitsException(operation.qubits)
                 new_operation = deepcopy(operation)
                 relative_measurement_gate: RelativeMeasurementGate = new_operation.gate  # type: ignore
                 relative_measurement_gate.compute_global_measurements_lookback_offsets(

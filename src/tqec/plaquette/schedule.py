@@ -4,14 +4,14 @@ from copy import deepcopy
 
 import cirq
 from tqec.detectors.gate import DetectorGate
-from tqec.errors import QubitTypeError
+from tqec.errors import QubitTypeException
 
 
-class ScheduleError(Exception):
+class ScheduleException(Exception):
     pass
 
 
-class ScheduleWithNonIntegerEntries(ScheduleError):
+class ScheduleWithNonIntegerEntriesException(ScheduleException):
     def __init__(self, schedule: list[int], non_integer_type: type) -> None:
         super().__init__(
             f"Found a non-integer entry of type {non_integer_type.__name__} in "
@@ -19,7 +19,7 @@ class ScheduleWithNonIntegerEntries(ScheduleError):
         )
 
 
-class ScheduleNotSorted(ScheduleError):
+class ScheduleNotSortedException(ScheduleException):
     def __init__(self, schedule: list[int]) -> None:
         super().__init__(
             f"The provided schedule {schedule} is not sorted. "
@@ -27,14 +27,14 @@ class ScheduleNotSorted(ScheduleError):
         )
 
 
-class CannotScheduleCircuit(ScheduleError):
+class CannotScheduleCircuitException(ScheduleException):
     def __init__(self, circuit: cirq.Circuit, schedule: list[int]) -> None:
         super().__init__(
             f"The provided cirq.Circuit instance:\n{circuit}\n cannot be scheduled."
         )
 
 
-class ScheduleEntryTooLow(ScheduleError):
+class ScheduleEntryTooLowException(ScheduleException):
     def __init__(self, first_schedule_entry: int, initial_virtual_moments: int) -> None:
         super().__init__(
             f"Schedule entries should be strictly greater than {ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE}. "
@@ -46,7 +46,7 @@ class ScheduleEntryTooLow(ScheduleError):
         )
 
 
-class ScheduleCannotBeAppliedToCircuit(ScheduleError):
+class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
     def __init__(self, schedule: list[int], number_of_non_virtual_moments: int) -> None:
         super().__init__(
             (
@@ -116,19 +116,19 @@ class ScheduledCircuit:
         # Check that all the qubits in the cirq.Circuit instance are instances of cirq.GridQubit.
         for q in circuit.all_qubits():
             if not isinstance(q, cirq.GridQubit):
-                raise QubitTypeError(cirq.GridQubit, type(q))
+                raise QubitTypeException(cirq.GridQubit, type(q))
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
             if not isinstance(entry, numbers.Integral):
-                raise ScheduleWithNonIntegerEntries(schedule, type(entry))
+                raise ScheduleWithNonIntegerEntriesException(schedule, type(entry))
 
         # Check that the schedule is sorted.
         is_sorted: bool = all(
             schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1)
         )
         if not is_sorted:
-            raise ScheduleNotSorted(schedule)
+            raise ScheduleNotSortedException(schedule)
 
         # Ensure that ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
         # that can be stored.
@@ -142,7 +142,9 @@ class ScheduledCircuit:
             and (schedule[0] - number_of_initial_virtual_moments)
             > ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
         ):
-            raise ScheduleEntryTooLow(schedule[0], number_of_initial_virtual_moments)
+            raise ScheduleEntryTooLowException(
+                schedule[0], number_of_initial_virtual_moments
+            )
 
         # Ensure that the provided schedule contains as much entries as the number of non-virtual
         # moments in the circuit.
@@ -150,7 +152,9 @@ class ScheduledCircuit:
             ScheduledCircuit._is_virtual_moment(m) for m in circuit.moments
         )
         if len(schedule) != non_virtual_moments_number:
-            raise ScheduleCannotBeAppliedToCircuit(schedule, non_virtual_moments_number)
+            raise ScheduleCannotBeAppliedToCircuitException(
+                schedule, non_virtual_moments_number
+            )
 
     @staticmethod
     def from_multi_qubit_moment_schedule(
@@ -206,7 +210,7 @@ class ScheduledCircuit:
                 index_of_next_schedule = final_schedule[i] + 1
 
         if _NOT_SCHEDULED in final_schedule:
-            raise CannotScheduleCircuit(circuit, final_schedule)
+            raise CannotScheduleCircuitException(circuit, final_schedule)
         return ScheduledCircuit(circuit, final_schedule)
 
     @property

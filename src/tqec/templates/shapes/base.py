@@ -5,7 +5,7 @@ import numpy
 from tqec.position import Shape2D
 
 
-class WrongNumberOfParameters(Exception):
+class WrongNumberOfParametersException(Exception):
     def __init__(self, expected: int, provided: int) -> None:
         super().__init__(
             f"{provided} parameters were provided, but {expected} were expected."
