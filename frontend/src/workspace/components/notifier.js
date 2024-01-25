@@ -22,20 +22,19 @@ export default function notification(app, text) {
 	});
 	notificationText.anchor.set(0.5);
 	notificationText.position.set(150, 50);
-	notificationContainer.addChild(notificationText);
 
 	// Create a background for the notification
 	const background = new Graphics();
 	background.beginFill('green', 0.8);
 	background.drawRoundedRect(
-		0,
-		0,
+		notificationText.x - notificationText.getBounds().width / 2 - 15,
+		notificationText.y - notificationText.getBounds().height / 2 - 15,
 		notificationText.getBounds().width + 30,
 		notificationText.getBounds().height + 30
 	);
 	background.endFill();
 	notificationContainer.addChild(background);
-
+	notificationContainer.addChild(notificationText);
 	// Position the notification at the top center of the stage
 	notificationContainer.position.set(
 		app.screen.width / 2 - notificationContainer.width / 2,

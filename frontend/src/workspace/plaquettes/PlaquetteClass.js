@@ -4,11 +4,16 @@ import notification from '../components/notifier';
 
 const PlaquetteColors = {
 	Purple: Symbol('purple'),
-	Yellow: Symbol('yellow')
-}
+	Yellow: Symbol('yellow'),
+};
 
 export default class Plaquette extends Graphics {
-	constructor(qubits, workspace, gridSize = 50, color = PlaquetteColors.Purple) {
+	constructor(
+		qubits,
+		workspace,
+		gridSize = 50,
+		color = PlaquetteColors.Purple
+	) {
 		super();
 		// UI properties
 		this.workspace = workspace;
@@ -179,7 +184,7 @@ export default class Plaquette extends Graphics {
 		this.drawPolygon(qubitPos);
 		this.cursor = 'pointer';
 		this.endFill();
-		// Assign the qubit stack to the newly made convex hull	
+		// Assign the qubit stack to the newly made convex hull
 		this.qubitStack = qubitStack;
 	};
 
@@ -195,14 +200,6 @@ export default class Plaquette extends Graphics {
 	createPlaquette = () => {
 		// The graphic should connect the points from the qubits
 		const nQubits = this.qubits.length;
-		if (nQubits < 3) {
-			console.log('Plaquette must have at least 3 qubits');
-			// Show a notification to the user that the plaquette must have at least 3 qubits
-			notification(this.workspace, 'Plaquette must have at least 3 qubits');
-			this.plaquetteMade = false;
-			return null;
-		}
-
 		// Create a convex hull
 		this._createConvexHull();
 		const { x, y } = this.calculatePlaquetteCenter();
@@ -215,7 +212,7 @@ export default class Plaquette extends Graphics {
 		this.cursor = 'pointer';
 		this.makeExtensible();
 		this.toggleCtrlButtons();
-		console.log("Made plaquette of length ", nQubits)
+		console.log('Made plaquette of length ', nQubits);
 	};
 
 	makeExtensible = () => {
@@ -229,7 +226,7 @@ export default class Plaquette extends Graphics {
 	onDragStart(event) {
 		this.isDragging = true;
 		this.initialPosition = event.data.getLocalPosition(this.parent);
-		console.log("Initial position: " + this.initialPosition);
+		console.log('Initial position: ' + this.initialPosition);
 	}
 
 	onDragMove = (event) => {
@@ -262,7 +259,8 @@ export default class Plaquette extends Graphics {
 					);
 
 					diff = newrq.globalX - shiftQ.globalX;
-				} else { // Moving to the left
+				} else {
+					// Moving to the left
 					// Generate the qubits that are closest to the left
 					shiftQ = this.mostLeftQubit();
 					// Find the neighboring qubit that is closest to the left
@@ -313,7 +311,6 @@ export default class Plaquette extends Graphics {
 			}
 			this.createNewPlaquette(newQubits);
 		}
-		
 	};
 
 	createNewPlaquette(newQubits) {
@@ -321,7 +318,7 @@ export default class Plaquette extends Graphics {
 		if (this.color !== PlaquetteColors.Purple) {
 			newColor = PlaquetteColors.Purple;
 		}
-		console.log("New plaquette color = " + newColor.description);
+		console.log('New plaquette color = ' + newColor.description);
 		const newPlaquette = new Plaquette(
 			newQubits,
 			this.workspace,
@@ -361,7 +358,7 @@ export default class Plaquette extends Graphics {
 		this.rotateButton.on('click', (_event) => {
 			// Rotate the plaquette
 			this.rotation += Math.PI / 2; // Rotate 90 degrees
-			console.log("Rotate button position = " + this.rotateButton.position);
+			console.log('Rotate button position = ' + this.rotateButton.position);
 		});
 		this.rotateButton.name = 'rotate_button';
 		// Add the button to the control panel container
@@ -369,7 +366,8 @@ export default class Plaquette extends Graphics {
 	};
 
 	changeColorButton = () => {
-		this.colorButton.on('click', (_event) => { // Change the color of the plaquette
+		this.colorButton.on('click', (_event) => {
+			// Change the color of the plaquette
 			if (this.color === PlaquetteColors.Purple) {
 				this.changePlaquetteColor(PlaquetteColors.Yellow);
 			} else {
@@ -401,13 +399,12 @@ export default class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+				(q) => q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedRightQubits = () => {
 		let shiftQ = null;
@@ -422,13 +419,12 @@ export default class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+				(q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedLeftQubits = () => {
 		let newQubits = [];
@@ -443,13 +439,12 @@ export default class Plaquette extends Graphics {
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
 				// eslint-disable-next-line no-loop-func
-				(q) =>
-					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+				(q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedBottomQubits = () => {
 		// Generate the qubits that are closest to the top
@@ -466,28 +461,27 @@ export default class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+				(q) => q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	initializeNewButton = (button, name) => {
 		const buttonKindToFunction = {
-			'new_button_top': this.clonedTopQubits,
-			'new_button_right': this.clonedLeftQubits,
-			'new_button_left': this.clonedRightQubits,
-			'new_button_bottom': this.clonedBottomQubits
-		}
+			new_button_top: this.clonedTopQubits,
+			new_button_right: this.clonedLeftQubits,
+			new_button_left: this.clonedRightQubits,
+			new_button_bottom: this.clonedBottomQubits,
+		};
 		button.on('click', (_event) => {
 			this.workspace.addChild(this);
 			this.makeExtensible();
-			this.toggleCtrlButtons();			
+			this.toggleCtrlButtons();
 			this.createNewPlaquette(buttonKindToFunction[name]());
 		});
 		button.name = name;
 		this.controlPanel.addChild(button);
-	}
+	};
 }
