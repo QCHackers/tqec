@@ -110,7 +110,7 @@ class TemplateOrchestrator(JSONEncodable):
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
         self._maximum_plaquette_mapping_index = max(
-            self._maximum_plaquette_mapping_index, max(indices)
+            self._maximum_plaquette_mapping_index, indices
         )
         return template_id
 
@@ -304,7 +304,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
+    def _build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left
@@ -335,7 +335,7 @@ class TemplateOrchestrator(JSONEncodable):
         return ret
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self.build_array(plaquette_indices)
+        return self._build_array(plaquette_indices)
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         """Scales all the scalable component templates to the given scale k.
