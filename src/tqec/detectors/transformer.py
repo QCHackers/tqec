@@ -5,7 +5,7 @@ import numpy
 import sympy
 from tqec.detectors.gate import RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.errors import MeasurementAppliedOnMultipleQubitsException
+from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException
 
 
 def _fill_in_detectors_global_record_indices_impl(

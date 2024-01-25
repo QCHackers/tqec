@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import cirq
 import stim
 from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.errors import MeasurementAppliedOnMultipleQubitsException, QubitTypeException
+from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException, QubitTypeException
 
 
 class GlobalMeasurementLookbackMissingException(Exception):

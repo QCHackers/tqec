@@ -4,7 +4,7 @@ from copy import deepcopy
 
 import cirq
 from tqec.detectors.gate import DetectorGate
-from tqec.errors import QubitTypeException
+from tqec.exceptions import QubitTypeException
 
 
 class ScheduleException(Exception):

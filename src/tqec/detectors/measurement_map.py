@@ -1,5 +1,5 @@
 import cirq
-from tqec.errors import MeasurementAppliedOnMultipleQubitsException
+from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException
 
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
