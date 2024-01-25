@@ -49,9 +49,6 @@ def generate_circuit(
     # The shape limitation is an assumption to simplify the code and will have to be
     # eventually lifted.
     plaquette_shape: Shape2D = plaquettes[0].shape
-    assert all(
-        p.shape == plaquette_shape for p in plaquettes
-    ), "All plaquettes should have exactly the same shape for the moment."
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
@@ -70,7 +67,7 @@ def generate_circuit(
     ), "Qubits used in plaquette layers should be instances of cirq.GridQubit."
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
-    all_scheduled_circuits: list[ScheduledCircuit] = list()
+    all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
     for plaquette_y, line in enumerate(template_plaquettes):
         for plaquette_x, plaquette_index in enumerate(line):
