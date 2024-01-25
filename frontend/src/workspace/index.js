@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useApp } from '@pixi/react';
 import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
@@ -5,7 +6,6 @@ import { makeGrid } from './grid';
 import Qubit from './QubitClass';
 import Template from './TemplateClass';
 import { button } from './components/button';
-import axios from 'axios';
 
 // TODO: move this to a config file
 const prodBackendURL = 'https://tqec-app-mvp.uc.r.appspot.com';
