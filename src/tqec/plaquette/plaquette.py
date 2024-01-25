@@ -1,9 +1,9 @@
 import cirq
 
-from tqec.enums import PlaquetteOrientation
+from tqec.enums import PlaquetteOrientation, PlaquetteOrigin
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
-from tqec.position import Position, Shape2D
+from tqec.position import Position
 
 
 class Plaquette:
@@ -13,7 +13,13 @@ class Plaquette:
     def get_mergeable_tag() -> str:
         return Plaquette._MERGEABLE_TAG
 
-    def __init__(self, qubits: list[PlaquetteQubit], circuit: ScheduledCircuit) -> None:
+    def __init__(
+        self,
+        qubits: list[PlaquetteQubit],
+        circuit: ScheduledCircuit,
+        origin: PlaquetteOrigin = PlaquetteOrigin.BOTTOM_RIGHT,
+        origin_index: int = 0,
+    ) -> None:
         """Represents a QEC plaquette
 
         This class stores qubits in the plaquette local coordinate system and a scheduled
@@ -26,15 +32,23 @@ class Plaquette:
             coordinate system.
         :param circuit: scheduled quantum circuit implementing the computation that the
             plaquette should represent.
+        :param origin: origin of the plaquette. This is used to compute the global position
+            during the generation of the circuit.
+        :param origin_index: index of the origin qubit in the list. Only used in combination
+            with origin == PlaquetteOrigin.USER_DEFINED.
+
+        :raises ValueError: if the number of qubits doesn't match the number of qubits
         """
+        if len(qubits) != len(circuit.qubits):
+            raise ValueError("Number of qubits doesn't match number of circuit qubits")
+
         self._qubits = qubits
         self._circuit = circuit
+        self._caclulate_origin(origin, origin_index)
 
     @property
-    def shape(self) -> Shape2D:
-        maxx = max(qubit.position.x for qubit in self.qubits)
-        maxy = max(qubit.position.y for qubit in self.qubits)
-        return Shape2D(maxx + 1, maxy + 1)
+    def origin(self) -> Position:
+        return self._origin
 
     @property
     def qubits(self) -> list[PlaquetteQubit]:
@@ -43,6 +57,20 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    def _caclulate_origin(self, origin: PlaquetteOrigin, origin_index: int) -> None:
+        """Calcluates the origin of the plaquette given the user input."""
+        match origin:
+            case PlaquetteOrigin.BOTTOM_RIGHT:
+                max_x = max(qubit.position.x for qubit in self.qubits)
+                max_y = max(qubit.position.y for qubit in self.qubits)
+                self._origin = Position(max_x + 1, max_y + 1)
+            case PlaquetteOrigin.CENTRAL:
+                raise NotImplementedError()
+            case PlaquetteOrigin.FIRST:
+                self._origin = self._qubits[0].position
+            case PlaquetteOrigin.USER_DEFINED:
+                self._origin = self._qubits[origin_index].position
 
 
 class SquarePlaquette(Plaquette):
