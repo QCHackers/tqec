@@ -184,7 +184,7 @@ export class Plaquette extends Graphics {
 		this.drawPolygon(qubitPos);
 		this.cursor = 'pointer';
 		this.endFill();
-		// Assign the qubit stack to the newly made convex hull	
+		// Assign the qubit stack to the newly made convex hull
 		this.qubitStack = qubitStack;
 	};
 
@@ -200,14 +200,6 @@ export class Plaquette extends Graphics {
 	populatePlaquetteShapeAndInteractionFields = () => {
 		// The graphic should connect the points from the qubits
 		const nQubits = this.qubits.length;
-		if (nQubits < 3) {
-			console.log('Plaquette must have at least 3 qubits');
-			// Show a notification to the user that the plaquette must have at least 3 qubits
-			notification(this.workspace, 'Plaquette must have at least 3 qubits');
-			this.plaquetteMade = false;
-			return null;
-		}
-
 		// Create a convex hull
 		this._createConvexHull();
 		const { x, y } = this.calculatePlaquetteCenter();
@@ -220,7 +212,7 @@ export class Plaquette extends Graphics {
 		this.cursor = 'pointer';
 		this.makeExtensible();
 		this.toggleCtrlButtons();
-		console.log("Made plaquette of length ", nQubits)
+		console.log('Made plaquette of length ', nQubits);
 	};
 
 	makeExtensible = () => {
@@ -234,7 +226,7 @@ export class Plaquette extends Graphics {
 	onDragStart(event) {
 		this.isDragging = true;
 		this.initialPosition = event.data.getLocalPosition(this.parent);
-		console.log("Initial position: " + this.initialPosition);
+		console.log('Initial position: ' + this.initialPosition);
 	}
 
 	onDragMove = (event) => {
@@ -267,7 +259,8 @@ export class Plaquette extends Graphics {
 					);
 
 					diff = newrq.globalX - shiftQ.globalX;
-				} else { // Moving to the left
+				} else {
+					// Moving to the left
 					// Generate the qubits that are closest to the left
 					shiftQ = this.mostLeftQubit();
 					// Find the neighboring qubit that is closest to the left
@@ -318,7 +311,6 @@ export class Plaquette extends Graphics {
 			}
 			this.parent.addChild(this.createNewPlaquette(newQubits));
 		}
-		
 	};
 
 	createNewPlaquette(newQubits) {
@@ -360,7 +352,7 @@ export class Plaquette extends Graphics {
 		this.rotateButton.on('click', (_event) => {
 			// Rotate the plaquette
 			this.rotation += Math.PI / 2; // Rotate 90 degrees
-			console.log("Rotate button position = " + this.rotateButton.position);
+			console.log('Rotate button position = ' + this.rotateButton.position);
 		});
 		this.rotateButton.name = 'rotate_button';
 		// Add the button to the control panel container
@@ -400,13 +392,12 @@ export class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+				(q) => q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedRightQubits = () => {
 		let shiftQ = null;
@@ -421,13 +412,12 @@ export class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+				(q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedLeftQubits = () => {
 		let newQubits = [];
@@ -442,13 +432,12 @@ export class Plaquette extends Graphics {
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
 				// eslint-disable-next-line no-loop-func
-				(q) =>
-					q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
+				(q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	clonedBottomQubits = () => {
 		// Generate the qubits that are closest to the top
@@ -465,21 +454,20 @@ export class Plaquette extends Graphics {
 		// Shift the qubits by the difference
 		for (const qubit of this.qubits) {
 			const q = qubit.neighbors.find(
-				(q) =>
-					q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
+				(q) => q.globalX === qubit.globalX && q.globalY === qubit.globalY + diff
 			);
 			newQubits.push(q);
 		}
 		return newQubits;
-	}
+	};
 
 	initializeNewButton = (button, name) => {
 		const buttonKindToFunction = {
-			'new_button_top': this.clonedTopQubits,
-			'new_button_right': this.clonedLeftQubits,
-			'new_button_left': this.clonedRightQubits,
-			'new_button_bottom': this.clonedBottomQubits
-		}
+			new_button_top: this.clonedTopQubits,
+			new_button_right: this.clonedLeftQubits,
+			new_button_left: this.clonedRightQubits,
+			new_button_bottom: this.clonedBottomQubits,
+		};
 		button.on('click', (_event) => {
 			this.makeExtensible();
 			this.toggleCtrlButtons();
@@ -488,5 +476,5 @@ export class Plaquette extends Graphics {
 		});
 		button.name = name;
 		this.controlPanel.addChild(button);
-	}
+	};
 }

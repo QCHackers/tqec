@@ -25,6 +25,7 @@ export default class Qubit extends Graphics {
 		// Adjacent (degree 1) qubits
 		this.isQubit = true;
 		this.visible = true;
+		this.isSelected = false;
 	}
 
 	_onPointerOver = () => {
@@ -54,6 +55,20 @@ export default class Qubit extends Graphics {
 		this.on('pointerout', this._onPointerOut);
 	}
 
+	changeColor(color) {
+		this.clear();
+		this._createCircle(this.globalX, this.globalY, 5, color);
+	}
+
+	deselect() {
+		this.on('click', () => {
+			if (this.isSelected === true) {
+				this.isSelected = false;
+				this.changeColor('black');
+				this.removeChildren();
+			}
+		});
+	}
 	checkHitArea(eventX, eventY, threshold = 5) {
 		// Calculate the distance between event coordinates and qubit's global position
 		const distance = Math.sqrt(
@@ -61,13 +76,13 @@ export default class Qubit extends Graphics {
 		);
 		// Define a threshold to determine the hit area
 		if (distance <= threshold) {
-			// Create a text element
+			// If there is already a text element, don't create another one
 			if (this.children.length > 0) {
-				// If the qubit already has a text element, remove it
-				this.removeChildren();
+				this.deselect();
 				return true;
 			}
-
+			this.isSelected = true;
+			// Create a text element
 			const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
 				fill: 'white',
 				fontSize: 10,

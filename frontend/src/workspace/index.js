@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useApp } from '@pixi/react';
 import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
@@ -36,12 +37,12 @@ export default function TQECApp() {
 			if (currentPlaquette != null) {
 				currentPlaquette.filters = null;
 			}
-			newPlaquette.filters = [new AdjustmentFilter({contrast: 0.5})]
-			workspace.removeChild('control_panel')
+			newPlaquette.filters = [new AdjustmentFilter({ contrast: 0.5 })];
+			workspace.removeChild('control_panel');
 			workspace.addChild(newPlaquette.controlPanel);
 			workspace.selectedPlaquette = newPlaquette;
 		}
-	}
+	};
 
 	workspace.removePlaquette = (plaquette) => {
 		if (plaquette === null) {
@@ -61,7 +62,7 @@ export default function TQECApp() {
 			}
 		});
 		plaquette.destroy({ children: true });
-	}
+	};
 
 	// Add the qubits to the workspace
 	for (let x = 0; x <= app.renderer.width; x += gridSize) {
@@ -85,16 +86,20 @@ export default function TQECApp() {
 	}
 
 	let selectedQubits = [];
-	// Create the button
-	const plaquetteButton = new Button('Create plaquette', 100, 100);
+	const plaquetteButton = button('Create plaquette', 100, 120);
+	const template = new Template(
+		selectedQubits,
+		workspace,
+		plaquetteButton,
+		app
+	);
+
 	plaquetteButton.on('click', (_e) => {
 		// Create the plaquettes and tile
-		const tile = new TileClass([new Plaquette(selectedQubits, workspace)], workspace);
-		workspace.addChild(tile);
+		template.createPlaquette();
+		workspace.addChild(template.container);
 		// Clear the selected qubits
 		selectedQubits = [];
-		// Hide the button
-		plaquetteButton.visible = false;
 	});
 	plaquetteButton.visible = false;
 
@@ -138,7 +143,7 @@ export default function TQECApp() {
 
 	// Final workspace setup
 	workspace.visible = true;
-	app.view.addEventListener('click', selectQubit);
+	// app.stage.addChild(plaquetteButton);
 	app.stage.addChild(workspace);
 
 	return;
