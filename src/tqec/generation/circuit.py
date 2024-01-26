@@ -2,16 +2,17 @@ from copy import deepcopy
 
 import cirq
 
-from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.position import Shape2D
+from tqec.position import Position
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
 def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
+    default_x_increment: int = 2,
+    default_y_increment: int = 2,
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -22,7 +23,8 @@ def generate_circuit(
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
        the provided template.
-    2. all the provided plaquettes should have the same shape.
+    2. all the provided plaquettes are rectengular. For '0' plaquettes, the shape is asumed to be
+        (default_x_increment, default_y_increment).
     3. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
     If any of the above pre-conditions is not met, the inputs are considered invalid, in which
@@ -32,6 +34,9 @@ def generate_circuit(
         to implement.
     :param plaquettes: description of the computation that should happen at different time-slices
         of the quantum error correction experiment (or at least part of it).
+    :param default_x_increment: default increment in the x direction between two plaquettes.
+    :param default_y_increment: default increment in the y direction between two plaquettes.
+
     :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
         represented by the provided inputs.
 
@@ -44,11 +49,6 @@ def generate_circuit(
         f"The given template requires {template.expected_plaquettes_number - 1} plaquettes "
         f"but only {len(plaquettes)} have been provided."
     )
-
-    # Check that all the given plaquettes have the same shape. If not, this is an issue.
-    # The shape limitation is an assumption to simplify the code and will have to be
-    # eventually lifted.
-    plaquette_shape: Shape2D = plaquettes[0].shape
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
@@ -71,9 +71,25 @@ def generate_circuit(
     plaquette_index: int
     for plaquette_y, line in enumerate(template_plaquettes):
         for plaquette_x, plaquette_index in enumerate(line):
-            qubit_x = get_plaquette_starting_index(plaquette_shape.x, plaquette_x)
-            qubit_y = get_plaquette_starting_index(plaquette_shape.y, plaquette_y)
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
+
+            offset: Position = _find_offset(
+                all_scheduled_circuits,
+                plaquette_y,
+                plaquette_x,
+                len(line),
+                default_x_increment,
+                default_y_increment,
+            )
+            print(offset)
+            if plaquette_index > 0:
+                plaquette = plaquettes[plaquette_index - 1]
+                qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
+                scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
+            all_scheduled_circuits.append(scheduled_circuit)
+
+    # Merge everything!
+    return merge_scheduled_circuits(all_scheduled_circuits)
 
 
 def _create_mapping(
