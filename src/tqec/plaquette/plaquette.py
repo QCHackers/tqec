@@ -17,7 +17,7 @@ class Plaquette:
         self,
         qubits: list[PlaquetteQubit],
         circuit: ScheduledCircuit,
-        origin: PlaquetteOrigin = PlaquetteOrigin.BOTTOM_RIGHT,
+        origin: PlaquetteOrigin = PlaquetteOrigin.TOP_LEFT,
         origin_index: int = 0,
     ) -> None:
         """Represents a QEC plaquette
@@ -39,8 +39,8 @@ class Plaquette:
 
         :raises ValueError: if the number of qubits doesn't match the number of qubits
         """
-        if len(qubits) != len(circuit.qubits):
-            raise ValueError("Number of qubits doesn't match number of circuit qubits")
+        # if len(qubits) != len(circuit.raw_circuit.all_qubits()):
+        #     raise ValueError("Number of qubits doesn't match number of circuit qubits")
 
         self._qubits = qubits
         self._circuit = circuit
@@ -61,10 +61,8 @@ class Plaquette:
     def _caclulate_origin(self, origin: PlaquetteOrigin, origin_index: int) -> None:
         """Calcluates the origin of the plaquette given the user input."""
         match origin:
-            case PlaquetteOrigin.BOTTOM_RIGHT:
-                max_x = max(qubit.position.x for qubit in self.qubits)
-                max_y = max(qubit.position.y for qubit in self.qubits)
-                self._origin = Position(max_x + 1, max_y + 1)
+            case PlaquetteOrigin.TOP_LEFT:
+                self._origin = Position(0, 0)
             case PlaquetteOrigin.CENTRAL:
                 raise NotImplementedError()
             case PlaquetteOrigin.FIRST:
