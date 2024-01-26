@@ -5,22 +5,24 @@ from tqec.templates.shapes.rectangle import Rectangle
 
 class ScalableRectangle(ScalableTemplate):
     def __init__(
-        self, 
-        width: int, 
-        height: int, 
+        self,
+        width: int,
+        height: int,
         scale_width: bool | None = None,
     ) -> None:
         """Rectangle with scalable width **or** height.
 
         A scalable rectangle can only scale its width **or** height, but not both.
 
-        :param width: width of the rectangle.   
+        :param width: width of the rectangle.
         :param height: height of the rectangle.
         :param scale_width: whether to scale the width or height. If None, the dimension
             with the even value or the larger value will be scaled. If both dimensions
             are even and equal, the width will be scaled by default.
         """
-        assert (width % 2 == 0) or (height % 2 == 0), "At least one dimension must be even to be scalable!"
+        assert (width % 2 == 0) or (
+            height % 2 == 0
+        ), "At least one dimension must be even to be scalable!"
         # Determine which dimension to scale
         if scale_width is None:
             scale_width = height % 2 != 0 or (width % 2 == 0 and width >= height)

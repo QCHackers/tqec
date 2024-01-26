@@ -54,7 +54,7 @@ def get_corner_position(
 
 class TemplateOrchestrator(JSONEncodable):
     def __init__(self, templates: list[TemplateWithIndices]) -> None:
-        """Manages templates positionned relatively to each other.
+        """Manages templates positioned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
         positions to build and scale quantum error correction code.
@@ -110,7 +110,7 @@ class TemplateOrchestrator(JSONEncodable):
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
         self._maximum_plaquette_mapping_index = max(
-            self._maximum_plaquette_mapping_index, indices
+            [self._maximum_plaquette_mapping_index] + indices
         )
         return template_id
 
@@ -342,9 +342,9 @@ class TemplateOrchestrator(JSONEncodable):
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
