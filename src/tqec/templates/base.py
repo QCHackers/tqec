@@ -147,8 +147,7 @@ class Template(JSONEncodable):
 
 @dataclass
 class TemplateWithIndices:
-    """A wrapper around a Template instance and the indices
-    representing the plaquettes it should be instanciated with."""
+    """A wrapper around a Template instance and the indices representing the plaquettes it should be instanciated with."""
 
     template: Template
     indices: list[int]
