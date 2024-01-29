@@ -1,7 +1,7 @@
 import { Container, Graphics } from 'pixi.js';
-import Plaquette from './plaquettes/PlaquetteClass';
+import { Plaquette } from './plaquettes/PlaquetteClass';
 import notification from './components/notifier';
-import { button } from './components/button';
+import { Button } from './components/button';
 
 export default class Template {
 	constructor(selectedQubits, workspace, plaquetteButton, app) {
@@ -20,7 +20,7 @@ export default class Template {
 		this.selectedQubits = [];
 		this.rectangle = new Graphics();
 		this.workspace = workspace;
-		this.templateButton = button('Step 1: Define a Template', 100, 120);
+		this.templateButton = new Button('Step 1: Define a Template', 100, 120);
 		this.templateButton.on('click', (e) => {
 			// Create the template
 			this.renderTemplateControlButtons();
@@ -42,7 +42,7 @@ export default class Template {
 		this.isDragging = true;
 		this.container.name = 'template';
 		// Create the buttons
-		this.clearButton = button('Clear', 100, 120);
+		this.clearButton = new Button('Clear', 100, 120);
 		this.clearButton.on('click', (e) => {
 			// Clear the template
 			this.clearButton.visible = false;
@@ -71,7 +71,7 @@ export default class Template {
 			notification(this.app, 'Step 1: Drag to define a template area');
 		});
 
-		this.makeTileButton = button(
+		this.makeTileButton = new Button(
 			'Step 2: Confirm Template',
 			100,
 			170,

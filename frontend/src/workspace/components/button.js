@@ -1,6 +1,6 @@
 import { Text, Container, Graphics } from 'pixi.js';
 import { DropShadowFilter } from '@pixi/filter-drop-shadow';
-import Tile from '../TileClass';
+import Template from '../TemplateClass';
 import axios from 'axios';
 import config from './config.js';
 
@@ -66,7 +66,7 @@ export class DownloadButton extends Button {
 	
 	_onClick = (_e) => {
 		const payload = {plaquettes: []};
-		this.workspace.children.filter((child) => child instanceof Tile).forEach((tile) => {
+		this.workspace.children.filter((child) => child instanceof Template).forEach((tile) => {
 			tile.getPlaquettes().forEach((plaquette) => {
 				const marshalledPlaquette = {
 					color: plaquette.color.toUint8RgbArray(),

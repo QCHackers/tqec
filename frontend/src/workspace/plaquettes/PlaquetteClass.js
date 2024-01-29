@@ -6,7 +6,7 @@ export const PlaquetteColors = {
 	purple: new Color('purple'),
 	yellow: new Color('yellow'),
 }
-export class Plaquette extends Graphics {
+export default class Plaquette extends Graphics {
 	constructor(qubits, workspace, color = PlaquetteColors.purple) {
 		super();
 		// UI properties

@@ -4,9 +4,9 @@ import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import { makeGrid } from './grid';
 import Qubit from './QubitClass';
-import TileClass from './TileClass';
+import Template from './TemplateClass';
 import { Button, DownloadButton } from './components/button';
-import { Plaquette } from './plaquettes/PlaquetteClass';
+import { Plaquette, PlaquetteColors } from './plaquettes/PlaquetteClass';
 
 export default function TQECApp() {
 	// Initialize the app
@@ -86,7 +86,7 @@ export default function TQECApp() {
 	}
 
 	let selectedQubits = [];
-	const plaquetteButton = button('Create plaquette', 100, 120);
+	const plaquetteButton = new Button('Create plaquette', 100, 120);
 	const template = new Template(
 		selectedQubits,
 		workspace,
