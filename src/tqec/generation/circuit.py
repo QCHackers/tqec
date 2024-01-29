@@ -4,7 +4,7 @@ import cirq
 
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.position import Displacement, Position
+from tqec.position import Position
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
@@ -47,8 +47,7 @@ def generate_circuit(
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
     _indices = list(range(len(plaquettes) + 1))
-    template_plaquettes = template.instanciate(*_indices)
-    plaquette_increments = template.get_template_increments(*_indices)
+    template_plaquettes, plaquette_increments = template.build_array(_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
@@ -69,9 +68,7 @@ def generate_circuit(
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
             increments = plaquette_increments[row_index][column_index]
             if plaquette_index > 0:
-                offset = Displacement(
-                    column_index * increments.x, row_index * increments.y
-                )
+                offset = (column_index * increments.x, row_index * increments.y)
                 plaquette = plaquettes[plaquette_index - 1]
                 qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
                 scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
@@ -82,9 +79,7 @@ def generate_circuit(
 
 
 def _create_mapping(
-    plaquette: Plaquette,
-    scheduled_circuit: ScheduledCircuit,
-    offset: Displacement,
+    plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: tuple[int, int]
 ) -> dict[cirq.Qid, cirq.Qid]:
     origin = plaquette.origin
     assert origin == Position(0, 0), "Only origin (0,0) is supported for now"
