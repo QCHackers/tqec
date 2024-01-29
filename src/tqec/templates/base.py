@@ -5,7 +5,7 @@ import typing as ty
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
-from tqec.position import Shape2D
+from tqec.position import Displacement, Shape2D
 from tqec.templates.shapes.base import BaseShape
 
 
@@ -137,12 +137,12 @@ class Template(JSONEncodable):
         """
         return self._shape_instance
 
-    def get_increments(self) -> tuple[int, int]:
+    def get_increments(self) -> Displacement:
         """Get the default increments of the template.
 
-        :returns: a tuple of the default increments in the x and y directions.
+        :returns: a displacement of the default increments in the x and y directions.
         """
-        return self._default_x_increment, self._default_y_increment
+        return Displacement(self._default_x_increment, self._default_y_increment)
 
 
 @dataclass

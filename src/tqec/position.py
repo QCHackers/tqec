@@ -40,3 +40,19 @@ class Shape2D:
         instance to a numpy shape transparently for the user.
         """
         return (self.y, self.x)
+
+
+@dataclass
+class Displacement:
+    """Simple wrapper around tuple[int, int].
+
+    This class is here to explicitely name the type of variables as shapes
+    instead of having a tuple[int, int] that could be:
+    - a position,
+    - a shape,
+    - coefficients for positions,
+    - displacements.
+    """
+
+    x: int
+    y: int

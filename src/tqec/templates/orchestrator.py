@@ -315,7 +315,7 @@ class TemplateOrchestrator(JSONEncodable):
         shape = self._get_shape_from_bounding_box(bbul, bbbr)
 
         ret = numpy.zeros(shape.to_numpy_shape(), dtype=int)
-        increments = numpy.zeros(shape.to_numpy_shape(), dtype=(int, int))
+        increments = numpy.zeros(shape.to_numpy_shape(), dtype=object)
         # tid: template id
         # tul: template upper-left
         for tid, tul in ul_positions.items():
