@@ -304,7 +304,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def _build_array(
+    def build_array(
         self, indices_map: tuple[int, ...]
     ) -> tuple[numpy.ndarray, numpy.ndarray]:
         # ul: upper-left
@@ -339,7 +339,7 @@ class TemplateOrchestrator(JSONEncodable):
         return ret, increments
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self._build_array(plaquette_indices)[0]
+        return self.build_array(plaquette_indices)[0]
 
     def get_template_increments(self, *plaquette_indices: int) -> numpy.ndarray:
         """Get the increments between plaquettes of the template.
@@ -349,7 +349,7 @@ class TemplateOrchestrator(JSONEncodable):
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
-        return self._build_array(plaquette_indices)[1]
+        return self.build_array(plaquette_indices)[1]
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         """Scales all the scalable component templates to the given scale k.
