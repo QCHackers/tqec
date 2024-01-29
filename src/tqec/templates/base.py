@@ -48,7 +48,12 @@ class JSONEncodable(ABC):
 
 
 class Template(JSONEncodable):
-    def __init__(self, shape: BaseShape) -> None:
+    def __init__(
+        self,
+        shape: BaseShape,
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Base class for all the templates.
 
         This class is the base of all templates and provide the necessary interface
@@ -57,10 +62,18 @@ class Template(JSONEncodable):
         Each template should have a shape, represented by a Shape instance, and encoding
         how the template scales and its plaquettes.
 
+        The default increments define the distance between two plaquettes.
+        For example a default_x_increment of 2 means that two 2x2 plaquettes will share
+        a common edge.
+
         :param shape: the underlying template shape.
+        :param default_x_increment: default increment in the x direction between two plaquettes.
+        :param default_y_increment: default increment in the y direction between two plaquettes.
         """
         super().__init__()
         self._shape_instance = shape
+        self._default_x_increment = default_x_increment
+        self._default_y_increment = default_y_increment
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
@@ -92,9 +105,9 @@ class Template(JSONEncodable):
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
@@ -124,10 +137,18 @@ class Template(JSONEncodable):
         """
         return self._shape_instance
 
+    def get_increments(self) -> tuple[int, int]:
+        """Get the default increments of the template.
+
+        :returns: a tuple of the default increments in the x and y directions.
+        """
+        return self._default_x_increment, self._default_y_increment
+
 
 @dataclass
 class TemplateWithIndices:
-    """A wrapper around a Template instance and the indices representing the plaquettes it should be instanciated with."""
+    """A wrapper around a Template instance and the indices
+    representing the plaquettes it should be instanciated with."""
 
     template: Template
     indices: list[int]
