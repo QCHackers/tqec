@@ -1,0 +1,23 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
+		"airbnb"
+	],
+	"parserOptions": {
+		"ecmaVersion": "latest", // or 2015, etc
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"plugins": ["react", "react-hooks"],
+	"rules": {
+		//add customize rules here as per your project's needs
+	}
+}
