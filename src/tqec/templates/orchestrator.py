@@ -304,7 +304,9 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def _build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
+    def _build_array(
+        self, indices_map: tuple[int, ...]
+    ) -> tuple[numpy.ndarray, numpy.ndarray]:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left
@@ -313,6 +315,7 @@ class TemplateOrchestrator(JSONEncodable):
         shape = self._get_shape_from_bounding_box(bbul, bbbr)
 
         ret = numpy.zeros(shape.to_numpy_shape(), dtype=int)
+        increments = numpy.zeros(shape.to_numpy_shape(), dtype=(int, int))
         # tid: template id
         # tul: template upper-left
         for tid, tul in ul_positions.items():
@@ -332,10 +335,21 @@ class TemplateOrchestrator(JSONEncodable):
             ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
                 *plaquette_indices
             )
-        return ret
+            increments[y : y + tshapey, x : x + tshapex] = template.get_increments()
+        return ret, increments
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self._build_array(plaquette_indices)
+        return self._build_array(plaquette_indices)[0]
+
+    def get_template_increments(self, *plaquette_indices: int) -> numpy.ndarray:
+        """Get the increments between plaquettes of the template.
+
+        :param plaquette_indices: the plaquette indices that will be forwarded to the
+            underlying Shape instance's instanciate method.
+        :returns: a numpy array with the given plaquette indices arranged according
+            to the underlying shape of the template.
+        """
+        return self._build_array(plaquette_indices)[1]
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         """Scales all the scalable component templates to the given scale k.
