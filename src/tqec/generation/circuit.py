@@ -21,7 +21,7 @@ def generate_circuit(
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
        the provided template.
-    3. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
+    2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
     If any of the above pre-conditions is not met, the inputs are considered invalid, in which
     case this function **might** raise an error.
