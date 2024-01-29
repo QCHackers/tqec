@@ -169,7 +169,7 @@ node_modules/
 .vscode
 
 # Backend testing and deployment files
-web/circuit.stim
+ser/circuit.stim
 web/circuit.json
 web/tqec/
 web/requirements.txt
