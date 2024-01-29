@@ -11,8 +11,6 @@ from tqec.templates.orchestrator import TemplateOrchestrator
 def generate_circuit(
     template: TemplateOrchestrator,
     plaquettes: list[Plaquette],
-    default_x_increment: int = 2,
-    default_y_increment: int = 2,
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -23,8 +21,6 @@ def generate_circuit(
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
        the provided template.
-    2. all the provided plaquettes are rectangular. For '0' plaquettes, the shape is assumed to be
-        (default_x_increment, default_y_increment).
     3. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
     If any of the above pre-conditions is not met, the inputs are considered invalid, in which
@@ -34,8 +30,6 @@ def generate_circuit(
         to implement.
     :param plaquettes: description of the computation that should happen at different time-slices
         of the quantum error correction experiment (or at least part of it).
-    :param default_x_increment: default increment in the x direction between two plaquettes.
-    :param default_y_increment: default increment in the y direction between two plaquettes.
 
     :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
         represented by the provided inputs.
@@ -54,6 +48,7 @@ def generate_circuit(
     # Index 0 is "no plaquette" by convention.
     _indices = list(range(len(plaquettes) + 1))
     template_plaquettes = template.instanciate(*_indices)
+    plaquette_increments = template.get_template_increments(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
@@ -72,9 +67,9 @@ def generate_circuit(
     for row_index, line in enumerate(template_plaquettes):
         for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-
+            increments = plaquette_increments[row_index][column_index]
             offset: Position = Position(
-                column_index * default_x_increment, row_index * default_y_increment
+                column_index * increments[0], row_index * increments[1]
             )
             if plaquette_index > 0:
                 plaquette = plaquettes[plaquette_index - 1]
