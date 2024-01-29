@@ -4,7 +4,7 @@ import cirq
 
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.position import Position
+from tqec.position import Displacement, Position
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
@@ -68,10 +68,10 @@ def generate_circuit(
         for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
             increments = plaquette_increments[row_index][column_index]
-            offset: Position = Position(
-                column_index * increments[0], row_index * increments[1]
-            )
             if plaquette_index > 0:
+                offset = Displacement(
+                    column_index * increments.x, row_index * increments.y
+                )
                 plaquette = plaquettes[plaquette_index - 1]
                 qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
                 scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
@@ -84,7 +84,7 @@ def generate_circuit(
 def _create_mapping(
     plaquette: Plaquette,
     scheduled_circuit: ScheduledCircuit,
-    offset: Position,
+    offset: Displacement,
 ) -> dict[cirq.Qid, cirq.Qid]:
     origin = plaquette.origin
     assert origin == Position(0, 0), "Only origin (0,0) is supported for now"
