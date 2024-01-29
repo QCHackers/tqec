@@ -94,17 +94,30 @@ class TemplateOrchestrator(JSONEncodable):
 
         :param templates: a list of templates forwarded to the add_templates method
             at the end of instance initialisation.
+        :raises ValueError: if the templates provided have different default increments.
         """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
+        self._default_increments = (2, 2)
         self.add_templates(templates)
 
     def add_template(
         self,
         template_to_insert: TemplateWithIndices,
     ) -> int:
-        """Add the provided template to the data structure."""
+        """Add the provided template to the data structure.
+
+        :param template_to_insert: the template to insert, along with the indices of the
+        :raises ValueError: if the template to insert has different default increments than
+        :returns: the index of the template in the list of templates.
+        """
+        if len(self._templates) == 0:
+            self._default_increments = template_to_insert.template.get_increments()
+        elif self._default_increments != template_to_insert.template.get_increments():
+            raise ValueError(
+                f"Template {template_to_insert.template.to_dict()} has different default increments than the other templates."
+            )
         template_id: int = len(self._templates)
         indices = template_to_insert.indices
         self._templates.append(template_to_insert.template)
