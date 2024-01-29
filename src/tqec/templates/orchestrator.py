@@ -116,7 +116,8 @@ class TemplateOrchestrator(JSONEncodable):
             self._default_increments = template_to_insert.template.get_increments()
         elif self._default_increments != template_to_insert.template.get_increments():
             raise ValueError(
-                f"Template {template_to_insert.template.to_dict()} has different default increments than the other templates."
+                f"Template {template_to_insert.template.to_dict()}"
+                + " has different default increments than the other templates."
             )
         template_id: int = len(self._templates)
         indices = template_to_insert.indices
