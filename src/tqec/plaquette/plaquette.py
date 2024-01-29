@@ -1,6 +1,6 @@
 import cirq
 
-from tqec.enums import PlaquetteOrientation, PlaquetteOrigin
+from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
@@ -17,8 +17,6 @@ class Plaquette:
         self,
         qubits: list[PlaquetteQubit],
         circuit: ScheduledCircuit,
-        origin: PlaquetteOrigin = PlaquetteOrigin.TOP_LEFT,
-        origin_index: int = 0,
     ) -> None:
         """Represents a QEC plaquette
 
@@ -32,10 +30,6 @@ class Plaquette:
             coordinate system.
         :param circuit: scheduled quantum circuit implementing the computation that the
             plaquette should represent.
-        :param origin: origin of the plaquette. This is used to compute the global position
-            during the generation of the circuit.
-        :param origin_index: index of the origin qubit in the list. Only used in combination
-            with origin == PlaquetteOrigin.USER_DEFINED.
 
         :raises ValueError: if the number of qubits doesn't match the number of qubits
         """
@@ -44,11 +38,10 @@ class Plaquette:
 
         self._qubits = qubits
         self._circuit = circuit
-        self._caclulate_origin(origin, origin_index)
 
     @property
     def origin(self) -> Position:
-        return self._origin
+        return Position(0, 0)
 
     @property
     def qubits(self) -> list[PlaquetteQubit]:
@@ -57,18 +50,6 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
-
-    def _caclulate_origin(self, origin: PlaquetteOrigin, origin_index: int) -> None:
-        """Calcluates the origin of the plaquette given the user input."""
-        match origin:
-            case PlaquetteOrigin.TOP_LEFT:
-                self._origin = Position(0, 0)
-            case PlaquetteOrigin.CENTRAL:
-                raise NotImplementedError()
-            case PlaquetteOrigin.FIRST:
-                self._origin = self._qubits[0].position
-            case PlaquetteOrigin.USER_DEFINED:
-                self._origin = self._qubits[origin_index].position
 
 
 class SquarePlaquette(Plaquette):
