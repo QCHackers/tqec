@@ -69,11 +69,13 @@ def generate_circuit(
     # Generate the ScheduledCircuit instances for each plaquette instanciation
     all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
-    for plaquette_y, line in enumerate(template_plaquettes):
-        for plaquette_x, plaquette_index in enumerate(line):
+    for row_index, line in enumerate(template_plaquettes):
+        for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
 
-            offset: Position = Position(0, 0)
+            offset: Position = Position(
+                column_index * default_x_increment, row_index * default_y_increment
+            )
             if plaquette_index > 0:
                 plaquette = plaquettes[plaquette_index - 1]
                 qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
