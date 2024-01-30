@@ -172,3 +172,5 @@ node_modules/
 web/circuit.stim
 web/tqec/
 web/requirements.txt
+bin
+pyvenv.cfg

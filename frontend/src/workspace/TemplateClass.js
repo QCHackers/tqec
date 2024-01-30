@@ -35,6 +35,7 @@ export default class Template {
     this.container.addChild(this.templateButton);
     this.container.addChild(this.plaquetteButton);
     this.container.name = 'template';
+    this.workspace.addChild(this.container);
   }
 
   // Render the template control buttons
@@ -250,7 +251,7 @@ export default class Template {
     }
   };
 
-  // Create the plaquettes that are assigned to the tile
+  // Create the plaquette from the selected qubits and assign it to the template
   createPlaquette = () => {
     // Check that the selected qubits are part of the template area
     if (this.selectedQubits.length < 3) {
@@ -258,8 +259,8 @@ export default class Template {
       return;
     }
     // Render the plaquette
-    const plaquette = new Plaquette(this.selectedQubits, this.workspace); // Remove the container
-    if (!plaquette.plaquetteMade) return;
+    const plaquette = new Plaquette(this.selectedQubits, this.workspace);
+    if (!plaquette.plaquetteMade);
     // Add the plaquette to the tile container
     this.container.addChild(plaquette);
     // For each qubit, remove the text

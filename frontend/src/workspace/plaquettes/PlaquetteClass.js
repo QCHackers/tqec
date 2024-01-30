@@ -120,8 +120,8 @@ export default class Plaquette extends Graphics {
     let lowestYQubit = sortedQubits[0]; // This is the first qubit in the sorted list
     // Find the next qubit
     sortedQubits.forEach((q) => {
-      if (sortedQubits[q].globalY > lowestYQubit.globalY) {
-        lowestYQubit = sortedQubits[q];
+      if (q.globalY > lowestYQubit.globalY) {
+        lowestYQubit = q;
       }
     });
 
