@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
+import TqecApp from './workspace'
 
 function App() {
   return (
@@ -18,8 +19,8 @@ function App() {
         >
           TQEC repo
         </a>
-        <Stage width={1000} height={800}>
-
+        <Stage width={1000} height={800} options={{backgroundColor: 0x012b30, antialias: true}}>
+          <TqecApp />
         </Stage>
       </header>
     </div>
