@@ -318,9 +318,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def build_array(
-        self, indices_map: tuple[int, ...]
-    ) -> tuple[numpy.ndarray, numpy.ndarray]:
+    def _build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left
@@ -329,8 +327,6 @@ class TemplateOrchestrator(JSONEncodable):
         shape = self._get_shape_from_bounding_box(bbul, bbbr)
 
         ret = numpy.zeros(shape.to_numpy_shape(), dtype=int)
-        increments = increments = numpy.zeros((*shape.to_numpy_shape(), 2), dtype=int)
-        # tid: template id
         # tul: template upper-left
         for tid, tul in ul_positions.items():
             template = self._templates[tid]
@@ -349,21 +345,20 @@ class TemplateOrchestrator(JSONEncodable):
             ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
                 *plaquette_indices
             )
-            increments[y : y + tshapey, x : x + tshapex] = template.get_increments()
-        return ret, increments
+
+        return ret
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self.build_array(plaquette_indices)[0]
+        return self._build_array(plaquette_indices)
 
-    def get_template_increments(self, *plaquette_indices: int) -> numpy.ndarray:
+    @property
+    def default_increments(self) -> tuple[int, int]:
         """Get the increments between plaquettes of the template.
 
-        :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
+        :returns: a tuple (x increment, y increment) representing the increments between
+            plaquettes of the template.
         """
-        return self.build_array(plaquette_indices)[1]
+        return self._default_increments
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         """Scales all the scalable component templates to the given scale k.
