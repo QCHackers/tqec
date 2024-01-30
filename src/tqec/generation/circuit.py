@@ -47,7 +47,8 @@ def generate_circuit(
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
     _indices = list(range(len(plaquettes) + 1))
-    template_plaquettes, plaquette_increments = template.build_array(_indices)
+    template_plaquettes = template.instanciate(*_indices)
+    increments = template.default_increments
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
@@ -66,9 +67,9 @@ def generate_circuit(
     for row_index, line in enumerate(template_plaquettes):
         for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-            increments = plaquette_increments[row_index][column_index]
+
             if plaquette_index > 0:
-                offset = (column_index * increments.x, row_index * increments.y)
+                offset = (column_index * increments[0], row_index * increments[1])
                 plaquette = plaquettes[plaquette_index - 1]
                 qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
                 scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
@@ -87,7 +88,7 @@ def _create_mapping(
     qubit_map = {
         # GridQubit are indexed as (row, col), so (y, x)
         # Qubits are given relative to an origin, so we need to add the offset
-        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)  # type: ignore
+        qubit: qubit + (offset[1], offset[0]) + (origin.y, origin.x)  # type: ignore
         for qubit in scheduled_circuit.raw_circuit.all_qubits()
     }
     return qubit_map
