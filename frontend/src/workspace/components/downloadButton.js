@@ -75,7 +75,7 @@ export default class DownloadButton extends Button {
         // create "a" HTML element with href to file & click
         const link = document.createElement('a');
         link.href = href;
-        link.setAttribute('download', 'circuit.json'); // or any other extension
+        link.setAttribute('download', 'circuit.stim');
         document.body.appendChild(link);
         link.click();
         // clean up "a" element & remove ObjectURL
