@@ -18,7 +18,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Welcome to the basic frontend. Edit the sourcefiles and save to reload.
         </p>
         <a
           className="App-link"

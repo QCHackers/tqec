@@ -63,13 +63,17 @@ export default class Qubit extends Graphics {
 		this._createCircle(this.globalX, this.globalY, 5, color);
 	}
 
-	deselect() {
+	select() {
 		this.on('click', () => {
 			if (this.isSelected === true) {
 				this.isSelected = false;
-				this.changeColor('black');
+				this.changeColor('red');
 				this.removeChildren();
 			}
+            else {
+                this.isSelected = true;
+				this.changeColor(this.color);
+            }
 		});
 	}
 }
