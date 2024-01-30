@@ -1,4 +1,8 @@
+// Create the grid underlying the qubit array.
+
 import { Graphics } from 'pixi.js';
+
+/////////////////////////////////////////////////////////////
 
 export const makeGrid = (app, gridSize = 50) => {
 	// Create a PIXI.Graphics object for the grid

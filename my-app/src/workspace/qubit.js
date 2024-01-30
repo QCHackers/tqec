@@ -1,4 +1,8 @@
+// Define class Qubit and its methods
+
 import { Graphics, Text } from 'pixi.js'
+
+/////////////////////////////////////////////////////////////
 
 /**
  * Qubit class
@@ -6,9 +10,12 @@ import { Graphics, Text } from 'pixi.js'
  * @constructor
  * @param {number} x - The x position of the qubit
  * @param {number} y - The y position of the qubit
+ * @param {number} radius - The radius of the circle representing the qubit
+ * @param {number} color - Color filling the circle
+ * @param {number} gridSize - Size of the underlying grid
  */
 export default class Qubit extends Graphics {
-	constructor(x, y, radius = 5, color = 'orange', gridSize = 50) {
+	constructor(x, y, radius = 5, color = 'orange') {
 		super();
 		// UI properties
 		this.eventMode = 'static';
@@ -19,7 +26,6 @@ export default class Qubit extends Graphics {
 		this._createCircle(x, y, radius, color);
 		this.maxNeighborDist = 2 * this.gridSize;
 		this.neighbors = [];
-		this.gridSize = gridSize;
 		// Adjacent (degree 1) qubits
 		// QC properties
 		this.isQubit = true;
@@ -45,11 +51,25 @@ export default class Qubit extends Graphics {
 		// Create a circle
 		this.beginFill(color);
 		this.drawCircle(x, y, radius);
-		// this.hitArea = new Circle(x, y, radius);
 		this.endFill();
 
 		// Add hover event
 		this.on('pointerover', this._onPointerOver);
 		this.on('pointerout', this._onPointerOut);
+	}
+
+    changeColor(color) {
+		this.clear();
+		this._createCircle(this.globalX, this.globalY, 5, color);
+	}
+
+	deselect() {
+		this.on('click', () => {
+			if (this.isSelected === true) {
+				this.isSelected = false;
+				this.changeColor('black');
+				this.removeChildren();
+			}
+		});
 	}
 }
