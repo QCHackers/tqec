@@ -1,7 +1,16 @@
-import logo from './logo.svg';
+import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
 import TqecApp from './workspace'
+
+/* The logo has been created as the SVG rendering of the ASCII:
+ *
+ *    /---/  //---/    //---/   //---/
+ *     //   //   /    //-/     //
+ *    //   //---/==  //---/   //---/
+ *
+ *  with the web app: https://ivanceras.github.io/svgbob-editor/
+ */
 
 function App() {
   return (
