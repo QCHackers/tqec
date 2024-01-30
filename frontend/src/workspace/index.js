@@ -4,7 +4,7 @@
 import { useApp } from '@pixi/react';
 import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
-import { makeGrid } from './grid';
+import makeGrid from './grid';
 import Qubit from './QubitClass';
 import Template from './TemplateClass';
 import Button from './components/button';

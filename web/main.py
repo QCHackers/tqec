@@ -25,8 +25,6 @@ if __name__ == "__main__":
 @cross_origin(supports_credentials=True)
 def jsonToStim() -> Response:
     _json = request.get_json()
-    # TODO: Construct the plaquettes from the given file
-    # TODO: deserialize templates, Invoke generate_circuit
     filename = "circuit.stim"
     with open(filename, "w") as f:
         json.dump(_json, f)

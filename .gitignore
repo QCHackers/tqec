@@ -170,6 +170,5 @@ node_modules/
 
 # Backend testing and deployment files
 web/circuit.stim
-web/circuit.json
 web/tqec/
 web/requirements.txt
