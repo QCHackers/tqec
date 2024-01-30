@@ -172,5 +172,7 @@ node_modules/
 web/circuit.stim
 web/tqec/
 web/requirements.txt
+
+# created by virtualenv
 bin
 pyvenv.cfg
