@@ -50,21 +50,23 @@ export default class Plaquette extends Graphics {
 	 */
 	_createRectangle() {
         // Locate corners
-        let xmin = 0
-        let xmax = 100000
-        let ymin = 0
-        let ymax = 100000
+        let xmin = 10000
+        let xmax = 0
+        let ymin = 10000
+        let ymax = 0
         this.qubits.forEach(qubit => {
-            let x = qubit.xGlobal;
+            let x = qubit.globalX;
             if (x < xmin) xmin = x;
             if (x > xmax) xmax = x;
-            let y = qubit.yGlobal;
+            let y = qubit.globalY;
             if (y < ymin) ymin = y;
             if (y > ymax) ymax = y;
+            console.log(x,y)
         });
-		// Create a circle
+        console.log(xmin, ymin, xmax, ymax)
+		// Create a rectangle
 		this.beginFill(this.color);
-		this.drawRect(xmin, ymin, xmax, ymax);
+		this.drawRect(xmin, ymin, xmax-xmin, ymax-ymin);
 		this.endFill();
 
 		// Add hover event

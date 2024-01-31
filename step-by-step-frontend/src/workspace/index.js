@@ -44,6 +44,7 @@ export default function TqecApp() {
     let selectedQubits = [];
 	const createPlaquetteButton = button('Create plaquette', 2*gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
+	let plaquette;
 
     createPlaquetteButton.on('click', (_e) => {
 		// Loop on all qubits in the workspace and gather the selected ones
@@ -58,7 +59,9 @@ export default function TqecApp() {
 		console.log(selectedQubits);
 
 		// Create and draw the plaquette
-		const plaquette = new Plaquette(selectedQubits, workspace)
+		plaquette = new Plaquette(selectedQubits, workspace)
+		plaquette.interactive = true;
+		workspace.addChild(plaquette);
 		//template.createPlaquette();
 		//workspace.addChild(template.container);
 	});
@@ -90,8 +93,11 @@ export default function TqecApp() {
 			qubit.name = qubit.name.replace(/[szxa]/g, 'q');
 			qubit.removeChildren();
 		}); 
+		selectedQubits = []
 		// Remove list of qubits
+		//qubitsButton = button('', 2*gridSize, 3*gridSize, 'grey', 'black');
 		workspace.removeChild(qubitsButton)
+		workspace.removeChild(plaquette)
 	});
 
     //  Add workspace to the stage

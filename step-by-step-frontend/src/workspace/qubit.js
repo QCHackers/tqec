@@ -32,8 +32,8 @@ export default class Qubit extends Graphics {
 		this.globalY = y;
 		this.radius = radius;
 		this._createCircle(x, y, radius, Qubit.color_none);
-		this.maxNeighborDist = 2 * this.gridSize;
-		this.neighbors = [];
+		//this.maxNeighborDist = 2 * this.gridSize;
+		//this.neighbors = [];
 		// Adjacent (degree 1) qubits
 		// QC properties
 		this.isQubit = true;
