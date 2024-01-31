@@ -41,15 +41,23 @@ export default function TqecApp() {
 
     // Select the qubits that are part of a plaquette 
     let selectedQubits = [];
-	const plaquetteButton = button('Create plaquette', 2*gridSize, 1*gridSize, 'white', 'black');
-	workspace.addChild(plaquetteButton);
+	const createPlaquetteButton = button('Create plaquette', 2*gridSize, 1*gridSize, 'white', 'black');
+	workspace.addChild(createPlaquetteButton);
 
-    plaquetteButton.on('click', (_e) => {
-		// Create the plaquettes and tile
+    createPlaquetteButton.on('click', (_e) => {
+		// Loop on all qubits in the workspace and gather the selected ones
+		workspace.children.forEach(child => {
+			if (child instanceof Qubit) {
+				if (child.role != 'none') {
+					selectedQubits.push(child);
+				}
+			}
+		})
 		//template.createPlaquette();
 		//workspace.addChild(template.container);
 		// Clear the selected qubits
-		selectedQubits = [];
+		const printQubitsButton = button('Print plaquette qubits', 2*gridSize, 2*gridSize, 'white', 'black');
+		workspace.addChild(printQubitsButton);
 	});
 
     //  Add workspace to the stage

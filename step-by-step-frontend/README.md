@@ -1,4 +1,4 @@
-# Step-by-step cioding of the frontend
+# Step-by-step coding of the frontend
 
 Are you new to JavaScript, React and Pixi?  
 Do you want to contribute or simply understand the code powering the visual frontend of `tqecjs`?  

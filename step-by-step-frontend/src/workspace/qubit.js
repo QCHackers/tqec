@@ -93,6 +93,8 @@ export default class Qubit extends Graphics {
 
 	updateLabel() {
 		this.removeChildren();
+		if (this.role === 'none')
+			return;
 		// Create the label as a text element 
 		const label = new Text('S', {fill: Qubit.color_none, fontSize: 12,});
 		if (this.role === 'x') {
