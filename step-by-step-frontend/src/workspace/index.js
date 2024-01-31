@@ -13,6 +13,7 @@ export default function TqecApp() {
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
 	const gridSize = 50;
+	const qubitRadius = 7;
 
 	// Create the workspace
 	const workspace = new Container();
@@ -29,9 +30,11 @@ export default function TqecApp() {
             if ( (x+y) % 2 === 1 )
                 continue;
 			// Create a qubit
-			const qubit = new Qubit(x*gridSize, y*gridSize, 5, 'orange');
+			const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
 			// Name the qubit according to its position
 			qubit.name = `${x}_${y}`;
+			qubit.interactive = true;
+			qubit.on('click', qubit.select)
 			workspace.addChild(qubit);
 		}
 	}

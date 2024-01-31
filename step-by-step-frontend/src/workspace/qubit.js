@@ -15,21 +15,29 @@ import { Graphics, Text } from 'pixi.js'
  * @param {number} gridSize - Size of the underlying grid
  */
 export default class Qubit extends Graphics {
-	constructor(x, y, radius = 5, color = 'orange') {
+	constructor(x, y, radius = 5) {
 		super();
+		// Color properties (as static fields).
+		// Associated to the role played by the qubit.
+		Qubit.color_none = 'white'
+		Qubit.color_selected = 'yellow'
+		Qubit.color_x = 'blue'
+		Qubit.color_z = 'red'
+		Qubit.color_a = 'orange'
 		// UI properties
 		this.eventMode = 'static';
 		this.buttonMode = true;
 		this.cursor = 'pointer';
 		this.globalX = x;
 		this.globalY = y;
-		this._createCircle(x, y, radius, color);
+		this.radius = radius;
+		this._createCircle(x, y, radius, Qubit.color_none);
 		this.maxNeighborDist = 2 * this.gridSize;
 		this.neighbors = [];
 		// Adjacent (degree 1) qubits
 		// QC properties
 		this.isQubit = true;
-		this.isSelected = false;
+		this.role = 'none';
 	}
 
 	_onPointerOver = () => {
@@ -60,20 +68,26 @@ export default class Qubit extends Graphics {
 
     changeColor(color) {
 		this.clear();
-		this._createCircle(this.globalX, this.globalY, 5, color);
+		this._createCircle(this.globalX, this.globalY, this.radius, color);
 	}
 
 	select() {
-		this.on('click', () => {
-			if (this.isSelected === true) {
-				this.isSelected = false;
-				this.changeColor('red');
-				this.removeChildren();
-			}
-            else {
-                this.isSelected = true;
-				this.changeColor(this.color);
-            }
-		});
+		if (this.role === 'none') {
+			this.role = 'selected';
+			this.changeColor(Qubit.color_selected);
+		} else if (this.role === 'selected') {
+		    this.role = 'x';
+			this.changeColor(Qubit.color_x);
+		} else if (this.role === 'x') {
+		    this.role = 'z';
+			this.changeColor(Qubit.color_z);
+		} else if (this.role === 'z') {
+		    this.role = 'a';
+			this.changeColor(Qubit.color_a);
+		} else if (this.role === 'a') {
+		    this.role = 'none';
+			this.changeColor(Qubit.color_none);
+			this.removeChildren();
+		};
 	}
 }

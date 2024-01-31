@@ -13,7 +13,7 @@ export const makeGrid = (app, gridSize = 50, isRotated = true) => {
 	// Create a PIXI.Graphics object for the grid
 	const grid = new Graphics();
 	// Set the line style for the grid lines
-	grid.lineStyle(4, 'black');
+	grid.lineStyle(2, 'black');
 
 	if (isRotated === false) {
 		// Draw vertical lines
@@ -30,22 +30,22 @@ export const makeGrid = (app, gridSize = 50, isRotated = true) => {
 		for (let x = 0; x <= app.screen.width; x += 2*gridSize) {
 			// Draw lines at 45°, like '\' due to the reference system
 			grid.moveTo(x, 0);
-			const d1 = Math.min(app.screen.height, app.screen.width-x);
-			grid.lineTo(x+d1, d1);
+			var dx = Math.min(app.screen.height, app.screen.width-x);
+			grid.lineTo(x+dx, dx);
 			// Draw lines at -45°, like '/' due to the reference system
 			grid.moveTo(x, 0);
-			const d2 = Math.min(app.screen.height, x);
-			grid.lineTo(x-d2, d2);
+			dx = Math.min(app.screen.height, x);
+			grid.lineTo(x-dx, dx);
 		}
 		for (let y = 0; y <= app.screen.height; y += 2*gridSize) {
 			// Draw lines at 45°, like '\' due to the reference system
 			grid.moveTo(0, y);
-			const d1 = Math.min(app.screen.height-y, app.screen.width);
-			grid.lineTo(0+d1, y+d1);
+			var dy = Math.min(app.screen.height-y, app.screen.width);
+			grid.lineTo(0+dy, y+dy);
 			// Draw lines at -45°, like '/' due to the reference system
 			grid.moveTo(app.screen.width, y);
-			const d2 = Math.min(app.screen.height-y, app.screen.width);
-			grid.lineTo(app.screen.width-d2, y+d2);
+			dy = Math.min(app.screen.height-y, app.screen.width);
+			grid.lineTo(app.screen.width-dy, y+dy);
 		}
 	}
 
