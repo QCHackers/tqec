@@ -4,6 +4,7 @@ import { Container } from 'pixi.js'
 import Qubit from './qubit'
 import { button } from './button'
 import Plaquette from './plaquette'
+import Circuit from './circuit'
 
 // 
 
@@ -33,7 +34,7 @@ export default function TqecApp() {
 			// Create a qubit
 			const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
 			// Name the qubit according to its position
-			qubit.name = `q(${x},${y})`;
+			qubit.name = `q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
 			qubit.interactive = true;
 			qubit.on('click', qubit.select)
 			workspace.addChild(qubit);
@@ -59,17 +60,16 @@ export default function TqecApp() {
 		console.log(selectedQubits);
 
 		// Create and draw the plaquette
-		plaquette = new Plaquette(selectedQubits, workspace)
+		plaquette = new Plaquette(selectedQubits)
 		plaquette.interactive = true;
+		// We want the plaquette to be in the lowest layer
 		workspace.addChild(plaquette);
-		//template.createPlaquette();
-		//workspace.addChild(template.container);
+		//workspace.addChildAt(plaquette);
 	});
 
 	// Create a button to allow for printing the plaquette's qubits 
-	const printQubitsButton = button('Print plaquette qubits', 2*gridSize, 2*gridSize, 'white', 'black');
+	const printQubitsButton = button('Print qubit names', 2*gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(printQubitsButton);
-
 	let qubitsButton;
 
     printQubitsButton.on('click', (_e) => {
@@ -81,8 +81,18 @@ export default function TqecApp() {
 		workspace.addChild(qubitsButton);
 	});
 
+	// Create a button for printing the plaquette's circuit 
+	const printCircuitButton = button('Print circuit', 2*gridSize, 4*gridSize, 'white', 'black');
+	workspace.addChild(printCircuitButton);
+	let circuitArt;
+
+    printCircuitButton.on('click', (_e) => {
+		circuitArt = new Circuit(selectedQubits, gridSize-25, 5*gridSize-15);
+		workspace.addChild(circuitArt);
+	});
+
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', 2*gridSize, 4*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', 2*gridSize, 8*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
@@ -98,6 +108,7 @@ export default function TqecApp() {
 		//qubitsButton = button('', 2*gridSize, 3*gridSize, 'grey', 'black');
 		workspace.removeChild(qubitsButton)
 		workspace.removeChild(plaquette)
+		workspace.removeChild(circuitArt)
 	});
 
     //  Add workspace to the stage

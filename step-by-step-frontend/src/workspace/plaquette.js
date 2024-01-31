@@ -16,18 +16,13 @@ export const PlaquetteColors = {
  * @extends Graphics
  * @constructor
  * @param {array} qubits - The qubits which are part of the plaquette
- * @param {number} workspace - The container to which we add the plaquette as child
  * @param {Color} color - Color filling of the plaquette
  */
 export default class Plaquette extends Graphics {
-    constructor(qubits, workspace, color = PlaquetteColors.purple) {
+    constructor(qubits, color = PlaquetteColors.purple) {
         super();
         // UI properties
-        this.workspace = workspace;
         this.color = color;
-        this.gridSize = workspace.gridSize;
-        this.gridOffsetX = this.gridSize;
-        this.gridOffsetY = this.gridSize;
         this.qubits = qubits
         //this.isDragging = false;
         //this.plaquetteMade = false;
