@@ -3,6 +3,7 @@ import { makeGrid } from './grid'
 import { Container } from 'pixi.js'
 import Qubit from './qubit'
 import { button } from './button'
+import Plaquette from './plaquette'
 
 // 
 
@@ -56,6 +57,8 @@ export default function TqecApp() {
 		// For debugging purposes, annotate on the console's log which qubits were selected
 		console.log(selectedQubits);
 
+		// Create and draw the plaquette
+		const plaquette = new Plaquette(selectedQubits, workspace)
 		//template.createPlaquette();
 		//workspace.addChild(template.container);
 	});
@@ -64,13 +67,31 @@ export default function TqecApp() {
 	const printQubitsButton = button('Print plaquette qubits', 2*gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(printQubitsButton);
 
+	let qubitsButton;
+
     printQubitsButton.on('click', (_e) => {
 		let message = '';
 		selectedQubits.forEach(qubit => {
 			message = message + `${qubit.name} `;
 		}); 
-		const qubitsButton = button(message, 2*gridSize, 3*gridSize, 'grey', 'black');
+		qubitsButton = button(message, 2*gridSize, 3*gridSize, 'grey', 'black');
 		workspace.addChild(qubitsButton);
+	});
+
+	// Create a button to de-select all qubits 
+	const clearPlaquetteButton = button('Clear plaquette', 2*gridSize, 4*gridSize, 'white', 'black');
+	workspace.addChild(clearPlaquetteButton);
+
+    clearPlaquetteButton.on('click', (_e) => {
+		// De-select the qubits
+		selectedQubits.forEach(qubit => {
+		    qubit.role = 'none';
+			qubit.changeColor(Qubit.color_none);
+			qubit.name = qubit.name.replace(/[szxa]/g, 'q');
+			qubit.removeChildren();
+		}); 
+		// Remove list of qubits
+		workspace.removeChild(qubitsButton)
 	});
 
     //  Add workspace to the stage

@@ -48,7 +48,7 @@ export default class Qubit extends Graphics {
 		this.alpha = 1;
 	};
 
-    	/**
+	/**
 	 * Creates a circle
 	 * @param {*} x
 	 * @param {*} y
