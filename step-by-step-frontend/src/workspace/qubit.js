@@ -75,18 +75,23 @@ export default class Qubit extends Graphics {
 		if (this.role === 'none') {
 			this.role = 'selected';
 			this.changeColor(Qubit.color_selected);
+			this.name = this.name.replace(/[qxza]/g, 's');
 		} else if (this.role === 'selected') {
 		    this.role = 'x';
 			this.changeColor(Qubit.color_x);
+			this.name = this.name.replace(/[qsza]/g, 'x');
 		} else if (this.role === 'x') {
 		    this.role = 'z';
 			this.changeColor(Qubit.color_z);
+			this.name = this.name.replace(/[qsxa]/g, 'z');
 		} else if (this.role === 'z') {
 		    this.role = 'a';
 			this.changeColor(Qubit.color_a);
+			this.name = this.name.replace(/[qsxz]/g, 'a');
 		} else if (this.role === 'a') {
 		    this.role = 'none';
 			this.changeColor(Qubit.color_none);
+			this.name = this.name.replace(/[szxa]/g, 'q');
 		};
 		this.updateLabel();
 	}

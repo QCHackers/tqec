@@ -32,7 +32,7 @@ export default function TqecApp() {
 			// Create a qubit
 			const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
 			// Name the qubit according to its position
-			qubit.name = `${x}_${y}`;
+			qubit.name = `q(${x},${y})`;
 			qubit.interactive = true;
 			qubit.on('click', qubit.select)
 			workspace.addChild(qubit);
@@ -48,16 +48,29 @@ export default function TqecApp() {
 		// Loop on all qubits in the workspace and gather the selected ones
 		workspace.children.forEach(child => {
 			if (child instanceof Qubit) {
-				if (child.role != 'none') {
+				if (child.role !== 'none') {
 					selectedQubits.push(child);
 				}
 			}
-		})
+		});
+		// For debugging purposes, annotate on the console's log which qubits were selected
+		console.log(selectedQubits);
+
 		//template.createPlaquette();
 		//workspace.addChild(template.container);
-		// Clear the selected qubits
-		const printQubitsButton = button('Print plaquette qubits', 2*gridSize, 2*gridSize, 'white', 'black');
-		workspace.addChild(printQubitsButton);
+	});
+
+	// Create a button to allow for printing the plaquette's qubits 
+	const printQubitsButton = button('Print plaquette qubits', 2*gridSize, 2*gridSize, 'white', 'black');
+	workspace.addChild(printQubitsButton);
+
+    printQubitsButton.on('click', (_e) => {
+		let message = '';
+		selectedQubits.forEach(qubit => {
+			message = message + `${qubit.name} `;
+		}); 
+		const qubitsButton = button(message, 2*gridSize, 3*gridSize, 'grey', 'black');
+		workspace.addChild(qubitsButton);
 	});
 
     //  Add workspace to the stage

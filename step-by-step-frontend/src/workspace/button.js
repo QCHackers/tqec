@@ -26,7 +26,6 @@ export const button = (text, x, y, buttonColor = 'black', fontColor = 'white') =
 		buttonText.getBounds().width + 30,
 		buttonText.getBounds().height + 30
 	);
-
 	buttonBackground.endFill();
 
 	// Add effects
