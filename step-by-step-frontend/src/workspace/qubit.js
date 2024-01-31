@@ -87,7 +87,31 @@ export default class Qubit extends Graphics {
 		} else if (this.role === 'a') {
 		    this.role = 'none';
 			this.changeColor(Qubit.color_none);
-			this.removeChildren();
 		};
+		this.updateLabel();
+	}
+
+	updateLabel() {
+		this.removeChildren();
+		// Create the label as a text element 
+		const label = new Text('S', {fill: Qubit.color_none, fontSize: 12,});
+		if (this.role === 'x') {
+			label.text = 'X';
+			//label.tint = Qubit.color_x;
+		} else if (this.role === 'z') {
+			label.text = 'Z';
+			//label.tint = Qubit.color_z;
+		} else if (this.role === 'a') {
+			label.text = 'A';
+			//label.fill = Qubit.color_a;
+		} else if (this.role === 'selected') {
+			//label.fill = Qubit.color_selected;
+		};
+		label.anchor.set(0.5);
+
+		label.position.set(this.globalX, Math.max(this.globalY - 15, 13));
+		//this._onPointerOver();
+		// Add the label to the qubit
+		this.addChild(label);
 	}
 }
