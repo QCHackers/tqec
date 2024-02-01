@@ -2,11 +2,7 @@ import typing as ty
 
 import networkx as nx
 import numpy
-
-from tqec.enums import (
-    CornerPositionEnum,
-    TemplateRelativePositionEnum,
-)
+from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.position import Position, Shape2D
 from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
 
@@ -100,6 +96,15 @@ class TemplateOrchestrator(JSONEncodable):
         self._maximum_plaquette_mapping_index: int = 0
         self.add_templates(templates)
 
+    def _check_template_id(self, template_id: int) -> None:
+        if template_id < len(self._templates):
+            err = IndexError()
+            err.add_note(
+                f"Asking for element identified by {template_id} when only "
+                f"{len(self._templates)} templates have been added to the TemplateOrchestrator instance."
+            )
+            raise err
+
     def add_template(
         self,
         template_to_insert: TemplateWithIndices,
@@ -144,9 +149,8 @@ class TemplateOrchestrator(JSONEncodable):
             template provided in first parameter will be positioned.
         :returns: self, to be able to chain calls to this method.
         """
-        assert template_id_to_position < len(self._templates)
-        assert anchor_id < len(self._templates)
-        assert isinstance(relative_position, TemplateRelativePositionEnum)
+        self._check_template_id(template_id_to_position)
+        self._check_template_id(anchor_id)
 
         anchor_corner: CornerPositionEnum
         template_corner: CornerPositionEnum
@@ -191,8 +195,8 @@ class TemplateOrchestrator(JSONEncodable):
         """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
-        assert template_id < len(self._templates)
-        assert anchor_id < len(self._templates)
+        self._check_template_id(template_id)
+        self._check_template_id(anchor_id)
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
         self._relative_position_graph.add_edge(
@@ -342,9 +346,9 @@ class TemplateOrchestrator(JSONEncodable):
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
