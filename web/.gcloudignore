@@ -15,8 +15,15 @@
 
 # Python pycache:
 __pycache__/
+
 # Ignored by the build system
 /setup.cfg
 
 # venv
 venv/
+
+circuit.stim
+
+# Deployment scripts
+deploy-gcloud.sh
+deploy-local.sh
