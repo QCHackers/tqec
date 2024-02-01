@@ -75,16 +75,18 @@ class ZZMemoryPlaquette(BaseZZPlaquette):
         data_qubits = [
             q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
         ]
-        detector = [
-            DetectorGate(
-                syndrome_qubit,
-                [
-                    RelativeMeasurement(cirq.GridQubit(0, 0), -1),
-                    RelativeMeasurement(cirq.GridQubit(0, 0), -2),
-                ],
-                time_coordinate=0,
-            ).on(syndrome_qubit),
-        ]
+        detector = []
+        if include_detector:
+            detector = [
+                DetectorGate(
+                    syndrome_qubit,
+                    [
+                        RelativeMeasurement(cirq.GridQubit(0, 0), -1),
+                        RelativeMeasurement(cirq.GridQubit(0, 0), -2),
+                    ],
+                    time_coordinate=0,
+                ).on(syndrome_qubit),
+            ]
         super().__init__(
             circuit=ScheduledCircuit(
                 cirq.Circuit(
