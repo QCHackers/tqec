@@ -123,7 +123,12 @@ export default class Circuit extends Container {
 	 * Create the circuit as ASCII art
 	 */
 	_createCircuit() {
-		const message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : 'Plaquette is not compliant.';
+		const warning = 'Plaquette is not compliant.\n\n'
+					  + 'Requirements:\n'
+					  + '- there is a unique ancilla qubit\n'
+					  + '- all other qubits are associated with either X- or Z-stabilizers\n'
+					  + '- all data qubits are assumed physically connected to the ancilla qubit';
+		const message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : warning;
 		// Create the graphics
 		const artText = new Text(message,
 			{
@@ -132,7 +137,7 @@ export default class Circuit extends Container {
 				fill: Circuit.color, // White color
 				align: 'left',
 				wordWrap: true,
-				wordWrapWidth: 300, // Set the maximum width for word wrapping
+				wordWrapWidth: 800, // Set the maximum width for word wrapping
 			}
 		);
 		// Set the position of the text
@@ -152,6 +157,16 @@ export default class Circuit extends Container {
 		artBackground.beginFill(Circuit.color_background);
 		artBackground.drawRoundedRect(this.globalX-15, this.globalY-15, dx, dy);
 		artBackground.endFill();
+
+		// Add effects
+		this.eventMode = 'static';
+		// Add hover event
+		this.on('pointerover', () => {
+			artBackground.alpha = 0.5;
+		});
+		this.on('pointerout', () => {
+			artBackground.alpha = 1;
+		});
 		return artBackground;
 	};
 };
