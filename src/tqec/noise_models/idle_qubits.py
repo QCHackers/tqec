@@ -1,7 +1,6 @@
 from typing import Sequence
 
 import cirq
-
 from tqec.noise_models.base import BaseNoiseModel
 
 
@@ -26,10 +25,6 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
             return moment
 
         system_qubits_set = set(system_qubits)
-        illegal_qubits = moment.qubits.difference(system_qubits_set)
-        assert (
-            not illegal_qubits
-        ), f"Found a moment containing illegal qubits: {illegal_qubits}"
 
         # Apply recursively the noise model to CircuitOperation instances
         moment = cirq.Moment(
