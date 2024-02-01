@@ -1,6 +1,69 @@
 import { Text, Container, Graphics } from 'pixi.js';
 
 /**
+ * Create the circuit as ASCII art
+ */
+export function createCircuitAsciiArt(data_qubits, anc_qubit) {
+	let lines = [];
+	// Add lines for every data qubit.
+	let idx = 0;
+	data_qubits.forEach(qubit => {
+		let line = `|${qubit.name}> --`
+		// Local change of basis
+		if (qubit.role === 'x') line += 'H--';
+		if (qubit.role === 'z') line += '---';
+		// Previous CNOTs
+		for (let i = 0; i<idx; i++) {
+			line += '|--';
+		}
+		// Current CNOT
+		line += '*--'
+		// Next CNOTs
+		for (let i = idx+1; i<data_qubits.length; i++) {
+			line = line + '---';
+		}
+		// Change of basis
+		if (qubit.role === 'x') line = line + 'H--';
+		if (qubit.role === 'z') line = line + '---';
+		// End
+		line += '---';
+		lines.push(line);
+
+		// Empty line with only vertical bars.
+		//      |Q(__,__)> --
+		line = '             ';
+		line += '   ';
+		// Previous CNOTs and current one
+		for (let i = 0; i<idx+1; i++) {
+			line += '|  ';
+		}
+		// Next CNOTs
+		for (let i = idx+1; i<data_qubits.length; i++) {
+			line += '   ';
+		}
+		line += '      '
+		lines.push(line);
+		idx += 1;
+	});
+	// Add line for the ancilla qubit.
+	let line = `|${anc_qubit.name}> --`
+	line = line + '---'; // Change of basis
+	for (let i = 0; i<data_qubits.length; i++) {
+		line = line + 'x--';
+	}
+	line = line + '--- D~'
+	lines.push(line);
+	// Create the message
+	let art = '';
+	lines.slice(0,-1).forEach(line => {
+		art = art + line + '\n';
+	});
+	art += lines[lines.length-1];
+	return art;
+}
+
+
+/**
  * Qubit class
  * @extends Graphics
  * @constructor
@@ -15,8 +78,8 @@ export default class Circuit extends Container {
 		super();
 		// Color properties (as static fields).
 		// Associated to the role played by the qubit.
-		Circuit.color_background = 'white'
-		Circuit.color = 'black'
+		Circuit.color_background = 'purple'
+		Circuit.color = 'white'
 		// UI properties
 		this.globalX = x;
 		this.globalY = y;
@@ -24,10 +87,11 @@ export default class Circuit extends Container {
 		//this.anc_qubit;
 		this.data_qubits = [];
 		this._confirmFormat(qubits);
-		if (this.isCompatible === true) {
-			this._createBackground();
-			this._createCircuit();
-		}
+		this.art = this._createCircuit();
+		this.box = this._createBackground();
+		// Add the text object to the stage
+		this.addChild(this.box);
+		this.addChild(this.art);
 	}
 
 	/**
@@ -59,50 +123,12 @@ export default class Circuit extends Container {
 	 * Create the circuit as ASCII art
 	 */
 	_createCircuit() {
-		let lines = [''];
-		// Add lines for every data qubit.
-		let idx = 0;
-        this.data_qubits.forEach(qubit => {
-			let line = `|${qubit.name}> --`
-			// Local change of basis
-			if (qubit.role === 'x') line = line + 'H--';
-			if (qubit.role === 'z') line = line + '---';
-			// Previous CNOTs
-			for (let i = 0; i<idx; i++) {
-				line = line + '|--';
-			}
-			// Current CNOT
-			line = line + '*--'
-			// Next CNOTs
-			for (let i = idx+1; i<this.data_qubits.length; i++) {
-				line = line + '---';
-			}
-			// Change of basis
-			if (qubit.role === 'x') line = line + 'H--';
-			if (qubit.role === 'z') line = line + '---';
-			// End
-			line = line + '---'
-			lines.push(line);
-			idx += 1;
-		});
-		// Add line for the ancilla qubit.
-		let line = `|${this.anc_qubit.name}> --`
-		line = line + '---'; // Change of basis
-		for (let i = 0; i<this.data_qubits.length; i++) {
-			line = line + 'x--';
-		}
-		line = line + '--- D~'
-		lines.push(line);
-		// Create the message
-		let message = '';
-        lines.forEach(line => {
-			message = message + line + '\n';
-		});
+		const message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : 'Plaquette is not compliant.';
 		// Create the graphics
 		const artText = new Text(message,
 			{
 				fontFamily: 'monospace',
-				fontSize: 15,
+				fontSize: 16,
 				fill: Circuit.color, // White color
 				align: 'left',
 				wordWrap: true,
@@ -111,8 +137,7 @@ export default class Circuit extends Container {
 		);
 		// Set the position of the text
 		artText.position.set(this.globalX, this.globalY);
-		// Add the text object to the stage
-		this.addChild(artText);
+		return artText;
 	}
 
 	/**
@@ -120,13 +145,13 @@ export default class Circuit extends Container {
 	 */
 	_createBackground() {
 		const artBackground = new Graphics();
-        // Locate corners
-        const dx = 400
-        const dy = 130; //4 + this.data_qubits.length * 24
+		// Locate corners
+		const dx = this.art.getBounds().width + 30;
+		const dy = this.art.getBounds().height + 30;
 		// Create a rectangle
 		artBackground.beginFill(Circuit.color_background);
-		artBackground.drawRoundedRect(this.globalX-15, this.globalY, dx, dy);
+		artBackground.drawRoundedRect(this.globalX-15, this.globalY-15, dx, dy);
 		artBackground.endFill();
-		this.addChild(artBackground);
+		return artBackground;
 	};
 };

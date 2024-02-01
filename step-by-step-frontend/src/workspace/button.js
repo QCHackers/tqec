@@ -1,5 +1,10 @@
 import { Text, Container, Graphics } from 'pixi.js';
 
+/////////////////////////////////////////////////////////////
+
+/**
+ * Create a button formed by a Text graphics plus a rounded rectangular background
+ */
 export const button = (text, x, y, buttonColor = 'black', fontColor = 'white', isLeftAligned = true) => {
 	// Create the button container
 	const button = new Container();

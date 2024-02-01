@@ -89,12 +89,14 @@ export default function TqecApp() {
 	let circuitArt;
 
     printCircuitButton.on('click', (_e) => {
-		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize-15);
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize);
+		//let message = createCircuitAsciiArt(selectedQubits, selectedQubits[0]) // FIXME:
+		//circuitArt = button(message, gridSize, 7*gridSize, 'grey', 'black'); // FIXME:
 		workspace.addChild(circuitArt);
 	});
 
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', gridSize, 8*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 10*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
