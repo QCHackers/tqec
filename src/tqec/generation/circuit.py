@@ -4,7 +4,7 @@ import cirq
 
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.position import Position
+from tqec.position import Displacement
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
@@ -68,7 +68,7 @@ def generate_circuit(
         for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
 
-            offset = (column_index * increments[0], row_index * increments[1])
+            offset = Displacement(column_index * increments.x, row_index * increments.y)
             plaquette = plaquettes[plaquette_index - 1]
             qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
             scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
@@ -79,14 +79,14 @@ def generate_circuit(
 
 
 def _create_mapping(
-    plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: tuple[int, int]
+    plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: Displacement
 ) -> dict[cirq.Qid, cirq.Qid]:
     origin = plaquette.origin
 
     qubit_map = {
         # GridQubit are indexed as (row, col), so (y, x)
         # Qubits are given relative to an origin, so we need to add the offset
-        qubit: qubit + (offset[1], offset[0]) + (origin.y, origin.x)  # type: ignore
+        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)  # type: ignore
         for qubit in scheduled_circuit.raw_circuit.all_qubits()
     }
     return qubit_map

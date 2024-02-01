@@ -7,7 +7,7 @@ from tqec.enums import (
     CornerPositionEnum,
     TemplateRelativePositionEnum,
 )
-from tqec.position import Position, Shape2D
+from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
 
 
@@ -99,7 +99,7 @@ class TemplateOrchestrator(JSONEncodable):
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
-        self._default_increments = (2, 2)
+        self._default_increments = Displacement(2, 2)
         self.add_templates(templates)
 
     def add_template(
@@ -352,10 +352,10 @@ class TemplateOrchestrator(JSONEncodable):
         return self._build_array(plaquette_indices)
 
     @property
-    def default_increments(self) -> tuple[int, int]:
+    def default_increments(self) -> Displacement:
         """Get the increments between plaquettes of the template.
 
-        :returns: a tuple (x increment, y increment) representing the increments between
+        :returns: a Displacement(x increment, y increment) representing the increments between
             plaquettes of the template.
         """
         return self._default_increments
