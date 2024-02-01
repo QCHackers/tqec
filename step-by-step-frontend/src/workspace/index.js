@@ -34,7 +34,7 @@ export default function TqecApp() {
 			// Create a qubit
 			const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
 			// Name the qubit according to its position
-			qubit.name = `q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
+			qubit.name = `Q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
 			qubit.interactive = true;
 			qubit.on('click', qubit.select)
 			workspace.addChild(qubit);

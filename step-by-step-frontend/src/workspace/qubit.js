@@ -75,23 +75,23 @@ export default class Qubit extends Graphics {
 		if (this.role === 'none') {
 			this.role = 'selected';
 			this.changeColor(Qubit.color_selected);
-			this.name = this.name.replace(/[qxza]/g, 's');
+			this.name = this.name.replace(/[QXZA]/g, 'S');
 		} else if (this.role === 'selected') {
 		    this.role = 'x';
 			this.changeColor(Qubit.color_x);
-			this.name = this.name.replace(/[qsza]/g, 'x');
+			this.name = this.name.replace(/[QSZA]/g, 'X');
 		} else if (this.role === 'x') {
 		    this.role = 'z';
 			this.changeColor(Qubit.color_z);
-			this.name = this.name.replace(/[qsxa]/g, 'z');
+			this.name = this.name.replace(/[QSXA]/g, 'Z');
 		} else if (this.role === 'z') {
 		    this.role = 'a';
 			this.changeColor(Qubit.color_a);
-			this.name = this.name.replace(/[qsxz]/g, 'a');
+			this.name = this.name.replace(/[QSXZ]/g, 'A');
 		} else if (this.role === 'a') {
 		    this.role = 'none';
 			this.changeColor(Qubit.color_none);
-			this.name = this.name.replace(/[szxa]/g, 'q');
+			this.name = this.name.replace(/[SZXA]/g, 'Q');
 		};
 		this.updateLabel();
 	}
@@ -101,22 +101,10 @@ export default class Qubit extends Graphics {
 		if (this.role === 'none')
 			return;
 		// Create the label as a text element 
-		const label = new Text('S', {fill: Qubit.color_none, fontSize: 12,});
-		if (this.role === 'x') {
-			label.text = 'X';
-			//label.tint = Qubit.color_x;
-		} else if (this.role === 'z') {
-			label.text = 'Z';
-			//label.tint = Qubit.color_z;
-		} else if (this.role === 'a') {
-			label.text = 'A';
-			//label.fill = Qubit.color_a;
-		} else if (this.role === 'selected') {
-			//label.fill = Qubit.color_selected;
-		};
+		const label = new Text(this.name, {fill: Qubit.color_none, fontSize: 16, fontWeight: 'bold',});
 		label.anchor.set(0.5);
 
-		label.position.set(this.globalX, Math.max(this.globalY - 15, 13));
+		label.position.set(this.globalX, Math.max(this.globalY - 17, 13));
 		//this._onPointerOver();
 		// Add the label to the qubit
 		this.addChild(label);
