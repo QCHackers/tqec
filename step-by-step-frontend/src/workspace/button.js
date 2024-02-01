@@ -1,6 +1,6 @@
 import { Text, Container, Graphics } from 'pixi.js';
 
-export const button = (text, x, y, buttonColor = 'black', fontColor = 'white') => {
+export const button = (text, x, y, buttonColor = 'black', fontColor = 'white', isLeftAligned = true) => {
 	// Create the button container
 	const button = new Container();
 
@@ -13,15 +13,15 @@ export const button = (text, x, y, buttonColor = 'black', fontColor = 'white') =
 		align: 'center',
 	});
 
-	buttonText.anchor.set(0.5);
 	buttonText.x = x;
 	buttonText.y = y;
+	buttonText.anchor.set( (isLeftAligned) ? 0 : 0.5, 0.5);
 
 	// Create the button background
 	const buttonBackground = new Graphics();
 	buttonBackground.beginFill(buttonColor);
 	buttonBackground.drawRoundedRect(
-		buttonText.x - buttonText.getBounds().width / 2 - 15,
+		(isLeftAligned) ? buttonText.x - 15 : buttonText.x - buttonText.getBounds().width / 2 - 15,
 		buttonText.y - buttonText.getBounds().height / 2 - 15,
 		buttonText.getBounds().width + 30,
 		buttonText.getBounds().height + 30

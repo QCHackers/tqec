@@ -43,12 +43,13 @@ export default function TqecApp() {
 
     // Select the qubits that are part of a plaquette 
     let selectedQubits = [];
-	const createPlaquetteButton = button('Create plaquette', 2*gridSize, 1*gridSize, 'white', 'black');
+	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
 	let plaquette;
 
     createPlaquetteButton.on('click', (_e) => {
 		// Loop on all qubits in the workspace and gather the selected ones
+		selectedQubits = [];
 		workspace.children.forEach(child => {
 			if (child instanceof Qubit) {
 				if (child.role !== 'none') {
@@ -67,31 +68,33 @@ export default function TqecApp() {
 	});
 
 	// Create a button to allow for printing the plaquette's qubits 
-	const printQubitsButton = button('Print qubit names', 2*gridSize, 2*gridSize, 'white', 'black');
+	const printQubitsButton = button('Print qubit names', gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(printQubitsButton);
 	let qubitsButton;
 
     printQubitsButton.on('click', (_e) => {
+		// Remove the prior info box
+		workspace.removeChild(qubitsButton);
 		let message = '';
 		selectedQubits.forEach(qubit => {
 			message = message + `${qubit.name} `;
 		}); 
-		qubitsButton = button(message, 2*gridSize, 3*gridSize, 'grey', 'black');
+		qubitsButton = button(message, gridSize, 3*gridSize, 'grey', 'black');
 		workspace.addChild(qubitsButton);
 	});
 
 	// Create a button for printing the plaquette's circuit 
-	const printCircuitButton = button('Print circuit', 2*gridSize, 4*gridSize, 'white', 'black');
+	const printCircuitButton = button('Print circuit', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printCircuitButton);
 	let circuitArt;
 
     printCircuitButton.on('click', (_e) => {
-		circuitArt = new Circuit(selectedQubits, gridSize-25, 5*gridSize-15);
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize-15);
 		workspace.addChild(circuitArt);
 	});
 
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', 2*gridSize, 8*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 8*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
