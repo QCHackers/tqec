@@ -3,11 +3,13 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"@pixi/filter-drop-shadow": "^5.2.0",
 		"@pixi/react": "^7.1.1",
 		"@pixi/ui": "^0.10.1",
 		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
+		"assert": "^2.1.0",
 		"axios": "^0.24.0",
 		"install": "^0.13.0",
 		"npm": "^10.2.5",
@@ -47,8 +49,12 @@
 		"@stylistic/eslint-plugin-js": "^1.5.4",
 		"eslint": "^8.56.0",
 		"eslint-config-airbnb": "^19.0.4",
+		"eslint-config-semistandard": "^17.0.0",
+		"eslint-config-standard": "^17.1.0",
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-jsx-a11y": "^6.8.0",
+		"eslint-plugin-n": "^15.7.0",
+		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-react": "^7.33.2",
 		"eslint-plugin-react-hooks": "^4.6.0"
 	}

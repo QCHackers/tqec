@@ -1,3 +1,4 @@
+from tqec.exceptions import TQECException
 from tqec.templates.base import Template
 from tqec.templates.scalable.base import ScalableTemplate
 from tqec.templates.shapes.rectangle import Rectangle
@@ -19,10 +20,14 @@ class ScalableRectangle(ScalableTemplate):
         :param scale_width: whether to scale the width or height. If None, the dimension
             with the even value or the larger value will be scaled. If both dimensions
             are even and equal, the width will be scaled by default.
+        :raises DimensionNotEven: if both width and height are odd numbers.
         """
-        assert (width % 2 == 0) or (
-            height % 2 == 0
-        ), "At least one dimension must be even to be scalable!"
+        if width % 2 != 0 and height != 0:
+            raise TQECException(
+                f"At least one of width ({width}) or height ({height}) should be even. "
+                "Dimension must be even to be scalable!"
+            )
+
         # Determine which dimension to scale
         if scale_width is None:
             scale_width = height % 2 != 0 or (width % 2 == 0 and width >= height)

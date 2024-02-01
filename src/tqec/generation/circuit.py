@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 import cirq
-
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Displacement
@@ -34,15 +33,17 @@ def generate_circuit(
     :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
         represented by the provided inputs.
 
-    :raises AssertionError: if any of the pre-conditions is not met.
+    :raises CannotUsePlaquetteWithDifferentShapes: if the provided Plaquette instance do not ALL
+        have the same shape. See https://github.com/QCHackers/tqec/issues/34 for more information.
     """
     # Check that the user gave enough plaquettes.
     # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
     # The user is not expected to know about this implementation detail, so we hide it.
-    assert len(plaquettes) == template.expected_plaquettes_number - 1, (
-        f"The given template requires {template.expected_plaquettes_number - 1} plaquettes "
-        f"but only {len(plaquettes)} have been provided."
-    )
+    if len(plaquettes) != template.expected_plaquettes_number - 1:
+        raise TQECException(
+            f"{len(plaquettes)} plaquettes have been provided, but "
+            f"{template.expected_plaquettes_number - 1} were expected."
+        )
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
@@ -54,12 +55,6 @@ def generate_circuit(
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
         p.circuit for p in plaquettes
     ]
-    # Assert that all the circuits are defined on 2-dimensional grids.
-    assert all(
-        isinstance(qubit, cirq.GridQubit)
-        for circuit in plaquette_circuits
-        for qubit in circuit.raw_circuit.all_qubits()
-    ), "Qubits used in plaquette layers should be instances of cirq.GridQubit."
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
     all_scheduled_circuits: list[ScheduledCircuit] = []

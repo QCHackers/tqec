@@ -1,10 +1,11 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 import json
 import typing as ty
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 from tqec.templates.shapes.base import BaseShape
 
@@ -41,9 +42,13 @@ class JSONEncodable(ABC):
         :param kwargs: keyword arguments forwarded to the json.dumps function. The "default"
             keyword argument should NOT be present.
         :returns: the JSON representation of the instance.
-        :raises AssertionError: if the "default" key is present in kwargs.
+        :raises DefaultKeyInKwargs: if the "default" key is present in kwargs.
         """
-        assert "default" not in kwargs, "No default allowed!"
+        if "default" in kwargs:
+            raise TQECException(
+                f"The 'default' key has been found with value '{kwargs.get("default")}' in the provided kwargs."
+                " 'default' key is prohibited in the public API as it is changed internally."
+            )
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
 
 

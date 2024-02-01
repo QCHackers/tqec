@@ -12,18 +12,7 @@ folder:
 
 ```sh
 git clone https://github.com/QCHackers/tqec.git
-
 cd tqec
-```
-
-Then, create a new Python virtual environment and install the package and its
-dependencies:
-
-```sh
-conda create -n tqec python==3.11.0
-
-pip install -e .
-
 ```
 
 If not already done, create a clean Python virtual environment to avoid any
@@ -52,10 +41,6 @@ notebook, you will also have to install a few other packages:
 python -m pip install ".[dev]"
 ```
 
-> [!CAUTION] It is advised to follow the above 2-step process for the
-> installation. `pip` being quite inefficient, trying to install everything in
-> one command will result in a (very) long installation time.
-
 If no errors happen, the package is installed! You can try to launch a jupyter
 lab server
 
@@ -72,10 +57,6 @@ and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
 3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
 
 ## Before you commit
-
-`nbstripout` is a great option for clearing the output of the jupyter notebooks.
-It can be installed using `pip install nbstripout`. For more info see below in
-[before you commit section](#beforecommit)
 
 `nbdime` is a great tool for looking at the git diff for jupyter notebooks.
 
