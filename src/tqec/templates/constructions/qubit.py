@@ -6,8 +6,13 @@ from tqec.templates.scalable.square import ScalableAlternatingSquare
 
 
 class ScalableQubitSquare(TemplateOrchestrator):
-    def __init__(self, dim: int) -> None:
+    def __init__(self, k: int) -> None:
         """A scalable error-corrected qubit.
+
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
+        enforced to be even, which avoids some invalid configuration of the template.
 
         ```text
         .  .  1  .  1  .
@@ -18,19 +23,19 @@ class ScalableQubitSquare(TemplateOrchestrator):
         .  6  .  6  .  .
         ```
 
-        :param dim: dimension (code distance - 1) of the error-corrected qubit.
+        :param k: scale of the error-corrected qubit.
         """
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
+            TemplateWithIndices(ScalableAlternatingSquare(2 * k), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
+            TemplateWithIndices(ScalableRectangle(2 * k, 1), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(ScalableRectangle(1, 2 * k), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
+            TemplateWithIndices(ScalableRectangle(1, 2 * k), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [6, 0]),
+            TemplateWithIndices(ScalableRectangle(2 * k, 1), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
