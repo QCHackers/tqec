@@ -1,7 +1,6 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.fixed.base import FixedRaw
-from tqec.templates.fixed.rectangle import FixedRectangle
 from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import (
@@ -43,10 +42,10 @@ class ScalableCorner(TemplateOrchestrator):
             TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
             TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
-            TemplateWithIndices(FixedRectangle(1, 2), [2, 0]),
+            TemplateWithIndices(FixedRaw([[0]]), [2]),
             # 5
             TemplateWithIndices(ScalableRectangle(dim, 2), [3, 4]),
-            TemplateWithIndices(FixedRaw([[0, 0], [1, 0]]), [0, 6]),
+            TemplateWithIndices(FixedRaw([[0]]), [6]),
             TemplateWithIndices(ScalableRectangle(dim, 1), [7, 0]),
             TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithIndices(
@@ -64,22 +63,15 @@ class ScalableCorner(TemplateOrchestrator):
             TemplateWithIndices(ScalableAlternatingSquare(dim), [9, 8]),
             TemplateWithIndices(ScalableRectangle(1, dim), [10, 0]),
             TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
-            TemplateWithIndices(FixedRectangle(2, 1), [0, 12]),
+            TemplateWithIndices(FixedRaw([[0]]), [12]),
             # 15
             TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
         ]
-        _relations = [
+        relative_positions = [
             (0, ABOVE_OF, 2),
             (1, LEFT_OF, 2),
             (3, RIGHT_OF, 2),
-            (4, BELOW_OF, 1),
             (5, BELOW_OF, 2),
-            # For the moment, 6 is encoded as a FixedRaw of size 2x2
-            # as follow:
-            #   0 0
-            #   X 0
-            # where X is the provided plaquette number.
-            (6, RIGHT_OF, 5),
             (9, BELOW_OF, 5),
             (8, LEFT_OF, 9),
             (13, BELOW_OF, 9),
@@ -90,6 +82,13 @@ class ScalableCorner(TemplateOrchestrator):
             (15, BELOW_OF, 11),
             (14, LEFT_OF, 15),
         ]
+        pinned_corners = [
+            ((6, CornerPositionEnum.LOWER_LEFT), (9, CornerPositionEnum.UPPER_RIGHT)),
+            ((4, CornerPositionEnum.UPPER_RIGHT), (2, CornerPositionEnum.LOWER_LEFT)),
+            ((14, CornerPositionEnum.UPPER_RIGHT), (11, CornerPositionEnum.LOWER_LEFT)),
+        ]
         TemplateOrchestrator.__init__(self, _templates)
-        for source, relpos, target in _relations:
+        for source, relpos, target in relative_positions:
             self.add_relation(source, relpos, target)
+        for (start, start_corner), (end, end_corner) in pinned_corners:
+            self.add_corner_relation((start, start_corner), (end, end_corner))
