@@ -1,5 +1,4 @@
 import cirq
-
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
@@ -169,6 +168,16 @@ class RoundedPlaquette(Plaquette):
     @staticmethod
     def get_syndrome_qubits() -> list[PlaquetteQubit]:
         return RoundedPlaquette._syndrome_qubits
+
+    @staticmethod
+    def get_data_qubits_cirq(orientation: PlaquetteOrientation) -> list[cirq.GridQubit]:
+        return [
+            q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
+        ]
+
+    @staticmethod
+    def get_syndrome_qubits_cirq() -> list[cirq.GridQubit]:
+        return [q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()]
 
 
 class PlaquetteList:
