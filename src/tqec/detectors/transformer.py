@@ -3,9 +3,9 @@ from copy import deepcopy
 import cirq
 import numpy
 import sympy
-
 from tqec.detectors.gate import RelativeMeasurementGate
 from tqec.detectors.measurement_map import CircuitMeasurementMap
+from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException
 
 
 def _fill_in_detectors_global_record_indices_impl(
@@ -47,13 +47,11 @@ def _fill_in_detectors_global_record_indices_impl(
                 ) * operation_repetitions
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
             elif isinstance(operation.gate, RelativeMeasurementGate):
-                assert len(operation.qubits) == 1, (
-                    f"Cannot apply a {RelativeMeasurementGate.__class__.__name__} to more than "
-                    f"1 qubits ({len(operation.qubits)} qubits given)."
-                )
+                if len(operation.qubits) > 1:
+                    raise MeasurementAppliedOnMultipleQubitsException(operation.qubits)
                 new_operation = deepcopy(operation)
                 relative_measurement_gate: RelativeMeasurementGate = new_operation.gate  # type: ignore
-                relative_measurement_gate.compute_global_measurements_loopback_offsets(
+                relative_measurement_gate.compute_global_measurements_lookback_offsets(
                     global_measurement_map, current_moment_index
                 )
                 operations.append(new_operation)
