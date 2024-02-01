@@ -68,11 +68,10 @@ def generate_circuit(
         for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
 
-            if plaquette_index > 0:
-                offset = (column_index * increments[0], row_index * increments[1])
-                plaquette = plaquettes[plaquette_index - 1]
-                qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
-                scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
+            offset = (column_index * increments[0], row_index * increments[1])
+            plaquette = plaquettes[plaquette_index - 1]
+            qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
+            scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
             all_scheduled_circuits.append(scheduled_circuit)
 
     # Merge everything!
