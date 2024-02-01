@@ -82,7 +82,6 @@ def _create_mapping(
     plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: tuple[int, int]
 ) -> dict[cirq.Qid, cirq.Qid]:
     origin = plaquette.origin
-    assert origin == Position(0, 0), "Only origin (0,0) is supported for now"
 
     qubit_map = {
         # GridQubit are indexed as (row, col), so (y, x)
