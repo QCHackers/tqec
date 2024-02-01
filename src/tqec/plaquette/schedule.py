@@ -128,7 +128,7 @@ class ScheduledCircuit:
         if (
             schedule
             and (schedule[0] - number_of_initial_virtual_moments)
-            > ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
+            <= ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
         ):
             raise ScheduleEntryTooLowException(
                 schedule[0], number_of_initial_virtual_moments
