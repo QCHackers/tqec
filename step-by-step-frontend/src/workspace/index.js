@@ -63,8 +63,7 @@ export default function TqecApp() {
 		plaquette = new Plaquette(selectedQubits)
 		plaquette.interactive = true;
 		// We want the plaquette to be in the lowest layer
-		workspace.addChild(plaquette);
-		//workspace.addChildAt(plaquette);
+		workspace.addChildAt(plaquette, 0);
 	});
 
 	// Create a button to allow for printing the plaquette's qubits 

@@ -63,7 +63,7 @@ export default class Circuit extends Container {
 		// Add lines for every data qubit.
 		let idx = 0;
         this.data_qubits.forEach(qubit => {
-			let line = ` |${qubit.name}> = --`
+			let line = ` |${qubit.name}> --`
 			// Local change of basis
 			if (qubit.role === 'x') line = line + 'H--';
 			if (qubit.role === 'z') line = line + '---';
@@ -86,7 +86,7 @@ export default class Circuit extends Container {
 			idx += 1;
 		});
 		// Add line for the ancilla qubit.
-		let line = ` |${this.anc_qubit.name}> = --`
+		let line = ` |${this.anc_qubit.name}> --`
 		line = line + '---'; // Change of basis
 		for (let i = 0; i<this.data_qubits.length; i++) {
 			line = line + 'x--';

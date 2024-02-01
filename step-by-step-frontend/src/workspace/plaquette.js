@@ -1,6 +1,7 @@
 // Define class Plaquette and its methods
 
 import { Graphics, Color } from 'pixi.js';
+import { convexHull } from './utils'
 
 /////////////////////////////////////////////////////////////
 
@@ -29,7 +30,8 @@ export default class Plaquette extends Graphics {
         this.name = 'plaquette';
         // Draw the plaquette
         // TODO: Only rectangular plaquettes, at the moment
-        this._createRectangle();
+        //this._createRectangle();
+	    this._createConvexHull();
     };
 
 	_onPointerOver = () => {
@@ -56,9 +58,7 @@ export default class Plaquette extends Graphics {
             let y = qubit.globalY;
             if (y < ymin) ymin = y;
             if (y > ymax) ymax = y;
-            console.log(x,y)
         });
-        console.log(xmin, ymin, xmax, ymax)
 		// Create a rectangle
 		this.beginFill(this.color);
 		this.drawRect(xmin, ymin, xmax-xmin, ymax-ymin);
@@ -67,5 +67,30 @@ export default class Plaquette extends Graphics {
 		// Add hover event
 		this.on('pointerover', this._onPointerOver);
 		this.on('pointerout', this._onPointerOut);
+	};
+
+	/**
+	 * Create the convex hull using the naive algorithm
+     * 
+     * Start from a verical line left to the qubits.
+     * Then 
+	 */
+	_createConvexHull() {
+        // Convert the qubits in coordinate points
+        let points = []
+        this.qubits.forEach(qubit => {
+            points.push({x: qubit.globalX, y: qubit.globalY});
+        });
+        const hull = convexHull(points)
+
+        // Draw convex hull
+		this.beginFill(this.color);
+        this.lineStyle(1, this.color);
+        this.moveTo(hull[0].x, hull[0].y);
+        for (let i = 1; i < hull.length; i++) {
+            this.lineTo(hull[i].x, hull[i].y);
+        }
+        this.lineTo(hull[0].x, hull[0].y);
+		this.endFill();
 	};
 }
