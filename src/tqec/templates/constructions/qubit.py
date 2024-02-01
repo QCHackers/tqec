@@ -25,17 +25,18 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
         :param k: scale of the error-corrected qubit.
         """
+        dim = 2 * k
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableAlternatingSquare(2 * k), [3, 4]),
+            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [0, 1]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [2, 0]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [0, 5]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [6, 0]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
@@ -50,12 +51,11 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
 class ScalableQubitRectangle(TemplateOrchestrator):
     def __init__(
-        self, width: int, height: int, scale_width: bool | None = None
+        self, k_width: int, k_height: int, scale_width: bool | None = None
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
         A scalable rectangle qubit can only scale its width **or** height, but not both.
-
         ```text
         .  .  1  .  1  .  1  .
         2  3  4  3  4  3  4  .
@@ -65,12 +65,13 @@ class ScalableQubitRectangle(TemplateOrchestrator):
         .  6  .  6  .  6  .  .
         ```
 
-        :param width: width of the qubit.
-        :param height: height of the qubit.
+        :param k_width: half the width of the qubit.
+        :param k_height: half the height of the qubit.
         :param scale_width: whether to scale the width or height. If None, the dimension
-            with the even value or the larger value will be scaled. If both dimensions
-            are even and equal, the width will be scaled by default.
+            with the larger value will be scaled. If both dimensions are equal, the width
+            will be scaled by default.
         """
+        width, height = 2 * k_width, 2 * k_height
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),

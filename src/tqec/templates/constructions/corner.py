@@ -23,7 +23,6 @@ class ScalableCorner(TemplateOrchestrator):
         scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
 
-
         The below text represents this template for an input `k` of 2.
 
         ```text
@@ -43,20 +42,21 @@ class ScalableCorner(TemplateOrchestrator):
 
         :param k: scale of the initial error-corrected qubit.
         """
+        dim = 2 * k
         _templates = [
             # 0
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [0, 1]),
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [2, 0]),
-            TemplateWithIndices(ScalableAlternatingSquare(2 * k), [3, 4]),
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [0, 5]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
             TemplateWithIndices(FixedRectangle(1, 2), [2, 0]),
             # 5
-            TemplateWithIndices(ScalableRectangle(2 * k, 2), [3, 4]),
+            TemplateWithIndices(ScalableRectangle(dim, 2), [3, 4]),
             TemplateWithIndices(FixedRaw([[0, 0], [1, 0]]), [0, 6]),
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [7, 0]),
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [2, 0]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [7, 0]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
             TemplateWithIndices(
-                ScalableAlternatingCornerSquare(2 * k, CornerPositionEnum.LOWER_LEFT),
+                ScalableAlternatingCornerSquare(dim, CornerPositionEnum.LOWER_LEFT),
                 [
                     3,
                     4,
@@ -66,13 +66,13 @@ class ScalableCorner(TemplateOrchestrator):
                 ],
             ),
             # 10
-            TemplateWithIndices(ScalableRectangle(2, 2 * k, scale_width=False), [9, 8]),
-            TemplateWithIndices(ScalableAlternatingSquare(2 * k), [9, 8]),
-            TemplateWithIndices(ScalableRectangle(1, 2 * k), [10, 0]),
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [0, 12]),
+            TemplateWithIndices(ScalableRectangle(2, dim, scale_width=False), [9, 8]),
+            TemplateWithIndices(ScalableAlternatingSquare(dim), [9, 8]),
+            TemplateWithIndices(ScalableRectangle(1, dim), [10, 0]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
             TemplateWithIndices(FixedRectangle(2, 1), [0, 12]),
             # 15
-            TemplateWithIndices(ScalableRectangle(2 * k, 1), [0, 12]),
+            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
         ]
         _relations = [
             (0, ABOVE_OF, 2),
