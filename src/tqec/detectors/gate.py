@@ -35,6 +35,14 @@ class CannotComputeMeasurementOffsetLookbackException(TQECException):
         )
 
 
+class NonAppliedRelativeMeasurementGate(Exception):
+    def __init__(self) -> None:
+        super().__init__(
+            "Calling compute_global_measurements_lookback_offsets on a RelativeMeasurementGate "
+            "that has not been applied to a qubit yet."
+        )
+
+
 class ShiftCoordsGate(cirq.Gate):
     def __init__(self, *args: int) -> None:
         """A virtual gate exporting to the SHIFT_COORDS stim instruction
@@ -98,8 +106,8 @@ class RelativeMeasurement:
 class RelativeMeasurementGate(cirq.Gate):
     def __init__(
         self,
-        qubit_coordinate_system_origin: cirq.GridQubit,
         relative_measurements_lookback_offsets: list[RelativeMeasurement],
+        qubit_coordinate_system_origin: cirq.GridQubit | None = None,
     ) -> None:
         """Gate representing a Stim instruction with relative measurements as targets.
 
@@ -131,7 +139,7 @@ class RelativeMeasurementGate(cirq.Gate):
         but requires a change directly in Stim.
 
         :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move instances of
-            this Gate along with plaquettes.
+            this Gate along with plaquettes. Default to None, set when calling `.on` method.
         :param measurements_lookback_offsets: a list of measurements that are part of the gate. The
             measurements are given as a tuple with the following entries:
 
@@ -155,10 +163,10 @@ class RelativeMeasurementGate(cirq.Gate):
 
     def __deepcopy__(self, memo: dict) -> "RelativeMeasurementGate":
         return RelativeMeasurementGate(
-            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             deepcopy(
                 self._local_measurements_lookback_offsets_relative_to_origin, memo=memo
             ),
+            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
         )
 
     def __copy__(self) -> "RelativeMeasurementGate":
@@ -197,6 +205,8 @@ class RelativeMeasurementGate(cirq.Gate):
         :param current_moment_index: index of the moment this gate instance is found in. Used to
             recover the correct data from the given measurement_map.
         """
+        if self._qubit_coordinate_system_origin is None:
+            raise NonAppliedRelativeMeasurementGate()
         self._global_measurements_lookback_offsets.clear()
         for (
             relative_measurement
@@ -225,16 +235,14 @@ class RelativeMeasurementGate(cirq.Gate):
 class DetectorGate(RelativeMeasurementGate):
     def __init__(
         self,
-        qubit_coordinate_system_origin: cirq.GridQubit,
         measurements_lookback_offsets: list[RelativeMeasurement],
+        qubit_coordinate_system_origin: cirq.GridQubit | None = None,
         time_coordinate: int = 0,
     ) -> None:
         """Gate representing a detector.
 
         Issue with this class: see RelativeMeasurementGate docstring.
 
-        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move detectors
-            along with measurement gates.
         :param measurements_lookback_offsets: a list of measurements that are part of the detector. The
             measurements are given as a tuple with the following entries:
 
@@ -248,16 +256,18 @@ class DetectorGate(RelativeMeasurementGate):
             1. located before the Moment this gate is in, and
             2. applied on the qubit "origin + cirq.GridQubit(1, 1)", where "origin" is the qubit given to
                the "on" method to construct an operation.
+        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move instances of
+            this Gate along with plaquettes. Default to None, set when calling `.on` method.
         :param time_coordinate: an annotation that will be forwarded to the DETECTOR Stim structure as the
             last coordinate.
         """
-        super().__init__(qubit_coordinate_system_origin, measurements_lookback_offsets)
+        super().__init__(measurements_lookback_offsets, qubit_coordinate_system_origin)
         self._time_coordinate = time_coordinate
 
     def __deepcopy__(self, memo: dict) -> "DetectorGate":
         return DetectorGate(
-            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             deepcopy(self._local_measurements_lookback_offsets_relative_to_origin),
+            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             self._time_coordinate,
         )
 
@@ -271,6 +281,8 @@ class DetectorGate(RelativeMeasurementGate):
 
     @property
     def coordinates(self) -> tuple[int, ...]:
+        if self._qubit_coordinate_system_origin is None:
+            raise NonAppliedRelativeMeasurementGate()
         return (
             self._qubit_coordinate_system_origin.row,
             self._qubit_coordinate_system_origin.col,
@@ -302,8 +314,8 @@ class DetectorGate(RelativeMeasurementGate):
 class ObservableGate(RelativeMeasurementGate):
     def __init__(
         self,
-        qubit_coordinate_system_origin: cirq.GridQubit,
         measurements_lookback_offsets: list[RelativeMeasurement],
+        qubit_coordinate_system_origin: cirq.GridQubit | None = None,
         observable_index: int = 0,
     ) -> None:
         """Gate representing an observable.
@@ -316,8 +328,6 @@ class ObservableGate(RelativeMeasurementGate):
         A future task will consist in replacing this local description of observables by a more appropriate,
         probably global, way of describing observables.
 
-        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move observables
-            along with plaquettes.
         :param measurements_lookback_offsets: a list of measurements that are part of the observable. The
             measurements are given as a tuple with the following entries:
 
@@ -331,14 +341,16 @@ class ObservableGate(RelativeMeasurementGate):
             1. located before the Moment this gate is in, and
             2. applied on the qubit "origin + cirq.GridQubit(1, 1)", where "origin" is the qubit given to
                the "on" method to construct an operation.
+        :param qubit_coordinate_system_origin: origin of the qubit coordinate system. Used to move instances of
+            this Gate along with plaquettes. Default to None, set when calling `.on` method.
         """
-        super().__init__(qubit_coordinate_system_origin, measurements_lookback_offsets)
+        super().__init__(measurements_lookback_offsets, qubit_coordinate_system_origin)
         self._observable_index = observable_index
 
     def __deepcopy__(self, memo: dict) -> "ObservableGate":
         return ObservableGate(
-            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             deepcopy(self._local_measurements_lookback_offsets_relative_to_origin),
+            deepcopy(self._qubit_coordinate_system_origin, memo=memo),
             self._observable_index,
         )
 
