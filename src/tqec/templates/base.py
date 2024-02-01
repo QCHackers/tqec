@@ -72,8 +72,9 @@ class Template(JSONEncodable):
         """
         super().__init__()
         self._shape_instance = shape
-        self._default_x_increment = default_x_increment
-        self._default_y_increment = default_y_increment
+        self._default_increments = Displacement(
+            default_x_increment, default_y_increment
+        )
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
@@ -129,8 +130,8 @@ class Template(JSONEncodable):
             "type": self.__class__.__name__,
             "shape": self.shape_instance.to_dict(),
             "default_increments": {
-                "x": self._default_x_increment,
-                "y": self._default_y_increment,
+                "x": self._default_increments.x,
+                "y": self._default_increments.y,
             },
         }
 
@@ -149,7 +150,7 @@ class Template(JSONEncodable):
 
         :returns: a displacement of the default increments in the x and y directions.
         """
-        return Displacement(self._default_x_increment, self._default_y_increment)
+        return self._default_increments
 
 
 @dataclass

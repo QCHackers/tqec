@@ -31,7 +31,6 @@ class Plaquette:
         :param circuit: scheduled quantum circuit implementing the computation that the
             plaquette should represent.
 
-        :raises ValueError: if the number of qubits doesn't match the number of qubits
         """
         # if len(qubits) != len(circuit.raw_circuit.all_qubits()):
         #     raise ValueError("Number of qubits doesn't match number of circuit qubits")
