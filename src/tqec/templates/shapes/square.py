@@ -1,8 +1,8 @@
 import typing as ty
 
 import numpy
-
 from tqec.enums import CornerPositionEnum
+from tqec.templates.shapes.base import WrongNumberOfParametersException
 from tqec.templates.shapes.rectangle import Rectangle
 
 
@@ -15,7 +15,8 @@ class AlternatingSquare(Rectangle):
         return (dimension,)
 
     def set_parameters(self, parameters: tuple[int, ...]) -> None:
-        assert len(parameters) == 1
+        if len(parameters) != 1:
+            raise WrongNumberOfParametersException(1, len(parameters))
         dimension: int = parameters[0]
         super().set_parameters((dimension, dimension))
 
