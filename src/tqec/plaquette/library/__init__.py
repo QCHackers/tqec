@@ -1,6 +1,7 @@
 from .xx import (
     BaseXXPlaquette,
     XXFinalMeasurementPlaquette,
+    XXFromXXXXPlaquette,
     XXInitialisationPlaquette,
     XXMemoryPlaquette,
     XXPlaquetteList,
@@ -15,6 +16,7 @@ from .xxxx import (
 from .zz import (
     BaseZZPlaquette,
     ZZFinalMeasurementPlaquette,
+    ZZFromZZZZPlaquette,
     ZZInitialisationPlaquette,
     ZZMemoryPlaquette,
     ZZPlaquetteList,
@@ -41,10 +43,12 @@ __all__ = [
     "ZZZZMemoryPlaquette",
     "ZZZZPlaquetteList",
     "XXFinalMeasurementPlaquette",
+    "XXFromXXXXPlaquette",
     "XXInitialisationPlaquette",
     "XXMemoryPlaquette",
     "XXPlaquetteList",
     "ZZFinalMeasurementPlaquette",
+    "ZZFromZZZZPlaquette",
     "ZZInitialisationPlaquette",
     "ZZMemoryPlaquette",
     "ZZPlaquetteList",
