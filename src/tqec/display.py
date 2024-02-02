@@ -13,7 +13,7 @@ def display_template(template: Template, *plaquette_indices: int) -> None:
         call to template.instanciate to get the actual template representation.
     """
     if len(plaquette_indices) == 0:
-        plaquette_indices = tuple(range(template.expected_plaquettes_number))
+        plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
     arr = template.instanciate(*plaquette_indices)
     for line in arr:
         for element in line:
@@ -44,7 +44,7 @@ def display_templates_svg(
     :return: the SVG string.
     """
     if len(plaquette_indices) == 0:
-        plaquette_indices = tuple(range(templates.expected_plaquettes_number))
+        plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
     template_list = templates._templates
     ul_positions = templates._compute_ul_absolute_position()
     box = templates._get_bounding_box_from_ul_positions(ul_positions)

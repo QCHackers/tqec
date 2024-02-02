@@ -39,12 +39,10 @@ def generate_circuit(
         have the same shape. See https://github.com/QCHackers/tqec/issues/34 for more information.
     """
     # Check that the user gave enough plaquettes.
-    # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
-    # The user is not expected to know about this implementation detail, so we hide it.
-    if len(plaquettes) != template.expected_plaquettes_number - 1:
+    if len(plaquettes) != template.expected_plaquettes_number:
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
-            f"{template.expected_plaquettes_number - 1} were expected."
+            f"{template.expected_plaquettes_number} were expected."
         )
 
     # Check that all the given plaquettes have the same shape. If not, this is an issue.
@@ -59,8 +57,8 @@ def generate_circuit(
         )
 
     # Instanciate the template with the appropriate plaquette indices.
-    # Index 0 is "no plaquette" by convention.
-    _indices = list(range(len(plaquettes) + 1))
+    # Index 0 is "no plaquette" by convention and should not be included here.
+    _indices = list(range(1, len(plaquettes) + 1))
     template_plaquettes = template.instanciate(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
