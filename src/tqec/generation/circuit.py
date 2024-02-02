@@ -6,11 +6,11 @@ from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Shape2D
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.base import Template
 
 
 def generate_circuit(
-    template: TemplateOrchestrator,
+    template: Template,
     plaquettes: list[Plaquette],
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
