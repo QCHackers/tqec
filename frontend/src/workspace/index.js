@@ -7,6 +7,7 @@ import { AdjustmentFilter } from 'pixi-filters';
 import makeGrid from './grid';
 import Qubit from './QubitClass';
 import Template from './TemplateClass';
+import QubitLattice from './QubitLattice';
 import Button from './components/button';
 import DownloadButton from './components/downloadButton';
 
@@ -68,6 +69,7 @@ export default function TQECApp() {
     plaquette.destroy({ children: true });
   };
 
+  // TODO: instead add the qubits in QubitLattice
   // Add the qubits to the workspace
   for (let x = 0; x <= app.renderer.width; x += gridSize) {
     for (let y = 0; y <= app.renderer.height; y += gridSize) {
