@@ -42,6 +42,14 @@ class Rectangle(BaseShape):
             raise WrongNumberOfParametersException(2, len(parameters))
         self._width, self._height = parameters
 
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        return 2
+
 
 class RawRectangle(Rectangle):
     def __init__(self, indices: list[list[int]]) -> None:
@@ -73,3 +81,11 @@ class RawRectangle(Rectangle):
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {"type": self.__class__.__name__, "kwargs": {"indices": self._indices}}
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        return max(max(line) for line in self._indices) + 1

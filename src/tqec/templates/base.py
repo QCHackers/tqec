@@ -115,6 +115,15 @@ class Template(JSONEncodable):
         # This is intentional.
         return {"type": self.__class__.__name__}
 
+    @property
+    @abstractmethod
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        pass
+
 
 class AtomicTemplate(Template):
     def __init__(self, shape: BaseShape) -> None:
@@ -188,6 +197,14 @@ class AtomicTemplate(Template):
         Used to implement to_json.
         """
         return super().to_dict() | {"shape": self.shape_instance.to_dict()}
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        return self._shape_instance.expected_plaquettes_number
 
 
 @dataclass
