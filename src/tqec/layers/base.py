@@ -5,7 +5,7 @@ from tqec.detectors.gate import ShiftCoordsGate
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Position
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.base import Template
 
 
 def make_repeated_layer(
@@ -31,7 +31,7 @@ def make_repeated_layer(
 class BaseLayer:
     def __init__(
         self,
-        template: TemplateOrchestrator,
+        template: Template,
         plaquettes: list[Plaquette],
         top_left_corner: Position | None = None,
         repetitions: int = 1,
