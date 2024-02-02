@@ -179,6 +179,20 @@ class RoundedPlaquette(Plaquette):
     def get_syndrome_qubits_cirq() -> list[cirq.GridQubit]:
         return [q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()]
 
+    @staticmethod
+    def get_unused_qubits(orientation: PlaquetteOrientation) -> list[PlaquetteQubit]:
+        all_data_qubits = set(RoundedPlaquette._data_qubits)
+        still_used_data_qubits = set(RoundedPlaquette.get_data_qubits_cirq(orientation))
+        return list(all_data_qubits.difference(still_used_data_qubits))
+
+    @staticmethod
+    def get_unused_qubits_cirq(
+        orientation: PlaquetteOrientation,
+    ) -> list[cirq.GridQubit]:
+        return [
+            q.to_grid_qubit() for q in RoundedPlaquette.get_unused_qubits(orientation)
+        ]
+
 
 class PlaquetteList:
     """Basic wrapper over a list of Plaquette instances."""
