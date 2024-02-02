@@ -83,3 +83,11 @@ class AlternatingCornerSquare(AlternatingSquare):
                         ret[i, j] = x_plaquette_flipped
         # Correct ret and return
         return self._TRANSFORMATIONS[self._corner_position](ret)
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        return 5
