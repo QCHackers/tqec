@@ -4,7 +4,7 @@ import networkx as nx
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.position import Position, Shape2D
-from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
+from tqec.templates.base import Template, TemplateWithIndices
 
 
 def get_corner_position(
@@ -48,7 +48,7 @@ def get_corner_position(
     )
 
 
-class TemplateOrchestrator(JSONEncodable):
+class TemplateOrchestrator(Template):
     def __init__(self, templates: list[TemplateWithIndices]) -> None:
         """Manages templates positionned relatively to each other.
 
