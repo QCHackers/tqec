@@ -4,6 +4,7 @@
 import { useApp } from '@pixi/react';
 import { Container } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
+import notification from './components/notifier';
 import makeGrid from './grid';
 import Qubit from './QubitClass';
 import Template from './TemplateClass';
@@ -70,6 +71,23 @@ export default function TQECApp() {
   };
 
   // TODO: instead add the qubits in QubitLattice
+  const lattice = new QubitLattice(workspace, app);
+  const createQubitConstellationButton = new Button('Create Qubit Constellation', 100, 120);
+  workspace.addChild(createQubitConstellationButton);
+  const saveQubitConstellationButton = new Button('Save Qubit Constellation', 100, 120);
+  createQubitConstellationButton.on('click', () => {
+    lattice.selectQubitForConstellation();
+    workspace.addChild(saveQubitConstellationButton);
+    workspace.removeChild(createQubitConstellationButton);
+  });
+  saveQubitConstellationButton.on('click', () => {
+    if (lattice.constellation.length === 0) {
+      notification('Constellation must have at least one qubit');
+    } else {
+      workspace.removeChild(saveQubitConstellationButton);
+      this.app.view.addEventListener('mousedown', lattice.selectFirstVectorOrigin);
+    }
+  });
   // Add the qubits to the workspace
   for (let x = 0; x <= app.renderer.width; x += gridSize) {
     for (let y = 0; y <= app.renderer.height; y += gridSize) {
@@ -96,7 +114,7 @@ export default function TQECApp() {
     selectedQubits,
     workspace,
     plaquetteButton,
-    app,
+    app
   );
 
   plaquetteButton.on('click', () => {
@@ -122,7 +140,7 @@ export default function TQECApp() {
     const qubits = workspace.children.filter((child) => child.isQubit === true);
     const qubit = qubits.find(
       // Find the qubit that was clicked
-      (q) => q.checkHitArea(relativeX, relativeY) === true,
+      (q) => q.checkHitArea(relativeX, relativeY) === true
     );
     if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
     // Check that the qubit is not already selected
@@ -151,7 +169,7 @@ export default function TQECApp() {
     100,
     50,
     'white',
-    'black',
+    'black'
   );
   workspace.addChild(downloadStimButton);
 
