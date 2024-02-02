@@ -22,7 +22,7 @@ class ScalableRectangle(ScalableTemplate):
             are even and equal, the width will be scaled by default.
         :raises DimensionNotEven: if both width and height are odd numbers.
         """
-        if width % 2 != 0 and height != 0:
+        if width % 2 != 0 and height % 2 != 0:
             raise TQECException(
                 f"At least one of width ({width}) or height ({height}) should be even. "
                 "Dimension must be even to be scalable!"
