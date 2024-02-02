@@ -3,6 +3,7 @@ import typing as ty
 import networkx as nx
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.exceptions import TQECException
 from tqec.position import Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
 
@@ -339,7 +340,37 @@ class TemplateOrchestrator(Template):
         return ret
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self.build_array(plaquette_indices)
+        """Generate the numpy array representing the template.
+
+        ## Important note
+        In previous implementations of this class, the instanciate method was
+        expecting a plaquette "0" to be positioned first in the provided plaquette
+        indices.
+        This expectation was:
+        1. not documented anywhere,
+        2. an exposition of internal implementation details,
+        3. very error-prone for external users.
+
+        It also made the interface of TemplateOrchestrator slightly different from
+        its parent Template class.
+
+        The current implementation does not expect such a plaquette anymore.
+
+        :param plaquette_indices: the plaquette indices that will be used to
+            instanciate the different orchestrated templates.
+        :returns: a numpy array with the given plaquette indices arranged according
+            to the underlying shape of the template.
+        """
+        if 0 in plaquette_indices:
+            raise TQECException(
+                f"{__class__.__name__} does not expect a plaquette 0 anymore."
+            )
+        if len(plaquette_indices) != self.expected_plaquettes_number:
+            raise TQECException(
+                f"Expecting {self.expected_plaquettes_number} plaquettes indices "
+                f"but only {len(plaquette_indices)} were provided."
+            )
+        return self.build_array((0, *plaquette_indices))
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
         """Scales all the scalable component templates to the given scale k.
@@ -390,4 +421,4 @@ class TemplateOrchestrator(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        return self._maximum_plaquette_mapping_index + 1
+        return self._maximum_plaquette_mapping_index
