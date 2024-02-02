@@ -126,7 +126,6 @@ class ScheduledCircuit:
                 circuit.moments[number_of_initial_virtual_moments]
             ):
                 number_of_initial_virtual_moments += 1
-
         if (
             schedule
             and (schedule[0] - number_of_initial_virtual_moments)
