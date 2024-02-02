@@ -121,14 +121,15 @@ class ScheduledCircuit:
         # Ensure that ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
         # that can be stored.
         number_of_initial_virtual_moments: int = 0
-        while ScheduledCircuit._is_virtual_moment(
-            circuit.moments[number_of_initial_virtual_moments]
-        ):
-            number_of_initial_virtual_moments += 1
+        if circuit.moments:
+            while ScheduledCircuit._is_virtual_moment(
+                circuit.moments[number_of_initial_virtual_moments]
+            ):
+                number_of_initial_virtual_moments += 1
         if (
             schedule
             and (schedule[0] - number_of_initial_virtual_moments)
-            > ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
+            <= ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
         ):
             raise ScheduleEntryTooLowException(
                 schedule[0], number_of_initial_virtual_moments
@@ -136,8 +137,8 @@ class ScheduledCircuit:
 
         # Ensure that the provided schedule contains as much entries as the number of non-virtual
         # moments in the circuit.
-        non_virtual_moments_number: int = sum(
-            ScheduledCircuit._is_virtual_moment(m) for m in circuit.moments
+        non_virtual_moments_number: int = (
+            ScheduledCircuit._compute_number_of_non_virtual_moments(circuit)
         )
         if len(schedule) != non_virtual_moments_number:
             raise ScheduleCannotBeAppliedToCircuitException(

@@ -103,7 +103,7 @@ class TemplateOrchestrator(JSONEncodable):
         self.add_templates(templates)
 
     def _check_template_id(self, template_id: int) -> None:
-        if template_id < len(self._templates):
+        if template_id >= len(self._templates):
             err = IndexError()
             err.add_note(
                 f"Asking for element identified by {template_id} when only "
