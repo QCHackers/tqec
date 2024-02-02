@@ -360,10 +360,8 @@ class TemplateOrchestrator(Template):
         return self
 
     @property
-    def shape(self) -> tuple[int, int]:
-        return self._get_shape_from_ul_positions(
-            self._compute_ul_absolute_position()
-        ).to_numpy_shape()
+    def shape(self) -> Shape2D:
+        return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
