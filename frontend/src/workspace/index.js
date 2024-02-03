@@ -27,6 +27,7 @@ export default function TQECApp() {
   workspace.addChild(grid);
   workspace.selectedPlaquette = null; // Used to update filters
   workspace.gridSize = gridSize;
+  workspace.gridTileWidth = 5;
 
   workspace.updateSelectedPlaquette = (newPlaquette) => {
     if (newPlaquette === null) {
@@ -71,21 +72,35 @@ export default function TQECApp() {
   };
 
   // TODO: instead add the qubits in QubitLattice
-  const lattice = new QubitLattice(workspace, app);
-  const createQubitConstellationButton = new Button('Create Qubit Constellation', 100, 120);
+  const createQubitConstellationButton = new Button(
+    'Create Qubit Constellation',
+    100,
+    120
+  );
   workspace.addChild(createQubitConstellationButton);
-  const saveQubitConstellationButton = new Button('Save Qubit Constellation', 100, 120);
+  const saveQubitConstellationButton = new Button(
+    'Save Qubit Constellation',
+    100,
+    120
+  );
+  const lattice = new QubitLattice(workspace, app);
   createQubitConstellationButton.on('click', () => {
-    lattice.selectQubitForConstellation();
-    workspace.addChild(saveQubitConstellationButton);
+    // lattice.selectQubitForConstellation();
     workspace.removeChild(createQubitConstellationButton);
+    workspace.addChild(saveQubitConstellationButton);
+    app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
+  workspace.addChild(createQubitConstellationButton);
   saveQubitConstellationButton.on('click', () => {
     if (lattice.constellation.length === 0) {
-      notification('Constellation must have at least one qubit');
+      notification(app, 'Constellation must have at least one qubit');
     } else {
       workspace.removeChild(saveQubitConstellationButton);
-      this.app.view.addEventListener('mousedown', lattice.selectFirstVectorOrigin);
+      // TODO: create bounding box parallelogram
+      // this.app.view.addEventListener(
+      //   'mousedown',
+      //   lattice.selectFirstVectorOrigin
+      // );
     }
   });
   // Add the qubits to the workspace
@@ -160,7 +175,7 @@ export default function TQECApp() {
       plaquetteButton.visible = true;
     }
   };
-  workspace.addChild(plaquetteButton);
+  // workspace.addChild(plaquetteButton);
 
   // Add download stim button
   const downloadStimButton = new DownloadButton(

@@ -45,5 +45,6 @@ export default class Button extends Container {
     // Add the text to the button container
     this.addChild(buttonBackground);
     this.addChild(buttonText);
+    this.name = text;
   }
 }

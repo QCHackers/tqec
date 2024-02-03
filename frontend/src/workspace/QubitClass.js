@@ -29,12 +29,15 @@ export default class Qubit extends Graphics {
     this.neighbors = [];
     this.gridSize = gridSize;
     this.qubitType = qubitType;
+    this.name = `(${x}, ${y})`;
 
     // Adjacent (degree 1) qubits
     this.isQubit = true;
     this.visible = true;
     this.isSelected = false;
   }
+
+  toString = () => this.name;
 
   onPointerOver = () => {
     this.alpha = 0.5;

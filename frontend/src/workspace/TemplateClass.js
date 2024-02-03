@@ -35,7 +35,7 @@ export default class Template {
     this.container.addChild(this.templateButton);
     this.container.addChild(this.plaquetteButton);
     this.container.name = 'template';
-    this.workspace.addChild(this.container);
+    // this.workspace.addChild(this.container);
   }
 
   // Render the template control buttons
