@@ -6,8 +6,13 @@ from tqec.templates.scalable.square import ScalableAlternatingSquare
 
 
 class ScalableQubitSquare(TemplateOrchestrator):
-    def __init__(self, dim: int) -> None:
+    def __init__(self, k: int) -> None:
         """A scalable error-corrected qubit.
+
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
+        enforced to be even, which avoids some invalid configuration of the template.
 
         ```text
         .  .  1  .  1  .
@@ -18,8 +23,9 @@ class ScalableQubitSquare(TemplateOrchestrator):
         .  6  .  6  .  .
         ```
 
-        :param dim: dimension (code distance - 1) of the error-corrected qubit.
+        :param k: scale of the error-corrected qubit.
         """
+        dim = 2 * k
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
@@ -45,12 +51,11 @@ class ScalableQubitSquare(TemplateOrchestrator):
 
 class ScalableQubitRectangle(TemplateOrchestrator):
     def __init__(
-        self, width: int, height: int, scale_width: bool | None = None
+        self, k_width: int, k_height: int, scale_width: bool | None = None
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
         A scalable rectangle qubit can only scale its width **or** height, but not both.
-
         ```text
         .  .  1  .  1  .  1  .
         2  3  4  3  4  3  4  .
@@ -60,12 +65,13 @@ class ScalableQubitRectangle(TemplateOrchestrator):
         .  6  .  6  .  6  .  .
         ```
 
-        :param width: width of the qubit.
-        :param height: height of the qubit.
+        :param k_width: half the width of the qubit.
+        :param k_height: half the height of the qubit.
         :param scale_width: whether to scale the width or height. If None, the dimension
-            with the even value or the larger value will be scaled. If both dimensions
-            are even and equal, the width will be scaled by default.
+            with the larger value will be scaled. If both dimensions are equal, the width
+            will be scaled by default.
         """
+        width, height = 2 * k_width, 2 * k_height
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
             TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),
