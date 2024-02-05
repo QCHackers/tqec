@@ -10,7 +10,7 @@ from tqec.templates.base import Template
 
 def generate_circuit(
     template: Template,
-    plaquettes: list[Plaquette],
+    plaquettes: list[Plaquette] | dict[int, Plaquette],
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -44,6 +44,10 @@ def generate_circuit(
             f"{template.expected_plaquettes_number} were expected."
         )
 
+    # If plaquettes are given as a list, make that a dict to simplify the following operations
+    if isinstance(plaquettes, list):
+        plaquettes = {i: plaquette for i, plaquette in enumerate(plaquettes)}
+
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, len(plaquettes) + 1))
@@ -51,9 +55,9 @@ def generate_circuit(
     increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
-    plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
-        p.circuit for p in plaquettes
-    ]
+    plaquette_circuits = {0: ScheduledCircuit(cirq.Circuit())} | {
+        i: p.circuit for i, p in plaquettes.items()
+    }
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
     all_scheduled_circuits: list[ScheduledCircuit] = []
