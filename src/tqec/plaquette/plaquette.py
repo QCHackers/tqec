@@ -4,6 +4,7 @@ from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
+from tqec.exceptions import TQECException
 
 
 class Plaquette:
@@ -32,9 +33,14 @@ class Plaquette:
             plaquette should represent.
 
         """
-        # if len(qubits) != len(circuit.raw_circuit.all_qubits()):
-        #     raise ValueError("Number of qubits doesn't match number of circuit qubits")
-
+        plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
+        circuit_qubits = set(circuit.raw_circuit.all_qubits())
+        if not circuit_qubits.issubset(plaquette_qubits):
+            wrong_qubits = plaquette_qubits.difference(circuit_qubits)
+            raise TQECException(
+                f"The following qubits ({wrong_qubits}) are in the provided circuit "
+                "but not in the list of PlaquetteQubit."
+            )
         self._qubits = qubits
         self._circuit = circuit
 
