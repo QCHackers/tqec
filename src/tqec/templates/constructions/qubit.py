@@ -48,7 +48,7 @@ class QubitSquareTemplate(ComposedTemplate):
             self.add_relation(source, relpos, target)
 
 
-class ScalableQubitRectangle(ComposedTemplate):
+class QubitRectangleTemplate(ComposedTemplate):
     def __init__(
         self,
         k_width: int | Dimension,
