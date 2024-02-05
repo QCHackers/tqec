@@ -20,7 +20,7 @@ class MultiQubitDepolarizingNoiseAfterMultiQubitGate(BaseNoiseModel):
         qubit_number = len(operation.qubits)
         if qubit_number > 1:
             if isinstance(operation, cirq.CircuitOperation):
-                return self.recurse_in_operation_if_CircuitOperation(operation)
+                return self.recurse_in_operation_if_circuit_operation(operation)
             else:
                 return [
                     operation,

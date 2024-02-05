@@ -12,7 +12,7 @@ class BaseNoiseModel(cirq.NoiseModel):
         )
         super().__init__()
 
-    def recurse_in_operation_if_CircuitOperation(
+    def recurse_in_operation_if_circuit_operation(
         self, operation: cirq.Operation
     ) -> cirq.OP_TREE:
         """Helper method to handle cirq.CircuitOperation nearly transparently

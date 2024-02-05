@@ -25,4 +25,4 @@ class BeforeMeasurementFlipNoise(BaseNoiseModel):
                 operation,
             ]
         else:
-            return self.recurse_in_operation_if_CircuitOperation(operation)
+            return self.recurse_in_operation_if_circuit_operation(operation)
