@@ -6,11 +6,6 @@ const assert = require('assert');
 
 export default class QubitLattice {
   constructor(workspace, app) {
-    // assert(
-    //   constellation.length > 0,
-    //   'Constellation must have at least one qubit'
-    // );
-    // assert(!vector1.parallelTo(vector2), 'Vectors must not be parallel');
     this.specifyQubitsButton = new Button('Specify Qubits', 100, 120);
     this.specifyQubitsButton.on('click', () => {
       this.specifyQubits();
@@ -63,7 +58,7 @@ export default class QubitLattice {
     const rightmostQubit = this.constellation.reduce((a, b) => (a.globalX > b.globalX ? a : b));
     const topmostQubit = this.constellation.reduce((a, b) => (a.globalY < b.globalY ? a : b));
     const bottommostQubit = this.constellation.reduce((a, b) => (a.globalY > b.globalY ? a : b));
-    const delta = this.workspace.gridTileWidth;
+    const delta = this.workspace.gridSize;
     const upperLeftCorner = new Point(leftmostQubit.globalX - delta, topmostQubit.globalY - delta);
     // eslint-disable-next-line max-len
     const lowerRightCorner = new Point(rightmostQubit.globalX + delta, bottommostQubit.globalY + delta);
@@ -79,11 +74,6 @@ export default class QubitLattice {
     return boundingBox;
   };
 
-  /**
-   *
-   * @param {*} e
-   * @returns
-   */
   selectQubitForConstellation = (e) => {
     const [relativeX, relativeY] = this.relativeXY(e);
     if (relativeX < 200 && relativeY < 140) {
@@ -104,6 +94,5 @@ export default class QubitLattice {
       this.constellation.push(newQubit);
       this.workspace.addChild(newQubit);
     }
-    console.log(this.constellation.toString());
   };
 }
