@@ -1,42 +1,41 @@
+from copy import copy
+
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
+from tqec.exceptions import TQECException
+from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
+from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scalable.rectangle import ScalableRectangle
-from tqec.templates.scalable.square import ScalableAlternatingSquare
+from tqec.templates.scale import Dimension
 
 
-class ScalableQubitSquare(ComposedTemplate):
-    def __init__(self, k: int) -> None:
-        """A scalable error-corrected qubit.
+class QubitSquareTemplate(ComposedTemplate):
+    def __init__(self, k: int | Dimension) -> None:
+        """An error-corrected qubit.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
-
-        ```text
-        .  .  1  .  1  .
-        2  3  4  3  4  .
-        .  4  3  4  3  5
-        2  3  4  3  4  .
-        .  4  3  4  3  5
-        .  6  .  6  .  .
-        ```
-
-        :param k: scale of the error-corrected qubit.
+        TODO
         """
-        dim = 2 * k
+        # sdim: scalable dimension
+        sdim: Dimension
+        if isinstance(k, int):
+            sdim = Dimension(k, scaling_function=lambda scale: 2 * scale)
+        else:
+            sdim = copy(k)
+        sdim.value = 2 * sdim.value
+        # nsone: non-scalable one
+        nsone = Dimension(1, is_fixed=True)
+
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
+            TemplateWithIndices(AlternatingSquareTemplate(sdim), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [6, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
@@ -44,45 +43,37 @@ class ScalableQubitSquare(ComposedTemplate):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        ComposedTemplate.__init__(self, _templates)
+        super().__init__(_templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
 
 class ScalableQubitRectangle(ComposedTemplate):
     def __init__(
-        self, k_width: int, k_height: int, scale_width: bool | None = None
+        self,
+        k_width: int | Dimension,
+        k_height: int | Dimension,
+        scale_width: bool | None = None,
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
-        A scalable rectangle qubit can only scale its width **or** height, but not both.
-        ```text
-        .  .  1  .  1  .  1  .
-        2  3  4  3  4  3  4  .
-        .  4  3  4  3  4  3  5
-        2  3  4  3  4  3  4  .
-        .  4  3  4  3  4  3  5
-        .  6  .  6  .  6  .  .
-        ```
-
-        :param k_width: half the width of the qubit.
-        :param k_height: half the height of the qubit.
-        :param scale_width: whether to scale the width or height. If None, the dimension
-            with the larger value will be scaled. If both dimensions are equal, the width
-            will be scaled by default.
+        TODO
         """
-        width, height = 2 * k_width, 2 * k_height
+        swidth, sheight = self.get_dimensions(k_width, k_height, scale_width)
+        # nsone: non-scalable one
+        nsone = Dimension(1, is_fixed=True)
+
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),
+            TemplateWithIndices(AlternatingRectangleTemplate(swidth, sheight), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(width, 1), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(swidth, nsone), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, height), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sheight), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, height), [0, 5]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sheight), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(width, 1), [6, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(swidth, nsone), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
@@ -90,6 +81,41 @@ class ScalableQubitRectangle(ComposedTemplate):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        ComposedTemplate.__init__(self, _templates)
+        super().__init__(_templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
+
+    @staticmethod
+    def get_dimensions(
+        k_width: int | Dimension,
+        k_height: int | Dimension,
+        scale_width: bool | None = None,
+    ) -> tuple[Dimension, Dimension]:
+        if (
+            isinstance(k_width, Dimension)
+            and isinstance(k_height, Dimension)
+            and scale_width is None
+        ):
+            width, height = copy(k_width), copy(k_height)
+            width.value, height.value = 2 * width.value, 2 * height.value
+            return width, height
+        elif (
+            isinstance(k_width, int)
+            and isinstance(k_height, int)
+            and scale_width is not None
+        ):
+            width, height = 2 * k_width, 2 * k_height
+            if scale_width:
+                return Dimension(width, scaling_function=lambda k: 2 * k), Dimension(
+                    height, is_fixed=True
+                )
+            else:
+                return Dimension(width, is_fixed=True), Dimension(
+                    height, scaling_function=lambda k: 2 * k
+                )
+        else:
+            raise TQECException(
+                f"Wrong dimensions types. You gave {type(k_width).__name__}, "
+                f"{type(k_height).__name__}, {str(scale_width)}. "
+                "Refer to the documentation."
+            )
