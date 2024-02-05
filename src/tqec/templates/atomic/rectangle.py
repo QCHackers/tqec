@@ -15,6 +15,44 @@ class AlternatingRectangleTemplate(AtomicTemplate):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """Implements an atomic rectangular template with alternating plaquettes.
+
+        ## Example
+        The following code:
+        ```python
+        from tqec.templates.scale import Dimension
+        from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
+        from tqec.display import display_template
+
+        width = Dimension(4, scaling_function=lambda k: 2*k)
+        height = Dimension(6, scaling_function=lambda k: 3*k)
+        template = AlternatingRectangleTemplate(width, height)
+
+        print("Non-scaled template:")
+        display_template(template)
+        print("Scaled template:")
+        display_template(template.scale_to(1))
+        ```
+        outputs
+        ```text
+        Non-scaled template:
+        1  2  1  2
+        2  1  2  1
+        1  2  1  2
+        2  1  2  1
+        1  2  1  2
+        2  1  2  1
+        Scaled template:
+        1  2
+        2  1
+        1  2
+        ```
+        :param width: rectangle width.
+        :param height: rectangle height.
+        :param default_x_increment: default increment in the x direction between two plaquettes.
+        :param default_y_increment: default increment in the y direction between two plaquettes.
+        """
+
         super().__init__(default_x_increment, default_y_increment)
         self._width = width
         self._height = height
@@ -56,6 +94,43 @@ class RawRectangleTemplate(AtomicTemplate):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """
+        Implements an atomic rectangular template with user-provided
+        plaquette distribution.
+
+        User-provided `indices` defines the width and height of the template.
+        The integers in `indices` will be used to index the `plaquette_indices`
+        provided to the `instantiate` method. The maximum integer in `indices`
+        is the expected number of plaquettes to instantiate the template.
+
+        ## Example
+        The following code:
+        ```python
+        from tqec.templates.atomic.rectangle import RawRectangleTemplate
+        from tqec.display import display_template
+
+        one_plaquette = RawRectangleTemplate([[0]])
+        template = RawRectangleTemplate([[2, 1], [1, 1], [0, 3]])
+
+        print("One plaquette:")
+        display_template(one_plaquette)
+        print("Full template:")
+        display_template(template)
+        ```
+        outputs
+        ```text
+        One plaquette:
+        1
+        Full template:
+        3  2
+        2  2
+        1  4
+        ```
+        :param indices: 2-dimensional list of indices that will be used to index the
+            plaquette_indices provided to the `instantiate` method.
+        :param default_x_increment: default increment in the x direction between two plaquettes.
+        :param default_y_increment: default increment in the y direction between two plaquettes.
+        """
         super().__init__(default_x_increment, default_y_increment)
         self._indices = indices
 
@@ -132,6 +207,10 @@ class FixedRectangleTemplate(AlternatingRectangleTemplate):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """
+        Implements an atomic rectangular template with alternating plaquettes
+        that does not scale its dimensions.
+        """
         super().__init__(
             Dimension(width, is_fixed=True),
             Dimension(height, is_fixed=True),
