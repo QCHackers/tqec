@@ -96,6 +96,9 @@ export default function TQECApp() {
       notification(app, 'Constellation must have at least one qubit');
     } else {
       workspace.removeChild(saveQubitConstellationButton);
+      const bb = lattice.createBoundingBox();
+      console.log(bb);
+      workspace.addChild(bb);
       // TODO: create bounding box parallelogram
       // this.app.view.addEventListener(
       //   'mousedown',

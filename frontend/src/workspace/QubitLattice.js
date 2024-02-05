@@ -1,4 +1,4 @@
-import { Point } from 'pixi.js';
+import { Point, Graphics, Color } from 'pixi.js';
 import Qubit from './QubitClass';
 import Button from './components/button';
 
@@ -58,14 +58,25 @@ export default class QubitLattice {
       this.constellation.length > 0,
       'Constellation must have at least one qubit'
     );
-    // var upperLeftCorner = new Point(-Infinity, -Infinity);
-    // var lowerRightCorner = new Point(Infinity, Infinity);
-    // this.constellation.forEach((qubit) => {
-    //   if (qubit.globalX < lowerRightCorner.x) {
-    //     lowerRightCorner.x = qubit.globalX;
-    //   }
-
-    // });
+    // TODO: create a minimal rectangle containing the constellation.
+    const leftmostQubit = this.constellation.reduce((a, b) => (a.globalX < b.globalX ? a : b));
+    const rightmostQubit = this.constellation.reduce((a, b) => (a.globalX > b.globalX ? a : b));
+    const topmostQubit = this.constellation.reduce((a, b) => (a.globalY < b.globalY ? a : b));
+    const bottommostQubit = this.constellation.reduce((a, b) => (a.globalY > b.globalY ? a : b));
+    const delta = this.workspace.gridTileWidth;
+    const upperLeftCorner = new Point(leftmostQubit.globalX - delta, topmostQubit.globalY - delta);
+    // eslint-disable-next-line max-len
+    const lowerRightCorner = new Point(rightmostQubit.globalX + delta, bottommostQubit.globalY + delta);
+    const width = lowerRightCorner.x - upperLeftCorner.x;
+    const height = lowerRightCorner.y - upperLeftCorner.y;
+    const boundingBox = new Graphics();
+    boundingBox.beginFill(new Color('green').toNumber());
+    boundingBox.lineStyle(2, 0x0000ff, 1);
+    boundingBox.drawRect(upperLeftCorner.x, upperLeftCorner.y, width, height);
+    boundingBox.alpha = 0.5;
+    boundingBox.endFill();
+    boundingBox.visible = true;
+    return boundingBox;
   };
 
   /**
