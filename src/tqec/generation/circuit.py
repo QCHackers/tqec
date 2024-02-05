@@ -46,7 +46,7 @@ def generate_circuit(
 
     # If plaquettes are given as a list, make that a dict to simplify the following operations
     if isinstance(plaquettes, list):
-        plaquettes = {i: plaquette for i, plaquette in enumerate(plaquettes)}
+        plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
     # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
@@ -64,13 +64,15 @@ def generate_circuit(
     plaquette_index: int
     for row_index, line in enumerate(template_plaquettes):
         for column_index, plaquette_index in enumerate(line):
-            scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-
-            offset = Displacement(column_index * increments.x, row_index * increments.y)
-            plaquette = plaquettes[plaquette_index - 1]
-            qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
-            scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
-            all_scheduled_circuits.append(scheduled_circuit)
+            if plaquette_index != 0:
+                scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
+                offset = Displacement(
+                    column_index * increments.x, row_index * increments.y
+                )
+                plaquette = plaquettes[plaquette_index]
+                qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
+                scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
+                all_scheduled_circuits.append(scheduled_circuit)
 
     # Merge everything!
     return merge_scheduled_circuits(all_scheduled_circuits)
