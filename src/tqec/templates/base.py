@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
-from tqec.position import Shape2D
+from tqec.position import Displacement, Shape2D
 from tqec.templates.shapes.base import BaseShape
 
 
@@ -53,13 +53,20 @@ class JSONEncodable(ABC):
 
 
 class Template(JSONEncodable):
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Base class for all the templates.
 
         This class is the base of all templates and provide the necessary interface
         that all templates should implement to be usable by the library.
         """
         super().__init__()
+        self._default_increments = Displacement(
+            default_x_increment, default_y_increment
+        )
 
     @abstractmethod
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
@@ -113,7 +120,13 @@ class Template(JSONEncodable):
         # account inheritance. So this is not always "Template" here, as a subclass of
         # Template could use this method and self.__class__ would be this subclass type.
         # This is intentional.
-        return {"type": self.__class__.__name__}
+        return {
+            "type": self.__class__.__name__,
+            "default_increments": {
+                "x": self._default_increments.x,
+                "y": self._default_increments.y,
+            },
+        }
 
     @property
     @abstractmethod
@@ -123,6 +136,13 @@ class Template(JSONEncodable):
         :returns: the number of plaquettes expected from the `instanciate` method.
         """
         pass
+
+    def get_increments(self) -> Displacement:
+        """Get the default increments of the template.
+
+        :returns: a displacement of the default increments in the x and y directions.
+        """
+        return self._default_increments
 
 
 class AtomicTemplate(Template):
@@ -135,7 +155,13 @@ class AtomicTemplate(Template):
         Each atomis template should have a shape, represented by a Shape instance, and encoding
         how the atomic template scales and its plaquettes.
 
+        The default increments define the distance between two plaquettes.
+        For example a default_x_increment of 2 means that two 2x2 plaquettes will share
+        a common edge.
+
         :param shape: the underlying template shape.
+        :param default_x_increment: default increment in the x direction between two plaquettes.
+        :param default_y_increment: default increment in the y direction between two plaquettes.
         """
         super().__init__()
         self._shape_instance = shape
