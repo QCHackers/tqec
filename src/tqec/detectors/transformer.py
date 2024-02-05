@@ -2,13 +2,20 @@ from copy import deepcopy
 
 import cirq
 import numpy
+import stimcirq
 import sympy
-from tqec.detectors.gate import RelativeMeasurementGate
-from tqec.detectors.measurement_map import CircuitMeasurementMap
-from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException
+
+from tqec.exceptions import TQECException
+from tqec.detectors.operation import (
+    ShiftCoords,
+    Detector,
+    Observable,
+    STIM_TAG,
+)
+from tqec.detectors.measurement_map import CircuitMeasurementMap, compute_global_measurements_lookback_offsets
 
 
-def _fill_in_detectors_global_record_indices_impl(
+def _transform_to_stimcirq_compatible_impl(
     circuit: cirq.AbstractCircuit,
     global_measurement_map: CircuitMeasurementMap,
     current_moment_index_offset: int,
@@ -37,7 +44,7 @@ def _fill_in_detectors_global_record_indices_impl(
                 (
                     modified_circuit,
                     index_of_last_explored_moment,
-                ) = _fill_in_detectors_global_record_indices_impl(
+                ) = _transform_to_stimcirq_compatible_impl(
                     operation.circuit.unfreeze(),
                     global_measurement_map=global_measurement_map,
                     current_moment_index_offset=current_moment_index,
@@ -46,17 +53,38 @@ def _fill_in_detectors_global_record_indices_impl(
                     index_of_last_explored_moment - current_moment_index
                 ) * operation_repetitions
                 operations.append(operation.replace(circuit=modified_circuit.freeze()))
-            elif isinstance(operation.gate, RelativeMeasurementGate):
-                if len(operation.qubits) > 1:
-                    raise MeasurementAppliedOnMultipleQubitsException(operation.qubits)
-                new_operation = deepcopy(operation)
-                relative_measurement_gate: RelativeMeasurementGate = new_operation.gate  # type: ignore
-                relative_measurement_gate.compute_global_measurements_lookback_offsets(
-                    global_measurement_map, current_moment_index
-                )
-                operations.append(new_operation)
-            else:
+                continue
+
+            # All the stim-related annotations should have been tagged with STIM_TAG
+            if STIM_TAG not in operation.tags:
                 operations.append(deepcopy(operation))
+                continue
+            untagged = operation.untagged
+            if isinstance(untagged, ShiftCoords):
+                operations.append(stimcirq.ShiftCoordsAnnotation(untagged.shift))
+            elif isinstance(untagged, Detector):
+                relative_keys = compute_global_measurements_lookback_offsets(
+                    untagged, global_measurement_map, current_moment_index
+                )
+                detector_annotation = stimcirq.DetAnnotation(
+                    relative_keys=relative_keys,
+                    coordinate_metadata=untagged.coordinates,
+                )
+                operations.append(detector_annotation)
+            elif isinstance(untagged, Observable):
+                relative_keys = compute_global_measurements_lookback_offsets(
+                    untagged, global_measurement_map, current_moment_index
+                )
+                observable_annotation = stimcirq.CumulativeObservableAnnotation(
+                    relative_keys=relative_keys,
+                    observable_index=untagged.index,
+                )
+                operations.append(observable_annotation)
+            else:
+                raise TQECException(
+                    f"The operation {untagged} is tagged with {STIM_TAG} but is not an operation"
+                    "recognized by tqec."
+                )
         moments.append(cirq.Moment(*operations))
         current_moment_index += number_of_moments_explored
 
@@ -64,27 +92,27 @@ def _fill_in_detectors_global_record_indices_impl(
 
 
 @cirq.transformer
-def fill_in_global_record_indices(
+def transform_to_stimcirq_compatible(
     circuit: cirq.AbstractCircuit,
     *,
     context: cirq.TransformerContext | None = None,
 ) -> cirq.Circuit:
-    """Compute and replace global measurement indices in detectors
+    """Transform the circuit to be compatible with stimcirq.
 
-    This transformer iterates on all the operations contained in the provided cirq.AbstractCircuit
-    instance and calls RelativeMeasurementGate._get_global_measurement_index and all the instances
-    of RelativeMeasurementGate in order to replace their internal, local, measurement representation
-    by the global records that will be useful to stim.
+    stimcirq is a library that allows to convert cirq circuits to stim circuits. It defines a set of
+    annotations in cirq that are used to represent the operations specific to stim. In tqec, we define
+    the same annotations with different semantics. This transformer is used to convert the tqec
+    annotations to the stimcirq annotations. The transformed operations are:
 
-    :param circuit: instance containing the operations to fill-in with global measurement records
-        understandable by stim.
-    :param context: See cirq.transformer documentation.
-    :returns: a copy of the given circuit with local measurement records replaced by global ones,
-        understandable by stim.
+    - :class:`ShiftCoords`: converted to `stimcirq.ShiftCoordsAnnotation`.
+    - :class:`Detector`: converted to `stimcirq.DetAnnotation` with the correct relative keys computed.
+    - :class:`Observable`: converted to `stimcirq.CumulativeObservableAnnotation` with the correct
+    relative keys computed.
+
+    :param circuit: The circuit to transform, which may contain tqec specific operations.
+    :param context: See `cirq.transformer` documentation.
+    :returns: A new circuit with the tqec specific operations transformed to stimcirq compatible operations.
     """
     measurement_map = CircuitMeasurementMap(circuit)
-    (
-        filled_in_circuit,
-        _,
-    ) = _fill_in_detectors_global_record_indices_impl(circuit, measurement_map, 0)
-    return filled_in_circuit
+    transformed_circuit, _ = _transform_to_stimcirq_compatible_impl(circuit, measurement_map, 0)
+    return transformed_circuit

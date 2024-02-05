@@ -79,7 +79,7 @@ def generate_circuit(
             qubit_map = {
                 # GridQubit are indexed as (row, col), so (y, x)
                 qubit: qubit + (qubit_y, qubit_x)  # type: ignore
-                for qubit in scheduled_circuit.raw_circuit.all_qubits()
+                for qubit in scheduled_circuit.mappable_qubits
             }
             scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
             all_scheduled_circuits.append(scheduled_circuit)
