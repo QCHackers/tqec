@@ -2,7 +2,7 @@ import math
 import pathlib
 
 from tqec.templates.base import Template
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.composed import ComposedTemplate
 
 
 def display_template(template: Template, *plaquette_indices: int) -> None:
@@ -23,7 +23,7 @@ def display_template(template: Template, *plaquette_indices: int) -> None:
 
 
 def display_templates_svg(
-    templates: TemplateOrchestrator,
+    templates: ComposedTemplate,
     write_svg_file: str | pathlib.Path | None,
     canvas_height: int = 500,
     *plaquette_indices: int,

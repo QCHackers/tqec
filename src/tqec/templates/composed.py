@@ -4,8 +4,8 @@ import networkx as nx
 import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
-from tqec.templates.base import Template, TemplateWithIndices
 from tqec.position import Displacement, Position, Shape2D
+from tqec.templates.base import Template, TemplateWithIndices
 
 
 def get_corner_position(
@@ -49,7 +49,7 @@ def get_corner_position(
     )
 
 
-class TemplateOrchestrator(Template):
+class ComposedTemplate(Template):
     def __init__(self, templates: list[TemplateWithIndices]) -> None:
         """Manages templates positioned relatively to each other.
 
@@ -146,7 +146,7 @@ class TemplateOrchestrator(Template):
         template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         This method has the same effect as add_corner_relation (it internally calls it), but
@@ -197,7 +197,7 @@ class TemplateOrchestrator(Template):
         self,
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         :param template_id_to_position_corner: a tuple containing the index of the template that
@@ -396,7 +396,7 @@ class TemplateOrchestrator(Template):
         """
         return self._default_increments
 
-    def scale_to(self, k: int) -> "TemplateOrchestrator":
+    def scale_to(self, k: int) -> "ComposedTemplate":
         """Scales all the scalable component templates to the given scale k.
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
