@@ -46,7 +46,7 @@ class JSONEncodable(ABC):
         """
         if "default" in kwargs:
             raise TQECException(
-                f"The 'default' key has been found with value '{kwargs.get("default")}' in the provided kwargs."
+                f"The 'default' key has been found with value '{kwargs.get('default')}' in the provided kwargs."
                 " 'default' key is prohibited in the public API as it is changed internally."
             )
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
