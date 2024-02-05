@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class Position:
     """Simple wrapper around tuple[int, int].
 
-    This class is here to explicitely name the type of variables as positions
+    This class is here to explicitly name the type of variables as positions
     instead of having a tuple[int, int] that could be:
     - a position,
     - a shape,
@@ -21,7 +21,7 @@ class Position:
 class Shape2D:
     """Simple wrapper around tuple[int, int].
 
-    This class is here to explicitely name the type of variables as shapes
+    This class is here to explicitly name the type of variables as shapes
     instead of having a tuple[int, int] that could be:
     - a position,
     - a shape,
