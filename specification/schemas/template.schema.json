@@ -29,7 +29,7 @@
               "description": "Raw plaquette indices in the 'raw_rectangle'.",
               "items": {
                 "type": "array",
-                "items": {"type": "integer", "description": "Plaquette indices used to instanciate the template."}
+                "items": {"type": "integer", "description": "Plaquette indices used to instantiate the template."}
               }
             },
             {

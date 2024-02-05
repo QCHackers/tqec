@@ -18,7 +18,7 @@ class BaseShape(ABC):
         super().__init__()
 
     @abstractmethod
-    def instanciate(self, *_: int) -> numpy.ndarray:
+    def instantiate(self, *_: int) -> numpy.ndarray:
         pass
 
     @property

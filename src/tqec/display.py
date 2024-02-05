@@ -12,11 +12,11 @@ def display_template(
 
     :param template: the Template instance to display.
     :param plaquette_indices: the plaquette indices that are forwarded to the
-        call to template.instanciate to get the actual template representation.
+        call to template.instantiate to get the actual template representation.
     """
     if isinstance(template, TemplateOrchestrator) and len(plaquette_indices) == 0:
         plaquette_indices = tuple(range(template.expected_plaquettes_number))
-    arr = template.instanciate(*plaquette_indices)
+    arr = template.instantiate(*plaquette_indices)
     for line in arr:
         for element in line:
             element = str(element) if element != 0 else "."
@@ -41,7 +41,7 @@ def display_templates_svg(
     :param write_svg_file: the path to the SVG file to write.
     :param canvas_height: the height of the canvas in pixels to draw on.
     :param plaquette_indices: the plaquette indices that are forwarded to the
-        call to template.instanciate to get the actual template representation.
+        call to template.instantiate to get the actual template representation.
 
     :return: the SVG string.
     """
@@ -102,7 +102,7 @@ def display_templates_svg(
             plaquette_indices[k]
             for k in templates._relative_position_graph.nodes[i]["plaquette_indices"]
         ]
-        arr = template.instanciate(*indices)
+        arr = template.instantiate(*indices)
         outer_rects.extend(
             rect(ul_position.x, ul_position.y, len(arr[0]), len(arr), outmost=True)
         )

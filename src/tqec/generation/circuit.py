@@ -17,7 +17,7 @@ def generate_circuit(
 
     This is one of the core methods of the `tqec` package. It generates a quantum circuit
     from the description of the template that should be implemented as well as the plaquettes
-    that should be used to instanciate the provided template.
+    that should be used to instantiate the provided template.
 
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
@@ -58,17 +58,17 @@ def generate_circuit(
             "See https://github.com/QCHackers/tqec/issues/34."
         )
 
-    # Instanciate the template with the appropriate plaquette indices.
+    # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
     _indices = list(range(len(plaquettes) + 1))
-    template_plaquettes = template.instanciate(*_indices)
+    template_plaquettes = template.instantiate(*_indices)
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
         p.circuit for p in plaquettes
     ]
 
-    # Generate the ScheduledCircuit instances for each plaquette instanciation
+    # Generate the ScheduledCircuit instances for each plaquette instantiation
     all_scheduled_circuits: list[ScheduledCircuit] = list()
     plaquette_index: int
     for plaquette_y, line in enumerate(template_plaquettes):

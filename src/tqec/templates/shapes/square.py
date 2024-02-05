@@ -54,7 +54,7 @@ class AlternatingCornerSquare(AlternatingSquare):
         super().__init__(dimension)
         self._corner_position = corner_position
 
-    def instanciate(
+    def instantiate(
         self,
         x_plaquette: int,
         z_plaquette: int,

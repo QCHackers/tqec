@@ -333,12 +333,12 @@ class TemplateOrchestrator(JSONEncodable):
             x = tul.x - bbul.x
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
-            ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
+            ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
                 *plaquette_indices
             )
         return ret
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         return self.build_array(plaquette_indices)
 
     def scale_to(self, k: int) -> "TemplateOrchestrator":
