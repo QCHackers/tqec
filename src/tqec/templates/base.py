@@ -62,6 +62,9 @@ class Template(JSONEncodable):
 
         This class is the base of all templates and provide the necessary interface
         that all templates should implement to be usable by the library.
+
+        :param default_x_increment: default increment in the x direction between two plaquettes.
+        :param default_y_increment: default increment in the y direction between two plaquettes.
         """
         super().__init__()
         self._default_increments = Displacement(
@@ -146,7 +149,12 @@ class Template(JSONEncodable):
 
 
 class AtomicTemplate(Template):
-    def __init__(self, shape: BaseShape) -> None:
+    def __init__(
+        self,
+        shape: BaseShape,
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Base class for all the templates that are not composed of other Template instances.
 
         This class is the base of all templates that are "atomic", i.e., cannot be decomposed
@@ -163,7 +171,7 @@ class AtomicTemplate(Template):
         :param default_x_increment: default increment in the x direction between two plaquettes.
         :param default_y_increment: default increment in the y direction between two plaquettes.
         """
-        super().__init__()
+        super().__init__(default_x_increment, default_y_increment)
         self._shape_instance = shape
 
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
