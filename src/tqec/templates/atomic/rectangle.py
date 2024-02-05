@@ -166,7 +166,7 @@ class RawRectangleTemplate(AtomicTemplate):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        return max(max(line) for line in self._indices)
+        return max(max(line) for line in self._indices) + 1
 
 
 class LegacyRectangleTemplate(AlternatingRectangleTemplate):
