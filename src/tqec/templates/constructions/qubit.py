@@ -99,12 +99,11 @@ class ScalableQubitRectangle(ComposedTemplate):
             width, height = copy(k_width), copy(k_height)
             width.value, height.value = 2 * width.value, 2 * height.value
             return width, height
-        elif (
-            isinstance(k_width, int)
-            and isinstance(k_height, int)
-            and scale_width is not None
-        ):
+        elif isinstance(k_width, int) and isinstance(k_height, int):
             width, height = 2 * k_width, 2 * k_height
+            # Determine which dimension to scale if scale_width is not provided.
+            if scale_width is None:
+                scale_width = width >= height
             if scale_width:
                 return Dimension(width, scaling_function=lambda k: 2 * k), Dimension(
                     height, is_fixed=True
