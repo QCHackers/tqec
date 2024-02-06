@@ -11,11 +11,25 @@ class ShiftCoords(cirq.Operation):
         """
         Annotates that the qubit/detector coordinate origin is being moved.
 
+        WARNING: you should use `make_shift_coords` to create instances of this class.
+        If you do not, read attentively the documentation below.
+
         This is a replication of the 
         [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
         class. We can directly use `stimcirq.ShiftCoordsAnnotation` here, however,
         replication brings the class into the `tqec` namespace and is useful for the
         potential future iteration.
+
+        Since the operation is not a real quantum operation, it does not have qubits
+        and is not applied to any qubits. This might cause surprising behavior if you
+        try to append or insert it into a circuit. It is always recommended to containerize
+        this operation in a `cirq.Moment` before appending it to a circuit.
+
+        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`
+        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.
+        You can use the `make_shift_coords` helper function to create an instance of this class
+        with the correct tags. Otherwise, you might need to manually tag the operation with the
+        `cirq.VirtualTag` and the `STIM_TAG`.
 
         :param shifts: How much to shift each coordinate.
         """
@@ -111,6 +125,20 @@ class Detector(RelativeMeasurementsRecord):
     ) -> None:
         """Operation representing a detector.
 
+        WARNING: you should use `make_detector` to create instances of this class.
+        If you do not, read attentively the documentation below.
+
+        Since the operation is not a real quantum operation, it does not have qubits
+        and is not applied to any qubits. This might cause surprising behavior if you
+        try to append or insert it into a circuit. It is always recommended to containerize
+        this operation in a `cirq.Moment` before appending it to a circuit.
+
+        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`
+        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.
+        You can use the `make_detector` helper function to create an instance of this class
+        with the correct tags. Otherwise, you might need to manually tag the operation with the
+        `cirq.VirtualTag` and the `STIM_TAG`.
+
         :param local_coordinate_system_origin: origin of the local coordinate system.
             The origin along with the local coordinate system will be pinned to the
             global coordinate system to resolve the actual qubit coordinates the
@@ -144,6 +172,20 @@ class Observable(RelativeMeasurementsRecord):
         observable_index: int = 0,
     ) -> None:
         """Operation representing an observable.
+
+        WARNING: you should use `make_observable` to create instances of this class.
+        If you do not, read attentively the documentation below.
+
+        Since the operation is not a real quantum operation, it does not have qubits
+        and is not applied to any qubits. This might cause surprising behavior if you
+        try to append or insert it into a circuit. It is always recommended to containerize
+        this operation in a `cirq.Moment` before appending it to a circuit.
+
+        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`
+        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.
+        You can use the `make_observable` helper function to create an instance of this class
+        with the correct tags. Otherwise, you might need to manually tag the operation with the
+        `cirq.VirtualTag` and the `STIM_TAG`.
 
         :param local_coordinate_system_origin: origin of the local coordinate system.
             The origin along with the local coordinate system will be pinned to the
