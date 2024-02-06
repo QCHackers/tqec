@@ -1,9 +1,45 @@
+import numbers
 import typing
 from copy import deepcopy
 
 import cirq
-
 from tqec.detectors.gate import DetectorGate
+from tqec.exceptions import QubitTypeException, TQECException
+
+
+class ScheduleException(TQECException):
+    pass
+
+
+class ScheduleWithNonIntegerEntriesException(ScheduleException):
+    def __init__(self, schedule: list[int], non_integer_type: type) -> None:
+        super().__init__(
+            f"Found a non-integer entry of type {non_integer_type.__name__} in "
+            f"the provided schedule {schedule}. Entries should all be integers."
+        )
+
+
+class ScheduleEntryTooLowException(ScheduleException):
+    def __init__(self, first_schedule_entry: int, initial_virtual_moments: int) -> None:
+        super().__init__(
+            f"Schedule entries should be strictly greater than {ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE}. "
+            f"The first schedule entry provided ({first_schedule_entry}) and the fact that "
+            f"{initial_virtual_moments} virtual moments have been found before it breaks this "
+            f"assumption as {first_schedule_entry} - {initial_virtual_moments} = "
+            f"{first_schedule_entry - initial_virtual_moments}. Please re-number your input schedule or ask "
+            "for the limit to be raised."
+        )
+
+
+class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
+    def __init__(self, schedule: list[int], number_of_non_virtual_moments: int) -> None:
+        super().__init__(
+            (
+                f"The provided schedule contains {len(schedule)} entries, but "
+                f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
+                "provided circuit."
+            )
+        )
 
 
 class ScheduledCircuit:
@@ -31,7 +67,7 @@ class ScheduledCircuit:
             instance. If the list is None, it default to
             `list(range(number_of_non_virtual_moments))`.
 
-        :raises AssertionError: if the provided schedule is invalid.
+        :raises ScheduleError: if the provided schedule is invalid.
         """
         self._is_non_virtual_moment_list: list[bool] = [
             not ScheduledCircuit._is_virtual_moment(moment)
@@ -41,38 +77,73 @@ class ScheduledCircuit:
         if schedule is None:
             schedule = list(range(self._number_of_non_virtual_moments))
         else:
-            ScheduledCircuit._check_input_schedule_validity(schedule)
-            assert len(schedule) == self._number_of_non_virtual_moments, (
-                f"Cannot create a ScheduledCircuit instance with a different number "
-                f"of non-virtual moments ({self._number_of_non_virtual_moments}) and time slices "
-                f"in the provided schedule ({len(schedule)})."
-            )
+            ScheduledCircuit._check_input_validity(circuit, schedule)
+
         self._raw_circuit: cirq.Circuit = circuit
         self._schedule: list[int]
         self.schedule = schedule
 
     @staticmethod
-    def _check_input_schedule_validity(schedule: list[int]) -> None:
-        """Asserts that the given schedule is valid
-
-        A valid input schedule is composed on entries that are:
-        1. sorted
-        2. unique
-        3. all strictly greater than ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
-
-        This static method checks the above points by using asserts.
+    def _check_input_validity(circuit: cirq.Circuit, schedule: list[int]) -> None:
+        """Asserts that the given inputs are valid to construct a ScheduledCircuit instance.
 
         :param schedule: the schedule to check.
-        :raises AssertionError: if the given schedule is invalid.
+
+        :raises ScheduleWithNonIntegerEntries: if the given schedule has a non-integer entry.
+        :raises ScheduleNotSorted: if the given schedule is not a sorted list.
+        :raises ScheduleEntryTooLow: if the given schedule has an entry that would lead to incorrect
+            scheduling.
+        :raises ScheduleCannotBeAppliedToCircuit: if the given schedule cannot be applied to the
+            provided cirq.Circuit instance, for example if the number of entries in the schedule and
+            the number of non-virtual moments in the circuit are not equal.
+        :raises QubitTypeError: if any of the circuit qubit is not a cirq.GridQubit instance.
         """
-        assert all(
+        # Check that all the qubits in the cirq.Circuit instance are instances of cirq.GridQubit.
+        for q in circuit.all_qubits():
+            if not isinstance(q, cirq.GridQubit):
+                raise QubitTypeException(cirq.GridQubit, type(q))
+
+        # Check that all entries in the provided schedule are integers.
+        for entry in schedule:
+            if not isinstance(entry, numbers.Integral):
+                raise ScheduleWithNonIntegerEntriesException(schedule, type(entry))
+
+        # Check that the schedule is sorted.
+        is_sorted: bool = all(
             schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1)
-        ), "Given schedule should be a sorted list of unique integers."
-        # Ensure that ScheduledCircuit._VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
+        )
+        if not is_sorted:
+            raise ScheduleException(
+                f"The provided schedule {schedule} is not sorted. "
+                "You should only provide sorted schedules."
+            )
+
+        # Ensure that ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE is the lowest possible moment schedule
         # that can be stored.
-        assert (
-            len(schedule) == 0 or schedule[0] > ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
-        ), f"Moment schedules cannot be lower than {ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE}. Found {schedule[0]}."
+        number_of_initial_virtual_moments: int = 0
+        if circuit.moments:
+            while ScheduledCircuit._is_virtual_moment(
+                circuit.moments[number_of_initial_virtual_moments]
+            ):
+                number_of_initial_virtual_moments += 1
+        if (
+            schedule
+            and (schedule[0] - number_of_initial_virtual_moments)
+            <= ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
+        ):
+            raise ScheduleEntryTooLowException(
+                schedule[0], number_of_initial_virtual_moments
+            )
+
+        # Ensure that the provided schedule contains as much entries as the number of non-virtual
+        # moments in the circuit.
+        non_virtual_moments_number: int = (
+            ScheduledCircuit._compute_number_of_non_virtual_moments(circuit)
+        )
+        if len(schedule) != non_virtual_moments_number:
+            raise ScheduleCannotBeAppliedToCircuitException(
+                schedule, non_virtual_moments_number
+            )
 
     @staticmethod
     def from_multi_qubit_moment_schedule(
@@ -83,10 +154,10 @@ class ScheduledCircuit:
         This construction method basically auto-schedules single-qubit gates from
         the schedule of multi-qubit ones.
 
-        :raises AssertionError: if the provided schedule is invalid or if the auto-scheduling is
+        :raises ScheduleError: if the provided schedule is invalid or if the auto-scheduling is
             impossible.
         """
-        ScheduledCircuit._check_input_schedule_validity(multi_qubit_moment_schedule)
+        ScheduledCircuit._check_input_validity(circuit, multi_qubit_moment_schedule)
 
         # Generate a list with all the multi-qubit moments scheduled
         number_of_non_virtual_moments = (
@@ -127,9 +198,11 @@ class ScheduledCircuit:
             else:
                 index_of_next_schedule = final_schedule[i] + 1
 
-        assert (
-            _NOT_SCHEDULED not in final_schedule
-        ), "Not all gates have been scheduled!"
+        if _NOT_SCHEDULED in final_schedule:
+            raise ScheduleException(
+                f"The provided cirq.Circuit instance:\n{circuit}\n cannot be scheduled. "
+                f"Final (invalid) schedule: {final_schedule}."
+            )
         return ScheduledCircuit(circuit, final_schedule)
 
     @property
@@ -138,15 +211,7 @@ class ScheduledCircuit:
 
     @schedule.setter
     def schedule(self, new_schedule: list[int]) -> None:
-        ScheduledCircuit._check_input_schedule_validity(new_schedule)
-        number_of_moments_to_schedule: int = self._number_of_non_virtual_moments
-        number_of_scheduled_moment: int = len(new_schedule)
-        assert number_of_moments_to_schedule == number_of_scheduled_moment, (
-            "Trying to change the underlying schedule (containing "
-            f"{number_of_scheduled_moment} entries) of a ScheduledCircuit "
-            "with a schedule containing a different number of "
-            f"entries ({number_of_moments_to_schedule})."
-        )
+        ScheduledCircuit._check_input_validity(self.raw_circuit, new_schedule)
         self._schedule = new_schedule
 
     @property
@@ -155,18 +220,7 @@ class ScheduledCircuit:
 
     @raw_circuit.setter
     def raw_circuit(self, new_circuit: cirq.Circuit) -> None:
-        number_of_non_virtual_moments_in_new_circuit: int = (
-            ScheduledCircuit._compute_number_of_non_virtual_moments(new_circuit)
-        )
-        number_of_scheduled_moment: int = len(self._schedule)
-        assert (
-            number_of_non_virtual_moments_in_new_circuit == number_of_scheduled_moment
-        ), (
-            "Trying to change the underlying cirq.Circuit instance "
-            f"({number_of_scheduled_moment} moments) of a ScheduledCircuit "
-            "with a cirq.Circuit instance containing a different number of "
-            f"moments ({number_of_non_virtual_moments_in_new_circuit})."
-        )
+        ScheduledCircuit._check_input_validity(new_circuit, self.schedule)
         self._raw_circuit = new_circuit
 
     def map_to_qubits(
@@ -241,9 +295,8 @@ class ScheduledCircuit:
 
     @property
     def qubits(self) -> frozenset[cirq.GridQubit]:
-        qubits = self._raw_circuit.all_qubits()
-        assert all(isinstance(q, cirq.GridQubit) for q in qubits)
-        return qubits  # type: ignore
+        # qubit type validation has been performed at construction
+        return self._raw_circuit.all_qubits()  # type: ignore
 
     @property
     def number_of_non_virtual_moments(self) -> int:
@@ -300,7 +353,10 @@ class ScheduledCircuits:
         :raises AssertionError: if not self.has_pending_operation(index).
         """
         ret = self._current_moments[index]
-        assert ret is not None, "No moment to pop!"
+        if ret is None:
+            raise RuntimeError(
+                "Trying to pop a Moment instance from a ScheduledCircuit with all its moments already collected."
+            )
         self._current_moments[index] = next(self._iterators[index], None)
         return ret
 
@@ -389,7 +445,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     while scheduled_circuits.has_pending_moment():
         moments = scheduled_circuits.collect_moments()
         # Flatten the moments into a list of operations to perform some modifications
-        operations = sum((list(moment.operations) for moment in moments), start=list())
+        operations = sum((list(moment.operations) for moment in moments), start=[])
         # Avoid duplicated operations. Any operation that have the Plaquette.get_mergeable_tag() tag
         # is considered mergeable, and can be removed if another operation in the list
         # is considered equal (and has the mergeable tag).

@@ -2,8 +2,15 @@ import typing as ty
 from abc import ABC, abstractmethod
 
 import numpy
-
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
+
+
+class WrongNumberOfParametersException(TQECException):
+    def __init__(self, expected: int, provided: int) -> None:
+        super().__init__(
+            f"{provided} parameters were provided, but {expected} were expected."
+        )
 
 
 class BaseShape(ABC):
@@ -11,7 +18,7 @@ class BaseShape(ABC):
         super().__init__()
 
     @abstractmethod
-    def instanciate(self, *_: int) -> numpy.ndarray:
+    def instantiate(self, *_: int) -> numpy.ndarray:
         pass
 
     @property
@@ -21,6 +28,15 @@ class BaseShape(ABC):
 
     @abstractmethod
     def to_dict(self) -> dict[str, ty.Any]:
+        pass
+
+    @property
+    @abstractmethod
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instantiate` method.
+
+        :returns: the number of plaquettes expected from the `instantiate` method.
+        """
         pass
 
     @abstractmethod

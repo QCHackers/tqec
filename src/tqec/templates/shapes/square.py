@@ -1,8 +1,8 @@
 import typing as ty
 
 import numpy
-
 from tqec.enums import CornerPositionEnum
+from tqec.templates.shapes.base import WrongNumberOfParametersException
 from tqec.templates.shapes.rectangle import Rectangle
 
 
@@ -15,7 +15,8 @@ class AlternatingSquare(Rectangle):
         return (dimension,)
 
     def set_parameters(self, parameters: tuple[int, ...]) -> None:
-        assert len(parameters) == 1
+        if len(parameters) != 1:
+            raise WrongNumberOfParametersException(1, len(parameters))
         dimension: int = parameters[0]
         super().set_parameters((dimension, dimension))
 
@@ -53,7 +54,7 @@ class AlternatingCornerSquare(AlternatingSquare):
         super().__init__(dimension)
         self._corner_position = corner_position
 
-    def instanciate(
+    def instantiate(
         self,
         x_plaquette: int,
         z_plaquette: int,
@@ -82,3 +83,11 @@ class AlternatingCornerSquare(AlternatingSquare):
                         ret[i, j] = x_plaquette_flipped
         # Correct ret and return
         return self._TRANSFORMATIONS[self._corner_position](ret)
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instantiate` method.
+
+        :returns: the number of plaquettes expected from the `instantiate` method.
+        """
+        return 5

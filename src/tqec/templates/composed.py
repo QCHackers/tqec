@@ -2,13 +2,10 @@ import typing as ty
 
 import networkx as nx
 import numpy
-
-from tqec.enums import (
-    CornerPositionEnum,
-    TemplateRelativePositionEnum,
-)
-from tqec.position import Position, Shape2D
-from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
+from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.exceptions import TQECException
+from tqec.position import Displacement, Position, Shape2D
+from tqec.templates.base import Template, TemplateWithIndices
 
 
 def get_corner_position(
@@ -52,9 +49,9 @@ def get_corner_position(
     )
 
 
-class TemplateOrchestrator(JSONEncodable):
+class ComposedTemplate(Template):
     def __init__(self, templates: list[TemplateWithIndices]) -> None:
-        """Manages templates positionned relatively to each other.
+        """Manages templates positioned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
         positions to build and scale quantum error correction code.
@@ -94,23 +91,46 @@ class TemplateOrchestrator(JSONEncodable):
 
         :param templates: a list of templates forwarded to the add_templates method
             at the end of instance initialisation.
+        :raises ValueError: if the templates provided have different default increments.
         """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
+        self._default_increments = Displacement(2, 2)
         self.add_templates(templates)
+
+    def _check_template_id(self, template_id: int) -> None:
+        if template_id >= len(self._templates):
+            err = IndexError()
+            err.add_note(
+                f"Asking for element identified by {template_id} when only "
+                f"{len(self._templates)} templates have been added to the TemplateOrchestrator instance."
+            )
+            raise err
 
     def add_template(
         self,
         template_to_insert: TemplateWithIndices,
     ) -> int:
-        """Add the provided template to the data structure."""
+        """Add the provided template to the data structure.
+
+        :param template_to_insert: the template to insert, along with the indices of the
+        :raises ValueError: if the template to insert has different default increments than
+        :returns: the index of the template in the list of templates.
+        """
+        if len(self._templates) == 0:
+            self._default_increments = template_to_insert.template.get_increments()
+        elif self._default_increments != template_to_insert.template.get_increments():
+            raise ValueError(
+                f"Template {template_to_insert.template.to_dict()}"
+                + " has different default increments than the other templates."
+            )
         template_id: int = len(self._templates)
         indices = template_to_insert.indices
         self._templates.append(template_to_insert.template)
         self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
         self._maximum_plaquette_mapping_index = max(
-            self._maximum_plaquette_mapping_index, max(indices)
+            [self._maximum_plaquette_mapping_index] + indices
         )
         return template_id
 
@@ -126,7 +146,7 @@ class TemplateOrchestrator(JSONEncodable):
         template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         This method has the same effect as add_corner_relation (it internally calls it), but
@@ -144,9 +164,8 @@ class TemplateOrchestrator(JSONEncodable):
             template provided in first parameter will be positioned.
         :returns: self, to be able to chain calls to this method.
         """
-        assert template_id_to_position < len(self._templates)
-        assert anchor_id < len(self._templates)
-        assert isinstance(relative_position, TemplateRelativePositionEnum)
+        self._check_template_id(template_id_to_position)
+        self._check_template_id(anchor_id)
 
         anchor_corner: CornerPositionEnum
         template_corner: CornerPositionEnum
@@ -178,7 +197,7 @@ class TemplateOrchestrator(JSONEncodable):
         self,
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         :param template_id_to_position_corner: a tuple containing the index of the template that
@@ -191,8 +210,8 @@ class TemplateOrchestrator(JSONEncodable):
         """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
-        assert template_id < len(self._templates)
-        assert anchor_id < len(self._templates)
+        self._check_template_id(template_id)
+        self._check_template_id(anchor_id)
         # Add 2 symmetric edges on the graph to encode the relative positioning information
         # provided by the user by calling this methods.
         self._relative_position_graph.add_edge(
@@ -304,7 +323,7 @@ class TemplateOrchestrator(JSONEncodable):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br)
 
-    def build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
+    def _build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
         # bbul: bounding-box upper-left
@@ -329,22 +348,62 @@ class TemplateOrchestrator(JSONEncodable):
             x = tul.x - bbul.x
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
-            ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
+            ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
                 *plaquette_indices
             )
+
         return ret
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self.build_array(plaquette_indices)
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+        """Generate the numpy array representing the template.
 
-    def scale_to(self, k: int) -> "TemplateOrchestrator":
+        ## Important note
+        In previous implementations of this class, the instantiate method was
+        expecting a plaquette "0" to be positioned first in the provided plaquette
+        indices.
+        This expectation was:
+        1. not documented anywhere,
+        2. an exposition of internal implementation details,
+        3. very error-prone for external users.
+
+        It also made the interface of TemplateOrchestrator slightly different from
+        its parent Template class.
+
+        The current implementation does not expect such a plaquette anymore.
+
+        :param plaquette_indices: the plaquette indices that will be used to
+            instantiate the different orchestrated templates.
+        :returns: a numpy array with the given plaquette indices arranged according
+            to the underlying shape of the template.
+        """
+        if 0 in plaquette_indices:
+            raise TQECException(
+                f"{__class__.__name__} does not expect a plaquette 0 anymore."
+            )
+        if len(plaquette_indices) != self.expected_plaquettes_number:
+            raise TQECException(
+                f"Expecting {self.expected_plaquettes_number} plaquettes indices "
+                f"but only {len(plaquette_indices)} were provided."
+            )
+        return self._build_array((0, *plaquette_indices))
+
+    @property
+    def default_increments(self) -> Displacement:
+        """Get the increments between plaquettes of the template.
+
+        :returns: a Displacement(x increment, y increment) representing the increments between
+            plaquettes of the template.
+        """
+        return self._default_increments
+
+    def scale_to(self, k: int) -> "ComposedTemplate":
         """Scales all the scalable component templates to the given scale k.
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
         of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is 
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
         enforced to be even, which avoids some invalid configuration of the template.
-        
+
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
@@ -356,10 +415,8 @@ class TemplateOrchestrator(JSONEncodable):
         return self
 
     @property
-    def shape(self) -> tuple[int, int]:
-        return self._get_shape_from_ul_positions(
-            self._compute_ul_absolute_position()
-        ).to_numpy_shape()
+    def shape(self) -> Shape2D:
+        return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
@@ -388,4 +445,4 @@ class TemplateOrchestrator(JSONEncodable):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        return self._maximum_plaquette_mapping_index + 1
+        return self._maximum_plaquette_mapping_index
