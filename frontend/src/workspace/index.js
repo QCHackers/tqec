@@ -73,7 +73,6 @@ export default function TQECApp() {
 
   workspace.mainButtonPosition = new Point(125, 50);
 
-  // TODO: instead add the qubits in QubitLattice
   const createQubitConstellationButton = new Button(
     'Create Qubit Constellation',
     workspace.mainButtonPosition.x,
@@ -92,7 +91,11 @@ export default function TQECApp() {
     app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
   workspace.addChild(createQubitConstellationButton);
-  const finalizeBoundingQuadButton = new Button('Finalize quadrilateral', workspace.mainButtonPosition.x, workspace.mainButtonPosition.y);
+  const finalizeBoundingQuadButton = new Button(
+    'Finalize quadrilateral',
+    workspace.mainButtonPosition.x,
+    workspace.mainButtonPosition.y
+  );
   let bb;
   saveQubitConstellationButton.on('click', () => {
     if (lattice.constellation.length === 0) {
@@ -108,8 +111,6 @@ export default function TQECApp() {
         workspace.removeChild(bb);
         workspace.removeChild(finalizeBoundingQuadButton);
         app.view.removeEventListener('click', lattice.selectQubitForConstellation);
-        // TODO: tessellate the workspace with qubits
-        // FIXME: only compatible with rectangular bounding boxes
         for (let x = 0; x <= app.renderer.width; x += bb.width) {
           for (let y = 0; y <= app.renderer.height; y += bb.height) {
             for (const qubit of lattice.constellation) {
@@ -118,6 +119,7 @@ export default function TQECApp() {
             }
           }
         }
+        // Make the original qubits invisible to remove redundancy
         lattice.constellation.forEach((qubit) => {
           qubit.visible = false;
         });
