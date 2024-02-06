@@ -130,8 +130,8 @@ class Detector(RelativeMeasurementsRecord):
     @property
     def coordinates(self) -> tuple[int, ...]:
         return (
-            self._local_coordinate_system_origin.row,
-            self._local_coordinate_system_origin.col,
+            self.origin.row,
+            self.origin.col,
             self._time_coordinate,
         )
 
