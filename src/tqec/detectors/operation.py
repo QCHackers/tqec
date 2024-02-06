@@ -11,7 +11,8 @@ class ShiftCoords(cirq.Operation):
         """
         Annotates that the qubit/detector coordinate origin is being moved.
 
-        This is a replication of the [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
+        This is a replication of the 
+        [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
         class. We can directly use `stimcirq.ShiftCoordsAnnotation` here, however,
         replication brings the class into the `tqec` namespace and is useful for the
         potential future iteration.
