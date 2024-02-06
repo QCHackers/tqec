@@ -165,15 +165,15 @@ class Observable(RelativeMeasurementsRecord):
         return self._observable_index
 
 
-def make_shift_coords(*shift: int) -> cirq.Operation:
+def make_shift_coords(*shifts: int) -> cirq.Operation:
     """This is a helper function to make a :class:~ShiftCoords operation with the
     `cirq.VirtualTag` tag.
 
-    :param shift: How much to shift each coordinate.
+    :param shifts: How much to shift each coordinate.
 
     :return: A :class:`ShiftCoords` operation with the `cirq.VirtualTag` tag.
     """
-    return ShiftCoords(*shift).with_tags(cirq.VirtualTag(), STIM_TAG)
+    return ShiftCoords(*shifts).with_tags(cirq.VirtualTag(), STIM_TAG)
 
 
 def make_detector(
