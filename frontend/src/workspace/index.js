@@ -2,12 +2,12 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 import { useApp } from '@pixi/react';
-import { Container } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import notification from './components/notifier';
 import makeGrid from './grid';
-import Qubit from './QubitClass';
 import Template from './TemplateClass';
+import Qubit from './QubitClass';
 import QubitLattice from './QubitLattice';
 import Button from './components/button';
 import DownloadButton from './components/downloadButton';
@@ -71,125 +71,89 @@ export default function TQECApp() {
     plaquette.destroy({ children: true });
   };
 
+  workspace.mainButtonPosition = new Point(125, 50);
+
   // TODO: instead add the qubits in QubitLattice
   const createQubitConstellationButton = new Button(
     'Create Qubit Constellation',
-    100,
-    120
+    workspace.mainButtonPosition.x,
+    workspace.mainButtonPosition.y
   );
   workspace.addChild(createQubitConstellationButton);
   const saveQubitConstellationButton = new Button(
     'Save Qubit Constellation',
-    100,
-    120
+    workspace.mainButtonPosition.x,
+    workspace.mainButtonPosition.y
   );
   const lattice = new QubitLattice(workspace, app);
   createQubitConstellationButton.on('click', () => {
-    // lattice.selectQubitForConstellation();
     workspace.removeChild(createQubitConstellationButton);
     workspace.addChild(saveQubitConstellationButton);
     app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
   workspace.addChild(createQubitConstellationButton);
+  const finalizeBoundingQuadButton = new Button('Finalize quadrilateral', workspace.mainButtonPosition.x, workspace.mainButtonPosition.y);
+  let bb;
   saveQubitConstellationButton.on('click', () => {
     if (lattice.constellation.length === 0) {
       notification(app, 'Constellation must have at least one qubit');
     } else {
       workspace.removeChild(saveQubitConstellationButton);
-      const bb = lattice.createBoundingBox();
-      console.log(bb);
+      lattice.createBoundingBox();
+      lattice.applyBBCoordinatesToQubits();
+      bb = lattice.boundingBox;
       workspace.addChild(bb);
-      // TODO: create bounding box parallelogram
-      // this.app.view.addEventListener(
-      //   'mousedown',
-      //   lattice.selectFirstVectorOrigin
-      // );
+      workspace.addChild(finalizeBoundingQuadButton);
+      finalizeBoundingQuadButton.on('click', () => {
+        workspace.removeChild(bb);
+        workspace.removeChild(finalizeBoundingQuadButton);
+        app.view.removeEventListener('click', lattice.selectQubitForConstellation);
+        // TODO: tessellate the workspace with qubits
+        // FIXME: only compatible with rectangular bounding boxes
+        for (let x = 0; x <= app.renderer.width; x += bb.width) {
+          for (let y = 0; y <= app.renderer.height; y += bb.height) {
+            for (const qubit of lattice.constellation) {
+              const newQubit = new Qubit(qubit.bbX + x, qubit.bbY + y);
+              workspace.addChild(newQubit);
+            }
+          }
+        }
+        lattice.constellation.forEach((qubit) => {
+          qubit.visible = false;
+        });
+        let selectedQubits = [];
+        const plaquetteButton = new Button('Create plaquette', workspace.mainButtonPosition.x, workspace.mainButtonPosition.y + 50);
+        const template = new Template(
+          selectedQubits,
+          workspace,
+          plaquetteButton,
+          app
+        );
+        plaquetteButton.on('click', () => {
+        // Create the plaquettes and template
+          template.createPlaquette();
+          workspace.addChild(template.container);
+          // Clear the selected qubits
+          selectedQubits = [];
+          plaquetteButton.visible = false;
+        });
+
+        workspace.addChild(plaquetteButton);
+        plaquetteButton.visible = true;
+        workspace.removeChild(finalizeBoundingQuadButton);
+        // Add download stim button
+        const downloadStimButton = new DownloadButton(
+          workspace,
+          'Download Stim file',
+          workspace.mainButtonPosition.x,
+          workspace.mainButtonPosition.y,
+          'white',
+          'black'
+        );
+        workspace.addChild(downloadStimButton);
+      });
     }
   });
-  // Add the qubits to the workspace
-  for (let x = 0; x <= app.renderer.width; x += gridSize) {
-    for (let y = 0; y <= app.renderer.height; y += gridSize) {
-      // Skip every other qubit
-      if (x % (gridSize * 2) === 0 && y % (gridSize * 2) === 0) continue;
-      if (x % (gridSize * 2) === gridSize && y % (gridSize * 2) === gridSize) continue;
-      // Create a qubit
-      const qubit = new Qubit(x, y, 5, gridSize);
-      // Name the qubit according to its position
-      qubit.name = `${x}_${y}`;
-      workspace.addChild(qubit);
-    }
-  }
-  // Give the qubit its neighbors
-  for (const q in workspace.children) {
-    if (workspace.children[q].isQubit === true) {
-      workspace.children[q].setNeighbors();
-    }
-  }
-
-  let selectedQubits = [];
-  const plaquetteButton = new Button('Create plaquette', 100, 120);
-  const template = new Template(
-    selectedQubits,
-    workspace,
-    plaquetteButton,
-    app
-  );
-
-  plaquetteButton.on('click', () => {
-    // Create the plaquettes and template
-    template.createPlaquette();
-    workspace.addChild(template.container);
-    // Clear the selected qubits
-    selectedQubits = [];
-  });
-  plaquetteButton.visible = false;
-
-  // FIXME: make use of this function for actually being able to click qubits!!
-  // Select qubits
-  // eslint-disable-next-line no-unused-vars
-  const selectQubit = (e) => {
-    // Check if the click was on a qubit
-    const canvasRect = app.view.getBoundingClientRect(); // Get canvas position
-
-    // Calculate the relative click position within the canvas
-    const relativeX = e.clientX - canvasRect.left;
-    const relativeY = e.clientY - canvasRect.top;
-    // Get all the qubits
-    const qubits = workspace.children.filter((child) => child.isQubit === true);
-    const qubit = qubits.find(
-      // Find the qubit that was clicked
-      (q) => q.checkHitArea(relativeX, relativeY) === true
-    );
-    if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
-    // Check that the qubit is not already selected
-    if (selectedQubits.includes(qubit)) {
-      // Remove the qubit from the selected qubits
-      selectedQubits = selectedQubits.filter((q) => q !== qubit);
-      // Hide the button
-      plaquetteButton.visible = false;
-      return;
-    }
-    selectedQubits.push(qubit);
-    selectedQubits.forEach((q) => {
-      q.visible = true;
-    });
-    if (selectedQubits.length > 2) {
-      // Show the button
-      plaquetteButton.visible = true;
-    }
-  };
-  // workspace.addChild(plaquetteButton);
-
-  // Add download stim button
-  const downloadStimButton = new DownloadButton(
-    workspace,
-    'Download Stim file',
-    100,
-    50,
-    'white',
-    'black'
-  );
-  workspace.addChild(downloadStimButton);
 
   // Final workspace setup
   workspace.visible = true;

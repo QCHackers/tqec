@@ -106,6 +106,7 @@ export default class Qubit extends Graphics {
 
       // Add the text to the qubit
       this.addChild(text);
+      text.visible = true;
 
       return true;
     }
@@ -170,5 +171,10 @@ export default class Qubit extends Graphics {
         child.visible = false;
       }
     });
+  };
+
+  applyBoundingBoxCoordinates = (x, y) => {
+    this.bbX = x;
+    this.bbY = y;
   };
 }
