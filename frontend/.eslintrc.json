@@ -24,6 +24,5 @@
 		"react/jsx-indent-props": "off",
 		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
 		"comma-dangle": ["error", "only-multiline"],
-    "quotes": [2, "single", { "avoidEscape": true }]
 	}
 }

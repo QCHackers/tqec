@@ -1,6 +1,6 @@
 import cirq
 
-from tqec.detectors.gate import DetectorGate, RelativeMeasurement
+from tqec.detectors.operation import make_detector
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import PlaquetteList, RoundedPlaquette
 from tqec.plaquette.schedule import ScheduledCircuit
@@ -33,30 +33,27 @@ class XXInitialisationPlaquette(BaseXXPlaquette):
         data_qubits = [
             q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
         ]
-        detector = []
-        if include_detector:
-            detector = [
-                DetectorGate(
-                    syndrome_qubit,
-                    [RelativeMeasurement(cirq.GridQubit(0, 0), -1)],
-                    time_coordinate=0,
-                ).on(syndrome_qubit),
-            ]
+        detector = [
+            cirq.Moment(make_detector(
+                syndrome_qubit,
+                [(cirq.GridQubit(0, 0), -1)],
+                time_coordinate=0,
+            )),
+        ] if include_detector else []
         super().__init__(
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        [
+                        cirq.Moment(
                             cirq.R(q).with_tags(self._MERGEABLE_TAG)
                             for q in [syndrome_qubit, *data_qubits]
-                        ],
-                        [cirq.H(syndrome_qubit)],
-                        [cirq.CX(syndrome_qubit, data_qubits[0])],
-                        [cirq.CX(syndrome_qubit, data_qubits[1])],
-                        [cirq.H(syndrome_qubit)],
-                        [cirq.M(syndrome_qubit)],
-                        detector,
-                    ]
+                        ),
+                        cirq.Moment(cirq.H(syndrome_qubit)),
+                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
+                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
+                        cirq.Moment(cirq.H(syndrome_qubit)),
+                        cirq.Moment([cirq.M(syndrome_qubit)] + detector),
+                    ] + detector
                 ),
                 schedule,
             ),
@@ -69,7 +66,7 @@ class XXMemoryPlaquette(BaseXXPlaquette):
         self,
         orientation: PlaquetteOrientation,
         schedule: list[int],
-        include_detector = True,
+        include_detector=True,
     ):
         (syndrome_qubit,) = [
             q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()
@@ -77,33 +74,30 @@ class XXMemoryPlaquette(BaseXXPlaquette):
         data_qubits = [
             q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
         ]
-        detector = []
-        if include_detector:
-            detector = [
-                DetectorGate(
-                    syndrome_qubit,
-                    [
-                        RelativeMeasurement(cirq.GridQubit(0, 0), -1),
-                        RelativeMeasurement(cirq.GridQubit(0, 0), -2),
-                    ],
-                    time_coordinate=0,
-                ).on(syndrome_qubit),
-            ]
+        detector = [
+            cirq.Moment(make_detector(
+                syndrome_qubit,
+                [
+                    (cirq.GridQubit(0, 0), -1),
+                    (cirq.GridQubit(0, 0), -2),
+                ],
+                time_coordinate=0,
+            )),
+        ] if include_detector else []
         super().__init__(
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        [
+                        cirq.Moment(
                             cirq.R(q).with_tags(self._MERGEABLE_TAG)
                             for q in [syndrome_qubit]
-                        ],
-                        [cirq.H(syndrome_qubit)],
-                        [cirq.CX(syndrome_qubit, data_qubits[0])],
-                        [cirq.CX(syndrome_qubit, data_qubits[1])],
-                        [cirq.H(syndrome_qubit)],
-                        [cirq.M(syndrome_qubit)],
-                        detector,
-                    ]
+                        ),
+                        cirq.Moment(cirq.H(syndrome_qubit)),
+                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
+                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
+                        cirq.Moment(cirq.H(syndrome_qubit)),
+                        cirq.Moment(cirq.M(syndrome_qubit)),
+                    ] + detector
                 ),
                 schedule,
             ),
@@ -125,19 +119,19 @@ class XXFinalMeasurementPlaquette(BaseXXPlaquette):
         ]
         detector = [
             cirq.Moment(
-                DetectorGate(
+                make_detector(
                     syndrome_qubit,
                     [
-                        RelativeMeasurement(cirq.GridQubit(0, 0), -1),
+                        (cirq.GridQubit(0, 0), -1),
                         *[
-                            RelativeMeasurement(dq - syndrome_qubit, -1)
+                            (dq - syndrome_qubit, -1)
                             for dq in data_qubits
                         ],
                     ],
                     time_coordinate=1,
-                ).on(syndrome_qubit)
+                )
             )
-        ]
+        ] if include_detector else []
         super().__init__(
             circuit=ScheduledCircuit(
                 cirq.Circuit(
@@ -148,8 +142,7 @@ class XXFinalMeasurementPlaquette(BaseXXPlaquette):
                                 for q in data_qubits
                             ]
                         ),
-                    ]
-                    + (detector if include_detector else [])
+                    ] + detector
                 ),
             ),
             orientation=orientation,

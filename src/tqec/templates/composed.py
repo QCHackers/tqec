@@ -2,13 +2,10 @@ import typing as ty
 
 import networkx as nx
 import numpy
-
-from tqec.enums import (
-    CornerPositionEnum,
-    TemplateRelativePositionEnum,
-)
+from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
-from tqec.templates.base import JSONEncodable, Template, TemplateWithIndices
+from tqec.templates.base import Template, TemplateWithIndices
 
 
 def get_corner_position(
@@ -52,7 +49,7 @@ def get_corner_position(
     )
 
 
-class TemplateOrchestrator(JSONEncodable):
+class ComposedTemplate(Template):
     def __init__(self, templates: list[TemplateWithIndices]) -> None:
         """Manages templates positioned relatively to each other.
 
@@ -149,7 +146,7 @@ class TemplateOrchestrator(JSONEncodable):
         template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         This method has the same effect as add_corner_relation (it internally calls it), but
@@ -200,7 +197,7 @@ class TemplateOrchestrator(JSONEncodable):
         self,
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
-    ) -> "TemplateOrchestrator":
+    ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
         :param template_id_to_position_corner: a tuple containing the index of the template that
@@ -351,14 +348,44 @@ class TemplateOrchestrator(JSONEncodable):
             x = tul.x - bbul.x
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
-            ret[y : y + tshapey, x : x + tshapex] = template.instanciate(
+            ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
                 *plaquette_indices
             )
 
         return ret
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
-        return self._build_array(plaquette_indices)
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+        """Generate the numpy array representing the template.
+
+        ## Important note
+        In previous implementations of this class, the instantiate method was
+        expecting a plaquette "0" to be positioned first in the provided plaquette
+        indices.
+        This expectation was:
+        1. not documented anywhere,
+        2. an exposition of internal implementation details,
+        3. very error-prone for external users.
+
+        It also made the interface of TemplateOrchestrator slightly different from
+        its parent Template class.
+
+        The current implementation does not expect such a plaquette anymore.
+
+        :param plaquette_indices: the plaquette indices that will be used to
+            instantiate the different orchestrated templates.
+        :returns: a numpy array with the given plaquette indices arranged according
+            to the underlying shape of the template.
+        """
+        if 0 in plaquette_indices:
+            raise TQECException(
+                f"{__class__.__name__} does not expect a plaquette 0 anymore."
+            )
+        if len(plaquette_indices) != self.expected_plaquettes_number:
+            raise TQECException(
+                f"Expecting {self.expected_plaquettes_number} plaquettes indices "
+                f"but only {len(plaquette_indices)} were provided."
+            )
+        return self._build_array((0, *plaquette_indices))
 
     @property
     def default_increments(self) -> Displacement:
@@ -369,7 +396,7 @@ class TemplateOrchestrator(JSONEncodable):
         """
         return self._default_increments
 
-    def scale_to(self, k: int) -> "TemplateOrchestrator":
+    def scale_to(self, k: int) -> "ComposedTemplate":
         """Scales all the scalable component templates to the given scale k.
 
         The scale k of a **scalable template** is defined to be **half** the dimension/size
@@ -388,10 +415,8 @@ class TemplateOrchestrator(JSONEncodable):
         return self
 
     @property
-    def shape(self) -> tuple[int, int]:
-        return self._get_shape_from_ul_positions(
-            self._compute_ul_absolute_position()
-        ).to_numpy_shape()
+    def shape(self) -> Shape2D:
+        return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
@@ -420,4 +445,4 @@ class TemplateOrchestrator(JSONEncodable):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        return self._maximum_plaquette_mapping_index + 1
+        return self._maximum_plaquette_mapping_index
