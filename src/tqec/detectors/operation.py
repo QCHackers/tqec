@@ -227,7 +227,7 @@ def make_observable(
         parity check of the observable. Each element of the list is a tuple of
         (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
         instance. When a tuple is provided, the first element is the position of
-        the qubit relative to a local coordinate system origin and the second element
+        the qubit relative to the local coordinate system origin and the second element
         is the relative measurement offset with respect to the most recent measurement
         performed on the qubit.
     :param observable_index: the index of the observable.
