@@ -4,7 +4,7 @@ import { Stage } from '@pixi/react';
 import PixiApp from './workspace';
 
 const stageOptions = {
-  backgroundColor: 0x1099bb,
+  backgroundColor: 0x1099bb
 };
 
 function App() {

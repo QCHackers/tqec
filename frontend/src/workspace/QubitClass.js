@@ -15,7 +15,7 @@ export default class Qubit extends Graphics {
     radius = 5,
     gridSize = 50,
     color = 'black',
-    qubitType = 'data',
+    qubitType = 'data'
   ) {
     super();
     // UI properties
@@ -81,7 +81,7 @@ export default class Qubit extends Graphics {
   checkHitArea(eventX, eventY, threshold = 5) {
     // Calculate the distance between event coordinates and qubit's global position
     const distance = Math.sqrt(
-      (eventX - this.globalX) ** 2 + (eventY - this.globalY) ** 2,
+      (eventX - this.globalX) ** 2 + (eventY - this.globalY) ** 2
     );
     // Define a threshold to determine the hit area
     if (distance <= threshold) {
@@ -94,7 +94,7 @@ export default class Qubit extends Graphics {
       // Create a text element
       const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
         fill: 'white',
-        fontSize: 10,
+        fontSize: 10
       }); // White text color
       text.anchor.set(0.5);
       text.position.set(eventX, eventY + 10);
@@ -125,32 +125,32 @@ export default class Qubit extends Graphics {
     // Get surrounding qubits, this is specific to the grid we have built
     const topQubitPos = {
       x: this.globalX,
-      y: this.globalY - 2 * this.gridSize,
+      y: this.globalY - 2 * this.gridSize
     };
     const bottomQubitPos = {
       x: this.globalX,
-      y: this.globalY + 2 * this.gridSize,
+      y: this.globalY + 2 * this.gridSize
     };
     const leftQubitPos = {
       x: this.globalX - 2 * this.gridSize,
-      y: this.globalY,
+      y: this.globalY
     };
     const rightQubitPos = {
       x: this.globalX + 2 * this.gridSize,
-      y: this.globalY,
+      y: this.globalY
     };
     // For readability
     const neighborArr = [
       topQubitPos,
       bottomQubitPos,
       leftQubitPos,
-      rightQubitPos,
+      rightQubitPos
     ];
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const q in neighborArr) {
       // Check if the qubit is within the workspace
       const qubit = this.parent.getChildByName(
-        `${neighborArr[q].x}_${neighborArr[q].y}`,
+        `${neighborArr[q].x}_${neighborArr[q].y}`
       );
       if (qubit) {
         // Set the neighbors

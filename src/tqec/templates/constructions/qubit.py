@@ -1,36 +1,31 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
+from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
+from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
-from tqec.templates.orchestrator import TemplateOrchestrator
-from tqec.templates.scalable.rectangle import ScalableRectangle
-from tqec.templates.scalable.square import ScalableAlternatingSquare
+from tqec.templates.composed import ComposedTemplate
+from tqec.templates.scale import Dimension, LinearFunction
 
 
-class ScalableQubitSquare(TemplateOrchestrator):
-    def __init__(self, dim: int) -> None:
-        """A scalable error-corrected qubit.
+class QubitSquareTemplate(ComposedTemplate):
+    def __init__(self, dim: Dimension) -> None:
+        """An error-corrected qubit.
 
-        ```text
-        .  .  1  .  1  .
-        2  3  4  3  4  .
-        .  4  3  4  3  5
-        2  3  4  3  4  .
-        .  4  3  4  3  5
-        .  6  .  6  .  .
-        ```
-
-        :param dim: dimension (code distance - 1) of the error-corrected qubit.
+        TODO
         """
+        # nsone: non-scalable one
+        nsone = Dimension(1, LinearFunction(0, 1))
+
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
+            TemplateWithIndices(AlternatingSquareTemplate(dim), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(dim, 1), [6, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
@@ -38,45 +33,35 @@ class ScalableQubitSquare(TemplateOrchestrator):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        super().__init__(_templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
 
-class ScalableQubitRectangle(TemplateOrchestrator):
+class QubitRectangleTemplate(ComposedTemplate):
     def __init__(
-        self, width: int, height: int, scale_width: bool | None = None
+        self,
+        width: Dimension,
+        height: Dimension,
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
-        A scalable rectangle qubit can only scale its width **or** height, but not both.
-
-        ```text
-        .  .  1  .  1  .  1  .
-        2  3  4  3  4  3  4  .
-        .  4  3  4  3  4  3  5
-        2  3  4  3  4  3  4  .
-        .  4  3  4  3  4  3  5
-        .  6  .  6  .  6  .  .
-        ```
-
-        :param width: width of the qubit.
-        :param height: height of the qubit.
-        :param scale_width: whether to scale the width or height. If None, the dimension
-            with the even value or the larger value will be scaled. If both dimensions
-            are even and equal, the width will be scaled by default.
+        TODO
         """
+        # nsone: non-scalable one
+        nsone = Dimension(1, LinearFunction(0, 1))
+
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(ScalableRectangle(width, height, scale_width), [3, 4]),
+            TemplateWithIndices(AlternatingRectangleTemplate(width, height), [3, 4]),
             # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(ScalableRectangle(width, 1), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(width, nsone), [0, 1]),
             # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(ScalableRectangle(1, height), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, height), [2, 0]),
             # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(ScalableRectangle(1, height), [0, 5]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, height), [0, 5]),
             # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(ScalableRectangle(width, 1), [6, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(width, nsone), [6, 0]),
         ]
         _relations = [
             (1, ABOVE_OF, 0),
@@ -84,6 +69,6 @@ class ScalableQubitRectangle(TemplateOrchestrator):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        super().__init__(_templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)

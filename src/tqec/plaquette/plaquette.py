@@ -2,7 +2,8 @@ import cirq
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
-from tqec.position import Position, Shape2D
+from tqec.position import Position
+from tqec.exceptions import TQECException
 
 
 class Plaquette:
@@ -12,7 +13,11 @@ class Plaquette:
     def get_mergeable_tag() -> str:
         return Plaquette._MERGEABLE_TAG
 
-    def __init__(self, qubits: list[PlaquetteQubit], circuit: ScheduledCircuit) -> None:
+    def __init__(
+        self,
+        qubits: list[PlaquetteQubit],
+        circuit: ScheduledCircuit,
+    ) -> None:
         """Represents a QEC plaquette
 
         This class stores qubits in the plaquette local coordinate system and a scheduled
@@ -25,15 +30,22 @@ class Plaquette:
             coordinate system.
         :param circuit: scheduled quantum circuit implementing the computation that the
             plaquette should represent.
+
         """
+        plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
+        circuit_qubits = set(circuit.raw_circuit.all_qubits())
+        if not circuit_qubits.issubset(plaquette_qubits):
+            wrong_qubits = plaquette_qubits.difference(circuit_qubits)
+            raise TQECException(
+                f"The following qubits ({wrong_qubits}) are in the provided circuit "
+                "but not in the list of PlaquetteQubit."
+            )
         self._qubits = qubits
         self._circuit = circuit
 
     @property
-    def shape(self) -> Shape2D:
-        maxx = max(qubit.position.x for qubit in self.qubits)
-        maxy = max(qubit.position.y for qubit in self.qubits)
-        return Shape2D(maxx + 1, maxy + 1)
+    def origin(self) -> Position:
+        return Position(0, 0)
 
     @property
     def qubits(self) -> list[PlaquetteQubit]:
