@@ -465,7 +465,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     while scheduled_circuits.has_pending_moment():
         moments = scheduled_circuits.collect_moments()
         # Flatten the moments into a list of operations to perform some modifications
-        operations = sum((list(moment.operations) for moment in moments), start=list())
+        operations = sum((list(moment.operations) for moment in moments), start=[])
         # Avoid duplicated operations. Any operation that have the Plaquette.get_mergeable_tag() tag
         # is considered mergeable, and can be removed if another operation in the list
         # is considered equal (and has the mergeable tag).

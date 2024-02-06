@@ -94,7 +94,7 @@ export default function TQECApp() {
     selectedQubits,
     workspace,
     plaquetteButton,
-    app,
+    app
   );
 
   plaquetteButton.on('click', () => {
@@ -120,7 +120,7 @@ export default function TQECApp() {
     const qubits = workspace.children.filter((child) => child.isQubit === true);
     const qubit = qubits.find(
       // Find the qubit that was clicked
-      (q) => q.checkHitArea(relativeX, relativeY) === true,
+      (q) => q.checkHitArea(relativeX, relativeY) === true
     );
     if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
     // Check that the qubit is not already selected
@@ -149,7 +149,7 @@ export default function TQECApp() {
     100,
     50,
     'white',
-    'black',
+    'black'
   );
   workspace.addChild(downloadStimButton);
 

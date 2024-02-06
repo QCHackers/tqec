@@ -1,7 +1,7 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.base import TemplateWithIndices
+from tqec.templates.composed import ComposedTemplate
 from tqec.templates.fixed.base import FixedRaw
-from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import (
     ScalableAlternatingCornerSquare,
@@ -9,15 +9,20 @@ from tqec.templates.scalable.square import (
 )
 
 
-class ScalableCorner(TemplateOrchestrator):
-    def __init__(self, dim: int) -> None:
+class ScalableCorner(ComposedTemplate):
+    def __init__(self, k: int) -> None:
         """A scalable corner template.
 
         This corner template can be used to move an error-corrected qubit to another
         location on the chip. This is the basic building block to perform error-corrected
         computations.
 
-        The below text represents this template for an input `dim` of 4.
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
+        enforced to be even, which avoids some invalid configuration of the template.
+
+        The below text represents this template for an input `k` of 2.
 
         ```text
         .  .  1  .  1  .  .  .  .  .  .  .
@@ -34,8 +39,9 @@ class ScalableCorner(TemplateOrchestrator):
         .  . 12  . 12  . 12  . 12  . 12  .
         ```
 
-        :param dim: dimension (code distance - 1) of the initial error-corrected qubit.
+        :param k: scale of the initial error-corrected qubit.
         """
+        dim = 2 * k
         _templates = [
             # 0
             TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
@@ -87,7 +93,7 @@ class ScalableCorner(TemplateOrchestrator):
             ((4, CornerPositionEnum.UPPER_RIGHT), (2, CornerPositionEnum.LOWER_LEFT)),
             ((14, CornerPositionEnum.UPPER_RIGHT), (11, CornerPositionEnum.LOWER_LEFT)),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        ComposedTemplate.__init__(self, _templates)
         for source, relpos, target in relative_positions:
             self.add_relation(source, relpos, target)
         for (start, start_corner), (end, end_corner) in pinned_corners:

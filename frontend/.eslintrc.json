@@ -18,11 +18,11 @@
 	},
 	"plugins": ["react", "react-hooks"],
 	"rules": {
-		"indent": ["error", "tab"],
-		"no-tabs": "off",
+		"indent": ["error", 2],
+		"no-tabs": 1,
 		"react/jsx-indent": "off",
 		"react/jsx-indent-props": "off",
 		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-		"comma-dangle": ["error", "never"]
+		"comma-dangle": ["error", "only-multiline"],
 	}
 }

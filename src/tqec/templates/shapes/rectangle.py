@@ -11,7 +11,7 @@ class Rectangle(BaseShape):
         self._width = width
         self._height = height
 
-    def instanciate(self, x_plaquette: int, z_plaquette: int, *_: int) -> numpy.ndarray:
+    def instantiate(self, x_plaquette: int, z_plaquette: int, *_: int) -> numpy.ndarray:
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
@@ -42,6 +42,14 @@ class Rectangle(BaseShape):
             raise WrongNumberOfParametersException(2, len(parameters))
         self._width, self._height = parameters
 
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instantiate` method.
+
+        :returns: the number of plaquettes expected from the `instantiate` method.
+        """
+        return 2
+
 
 class RawRectangle(Rectangle):
     def __init__(self, indices: list[list[int]]) -> None:
@@ -54,9 +62,9 @@ class RawRectangle(Rectangle):
         super().__init__(width, height)
         self._indices = indices
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         try:
-            # Use numpy indexing to instanciate the raw values.
+            # Use numpy indexing to instantiate the raw values.
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
             indices = numpy.array(self._indices, dtype=int)
             return plaquette_indices_array[indices]
@@ -73,3 +81,11 @@ class RawRectangle(Rectangle):
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {"type": self.__class__.__name__, "kwargs": {"indices": self._indices}}
+
+    @property
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instantiate` method.
+
+        :returns: the number of plaquettes expected from the `instantiate` method.
+        """
+        return max(max(line) for line in self._indices) + 1
