@@ -58,15 +58,15 @@ export default class Template {
       // Remove listeners
       this.app.view.removeEventListener(
         'mousedown',
-        this.mouseDownCreateTemplateArea,
+        this.mouseDownCreateTemplateArea
       );
       this.app.view.removeEventListener(
         'mousemove',
-        this.mouseDragResizeTemplateArea,
+        this.mouseDragResizeTemplateArea
       );
       this.app.view.removeEventListener(
         'mouseup',
-        this.mouseUpFinishTemplateArea,
+        this.mouseUpFinishTemplateArea
       );
       this.rectangle.visible = false;
       notification(this.app, 'Step 1: Drag to define a template area');
@@ -76,7 +76,7 @@ export default class Template {
       'Step 2: Confirm Template',
       100,
       170,
-      'darkgreen',
+      'darkgreen'
     );
     this.makeTileButton.on('click', () => {
       if (this.templateQubits.length === 0) {
@@ -89,15 +89,15 @@ export default class Template {
       // Remove listeners
       this.app.view.removeEventListener(
         'mousedown',
-        this.mouseDownCreateTemplateArea,
+        this.mouseDownCreateTemplateArea
       );
       this.app.view.removeEventListener(
         'mousemove',
-        this.mouseDragResizeTemplateArea,
+        this.mouseDragResizeTemplateArea
       );
       this.app.view.removeEventListener(
         'mouseup',
-        this.mouseUpFinishTemplateArea,
+        this.mouseUpFinishTemplateArea
       );
       notification(this.app, 'Step 3: Click on 3+ qubits to make a plaquette');
       this.app.view.addEventListener('click', this.selectQubit);
@@ -172,9 +172,10 @@ export default class Template {
             this.templateQubits.push(child);
             return child;
           } if (this.templateQubits.includes(child)) {
-            // If the qubit is no longer in the template area, remove it from the template
+            // If the qubit is no longer in the template area,
+            // remove it from the template
             this.templateQubits = this.templateQubits.filter(
-              (qubit) => qubit !== child,
+              (qubit) => qubit !== child
             );
             child.changeColor('black');
           }
@@ -197,17 +198,17 @@ export default class Template {
 
     this.app.renderer.view.addEventListener(
       'mousedown',
-      this.mouseDownCreateTemplateArea,
+      this.mouseDownCreateTemplateArea
     );
 
     this.app.renderer.view.addEventListener(
       'mousemove',
-      this.mouseDragResizeTemplateArea,
+      this.mouseDragResizeTemplateArea
     );
 
     this.app.renderer.view.addEventListener(
       'mouseup',
-      this.mouseUpFinishTemplateArea,
+      this.mouseUpFinishTemplateArea
     );
     return this.templateQubits;
   }
@@ -231,11 +232,11 @@ export default class Template {
     const relativeY = e.clientY - canvasRect.top;
     // Get all the qubits
     const qubits = this.templateQubits.filter(
-      (child) => child.isQubit === true,
+      (child) => child.isQubit === true
     );
     const qubit = qubits.find(
       // Find the qubit that was clicked
-      (q) => q.checkHitArea(relativeX, relativeY) === true,
+      (q) => q.checkHitArea(relativeX, relativeY) === true
     );
     if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
     // Check that the qubit is not already selected
