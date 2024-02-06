@@ -48,7 +48,7 @@ def generate_circuit(
     if isinstance(plaquettes, list):
         plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
-    # Instanciate the template with the appropriate plaquette indices.
+    # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, len(plaquettes) + 1))
     template_plaquettes = template.instantiate(*_indices)

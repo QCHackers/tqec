@@ -44,9 +44,9 @@ class Rectangle(BaseShape):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return 2
 
@@ -84,8 +84,8 @@ class RawRectangle(Rectangle):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return max(max(line) for line in self._indices) + 1

@@ -72,11 +72,11 @@ class Template(JSONEncodable):
         )
 
     @abstractmethod
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
+            underlying Shape instance's instantiate method.
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
@@ -134,9 +134,9 @@ class Template(JSONEncodable):
     @property
     @abstractmethod
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         pass
 
@@ -234,9 +234,9 @@ class AtomicTemplate(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return self._shape_instance.expected_plaquettes_number
 

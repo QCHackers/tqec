@@ -354,11 +354,11 @@ class ComposedTemplate(Template):
 
         return ret
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         ## Important note
-        In previous implementations of this class, the instanciate method was
+        In previous implementations of this class, the instantiate method was
         expecting a plaquette "0" to be positioned first in the provided plaquette
         indices.
         This expectation was:
@@ -372,7 +372,7 @@ class ComposedTemplate(Template):
         The current implementation does not expect such a plaquette anymore.
 
         :param plaquette_indices: the plaquette indices that will be used to
-            instanciate the different orchestrated templates.
+            instantiate the different orchestrated templates.
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
