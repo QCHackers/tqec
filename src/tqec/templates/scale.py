@@ -59,3 +59,8 @@ class Dimension:
             "value": self._value,
             "scaling_function": self._scaling_function.to_dict(),
         }
+
+
+class FixedDimension(Dimension):
+    def __init__(self, value: int) -> None:
+        super().__init__(value, LinearFunction(0, value))
