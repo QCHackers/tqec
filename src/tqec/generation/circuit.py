@@ -1,11 +1,9 @@
 from copy import deepcopy
 
 import cirq
-from tqec.exceptions import TQECException
-from tqec.generation.topology import get_plaquette_starting_index
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.position import Shape2D
+from tqec.position import Displacement
 from tqec.templates.orchestrator import TemplateOrchestrator
 
 
@@ -22,8 +20,7 @@ def generate_circuit(
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
        the provided template.
-    2. all the provided plaquettes should have the same shape.
-    3. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
+    2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
     If any of the above pre-conditions is not met, the inputs are considered invalid, in which
     case this function **might** raise an error.
@@ -32,6 +29,7 @@ def generate_circuit(
         to implement.
     :param plaquettes: description of the computation that should happen at different time-slices
         of the quantum error correction experiment (or at least part of it).
+
     :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
         represented by the provided inputs.
 
@@ -47,42 +45,44 @@ def generate_circuit(
             f"{template.expected_plaquettes_number - 1} were expected."
         )
 
-    # Check that all the given plaquettes have the same shape. If not, this is an issue.
-    # The shape limitation is an assumption to simplify the code and will have to be
-    # eventually lifted.
-    plaquette_shape: Shape2D = plaquettes[0].shape
-    if any(p.shape != plaquette_shape for p in plaquettes):
-        different_shapes = set(p.shape.to_numpy_shape() for p in plaquettes)
-        raise TQECException(
-            f"Found Plaquette instances with different shapes: {different_shapes}. "
-            "See https://github.com/QCHackers/tqec/issues/34."
-        )
-
-    # instantiate the template with the appropriate plaquette indices.
+    # Instanciate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention.
     _indices = list(range(len(plaquettes) + 1))
-    template_plaquettes = template.instantiate(*_indices)
+    template_plaquettes = template.instanciate(*_indices)
+    increments = template.default_increments
+
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
         p.circuit for p in plaquettes
     ]
 
-    # Generate the ScheduledCircuit instances for each plaquette instantiation
-    all_scheduled_circuits: list[ScheduledCircuit] = list()
+    # Generate the ScheduledCircuit instances for each plaquette instanciation
+    all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
-    for plaquette_y, line in enumerate(template_plaquettes):
-        for plaquette_x, plaquette_index in enumerate(line):
-            qubit_x = get_plaquette_starting_index(plaquette_shape.x, plaquette_x)
-            qubit_y = get_plaquette_starting_index(plaquette_shape.y, plaquette_y)
+    for row_index, line in enumerate(template_plaquettes):
+        for column_index, plaquette_index in enumerate(line):
             scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-            qubit_map = {
-                # GridQubit are indexed as (row, col), so (y, x)
-                qubit: qubit + (qubit_y, qubit_x)  # type: ignore
-                for qubit in scheduled_circuit.raw_circuit.all_qubits()
-            }
+
+            offset = Displacement(column_index * increments.x, row_index * increments.y)
+            plaquette = plaquettes[plaquette_index - 1]
+            qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
             scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
             all_scheduled_circuits.append(scheduled_circuit)
 
     # Merge everything!
     return merge_scheduled_circuits(all_scheduled_circuits)
+
+
+def _create_mapping(
+    plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: Displacement
+) -> dict[cirq.Qid, cirq.Qid]:
+    origin = plaquette.origin
+
+    qubit_map = {
+        # GridQubit are indexed as (row, col), so (y, x)
+        # Qubits are given relative to an origin, so we need to add the offset
+        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)  # type: ignore
+        for qubit in scheduled_circuit.raw_circuit.all_qubits()
+    }
+    return qubit_map

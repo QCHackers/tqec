@@ -10,14 +10,19 @@ from tqec.templates.scalable.square import (
 
 
 class ScalableCorner(TemplateOrchestrator):
-    def __init__(self, dim: int) -> None:
+    def __init__(self, k: int) -> None:
         """A scalable corner template.
 
         This corner template can be used to move an error-corrected qubit to another
         location on the chip. This is the basic building block to perform error-corrected
         computations.
 
-        The below text represents this template for an input `dim` of 4.
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
+        enforced to be even, which avoids some invalid configuration of the template.
+
+        The below text represents this template for an input `k` of 2.
 
         ```text
         .  .  1  .  1  .  .  .  .  .  .  .
@@ -34,8 +39,9 @@ class ScalableCorner(TemplateOrchestrator):
         .  . 12  . 12  . 12  . 12  . 12  .
         ```
 
-        :param dim: dimension (code distance - 1) of the initial error-corrected qubit.
+        :param k: scale of the initial error-corrected qubit.
         """
+        dim = 2 * k
         _templates = [
             # 0
             TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
