@@ -90,19 +90,19 @@ class ZZMemoryPlaquette(ZZSyndromeMeasurementPlaquette):
         super().__init__(orientation, schedule, detector, reset_data_qubits=False)
 
 
-class ZZFromZZZZPlaquette(ZZSyndromeMeasurementPlaquette):
+class ZZFromZZZZPlaquette(BaseZZPlaquette):
     def __init__(
         self,
         orientation: PlaquetteOrientation,
         schedule: list[int],
         include_detector: bool = True,
     ):
-        # Some qubits have just been measured. Get their offset to include them
-        # in the detector.
-        just_measured_qubits = self.get_unused_qubits_cirq(orientation)
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
-        measured_qubits_offsets = [q - syndrome_qubit for q in just_measured_qubits]
+        data_qubits = self.get_data_qubits_cirq(orientation)
+        qubits_to_measure = self.get_unused_qubits_cirq(orientation)
+        qubits_to_reset = [syndrome_qubit]
 
+        measured_qubits_offsets = [q - syndrome_qubit for q in qubits_to_measure]
         # Regular detector offsets
         measurements_lookback_offsets = [
             RelativeMeasurement(cirq.GridQubit(0, 0), -1),
@@ -118,7 +118,31 @@ class ZZFromZZZZPlaquette(ZZSyndromeMeasurementPlaquette):
                 measurements_lookback_offsets=measurements_lookback_offsets,
                 time_coordinate=0,
             )
-        super().__init__(orientation, schedule, detector, reset_data_qubits=False)
+
+        super().__init__(
+            circuit=ScheduledCircuit(
+                cirq.Circuit(
+                    [
+                        [
+                            cirq.R(q).with_tags(self._MERGEABLE_TAG)
+                            for q in qubits_to_reset
+                        ],
+                        [cirq.CX(data_qubits[0], syndrome_qubit)],
+                        [cirq.CX(data_qubits[1], syndrome_qubit)],
+                        [
+                            cirq.M(syndrome_qubit),
+                            *[cirq.M(qubit) for qubit in qubits_to_measure],
+                        ],
+                        detector.on(syndrome_qubit) if detector is not None else [],
+                    ]
+                ),
+                schedule,
+            ),
+            orientation=orientation,
+            # We need to add the qubits that are considered "unused" by the RoundedPlaquette
+            # because they are measured in this plaquette.
+            add_unused_qubits=True,
+        )
 
 
 class ZZFinalMeasurementPlaquette(BaseZZPlaquette):
