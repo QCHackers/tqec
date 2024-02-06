@@ -1,27 +1,48 @@
 import numpy.testing
 import pytest
-from tqec.exceptions import TQECException
-from tqec.position import Position, Shape2D
-from tqec.templates.scalable.square import ScalableAlternatingSquare
-from tqec.templates.stack import TemplateStack
+from tqec.position import Shape2D
+from tqec.templates.atomic.square import AlternatingSquareTemplate
+from tqec.templates.base import Template
+from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
+from tqec.templates.shifted import ScalableOffset, ShiftedTemplate
+from tqec.templates.stack import StackedTemplate
 
 
-def test_stack_template_over_itself():
-    alternating = ScalableAlternatingSquare(2)
-    stack = TemplateStack()
-    stack.push_template_on_top(alternating)
-    stack.push_template_on_top(alternating)
+@pytest.fixture
+def small_alternating_template():
+    return AlternatingSquareTemplate(Dimension(1, LinearFunction(2)))
+
+
+@pytest.fixture
+def shifted_small_alternating_template():
+    return ShiftedTemplate(
+        AlternatingSquareTemplate(Dimension(1, LinearFunction(2))),
+        ScalableOffset(FixedDimension(2), FixedDimension(2)),
+    )
+
+
+@pytest.fixture
+def larger_alternating_template():
+    return AlternatingSquareTemplate(Dimension(2, LinearFunction(2)))
+
+
+def test_stack_template_over_itself(small_alternating_template: Template):
+    stack = StackedTemplate()
+    stack.push_template_on_top(small_alternating_template)
+    stack.push_template_on_top(small_alternating_template)
     instanciation = stack.instanciate(1, 2, 3, 4)
 
-    numpy.testing.assert_array_equal(instanciation, alternating.instanciate(3, 4))
+    numpy.testing.assert_array_equal(
+        instanciation, small_alternating_template.instanciate(3, 4)
+    )
 
 
-def test_stack_small_alternating_on_top_of_larger_alternating():
-    small_alternating = ScalableAlternatingSquare(2)
-    larger_alternating = ScalableAlternatingSquare(4)
-    stack = TemplateStack()
-    stack.push_template_on_top(larger_alternating)
-    stack.push_template_on_top(small_alternating)
+def test_stack_small_alternating_on_top_of_larger_alternating(
+    small_alternating_template: Template, larger_alternating_template: Template
+):
+    stack = StackedTemplate()
+    stack.push_template_on_top(larger_alternating_template)
+    stack.push_template_on_top(small_alternating_template)
     instanciation = stack.instanciate(1, 2, 3, 4)
 
     numpy.testing.assert_array_equal(
@@ -30,12 +51,12 @@ def test_stack_small_alternating_on_top_of_larger_alternating():
     )
 
 
-def test_stack_small_alternating_with_offset_on_top_of_larger_alternating():
-    small_alternating = ScalableAlternatingSquare(2)
-    larger_alternating = ScalableAlternatingSquare(4)
-    stack = TemplateStack()
-    stack.push_template_on_top(larger_alternating)
-    stack.push_template_on_top(small_alternating, positive_offset=Position(2, 2))
+def test_stack_small_alternating_with_offset_on_top_of_larger_alternating(
+    shifted_small_alternating_template: Template, larger_alternating_template: Template
+):
+    stack = StackedTemplate()
+    stack.push_template_on_top(larger_alternating_template)
+    stack.push_template_on_top(shifted_small_alternating_template)
     instanciation = stack.instanciate(1, 2, 3, 4)
 
     numpy.testing.assert_array_equal(
@@ -44,55 +65,36 @@ def test_stack_small_alternating_with_offset_on_top_of_larger_alternating():
     )
 
 
-def test_stack_small_alternating_below_of_larger_alternating():
-    small_alternating = ScalableAlternatingSquare(2)
-    larger_alternating = ScalableAlternatingSquare(4)
-    stack = TemplateStack()
-    stack.push_template_on_top(small_alternating)
-    stack.push_template_on_top(larger_alternating)
+def test_stack_small_alternating_below_of_larger_alternating(
+    small_alternating_template: Template, larger_alternating_template: Template
+):
+    stack = StackedTemplate()
+    stack.push_template_on_top(small_alternating_template)
+    stack.push_template_on_top(larger_alternating_template)
     instanciation = stack.instanciate(1, 2, 3, 4)
 
     numpy.testing.assert_array_equal(
         instanciation,
-        larger_alternating.instanciate(3, 4),
+        larger_alternating_template.instanciate(3, 4),
     )
 
 
-def test_stack_template_pop():
-    small_alternating = ScalableAlternatingSquare(2)
-    larger_alternating = ScalableAlternatingSquare(4)
-    stack = TemplateStack()
-    stack.push_template_on_top(larger_alternating)
-    stack.push_template_on_top(small_alternating)
+def test_stack_template_pop(
+    small_alternating_template: Template, larger_alternating_template: Template
+):
+    stack = StackedTemplate()
+    stack.push_template_on_top(larger_alternating_template)
+    stack.push_template_on_top(small_alternating_template)
     stack.pop_template_from_top()
     instanciation = stack.instanciate(1, 2)
 
     numpy.testing.assert_array_equal(
-        instanciation, larger_alternating.instanciate(1, 2)
+        instanciation, larger_alternating_template.instanciate(1, 2)
     )
 
 
-def test_stack_shape():
-    small_alternating = ScalableAlternatingSquare(2)
-    stack = TemplateStack()
-    stack.push_template_on_top(small_alternating)
+def test_stack_shape(small_alternating_template: Template):
+    stack = StackedTemplate()
+    stack.push_template_on_top(small_alternating_template)
 
     assert stack.shape == Shape2D(2, 2)
-
-
-def test_stack_shape_with_offset():
-    small_alternating = ScalableAlternatingSquare(2)
-    stack = TemplateStack()
-    stack.push_template_on_top(small_alternating, positive_offset=Position(18, 3))
-
-    assert stack.shape == Shape2D(20, 5)
-
-
-def test_stack_shape_with_negative_offset():
-    small_alternating = ScalableAlternatingSquare(2)
-    stack = TemplateStack()
-    # We want the exception to include the offending non-positive offset in order for
-    # the user to have an easy way to track down its mistake. This is done by the
-    # match parameter below.
-    with pytest.raises(TQECException, match=r".*\((x=)?-4, ?(y=)?-1\).*"):
-        stack.push_template_on_top(small_alternating, positive_offset=Position(-4, -1))

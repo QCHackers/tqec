@@ -5,7 +5,7 @@ from tqec.position import Shape2D
 from tqec.templates.base import Template
 
 
-class TemplateStack(Template):
+class StackedTemplate(Template):
     def __init__(
         self, default_x_increment: int = 2, default_y_increment: int = 2
     ) -> None:
@@ -63,7 +63,7 @@ class TemplateStack(Template):
         """Removes the top-most template from the stack."""
         return self._stack.pop()
 
-    def scale_to(self, k: int) -> "TemplateStack":
+    def scale_to(self, k: int) -> "StackedTemplate":
         """Scales all the scalable templates in the stack to the given scale k.
 
         Note that this function scales to INLINE, so the instance on which it is called is
