@@ -106,7 +106,10 @@ class SquarePlaquette(Plaquette):
 
 class RoundedPlaquette(Plaquette):
     def __init__(
-        self, circuit: ScheduledCircuit, orientation: PlaquetteOrientation
+        self,
+        circuit: ScheduledCircuit,
+        orientation: PlaquetteOrientation,
+        add_unused_qubits: bool = False,
     ) -> None:
         """Represents a rounded QEC plaquette
 
@@ -142,9 +145,14 @@ class RoundedPlaquette(Plaquette):
             of PlaquetteOrientation.UP will generate a plaquette with its rounded side
             pointing up.
         """
-        super().__init__(
+        all_qubits = (
             RoundedPlaquette.get_data_qubits(orientation)
-            + RoundedPlaquette.get_syndrome_qubits(),
+            + RoundedPlaquette.get_syndrome_qubits()
+        )
+        if add_unused_qubits:
+            all_qubits += RoundedPlaquette.get_unused_qubits(orientation)
+        super().__init__(
+            all_qubits,
             circuit,
         )
 

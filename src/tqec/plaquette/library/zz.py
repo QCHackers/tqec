@@ -8,9 +8,12 @@ from tqec.position import Shape2D
 
 class BaseZZPlaquette(RoundedPlaquette):
     def __init__(
-        self, circuit: ScheduledCircuit, orientation: PlaquetteOrientation
+        self,
+        circuit: ScheduledCircuit,
+        orientation: PlaquetteOrientation,
+        add_unused_qubits: bool = False,
     ) -> None:
-        super().__init__(circuit, orientation)
+        super().__init__(circuit, orientation, add_unused_qubits)
 
     @property
     def shape(self) -> Shape2D:
