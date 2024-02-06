@@ -1,12 +1,24 @@
-import marshal
 import typing as ty
+from dataclasses import dataclass
+
+
+@dataclass
+class LinearFunction:
+    slope: int = 1
+    offset: int = 0
+
+    def __call__(self, x: int) -> int:
+        return self.slope * x + self.offset
+
+    def to_dict(self) -> dict[str, ty.Any]:
+        return {"type": type(self).__name__, "slope": self.slope, "offset": self.offset}
 
 
 class Dimension:
     def __init__(
         self,
         initial_scale_parameter: int,
-        scaling_function: ty.Callable[[int], int],
+        scaling_function: LinearFunction,
     ) -> None:
         """Represent an integer dimension that may or may not be scalable
 
@@ -19,8 +31,7 @@ class Dimension:
             instance should take.
         :param scaling_function: a function that takes exactly one integer as
             input (the scale provided to the `scale_to` method) and outputs the
-            value this Dimension instance should take. If None, `is_fixed` should
-            be set. If set, `is_fixed` should be None.
+            value this Dimension instance should take.
         """
         self._scaling_function = scaling_function
         self._value = self._scaling_function(initial_scale_parameter)
@@ -46,5 +57,5 @@ class Dimension:
         """Encodes the instance into a JSON-compatible dictionary."""
         return {
             "value": self._value,
-            "scaling_function": marshal.dumps(self._scaling_function.func_code),
+            "scaling_function": self._scaling_function.to_dict(),
         }

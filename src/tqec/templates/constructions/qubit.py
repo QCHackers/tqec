@@ -3,7 +3,7 @@ from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, LinearFunction
 
 
 class QubitSquareTemplate(ComposedTemplate):
@@ -13,7 +13,7 @@ class QubitSquareTemplate(ComposedTemplate):
         TODO
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, lambda _: 1)
+        nsone = Dimension(1, LinearFunction(0, 1))
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
@@ -49,7 +49,7 @@ class QubitRectangleTemplate(ComposedTemplate):
         TODO
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, lambda _: 1)
+        nsone = Dimension(1, LinearFunction(0, 1))
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4

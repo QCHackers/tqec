@@ -9,7 +9,7 @@ from tqec.templates.atomic.square import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, LinearFunction
 
 
 class ScalableCorner(ComposedTemplate):
@@ -20,8 +20,8 @@ class ScalableCorner(ComposedTemplate):
         """
         # nsone: non-scalable one
         # nstwo: non-scalable two
-        nsone = Dimension(1, lambda _: 1)
-        nstwo = Dimension(2, lambda _: 2)
+        nsone = Dimension(1, LinearFunction(0, 1))
+        nstwo = Dimension(2, LinearFunction(0, 2))
 
         _templates = [
             # 0

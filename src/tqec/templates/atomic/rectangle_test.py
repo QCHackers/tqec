@@ -1,11 +1,11 @@
 import pytest
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, LinearFunction
 
 
 @pytest.fixture
 def scaling_by_two_dimensions():
-    return Dimension(2, lambda k: 2 * k), Dimension(3, lambda k: 2 * k)
+    return Dimension(2, LinearFunction(2)), Dimension(3, LinearFunction(2))
 
 
 def test_rectangle_template_init(
@@ -27,8 +27,8 @@ def test_rectangle_template_same_scaling(
 
 
 def test_rectangle_template_different_scaling():
-    width = Dimension(2, lambda x: 3 * x)
-    height = Dimension(2, lambda x: 40 * x + 3)
+    width = Dimension(2, LinearFunction(3))
+    height = Dimension(2, LinearFunction(40, 3))
     template = AlternatingRectangleTemplate(width, height)
     template.scale_to(30)
     shape = template.shape
