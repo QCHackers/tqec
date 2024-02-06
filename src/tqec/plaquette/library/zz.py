@@ -136,7 +136,7 @@ class ZZFinalMeasurementPlaquette(BaseZZPlaquette):
                             for dq in data_qubits
                         ],
                     ],
-                    time_coordinate=1,
+                    time_coordinate=0,
                 ).on(syndrome_qubit)
             )
         ]

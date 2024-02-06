@@ -100,7 +100,7 @@ class ZZZZFinalMeasurementPlaquette(BaseZZZZPlaquette):
                         ],
                     ],
                     qubit_coordinate_system_origin=syndrome_qubit,
-                    time_coordinate=1,
+                    time_coordinate=0,
                 ).on(syndrome_qubit)
             )
         ]
