@@ -48,7 +48,7 @@ class AfterCliffordDepolarizingNoise(BaseNoiseModel):
 
     def noisy_operation(self, operation: cirq.Operation) -> cirq.OP_TREE:
         if isinstance(operation, cirq.CircuitOperation):
-            return self.recurse_in_operation_if_CircuitOperation(operation)
+            return self.recurse_in_operation_if_circuit_operation(operation)
         elif is_clifford(operation):
             return [
                 operation,

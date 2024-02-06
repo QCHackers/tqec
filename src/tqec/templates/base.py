@@ -46,7 +46,7 @@ class JSONEncodable(ABC):
         """
         if "default" in kwargs:
             raise TQECException(
-                f"The 'default' key has been found with value '{kwargs.get("default")}' in the provided kwargs."
+                f"The 'default' key has been found with value '{kwargs.get('default')}' in the provided kwargs."
                 " 'default' key is prohibited in the public API as it is changed internally."
             )
         return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
@@ -72,11 +72,11 @@ class Template(JSONEncodable):
         )
 
     @abstractmethod
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
+            underlying Shape instance's instantiate method.
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
@@ -134,9 +134,9 @@ class Template(JSONEncodable):
     @property
     @abstractmethod
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         pass
 
@@ -174,15 +174,15 @@ class AtomicTemplate(Template):
         super().__init__(default_x_increment, default_y_increment)
         self._shape_instance = shape
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
+            underlying Shape instance's instantiate method.
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
-        return self._shape_instance.instanciate(*plaquette_indices)
+        return self._shape_instance.instantiate(*plaquette_indices)
 
     @property
     def shape(self) -> Shape2D:
@@ -234,16 +234,16 @@ class AtomicTemplate(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return self._shape_instance.expected_plaquettes_number
 
 
 @dataclass
 class TemplateWithIndices:
-    """A wrapper around a Template instance and the indices representing the plaquettes it should be instanciated with."""
+    """A wrapper around a Template instance and the indices representing the plaquettes it should be instantiated with."""
 
     template: Template
     indices: list[int]

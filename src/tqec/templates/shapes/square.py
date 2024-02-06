@@ -54,7 +54,7 @@ class AlternatingCornerSquare(AlternatingSquare):
         super().__init__(dimension)
         self._corner_position = corner_position
 
-    def instanciate(
+    def instantiate(
         self,
         x_plaquette: int,
         z_plaquette: int,
@@ -86,8 +86,8 @@ class AlternatingCornerSquare(AlternatingSquare):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return 5
