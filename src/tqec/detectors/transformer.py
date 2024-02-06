@@ -61,7 +61,7 @@ def _transform_to_stimcirq_compatible_impl(
                 continue
             untagged = operation.untagged
             if isinstance(untagged, ShiftCoords):
-                operations.append(stimcirq.ShiftCoordsAnnotation(untagged.shift))
+                operations.append(stimcirq.ShiftCoordsAnnotation(untagged.shifts))
             elif isinstance(untagged, Detector):
                 relative_keys = compute_global_measurements_lookback_offsets(
                     untagged, global_measurement_map, current_moment_index
