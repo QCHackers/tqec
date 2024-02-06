@@ -74,8 +74,8 @@ class Template(JSONEncodable):
     def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
-        :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
+        :param plaquette_indices: the plaquette indices that will be used to construct
+            the array representing the template.
         :returns: a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
@@ -102,12 +102,6 @@ class Template(JSONEncodable):
     @abstractmethod
     def shape(self) -> Shape2D:
         """Returns the current template shape.
-
-        This should not be confused with the underlying shape of the template. Here
-        shape can mean:
-        - the Shape instance that defines what the template will look like and,
-        - the numpy-like shape, that is represented as 2 integers encoding the sizes
-          of the returned numpy array in both dimensions.
 
         :returns: the numpy-like shape of the template.
         """
