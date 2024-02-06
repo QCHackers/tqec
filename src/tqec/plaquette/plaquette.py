@@ -123,7 +123,7 @@ class RoundedPlaquette(Plaquette):
         PlaquetteOrientation.UP orientation will have its two qubits ordered as
         ```text
           -------
-         /       \
+         /       \\
         | 1     2 |
         |---------|
         ```
