@@ -71,6 +71,7 @@ export default class QubitLattice {
     boundingBox.alpha = 0.5;
     boundingBox.endFill();
     boundingBox.visible = true;
+    boundingBox.interactive = true;
     this.upperLeftCorner = upperLeftCorner;
     this.boundingBox = boundingBox;
   };

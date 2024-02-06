@@ -72,17 +72,18 @@ export default function TQECApp() {
   };
 
   workspace.mainButtonPosition = new Point(125, 50);
+  const { x, y } = workspace.mainButtonPosition;
 
   const createQubitConstellationButton = new Button(
     'Create Qubit Constellation',
-    workspace.mainButtonPosition.x,
-    workspace.mainButtonPosition.y
+    x,
+    y
   );
   workspace.addChild(createQubitConstellationButton);
   const saveQubitConstellationButton = new Button(
     'Save Qubit Constellation',
-    workspace.mainButtonPosition.x,
-    workspace.mainButtonPosition.y
+    x,
+    y
   );
   const lattice = new QubitLattice(workspace, app);
   createQubitConstellationButton.on('click', () => {
@@ -93,10 +94,10 @@ export default function TQECApp() {
   workspace.addChild(createQubitConstellationButton);
   const finalizeBoundingQuadButton = new Button(
     'Finalize quadrilateral',
-    workspace.mainButtonPosition.x,
-    workspace.mainButtonPosition.y
+    x,
+    y
   );
-  let bb;
+
   saveQubitConstellationButton.on('click', () => {
     if (lattice.constellation.length === 0) {
       notification(app, 'Constellation must have at least one qubit');
@@ -104,27 +105,30 @@ export default function TQECApp() {
       workspace.removeChild(saveQubitConstellationButton);
       lattice.createBoundingBox();
       lattice.applyBBCoordinatesToQubits();
-      bb = lattice.boundingBox;
-      workspace.addChild(bb);
+      const { boundingBox } = lattice;
+      workspace.addChild(boundingBox);
       workspace.addChild(finalizeBoundingQuadButton);
+
       finalizeBoundingQuadButton.on('click', () => {
-        workspace.removeChild(bb);
+        workspace.removeChild(boundingBox);
         workspace.removeChild(finalizeBoundingQuadButton);
         app.view.removeEventListener('click', lattice.selectQubitForConstellation);
-        for (let x = 0; x <= app.renderer.width; x += bb.width) {
-          for (let y = 0; y <= app.renderer.height; y += bb.height) {
+
+        for (let horiz = 0; horiz <= app.renderer.width; horiz += boundingBox.width) {
+          for (let vertic = 0; vertic <= app.renderer.height; vertic += boundingBox.height) {
             for (const qubit of lattice.constellation) {
-              const newQubit = new Qubit(qubit.bbX + x, qubit.bbY + y);
+              const newQubit = new Qubit(qubit.bbX + horiz, qubit.bbY + vertic);
               workspace.addChild(newQubit);
             }
           }
         }
+
         // Make the original qubits invisible to remove redundancy
         lattice.constellation.forEach((qubit) => {
           qubit.visible = false;
         });
         let selectedQubits = [];
-        const plaquetteButton = new Button('Create plaquette', workspace.mainButtonPosition.x, workspace.mainButtonPosition.y + 50);
+        const plaquetteButton = new Button('Add template', x, y + 50);
         const template = new Template(
           selectedQubits,
           workspace,
@@ -147,8 +151,8 @@ export default function TQECApp() {
         const downloadStimButton = new DownloadButton(
           workspace,
           'Download Stim file',
-          workspace.mainButtonPosition.x,
-          workspace.mainButtonPosition.y,
+          x,
+          y,
           'white',
           'black'
         );
