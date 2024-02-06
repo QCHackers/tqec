@@ -194,7 +194,7 @@ class RoundedPlaquette(Plaquette):
     @staticmethod
     def get_unused_qubits(orientation: PlaquetteOrientation) -> list[PlaquetteQubit]:
         all_data_qubits = set(RoundedPlaquette._data_qubits)
-        still_used_data_qubits = set(RoundedPlaquette.get_data_qubits_cirq(orientation))
+        still_used_data_qubits = set(RoundedPlaquette.get_data_qubits(orientation))
         return list(all_data_qubits.difference(still_used_data_qubits))
 
     @staticmethod
