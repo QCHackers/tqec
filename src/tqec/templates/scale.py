@@ -2,7 +2,7 @@ import typing as ty
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class LinearFunction:
     slope: int = 1
     offset: int = 0
