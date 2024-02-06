@@ -33,7 +33,6 @@ class BaseLayer:
         self,
         template: Template,
         plaquettes: list[Plaquette],
-        top_left_corner: Position | None = None,
         repetitions: int = 1,
         add_shift_coord_gate: bool = True,
     ) -> None:
@@ -43,22 +42,14 @@ class BaseLayer:
         self._plaquettes = plaquettes
         self._repetitions = repetitions
         self._add_shift_coord_gate = add_shift_coord_gate
-        if top_left_corner is None:
-            top_left_corner = Position(0, 0)
-        self._top_left_corner = top_left_corner
 
     def generate_circuit(self, k: int) -> cirq.Circuit:
         raw_circuit = generate_circuit(self._template.scale_to(k), self._plaquettes)
-        qubit_map = {
-            qubit: qubit + self._top_left_corner.to_grid_qubit()  # type: ignore
-            for qubit in raw_circuit.all_qubits()
-        }
-        qubit_mapped_circuit = raw_circuit.transform_qubits(qubit_map)
         if self._repetitions == 1:
-            return qubit_mapped_circuit
+            return raw_circuit
         else:
             return make_repeated_layer(
-                qubit_mapped_circuit, self._repetitions, self._add_shift_coord_gate
+                raw_circuit, self._repetitions, self._add_shift_coord_gate
             )
 
     @property
