@@ -7,7 +7,7 @@ STIM_TAG = "STIM_OPERATION"
 
 
 class ShiftCoords(cirq.Operation):
-    def __init__(self, *shift: int) -> None:
+    def __init__(self, *shifts: int) -> None:
         """
         Annotates that the qubit/detector coordinate origin is being moved.
 
