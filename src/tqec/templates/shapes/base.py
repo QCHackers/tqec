@@ -30,6 +30,15 @@ class BaseShape(ABC):
     def to_dict(self) -> dict[str, ty.Any]:
         pass
 
+    @property
+    @abstractmethod
+    def expected_plaquettes_number(self) -> int:
+        """Returns the number of plaquettes expected from the `instanciate` method.
+
+        :returns: the number of plaquettes expected from the `instanciate` method.
+        """
+        pass
+
     @abstractmethod
     def get_parameters(self) -> tuple[int, ...]:
         pass

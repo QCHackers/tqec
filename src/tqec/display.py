@@ -1,21 +1,19 @@
-import pathlib
 import math
+import pathlib
 
 from tqec.templates.base import Template
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.composed import ComposedTemplate
 
 
-def display_template(
-    template: Template | TemplateOrchestrator, *plaquette_indices: int
-) -> None:
+def display_template(template: Template, *plaquette_indices: int) -> None:
     """Display a template instance with ASCII output.
 
     :param template: the Template instance to display.
     :param plaquette_indices: the plaquette indices that are forwarded to the
         call to template.instantiate to get the actual template representation.
     """
-    if isinstance(template, TemplateOrchestrator) and len(plaquette_indices) == 0:
-        plaquette_indices = tuple(range(template.expected_plaquettes_number))
+    if len(plaquette_indices) == 0:
+        plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
     arr = template.instantiate(*plaquette_indices)
     for line in arr:
         for element in line:
@@ -25,7 +23,7 @@ def display_template(
 
 
 def display_templates_svg(
-    templates: TemplateOrchestrator,
+    templates: ComposedTemplate,
     write_svg_file: str | pathlib.Path | None,
     canvas_height: int = 500,
     *plaquette_indices: int,
@@ -46,7 +44,7 @@ def display_templates_svg(
     :return: the SVG string.
     """
     if len(plaquette_indices) == 0:
-        plaquette_indices = tuple(range(templates.expected_plaquettes_number))
+        plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
     template_list = templates._templates
     ul_positions = templates._compute_ul_absolute_position()
     box = templates._get_bounding_box_from_ul_positions(ul_positions)
