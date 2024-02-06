@@ -7,23 +7,24 @@ STIM_TAG = "STIM_OPERATION"
 
 
 class ShiftCoords(cirq.Operation):
-    def __init__(self, *shift: int) -> None:
+    def __init__(self, *shifts: int) -> None:
         """
         Annotates that the qubit/detector coordinate origin is being moved.
 
-        This is a replication of the [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
+        This is a replication of the 
+        [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
         class. We can directly use `stimcirq.ShiftCoordsAnnotation` here, however,
         replication brings the class into the `tqec` namespace and is useful for the
         potential future iteration.
 
-        :param shift: How much to shift each coordinate.
+        :param shifts: How much to shift each coordinate.
         """
-        self._shift = shift
+        self._shifts = shifts
 
     @property
-    def shift(self) -> tuple[int, ...]:
-        """The shift the operation represents."""
-        return self._shift
+    def shifts(self) -> tuple[int, ...]:
+        """The shifts the operation represents."""
+        return self._shifts
 
     @property
     def qubits(self) -> tuple['cirq.Qid', ...]:
@@ -129,8 +130,8 @@ class Detector(RelativeMeasurementsRecord):
     @property
     def coordinates(self) -> tuple[int, ...]:
         return (
-            self._local_coordinate_system_origin.row,
-            self._local_coordinate_system_origin.col,
+            self.origin.row,
+            self.origin.col,
             self._time_coordinate,
         )
 
@@ -164,15 +165,15 @@ class Observable(RelativeMeasurementsRecord):
         return self._observable_index
 
 
-def make_shift_coords(*shift: int) -> cirq.Operation:
+def make_shift_coords(*shifts: int) -> cirq.Operation:
     """This is a helper function to make a :class:~ShiftCoords operation with the
     `cirq.VirtualTag` tag.
 
-    :param shift: How much to shift each coordinate.
+    :param shifts: How much to shift each coordinate.
 
     :return: A :class:`ShiftCoords` operation with the `cirq.VirtualTag` tag.
     """
-    return ShiftCoords(*shift).with_tags(cirq.VirtualTag(), STIM_TAG)
+    return ShiftCoords(*shifts).with_tags(cirq.VirtualTag(), STIM_TAG)
 
 
 def make_detector(
@@ -187,11 +188,11 @@ def make_detector(
         The origin along with the local coordinate system will be pinned to the
         global coordinate system to resolve the actual qubit coordinates the
         measurements applied to.
-    :param relative_measurements: a list of relative measurements that composed the
+    :param relative_measurements: a list of relative measurements that compose the
         parity check of the detector. Each element of the list is a tuple of
         (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
         instance. When a tuple is provided, the first element is the position of
-        the qubit relative to a local coordinate system origin and the second element
+        the qubit relative to the local coordinate system origin and the second element
         is the relative measurement offset with respect to the most recent measurement
         performed on the qubit.
     :param time_coordinate: an annotation that will be forwarded to the DETECTOR
@@ -222,11 +223,11 @@ def make_observable(
         The origin along with the local coordinate system will be pinned to the
         global coordinate system to resolve the actual qubit coordinates the
         measurements applied to.
-    :param relative_measurements: a list of relative measurements that composed the
+    :param relative_measurements: a list of relative measurements that compose the
         parity check of the observable. Each element of the list is a tuple of
         (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
         instance. When a tuple is provided, the first element is the position of
-        the qubit relative to a local coordinate system origin and the second element
+        the qubit relative to the local coordinate system origin and the second element
         is the relative measurement offset with respect to the most recent measurement
         performed on the qubit.
     :param observable_index: the index of the observable.
