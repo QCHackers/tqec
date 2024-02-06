@@ -113,6 +113,30 @@ def transform_to_stimcirq_compatible(
     :param context: See `cirq.transformer` documentation.
     :returns: A new circuit with the tqec specific operations transformed to stimcirq compatible operations.
     """
+    _annotation_safety_check(circuit)
     measurement_map = CircuitMeasurementMap(circuit)
     transformed_circuit, _ = _transform_to_stimcirq_compatible_impl(circuit, measurement_map, 0)
     return transformed_circuit
+
+
+def _annotation_safety_check(
+    circuit: cirq.AbstractCircuit,
+) -> None:
+    """Check the first moment of the circuit for the presence of specific tqec annotations.
+
+    The `Detector`/`Observable` annotations should not be present in the first moment of the circuit
+    as there are no measurements to refer to. This function checks for the presence of these annotations
+    and raises an exception if they are present.
+
+    This exception is commonly raised when the user tries to append or insert a `Detector`/`Observable`
+    operation directly to the circuit without a `cirq.Moment` around it.
+    """
+    first_moment = circuit.moments[0]
+    for operation in first_moment.operations:
+        if isinstance(operation.untagged, (Detector, Observable)):
+            raise TQECException(
+                f"The operation {operation.untagged} is a tqec specific operation that refers to a measurement"
+                " but is present in the first moment of the circuit. This is not allowed as there are no"
+                " measurements to refer to. This is likely due to the user trying to append or insert this"
+                " operation directly to the circuit without a cirq.Moment around it."
+            )
