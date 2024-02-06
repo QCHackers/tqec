@@ -17,14 +17,14 @@ class ShiftCoords(cirq.Operation):
         replication brings the class into the `tqec` namespace and is useful for the
         potential future iteration.
 
-        :param shift: How much to shift each coordinate.
+        :param shifts: How much to shift each coordinate.
         """
-        self._shift = shift
+        self._shifts = shifts
 
     @property
-    def shift(self) -> tuple[int, ...]:
-        """The shift the operation represents."""
-        return self._shift
+    def shifts(self) -> tuple[int, ...]:
+        """The shifts the operation represents."""
+        return self._shifts
 
     @property
     def qubits(self) -> tuple['cirq.Qid', ...]:
