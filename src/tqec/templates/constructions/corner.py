@@ -1,5 +1,3 @@
-from copy import copy
-
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
@@ -15,38 +13,30 @@ from tqec.templates.scale import Dimension
 
 
 class ScalableCorner(ComposedTemplate):
-    def __init__(self, k: int | Dimension) -> None:
+    def __init__(self, dim: Dimension) -> None:
         """A scalable corner template.
 
         TODO
         """
-        # sdim: scalable dimension
-        sdim: Dimension
-        if isinstance(k, int):
-            sdim = Dimension(k, scaling_function=lambda scale: 2 * scale)
-        else:
-            sdim = copy(k)
-        sdim.value = 2 * sdim.value
-
         # nsone: non-scalable one
         # nstwo: non-scalable two
-        nsone = Dimension(1, is_fixed=True)
-        nstwo = Dimension(2, is_fixed=True)
+        nsone = Dimension(1, lambda _: 1)
+        nstwo = Dimension(2, lambda _: 2)
 
         _templates = [
             # 0
-            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [0, 1]),
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [2, 0]),
-            TemplateWithIndices(AlternatingSquareTemplate(sdim), [3, 4]),
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [0, 5]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
+            TemplateWithIndices(AlternatingSquareTemplate(dim), [3, 4]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [0, 5]),
             TemplateWithIndices(RawRectangleTemplate([[0]]), [2]),
             # 5
-            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nstwo), [3, 4]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nstwo), [3, 4]),
             TemplateWithIndices(RawRectangleTemplate([[0]]), [6]),
-            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [7, 0]),
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [7, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
             TemplateWithIndices(
-                AlternatingCornerSquareTemplate(sdim, CornerPositionEnum.LOWER_LEFT),
+                AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT),
                 [
                     3,
                     4,
@@ -56,13 +46,13 @@ class ScalableCorner(ComposedTemplate):
                 ],
             ),
             # 10
-            TemplateWithIndices(AlternatingRectangleTemplate(nstwo, sdim), [9, 8]),
-            TemplateWithIndices(AlternatingSquareTemplate(sdim), [9, 8]),
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, sdim), [10, 0]),
-            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [0, 12]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nstwo, dim), [9, 8]),
+            TemplateWithIndices(AlternatingSquareTemplate(dim), [9, 8]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [10, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 12]),
             TemplateWithIndices(RawRectangleTemplate([[0]]), [12]),
             # 15
-            TemplateWithIndices(AlternatingRectangleTemplate(sdim, nsone), [0, 12]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 12]),
         ]
         relative_positions = [
             (0, ABOVE_OF, 2),

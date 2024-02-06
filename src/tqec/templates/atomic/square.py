@@ -31,7 +31,7 @@ class FixedAlternatingSquareTemplate(AlternatingSquareTemplate):
         default_y_increment: int = 2,
     ) -> None:
         super().__init__(
-            Dimension(dimension, is_fixed=True),
+            Dimension(dimension, lambda _: dimension),
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
         )
@@ -143,7 +143,7 @@ class FixedAlternatingCornerSquareTemplate(AlternatingCornerSquareTemplate):
         default_y_increment: int = 2,
     ) -> None:
         super().__init__(
-            Dimension(dimension, is_fixed=True),
+            Dimension(dimension, lambda _: dimension),
             corner_position,
             default_x_increment,
             default_y_increment,

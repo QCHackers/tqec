@@ -1,10 +1,8 @@
-import pytest
-from tqec.exceptions import TQECException
 from tqec.templates.scale import Dimension
 
 
 def test_dimension_init():
-    dim = Dimension(5, is_fixed=True)
+    dim = Dimension(5, lambda k: k)
     assert dim.value == 5
 
 
@@ -12,15 +10,6 @@ def test_dimension_default_scaling():
     dim = Dimension(2, scaling_function=lambda k: 2 * k)
     dim.scale_to(3)
     assert dim.value == 2 * 3
-
-
-def test_dimension_raises_if_wrong_arguments():
-    with pytest.raises(TQECException):
-        Dimension(2)
-    with pytest.raises(TQECException):
-        Dimension(2, is_fixed=False)
-    with pytest.raises(TQECException):
-        Dimension(2, is_fixed=True, scaling_function=lambda k: 2 * k)
 
 
 def test_dimension_scaling():

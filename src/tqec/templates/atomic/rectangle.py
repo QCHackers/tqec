@@ -189,9 +189,9 @@ class LegacyRectangleTemplate(AlternatingRectangleTemplate):
 
         if scale_width:
             width_dim = Dimension(width, lambda k: 2 * k)
-            height_dim = Dimension(height, is_fixed=True)
+            height_dim = Dimension(height, lambda _: height)
         else:
-            width_dim = Dimension(width, is_fixed=True)
+            width_dim = Dimension(width, lambda _: width)
             height_dim = Dimension(height, lambda k: 2 * k)
         super().__init__(
             width_dim, height_dim, default_x_increment, default_y_increment
@@ -211,8 +211,8 @@ class FixedRectangleTemplate(AlternatingRectangleTemplate):
         that does not scale its dimensions.
         """
         super().__init__(
-            Dimension(width, is_fixed=True),
-            Dimension(height, is_fixed=True),
+            Dimension(width, lambda _: width),
+            Dimension(height, lambda _: height),
             default_x_increment,
             default_y_increment,
         )

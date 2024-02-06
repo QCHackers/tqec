@@ -5,7 +5,7 @@ from tqec.templates.scale import Dimension
 
 @pytest.fixture
 def scaling_by_two_dimensions():
-    return Dimension(2), Dimension(3)
+    return Dimension(2, lambda k: 2 * k), Dimension(3, lambda k: 2 * k)
 
 
 def test_rectangle_template_init(
