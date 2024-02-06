@@ -1,7 +1,7 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.base import TemplateWithIndices
+from tqec.templates.composed import ComposedTemplate
 from tqec.templates.fixed.base import FixedRaw
-from tqec.templates.orchestrator import TemplateOrchestrator
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import (
     ScalableAlternatingCornerSquare,
@@ -9,7 +9,7 @@ from tqec.templates.scalable.square import (
 )
 
 
-class ScalableCorner(TemplateOrchestrator):
+class ScalableCorner(ComposedTemplate):
     def __init__(self, k: int) -> None:
         """A scalable corner template.
 
@@ -93,7 +93,7 @@ class ScalableCorner(TemplateOrchestrator):
             ((4, CornerPositionEnum.UPPER_RIGHT), (2, CornerPositionEnum.LOWER_LEFT)),
             ((14, CornerPositionEnum.UPPER_RIGHT), (11, CornerPositionEnum.LOWER_LEFT)),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        ComposedTemplate.__init__(self, _templates)
         for source, relpos, target in relative_positions:
             self.add_relation(source, relpos, target)
         for (start, start_corner), (end, end_corner) in pinned_corners:

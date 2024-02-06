@@ -1,9 +1,9 @@
-from tqec.templates.base import Template
+from tqec.templates.base import AtomicTemplate
 from tqec.templates.shapes.base import BaseShape
 from tqec.templates.shapes.rectangle import RawRectangle
 
 
-class FixedTemplate(Template):
+class FixedTemplate(AtomicTemplate):
     def __init__(self, shape: BaseShape) -> None:
         super().__init__(shape)
 

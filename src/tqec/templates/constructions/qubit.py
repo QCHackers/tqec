@@ -1,11 +1,11 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 from tqec.templates.base import TemplateWithIndices
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.composed import ComposedTemplate
 from tqec.templates.scalable.rectangle import ScalableRectangle
 from tqec.templates.scalable.square import ScalableAlternatingSquare
 
 
-class ScalableQubitSquare(TemplateOrchestrator):
+class ScalableQubitSquare(ComposedTemplate):
     def __init__(self, k: int) -> None:
         """A scalable error-corrected qubit.
 
@@ -44,12 +44,12 @@ class ScalableQubitSquare(TemplateOrchestrator):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        ComposedTemplate.__init__(self, _templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
 
-class ScalableQubitRectangle(TemplateOrchestrator):
+class ScalableQubitRectangle(ComposedTemplate):
     def __init__(
         self, k_width: int, k_height: int, scale_width: bool | None = None
     ) -> None:
@@ -90,6 +90,6 @@ class ScalableQubitRectangle(TemplateOrchestrator):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        TemplateOrchestrator.__init__(self, _templates)
+        ComposedTemplate.__init__(self, _templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)

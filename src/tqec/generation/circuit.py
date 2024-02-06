@@ -1,15 +1,16 @@
 from copy import deepcopy
 
 import cirq
+from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Displacement
-from tqec.templates.orchestrator import TemplateOrchestrator
+from tqec.templates.base import Template
 
 
 def generate_circuit(
-    template: TemplateOrchestrator,
-    plaquettes: list[Plaquette],
+    template: Template,
+    plaquettes: list[Plaquette] | dict[int, Plaquette],
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -37,37 +38,41 @@ def generate_circuit(
         have the same shape. See https://github.com/QCHackers/tqec/issues/34 for more information.
     """
     # Check that the user gave enough plaquettes.
-    # The expected_plaquettes_number attribute includes the "no plaquette" indexed 0.
-    # The user is not expected to know about this implementation detail, so we hide it.
-    if len(plaquettes) != template.expected_plaquettes_number - 1:
+    if len(plaquettes) != template.expected_plaquettes_number:
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
-            f"{template.expected_plaquettes_number - 1} were expected."
+            f"{template.expected_plaquettes_number} were expected."
         )
 
+    # If plaquettes are given as a list, make that a dict to simplify the following operations
+    if isinstance(plaquettes, list):
+        plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
+
     # Instanciate the template with the appropriate plaquette indices.
-    # Index 0 is "no plaquette" by convention.
-    _indices = list(range(len(plaquettes) + 1))
+    # Index 0 is "no plaquette" by convention and should not be included here.
+    _indices = list(range(1, len(plaquettes) + 1))
     template_plaquettes = template.instanciate(*_indices)
-    increments = template.default_increments
+    increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
-    plaquette_circuits = [ScheduledCircuit(cirq.Circuit())] + [
-        p.circuit for p in plaquettes
-    ]
+    plaquette_circuits = {0: ScheduledCircuit(cirq.Circuit())} | {
+        i: p.circuit for i, p in plaquettes.items()
+    }
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
     all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
     for row_index, line in enumerate(template_plaquettes):
         for column_index, plaquette_index in enumerate(line):
-            scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-
-            offset = Displacement(column_index * increments.x, row_index * increments.y)
-            plaquette = plaquettes[plaquette_index - 1]
-            qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
-            scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
-            all_scheduled_circuits.append(scheduled_circuit)
+            if plaquette_index != 0:
+                scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
+                offset = Displacement(
+                    column_index * increments.x, row_index * increments.y
+                )
+                plaquette = plaquettes[plaquette_index]
+                qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
+                scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
+                all_scheduled_circuits.append(scheduled_circuit)
 
     # Merge everything!
     return merge_scheduled_circuits(all_scheduled_circuits)
