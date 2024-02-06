@@ -223,7 +223,7 @@ def make_observable(
         The origin along with the local coordinate system will be pinned to the
         global coordinate system to resolve the actual qubit coordinates the
         measurements applied to.
-    :param relative_measurements: a list of relative measurements that composed the
+    :param relative_measurements: a list of relative measurements that compose the
         parity check of the observable. Each element of the list is a tuple of
         (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
         instance. When a tuple is provided, the first element is the position of
