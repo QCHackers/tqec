@@ -1,5 +1,7 @@
 import cirq
-from tqec.exceptions import MeasurementAppliedOnMultipleQubitsException, TQECException
+
+from tqec.exceptions import TQECException
+from tqec.detectors.operation import RelativeMeasurementsRecord
 
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
@@ -20,7 +22,7 @@ class CircuitMeasurementMap:
         """Stores information about all the measurements found in the provided circuit
 
         This class provides a method to recover the global record offset of a given
-        measurement from local informations about this measurement.
+        measurement from local information about this measurement.
 
         :param circuit: the circuit instance to analyse.
         """
@@ -100,7 +102,7 @@ class CircuitMeasurementMap:
         """Computes and returns the global measurement indices for the given circuit
 
         This method API takes into account the fact that some information need to be passed
-        accross recursions and so is not really user-friendly.
+        across recursions and so is not really user-friendly.
 
         The provided circuit should not contain any cirq.CircuitOperation instance.
 
@@ -125,9 +127,50 @@ class CircuitMeasurementMap:
             for op in moment.operations:
                 if isinstance(op.gate, cirq.MeasurementGate):
                     if len(op.qubits) > 1:
-                        raise MeasurementAppliedOnMultipleQubitsException(op.qubits)
+                        raise TQECException(f"Found a measurement applied on multiple qubits ({op.qubits}).")
                     qubit: cirq.Qid = op.qubits[0]
                     global_measurement_indices[-1][qubit] = global_measurement_index
                     global_measurement_index += 1
 
         return global_measurement_indices, global_measurement_index
+
+
+def compute_global_measurements_lookback_offsets(
+    relative_measurements_record: RelativeMeasurementsRecord,
+    measurement_map: CircuitMeasurementMap,
+    current_moment_index: int,
+) -> list[int]:
+    """Computes, from the data in the given measurement_map, the global measurement offsets
+
+    This method uses the global data computed in the CircuitMeasurementMap instance given as
+    parameter to compute the measurement record indices for the current gate instance.
+
+    :param relative_measurements_record: the record of relative measurements to compute global
+        measurements offset from.
+    :param measurement_map: global measurement data obtained from the complete quantum circuit.
+    :param current_moment_index: index of the moment this gate instance is found in. Used to
+        recover the correct data from the given measurement_map.
+
+    :return: the computed list of global measurements lookback offsets.
+    """
+    global_measurements_lookback_offsets = []
+    origin = relative_measurements_record.origin
+    for relative_measurement in relative_measurements_record.data:
+        # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
+        #                    coordinate system, so no issue here.
+        qubit = origin + relative_measurement.relative_qubit_positioning
+        relative_measurement_offset = relative_measurement.relative_measurement_offset
+        relative_offset = measurement_map.get_measurement_relative_offset(
+            current_moment_index,
+            qubit,
+            relative_measurement_offset,
+        )
+        if relative_offset is None:
+            raise TQECException(
+                "An error happened during the measurement offset lookback computation. "
+                f"You asked for the {relative_measurement_offset} measurement on {qubit} "
+                f"at the moment {current_moment_index}. The computed measurement map is"
+                f"{measurement_map}."
+            )
+        global_measurements_lookback_offsets.append(relative_offset)
+    return global_measurements_lookback_offsets

@@ -3,7 +3,8 @@ import typing
 from copy import deepcopy
 
 import cirq
-from tqec.detectors.gate import DetectorGate
+
+from tqec.detectors.operation import Detector, make_detector
 from tqec.exceptions import QubitTypeException, TQECException
 
 
@@ -223,15 +224,33 @@ class ScheduledCircuit:
         ScheduledCircuit._check_input_validity(new_circuit, self.schedule)
         self._raw_circuit = new_circuit
 
+    @property
+    def detectors(self) -> list[Detector]:
+        """Return the list of all the detectors in the circuit."""
+        return [
+            typing.cast(Detector, op.untagged)
+            for op in self.raw_circuit.all_operations()
+            if isinstance(op.untagged, Detector)
+        ]
+
+    @property
+    def mappable_qubits(self) -> frozenset[cirq.GridQubit]:
+        """Return the set of qubits involved in the circuit that can be mapped, which is
+        the union of the qubits of all the operations performed on and the origin of all
+        the detectors."""
+        operation_qubits = set(self.raw_circuit.all_qubits())
+        detector_origins = set(detector.origin for detector in self.detectors)
+        return frozenset(operation_qubits.union(detector_origins))
+
     def map_to_qubits(
-        self, qubit_map: dict[cirq.Qid, cirq.Qid], inplace: bool = False
+        self, qubit_map: dict[cirq.GridQubit, cirq.GridQubit], inplace: bool = False
     ) -> "ScheduledCircuit":
         """Map the qubits the ScheduledCircuit instance is applied on.
 
         This method forwards most of its logic to the underlying raw_circuit
-        map_operations method, but additionnally takes care of forwarding tags,
+        map_operations method, but additionally takes care of forwarding tags,
         changing measurements key by re-creating the correct measurements and
-        re-creating DetectorGate instances correctly.
+        re-creating Detector operation correctly.
 
         :param qubit_map: the map used to modify the qubits.
         :param inplace: if True, perform the modification in place and return
@@ -243,13 +262,14 @@ class ScheduledCircuit:
 
         def remap_qubits(op: cirq.Operation) -> cirq.Operation:
             op = op.transform_qubits(qubit_map)
+            untagged = op.untagged
             if isinstance(op.gate, cirq.MeasurementGate):
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
-            elif isinstance(op.gate, DetectorGate):
-                # Re-create the operation from the gate
-                detector_gate: DetectorGate = deepcopy(op.gate)
-                return detector_gate.on(*op.qubits, add_virtual_tag=False).with_tags(
-                    *op.tags
+            elif isinstance(untagged, Detector):
+                return make_detector(
+                    qubit_map.get(untagged.origin, untagged.origin),
+                    untagged.data,
+                    time_coordinate=untagged.coordinates[-1],
                 )
             else:
                 return op
@@ -305,7 +325,7 @@ class ScheduledCircuit:
     @staticmethod
     def _is_virtual_moment(moment: cirq.Moment) -> bool:
         _virtual_tag = cirq.VirtualTag()
-        return any(_virtual_tag in op.tags for op in moment.operations)
+        return all(_virtual_tag in op.tags for op in moment.operations)
 
     @staticmethod
     def _compute_number_of_non_virtual_moments(circuit: cirq.Circuit) -> int:
