@@ -31,12 +31,14 @@ def get_corner_position(
     >>> get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
     Position(x=-2, y=-2)
 
+    Args:
+        position: position of the "anchor" corner.
+        position_corner: corner which position is given as first argument.
+        shape: 2-dimensional shape of the considerer template.
+        expected_corner: the corner we want to compute the position of.
 
-    :param position: position of the "anchor" corner.
-    :param position_corner: corner which position is given as first argument.
-    :param shape: 2-dimensional shape of the considerer template.
-    :param expected_corner: the corner we want to compute the position of.
-    :returns: the position of the expected_corner of a template of the given shape,
+    Returns:
+        the position of the expected_corner of a template of the given shape,
         knowing that the corner position_corner is at the given position.
     """
     transformation: tuple[int, int] = (
@@ -89,9 +91,13 @@ class ComposedTemplate(Template):
           |
           V
 
-        :param templates: a list of templates forwarded to the add_templates method
-            at the end of instance initialisation.
-        :raises ValueError: if the templates provided have different default increments.
+        Args:
+            templates: a list of templates forwarded to the add_templates method
+                at the end of instance initialisation.
+
+        Raises:
+            ValueError: if the templates provided have different default
+                increments.
         """
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
@@ -114,9 +120,16 @@ class ComposedTemplate(Template):
     ) -> int:
         """Add the provided template to the data structure.
 
-        :param template_to_insert: the template to insert, along with the indices of the
-        :raises ValueError: if the template to insert has different default increments than
-        :returns: the index of the template in the list of templates.
+        Args:
+            template_to_insert: the template to insert, along with the indices
+                of the
+
+        Returns:
+            the index of the template in the list of templates.
+
+        Raises:
+            ValueError: if the template to insert has different default
+                increments than
         """
         if len(self._templates) == 0:
             self._default_increments = template_to_insert.template.get_increments()
@@ -155,14 +168,19 @@ class ComposedTemplate(Template):
         This method is kept in the interface because the interface it provides is simpler
         to use and read than add_corner_relation.
 
-        :param template_id_to_position: index of the template that should be positionned relatively
-            to the provided anchor.
-        :param relative_position: the relative position of the template provided as first parameter
-            with respect to the anchor provided as third parameter. Can be any of LEFT_OF, RIGHT_OF,
-            BELOW_OF and ABOVE_OF.
-        :param anchor_id: index of the anchor template, i.e., the template with respect to which the
-            template provided in first parameter will be positioned.
-        :returns: self, to be able to chain calls to this method.
+        Args:
+            template_id_to_position: index of the template that should be
+                positionned relatively to the provided anchor.
+            relative_position: the relative position of the template provided as
+                first parameter with respect to the anchor provided as third
+                parameter. Can be any of LEFT_OF, RIGHT_OF, BELOW_OF and
+                ABOVE_OF.
+            anchor_id: index of the anchor template, i.e., the template with
+                respect to which the template provided in first parameter will
+                be positioned.
+
+        Returns:
+            self, to be able to chain calls to this method.
         """
         self._check_template_id(template_id_to_position)
         self._check_template_id(anchor_id)
@@ -200,13 +218,17 @@ class ComposedTemplate(Template):
     ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
-        :param template_id_to_position_corner: a tuple containing the index of the template that
-            should be positionned relatively to the provided anchor and the corner that should be
-            considered.
-        :param anchor_id_corner: a tuple containing the index of the (anchor) template that
-            should be used to position the template instance provided in the first parameter,
-            and the corner that should be considered.
-        :returns: self, to be able to chain calls to this method.
+        Args:
+            template_id_to_position_corner: a tuple containing the index of the
+                template that should be positionned relatively to the provided
+                anchor and the corner that should be considered.
+            anchor_id_corner: a tuple containing the index of the (anchor)
+                template that should be used to position the template instance
+                provided in the first parameter, and the corner that should be
+                considered.
+
+        Returns:
+            self, to be able to chain calls to this method.
         """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
@@ -239,8 +261,9 @@ class ComposedTemplate(Template):
         This means in particular that this method can return positions with negative
         coordinates.
 
-        :returns: a mapping between templates indices and their upper-left corner absolute
-            position.
+        Returns:
+            a mapping between templates indices and their upper-left corner
+            absolute position.
         """
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
@@ -287,10 +310,14 @@ class ComposedTemplate(Template):
     ) -> tuple[Position, Position]:
         """Get the bounding box containing all the templates from their upper-left corner position.
 
-        :param ul_positions: a mapping between templates indices and their upper-left corner absolute
-            position.
-        :returns: a tuple (upper-left position, bottom-right position) representing the bounding box.
-            Coordinates in each positions are not guaranteed to be positive.
+        Args:
+            ul_positions: a mapping between templates indices and their upper-left
+            corner absolute position.
+
+        Returns:
+            a tuple (upper-left position, bottom-right position) representing
+            the bounding box. Coordinates in each positions are not guaranteed
+            to be positive.
         """
         # ul: upper-left
         # br: bottom-right
@@ -307,8 +334,9 @@ class ComposedTemplate(Template):
     def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape2D:
         """Get the shape of the represented code from the bounding box.
 
-        :param ul: upper-left corner position of the bounding box.
-        :param br: bottom-right corner position of the bounding box.
+        Args:
+            ul: upper-left corner position of the bounding box.
+            br: bottom-right corner position of the bounding box.
         """
         # ul: upper-left
         # br: bottom-right
@@ -371,10 +399,13 @@ class ComposedTemplate(Template):
 
         The current implementation does not expect such a plaquette anymore.
 
-        :param plaquette_indices: the plaquette indices that will be used to
-            instantiate the different orchestrated templates.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
+        Args:
+            *plaquette_indices: the plaquette indices that will be used to
+                instantiate the different orchestrated templates.
+
+        Returns:
+            a numpy array with the given plaquette indices arranged according to
+            the underlying shape of the template.
         """
         if 0 in plaquette_indices:
             raise TQECException(
@@ -391,8 +422,9 @@ class ComposedTemplate(Template):
     def default_increments(self) -> Displacement:
         """Get the increments between plaquettes of the template.
 
-        :returns: a Displacement(x increment, y increment) representing the increments between
-            plaquettes of the template.
+        Returns:
+            a Displacement(x increment, y increment) representing the increments
+            between plaquettes of the template.
         """
         return self._default_increments
 
@@ -407,8 +439,11 @@ class ComposedTemplate(Template):
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
-        :param k: the new scale of the component templates.
-        :returns: self, once scaled.
+        Args:
+            k: the new scale of the component templates.
+
+        Returns:
+            self, once scaled.
         """
         for t in self._templates:
             t.scale_to(k)

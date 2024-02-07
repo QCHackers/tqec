@@ -13,7 +13,8 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
         considered idle during this Moment and a depolarizing noise is added
         to account for this idle time.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            p: strength (probability of error) of the applied noise.
         """
         super().__init__(p)
 

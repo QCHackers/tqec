@@ -25,8 +25,10 @@ def get_plaquette_starting_index(plaquette_size: int, plaquette_index: int) -> i
     This function also assumes that plaquettes are square-like shapes and share qubits
     on their edges.
 
-    :param plaquette_size: number of qubits required by the plaquette in the dimension
-        of interest (x or y).
-    :param plaquette_index: index of the plaquette we want to know the starting index of.
+    Args:
+        plaquette_size: number of qubits required by the plaquette in the
+            dimension of interest (x or y).
+        plaquette_index: index of the plaquette we want to know the starting
+            index of.
     """
     return plaquette_index * (plaquette_size - 1)
