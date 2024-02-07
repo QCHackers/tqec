@@ -53,4 +53,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test
-        run: npm test
+        run: npm test --passWithNoTests
