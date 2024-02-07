@@ -38,9 +38,8 @@ def generate_circuit(
         correction experiment represented by the provided inputs.
 
     Raises:
-        CannotUsePlaquetteWithDifferentShapes: if the provided Plaquette
-            instance do not ALL have the same shape. See
-            https://github.com/QCHackers/tqec/issues/34 for more information.
+        TQECException: if the provided plaquettes do not match the expected
+            number of plaquettes for the given template.
     """
     # Check that the user gave enough plaquettes.
     if len(plaquettes) != template.expected_plaquettes_number:

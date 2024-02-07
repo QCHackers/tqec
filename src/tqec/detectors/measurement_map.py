@@ -65,8 +65,7 @@ class CircuitMeasurementMap:
             current_moment_index, or None if the searched offset does not exist.
 
         Raises:
-            PositiveMeasurementOffsetError: if the provided measurement_offset
-                value is positive.
+            TQECException: if the provided measurement_offset value is positive.
         """
         if measurement_offset >= 0:
             raise TQECException(
@@ -133,8 +132,7 @@ class CircuitMeasurementMap:
               be useful for the external caller.
 
         Raises:
-            MeasurementAppliedOnMultipleQubits: if the provided
-                cirq.AbstractCircuit instance contains measurements applied on
+            TQECException: if the provided cirq.AbstractCircuit instance contains measurements applied on
                 several qubits at the same time.
         """
         global_measurement_indices: list[dict[cirq.Qid, int]] = []
@@ -172,6 +170,9 @@ def compute_global_measurements_lookback_offsets(
 
     Returns:
         the computed list of global measurements lookback offsets.
+
+    Raises:
+        TQECException: if the global measurement offset computation fails.
     """
     global_measurements_lookback_offsets = []
     origin = relative_measurements_record.origin
