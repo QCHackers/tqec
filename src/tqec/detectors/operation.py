@@ -31,7 +31,8 @@ class ShiftCoords(cirq.Operation):
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
 
-        :param shifts: How much to shift each coordinate.
+        Args:
+            *shifts: How much to shift each coordinate.
         """
         self._shifts = shifts
 
