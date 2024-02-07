@@ -16,8 +16,9 @@ def _json_encoding_default(obj) -> str | dict | None:
     way to translate the enumerations used by some templates to JSON
     data.
 
-    :raises TypeError: if an instance of a unimplemented type is
-        provided as parameter.
+    Raises:
+        TypeError: if an instance of a unimplemented type is provided as
+            parameter.
     """
     if isinstance(obj, CornerPositionEnum):
         return f"{obj.name}"
@@ -38,10 +39,15 @@ class JSONEncodable(ABC):
     def to_json(self, **kwargs) -> str:
         """Returns a JSON representation of the instance.
 
-        :param kwargs: keyword arguments forwarded to the json.dumps function. The "default"
-            keyword argument should NOT be present.
-        :returns: the JSON representation of the instance.
-        :raises DefaultKeyInKwargs: if the "default" key is present in kwargs.
+        Args:
+            **kwargs: keyword arguments forwarded to the json.dumps function.
+                The "default" keyword argument should NOT be present.
+
+        Returns:
+            the JSON representation of the instance.
+
+        Raises:
+            TQECException: if the "default" key is present in kwargs.
         """
         if "default" in kwargs:
             raise TQECException(
@@ -62,8 +68,11 @@ class Template(JSONEncodable):
         This class is the base of all templates and provide the necessary interface
         that all templates should implement to be usable by the library.
 
-        :param default_x_increment: default increment in the x direction between two plaquettes.
-        :param default_y_increment: default increment in the y direction between two plaquettes.
+        Args:
+            default_x_increment: default increment in the x direction between
+                two plaquettes.
+            default_y_increment: default increment in the y direction between
+                two plaquettes.
         """
         super().__init__()
         self._default_increments = Displacement(
@@ -74,10 +83,13 @@ class Template(JSONEncodable):
     def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
-        :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instantiate method.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
+        Args:
+            *plaquette_indices: the plaquette indices that will be forwarded to
+                the underlying Shape instance's instantiate method.
+
+        Returns:
+            a numpy array with the given plaquette indices arranged according to
+            the underlying shape of the template.
         """
         pass
 
@@ -93,8 +105,11 @@ class Template(JSONEncodable):
         Note that this function scales to INLINE, so the instance on which it is called is
         modified in-place AND returned.
 
-        :param k: the new scale of the template.
-        :returns: self, once scaled.
+        Args:
+            k: the new scale of the template.
+
+        Returns:
+            self, once scaled.
         """
         pass
 
@@ -109,7 +124,8 @@ class Template(JSONEncodable):
         - the numpy-like shape, that is represented as 2 integers encoding the sizes
           of the returned numpy array in both dimensions.
 
-        :returns: the numpy-like shape of the template.
+        Returns:
+            the numpy-like shape of the template.
         """
         pass
 
@@ -135,21 +151,24 @@ class Template(JSONEncodable):
     def expected_plaquettes_number(self) -> int:
         """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instantiate` method.
+        Returns:
+            the number of plaquettes expected from the `instantiate` method.
         """
         pass
 
     def get_increments(self) -> Displacement:
         """Get the default increments of the template.
 
-        :returns: a displacement of the default increments in the x and y directions.
+        Returns:
+            a displacement of the default increments in the x and y directions.
         """
         return self._default_increments
 
 
 @dataclass
 class TemplateWithIndices:
-    """A wrapper around a Template instance and the indices representing the plaquettes it should be instantiated with."""
+    """A wrapper around a Template instance and the indices representing the plaquettes
+    it should be instantiated with."""
 
     template: Template
     indices: list[int]

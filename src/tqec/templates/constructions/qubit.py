@@ -10,7 +10,22 @@ class QubitSquareTemplate(ComposedTemplate):
     def __init__(self, dim: Dimension) -> None:
         """An error-corrected qubit.
 
-        TODO
+        The scale k of a **scalable template** is defined to be **half** the dimension/size
+        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
+        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
+        enforced to be even, which avoids some invalid configuration of the template.
+
+        ```text
+        .  .  1  .  1  .
+        2  3  4  3  4  .
+        .  4  3  4  3  5
+        2  3  4  3  4  .
+        .  4  3  4  3  5
+        .  6  .  6  .  .
+        ```
+
+        Args:
+            k: scale of the error-corrected qubit.
         """
         # nsone: non-scalable one
         nsone = Dimension(1, LinearFunction(0, 1))
@@ -46,7 +61,22 @@ class QubitRectangleTemplate(ComposedTemplate):
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
-        TODO
+        A scalable rectangle qubit can only scale its width **or** height, but not both.
+        ```text
+        .  .  1  .  1  .  1  .
+        2  3  4  3  4  3  4  .
+        .  4  3  4  3  4  3  5
+        2  3  4  3  4  3  4  .
+        .  4  3  4  3  4  3  5
+        .  6  .  6  .  6  .  .
+        ```
+
+        Args:
+            k_width: half the width of the qubit.
+            k_height: half the height of the qubit.
+            scale_width: whether to scale the width or height. If None, the
+                dimension with the larger value will be scaled. If both
+                dimensions are equal, the width will be scaled by default.
         """
         # nsone: non-scalable one
         nsone = Dimension(1, LinearFunction(0, 1))
