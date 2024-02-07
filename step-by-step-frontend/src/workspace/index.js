@@ -130,7 +130,7 @@ export default function TqecApp() {
 	let circuitArt;
 
     printCircuitButton.on('click', (_e) => {
-		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize);
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
 		//let message = createCircuitAsciiArt(selectedQubits, selectedQubits[0]) // FIXME:
 		//circuitArt = button(message, gridSize, 7*gridSize, 'grey', 'black'); // FIXME:
 		workspace.addChild(circuitArt);

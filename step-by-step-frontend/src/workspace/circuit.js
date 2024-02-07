@@ -64,21 +64,20 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit) {
 
 
 /**
- * Qubit class
- * @extends Graphics
+ * Circuit class
+ * @extends Container
  * @constructor
- * @param {number} x - The x position of the qubit
- * @param {number} y - The y position of the qubit
- * @param {number} radius - The radius of the circle representing the qubit
- * @param {number} color - Color filling the circle
- * @param {number} gridSize - Size of the underlying grid
+ * @param {array} qubits - The qubits involved in the circuit
+ * @param {number} x - The x position of the circuit graphics
+ * @param {number} y - The y position of the circuit graphics
+ * @param {number} color - Color filling of the circuit
  */
 export default class Circuit extends Container {
-	constructor(qubits, x, y) {
+	constructor(qubits, x, y, color = 'purple') {
 		super();
 		// Color properties (as static fields).
 		// Associated to the role played by the qubit.
-		Circuit.color_background = 'purple'
+		Circuit.color_background = color
 		Circuit.color = 'white'
 		// UI properties
 		this.globalX = x;
