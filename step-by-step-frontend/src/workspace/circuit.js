@@ -8,7 +8,7 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit) {
 	// Add lines for every data qubit.
 	let idx = 0;
 	data_qubits.forEach(qubit => {
-		let line = `|${qubit.name}> --`
+		let line = `${qubit.name}: ----`
 		// Local change of basis
 		if (qubit.role === 'x') line += 'H--';
 		if (qubit.role === 'z') line += '---';
@@ -30,8 +30,8 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit) {
 		lines.push(line);
 
 		// Empty line with only vertical bars.
-		//      |Q(__,__)> --
-		line = '             ';
+		//      Q(__,__): ----
+		line = '              ';
 		line += '   ';
 		// Previous CNOTs and current one
 		for (let i = 0; i<idx+1; i++) {
@@ -46,8 +46,8 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit) {
 		idx += 1;
 	});
 	// Add line for the ancilla qubit.
-	let line = `|${anc_qubit.name}> --`
-	line = line + '---'; // Change of basis
+	let line = `${anc_qubit.name}: |0> --`
+	line = line + '-'; // Change of basis
 	for (let i = 0; i<data_qubits.length; i++) {
 		line = line + 'x--';
 	}

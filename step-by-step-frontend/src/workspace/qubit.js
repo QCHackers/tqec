@@ -20,7 +20,6 @@ export default class Qubit extends Graphics {
 		// Color properties (as static fields).
 		// Associated to the role played by the qubit.
 		Qubit.color_none = 'white'
-		Qubit.color_selected = 'yellow'
 		Qubit.color_x = 'blue'
 		Qubit.color_z = 'red'
 		Qubit.color_a = 'orange'
@@ -32,9 +31,6 @@ export default class Qubit extends Graphics {
 		this.globalY = y;
 		this.radius = radius;
 		this._createCircle(x, y, radius, Qubit.color_none);
-		//this.maxNeighborDist = 2 * this.gridSize;
-		//this.neighbors = [];
-		// Adjacent (degree 1) qubits
 		// QC properties
 		this.isQubit = true;
 		this.role = 'none';
@@ -73,33 +69,27 @@ export default class Qubit extends Graphics {
 
 	select() {
 		if (this.role === 'none') {
-			this.role = 'selected';
-			this.changeColor(Qubit.color_selected);
-			this.name = this.name.replace(/[QXZA]/g, 'S');
-		} else if (this.role === 'selected') {
 		    this.role = 'x';
 			this.changeColor(Qubit.color_x);
-			this.name = this.name.replace(/[QSZA]/g, 'X');
+			this.name = this.name.replace(/[QZA]/g, 'X');
 		} else if (this.role === 'x') {
 		    this.role = 'z';
 			this.changeColor(Qubit.color_z);
-			this.name = this.name.replace(/[QSXA]/g, 'Z');
+			this.name = this.name.replace(/[QXA]/g, 'Z');
 		} else if (this.role === 'z') {
 		    this.role = 'a';
 			this.changeColor(Qubit.color_a);
-			this.name = this.name.replace(/[QSXZ]/g, 'A');
+			this.name = this.name.replace(/[QXZ]/g, 'A');
 		} else if (this.role === 'a') {
 		    this.role = 'none';
 			this.changeColor(Qubit.color_none);
-			this.name = this.name.replace(/[SZXA]/g, 'Q');
+			this.name = this.name.replace(/[ZXA]/g, 'Q');
 		};
 		this.updateLabel();
 	}
 
 	updateLabel() {
 		this.removeChildren();
-		if (this.role === 'none')
-			return;
 		// Create the label as a text element 
 		const label = new Text(this.name, {fill: Qubit.color_none, fontSize: 16, fontWeight: 'bold',});
 		label.anchor.set(0.5);

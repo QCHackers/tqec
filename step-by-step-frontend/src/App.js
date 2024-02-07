@@ -25,7 +25,7 @@ function App() {
         >
           TQEC repo
         </a>
-        <Stage width={1400} height={800} options={{backgroundColor: 0x2980b9, antialias: true}}>
+        <Stage width={1400} height={1000} options={{backgroundColor: 0x2980b9, antialias: true}}>
           <TqecApp />
         </Stage>
       </header>

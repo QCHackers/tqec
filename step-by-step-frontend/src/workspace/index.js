@@ -2,11 +2,12 @@ import { useApp } from '@pixi/react'
 import { makeGrid } from './grid'
 import { Container } from 'pixi.js'
 import Qubit from './qubit'
+import Position from './position'
 import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 
-// 
+/////////////////////////////////////////////////////////////
 
 export default function TqecApp() {
 	// Initialize the app
@@ -25,24 +26,32 @@ export default function TqecApp() {
 	const grid = makeGrid(app, gridSize);
     workspace.addChild(grid);
 
-	// Add the qubits to the workspace
+/////////////////////////////////////////////////////////////
+
+    let selectedQubits = [];
+
+	// Add qubit positions to the workspace
 	for (let x = 0; x <= app.renderer.width/gridSize; x += 1) {
 		for (let y = 0; y <= app.renderer.height/gridSize; y += 1) {
 			// Skip every other qubit
             if ( (x+y) % 2 === 1 )
                 continue;
 			// Create a qubit
-			const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
-			// Name the qubit according to its position
-			qubit.name = `Q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
-			qubit.interactive = true;
-			qubit.on('click', qubit.select)
-			workspace.addChild(qubit);
+			const pos = new Position(x*gridSize, y*gridSize, qubitRadius);
+    		pos.on('click', (_e) => {
+				const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
+				// Name the qubit according to its position
+				qubit.name = `Q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
+				qubit.interactive = true;
+				qubit.on('click', qubit.select)
+				qubit.select()
+				workspace.addChild(qubit);
+			});
+			workspace.addChild(pos);
 		}
 	}
 
     // Select the qubits that are part of a plaquette 
-    let selectedQubits = [];
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
 	let plaquette;
