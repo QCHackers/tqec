@@ -97,13 +97,15 @@ class Template(JSONEncodable):
     def scale_to(self, k: int) -> "Template":
         """Scales self to the given scale k.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
+        Note that this function scales the template instance INLINE. Rephrasing, the
+        instance on which this method is called is modified in-place AND returned.
 
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
+        The input parameter ``k`` corresponds to an abstract scale that may be
+        forwarded to
+        1. :class:`Dimension` instances in the case of :class:`AtomicTemplate`,
+        2. other :class:`Template` instances in the case of templates modifying
+           existing instances,
+        3. anything else that the subclass might implement.
 
         Args:
             k: the new scale of the template.
@@ -118,14 +120,8 @@ class Template(JSONEncodable):
     def shape(self) -> Shape2D:
         """Returns the current template shape.
 
-        This should not be confused with the underlying shape of the template. Here
-        shape can mean:
-        - the Shape instance that defines what the template will look like and,
-        - the numpy-like shape, that is represented as 2 integers encoding the sizes
-          of the returned numpy array in both dimensions.
-
         Returns:
-            the numpy-like shape of the template.
+            the shape of the template.
         """
         pass
 
