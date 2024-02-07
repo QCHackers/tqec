@@ -132,6 +132,8 @@ class RawRectangleTemplate(AtomicTemplate):
         :param default_y_increment: default increment in the y direction between two plaquettes.
         """
         super().__init__(default_x_increment, default_y_increment)
+        if len(set(len(line) for line in indices)) > 1:
+            raise TQECException("All lines should have the same length.")
         self._indices = indices
 
     def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
