@@ -57,7 +57,7 @@ class AlternatingRectangleTemplate(AtomicTemplate):
         self._width = width
         self._height = height
 
-    def instanciate(self, p1: int, p2: int, *_: int) -> numpy.ndarray:
+    def instantiate(self, p1: int, p2: int, *_: int) -> numpy.ndarray:
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
@@ -134,9 +134,9 @@ class RawRectangleTemplate(AtomicTemplate):
         super().__init__(default_x_increment, default_y_increment)
         self._indices = indices
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         try:
-            # Use numpy indexing to instanciate the raw values.
+            # Use numpy indexing to instantiate the raw values.
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
             indices = numpy.array(self._indices, dtype=int)
             return plaquette_indices_array[indices]
