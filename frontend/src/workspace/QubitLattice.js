@@ -72,6 +72,8 @@ export default class QubitLattice {
     boundingBox.endFill();
     boundingBox.visible = true;
     boundingBox.interactive = true;
+    boundingBox.logicalWidth = rightmostQubit.globalX - leftmostQubit.globalX;
+    boundingBox.logicalHeight = bottommostQubit.globalY - topmostQubit.globalY;
     this.upperLeftCorner = upperLeftCorner;
     this.boundingBox = boundingBox;
   };

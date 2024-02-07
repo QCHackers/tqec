@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
 
+const assert = require('assert');
+
 /**
  * Qubit class
  * @extends Graphics
@@ -22,6 +24,8 @@ export default class Qubit extends Graphics {
     this.eventMode = 'static';
     this.buttonMode = true;
     this.cursor = 'pointer';
+    assert(x % gridSize === 0, 'x must be a multiple of gridSize');
+    assert(y % gridSize === 0, 'y must be a multiple of gridSize');
     this.globalX = x;
     this.globalY = y;
     this.createCircle(x, y, radius, color);
@@ -29,7 +33,7 @@ export default class Qubit extends Graphics {
     this.neighbors = [];
     this.gridSize = gridSize;
     this.qubitType = qubitType;
-    this.name = `(${x}, ${y})`;
+    this.name = `Qubit(${x}, ${y})`;
 
     // Adjacent (degree 1) qubits
     this.isQubit = true;

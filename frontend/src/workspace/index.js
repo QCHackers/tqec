@@ -27,7 +27,7 @@ export default function TQECApp() {
   workspace.addChild(grid);
   workspace.selectedPlaquette = null; // Used to update filters
   workspace.gridSize = gridSize;
-  workspace.gridTileWidth = 5;
+  workspace.qubitRadius = 5;
 
   workspace.updateSelectedPlaquette = (newPlaquette) => {
     if (newPlaquette === null) {
@@ -114,10 +114,13 @@ export default function TQECApp() {
         workspace.removeChild(finalizeBoundingQuadButton);
         app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
-        for (let horiz = 0; horiz <= app.renderer.width; horiz += boundingBox.width) {
-          for (let vertic = 0; vertic <= app.renderer.height; vertic += boundingBox.height) {
+        // eslint-disable-next-line max-len
+        for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth * workspace.gridSize) {
+          // eslint-disable-next-line max-len
+          for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight * workspace.gridSize) {
             for (const qubit of lattice.constellation) {
-              const newQubit = new Qubit(qubit.bbX + horiz, qubit.bbY + vertic);
+              // eslint-disable-next-line max-len
+              const newQubit = new Qubit(qubit.bbX + horiz, qubit.bbY + vertic, workspace.qubitRadius, workspace.gridSize);
               workspace.addChild(newQubit);
             }
           }
@@ -127,14 +130,17 @@ export default function TQECApp() {
         lattice.constellation.forEach((qubit) => {
           qubit.visible = false;
         });
+
+        // Initialize button to make plaquettes
         let selectedQubits = [];
-        const plaquetteButton = new Button('Add template', x, y + 50);
+        const plaquetteButton = new Button('Create plaquette', x, y + 50);
         const template = new Template(
           selectedQubits,
           workspace,
           plaquetteButton,
           app
         );
+
         plaquetteButton.on('click', () => {
         // Create the plaquettes and template
           template.createPlaquette();
@@ -145,7 +151,6 @@ export default function TQECApp() {
         });
 
         workspace.addChild(plaquetteButton);
-        plaquetteButton.visible = true;
         workspace.removeChild(finalizeBoundingQuadButton);
         // Add download stim button
         const downloadStimButton = new DownloadButton(
@@ -163,6 +168,5 @@ export default function TQECApp() {
 
   // Final workspace setup
   workspace.visible = true;
-  // app.stage.addChild(plaquetteButton);
   app.stage.addChild(workspace);
 }

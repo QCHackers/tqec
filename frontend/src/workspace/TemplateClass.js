@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Color } from 'pixi.js';
 import Plaquette from './plaquettes/PlaquetteClass';
 import notification from './components/notifier';
 import Button from './components/button';
@@ -20,7 +20,8 @@ export default class Template {
     this.selectedQubits = [];
     this.rectangle = new Graphics();
     this.workspace = workspace;
-    this.templateButton = new Button('Step 1: Define a Template', 100, 120);
+    const { x, y } = workspace.mainButtonPosition;
+    this.templateButton = new Button('Step 1: Define a Template', x, y + 50);
     this.templateButton.on('click', () => {
       // Create the template
       this.renderTemplateControlButtons();
@@ -43,7 +44,8 @@ export default class Template {
     this.isDragging = true;
     this.container.name = 'template';
     // Create the buttons
-    this.clearButton = new Button('Clear', 100, 120);
+    const { x, y } = this.workspace.mainButtonPosition;
+    this.clearButton = new Button('Clear', x, y + 50);
     this.clearButton.on('click', () => {
       // Clear the template
       this.clearButton.visible = false;
@@ -148,7 +150,7 @@ export default class Template {
       const width = event.clientX - this.startX;
       const height = event.clientY - this.startY;
       this.rectangle.clear();
-      this.rectangle.lineStyle(2, 0xff0000);
+      this.rectangle.lineStyle(2, new Color('red').toNumber());
       this.rectangle.drawRect(0, 0, width, height);
       // Find the qubits within the this.rectangle
       // eslint-disable-next-line consistent-return
