@@ -15,6 +15,40 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """Implements an atomic square template with alternating plaquettes.
+
+        Args:
+            dimension: width and height of the square template.
+            default_x_increment: default increment in the x direction between two plaquettes.
+            default_y_increment: default increment in the y direction between two plaquettes.
+
+        Example:
+            The following code:
+            .. code-block:: python
+
+                from tqec.templates.scale import Dimension
+                from tqec.templates.atomic.rectangle import AlternatingSquareTemplate
+                from tqec.display import display_template
+
+                dim = Dimension(2, scaling_function=lambda k: 2*k)
+                template = AlternatingSquareTemplate(dim)
+
+                print("Non-scaled template:")
+                display_template(template)
+                print("Scaled template:")
+                display_template(template.scale_to(1))
+
+            outputs ::
+
+                Non-scaled template:
+                1  2  1  2
+                2  1  2  1
+                1  2  1  2
+                2  1  2  1
+                Scaled template:
+                1  2
+                2  1
+        """
         super().__init__(
             dimension,
             dimension,
