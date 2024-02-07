@@ -11,7 +11,7 @@ def display_template(template: Template, *plaquette_indices: int) -> None:
     Args:
         template: the Template instance to display.
         *plaquette_indices: the plaquette indices that are forwarded to the call
-            to ``template.instantiate`` to get the actual template representation.
+            to `template.instantiate` to get the actual template representation.
     """
     if len(plaquette_indices) == 0:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
@@ -41,7 +41,7 @@ def display_templates_svg(
         write_svg_file: the path to the SVG file to write.
         canvas_height: the height of the canvas in pixels to draw on.
         *plaquette_indices: the plaquette indices that are forwarded to the call
-            to ``template.instantiate`` to get the actual template representation.
+            to `template.instantiate` to get the actual template representation.
 
     Returns:
         the SVG string.
