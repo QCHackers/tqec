@@ -58,6 +58,10 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
 
 
 class AlternatingCornerSquareTemplate(AtomicTemplate):
+    """TODO: This class needs fixing, the instantiate output does not adhere to
+    the convention that the first plaquette provided to the method is the top-left
+    one in the resulting array."""
+
     _TRANSFORMATIONS: dict[
         CornerPositionEnum, ty.Callable[[numpy.ndarray], numpy.ndarray]
     ] = {
@@ -84,6 +88,7 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
         self,
         dimension: Dimension,
         corner_position: CornerPositionEnum,
+        top_plaquettes_on_diagonal: bool = False,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -93,6 +98,7 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
         )
         self._dimension = dimension
         self._corner_position = corner_position
+        self._top_plaquettes_on_diagonal = top_plaquettes_on_diagonal
 
     def instantiate(
         self,
@@ -111,7 +117,7 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
             for j in range(dimension):
                 if i == j == 0:
                     ret[i, j] = corner_plaquette
-                elif i > j:
+                elif i > j or (self._top_plaquettes_on_diagonal and i == j):
                     if (i + j) % 2 == 1:
                         ret[i, j] = p2
                     else:
