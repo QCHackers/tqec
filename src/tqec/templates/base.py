@@ -48,7 +48,7 @@ class JSONEncodable(ABC):
             the JSON representation of the instance.
 
         Raises:
-            DefaultKeyInKwargs: if the "default" key is present in kwargs.
+            TQECException: if the "default" key is present in kwargs.
         """
         if "default" in kwargs:
             raise TQECException(
