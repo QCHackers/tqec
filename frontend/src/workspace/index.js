@@ -105,7 +105,8 @@ export default function TQECApp() {
       workspace.removeChild(saveQubitConstellationButton);
       lattice.createBoundingBox();
       lattice.applyBBCoordinatesToQubits();
-      const { boundingBox } = lattice;
+      // eslint-disable-next-line prefer-destructuring
+      const boundingBox = lattice.boundingBox;
       workspace.addChild(boundingBox);
       workspace.addChild(finalizeBoundingQuadButton);
 
@@ -115,9 +116,9 @@ export default function TQECApp() {
         app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
         // eslint-disable-next-line max-len
-        for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth * workspace.gridSize) {
+        for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth) {
           // eslint-disable-next-line max-len
-          for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight * workspace.gridSize) {
+          for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight) {
             for (const qubit of lattice.constellation) {
               // eslint-disable-next-line max-len
               const newQubit = new Qubit(qubit.bbX + horiz, qubit.bbY + vertic, workspace.qubitRadius, workspace.gridSize);

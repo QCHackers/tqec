@@ -211,7 +211,6 @@ export default class Plaquette extends Graphics {
 
   populatePlaquetteShapeAndInteractionFields = () => {
     // The graphic should connect the points from the qubits
-    const nQubits = this.qubits.length;
     // Create a convex hull
     this.createConvexHull();
     const { x, y } = this.calculatePlaquetteCenter();
@@ -224,7 +223,6 @@ export default class Plaquette extends Graphics {
     this.cursor = 'pointer';
     this.makeExtensible();
     this.toggleCtrlButtons();
-    console.log('Made plaquette of length ', nQubits);
   };
 
   makeExtensible = () => {
@@ -238,7 +236,6 @@ export default class Plaquette extends Graphics {
   onDragStart(event) {
     this.isDragging = true;
     this.initialPosition = event.data.getLocalPosition(this.parent);
-    console.log(`Initial position: ${this.initialPosition}`);
   }
 
   onDragMove = (event) => {
@@ -254,7 +251,6 @@ export default class Plaquette extends Graphics {
     const deltaX = newPosition.x - this.initialPosition?.x;
     // eslint-disable-next-line no-unsafe-optional-chaining
     const deltaY = newPosition.y - this.initialPosition?.y;
-    console.log(`Drag (dx, dy) = (${deltaX}, ${deltaY})`);
     let shiftQ = null;
     const scaleFactor = 0.4;
     const threshold = this.gridSize * scaleFactor;
@@ -344,7 +340,6 @@ export default class Plaquette extends Graphics {
 
   toggleCtrlButtons = () => {
     this.on('click', () => {
-      // console.log("Click event: " + JSON.stringify(e))
       const currentTime = Date.now();
       if (currentTime - this.lastClickTime < 300) {
         // Tell the workspace that the current control panel should be this one.
@@ -359,7 +354,6 @@ export default class Plaquette extends Graphics {
     this.rotateButton.on('click', () => {
       // Rotate the plaquette
       this.rotation += Math.PI / 2; // Rotate 90 degrees
-      console.log(`Rotate button position = ${this.rotateButton.position}`);
     });
     this.rotateButton.name = 'rotate_button';
     // Add the button to the control panel container

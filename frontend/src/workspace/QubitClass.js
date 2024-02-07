@@ -165,7 +165,6 @@ export default class Qubit extends Graphics {
         this.neighbors.push(qubit);
       }
     }
-    // console.log(this.neighbors);
     return this.neighbors;
   };
 
