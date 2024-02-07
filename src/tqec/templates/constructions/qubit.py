@@ -3,7 +3,7 @@ from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, LinearFunction
+from tqec.templates.scale import Dimension, FixedDimension
 
 
 class QubitSquareTemplate(ComposedTemplate):
@@ -23,7 +23,7 @@ class QubitSquareTemplate(ComposedTemplate):
             dim: dimension of the error-corrected qubit.
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, LinearFunction(0, 1))
+        nsone = FixedDimension(1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
@@ -71,7 +71,7 @@ class QubitRectangleTemplate(ComposedTemplate):
             height: height of the rectangle logical qubit.
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, LinearFunction(0, 1))
+        nsone = FixedDimension(1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
