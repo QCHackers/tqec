@@ -13,7 +13,7 @@ export const makeGrid = (app, gridSize = 50, isRotated = true) => {
 	// Create a PIXI.Graphics object for the grid
 	const grid = new Graphics();
 	// Set the line style for the grid lines
-	grid.lineStyle(2, 'black');
+	grid.lineStyle(1, 'darkgrey');
 
 	if (isRotated === false) {
 		// Draw vertical lines

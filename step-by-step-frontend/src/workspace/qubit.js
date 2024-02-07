@@ -1,12 +1,13 @@
 // Define class Qubit and its methods
 
-import { Graphics, Text } from 'pixi.js'
+import { Text } from 'pixi.js'
+import Position from './position'
 
 /////////////////////////////////////////////////////////////
 
 /**
  * Qubit class
- * @extends Graphics
+ * @extends Position
  * @constructor
  * @param {number} x - The x position of the qubit
  * @param {number} y - The y position of the qubit
@@ -14,7 +15,7 @@ import { Graphics, Text } from 'pixi.js'
  * @param {number} color - Color filling the circle
  * @param {number} gridSize - Size of the underlying grid
  */
-export default class Qubit extends Graphics {
+export default class Qubit extends Position {
 	constructor(x, y, radius = 5) {
 		super();
 		// Color properties (as static fields).
@@ -34,32 +35,6 @@ export default class Qubit extends Graphics {
 		// QC properties
 		this.isQubit = true;
 		this.role = 'none';
-	}
-
-	_onPointerOver = () => {
-		this.alpha = 0.5;
-	};
-
-	_onPointerOut = () => {
-		this.alpha = 1;
-	};
-
-	/**
-	 * Creates a circle
-	 * @param {*} x
-	 * @param {*} y
-	 * @param {*} radius
-	 * @param {*} color
-	 */
-	_createCircle(x, y, radius, color) {
-		// Create a circle
-		this.beginFill(color);
-		this.drawCircle(x, y, radius);
-		this.endFill();
-
-		// Add hover event
-		this.on('pointerover', this._onPointerOver);
-		this.on('pointerout', this._onPointerOut);
 	}
 
     changeColor(color) {

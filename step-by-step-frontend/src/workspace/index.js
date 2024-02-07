@@ -1,6 +1,6 @@
 import { useApp } from '@pixi/react'
 import { makeGrid } from './grid'
-import { Container } from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 import Qubit from './qubit'
 import Position from './position'
 import { button } from './button'
@@ -28,7 +28,21 @@ export default function TqecApp() {
 
 /////////////////////////////////////////////////////////////
 
-    let selectedQubits = [];
+	// Add guide for the eyes for the plaquette boundaries.
+	const outline = new Graphics();
+	outline.lineStyle(2, 'red');
+	for (const [x0, y0] of [[11, 3], [19, 3], [19, 7], [19, 11]]) {
+		const x1 = x0 + 2;
+		const y1 = y0 + 2;
+		outline.moveTo(x0*gridSize, y0*gridSize);
+		outline.lineTo(x1*gridSize, y0*gridSize);
+		outline.lineTo(x1*gridSize, y1*gridSize);
+		outline.lineTo(x0*gridSize, y1*gridSize);
+		outline.lineTo(x0*gridSize, y0*gridSize);
+	}
+    workspace.addChild(outline);
+
+/////////////////////////////////////////////////////////////
 
 	// Add qubit positions to the workspace
 	for (let x = 0; x <= app.renderer.width/gridSize; x += 1) {
@@ -51,10 +65,17 @@ export default function TqecApp() {
 		}
 	}
 
+/////////////////////////////////////////////////////////////
+
+	const infoButton = button('Library of plaquettes', 19*gridSize, 2*gridSize, 'orange', 'black');
+	workspace.addChild(infoButton);
+
+
     // Select the qubits that are part of a plaquette 
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
 	let plaquette;
+    let selectedQubits = [];
 
     createPlaquetteButton.on('click', (_e) => {
 		// Loop on all qubits in the workspace and gather the selected ones
