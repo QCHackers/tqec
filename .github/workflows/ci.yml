@@ -39,9 +39,10 @@ jobs:
           pytest --cov=src/tqec $(git ls-files '*_test.py')
   build-and-test-nodejs:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dart_project
     steps:
-      - name: CD to frontend
-        run: cd frontend
       - uses: actions/checkout@v4
       - name: Set up Node.js
         uses: actions/setup-node@v4
