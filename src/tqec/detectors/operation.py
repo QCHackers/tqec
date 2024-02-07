@@ -83,12 +83,13 @@ class RelativeMeasurementsRecord(cirq.Operation):
         """A group of relative measurement data representing measurements relative
         to the origin of local coordinate system and current measurement timestamp.
 
-        :param local_coordinate_system_origin: origin of the local coordinate system. 
-            The origin along with the local coordinate system will be pinned to the 
-            global coordinate system to resolve the actual qubit coordinates the 
-            measurements applied to.
-        :param data: a list of :class:`RelativeMeasurementData` that composed the
-            relative measurements' operation.
+        Args:
+            local_coordinate_system_origin: origin of the local coordinate
+                system. The origin along with the local coordinate system will
+                be pinned to the global coordinate system to resolve the actual
+                qubit coordinates the measurements applied to.
+            data: a list of :class:`RelativeMeasurementData` that composed the
+                relative measurements' operation.
         """
         self._local_coordinate_system_origin = local_coordinate_system_origin
         self._data = data
@@ -139,14 +140,15 @@ class Detector(RelativeMeasurementsRecord):
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
 
-        :param local_coordinate_system_origin: origin of the local coordinate system.
-            The origin along with the local coordinate system will be pinned to the
-            global coordinate system to resolve the actual qubit coordinates the
-            measurements applied to.
-        :param data: a list of :class:`RelativeMeasurementData` that composed the
-            relative measurements' operation.
-        :param time_coordinate: an annotation that will be forwarded to the DETECTOR
-            Stim structure as the last coordinate.
+        Args:
+            local_coordinate_system_origin: origin of the local coordinate
+                system. The origin along with the local coordinate system will
+                be pinned to the global coordinate system to resolve the actual
+                qubit coordinates the measurements applied to.
+            data: a list of :class:`RelativeMeasurementData` that composed the
+                relative measurements' operation.
+            time_coordinate: an annotation that will be forwarded to the
+                DETECTOR Stim structure as the last coordinate.
         """
         super().__init__(local_coordinate_system_origin, data)
         self._time_coordinate = time_coordinate
@@ -187,13 +189,14 @@ class Observable(RelativeMeasurementsRecord):
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
 
-        :param local_coordinate_system_origin: origin of the local coordinate system.
-            The origin along with the local coordinate system will be pinned to the
-            global coordinate system to resolve the actual qubit coordinates the
-            measurements applied to.
-        :param data: a list of :class:`RelativeMeasurementData` that composed the
-            relative measurements' operation.
-        :param observable_index: the index of the observable.
+        Args:
+            local_coordinate_system_origin: origin of the local coordinate
+                system. The origin along with the local coordinate system will
+                be pinned to the global coordinate system to resolve the actual
+                qubit coordinates the measurements applied to.
+            data: a list of :class:`RelativeMeasurementData` that composed the
+                relative measurements' operation.
+            observable_index: the index of the observable.
         """
         super().__init__(local_coordinate_system_origin, data)
         self._observable_index = observable_index
@@ -211,9 +214,11 @@ def make_shift_coords(*shifts: int) -> cirq.Operation:
     """This is a helper function to make a :class:~ShiftCoords operation with the
     `cirq.VirtualTag` tag.
 
-    :param shifts: How much to shift each coordinate.
+    Args:
+        *shifts: How much to shift each coordinate.
 
-    :return: A :class:`ShiftCoords` operation with the `cirq.VirtualTag` tag.
+    Returns:
+        A :class:`ShiftCoords` operation with the `cirq.VirtualTag` tag.
     """
     return ShiftCoords(*shifts).with_tags(cirq.VirtualTag(), STIM_TAG)
 
@@ -226,21 +231,24 @@ def make_detector(
     """This is a helper function to make a :class:`Detector` operation with the
     `cirq.VirtualTag` tag.
 
-    :param local_coordinate_system_origin: origin of the local coordinate system.
-        The origin along with the local coordinate system will be pinned to the
-        global coordinate system to resolve the actual qubit coordinates the
-        measurements applied to.
-    :param relative_measurements: a list of relative measurements that compose the
-        parity check of the detector. Each element of the list is a tuple of
-        (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
-        instance. When a tuple is provided, the first element is the position of
-        the qubit relative to the local coordinate system origin and the second element
-        is the relative measurement offset with respect to the most recent measurement
-        performed on the qubit.
-    :param time_coordinate: an annotation that will be forwarded to the DETECTOR
-        Stim structure as the last coordinate.
+    Args:
+        local_coordinate_system_origin: origin of the local coordinate system.
+            The origin along with the local coordinate system will be pinned to
+            the global coordinate system to resolve the actual qubit coordinates
+            the measurements applied to.
+        relative_measurements: a list of relative measurements that compose the
+            parity check of the detector. Each element of the list is a tuple of
+            (relative_qubit_position, relative_measurement_offset) or a
+            :class:`RelativeMeasurementData` instance. When a tuple is provided,
+            the first element is the position of the qubit relative to the local
+            coordinate system origin and the second element is the relative
+            measurement offset with respect to the most recent measurement
+            performed on the qubit.
+        time_coordinate: an annotation that will be forwarded to the DETECTOR
+            Stim structure as the last coordinate.
 
-    :return: A :class:`Detector` operation with the `cirq.VirtualTag` tag.
+    Returns:
+        A :class:`Detector` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
         RelativeMeasurementData(*rm) if not isinstance(rm, RelativeMeasurementData) else rm
@@ -261,20 +269,23 @@ def make_observable(
     """This is a helper function to make a :class:`Observable` operation with the
     `cirq.VirtualTag` tag.
 
-    :param local_coordinate_system_origin: origin of the local coordinate system.
-        The origin along with the local coordinate system will be pinned to the
-        global coordinate system to resolve the actual qubit coordinates the
-        measurements applied to.
-    :param relative_measurements: a list of relative measurements that compose the
-        parity check of the observable. Each element of the list is a tuple of
-        (relative_qubit_position, relative_measurement_offset) or a :class:`RelativeMeasurementData`
-        instance. When a tuple is provided, the first element is the position of
-        the qubit relative to the local coordinate system origin and the second element
-        is the relative measurement offset with respect to the most recent measurement
-        performed on the qubit.
-    :param observable_index: the index of the observable.
+    Args:
+        local_coordinate_system_origin: origin of the local coordinate system.
+            The origin along with the local coordinate system will be pinned to
+            the global coordinate system to resolve the actual qubit coordinates
+            the measurements applied to.
+        relative_measurements: a list of relative measurements that compose the
+            parity check of the observable. Each element of the list is a tuple
+            of (relative_qubit_position, relative_measurement_offset) or a
+            :class:`RelativeMeasurementData` instance. When a tuple is provided,
+            the first element is the position of the qubit relative to the local
+            coordinate system origin and the second element is the relative
+            measurement offset with respect to the most recent measurement
+            performed on the qubit.
+        observable_index: the index of the observable.
 
-    :return: A :class:`Observable` operation with the `cirq.VirtualTag` tag.
+    Returns:
+        A :class:`Observable` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
         RelativeMeasurementData(*rm) if not isinstance(rm, RelativeMeasurementData) else rm

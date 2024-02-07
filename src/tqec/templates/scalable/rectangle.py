@@ -15,12 +15,16 @@ class ScalableRectangle(ScalableTemplate):
 
         A scalable rectangle can only scale its width **or** height, but not both.
 
-        :param width: width of the rectangle.
-        :param height: height of the rectangle.
-        :param scale_width: whether to scale the width or height. If None, the dimension
-            with the even value or the larger value will be scaled. If both dimensions
-            are even and equal, the width will be scaled by default.
-        :raises DimensionNotEven: if both width and height are odd numbers.
+        Args:
+            width: width of the rectangle.
+            height: height of the rectangle.
+            scale_width: whether to scale the width or height. If None, the
+                dimension with the even value or the larger value will be
+                scaled. If both dimensions are even and equal, the width will be
+                scaled by default.
+
+        Raises:
+            DimensionNotEven: if both width and height are odd numbers.
         """
         if width % 2 != 0 and height % 2 != 0:
             raise TQECException(
