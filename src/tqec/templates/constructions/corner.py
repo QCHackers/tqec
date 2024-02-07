@@ -39,7 +39,8 @@ class ScalableCorner(ComposedTemplate):
         .  . 12  . 12  . 12  . 12  . 12  .
         ```
 
-        :param k: scale of the initial error-corrected qubit.
+        Args:
+            k: scale of the initial error-corrected qubit.
         """
         dim = 2 * k
         _templates = [

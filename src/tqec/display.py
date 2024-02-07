@@ -8,9 +8,10 @@ from tqec.templates.composed import ComposedTemplate
 def display_template(template: Template, *plaquette_indices: int) -> None:
     """Display a template instance with ASCII output.
 
-    :param template: the Template instance to display.
-    :param plaquette_indices: the plaquette indices that are forwarded to the
-        call to template.instantiate to get the actual template representation.
+    Args:
+        template: the Template instance to display.
+        *plaquette_indices: the plaquette indices that are forwarded to the call
+            to ``template.instantiate`` to get the actual template representation.
     """
     if len(plaquette_indices) == 0:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
@@ -35,13 +36,15 @@ def display_templates_svg(
     the templates, it can be very slow for large templates and results in huge
     svg files.
 
-    :param templates: the TemplateOrchestrator instance to display.
-    :param write_svg_file: the path to the SVG file to write.
-    :param canvas_height: the height of the canvas in pixels to draw on.
-    :param plaquette_indices: the plaquette indices that are forwarded to the
-        call to template.instantiate to get the actual template representation.
+    Args:
+        templates: the TemplateOrchestrator instance to display.
+        write_svg_file: the path to the SVG file to write.
+        canvas_height: the height of the canvas in pixels to draw on.
+        *plaquette_indices: the plaquette indices that are forwarded to the call
+            to ``template.instantiate`` to get the actual template representation.
 
-    :return: the SVG string.
+    Returns:
+        the SVG string.
     """
     if len(plaquette_indices) == 0:
         plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))

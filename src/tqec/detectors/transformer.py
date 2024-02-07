@@ -109,9 +109,14 @@ def transform_to_stimcirq_compatible(
     - :class:`Observable`: converted to `stimcirq.CumulativeObservableAnnotation` with the correct
     relative keys computed.
 
-    :param circuit: The circuit to transform, which may contain tqec specific operations.
-    :param context: See `cirq.transformer` documentation.
-    :returns: A new circuit with the tqec specific operations transformed to stimcirq compatible operations.
+    Args:
+        circuit: The circuit to transform, which may contain tqec specific
+            operations.
+        context: See `cirq.transformer` documentation.
+
+    Returns:
+        A new circuit with the tqec specific operations transformed to stimcirq
+        compatible operations.
     """
     _annotation_safety_check(circuit)
     measurement_map = CircuitMeasurementMap(circuit)
