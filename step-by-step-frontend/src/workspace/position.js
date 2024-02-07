@@ -45,6 +45,7 @@ export default class Position extends Graphics {
 	 * @param {*} color
 	 */
 	_createCircle(x, y, radius, color) {
+		this.clear();
 		// Create a circle
 		this.beginFill(color);
 		this.drawCircle(x, y, radius);

@@ -17,6 +17,8 @@ export default function TqecApp() {
 	app.stage.removeChildren();
 	const gridSize = 50;
 	const qubitRadius = 7;
+	const plaquetteDx = 2;
+	const plaquetteDy = 2;
 
 	// Create the workspace
 	const workspace = new Container();
@@ -29,11 +31,14 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Add guide for the eyes for the plaquette boundaries.
+	// They are located via the position of the top, left corner.
+	// The first guide is where the plaquette is built, the other guides are for the library.
+	const guideTopLeftCorners = [[11, 3], [19, 3], [19, 7], [19, 11], [19, 15]]
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
-	for (const [x0, y0] of [[11, 3], [19, 3], [19, 7], [19, 11]]) {
-		const x1 = x0 + 2;
-		const y1 = y0 + 2;
+	for (const [x0, y0] of guideTopLeftCorners) {
+		const x1 = x0 + plaquetteDx;
+		const y1 = y0 + plaquetteDy;
 		outline.moveTo(x0*gridSize, y0*gridSize);
 		outline.lineTo(x1*gridSize, y0*gridSize);
 		outline.lineTo(x1*gridSize, y1*gridSize);
@@ -67,14 +72,14 @@ export default function TqecApp() {
 
 /////////////////////////////////////////////////////////////
 
-	const infoButton = button('Library of plaquettes', 19*gridSize, 2*gridSize, 'orange', 'black');
+	const infoButton = button('Library of plaquettes', 19*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
 
     // Select the qubits that are part of a plaquette 
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
-	let plaquette;
+	let savedPlaquettes = [];
     let selectedQubits = [];
 
     createPlaquetteButton.on('click', (_e) => {
@@ -82,7 +87,7 @@ export default function TqecApp() {
 		selectedQubits = [];
 		workspace.children.forEach(child => {
 			if (child instanceof Qubit) {
-				if (child.role !== 'none') {
+				if (child.role !== 'none' && child.globalX < guideTopLeftCorners[1][0]*gridSize) {
 					selectedQubits.push(child);
 				}
 			}
@@ -91,11 +96,14 @@ export default function TqecApp() {
 		console.log(selectedQubits);
 
 		// Create and draw the plaquette
-		plaquette = new Plaquette(selectedQubits)
+		const plaquette = new Plaquette(selectedQubits)
 		plaquette.interactive = true;
+		savedPlaquettes.push(plaquette)
 		// We want the plaquette to be in the lowest layer
 		workspace.addChildAt(plaquette, 0);
 	});
+
+/////////////////////////////////////////////////////////////
 
 	// Create a button to allow for printing the plaquette's qubits 
 	const printQubitsButton = button('Print qubit names', gridSize, 2*gridSize, 'white', 'black');
@@ -113,6 +121,8 @@ export default function TqecApp() {
 		workspace.addChild(qubitsButton);
 	});
 
+/////////////////////////////////////////////////////////////
+
 	// Create a button for printing the plaquette's circuit 
 	const printCircuitButton = button('Print circuit', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printCircuitButton);
@@ -125,25 +135,39 @@ export default function TqecApp() {
 		workspace.addChild(circuitArt);
 	});
 
+/////////////////////////////////////////////////////////////
+
+	const addPlaquetteButton = button('Add plaquette to library', gridSize, 10*gridSize, 'white', 'black');
+	workspace.addChild(addPlaquetteButton);
+
+    addPlaquetteButton.on('click', (_e) => {
+		// De-select the qubits
+		selectedQubits = [];
+		// Remove list of qubits
+		workspace.removeChild(qubitsButton);
+		workspace.removeChild(circuitArt)
+		const numPlaquettes = savedPlaquettes.length
+		const dx = guideTopLeftCorners[numPlaquettes][0]-guideTopLeftCorners[0][0];
+		const dy = guideTopLeftCorners[numPlaquettes][1]-guideTopLeftCorners[0][1];
+		savedPlaquettes[numPlaquettes-1].movePlaquette(dx*gridSize, dy*gridSize);
+	});
+
+/////////////////////////////////////////////////////////////
+
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', gridSize, 10*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 11*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
-		// De-select the qubits
-		selectedQubits.forEach(qubit => {
-		    qubit.role = 'none';
-			qubit.changeColor(Qubit.color_none);
-			qubit.name = qubit.name.replace(/[szxa]/g, 'q');
-			qubit.removeChildren();
-		}); 
-		selectedQubits = []
-		// Remove list of qubits
-		//qubitsButton = button('', 2*gridSize, 3*gridSize, 'grey', 'black');
-		workspace.removeChild(qubitsButton)
-		workspace.removeChild(plaquette)
-		workspace.removeChild(circuitArt)
+		// Clear the work-in-progress plaquette.
+		for (let i = workspace.children.length - 1; i >= 0; i--) {
+    		const child = workspace.children[i];
+			if (child instanceof Qubit && child.globalX < guideTopLeftCorners[1][0]*gridSize)
+		    	workspace.removeChild(child);
+		};
 	});
+
+/////////////////////////////////////////////////////////////
 
     //  Add workspace to the stage
     workspace.visible = true;

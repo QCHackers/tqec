@@ -2,6 +2,7 @@
 
 import { Graphics, Color } from 'pixi.js';
 import { convexHull } from './utils'
+import Qubit from './qubit.js'
 
 /////////////////////////////////////////////////////////////
 
@@ -85,7 +86,7 @@ export default class Plaquette extends Graphics {
 
         // Draw convex hull
 		this.beginFill(this.color);
-        this.lineStyle(1, this.color);
+        this.lineStyle(10, this.color);
         this.moveTo(hull[0].x, hull[0].y);
         for (let i = 1; i < hull.length; i++) {
             this.lineTo(hull[i].x, hull[i].y);
@@ -93,4 +94,33 @@ export default class Plaquette extends Graphics {
         this.lineTo(hull[0].x, hull[0].y);
 		this.endFill();
 	};
+
+    movePlaquette(dx, dy) {
+        // Move the qubits.
+		this.qubits.forEach(q => {
+            q.globalX += dx;
+            q.globalY += dy;
+		    if (q.role === 'none')
+                q.changeColor(Qubit.color_none);
+		    else if (q.role === 'x')
+                q.changeColor(Qubit.color_x);
+		    else if (q.role === 'z')
+                q.changeColor(Qubit.color_z);
+		    else if (q.role === 'a')
+                q.changeColor(Qubit.color_a);
+            q.updateLabel();
+        });
+        // Recompute the shaded area.
+        this.clear();
+	    this._createConvexHull();
+    };
+
+    /*
+    onDragStart(event) {
+        this.isDragging = true;
+        this.initialPosition = event.data.getLocalPosition(this.parent);
+        console.log(`Initial position: ${this.initialPosition}`);
+    }
+    */
+
 }
