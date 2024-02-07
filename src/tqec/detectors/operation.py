@@ -32,7 +32,7 @@ class ShiftCoords(cirq.Operation):
         `cirq.VirtualTag` and the `STIM_TAG`.
 
         Args:
-            shifts: How much to shift each coordinate.
+            *shifts: How much to shift each coordinate.
         """
         self._shifts = shifts
 
