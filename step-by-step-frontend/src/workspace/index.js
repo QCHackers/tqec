@@ -33,7 +33,7 @@ export default function TqecApp() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorners = [[11, 3], [19, 3], [19, 7], [19, 11], [19, 15]]
+	const guideTopLeftCorners = [[11, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
 	const libraryColors = ['purple', 'green', 'pink', 'gold']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
@@ -57,11 +57,12 @@ export default function TqecApp() {
             if ( (x+y) % 2 === 1 )
                 continue;
 			// Create a qubit
-			const pos = new Position(x*gridSize, y*gridSize, qubitRadius);
+			const pos = new Position(x*gridSize, y*gridSize, qubitRadius-2);
     		pos.on('click', (_e) => {
 				const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
-				// Name the qubit according to its position
-				qubit.name = `Q(${String(x).padStart(2, ' ')},${String(y).padStart(2, ' ')})`;
+				// Name the qubit according to its position relative to the top-left
+				// corner of the plaquette-building area.
+				qubit.name = `Q(${String(x-guideTopLeftCorners[0][0]).padStart(2, ' ')},${String(y-guideTopLeftCorners[0][1]).padStart(2, ' ')})`;
 				qubit.interactive = true;
 				qubit.on('click', qubit.select)
 				qubit.select()
@@ -73,7 +74,7 @@ export default function TqecApp() {
 
 /////////////////////////////////////////////////////////////
 
-	const infoButton = button('Library of plaquettes', 19*gridSize, 1*gridSize, 'orange', 'black');
+	const infoButton = button('Library of plaquettes', guideTopLeftCorners[1][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
 
@@ -88,7 +89,7 @@ export default function TqecApp() {
 		selectedQubits = [];
 		workspace.children.forEach(child => {
 			if (child instanceof Qubit) {
-				if (child.role !== 'none' && child.globalX < guideTopLeftCorners[1][0]*gridSize) {
+				if (child.role !== 'none' && child.globalX < (guideTopLeftCorners[1][0]-2)*gridSize) {
 					selectedQubits.push(child);
 				}
 			}
@@ -131,8 +132,6 @@ export default function TqecApp() {
 
     printCircuitButton.on('click', (_e) => {
 		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
-		//let message = createCircuitAsciiArt(selectedQubits, selectedQubits[0]) // FIXME:
-		//circuitArt = button(message, gridSize, 7*gridSize, 'grey', 'black'); // FIXME:
 		workspace.addChild(circuitArt);
 	});
 
@@ -163,7 +162,7 @@ export default function TqecApp() {
 		// Clear the work-in-progress plaquette.
 		for (let i = workspace.children.length - 1; i >= 0; i--) {
     		const child = workspace.children[i];
-			if (child instanceof Qubit && child.globalX < guideTopLeftCorners[1][0]*gridSize)
+			if (child instanceof Qubit && child.globalX < (guideTopLeftCorners[1][0]-2)*gridSize)
 		    	workspace.removeChild(child);
 			else if (child instanceof Qubit && child.role === 'none')
 		    	workspace.removeChild(child);
