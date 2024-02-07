@@ -1,15 +1,8 @@
 // Define class Plaquette and its methods
 
-import { Graphics, Color } from 'pixi.js';
+import { Graphics } from 'pixi.js';
 import { convexHull } from './utils'
 import Qubit from './qubit.js'
-
-/////////////////////////////////////////////////////////////
-
-export const PlaquetteColors = {
-  purple: new Color('purple'),
-  yellow: new Color('yellow'),
-};
 
 /////////////////////////////////////////////////////////////
 
@@ -21,7 +14,7 @@ export const PlaquetteColors = {
  * @param {Color} color - Color filling of the plaquette
  */
 export default class Plaquette extends Graphics {
-    constructor(qubits, color = PlaquetteColors.purple) {
+    constructor(qubits, color = 'purple') {
         super();
         // UI properties
         this.color = color;

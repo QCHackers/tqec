@@ -34,6 +34,7 @@ export default function TqecApp() {
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
 	const guideTopLeftCorners = [[11, 3], [19, 3], [19, 7], [19, 11], [19, 15]]
+	const libraryColors = ['purple', 'green', 'pink', 'gold']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
 	for (const [x0, y0] of guideTopLeftCorners) {
@@ -96,7 +97,7 @@ export default function TqecApp() {
 		console.log(selectedQubits);
 
 		// Create and draw the plaquette
-		const plaquette = new Plaquette(selectedQubits)
+		const plaquette = new Plaquette(selectedQubits, libraryColors[savedPlaquettes.length])
 		plaquette.interactive = true;
 		savedPlaquettes.push(plaquette)
 		// We want the plaquette to be in the lowest layer
@@ -163,6 +164,8 @@ export default function TqecApp() {
 		for (let i = workspace.children.length - 1; i >= 0; i--) {
     		const child = workspace.children[i];
 			if (child instanceof Qubit && child.globalX < guideTopLeftCorners[1][0]*gridSize)
+		    	workspace.removeChild(child);
+			else if (child instanceof Qubit && child.role === 'none')
 		    	workspace.removeChild(child);
 		};
 	});
