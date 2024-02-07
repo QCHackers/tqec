@@ -1,6 +1,6 @@
 // Define class Qubit and its methods
 
-import { Graphics } from 'pixi.js'
+import { Graphics, Rectangle } from 'pixi.js'
 
 /////////////////////////////////////////////////////////////
 
@@ -16,7 +16,6 @@ export default class Position extends Graphics {
 	constructor(x, y, radius = 5) {
 		super();
 		// Color properties (as static fields).
-		// Associated to the role played by the qubit.
 		Position.color = 'white'
 		// UI properties
 		this.eventMode = 'static';
@@ -25,6 +24,7 @@ export default class Position extends Graphics {
 		this.globalX = x;
 		this.globalY = y;
 		this.radius = radius;
+		this.factor = 3; // TO expand the hitarea.
 		this._createCircle(x, y, radius, Position.color);
 		this.isQubit = false;
 	}
@@ -54,5 +54,9 @@ export default class Position extends Graphics {
 		// Add hover event
 		this.on('pointerover', this._onPointerOver);
 		this.on('pointerout', this._onPointerOut);
+
+		// Enlarge the 'hit' area.
+		const hit = new Rectangle(x-this.factor*radius, y-this.factor*radius, 2*this.factor*radius, 2*this.factor*radius)
+		this.hitArea = hit;
 	}
 }
