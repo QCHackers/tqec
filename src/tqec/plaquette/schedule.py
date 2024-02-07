@@ -5,7 +5,7 @@ from copy import deepcopy
 import cirq
 
 from tqec.detectors.operation import Detector, make_detector
-from tqec.exceptions import QubitTypeException, TQECException
+from tqec.exceptions import TQECException
 
 
 class ScheduleException(TQECException):
@@ -94,22 +94,23 @@ class ScheduledCircuit:
             schedule: the schedule to check.
 
         Raises:
-            ScheduleWithNonIntegerEntries: if the given schedule has a non-
-                integer entry.
+            ScheduleWithNonIntegerEntries: if the given schedule has a non-integer entry.
             ScheduleNotSorted: if the given schedule is not a sorted list.
             ScheduleEntryTooLow: if the given schedule has an entry that would
                 lead to incorrect scheduling.
             ScheduleCannotBeAppliedToCircuit: if the given schedule cannot be
                 applied to the provided cirq.Circuit instance, for example if
-                the number of entries in the schedule and the number of non-
-                virtual moments in the circuit are not equal.
-            QubitTypeError: if any of the circuit qubit is not a cirq.GridQubit
+                the number of entries in the schedule and the number of non-virtual moments
+                in the circuit are not equal.
+            TQECException: if any of the circuit qubit is not a cirq.GridQubit
                 instance.
         """
         # Check that all the qubits in the cirq.Circuit instance are instances of cirq.GridQubit.
         for q in circuit.all_qubits():
             if not isinstance(q, cirq.GridQubit):
-                raise QubitTypeException(cirq.GridQubit, type(q))
+                raise TQECException(
+                    f"Excepted only instances of 'cirq.GridQubit', "
+                    f"but found an instance of {q.__class__.__name__}.")
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
