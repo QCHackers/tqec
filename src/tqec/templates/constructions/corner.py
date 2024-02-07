@@ -20,30 +20,23 @@ class ScalableCorner(ComposedTemplate):
         location on the chip. This is the basic building block to perform error-corrected
         computations.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
+        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
 
-        The below text represents this template for an input `k` of 2.
-
-        ```text
-        .  .  1  .  1  .  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  5  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  5  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  6  .  7  .  7  .  .
-        2  4  3  4  8  9  8  9  8  9  8 10
-        .  3  4  8  9  8  9  8  9  8  9  .
-        2  4  8  9  8  9  8  9  8  9  8 10
-        . 11  9  8  9  8  9  8  9  8  9  .
-        .  . 12  . 12  . 12  . 12  . 12  .
-        ```
+            .  .  1  .  1  .  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  6  .  7  .  7  .  .
+            2  4  3  4  8  9  8  9  8  9  8 10
+            .  3  4  8  9  8  9  8  9  8  9  .
+            2  4  8  9  8  9  8  9  8  9  8 10
+            . 11  9  8  9  8  9  8  9  8  9  .
+            .  . 12  . 12  . 12  . 12  . 12  .
 
         Args:
-            k: scale of the initial error-corrected qubit.
+            dim: dimension of the initial error-corrected qubit.
         """
         # nsone: non-scalable one
         # nstwo: non-scalable two
