@@ -47,12 +47,12 @@ class CircuitMeasurementMap:
         Args:
             current_moment_index: the moment index for which we want to compute
                 the offset. This method will only backtrack in time, and so will
-                never return measurements that are performed after the moment
-                provided in this parameter. Also, the measurement record offset
-                is a local quantity that might change in time (due to subsequent
-                measurements shifting the offset), meaning that the returned
-                offset should only be considered valid for the moment provided
-                here, and for no other moments.
+                never return measurements that are performed strictly after the 
+                moment provided in this parameter. Also, the measurement record 
+                offset is a local quantity that might change in time (due to 
+                subsequent measurements shifting the offset), meaning that the
+                returned offset should only be considered valid for the moment 
+                provided here, and for no other moments.
             qubit: qubit instance the measurement we are searching for has been
                 performed on.
             measurement_offset: the temporally-local, negative, measurement
@@ -66,12 +66,18 @@ class CircuitMeasurementMap:
             current_moment_index, or None if the searched offset does not exist.
 
         Raises:
-            TQECException: if the provided measurement_offset value is positive.
+            TQECException: if the provided measurement_offset value is positive or
+                if the ``current_moment_index`` provided is not a valid moment of
+                the cirq.Circuit instance this instance has been constructed from.
         """
         if measurement_offset >= 0:
             raise TQECException(
                 f"Found a positive measurement offset ({measurement_offset}). "
                 "All measurement offsets should be strictly negative integers."
+            )
+        if not 0 <= current_moment_index < len(self._global_measurement_indices):
+            raise TQECException(
+                f"The provided moment index ({current_moment_index}) is invalid."
             )
 
         last_performed_measurement = self._get_index_of_last_performed_measurement(
@@ -81,9 +87,7 @@ class CircuitMeasurementMap:
             return None
 
         seen_measurements_on_qubit: int = 0
-        # We do not take into account the current moment, so we start at the moment
-        # just before.
-        for moment_index in reversed(range(current_moment_index)):
+        for moment_index in reversed(range(current_moment_index + 1)):
             moment_has_measurement_on_qubit: bool = (
                 qubit in self._global_measurement_indices[moment_index]
             )
