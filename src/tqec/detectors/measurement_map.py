@@ -66,12 +66,18 @@ class CircuitMeasurementMap:
             current_moment_index, or None if the searched offset does not exist.
 
         Raises:
-            TQECException: if the provided measurement_offset value is positive.
+            TQECException: if the provided measurement_offset value is positive or
+                if the ``current_moment_index`` provided is not a valid moment of
+                the cirq.Circuit instance this instance has been constructed from.
         """
         if measurement_offset >= 0:
             raise TQECException(
                 f"Found a positive measurement offset ({measurement_offset}). "
                 "All measurement offsets should be strictly negative integers."
+            )
+        if not 0 <= current_moment_index < len(self._global_measurement_indices):
+            raise TQECException(
+                f"The provided moment index ({current_moment_index}) is invalid."
             )
 
         last_performed_measurement = self._get_index_of_last_performed_measurement(
