@@ -110,7 +110,8 @@ class ComposedTemplate(Template):
             err = IndexError()
             err.add_note(
                 f"Asking for element identified by {template_id} when only "
-                f"{len(self._templates)} templates have been added to the TemplateOrchestrator instance."
+                f"{len(self._templates)} templates have been added to the "
+                "ComposedTemplate instance."
             )
             raise err
 
@@ -251,7 +252,7 @@ class ComposedTemplate(Template):
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
         """Computes the absolute position of each template upper-left corner.
 
-        This is the main method of the TemplateOrchestrator class. It explores templates
+        This is the main method of the ComposedTemplate class. It explores templates
         by performing a BFS on the graph of relations between templates, starting by the
         first template inserted (but any template connected to the others should work
         fine).
@@ -409,7 +410,7 @@ class ComposedTemplate(Template):
         """
         if 0 in plaquette_indices:
             raise TQECException(
-                f"{__class__.__name__} does not expect a plaquette 0 anymore."
+                f"{self.__class__.__name__} does not expect a plaquette 0 anymore."
             )
         if len(plaquette_indices) != self.expected_plaquettes_number:
             raise TQECException(
@@ -455,10 +456,10 @@ class ComposedTemplate(Template):
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
-            # __class__ is "TemplateOrchestrator" here, whatever the type of self is. This is different
+            # self.__class__ is "ComposedTemplate" here, whatever the type of self is. This is different
             # from what is done in the Template base class. This is done to avoid users subclassing this
             # class and having a subclass name we do not control in the "type" entry.
-            "type": __class__.__name__,
+            "type": self.__class__.__name__,
             "kwargs": {
                 "templates": [t.to_dict() for t in self._templates],
             },
