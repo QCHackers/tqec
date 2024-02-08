@@ -3,8 +3,8 @@ import typing as ty
 import numpy
 from tqec.enums import CornerPositionEnum
 from tqec.position import Shape2D
-from tqec.templates.atomic.base import AtomicTemplate
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
+from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
 
 
@@ -57,7 +57,7 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
         )
 
 
-class AlternatingCornerSquareTemplate(AtomicTemplate):
+class AlternatingCornerSquareTemplate(Template):
     """TODO: This class needs fixing, the instantiate output does not adhere to
     the convention that the first plaquette provided to the method is the top-left
     one in the resulting array."""

@@ -3,11 +3,11 @@ import typing as ty
 import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
-from tqec.templates.atomic.base import AtomicTemplate
+from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
 
 
-class AlternatingRectangleTemplate(AtomicTemplate):
+class AlternatingRectangleTemplate(Template):
     def __init__(
         self,
         width: Dimension,
@@ -89,7 +89,7 @@ class AlternatingRectangleTemplate(AtomicTemplate):
         return 2
 
 
-class RawRectangleTemplate(AtomicTemplate):
+class RawRectangleTemplate(Template):
     def __init__(
         self,
         indices: list[list[int]],
