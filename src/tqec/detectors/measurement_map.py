@@ -1,7 +1,8 @@
-import cirq
+from __future__ import annotations
 
-from tqec.exceptions import TQECException
+import cirq
 from tqec.detectors.operation import RelativeMeasurementsRecord
+from tqec.exceptions import TQECException
 
 
 def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
@@ -142,7 +143,9 @@ class CircuitMeasurementMap:
             for op in moment.operations:
                 if isinstance(op.gate, cirq.MeasurementGate):
                     if len(op.qubits) > 1:
-                        raise TQECException(f"Found a measurement applied on multiple qubits ({op.qubits}).")
+                        raise TQECException(
+                            f"Found a measurement applied on multiple qubits ({op.qubits})."
+                        )
                     qubit: cirq.Qid = op.qubits[0]
                     global_measurement_indices[-1][qubit] = global_measurement_index
                     global_measurement_index += 1

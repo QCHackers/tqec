@@ -1,10 +1,9 @@
 import cirq
-
 from tqec.enums import PlaquetteOrientation
+from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
-from tqec.exceptions import TQECException
 
 
 class Plaquette:

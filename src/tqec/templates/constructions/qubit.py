@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
