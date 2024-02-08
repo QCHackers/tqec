@@ -1,19 +1,31 @@
+from __future__ import annotations
+
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, LinearFunction
+from tqec.templates.scale import Dimension, FixedDimension
 
 
 class QubitSquareTemplate(ComposedTemplate):
     def __init__(self, dim: Dimension) -> None:
         """An error-corrected qubit.
 
-        TODO
+        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
+
+            .  .  1  .  1  .
+            2  3  4  3  4  .
+            .  4  3  4  3  5
+            2  3  4  3  4  .
+            .  4  3  4  3  5
+            .  6  .  6  .  .
+
+        Args:
+            dim: dimension of the error-corrected qubit.
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, LinearFunction(0, 1))
+        nsone = FixedDimension(1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
@@ -46,10 +58,22 @@ class QubitRectangleTemplate(ComposedTemplate):
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
-        TODO
+        The below text represents this template for an input ``width = FixedDimension(6)``
+        and ``height = FixedDimension(4)`` ::
+
+            .  .  1  .  1  .  1  .
+            2  3  4  3  4  3  4  .
+            .  4  3  4  3  4  3  5
+            2  3  4  3  4  3  4  .
+            .  4  3  4  3  4  3  5
+            .  6  .  6  .  6  .  .
+
+        Args:
+            width: width of the rectangle logical qubit.
+            height: height of the rectangle logical qubit.
         """
         # nsone: non-scalable one
-        nsone = Dimension(1, LinearFunction(0, 1))
+        nsone = FixedDimension(1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4

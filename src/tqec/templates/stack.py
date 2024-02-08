@@ -106,7 +106,7 @@ class StackedTemplate(Template):
         """
         return sum(t.expected_plaquettes_number for t in self._stack)
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         :param plaquette_indices: the plaquette indices that will be forwarded to the
@@ -122,7 +122,7 @@ class StackedTemplate(Template):
             indices = [plaquette_indices[i] for i in range(istart, istop)]
             first_non_used_plaquette_index = istop
 
-            tarr = template.instanciate(*indices)
+            tarr = template.instantiate(*indices)
             yshape, xshape = tarr.shape
 
             # We do not want "0" plaquettes (i.e., "no plaquette" with our convention) to

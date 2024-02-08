@@ -1,7 +1,7 @@
 import numbers
 
 import cirq
-from tqec.detectors.gate import ShiftCoordsGate
+from tqec.detectors.operation import make_shift_coords
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Position
@@ -18,7 +18,7 @@ def make_repeated_layer(circuit: cirq.Circuit, repetitions: int) -> cirq.Circuit
     assert (
         any_qubit is not None
     ), "Could not find any qubit in the given Circuit instance."
-    circuit_to_repeat = circuit + cirq.Circuit([ShiftCoordsGate(0, 0, 1).on(any_qubit)])
+    circuit_to_repeat = circuit + cirq.Circuit([make_shift_coords(0, 0, 1)])
     repeated_circuit_operation = cirq.CircuitOperation(
         circuit_to_repeat.freeze()
     ).repeat(repetitions)
@@ -40,16 +40,7 @@ class BaseLayer:
 
     def generate_circuit(self, k: int) -> cirq.Circuit:
         raw_circuit = generate_circuit(self._template.scale_to(k), self._plaquettes)
-        # Note: we do not care on which qubit it is applied, but we want a SHIFT_COORDS instruction
-        #       to be inserted at the end of the layer, because we do not want following layers to
-        #       to overwrite the detectors of this layer with their own.
-        any_qubit = next(iter(raw_circuit.all_qubits()), None)
-        assert (
-            any_qubit is not None
-        ), "Could not find any qubit in the given Circuit instance."
-        shift_op_in_circuit = cirq.Circuit(
-            cirq.Moment(ShiftCoordsGate(0, 0, 1).on(any_qubit))
-        )
+        shift_op_in_circuit = cirq.Circuit(cirq.Moment(make_shift_coords(0, 0, 1)))
         if self._repetitions == 1:
             return raw_circuit + shift_op_in_circuit
         else:

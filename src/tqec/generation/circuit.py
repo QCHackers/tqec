@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import deepcopy
 
 import cirq
@@ -16,26 +18,30 @@ def generate_circuit(
 
     This is one of the core methods of the `tqec` package. It generates a quantum circuit
     from the description of the template that should be implemented as well as the plaquettes
-    that should be used to instanciate the provided template.
+    that should be used to instantiate the provided template.
 
     This function requires that a few pre-conditions on the inputs are met:
     1. the number of plaquettes provided should match the number of plaquettes required by
-       the provided template.
+    the provided template.
     2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
     If any of the above pre-conditions is not met, the inputs are considered invalid, in which
     case this function **might** raise an error.
 
-    :param template: spatial description of the quantum error correction experiment we want
-        to implement.
-    :param plaquettes: description of the computation that should happen at different time-slices
-        of the quantum error correction experiment (or at least part of it).
+    Args:
+        template: spatial description of the quantum error correction experiment
+            we want to implement.
+        plaquettes: description of the computation that should happen at
+            different time-slices of the quantum error correction experiment (or
+            at least part of it).
 
-    :returns: a cirq.Circuit instance implementing the (part of) quantum error correction experiment
-        represented by the provided inputs.
+    Returns:
+        a cirq.Circuit instance implementing the (part of) quantum error
+        correction experiment represented by the provided inputs.
 
-    :raises CannotUsePlaquetteWithDifferentShapes: if the provided Plaquette instance do not ALL
-        have the same shape. See https://github.com/QCHackers/tqec/issues/34 for more information.
+    Raises:
+        TQECException: if the provided plaquettes do not match the expected
+            number of plaquettes for the given template.
     """
     # Check that the user gave enough plaquettes.
     if len(plaquettes) != template.expected_plaquettes_number:
@@ -48,10 +54,10 @@ def generate_circuit(
     if isinstance(plaquettes, list):
         plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
-    # Instanciate the template with the appropriate plaquette indices.
+    # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, len(plaquettes) + 1))
-    template_plaquettes = template.instanciate(*_indices)
+    template_plaquettes = template.instantiate(*_indices)
     increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
@@ -80,13 +86,13 @@ def generate_circuit(
 
 def _create_mapping(
     plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: Displacement
-) -> dict[cirq.Qid, cirq.Qid]:
+) -> dict[cirq.GridQubit, cirq.GridQubit]:
     origin = plaquette.origin
 
     qubit_map = {
         # GridQubit are indexed as (row, col), so (y, x)
         # Qubits are given relative to an origin, so we need to add the offset
         qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)  # type: ignore
-        for qubit in scheduled_circuit.raw_circuit.all_qubits()
+        for qubit in scheduled_circuit.mappable_qubits
     }
     return qubit_map

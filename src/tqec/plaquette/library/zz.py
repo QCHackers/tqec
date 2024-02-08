@@ -1,5 +1,5 @@
 import cirq
-from tqec.detectors.gate import DetectorGate, RelativeMeasurement
+from tqec.detectors.operation import make_detector
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import PlaquetteList, RoundedPlaquette
 from tqec.plaquette.schedule import ScheduledCircuit
@@ -27,7 +27,7 @@ class ZZSyndromeMeasurementPlaquette(BaseZZPlaquette):
         self,
         orientation: PlaquetteOrientation,
         schedule: list[int],
-        detector: DetectorGate | None = None,
+        detector: cirq.Operation | None = None,
         reset_data_qubits: bool = False,
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
@@ -39,14 +39,14 @@ class ZZSyndromeMeasurementPlaquette(BaseZZPlaquette):
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        [
+                        cirq.Moment(
                             cirq.R(q).with_tags(self._MERGEABLE_TAG)
                             for q in qubits_to_reset
-                        ],
-                        [cirq.CX(data_qubits[0], syndrome_qubit)],
-                        [cirq.CX(data_qubits[1], syndrome_qubit)],
-                        [cirq.M(syndrome_qubit)],
-                        detector.on(syndrome_qubit) if detector is not None else [],
+                        ),
+                        cirq.Moment(cirq.CX(data_qubits[0], syndrome_qubit)),
+                        cirq.Moment(cirq.CX(data_qubits[1], syndrome_qubit)),
+                        cirq.Moment(cirq.M(syndrome_qubit)),
+                        cirq.Moment(detector) if detector is not None else [],
                     ]
                 ),
                 schedule,
@@ -64,8 +64,10 @@ class ZZInitialisationPlaquette(ZZSyndromeMeasurementPlaquette):
     ):
         detector = None
         if include_detector:
-            detector = DetectorGate(
-                [RelativeMeasurement(cirq.GridQubit(0, 0), -1)],
+            (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
+            detector = make_detector(
+                syndrome_qubit,
+                [(cirq.GridQubit(0, 0), -1)],
                 time_coordinate=0,
             )
         super().__init__(orientation, schedule, detector, reset_data_qubits=True)
@@ -80,11 +82,10 @@ class ZZMemoryPlaquette(ZZSyndromeMeasurementPlaquette):
     ):
         detector = None
         if include_detector:
-            detector = DetectorGate(
-                [
-                    RelativeMeasurement(cirq.GridQubit(0, 0), -1),
-                    RelativeMeasurement(cirq.GridQubit(0, 0), -2),
-                ],
+            (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
+            detector = make_detector(
+                syndrome_qubit,
+                [(cirq.GridQubit(0, 0), -1), (cirq.GridQubit(0, 0), -2)],
                 time_coordinate=0,
             )
         super().__init__(orientation, schedule, detector, reset_data_qubits=False)
@@ -105,17 +106,18 @@ class ZZFromZZZZPlaquette(BaseZZPlaquette):
         measured_qubits_offsets = [q - syndrome_qubit for q in qubits_to_measure]
         # Regular detector offsets
         measurements_lookback_offsets = [
-            RelativeMeasurement(cirq.GridQubit(0, 0), -1),
-            RelativeMeasurement(cirq.GridQubit(0, 0), -2),
+            (cirq.GridQubit(0, 0), -1),
+            (cirq.GridQubit(0, 0), -2),
         ]
         # Adding the offset of the qubits we just measured.
         for offset in measured_qubits_offsets:
-            measurements_lookback_offsets.append(RelativeMeasurement(offset, -1))
+            measurements_lookback_offsets.append((offset, -1))
 
         detector = None
         if include_detector:
-            detector = DetectorGate(
-                measurements_lookback_offsets=measurements_lookback_offsets,
+            detector = make_detector(
+                syndrome_qubit,
+                measurements_lookback_offsets,
                 time_coordinate=0,
             )
 
@@ -123,17 +125,19 @@ class ZZFromZZZZPlaquette(BaseZZPlaquette):
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        [
+                        cirq.Moment(
                             cirq.R(q).with_tags(self._MERGEABLE_TAG)
                             for q in qubits_to_reset
-                        ],
-                        [cirq.CX(data_qubits[0], syndrome_qubit)],
-                        [cirq.CX(data_qubits[1], syndrome_qubit)],
-                        [
-                            cirq.M(syndrome_qubit),
-                            *[cirq.M(qubit) for qubit in qubits_to_measure],
-                        ],
-                        detector.on(syndrome_qubit) if detector is not None else [],
+                        ),
+                        cirq.Moment(cirq.CX(data_qubits[0], syndrome_qubit)),
+                        cirq.Moment(cirq.CX(data_qubits[1], syndrome_qubit)),
+                        cirq.Moment(
+                            [
+                                cirq.M(syndrome_qubit),
+                                *[cirq.M(qubit) for qubit in qubits_to_measure],
+                            ]
+                        ),
+                        cirq.Moment(detector) if detector is not None else [],
                     ]
                 ),
                 schedule,
@@ -153,20 +157,14 @@ class ZZFinalMeasurementPlaquette(BaseZZPlaquette):
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
         data_qubits = self.get_data_qubits_cirq(orientation)
-        detector = [
-            cirq.Moment(
-                DetectorGate(
-                    [
-                        RelativeMeasurement(cirq.GridQubit(0, 0), -1),
-                        *[
-                            RelativeMeasurement(dq - syndrome_qubit, -1)
-                            for dq in data_qubits
-                        ],
-                    ],
-                    time_coordinate=0,
-                ).on(syndrome_qubit)
-            )
-        ]
+        detector = make_detector(
+            syndrome_qubit,
+            [
+                (cirq.GridQubit(0, 0), -1),
+                *[(dq - syndrome_qubit, -1) for dq in data_qubits],
+            ],
+            time_coordinate=0,
+        )
         super().__init__(
             circuit=ScheduledCircuit(
                 cirq.Circuit(
@@ -177,8 +175,8 @@ class ZZFinalMeasurementPlaquette(BaseZZPlaquette):
                                 for q in data_qubits
                             ]
                         ),
+                        cirq.Moment(detector) if include_detector else [],
                     ]
-                    + (detector if include_detector else [])
                 ),
             ),
             orientation=orientation,

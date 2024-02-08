@@ -9,19 +9,39 @@ from tqec.templates.atomic.square import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, LinearFunction
+from tqec.templates.scale import Dimension, FixedDimension
 
 
 class ScalableCorner(ComposedTemplate):
     def __init__(self, dim: Dimension) -> None:
         """A scalable corner template.
 
-        TODO
+        This corner template can be used to move an error-corrected qubit to another
+        location on the chip. This is the basic building block to perform error-corrected
+        computations.
+
+        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
+
+            .  .  1  .  1  .  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  6  .  7  .  7  .  .
+            2  4  3  4  8  9  8  9  8  9  8 10
+            .  3  4  8  9  8  9  8  9  8  9  .
+            2  4  8  9  8  9  8  9  8  9  8 10
+            . 11  9  8  9  8  9  8  9  8  9  .
+            .  . 12  . 12  . 12  . 12  . 12  .
+
+        Args:
+            dim: dimension of the initial error-corrected qubit.
         """
         # nsone: non-scalable one
         # nstwo: non-scalable two
-        nsone = Dimension(1, LinearFunction(0, 1))
-        nstwo = Dimension(2, LinearFunction(0, 2))
+        nsone = FixedDimension(1)
+        nstwo = FixedDimension(2)
 
         _templates = [
             # 0

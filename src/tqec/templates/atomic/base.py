@@ -16,7 +16,8 @@ class AtomicTemplate(Template):
         For example a default_x_increment of 2 means that two 2x2 plaquettes will share
         a common edge.
 
-        :param default_x_increment: default increment in the x direction between two plaquettes.
-        :param default_y_increment: default increment in the y direction between two plaquettes.
+        Args:
+            default_x_increment: default increment in the x direction between two plaquettes.
+            default_y_increment: default increment in the y direction between two plaquettes.
         """
         super().__init__(default_x_increment, default_y_increment)

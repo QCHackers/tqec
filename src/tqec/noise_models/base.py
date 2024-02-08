@@ -5,14 +5,15 @@ class BaseNoiseModel(cirq.NoiseModel):
     def __init__(self, probability: float) -> None:
         """Base class for all `tqec` noise models
 
-        :param probability: strength of the noise described by the instance.
+        Args:
+            probability: strength of the noise described by the instance.
         """
         self._p = cirq.value.validate_probability(
             probability, "noise model probability"
         )
         super().__init__()
 
-    def recurse_in_operation_if_CircuitOperation(
+    def recurse_in_operation_if_circuit_operation(
         self, operation: cirq.Operation
     ) -> cirq.OP_TREE:
         """Helper method to handle cirq.CircuitOperation nearly transparently
@@ -24,11 +25,15 @@ class BaseNoiseModel(cirq.NoiseModel):
         This method does nothing if the provided operation is not a cirq.CircuitOperation instance
         and returns the same, unmodified, instance.
 
-        :param operation: a cirq.Operation instance that will be recursed in if and only if it is
-            a cirq.CircuitOperation instance.
-        :returns: a unmodified cirq.Operation instance if the provided operation is not an instance
-            of cirq.CircuitOperation. Else, the result of applying the noise model (subclass of this
-            class) calling this method on the cirq.Circuit instance wrapped in the operation.
+        Args:
+            operation: a cirq.Operation instance that will be recursed in if and
+                only if it is a cirq.CircuitOperation instance.
+
+        Returns:
+            An unmodified cirq.Operation instance if the provided operation is
+            not an instance of cirq.CircuitOperation. Else, the result of
+            applying the noise model (subclass of this class) calling this
+            method on the cirq.Circuit instance wrapped in the operation.
         """
         # If we have an instance of CircuitOperation, special handling should be performed to avoid
         # inserting a depolarizing channel as large as the circuit. In this specific case, we recurse

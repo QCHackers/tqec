@@ -14,7 +14,8 @@ class AfterResetFlipNoise(BaseNoiseModel):
         circuit contains operations like the stim "MR" (Measurement and Reset)
         instruction, this noise channel will **not** add any noise.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            operation: The operation to add noise on.
         """
         if isinstance(operation.gate, cirq.ResetChannel):
             return [
@@ -25,4 +26,4 @@ class AfterResetFlipNoise(BaseNoiseModel):
                 ],
             ]
         else:
-            return self.recurse_in_operation_if_CircuitOperation(operation)
+            return self.recurse_in_operation_if_circuit_operation(operation)

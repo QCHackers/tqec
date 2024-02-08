@@ -13,7 +13,8 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
         considered idle during this Moment and a depolarizing noise is added
         to account for this idle time.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            p: strength (probability of error) of the applied noise.
         """
         super().__init__(p)
 
@@ -28,7 +29,7 @@ class DepolarizingNoiseOnIdlingQubit(BaseNoiseModel):
 
         # Apply recursively the noise model to CircuitOperation instances
         moment = cirq.Moment(
-            self.recurse_in_operation_if_CircuitOperation(op) for op in moment
+            self.recurse_in_operation_if_circuit_operation(op) for op in moment
         )
         # Apply the noise model to the moment at hand, not recursing into
         # any CircuitOperation instances

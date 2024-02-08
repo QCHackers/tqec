@@ -74,7 +74,7 @@ class ShiftedTemplate(Template):
         """
         return self._shifted_template.expected_plaquettes_number
 
-    def instanciate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         :param plaquette_indices: the plaquette indices that will be used to create the
@@ -85,6 +85,6 @@ class ShiftedTemplate(Template):
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         tshape = self._shifted_template.shape
         xoffset, yoffset = self._offset.x.value, self._offset.y.value
-        tarr = self._shifted_template.instanciate(*plaquette_indices)
+        tarr = self._shifted_template.instantiate(*plaquette_indices)
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr
         return arr

@@ -12,8 +12,11 @@ def is_clifford(operation: cirq.Operation) -> bool:
     operations, which is the reason why this function will print a warning if the
     provided operation is considered "large" (3 qubits or more at the moment).
 
-    :param operation: the operation that will be checked.
-    :returns: True if the provided cirq.Operation instance is a Clifford operation,
+    Args:
+        operation: the operation that will be checked.
+
+    Returns:
+        True if the provided cirq.Operation instance is a Clifford operation,
         else False.
     """
     try:
@@ -42,13 +45,14 @@ class AfterCliffordDepolarizingNoise(BaseNoiseModel):
         this is different from applying `n` times a 1-qubit depolarizing noise to each
         of the involved qubits.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            p: strength (probability of error) of the applied noise.
         """
         super().__init__(p)
 
     def noisy_operation(self, operation: cirq.Operation) -> cirq.OP_TREE:
         if isinstance(operation, cirq.CircuitOperation):
-            return self.recurse_in_operation_if_CircuitOperation(operation)
+            return self.recurse_in_operation_if_circuit_operation(operation)
         elif is_clifford(operation):
             return [
                 operation,

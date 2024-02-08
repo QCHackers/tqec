@@ -15,6 +15,40 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """Implements an atomic square template with alternating plaquettes.
+
+        Args:
+            dimension: width and height of the square template.
+            default_x_increment: default increment in the x direction between two plaquettes.
+            default_y_increment: default increment in the y direction between two plaquettes.
+
+        Example:
+            The following code:
+            .. code-block:: python
+
+                from tqec.templates.scale import Dimension
+                from tqec.templates.atomic.rectangle import AlternatingSquareTemplate
+                from tqec.display import display_template
+
+                dim = Dimension(2, scaling_function=lambda k: 2*k)
+                template = AlternatingSquareTemplate(dim)
+
+                print("Non-scaled template:")
+                display_template(template)
+                print("Scaled template:")
+                display_template(template.scale_to(1))
+
+            outputs ::
+
+                Non-scaled template:
+                1  2  1  2
+                2  1  2  1
+                1  2  1  2
+                2  1  2  1
+                Scaled template:
+                1  2
+                2  1
+        """
         super().__init__(
             dimension,
             dimension,
@@ -24,6 +58,10 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
 
 
 class AlternatingCornerSquareTemplate(AtomicTemplate):
+    """TODO: This class needs fixing, the instantiate output does not adhere to
+    the convention that the first plaquette provided to the method is the top-left
+    one in the resulting array."""
+
     _TRANSFORMATIONS: dict[
         CornerPositionEnum, ty.Callable[[numpy.ndarray], numpy.ndarray]
     ] = {
@@ -50,6 +88,7 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
         self,
         dimension: Dimension,
         corner_position: CornerPositionEnum,
+        top_plaquettes_on_diagonal: bool = False,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -59,8 +98,9 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
         )
         self._dimension = dimension
         self._corner_position = corner_position
+        self._top_plaquettes_on_diagonal = top_plaquettes_on_diagonal
 
-    def instanciate(
+    def instantiate(
         self,
         p1: int,
         p2: int,
@@ -77,7 +117,7 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
             for j in range(dimension):
                 if i == j == 0:
                     ret[i, j] = corner_plaquette
-                elif i > j:
+                elif i > j or (self._top_plaquettes_on_diagonal and i == j):
                     if (i + j) % 2 == 1:
                         ret[i, j] = p2
                     else:
@@ -92,9 +132,9 @@ class AlternatingCornerSquareTemplate(AtomicTemplate):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
+        """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instanciate` method.
+        :returns: the number of plaquettes expected from the `instantiate` method.
         """
         return 5
 
