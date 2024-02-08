@@ -1,18 +1,22 @@
+from __future__ import annotations
+
 from copy import deepcopy
 
 import cirq
 import numpy
 import stimcirq
 import sympy
-
-from tqec.exceptions import TQECException
+from tqec.detectors.measurement_map import (
+    CircuitMeasurementMap,
+    compute_global_measurements_lookback_offsets,
+)
 from tqec.detectors.operation import (
-    ShiftCoords,
+    STIM_TAG,
     Detector,
     Observable,
-    STIM_TAG,
+    ShiftCoords,
 )
-from tqec.detectors.measurement_map import CircuitMeasurementMap, compute_global_measurements_lookback_offsets
+from tqec.exceptions import TQECException
 
 
 def _transform_to_stimcirq_compatible_impl(
@@ -120,7 +124,9 @@ def transform_to_stimcirq_compatible(
     """
     _annotation_safety_check(circuit)
     measurement_map = CircuitMeasurementMap(circuit)
-    transformed_circuit, _ = _transform_to_stimcirq_compatible_impl(circuit, measurement_map, 0)
+    transformed_circuit, _ = _transform_to_stimcirq_compatible_impl(
+        circuit, measurement_map, 0
+    )
     return transformed_circuit
 
 

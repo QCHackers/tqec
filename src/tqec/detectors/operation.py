@@ -1,5 +1,7 @@
-from typing import Any
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import Any
 
 import cirq
 
@@ -14,7 +16,7 @@ class ShiftCoords(cirq.Operation):
         WARNING: you should use `make_shift_coords` to create instances of this class.
         If you do not, read attentively the documentation below.
 
-        This is a replication of the 
+        This is a replication of the
         [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
         class. We can directly use `stimcirq.ShiftCoordsAnnotation` here, however,
         replication brings the class into the `tqec` namespace and is useful for the
@@ -42,10 +44,10 @@ class ShiftCoords(cirq.Operation):
         return self._shifts
 
     @property
-    def qubits(self) -> tuple['cirq.Qid', ...]:
+    def qubits(self) -> tuple[cirq.Qid, ...]:
         return ()
 
-    def with_qubits(self, *new_qubits: 'cirq.Qid') -> "ShiftCoords":
+    def with_qubits(self, *new_qubits: cirq.Qid) -> "ShiftCoords":
         return self
 
 
@@ -96,10 +98,10 @@ class RelativeMeasurementsRecord(cirq.Operation):
         self._data = data
 
     @property
-    def qubits(self) -> tuple['cirq.Qid', ...]:
+    def qubits(self) -> tuple[cirq.Qid, ...]:
         return ()
 
-    def with_qubits(self, *new_qubits: 'cirq.Qid') -> "RelativeMeasurementsRecord":
+    def with_qubits(self, *new_qubits: cirq.Qid) -> "RelativeMeasurementsRecord":
         return self
 
     @property
@@ -225,9 +227,9 @@ def make_shift_coords(*shifts: int) -> cirq.Operation:
 
 
 def make_detector(
-        local_coordinate_system_origin: cirq.GridQubit,
-        relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
-        time_coordinate: int = 0,
+    local_coordinate_system_origin: cirq.GridQubit,
+    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    time_coordinate: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Detector` operation with the
     `cirq.VirtualTag` tag.
@@ -252,20 +254,20 @@ def make_detector(
         A :class:`Detector` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm) if not isinstance(rm, RelativeMeasurementData) else rm
+        RelativeMeasurementData(*rm)
+        if not isinstance(rm, RelativeMeasurementData)
+        else rm
         for rm in relative_measurements
     ]
     return Detector(
-        local_coordinate_system_origin,
-        relative_measurements_data,
-        time_coordinate
+        local_coordinate_system_origin, relative_measurements_data, time_coordinate
     ).with_tags(cirq.VirtualTag(), STIM_TAG)
 
 
 def make_observable(
-        local_coordinate_system_origin: cirq.GridQubit,
-        relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
-        observable_index: int = 0,
+    local_coordinate_system_origin: cirq.GridQubit,
+    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    observable_index: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Observable` operation with the
     `cirq.VirtualTag` tag.
@@ -289,11 +291,11 @@ def make_observable(
         A :class:`Observable` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm) if not isinstance(rm, RelativeMeasurementData) else rm
+        RelativeMeasurementData(*rm)
+        if not isinstance(rm, RelativeMeasurementData)
+        else rm
         for rm in relative_measurements
     ]
     return Observable(
-        local_coordinate_system_origin,
-        relative_measurements_data,
-        observable_index
+        local_coordinate_system_origin, relative_measurements_data, observable_index
     ).with_tags(cirq.VirtualTag(), STIM_TAG)
