@@ -170,10 +170,7 @@ class RawRectangleTemplate(AtomicTemplate):
 
     @property
     def shape(self) -> Shape2D:
-        if not self._indices:
-            return Shape2D(0, 0)
-        else:
-            return Shape2D(len(self._indices[0]), len(self._indices))
+        return Shape2D(len(self._indices[0]), len(self._indices))
 
     def to_dict(self) -> dict[str, ty.Any]:
         return super().to_dict() | {"indices": self._indices}
