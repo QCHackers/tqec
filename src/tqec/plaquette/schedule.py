@@ -250,7 +250,7 @@ class ScheduledCircuit:
         the union of the qubits of all the operations performed on and the origin of all
         the detectors.
         """
-        operation_qubits = set(self.raw_circuit.all_qubits())
+        operation_qubits = self.qubits
         detector_origins = set(detector.origin for detector in self.detectors)
         return frozenset(operation_qubits.union(detector_origins))
 
