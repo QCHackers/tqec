@@ -137,7 +137,7 @@ class RawRectangleTemplate(Template):
                 1  4
         """
         super().__init__(default_x_increment, default_y_increment)
-        if not indices:
+        if not indices or not indices[0]:
             raise TQECException(
                 f"You should provide at least one index to {__class__.__name__}."
             )
