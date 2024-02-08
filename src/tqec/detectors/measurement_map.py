@@ -77,6 +77,9 @@ class CircuitMeasurementMap:
         last_performed_measurement = self._get_index_of_last_performed_measurement(
             current_moment_index
         )
+        if last_performed_measurement is None:
+            return None
+
         seen_measurements_on_qubit: int = 0
         # We do not take into account the current moment, so we start at the moment
         # just before.
@@ -95,14 +98,12 @@ class CircuitMeasurementMap:
 
     def _get_index_of_last_performed_measurement(
         self, current_moment_index: int
-    ) -> int:
+    ) -> int | None:
         for moment_index in reversed(range(current_moment_index + 1)):
             measurements_in_moment = self._global_measurement_indices[moment_index]
             if measurements_in_moment:
                 return max(measurements_in_moment.values())
-        raise TQECException(
-            f"Cannot find any measurement performed before moment {current_moment_index}."
-        )
+        return None
 
     @staticmethod
     def _get_global_measurement_index(
