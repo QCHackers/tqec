@@ -147,6 +147,18 @@ class RawRectangleTemplate(Template):
                 f"The 2-dimensional array provided to {__class__.__name__} should "
                 "be rectangular. Please provide an array with equally-sized rows."
             )
+        all_indices: set[int] = set().union(*[set(line) for line in indices])
+        expected_indices = set(range(len(all_indices)))
+        missing_expected_indices = expected_indices.difference(all_indices)
+        if missing_expected_indices:
+            min_index = min(min(row) for row in indices)
+            max_index = max(max(row) for row in indices)
+            raise TQECException(
+                f"{self.__class__.__name__} is expecting a 2-dimensional array of "
+                f"CONTIGUOUS indices. You provided indices between {min_index} and "
+                f"{max_index} but the following indices were missing: "
+                f"{missing_expected_indices}."
+            )
         self._indices = indices
 
     def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
