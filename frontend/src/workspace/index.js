@@ -93,7 +93,7 @@ export default function TQECApp() {
   });
   workspace.addChild(createQubitConstellationButton);
   const finalizeBoundingQuadButton = new Button(
-    'Finalize quadrilateral',
+    'Finalize unit cell',
     x,
     y
   );
@@ -109,11 +109,11 @@ export default function TQECApp() {
       const boundingBox = lattice.boundingBox;
       workspace.addChild(boundingBox);
       workspace.addChild(finalizeBoundingQuadButton);
+      app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
       finalizeBoundingQuadButton.on('click', () => {
         workspace.removeChild(boundingBox);
         workspace.removeChild(finalizeBoundingQuadButton);
-        app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
         // eslint-disable-next-line max-len
         for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth) {

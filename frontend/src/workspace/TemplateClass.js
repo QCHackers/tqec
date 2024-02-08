@@ -170,7 +170,7 @@ export default class Template {
             && qubitY <= relativeY + height
           ) {
             // Change the color of the qubits
-            child.changeColor('green');
+            child.changeColor('red');
             this.templateQubits.push(child);
             return child;
           } if (this.templateQubits.includes(child)) {
