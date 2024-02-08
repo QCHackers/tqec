@@ -9,7 +9,8 @@ class BeforeRoundDataDepolarizationNoise(BaseNoiseModel):
 
         This noise model is currently not implemented.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            p: strength (probability of error) of the applied noise.
         """
         super().__init__(p)
 

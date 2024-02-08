@@ -23,7 +23,8 @@ class ScalableQubitSquare(ComposedTemplate):
         .  6  .  6  .  .
         ```
 
-        :param k: scale of the error-corrected qubit.
+        Args:
+            k: scale of the error-corrected qubit.
         """
         dim = 2 * k
         _templates = [
@@ -65,11 +66,12 @@ class ScalableQubitRectangle(ComposedTemplate):
         .  6  .  6  .  6  .  .
         ```
 
-        :param k_width: half the width of the qubit.
-        :param k_height: half the height of the qubit.
-        :param scale_width: whether to scale the width or height. If None, the dimension
-            with the larger value will be scaled. If both dimensions are equal, the width
-            will be scaled by default.
+        Args:
+            k_width: half the width of the qubit.
+            k_height: half the height of the qubit.
+            scale_width: whether to scale the width or height. If None, the
+                dimension with the larger value will be scaled. If both
+                dimensions are equal, the width will be scaled by default.
         """
         width, height = 2 * k_width, 2 * k_height
         _templates = [

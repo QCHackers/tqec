@@ -17,7 +17,8 @@ def generate_coordinates(data):
     where each number is the length and the sign is the turning.
     this function constructs the coordinates for the positions
     and directions of each of these arrows. This prepares the
-    data to be drawn with matplotlib."""
+    data to be drawn with matplotlib.
+    """
 
     x_pos = []
     y_pos = []

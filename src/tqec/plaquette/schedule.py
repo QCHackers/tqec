@@ -5,7 +5,7 @@ from copy import deepcopy
 import cirq
 
 from tqec.detectors.operation import Detector, make_detector
-from tqec.exceptions import QubitTypeException, TQECException
+from tqec.exceptions import TQECException
 
 
 class ScheduleException(TQECException):
@@ -62,13 +62,15 @@ class ScheduledCircuit:
         its interfaces insert a schedule of VIRTUAL_MOMENT_SCHEDULE when the Moment instance
         is virtual.
 
-        :param circuit: the instance of Circuit that is scheduled.
-        :param schedule: a sorted list of time slices indices. The list should contain
-            as much indices as there are non-virtual moments in the provided Circuit
-            instance. If the list is None, it default to
-            `list(range(number_of_non_virtual_moments))`.
+        Args:
+            circuit: the instance of Circuit that is scheduled.
+            schedule: a sorted list of time slices indices. The list should
+                contain as many indices as there are non-virtual moments in the
+                provided Circuit instance. If the list is None, it default to
+                `list(range(number_of_non_virtual_moments))`.
 
-        :raises ScheduleError: if the provided schedule is invalid.
+        Raises:
+            ScheduleError: if the provided schedule is invalid.
         """
         self._is_non_virtual_moment_list: list[bool] = [
             not ScheduledCircuit._is_virtual_moment(moment)
@@ -88,21 +90,27 @@ class ScheduledCircuit:
     def _check_input_validity(circuit: cirq.Circuit, schedule: list[int]) -> None:
         """Asserts that the given inputs are valid to construct a ScheduledCircuit instance.
 
-        :param schedule: the schedule to check.
+        Args:
+            schedule: the schedule to check.
 
-        :raises ScheduleWithNonIntegerEntries: if the given schedule has a non-integer entry.
-        :raises ScheduleNotSorted: if the given schedule is not a sorted list.
-        :raises ScheduleEntryTooLow: if the given schedule has an entry that would lead to incorrect
-            scheduling.
-        :raises ScheduleCannotBeAppliedToCircuit: if the given schedule cannot be applied to the
-            provided cirq.Circuit instance, for example if the number of entries in the schedule and
-            the number of non-virtual moments in the circuit are not equal.
-        :raises QubitTypeError: if any of the circuit qubit is not a cirq.GridQubit instance.
+        Raises:
+            ScheduleWithNonIntegerEntries: if the given schedule has a non-integer entry.
+            ScheduleNotSorted: if the given schedule is not a sorted list.
+            ScheduleEntryTooLow: if the given schedule has an entry that would
+                lead to incorrect scheduling.
+            ScheduleCannotBeAppliedToCircuit: if the given schedule cannot be
+                applied to the provided cirq.Circuit instance, for example if
+                the number of entries in the schedule and the number of non-virtual moments
+                in the circuit are not equal.
+            TQECException: if any of the circuit qubit is not a cirq.GridQubit
+                instance.
         """
         # Check that all the qubits in the cirq.Circuit instance are instances of cirq.GridQubit.
         for q in circuit.all_qubits():
             if not isinstance(q, cirq.GridQubit):
-                raise QubitTypeException(cirq.GridQubit, type(q))
+                raise TQECException(
+                    f"Excepted only instances of 'cirq.GridQubit', "
+                    f"but found an instance of {q.__class__.__name__}.")
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
@@ -155,8 +163,9 @@ class ScheduledCircuit:
         This construction method basically auto-schedules single-qubit gates from
         the schedule of multi-qubit ones.
 
-        :raises ScheduleError: if the provided schedule is invalid or if the auto-scheduling is
-            impossible.
+        Raises:
+            ScheduleError: if the provided schedule is invalid or if the auto-
+                scheduling is impossible.
         """
         ScheduledCircuit._check_input_validity(circuit, multi_qubit_moment_schedule)
 
@@ -237,7 +246,8 @@ class ScheduledCircuit:
     def mappable_qubits(self) -> frozenset[cirq.GridQubit]:
         """Return the set of qubits involved in the circuit that can be mapped, which is
         the union of the qubits of all the operations performed on and the origin of all
-        the detectors."""
+        the detectors.
+        """
         operation_qubits = set(self.raw_circuit.all_qubits())
         detector_origins = set(detector.origin for detector in self.detectors)
         return frozenset(operation_qubits.union(detector_origins))
@@ -252,12 +262,14 @@ class ScheduledCircuit:
         changing measurements key by re-creating the correct measurements and
         re-creating Detector operation correctly.
 
-        :param qubit_map: the map used to modify the qubits.
-        :param inplace: if True, perform the modification in place and return
-            self. Else, perform the modification in a copy and return the copy.
+        Args:
+            qubit_map: the map used to modify the qubits.
+            inplace: if True, perform the modification in place and return self.
+                Else, perform the modification in a copy and return the copy.
 
-        :returns: a modified instance of ScheduledCircuit (a copy if inplace is
-            True, else self).
+        Returns:
+            a modified instance of ScheduledCircuit (a copy if inplace is True,
+            else self).
         """
 
         def remap_qubits(op: cirq.Operation) -> cirq.Operation:
@@ -346,7 +358,8 @@ class ScheduledCircuits:
         ScheduledCircuit, and implement a few other accessor methods to help with the
         task of merging multiple ScheduledCircuit together.
 
-        :param circuits: the instances that should be managed.
+        Args:
+            circuits: the instances that should be managed.
         """
         self._circuits = circuits
         self._iterators = [circuit.scheduled_moments for circuit in self._circuits]
@@ -370,7 +383,8 @@ class ScheduledCircuits:
     def _pop_scheduled_moment(self, index: int) -> tuple[cirq.Moment, int]:
         """Recover and mark as collected the pending moment for the instance at the given index.
 
-        :raises AssertionError: if not self.has_pending_operation(index).
+        Raises:
+            AssertionError: if not self.has_pending_operation(index).
         """
         ret = self._current_moments[index]
         if ret is None:
@@ -393,7 +407,9 @@ class ScheduledCircuits:
         ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE, virtual Moment instances are always scheduled first
         when encountered.
 
-        :returns: a list of Moment instances that should be added next to the QEC circuit.
+        Returns:
+            a list of Moment instances that should be added next to the QEC
+            circuit.
         """
         circuit_indices_organised_by_schedule: dict[int, list[int]] = dict()
         for circuit_index in range(self.number_of_circuits):
@@ -425,9 +441,10 @@ def remove_duplicate_operations(
     If two operations in the provided list are considered equal **AND** are
     mergeable, this method will one of them.
 
-    :returns: a list containing a copy of the cirq.Operation instances from
-        the given operations, without the mergeable tag, and with mergeable
-        duplicates removed from the list.
+    Returns:
+        a list containing a copy of the cirq.Operation instances from the given
+        operations, without the mergeable tag, and with mergeable duplicates
+        removed from the list.
     """
     # Import needed here to resolve at runtime and avoid circular import.
     from tqec.plaquette.plaquette import Plaquette
@@ -456,8 +473,8 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
     respecting their schedules, into a unique cirq.Circuit instance that will
     then be returned to the caller.
 
-    :returns: a circuit representing the merged scheduled circuits given as
-        input.
+    Returns:
+        a circuit representing the merged scheduled circuits given as input.
     """
     scheduled_circuits = ScheduledCircuits(circuits)
     all_moments: list[cirq.Moment] = list()

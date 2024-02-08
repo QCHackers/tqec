@@ -88,6 +88,7 @@ class AlternatingCornerSquare(AlternatingSquare):
     def expected_plaquettes_number(self) -> int:
         """Returns the number of plaquettes expected from the `instantiate` method.
 
-        :returns: the number of plaquettes expected from the `instantiate` method.
+        Returns:
+            the number of plaquettes expected from the `instantiate` method.
         """
         return 5

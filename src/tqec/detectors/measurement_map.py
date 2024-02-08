@@ -24,7 +24,8 @@ class CircuitMeasurementMap:
         This class provides a method to recover the global record offset of a given
         measurement from local information about this measurement.
 
-        :param circuit: the circuit instance to analyse.
+        Args:
+            circuit: the circuit instance to analyse.
         """
         flattened_circuit = flatten(circuit)
         (
@@ -42,21 +43,29 @@ class CircuitMeasurementMap:
         with their local temporal description and to recover the global offset that should be
         used to get the measurement result from the global measurement record.
 
-        :param current_moment_index: the moment index for which we want to compute the offset.
-            This method will only backtrack in time, and so will never return measurements that
-            are performed after the moment provided in this parameter. Also, the measurement
-            record offset is a local quantity that might change in time (due to subsequent
-            measurements shifting the offset), meaning that the returned offset should only be
-            considered valid for the moment provided here, and for no other moments.
-        :param qubit: qubit instance the measurement we are searching for has been performed on.
-        :param measurement_offset: the temporally-local, negative, measurement offset. A value of
-            -1 means "the last measurement performed on this qubit" ("last" should always be read
-            as "last from the current_moment_index moment view"), -2 means "the measurement just
-            before the last measurement performed on this qubit", etc.
-        :returns: the global measurement record offset, only valid for the provided
+        Args:
+            current_moment_index: the moment index for which we want to compute
+                the offset. This method will only backtrack in time, and so will
+                never return measurements that are performed after the moment
+                provided in this parameter. Also, the measurement record offset
+                is a local quantity that might change in time (due to subsequent
+                measurements shifting the offset), meaning that the returned
+                offset should only be considered valid for the moment provided
+                here, and for no other moments.
+            qubit: qubit instance the measurement we are searching for has been
+                performed on.
+            measurement_offset: the temporally-local, negative, measurement
+                offset. A value of -1 means "the last measurement performed on
+                this qubit" ("last" should always be read as "last from the
+                current_moment_index moment view"), -2 means "the measurement
+                just before the last measurement performed on this qubit", etc.
+
+        Returns:
+            the global measurement record offset, only valid for the provided
             current_moment_index, or None if the searched offset does not exist.
 
-        :raises PositiveMeasurementOffsetError: if the provided measurement_offset value is positive.
+        Raises:
+            TQECException: if the provided measurement_offset value is positive.
         """
         if measurement_offset >= 0:
             raise TQECException(
@@ -106,19 +115,25 @@ class CircuitMeasurementMap:
 
         The provided circuit should not contain any cirq.CircuitOperation instance.
 
-        :param circuit: circuit to compute the global measurements of.
-        :param _measurement_offset: offset applied to the indices of each measurements. Used for the
-            recursive calls.
-        :returns: a tuple (global_measurement_indices, global_measurement_index).
-            - global_measurement_indices is a list containing one entry for each Moment in the provided
+        Args:
+            circuit: circuit to compute the global measurements of.
+            _measurement_offset: offset applied to the indices of each
+                measurement. Used for the recursive calls.
+
+        Returns:
+            a tuple (global_measurement_indices, global_measurement_index). -
+            global_measurement_indices is a list containing one entry for each
+            Moment in the provided
               circuit. The entry for a given Moment corresponds to a mapping from the qubit instance that
               has been measured and the global measurement index (again, measurements in repeated
               cirq.CircuitOperation instances are only counted once).
             - global_measurement_index is an integer representing the index of the next measurement that
               will be encountered. It is part of the return API to simplify the recursion, and should not
               be useful for the external caller.
-        :raises MeasurementAppliedOnMultipleQubits: if the provided cirq.AbstractCircuit instance contains
-            measurements applied on several qubits at the same time.
+
+        Raises:
+            TQECException: if the provided cirq.AbstractCircuit instance contains measurements applied on
+                several qubits at the same time.
         """
         global_measurement_indices: list[dict[cirq.Qid, int]] = []
         global_measurement_index: int = _measurement_offset
@@ -145,13 +160,19 @@ def compute_global_measurements_lookback_offsets(
     This method uses the global data computed in the CircuitMeasurementMap instance given as
     parameter to compute the measurement record indices for the current gate instance.
 
-    :param relative_measurements_record: the record of relative measurements to compute global
-        measurements offset from.
-    :param measurement_map: global measurement data obtained from the complete quantum circuit.
-    :param current_moment_index: index of the moment this gate instance is found in. Used to
-        recover the correct data from the given measurement_map.
+    Args:
+        relative_measurements_record: the record of relative measurements to
+            compute global measurements offset from.
+        measurement_map: global measurement data obtained from the complete
+            quantum circuit.
+        current_moment_index: index of the moment this gate instance is found
+            in. Used to recover the correct data from the given measurement_map.
 
-    :return: the computed list of global measurements lookback offsets.
+    Returns:
+        the computed list of global measurements lookback offsets.
+
+    Raises:
+        TQECException: if the global measurement offset computation fails.
     """
     global_measurements_lookback_offsets = []
     origin = relative_measurements_record.origin

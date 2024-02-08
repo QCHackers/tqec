@@ -5,13 +5,14 @@ from tqec.noise_models.base import BaseNoiseModel
 
 class BeforeMeasurementFlipNoise(BaseNoiseModel):
     def __init__(self, p: float):
-        """Applies a X flip noise before each measurement operation.
+        """Applies an X flip noise before each measurement operation.
 
         This noise model only works on cirq.MeasurementGate instances! If your quantum
         circuit contains operations like the stim "MR" (Measurement and Reset)
         instruction, this noise channel will **not** add any noise.
 
-        :param p: strength (probability of error) of the applied noise.
+        Args:
+            p: strength (probability of error) of the applied noise.
         """
         super().__init__(p)
 
