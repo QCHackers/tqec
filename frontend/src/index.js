@@ -9,8 +9,9 @@ const initialState = {
   todos: [],
 };
 
-const reducer = (action, state = initialState) => {
-  switch (action) {
+// eslint-disable-next-line default-param-last
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
   case 'ADD_TODO':
     return {
       ...state,
