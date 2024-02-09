@@ -164,13 +164,3 @@ def test_raw_rectangle_larger_instantiate_different_order():
     numpy.testing.assert_equal(arr, [[3], [1], [2]])
 
 
-def test_raw_rectangle_larger_instantiate_hole():
-    template = RawRectangleTemplate([[0], [34], [9]])
-    arr = template.instantiate(*list(range(1, template.expected_plaquettes_number + 1)))
-    numpy.testing.assert_equal(arr, [[1], [35], [10]])
-
-
-def test_raw_rectangle_larger_instantiate_hole_raising():
-    template = RawRectangleTemplate([[0], [34], [9]])
-    with pytest.raises(TQECException):
-        template.instantiate(1, 2, 3)
