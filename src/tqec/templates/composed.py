@@ -110,7 +110,7 @@ class ComposedTemplate(Template):
             raise TQECException(
                 f"Asking for element identified by {template_id} when only "
                 f"{len(self._templates)} templates have been added to "
-                f"the {__class__.__name__} instance."
+                f"the {self.__class__.__name__} instance."
             )
 
     def add_template(
