@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import typing as ty
 from abc import ABC, abstractmethod
