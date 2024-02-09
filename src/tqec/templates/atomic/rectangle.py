@@ -141,12 +141,12 @@ class RawRectangleTemplate(Template):
         super().__init__(default_x_increment, default_y_increment)
         if not indices or not indices[0]:
             raise TQECException(
-                f"You should provide at least one index to {__class__.__name__}."
+                f"You should provide at least one index to {self.__class__.__name__}."
             )
         line_lens = set(len(line) for line in indices)
         if len(line_lens) > 1:
             raise TQECException(
-                f"The 2-dimensional array provided to {__class__.__name__} should "
+                f"The 2-dimensional array provided to {self.__class__.__name__} should "
                 "be rectangular. Please provide an array with equally-sized rows."
             )
         all_indices: set[int] = set().union(*[set(line) for line in indices])
