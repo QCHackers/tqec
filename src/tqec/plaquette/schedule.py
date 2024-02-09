@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import numbers
 import typing
 from copy import deepcopy
 
 import cirq
-
 from tqec.detectors.operation import Detector, make_detector
 from tqec.exceptions import TQECException
 
@@ -110,7 +111,8 @@ class ScheduledCircuit:
             if not isinstance(q, cirq.GridQubit):
                 raise TQECException(
                     f"Excepted only instances of 'cirq.GridQubit', "
-                    f"but found an instance of {q.__class__.__name__}.")
+                    f"but found an instance of {q.__class__.__name__}."
+                )
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tqec.exceptions import TQECException
 from tqec.templates.base import Template
 from tqec.templates.scalable.base import ScalableTemplate
