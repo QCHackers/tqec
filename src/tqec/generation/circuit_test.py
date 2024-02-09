@@ -1,19 +1,17 @@
 """Example taken from /notebooks/logical_qubit_memory_experiment.ipynb"""
 
 import cirq
-
-from tqec.templates.constructions.qubit import ScalableQubitSquare
 from tqec.detectors.gate import ShiftCoordsGate
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
-
-from tqec.plaquette.plaquette import PlaquetteList
 from tqec.plaquette.library import (
     XXPlaquetteList,
     XXXXPlaquetteList,
     ZZPlaquetteList,
     ZZZZPlaquetteList,
 )
+from tqec.plaquette.plaquette import PlaquetteList
+from tqec.templates.constructions.qubit import QubitSquareTemplate
 
 
 def _normalise_circuit(norm_circuit: cirq.Circuit) -> cirq.Circuit:
@@ -42,7 +40,7 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
 
 
 def _generate_circuit() -> cirq.Circuit:
-    template = ScalableQubitSquare(2)
+    template = QubitSquareTemplate(2)
     plaquettes: list[PlaquetteList] = [
         XXPlaquetteList(
             PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8], include_detector=False

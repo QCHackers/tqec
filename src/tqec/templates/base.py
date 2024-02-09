@@ -9,7 +9,6 @@ import numpy
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
-from tqec.templates.shapes.base import BaseShape
 
 
 def _json_encoding_default(obj) -> str | dict | None:
@@ -100,13 +99,15 @@ class Template(JSONEncodable):
     def scale_to(self, k: int) -> "Template":
         """Scales self to the given scale k.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
+        Note that this function scales the template instance INLINE. Rephrasing, the
+        instance on which this method is called is modified in-place AND returned.
 
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
+        The input parameter ``k`` corresponds to an abstract scale that may be
+        forwarded to
+        1. various :class:`Dimension` instances,
+        2. other :class:`Template` instances in the case of templates modifying
+           existing instances,
+        3. anything else that the subclass might implement.
 
         Args:
             k: the new scale of the template.
@@ -121,14 +122,8 @@ class Template(JSONEncodable):
     def shape(self) -> Shape2D:
         """Returns the current template shape.
 
-        This should not be confused with the underlying shape of the template. Here
-        shape can mean:
-        - the Shape instance that defines what the template will look like and,
-        - the numpy-like shape, that is represented as 2 integers encoding the sizes
-          of the returned numpy array in both dimensions.
-
         Returns:
-            the numpy-like shape of the template.
+            the shape of the template.
         """
         pass
 
@@ -166,110 +161,6 @@ class Template(JSONEncodable):
             a displacement of the default increments in the x and y directions.
         """
         return self._default_increments
-
-
-class AtomicTemplate(Template):
-    def __init__(
-        self,
-        shape: BaseShape,
-        default_x_increment: int = 2,
-        default_y_increment: int = 2,
-    ) -> None:
-        """Base class for all the templates that are not composed of other Template instances.
-
-        This class is the base of all templates that are "atomic", i.e., cannot be decomposed
-        in other Template instances any further.
-
-        Each atomis template should have a shape, represented by a Shape instance, and encoding
-        how the atomic template scales and its plaquettes.
-
-        The default increments define the distance between two plaquettes.
-        For example a default_x_increment of 2 means that two 2x2 plaquettes will share
-        a common edge.
-
-        Args:
-            shape: the underlying template shape.
-            default_x_increment: default increment in the x direction between
-                two plaquettes.
-            default_y_increment: default increment in the y direction between
-                two plaquettes.
-        """
-        super().__init__(default_x_increment, default_y_increment)
-        self._shape_instance = shape
-
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
-        """Generate the numpy array representing the template.
-
-        Args:
-            *plaquette_indices: the plaquette indices that will be forwarded to
-                the underlying Shape instance's instantiate method.
-
-        Returns:
-            a numpy array with the given plaquette indices arranged according to
-            the underlying shape of the template.
-        """
-        return self._shape_instance.instantiate(*plaquette_indices)
-
-    @property
-    def shape(self) -> Shape2D:
-        """Returns the current template shape.
-
-        This should not be confused with the underlying shape of the template. Here
-        shape can mean:
-        - the Shape instance that defines what the template will look like and,
-        - the numpy-like shape, that is represented as 2 integers encoding the sizes
-          of the returned numpy array in both dimensions.
-
-        Returns:
-            the numpy-like shape of the template.
-        """
-        return self._shape_instance.shape
-
-    @abstractmethod
-    def scale_to(self, k: int) -> "Template":
-        """Scales self to the given scale k.
-
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
-
-        Args:
-            k: the new scale of the template.
-
-        Returns:
-            self, once scaled.
-        """
-        pass
-
-    @property
-    def shape_instance(self) -> BaseShape:
-        """Get the underlying shape instance.
-
-        Not to be confused with the shape property, this property recovers the BaseShape
-        instance that is stored by the Template instance it is called on. It does NOT return
-        the numpy-like Shape2D instance representing the sizes of the templates.
-        """
-        return self._shape_instance
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        """Returns a dict-like representation of the instance.
-
-        Used to implement to_json.
-        """
-        return super().to_dict() | {"shape": self.shape_instance.to_dict()}
-
-    @property
-    def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instantiate` method.
-
-        Returns:
-            the number of plaquettes expected from the `instantiate` method.
-        """
-        return self._shape_instance.expected_plaquettes_number
 
 
 @dataclass
