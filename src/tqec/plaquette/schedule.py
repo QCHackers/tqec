@@ -282,7 +282,7 @@ class ScheduledCircuit:
             elif isinstance(untagged, Detector):
                 return make_detector(
                     qubit_map.get(untagged.origin, untagged.origin),
-                    untagged.data,
+                    untagged.relative_measurement_data,
                     time_coordinate=untagged.coordinates[-1],
                 )
             else:

@@ -20,16 +20,16 @@ def get_corner_position(
     template as long as we have the position of one of its corners.
 
     Examples:
-    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
-    Position(x=0, y=0)
-    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_LEFT)
-    Position(x=0, y=2)
-    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_RIGHT)
-    Position(x=2, y=0)
-    >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_RIGHT)
-    Position(x=2, y=2)
-    >>> get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
-    Position(x=-2, y=-2)
+        >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
+        Position(x=0, y=0)
+        >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_LEFT)
+        Position(x=0, y=2)
+        >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_RIGHT)
+        Position(x=2, y=0)
+        >>> get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_RIGHT)
+        Position(x=2, y=2)
+        >>> get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)
+        Position(x=-2, y=-2)
 
     Args:
         position: position of the "anchor" corner.
@@ -38,8 +38,8 @@ def get_corner_position(
         expected_corner: the corner we want to compute the position of.
 
     Returns:
-        the position of the expected_corner of a template of the given shape,
-        knowing that the corner position_corner is at the given position.
+        the position of the ``expected_corner`` of a template of the given ``shape``,
+        knowing that the corner ``position_corner`` is at the given ``position``.
     """
     transformation: tuple[int, int] = (
         expected_corner.value.x - position_corner.value.x,
@@ -68,13 +68,13 @@ class ComposedTemplate(Template):
         The relative position is internally stored as a tuple of corners that should
         represent the same underlying qubit. Each edge between vertices A and B should
         have a "weight" (as per networkx definition of the term) under the key
-        "relative_position" that is a tuple[CornerPositionEnum, CornerPositionEnum].
+        "relative_position" that is a ``tuple[CornerPositionEnum, CornerPositionEnum]``.
         If an edge from A to B has a "relative_position" weight of (corner1, corner2),
         that means that corner1 over the template A and corner2 of the template B are
         on the same location (i.e., same physical qubit).
 
         The main logic in this class is located in the (private) method
-        _compute_ul_absolute_position that, as its name indicate, computes the upper-left
+        ``_compute_ul_absolute_position`` that, as its name indicate, computes the upper-left
         absolute position of each template (i.e., absolute position of the upper-left
         corner of each template).
 
@@ -92,7 +92,7 @@ class ComposedTemplate(Template):
           V
 
         Args:
-            templates: a list of templates forwarded to the add_templates method
+            templates: a list of templates forwarded to the ``add_templates`` method
                 at the end of instance initialisation.
 
         Raises:
@@ -107,13 +107,11 @@ class ComposedTemplate(Template):
 
     def _check_template_id(self, template_id: int) -> None:
         if template_id >= len(self._templates):
-            err = IndexError()
-            err.add_note(
+            raise TQECException(
                 f"Asking for element identified by {template_id} when only "
-                f"{len(self._templates)} templates have been added to the "
-                "ComposedTemplate instance."
+                f"{len(self._templates)} templates have been added to "
+                f"the {__class__.__name__} instance."
             )
-            raise err
 
     def add_template(
         self,
@@ -123,14 +121,15 @@ class ComposedTemplate(Template):
 
         Args:
             template_to_insert: the template to insert, along with the indices
-                of the
+                that should be used to index the plaquette indices provided
+                to the ``instantiate`` method.
 
         Returns:
-            the index of the template in the list of templates.
+            the index of the newly inserted template in the list of templates.
 
         Raises:
             ValueError: if the template to insert has different default
-                increments than
+                increments.
         """
         if len(self._templates) == 0:
             self._default_increments = template_to_insert.template.get_increments()
@@ -163,25 +162,26 @@ class ComposedTemplate(Template):
     ) -> "ComposedTemplate":
         """Add a relative positioning between two templates.
 
-        This method has the same effect as add_corner_relation (it internally calls it), but
-        provide another interface to add a relation between two templates.
+        This method has the same effect as ``add_corner_relation`` (it
+        internally calls it), but provide another interface to add a
+        relation between two templates.
 
-        This method is kept in the interface because the interface it provides is simpler
-        to use and read than add_corner_relation.
+        This method is kept in the interface because the interface
+        it provides is simpler to use and read than ``add_corner_relation``.
 
         Args:
             template_id_to_position: index of the template that should be
                 positionned relatively to the provided anchor.
             relative_position: the relative position of the template provided as
                 first parameter with respect to the anchor provided as third
-                parameter. Can be any of LEFT_OF, RIGHT_OF, BELOW_OF and
-                ABOVE_OF.
+                parameter. Can be any of ``LEFT_OF``, ``RIGHT_OF``, ``BELOW_OF``
+                and ``ABOVE_OF``.
             anchor_id: index of the anchor template, i.e., the template with
                 respect to which the template provided in first parameter will
                 be positioned.
 
         Returns:
-            self, to be able to chain calls to this method.
+            ``self``, to be able to chain calls to this method.
         """
         self._check_template_id(template_id_to_position)
         self._check_template_id(anchor_id)
@@ -229,7 +229,7 @@ class ComposedTemplate(Template):
                 considered.
 
         Returns:
-            self, to be able to chain calls to this method.
+            ``self``, to be able to chain calls to this method.
         """
         anchor_id, anchor_corner = anchor_id_corner
         template_id, template_corner = template_id_to_position_corner
@@ -252,19 +252,23 @@ class ComposedTemplate(Template):
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
         """Computes the absolute position of each template upper-left corner.
 
-        This is the main method of the ComposedTemplate class. It explores templates
-        by performing a BFS on the graph of relations between templates, starting by the
-        first template inserted (but any template connected to the others should work
-        fine).
+        <<<<<<< HEAD
+                This is the main method of the ComposedTemplate class. It explores templates
+        =======
+                This is the main method of the ``ComposedTemplate`` class. It explores templates
+        >>>>>>> main
+                by performing a BFS on the graph of relations between templates, starting by the
+                first template inserted (but any template connected to the others should work
+                fine).
 
-        The first template upper-left corner is arbitrarily positioned at the (0, 0)
-        position, and each template upper-left corner is then computed from this position.
-        This means in particular that this method can return positions with negative
-        coordinates.
+                The first template upper-left corner is arbitrarily positioned at the (0, 0)
+                position, and each template upper-left corner is then computed from this position.
+                This means in particular that this method can return positions with negative
+                coordinates.
 
-        Returns:
-            a mapping between templates indices and their upper-left corner
-            absolute position.
+                Returns:
+                    a mapping between templates indices and their upper-left corner
+                    absolute position.
         """
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
@@ -309,11 +313,12 @@ class ComposedTemplate(Template):
     def _get_bounding_box_from_ul_positions(
         self, ul_positions: dict[int, Position]
     ) -> tuple[Position, Position]:
-        """Get the bounding box containing all the templates from their upper-left corner position.
+        """Get the bounding box containing all the templates from their
+        upper-left corner position.
 
         Args:
             ul_positions: a mapping between templates indices and their upper-left
-            corner absolute position.
+                corner absolute position.
 
         Returns:
             a tuple (upper-left position, bottom-right position) representing
@@ -386,20 +391,6 @@ class ComposedTemplate(Template):
     def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
-        ## Important note
-        In previous implementations of this class, the instantiate method was
-        expecting a plaquette "0" to be positioned first in the provided plaquette
-        indices.
-        This expectation was:
-        1. not documented anywhere,
-        2. an exposition of internal implementation details,
-        3. very error-prone for external users.
-
-        It also made the interface of TemplateOrchestrator slightly different from
-        its parent Template class.
-
-        The current implementation does not expect such a plaquette anymore.
-
         Args:
             *plaquette_indices: the plaquette indices that will be used to
                 instantiate the different orchestrated templates.
@@ -407,6 +398,20 @@ class ComposedTemplate(Template):
         Returns:
             a numpy array with the given plaquette indices arranged according to
             the underlying shape of the template.
+
+        Note:
+            In previous implementations of this class, the instantiate method was
+            expecting a plaquette "0" to be positioned first in the provided plaquette
+            indices.
+            This expectation was:
+            1. not documented anywhere,
+            2. an exposition of internal implementation details,
+            3. very error-prone for external users.
+
+            It also made the interface of ComposedTemplate slightly different from
+            its parent Template class.
+
+            The current implementation does not expect such a plaquette anymore.
         """
         if 0 in plaquette_indices:
             raise TQECException(
@@ -430,21 +435,17 @@ class ComposedTemplate(Template):
         return self._default_increments
 
     def scale_to(self, k: int) -> "ComposedTemplate":
-        """Scales all the scalable component templates to the given scale k.
+        """Scales all the scalable component templates to the given scale ``k``.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
+        Note that this function scales the template instance INLINE. Rephrasing, the
+        instance on which this method is called is modified in-place AND returned.
 
         Args:
-            k: the new scale of the component templates.
+            k: the new scale of the component templates. Forwarded to all the
+            ``Template`` instances added to this ``ComposedTemplate`` instance.
 
         Returns:
-            self, once scaled.
+            ``self``, once scaled.
         """
         for t in self._templates:
             t.scale_to(k)
