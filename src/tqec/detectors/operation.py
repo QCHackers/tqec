@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import cirq
+from tqec.exceptions import TQECException
 
 STIM_TAG = "STIM_OPERATION"
 
@@ -36,6 +37,14 @@ class ShiftCoords(cirq.Operation):
         Args:
             *shifts: How much to shift each coordinate.
         """
+        # The number of shift coordinates should be between 1 and 16.
+        # See [SHIFT_COORDS](https://github.com/quantumlib/Stim/blob/main/doc/gates.md#SHIFT_COORDS)
+        if not 1 <= len(shifts) <= 16:
+            raise TQECException(
+                "The number of shift coordinates should be between 1 and 16, "
+                f"but got {len(shifts)}."
+            )
+
         self._shifts = shifts
 
     @property
@@ -53,7 +62,7 @@ class ShiftCoords(cirq.Operation):
 
 @dataclass(frozen=True)
 class RelativeMeasurementData:
-    """The data of a spatially and temporally relative measurement
+    """The relative_measurement_data of a spatially and temporally relative measurement
 
     This class stores two attributes (relative_qubit_positioning and
     relative_measurement_offset) that respectively represent a spatial
@@ -76,12 +85,19 @@ class RelativeMeasurementData:
     relative_qubit_positioning: cirq.GridQubit
     relative_measurement_offset: int
 
+    def __post_init__(self):
+        if self.relative_measurement_offset >= 0:
+            raise TQECException(
+                "The relative_measurement_offset should be a negative integer, "
+                f"but got {self.relative_measurement_offset}."
+            )
+
 
 class RelativeMeasurementsRecord(cirq.Operation):
     def __init__(
         self,
         local_coordinate_system_origin: cirq.GridQubit,
-        data: list[RelativeMeasurementData],
+        relative_measurement_data: list[RelativeMeasurementData],
     ) -> None:
         """A group of relative measurement data representing measurements relative
         to the origin of local coordinate system and current measurement timestamp.
@@ -91,11 +107,17 @@ class RelativeMeasurementsRecord(cirq.Operation):
                 system. The origin along with the local coordinate system will
                 be pinned to the global coordinate system to resolve the actual
                 qubit coordinates the measurements applied to.
-            data: a list of :class:`RelativeMeasurementData` that composed the
+            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the
                 relative measurements' operation.
         """
+        # check there is no duplicate relative_measurement_data
+        if len(set(relative_measurement_data)) != len(relative_measurement_data):
+            raise TQECException(
+                "The relative_measurement_data should not contain duplicate elements."
+            )
+
         self._local_coordinate_system_origin = local_coordinate_system_origin
-        self._data = data
+        self._data = relative_measurement_data
 
     @property
     def qubits(self) -> tuple[cirq.Qid, ...]:
@@ -105,7 +127,7 @@ class RelativeMeasurementsRecord(cirq.Operation):
         return self
 
     @property
-    def data(self) -> list[RelativeMeasurementData]:
+    def relative_measurement_data(self) -> list[RelativeMeasurementData]:
         """The recorded relative measurement data."""
         return self._data
 
@@ -124,7 +146,7 @@ class Detector(RelativeMeasurementsRecord):
     def __init__(
         self,
         local_coordinate_system_origin: cirq.GridQubit,
-        data: list[RelativeMeasurementData],
+        relative_measurement_data: list[RelativeMeasurementData],
         time_coordinate: int = 0,
     ) -> None:
         """Operation representing a detector.
@@ -148,12 +170,18 @@ class Detector(RelativeMeasurementsRecord):
                 system. The origin along with the local coordinate system will
                 be pinned to the global coordinate system to resolve the actual
                 qubit coordinates the measurements applied to.
-            data: a list of :class:`RelativeMeasurementData` that composed the
+            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the
                 relative measurements' operation.
             time_coordinate: an annotation that will be forwarded to the
                 DETECTOR Stim structure as the last coordinate.
         """
-        super().__init__(local_coordinate_system_origin, data)
+        if time_coordinate < 0:
+            raise TQECException(
+                "The time_coordinate should be a non-negative integer, "
+                f"but got {time_coordinate}."
+            )
+
+        super().__init__(local_coordinate_system_origin, relative_measurement_data)
         self._time_coordinate = time_coordinate
 
     def _circuit_diagram_info_(self, _: Any) -> str:
@@ -173,7 +201,7 @@ class Observable(RelativeMeasurementsRecord):
     def __init__(
         self,
         local_coordinate_system_origin: cirq.GridQubit,
-        data: list[RelativeMeasurementData],
+        relative_measurement_data: list[RelativeMeasurementData],
         observable_index: int = 0,
     ) -> None:
         """Operation representing an observable.
@@ -197,11 +225,17 @@ class Observable(RelativeMeasurementsRecord):
                 system. The origin along with the local coordinate system will
                 be pinned to the global coordinate system to resolve the actual
                 qubit coordinates the measurements applied to.
-            data: a list of :class:`RelativeMeasurementData` that composed the
+            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the
                 relative measurements' operation.
             observable_index: the index of the observable.
         """
-        super().__init__(local_coordinate_system_origin, data)
+        if observable_index < 0:
+            raise TQECException(
+                "The observable_index should be a non-negative integer, "
+                f"but got {observable_index}."
+            )
+
+        super().__init__(local_coordinate_system_origin, relative_measurement_data)
         self._observable_index = observable_index
 
     def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs):
