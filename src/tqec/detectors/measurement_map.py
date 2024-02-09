@@ -47,12 +47,12 @@ class CircuitMeasurementMap:
         Args:
             current_moment_index: the moment index for which we want to compute
                 the offset. This method will only backtrack in time, and so will
-                never return measurements that are performed after the moment
-                provided in this parameter. Also, the measurement record offset
-                is a local quantity that might change in time (due to subsequent
-                measurements shifting the offset), meaning that the returned
-                offset should only be considered valid for the moment provided
-                here, and for no other moments.
+                never return measurements that are performed strictly after the 
+                moment provided in this parameter. Also, the measurement record 
+                offset is a local quantity that might change in time (due to 
+                subsequent measurements shifting the offset), meaning that the
+                returned offset should only be considered valid for the moment 
+                provided here, and for no other moments.
             qubit: qubit instance the measurement we are searching for has been
                 performed on.
             measurement_offset: the temporally-local, negative, measurement
@@ -66,21 +66,28 @@ class CircuitMeasurementMap:
             current_moment_index, or None if the searched offset does not exist.
 
         Raises:
-            TQECException: if the provided measurement_offset value is positive.
+            TQECException: if the provided measurement_offset value is positive or
+                if the ``current_moment_index`` provided is not a valid moment of
+                the cirq.Circuit instance this instance has been constructed from.
         """
         if measurement_offset >= 0:
             raise TQECException(
                 f"Found a positive measurement offset ({measurement_offset}). "
                 "All measurement offsets should be strictly negative integers."
             )
+        if not 0 <= current_moment_index < len(self._global_measurement_indices):
+            raise TQECException(
+                f"The provided moment index ({current_moment_index}) is invalid."
+            )
 
         last_performed_measurement = self._get_index_of_last_performed_measurement(
             current_moment_index
         )
+        if last_performed_measurement is None:
+            return None
+
         seen_measurements_on_qubit: int = 0
-        # We do not take into account the current moment, so we start at the moment
-        # just before.
-        for moment_index in reversed(range(current_moment_index)):
+        for moment_index in reversed(range(current_moment_index + 1)):
             moment_has_measurement_on_qubit: bool = (
                 qubit in self._global_measurement_indices[moment_index]
             )
@@ -95,14 +102,12 @@ class CircuitMeasurementMap:
 
     def _get_index_of_last_performed_measurement(
         self, current_moment_index: int
-    ) -> int:
+    ) -> int | None:
         for moment_index in reversed(range(current_moment_index + 1)):
             measurements_in_moment = self._global_measurement_indices[moment_index]
             if measurements_in_moment:
                 return max(measurements_in_moment.values())
-        raise TQECException(
-            f"Cannot find any measurement performed before moment {current_moment_index}."
-        )
+        return None
 
     @staticmethod
     def _get_global_measurement_index(
@@ -179,7 +184,7 @@ def compute_global_measurements_lookback_offsets(
     """
     global_measurements_lookback_offsets = []
     origin = relative_measurements_record.origin
-    for relative_measurement in relative_measurements_record.data:
+    for relative_measurement in relative_measurements_record.relative_measurement_data:
         # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
         #                    coordinate system, so no issue here.
         qubit = origin + relative_measurement.relative_qubit_positioning
