@@ -6,11 +6,12 @@
 		"@pixi/filter-drop-shadow": "^5.2.0",
 		"@pixi/react": "^7.1.1",
 		"@pixi/ui": "^0.10.1",
+		"@reduxjs/toolkit": "^2.1.0",
 		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
 		"assert": "^2.1.0",
-		"axios": "^0.24.0",
+		"axios": "^1.6.7",
 		"install": "^0.13.0",
 		"npm": "^10.2.5",
 		"pixi-filters": "^5.2.1",
@@ -18,7 +19,9 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-pixi-fiber": "^1.0.6",
+		"react-redux": "^9.1.0",
 		"react-scripts": "5.0.1",
+		"redux": "^5.0.1",
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
