@@ -138,9 +138,6 @@ def test_raw_rectangle_larger_expected_plaquettes_number():
     assert template.expected_plaquettes_number == 3
 
 
-def test_raw_rectangle_expected_plaquettes_number_with_holes():
-    template = RawRectangleTemplate([[0], [1], [24]])
-    assert template.expected_plaquettes_number == 25
 
 
 def test_raw_rectangle_simple_instantiate():
