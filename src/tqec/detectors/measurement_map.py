@@ -179,7 +179,7 @@ def compute_global_measurements_lookback_offsets(
     """
     global_measurements_lookback_offsets = []
     origin = relative_measurements_record.origin
-    for relative_measurement in relative_measurements_record.data:
+    for relative_measurement in relative_measurements_record.relative_measurement_data:
         # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
         #                    coordinate system, so no issue here.
         qubit = origin + relative_measurement.relative_qubit_positioning
