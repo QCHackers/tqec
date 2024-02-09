@@ -24,26 +24,6 @@ export default class QubitLattice {
     return [relativeX, relativeY];
   };
 
-  selectFirstVectorOrigin = (e) => {
-    const [relativeX, relativeY] = this.relativeXY(e);
-    this.vector1.origin = new Point(relativeX, relativeY);
-  };
-
-  selectSecondVectorOrigin = (e) => {
-    const [relativeX, relativeY] = this.relativeXY(e);
-    this.vector2.origin = new Point(relativeX, relativeY);
-  };
-
-  selectFirstVectorEndpoint = (e) => {
-    const [relativeX, relativeY] = this.relativeXY(e);
-    this.vector1.end = new Point(relativeX, relativeY);
-  };
-
-  selectSecondVectorEndpoint = (e) => {
-    const [relativeX, relativeY] = this.relativeXY(e);
-    this.vector2.end = new Point(relativeX, relativeY);
-  };
-
   createBoundingBox = () => {
     // Create a bounding box parallelogram
     // Determine the vertices of the box. It should contain every qubit,
@@ -74,6 +54,7 @@ export default class QubitLattice {
     boundingBox.interactive = true;
     boundingBox.logicalWidth = rightmostQubit.globalX - leftmostQubit.globalX + 2 * delta;
     boundingBox.logicalHeight = bottommostQubit.globalY - topmostQubit.globalY + 2 * delta;
+    // when the bounding box corner is dragged, it should be resized
     this.upperLeftCorner = upperLeftCorner;
     this.boundingBox = boundingBox;
   };
@@ -87,7 +68,7 @@ export default class QubitLattice {
 
   selectQubitForConstellation = (e) => {
     const [relativeX, relativeY] = this.relativeXY(e);
-    if (relativeX < 200 && relativeY < 140) {
+    if (relativeX < 250 && relativeY < 150) {
       return; // Do not allow qubits in the top left corner
     }
     // TODO: create a qubit at the grid intersection point nearest to the click
@@ -109,12 +90,14 @@ export default class QubitLattice {
     }
   };
 
-  applyBBCoordinatesToQubits = () => {
+  applyBoundingBoxCoordinatesToQubits = () => {
     // Apply the bounding box coordinates to the qubits
     // eslint-disable-next-line no-restricted-syntax
     for (const qubit of this.constellation) {
-      // eslint-disable-next-line max-len
-      qubit.applyBoundingBoxCoordinates(qubit.globalX - this.upperLeftCorner.x, qubit.globalY - this.upperLeftCorner.y);
+      qubit.applyBoundingBoxCoordinates(
+        qubit.globalX - this.upperLeftCorner.x,
+        qubit.globalY - this.upperLeftCorner.y
+      );
     }
   };
 }

@@ -25,6 +25,11 @@ export default function TQECApp() {
   const grid = makeGrid(app, gridSize);
 
   workspace.addChild(grid);
+  grid.units.forEach((row) => {
+    row.forEach((unit) => {
+      workspace.addChild(unit);
+    });
+  });
   workspace.selectedPlaquette = null; // Used to update filters
   workspace.gridSize = gridSize;
   workspace.qubitRadius = 5;
@@ -92,11 +97,6 @@ export default function TQECApp() {
     app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
   workspace.addChild(createQubitConstellationButton);
-  const finalizeBoundingQuadButton = new Button(
-    'Finalize unit cell',
-    x,
-    y
-  );
 
   saveQubitConstellationButton.on('click', () => {
     if (lattice.constellation.length === 0) {
@@ -104,10 +104,14 @@ export default function TQECApp() {
     } else {
       workspace.removeChild(saveQubitConstellationButton);
       lattice.createBoundingBox();
-      lattice.applyBBCoordinatesToQubits();
-      // eslint-disable-next-line prefer-destructuring
-      const boundingBox = lattice.boundingBox;
+      lattice.applyBoundingBoxCoordinatesToQubits();
+      const { boundingBox } = lattice;
       workspace.addChild(boundingBox);
+      const finalizeBoundingQuadButton = new Button(
+        'Finalize unit cell',
+        x,
+        y
+      );
       workspace.addChild(finalizeBoundingQuadButton);
       app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
@@ -120,8 +124,12 @@ export default function TQECApp() {
           // eslint-disable-next-line max-len
           for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight) {
             for (const qubit of lattice.constellation) {
-              // eslint-disable-next-line max-len
-              const newQubit = new Qubit(qubit.bbX + horiz, qubit.bbY + vertic, workspace.qubitRadius, workspace.gridSize);
+              const newQubit = new Qubit(
+                qubit.bbX + horiz,
+                qubit.bbY + vertic,
+                workspace.qubitRadius,
+                workspace.gridSize
+              );
               workspace.addChild(newQubit);
             }
           }
@@ -142,18 +150,17 @@ export default function TQECApp() {
           app
         );
 
-        plaquetteButton.on('click', () => {
         // Create the plaquettes and template
+        plaquetteButton.on('click', () => {
           template.createPlaquette();
           workspace.addChild(template.container);
           // Clear the selected qubits
           selectedQubits = [];
           plaquetteButton.visible = false;
         });
-
         workspace.addChild(plaquetteButton);
         workspace.removeChild(finalizeBoundingQuadButton);
-        // Add download stim button
+
         const downloadStimButton = new DownloadButton(
           workspace,
           'Download Stim file',
