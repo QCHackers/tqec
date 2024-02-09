@@ -104,7 +104,7 @@ class Template(JSONEncodable):
 
         The input parameter ``k`` corresponds to an abstract scale that may be
         forwarded to
-        1. :class:`Dimension` instances in the case of :class:`AtomicTemplate`,
+        1. various :class:`Dimension` instances,
         2. other :class:`Template` instances in the case of templates modifying
            existing instances,
         3. anything else that the subclass might implement.

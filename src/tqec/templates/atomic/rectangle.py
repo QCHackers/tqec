@@ -3,11 +3,11 @@ import typing as ty
 import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
-from tqec.templates.atomic.base import AtomicTemplate
+from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
 
 
-class AlternatingRectangleTemplate(AtomicTemplate):
+class AlternatingRectangleTemplate(Template):
     def __init__(
         self,
         width: Dimension,
@@ -89,7 +89,7 @@ class AlternatingRectangleTemplate(AtomicTemplate):
         return 2
 
 
-class RawRectangleTemplate(AtomicTemplate):
+class RawRectangleTemplate(Template):
     def __init__(
         self,
         indices: list[list[int]],
@@ -100,15 +100,17 @@ class RawRectangleTemplate(AtomicTemplate):
         Implements an atomic rectangular template with user-provided
         plaquette distribution.
 
-        User-provided `indices` defines the width and height of the template.
-        The integers in `indices` will be used to index the `plaquette_indices`
-        provided to the `instantiate` method. The maximum integer in `indices`
+        User-provided ``indices`` defines the width and height of the template.
+        The integers in ``indices`` will be used to index the ``plaquette_indices``
+        provided to the ``instantiate`` method. The maximum integer in ``indices``
         is used to compute the expected number of plaquettes to instantiate the
-        template, that is ``1 + max(max(line) for line in indices)``.
+        template, that is ``1 + max(max(line) for line in indices)``.`
 
         Args:
             indices: 2-dimensional list of indices that will be used to index the
-                plaquette_indices provided to the `instantiate` method.
+                plaquette_indices provided to the ``instantiate`` method. Should contain
+                a contiguous set of positive indices starting from 0 (i.e., the set of
+                integer indices present should be equal to ``range(n)`` for some ``n``).
             default_x_increment: default increment in the x direction between two plaquettes.
             default_y_increment: default increment in the y direction between two plaquettes.
 
@@ -137,7 +139,7 @@ class RawRectangleTemplate(AtomicTemplate):
                 1  4
         """
         super().__init__(default_x_increment, default_y_increment)
-        if not indices:
+        if not indices or not indices[0]:
             raise TQECException(
                 f"You should provide at least one index to {__class__.__name__}."
             )
@@ -146,6 +148,18 @@ class RawRectangleTemplate(AtomicTemplate):
             raise TQECException(
                 f"The 2-dimensional array provided to {__class__.__name__} should "
                 "be rectangular. Please provide an array with equally-sized rows."
+            )
+        all_indices: set[int] = set().union(*[set(line) for line in indices])
+        expected_indices = set(range(len(all_indices)))
+        missing_expected_indices = expected_indices.difference(all_indices)
+        if missing_expected_indices:
+            min_index = min(min(row) for row in indices)
+            max_index = max(max(row) for row in indices)
+            raise TQECException(
+                f"{self.__class__.__name__} is expecting a 2-dimensional array of "
+                f"CONTIGUOUS indices starting at 0. You provided indices between "
+                f"{min_index} and {max_index} but the following indices were "
+                f"missing: {missing_expected_indices}."
             )
         self._indices = indices
 

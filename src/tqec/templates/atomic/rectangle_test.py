@@ -148,11 +148,6 @@ def test_raw_rectangle_larger_expected_plaquettes_number():
     assert template.expected_plaquettes_number == 3
 
 
-def test_raw_rectangle_expected_plaquettes_number_with_holes():
-    template = RawRectangleTemplate([[0], [1], [24]])
-    assert template.expected_plaquettes_number == 25
-
-
 def test_raw_rectangle_simple_instantiate():
     template = RawRectangleTemplate([[0]])
     arr = template.instantiate(1)
@@ -177,13 +172,11 @@ def test_raw_rectangle_larger_instantiate_different_order():
     numpy.testing.assert_equal(arr, [[3], [1], [2]])
 
 
-def test_raw_rectangle_larger_instantiate_hole():
-    template = RawRectangleTemplate([[0], [34], [9]])
-    arr = template.instantiate(*list(range(1, template.expected_plaquettes_number + 1)))
-    numpy.testing.assert_equal(arr, [[1], [35], [10]])
+def test_raw_rectangle_with_noncontiguous_indices():
+    with pytest.raises(TQECException, match="CONTIGUOUS indices"):
+        RawRectangleTemplate([[0], [1], [24]])
 
 
-def test_raw_rectangle_larger_instantiate_hole_raising():
-    template = RawRectangleTemplate([[0], [34], [9]])
-    with pytest.raises(TQECException):
-        template.instantiate(1, 2, 3)
+def test_raw_rectangle_with_negative_index():
+    with pytest.raises(TQECException, match="starting at 0"):
+        RawRectangleTemplate([[-1]])
