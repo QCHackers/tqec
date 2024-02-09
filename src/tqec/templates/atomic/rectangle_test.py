@@ -164,3 +164,6 @@ def test_raw_rectangle_larger_instantiate_different_order():
     numpy.testing.assert_equal(arr, [[3], [1], [2]])
 
 
+def test_raw_rectangle_with_noncontiguout_indices():
+    with pytest.raises(TQECException, match="CONTIGUOUS indices"):
+        template = RawRectangleTemplate([[0], [1], [24]])
