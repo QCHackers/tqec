@@ -275,6 +275,8 @@ class ScheduledCircuit:
         """
 
         def remap_qubits(op: cirq.Operation) -> cirq.Operation:
+            # See https://github.com/QCHackers/tqec/pull/127#issuecomment-1934133595
+            # for an explanation on why this cast has been introduced.
             cast_qubit_map = typing.cast(dict[cirq.Qid, cirq.Qid], qubit_map)
             op = op.transform_qubits(cast_qubit_map)
             untagged = op.untagged
