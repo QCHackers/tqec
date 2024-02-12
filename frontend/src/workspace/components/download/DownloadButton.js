@@ -1,8 +1,8 @@
 import axios from 'axios';
-import Button from './button';
-import Template from '../TemplateClass';
+import Button from '../Button';
+import Template from '../../plaquettes/Template';
 import config from './config';
-import notification from './notifier';
+import notification from '../notification';
 
 const assert = require('assert');
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Container, Color } from 'pixi.js';
-import Button from '../components/button';
+import Button from '../components/Button';
 
 export const PlaquetteColors = {
   purple: new Color('purple'),

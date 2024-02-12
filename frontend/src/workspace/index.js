@@ -4,13 +4,13 @@
 import { useApp } from '@pixi/react';
 import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
-import notification from './components/notifier';
-import makeGrid from './grid';
-import Template from './TemplateClass';
-import Qubit from './QubitClass';
-import QubitLattice from './QubitLattice';
-import Button from './components/button';
-import DownloadButton from './components/downloadButton';
+import notification from './components/notification';
+import Grid from './graphics/Grid';
+import Template from './plaquettes/Template';
+import Qubit from './qubits/Qubit';
+import QubitLattice from './qubits/QubitLattice';
+import Button from './components/Button';
+import DownloadButton from './components/download/DownloadButton';
 
 export default function TQECApp() {
   // Initialize the app
@@ -22,7 +22,7 @@ export default function TQECApp() {
   const workspace = new Container();
   workspace.name = 'workspace';
   // Create the grid container
-  const grid = makeGrid(app, gridSize);
+  const grid = new Grid(gridSize, workspace, app);
 
   workspace.addChild(grid);
   grid.units.forEach((row) => {
@@ -115,10 +115,25 @@ export default function TQECApp() {
       workspace.addChild(finalizeBoundingQuadButton);
       app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
+      // Add recolorable grid squares
+      grid.units.forEach((row) => {
+        row.forEach((unit) => {
+          workspace.addChild(unit);
+          app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
+        });
+      });
+
       finalizeBoundingQuadButton.on('click', () => {
         workspace.removeChild(boundingBox);
         workspace.removeChild(finalizeBoundingQuadButton);
+        grid.units.forEach((row) => {
+          row.forEach((unit) => {
+            workspace.removeChild(unit);
+            app.renderer.view.removeEventListener('click', unit.toggleVisibility);
+          });
+        });
 
+        // Add qubits to the workspace
         // eslint-disable-next-line max-len
         for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth) {
           // eslint-disable-next-line max-len

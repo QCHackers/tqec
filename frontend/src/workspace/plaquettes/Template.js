@@ -1,7 +1,7 @@
 import { Container, Graphics, Color } from 'pixi.js';
-import Plaquette from './plaquettes/PlaquetteClass';
-import notification from './components/notifier';
-import Button from './components/button';
+import Plaquette from './Plaquette';
+import notification from '../components/notification';
+import Button from '../components/Button';
 
 export default class Template {
   constructor(selectedQubits, workspace, plaquetteButton, app) {

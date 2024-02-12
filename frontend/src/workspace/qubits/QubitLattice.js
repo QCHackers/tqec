@@ -1,6 +1,6 @@
 import { Point, Graphics, Color } from 'pixi.js';
-import Qubit from './QubitClass';
-import Button from './components/button';
+import Qubit from './Qubit';
+import Button from '../components/Button';
 
 const assert = require('assert');
 
