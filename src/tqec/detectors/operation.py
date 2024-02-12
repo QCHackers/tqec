@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 import cirq
 from tqec.exceptions import TQECException
@@ -262,7 +262,9 @@ def make_shift_coords(*shifts: int) -> cirq.Operation:
 
 def make_detector(
     local_coordinate_system_origin: cirq.GridQubit,
-    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    relative_measurements: Sequence[
+        tuple[cirq.GridQubit, int] | RelativeMeasurementData
+    ],
     time_coordinate: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Detector` operation with the
@@ -300,7 +302,9 @@ def make_detector(
 
 def make_observable(
     local_coordinate_system_origin: cirq.GridQubit,
-    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    relative_measurements: Sequence[
+        tuple[cirq.GridQubit, int] | RelativeMeasurementData
+    ],
     observable_index: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Observable` operation with the

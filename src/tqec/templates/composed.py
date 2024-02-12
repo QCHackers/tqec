@@ -110,7 +110,7 @@ class ComposedTemplate(Template):
             raise TQECException(
                 f"Asking for element identified by {template_id} when only "
                 f"{len(self._templates)} templates have been added to "
-                f"the {__class__.__name__} instance."
+                f"the {self.__class__.__name__} instance."
             )
 
     def add_template(
@@ -379,16 +379,16 @@ class ComposedTemplate(Template):
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
             ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
-                *plaquette_indices
+                plaquette_indices
             )
 
         return ret
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         Args:
-            *plaquette_indices: the plaquette indices that will be used to
+            plaquette_indices: the plaquette indices that will be used to
                 instantiate the different orchestrated templates.
 
         Returns:
@@ -411,7 +411,7 @@ class ComposedTemplate(Template):
         """
         if 0 in plaquette_indices:
             raise TQECException(
-                f"{__class__.__name__} does not expect a plaquette 0 anymore."
+                f"{self.__class__.__name__} does not expect a plaquette 0 anymore."
             )
         if len(plaquette_indices) != self.expected_plaquettes_number:
             raise TQECException(
@@ -453,10 +453,10 @@ class ComposedTemplate(Template):
 
     def to_dict(self) -> dict[str, ty.Any]:
         return {
-            # __class__ is "TemplateOrchestrator" here, whatever the type of self is. This is different
+            # self.__class__ is "ComposedTemplate" here, whatever the type of self is. This is different
             # from what is done in the Template base class. This is done to avoid users subclassing this
             # class and having a subclass name we do not control in the "type" entry.
-            "type": __class__.__name__,
+            "type": self.__class__.__name__,
             "kwargs": {
                 "templates": [t.to_dict() for t in self._templates],
             },
