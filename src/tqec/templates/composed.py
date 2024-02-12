@@ -252,19 +252,19 @@ class ComposedTemplate(Template):
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
         """Computes the absolute position of each template upper-left corner.
 
-                This is the main method of the ``ComposedTemplate`` class. It explores templates
-                by performing a BFS on the graph of relations between templates, starting by the
-                first template inserted (but any template connected to the others should work
-                fine).
+        This is the main method of the ``ComposedTemplate`` class. It explores templates
+        by performing a BFS on the graph of relations between templates, starting by the
+        first template inserted (but any template connected to the others should work
+        fine).
 
-                The first template upper-left corner is arbitrarily positioned at the (0, 0)
-                position, and each template upper-left corner is then computed from this position.
-                This means in particular that this method can return positions with negative
-                coordinates.
+        The first template upper-left corner is arbitrarily positioned at the (0, 0)
+        position, and each template upper-left corner is then computed from this position.
+        This means in particular that this method can return positions with negative
+        coordinates.
 
-                Returns:
-                    a mapping between templates indices and their upper-left corner
-                    absolute position.
+        Returns:
+            a mapping between templates indices and their upper-left corner
+            absolute position.
         """
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
@@ -379,16 +379,16 @@ class ComposedTemplate(Template):
             y = tul.y - bbul.y
             # Numpy indexing is (y, x) in our coordinate system convention.
             ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
-                *plaquette_indices
+                plaquette_indices
             )
 
         return ret
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         Args:
-            *plaquette_indices: the plaquette indices that will be used to
+            plaquette_indices: the plaquette indices that will be used to
                 instantiate the different orchestrated templates.
 
         Returns:

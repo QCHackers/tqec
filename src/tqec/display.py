@@ -2,22 +2,26 @@ from __future__ import annotations
 
 import math
 import pathlib
+import typing as ty
 
 from tqec.templates.base import Template
 from tqec.templates.composed import ComposedTemplate
 
 
-def display_template(template: Template, *plaquette_indices: int) -> None:
+def display_template(
+    template: Template, plaquette_indices: ty.Sequence[int] | None = None
+) -> None:
     """Display a template instance with ASCII output.
 
     Args:
         template: the Template instance to display.
-        *plaquette_indices: the plaquette indices that are forwarded to the call
+        plaquette_indices: the plaquette indices that are forwarded to the call
             to `template.instantiate` to get the actual template representation.
+            If None, default to ``range(1, template.expected_plaquettes_number + 1)``.
     """
-    if len(plaquette_indices) == 0:
+    if plaquette_indices is None:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
-    arr = template.instantiate(*plaquette_indices)
+    arr = template.instantiate(plaquette_indices)
     for line in arr:
         for element in line:
             element = str(element) if element != 0 else "."
@@ -105,7 +109,7 @@ def display_templates_svg(
             plaquette_indices[k]
             for k in templates._relative_position_graph.nodes[i]["plaquette_indices"]
         ]
-        arr = template.instantiate(*indices)
+        arr = template.instantiate(indices)
         outer_rects.extend(
             rect(ul_position.x, ul_position.y, len(arr[0]), len(arr), outmost=True)
         )

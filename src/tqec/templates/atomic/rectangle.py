@@ -59,7 +59,9 @@ class AlternatingRectangleTemplate(Template):
         self._width = width
         self._height = height
 
-    def instantiate(self, p1: int, p2: int, *_: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        self._check_plaquette_number(plaquette_indices)
+        p1, p2 = plaquette_indices[:2]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
@@ -163,7 +165,8 @@ class RawRectangleTemplate(Template):
             )
         self._indices = indices
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        self._check_plaquette_number(plaquette_indices)
         try:
             # Use numpy indexing to instantiate the raw values.
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)

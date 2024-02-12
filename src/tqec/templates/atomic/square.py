@@ -100,15 +100,9 @@ class AlternatingCornerSquareTemplate(Template):
         self._corner_position = corner_position
         self._top_plaquettes_on_diagonal = top_plaquettes_on_diagonal
 
-    def instantiate(
-        self,
-        p1: int,
-        p2: int,
-        p1_flipped: int,
-        p2_flipped: int,
-        corner_plaquette: int,
-        *_: int,
-    ) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        self._check_plaquette_number(plaquette_indices)
+        p1, p2, p1_flipped, p2_flipped, corner_plaquette = plaquette_indices[:5]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette

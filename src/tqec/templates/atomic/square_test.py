@@ -55,7 +55,7 @@ def test_square_template_one_fixed_scaling(dim2):
 
 def test_square_template_instantiate_default_plaquettes(dim2x2):
     template = AlternatingSquareTemplate(dim2x2)
-    arr = template.instantiate(1, 2)
+    arr = template.instantiate([1, 2])
     numpy.testing.assert_equal(
         arr, [[1, 2, 1, 2], [2, 1, 2, 1], [1, 2, 1, 2], [2, 1, 2, 1]]
     )
@@ -63,7 +63,7 @@ def test_square_template_instantiate_default_plaquettes(dim2x2):
 
 def test_square_template_one_fixed_scaling_instantiate_random_plaquettes(dim2x2, dim2):
     template = AlternatingSquareTemplate(dim2x2, dim2)
-    arr = template.instantiate(78, 195)
+    arr = template.instantiate([78, 195])
     numpy.testing.assert_equal(
         arr,
         [
