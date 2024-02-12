@@ -23,7 +23,7 @@ export default function makeGrid(app, gridSize = 50) {
   for (let x = 0; x <= app.screen.width; x += gridSize) {
     grid.units[x] = [];
     for (let y = 0; y <= app.screen.height; y += gridSize) {
-      const unit = GridUnit(x, y, gridSize);
+      const unit = new GridUnit(x, y, gridSize);
       grid.units[x][y] = unit;
     }
   }

@@ -33,7 +33,6 @@ export default class QubitLattice {
       this.constellation.length > 0,
       'Constellation must have at least one qubit'
     );
-    // TODO: create a minimal rectangle containing the constellation.
     const leftmostQubit = this.constellation.reduce((a, b) => (a.globalX < b.globalX ? a : b));
     const rightmostQubit = this.constellation.reduce((a, b) => (a.globalX > b.globalX ? a : b));
     const topmostQubit = this.constellation.reduce((a, b) => (a.globalY < b.globalY ? a : b));
@@ -54,7 +53,7 @@ export default class QubitLattice {
     boundingBox.interactive = true;
     boundingBox.logicalWidth = rightmostQubit.globalX - leftmostQubit.globalX + 2 * delta;
     boundingBox.logicalHeight = bottommostQubit.globalY - topmostQubit.globalY + 2 * delta;
-    // when the bounding box corner is dragged, it should be resized
+    // TODO: when the bounding box corner is dragged, it should be resized
     this.upperLeftCorner = upperLeftCorner;
     this.boundingBox = boundingBox;
   };
