@@ -30,10 +30,10 @@ def test_stack_template_over_itself(small_alternating_template: Template):
     stack = StackedTemplate()
     stack.push_template_on_top(small_alternating_template)
     stack.push_template_on_top(small_alternating_template)
-    instanciation = stack.instanciate(1, 2, 3, 4)
+    instanciation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_array_equal(
-        instanciation, small_alternating_template.instanciate(3, 4)
+        instanciation, small_alternating_template.instantiate([3, 4])
     )
 
 
@@ -43,7 +43,7 @@ def test_stack_small_alternating_on_top_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(small_alternating_template)
-    instanciation = stack.instanciate(1, 2, 3, 4)
+    instanciation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_array_equal(
         instanciation,
@@ -57,7 +57,7 @@ def test_stack_small_alternating_with_offset_on_top_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(shifted_small_alternating_template)
-    instanciation = stack.instanciate(1, 2, 3, 4)
+    instanciation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_array_equal(
         instanciation,
@@ -71,11 +71,11 @@ def test_stack_small_alternating_below_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(small_alternating_template)
     stack.push_template_on_top(larger_alternating_template)
-    instanciation = stack.instanciate(1, 2, 3, 4)
+    instanciation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_array_equal(
         instanciation,
-        larger_alternating_template.instanciate(3, 4),
+        larger_alternating_template.instantiate([3, 4]),
     )
 
 
@@ -86,10 +86,10 @@ def test_stack_template_pop(
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(small_alternating_template)
     stack.pop_template_from_top()
-    instanciation = stack.instanciate(1, 2)
+    instanciation = stack.instantiate([1, 2])
 
     numpy.testing.assert_array_equal(
-        instanciation, larger_alternating_template.instanciate(1, 2)
+        instanciation, larger_alternating_template.instantiate([1, 2])
     )
 
 
