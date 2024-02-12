@@ -2,22 +2,26 @@ from __future__ import annotations
 
 import math
 import pathlib
+import typing as ty
 
 from tqec.templates.base import Template
 from tqec.templates.composed import ComposedTemplate
 
 
-def display_template(template: Template, *plaquette_indices: int) -> None:
+def display_template(
+    template: Template, plaquette_indices: ty.Sequence[int] | None = None
+) -> None:
     """Display a template instance with ASCII output.
 
     Args:
         template: the Template instance to display.
-        *plaquette_indices: the plaquette indices that are forwarded to the call
+        plaquette_indices: the plaquette indices that are forwarded to the call
             to `template.instantiate` to get the actual template representation.
+            If None, default to ``range(1, template.expected_plaquettes_number + 1)``.
     """
-    if len(plaquette_indices) == 0:
+    if plaquette_indices is None:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
-    arr = template.instantiate(*plaquette_indices)
+    arr = template.instantiate(plaquette_indices)
     for line in arr:
         for element in line:
             element = str(element) if element != 0 else "."
@@ -39,7 +43,7 @@ def display_templates_svg(
     svg files.
 
     Args:
-        templates: the TemplateOrchestrator instance to display.
+        templates: the ComposedTemplate instance to display.
         write_svg_file: the path to the SVG file to write.
         canvas_height: the height of the canvas in pixels to draw on.
         *plaquette_indices: the plaquette indices that are forwarded to the call
@@ -53,8 +57,8 @@ def display_templates_svg(
     template_list = templates._templates
     ul_positions = templates._compute_ul_absolute_position()
     box = templates._get_bounding_box_from_ul_positions(ul_positions)
-    box_width = box[1].x - box[0].x
-    box_height = box[1].y - box[0].y
+    box_width: float = box[1].x - box[0].x
+    box_height: float = box[1].y - box[0].y
     pad = max(box_width, box_height) * 0.1
     box_width += pad
     box_height += pad
@@ -64,19 +68,19 @@ def display_templates_svg(
     def rect(
         x: int, y: int, width: int, height: int, label: int = 0, outmost: bool = False
     ) -> list[str]:
-        x = (x - box[0].x + pad / 2) * scale_factor
-        y = (y - box[0].y + pad / 2) * scale_factor
-        width = width * scale_factor
-        height = height * scale_factor
+        x_scaled = (x - box[0].x + pad / 2) * scale_factor
+        y_scaled = (y - box[0].y + pad / 2) * scale_factor
+        width_scaled = width * scale_factor
+        height_scaled = height * scale_factor
         lines: list[str] = []
         stroke = "#00FF00" if outmost else "black"
         stroke_width = 3 if outmost else 2
         # Draw the rectangle
         lines.append(
-            f'<rect x="{x}" '
-            f'y="{y}" '
-            f'width="{width}" '
-            f'height="{height}" '
+            f'<rect x="{x_scaled}" '
+            f'y="{y_scaled}" '
+            f'width="{width_scaled}" '
+            f'height="{height_scaled}" '
             f'stroke="{stroke}" '
             f'stroke-width="{stroke_width}" '
             'fill="none" />'
@@ -84,8 +88,8 @@ def display_templates_svg(
         # Draw the plaquette index
         if label:
             lines.append(
-                f'<text x="{x + width / 2}" '
-                f'y="{y + height / 2}" '
+                f'<text x="{x_scaled + width_scaled / 2}" '
+                f'y="{y_scaled + height_scaled / 2}" '
                 'font-size="10" '
                 'text-anchor="middle" '
                 f'dominant-baseline="middle">{label}</text>'
@@ -105,7 +109,7 @@ def display_templates_svg(
             plaquette_indices[k]
             for k in templates._relative_position_graph.nodes[i]["plaquette_indices"]
         ]
-        arr = template.instantiate(*indices)
+        arr = template.instantiate(indices)
         outer_rects.extend(
             rect(ul_position.x, ul_position.y, len(arr[0]), len(arr), outmost=True)
         )

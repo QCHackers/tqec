@@ -65,7 +65,7 @@ def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes(
     dim2x2, dim2
 ):
     template = AlternatingRectangleTemplate(dim2x2, dim2)
-    arr = template.instantiate(1, 2)
+    arr = template.instantiate([1, 2])
     numpy.testing.assert_equal(arr, [[1, 2, 1, 2], [2, 1, 2, 1]])
 
 
@@ -73,7 +73,7 @@ def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes(
     dim2x2, dim2
 ):
     template = AlternatingRectangleTemplate(dim2x2, dim2)
-    arr = template.instantiate(78, 195)
+    arr = template.instantiate([78, 195])
     numpy.testing.assert_equal(arr, [[78, 195, 78, 195], [195, 78, 195, 78]])
 
 
@@ -140,25 +140,25 @@ def test_raw_rectangle_larger_expected_plaquettes_number():
 
 def test_raw_rectangle_simple_instantiate():
     template = RawRectangleTemplate([[0]])
-    arr = template.instantiate(1)
+    arr = template.instantiate([1])
     numpy.testing.assert_equal(arr, [[1]])
 
 
 def test_raw_rectangle_simple_instantiate_random_plaquette_index():
     template = RawRectangleTemplate([[0]])
-    arr = template.instantiate(345897)
+    arr = template.instantiate([345897])
     numpy.testing.assert_equal(arr, [[345897]])
 
 
 def test_raw_rectangle_larger_instantiate():
     template = RawRectangleTemplate([[0], [1], [2]])
-    arr = template.instantiate(3, 2, 1)
+    arr = template.instantiate([3, 2, 1])
     numpy.testing.assert_equal(arr, [[3], [2], [1]])
 
 
 def test_raw_rectangle_larger_instantiate_different_order():
     template = RawRectangleTemplate([[0], [2], [1]])
-    arr = template.instantiate(3, 2, 1)
+    arr = template.instantiate([3, 2, 1])
     numpy.testing.assert_equal(arr, [[3], [1], [2]])
 
 

@@ -41,13 +41,13 @@ class XXSyndromeMeasurementPlaquette(BaseXXPlaquette):
                     [
                         cirq.Moment(
                             cirq.R(q).with_tags(self._MERGEABLE_TAG)
-                            for q in qubits_to_reset
+                            for q in [syndrome_qubit, *data_qubits]
                         ),
                         cirq.Moment(cirq.H(syndrome_qubit)),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
                         cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment(cirq.M(syndrome_qubit)),
+                        cirq.Moment([cirq.M(syndrome_qubit)]),
                         cirq.Moment(detector) if detector is not None else [],
                     ]
                 ),
