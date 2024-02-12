@@ -275,7 +275,8 @@ class ScheduledCircuit:
         """
 
         def remap_qubits(op: cirq.Operation) -> cirq.Operation:
-            op = op.transform_qubits(qubit_map)
+            cast_qubit_map = typing.cast(dict[cirq.Qid, cirq.Qid], qubit_map)
+            op = op.transform_qubits(cast_qubit_map)
             untagged = op.untagged
             if isinstance(op.gate, cirq.MeasurementGate):
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
