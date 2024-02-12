@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import deepcopy
 
 import cirq
@@ -55,7 +57,7 @@ def generate_circuit(
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, len(plaquettes) + 1))
-    template_plaquettes = template.instantiate(*_indices)
+    template_plaquettes = template.instantiate(_indices)
     increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.

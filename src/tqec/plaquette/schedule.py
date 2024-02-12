@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import numbers
 import typing
 from copy import deepcopy
 
 import cirq
-
 from tqec.detectors.operation import Detector, make_detector
 from tqec.exceptions import TQECException
 
@@ -110,7 +111,8 @@ class ScheduledCircuit:
             if not isinstance(q, cirq.GridQubit):
                 raise TQECException(
                     f"Excepted only instances of 'cirq.GridQubit', "
-                    f"but found an instance of {q.__class__.__name__}.")
+                    f"but found an instance of {q.__class__.__name__}."
+                )
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
@@ -248,7 +250,7 @@ class ScheduledCircuit:
         the union of the qubits of all the operations performed on and the origin of all
         the detectors.
         """
-        operation_qubits = set(self.raw_circuit.all_qubits())
+        operation_qubits = self.qubits
         detector_origins = set(detector.origin for detector in self.detectors)
         return frozenset(operation_qubits.union(detector_origins))
 
@@ -273,14 +275,17 @@ class ScheduledCircuit:
         """
 
         def remap_qubits(op: cirq.Operation) -> cirq.Operation:
-            op = op.transform_qubits(qubit_map)
+            # See https://github.com/QCHackers/tqec/pull/127#issuecomment-1934133595
+            # for an explanation on why this cast has been introduced.
+            cast_qubit_map = typing.cast(dict[cirq.Qid, cirq.Qid], qubit_map)
+            op = op.transform_qubits(cast_qubit_map)
             untagged = op.untagged
             if isinstance(op.gate, cirq.MeasurementGate):
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
             elif isinstance(untagged, Detector):
                 return make_detector(
                     qubit_map.get(untagged.origin, untagged.origin),
-                    untagged.data,
+                    untagged.relative_measurement_data,
                     time_coordinate=untagged.coordinates[-1],
                 )
             else:

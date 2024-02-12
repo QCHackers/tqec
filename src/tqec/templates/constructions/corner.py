@@ -1,62 +1,62 @@
 from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
+from tqec.templates.atomic.rectangle import (
+    AlternatingRectangleTemplate,
+    RawRectangleTemplate,
+)
+from tqec.templates.atomic.square import (
+    AlternatingCornerSquareTemplate,
+    AlternatingSquareTemplate,
+)
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.fixed.base import FixedRaw
-from tqec.templates.scalable.rectangle import ScalableRectangle
-from tqec.templates.scalable.square import (
-    ScalableAlternatingCornerSquare,
-    ScalableAlternatingSquare,
-)
+from tqec.templates.scale import Dimension, FixedDimension
 
 
 class ScalableCorner(ComposedTemplate):
-    def __init__(self, k: int) -> None:
+    def __init__(self, dim: Dimension) -> None:
         """A scalable corner template.
 
         This corner template can be used to move an error-corrected qubit to another
         location on the chip. This is the basic building block to perform error-corrected
         computations.
 
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
+        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
 
-        The below text represents this template for an input `k` of 2.
-
-        ```text
-        .  .  1  .  1  .  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  5  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  5  .  .  .  .  .  .
-        2  3  4  3  4  .  .  .  .  .  .  .
-        .  4  3  4  3  6  .  7  .  7  .  .
-        2  4  3  4  8  9  8  9  8  9  8 10
-        .  3  4  8  9  8  9  8  9  8  9  .
-        2  4  8  9  8  9  8  9  8  9  8 10
-        . 11  9  8  9  8  9  8  9  8  9  .
-        .  . 12  . 12  . 12  . 12  . 12  .
-        ```
+            .  .  1  .  1  .  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  5  .  .  .  .  .  .
+            2  3  4  3  4  .  .  .  .  .  .  .
+            .  4  3  4  3  6  .  7  .  7  .  .
+            2  4  3  4  8  9  8  9  8  9  8 10
+            .  3  4  8  9  8  9  8  9  8  9  .
+            2  4  8  9  8  9  8  9  8  9  8 10
+            . 11  9  8  9  8  9  8  9  8  9  .
+            .  . 12  . 12  . 12  . 12  . 12  .
 
         Args:
-            k: scale of the initial error-corrected qubit.
+            dim: dimension of the initial error-corrected qubit.
         """
-        dim = 2 * k
+        # nsone: non-scalable one
+        # nstwo: non-scalable two
+        nsone = FixedDimension(1)
+        nstwo = FixedDimension(2)
+
         _templates = [
             # 0
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 1]),
-            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
-            TemplateWithIndices(ScalableAlternatingSquare(dim), [3, 4]),
-            TemplateWithIndices(ScalableRectangle(1, dim), [0, 5]),
-            TemplateWithIndices(FixedRaw([[0]]), [2]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 1]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
+            TemplateWithIndices(AlternatingSquareTemplate(dim), [3, 4]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [0, 5]),
+            TemplateWithIndices(RawRectangleTemplate([[0]]), [2]),
             # 5
-            TemplateWithIndices(ScalableRectangle(dim, 2), [3, 4]),
-            TemplateWithIndices(FixedRaw([[0]]), [6]),
-            TemplateWithIndices(ScalableRectangle(dim, 1), [7, 0]),
-            TemplateWithIndices(ScalableRectangle(1, dim), [2, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nstwo), [3, 4]),
+            TemplateWithIndices(RawRectangleTemplate([[0]]), [6]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [7, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
             TemplateWithIndices(
-                ScalableAlternatingCornerSquare(dim, CornerPositionEnum.LOWER_LEFT),
+                AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT),
                 [
                     3,
                     4,
@@ -66,13 +66,13 @@ class ScalableCorner(ComposedTemplate):
                 ],
             ),
             # 10
-            TemplateWithIndices(ScalableRectangle(2, dim, scale_width=False), [9, 8]),
-            TemplateWithIndices(ScalableAlternatingSquare(dim), [9, 8]),
-            TemplateWithIndices(ScalableRectangle(1, dim), [10, 0]),
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
-            TemplateWithIndices(FixedRaw([[0]]), [12]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nstwo, dim), [9, 8]),
+            TemplateWithIndices(AlternatingSquareTemplate(dim), [9, 8]),
+            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [10, 0]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 12]),
+            TemplateWithIndices(RawRectangleTemplate([[0]]), [12]),
             # 15
-            TemplateWithIndices(ScalableRectangle(dim, 1), [0, 12]),
+            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 12]),
         ]
         relative_positions = [
             (0, ABOVE_OF, 2),
