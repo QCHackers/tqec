@@ -59,7 +59,9 @@ class AlternatingRectangleTemplate(Template):
         self._width = width
         self._height = height
 
-    def instantiate(self, p1: int, p2: int, *_: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        self._check_plaquette_number(plaquette_indices)
+        p1, p2 = plaquette_indices[:2]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
         even = slice(1, None, 2)
@@ -141,12 +143,12 @@ class RawRectangleTemplate(Template):
         super().__init__(default_x_increment, default_y_increment)
         if not indices or not indices[0]:
             raise TQECException(
-                f"You should provide at least one index to {__class__.__name__}."
+                f"You should provide at least one index to {self.__class__.__name__}."
             )
         line_lens = set(len(line) for line in indices)
         if len(line_lens) > 1:
             raise TQECException(
-                f"The 2-dimensional array provided to {__class__.__name__} should "
+                f"The 2-dimensional array provided to {self.__class__.__name__} should "
                 "be rectangular. Please provide an array with equally-sized rows."
             )
         all_indices: set[int] = set().union(*[set(line) for line in indices])
@@ -163,7 +165,8 @@ class RawRectangleTemplate(Template):
             )
         self._indices = indices
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        self._check_plaquette_number(plaquette_indices)
         try:
             # Use numpy indexing to instantiate the raw values.
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
