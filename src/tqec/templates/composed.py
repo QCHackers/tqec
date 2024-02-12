@@ -252,11 +252,7 @@ class ComposedTemplate(Template):
     def _compute_ul_absolute_position(self) -> dict[int, Position]:
         """Computes the absolute position of each template upper-left corner.
 
-        <<<<<<< HEAD
-                This is the main method of the ComposedTemplate class. It explores templates
-        =======
                 This is the main method of the ``ComposedTemplate`` class. It explores templates
-        >>>>>>> main
                 by performing a BFS on the graph of relations between templates, starting by the
                 first template inserted (but any template connected to the others should work
                 fine).
