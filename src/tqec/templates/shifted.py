@@ -83,6 +83,7 @@ class ShiftedTemplate(Template):
             a numpy array with the given plaquette indices arranged according
             to the underlying shape of the template.
         """
+        self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         tshape = self._shifted_template.shape
         xoffset, yoffset = self._offset.x.value, self._offset.y.value

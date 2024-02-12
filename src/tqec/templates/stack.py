@@ -102,11 +102,15 @@ class StackedTemplate(Template):
     def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
-        :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
+        Args:
+            plaquette_indices: the plaquette indices that will be forwarded to
+                the stacked ``Template`` instances.
+
+        Returns:
+            a numpy array with the given plaquette indices arranged according
+            to the stack of ``Template`` instances stored.
         """
+        self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         first_non_used_plaquette_index: int = 0
         for template in self._stack:

@@ -413,11 +413,7 @@ class ComposedTemplate(Template):
             raise TQECException(
                 f"{self.__class__.__name__} does not expect a plaquette 0 anymore."
             )
-        if len(plaquette_indices) != self.expected_plaquettes_number:
-            raise TQECException(
-                f"Expecting {self.expected_plaquettes_number} plaquettes indices "
-                f"but only {len(plaquette_indices)} were provided."
-            )
+        self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)
         return self._build_array((0, *plaquette_indices))
 
     @property

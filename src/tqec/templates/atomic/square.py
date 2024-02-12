@@ -101,7 +101,7 @@ class AlternatingCornerSquareTemplate(Template):
         self._top_plaquettes_on_diagonal = top_plaquettes_on_diagonal
 
     def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
-        self._check_plaquette_number(plaquette_indices)
+        self._check_plaquette_number(plaquette_indices, 5)
         p1, p2, p1_flipped, p2_flipped, corner_plaquette = plaquette_indices[:5]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
@@ -126,26 +126,9 @@ class AlternatingCornerSquareTemplate(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instantiate` method.
-
-        :returns: the number of plaquettes expected from the `instantiate` method.
-        """
         return 5
 
     def scale_to(self, k: int) -> "AlternatingCornerSquareTemplate":
-        """Scales self to the given scale k.
-
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
-
-        :param k: the new scale of the template.
-        :returns: self, once scaled.
-        """
         self._dimension.scale_to(k)
         return self
 
