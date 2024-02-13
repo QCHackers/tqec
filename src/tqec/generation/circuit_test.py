@@ -13,6 +13,7 @@ from tqec.plaquette.library import (
 )
 from tqec.plaquette.plaquette import PlaquetteList
 from tqec.templates.constructions.qubit import QubitSquareTemplate
+from tqec.templates.scale import Dimension, LinearFunction
 
 
 def _normalise_circuit(norm_circuit: cirq.Circuit) -> cirq.Circuit:
@@ -39,7 +40,7 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
 
 
 def _generate_circuit() -> cirq.Circuit:
-    template = QubitSquareTemplate(2)
+    template = QubitSquareTemplate(Dimension(2, LinearFunction(2)))
     plaquettes: list[PlaquetteList] = [
         XXPlaquetteList(
             PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8], include_detector=False
