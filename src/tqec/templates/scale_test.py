@@ -64,3 +64,12 @@ def test_fixed_dimension():
     assert dim.value == 3
     assert dim.scale_to(10).value == 3
     assert dim.scale_to(421).value == 3
+
+
+def test_dimension_operators():
+    sfa, sfb = LinearFunction(2, 5), LinearFunction(3, 1)
+    da, db = Dimension(2, sfa), Dimension(2, sfb)
+    assert (da + db).scale_to(10).value == sfa(10) + sfb(10)
+    assert (da - db).scale_to(3).value == sfa(3) - sfb(3)
+    assert (3 * da).scale_to(54).value == 3 * sfa(54)
+    assert (da * 3).scale_to(54).value == 3 * sfa(54)

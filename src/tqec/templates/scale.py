@@ -93,6 +93,27 @@ class Dimension:
             "scaling_function": self._scaling_function.to_dict(),
         }
 
+    def __add__(self, other: "Dimension") -> "Dimension":
+        return Dimension(
+            self._scaling_function.invert(self.value),
+            self._scaling_function + other._scaling_function,
+        )
+
+    def __sub__(self, other: "Dimension") -> "Dimension":
+        return Dimension(
+            self._scaling_function.invert(self.value),
+            self._scaling_function - other._scaling_function,
+        )
+
+    def __mul__(self, other: int) -> "Dimension":
+        return other * self
+
+    def __rmul__(self, other: int) -> "Dimension":
+        return Dimension(
+            self._scaling_function.invert(self.value),
+            self._scaling_function * other,
+        )
+
 
 class FixedDimension(Dimension):
     def __init__(self, value: int) -> None:
