@@ -51,8 +51,8 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Add qubit positions to the workspace
-	for (let x = 0; x <= app.renderer.width/gridSize; x += 1) {
-		for (let y = 0; y <= app.renderer.height/gridSize; y += 1) {
+	for (let x = 0; x <= app.screen.width/gridSize; x += 1) {
+		for (let y = 0; y <= app.screen.height/gridSize; y += 1) {
 			// Skip every other qubit
             if ( (x+y) % 2 === 1 )
                 continue;

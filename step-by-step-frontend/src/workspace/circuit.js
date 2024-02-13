@@ -3,56 +3,70 @@ import { Text, Container, Graphics } from 'pixi.js';
 /**
  * Create the circuit as ASCII art
  */
-export function createCircuitAsciiArt(data_qubits, anc_qubit) {
+export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true) {
 	let lines = [];
 	// Add lines for every data qubit.
 	let idx = 0;
 	data_qubits.forEach(qubit => {
 		let line = `${qubit.name}: ----`
 		// Local change of basis
-		if (qubit.role === 'x') line += 'H--';
-		if (qubit.role === 'z') line += '---';
+		if (qubit.role === 'x') line += '-H--';
+		if (qubit.role === 'z') line += '----';
 		// Previous CNOTs
 		for (let i = 0; i<idx; i++) {
-			line += '|--';
+			line += '-|--';
 		}
 		// Current CNOT
-		line += '*--'
+		line += '-*--'
 		// Next CNOTs
 		for (let i = idx+1; i<data_qubits.length; i++) {
-			line = line + '---';
+			line = line + '----';
 		}
 		// Change of basis
-		if (qubit.role === 'x') line = line + 'H--';
-		if (qubit.role === 'z') line = line + '---';
+		if (qubit.role === 'x') line = line + '-H--';
+		if (qubit.role === 'z') line = line + '----';
 		// End
-		line += '---';
+		line += '----';
 		lines.push(line);
 
 		// Empty line with only vertical bars.
 		//      Q(__,__): ----
 		line = '              ';
-		line += '   ';
+		line += '    ';
 		// Previous CNOTs and current one
 		for (let i = 0; i<idx+1; i++) {
-			line += '|  ';
+			line += ' |  ';
 		}
 		// Next CNOTs
 		for (let i = idx+1; i<data_qubits.length; i++) {
-			line += '   ';
+			line += '    ';
 		}
-		line += '      '
+		line += '        '
 		lines.push(line);
 		idx += 1;
 	});
 	// Add line for the ancilla qubit.
-	let line = `${anc_qubit.name}: |0> --`
-	line = line + '-'; // Change of basis
+	let line = `${anc_qubit.name}: |0> `
+	line = line + '----'; // Change of basis
 	for (let i = 0; i<data_qubits.length; i++) {
-		line = line + 'x--';
+		line = line + '-x--';
 	}
-	line = line + '--- D~'
+	line = line + '---- D~ '
 	lines.push(line);
+	// Add time ruler.
+	if (with_time) {
+		line = '';
+		lines.push(line);
+		//      Q(__,__): 
+		line = '          ';
+		let line2 = 'time ruler';
+		for (let i = 0; i<data_qubits.length+4; i++) {
+			line += '└ ┘ ';
+			line2 += ' ' + i + '  ';
+		}
+		lines.push(line);
+		lines.push(line2);
+	}
 	// Create the message
 	let art = '';
 	lines.slice(0,-1).forEach(line => {
