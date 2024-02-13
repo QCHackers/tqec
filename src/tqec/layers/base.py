@@ -9,15 +9,6 @@ from tqec.templates.base import Template
 
 
 def make_repeated_layer(circuit: cirq.Circuit, repetitions: int) -> cirq.Circuit:
-    circuit_to_repeat = circuit
-    # Note: we do not care on which qubit it is applied, but we want a SHIFT_COORDS instruction
-    #       to be inserted somewhere in the repetition loop. By convention, each timestep should
-    #       ensure that the coordinates are correctly shifted for the next one, so we insert the
-    #       SHIFT_COORDS at the end of the repeated circuit.
-    any_qubit = next(iter(circuit.all_qubits()), None)
-    assert (
-        any_qubit is not None
-    ), "Could not find any qubit in the given Circuit instance."
     circuit_to_repeat = circuit + cirq.Circuit([make_shift_coords(0, 0, 1)])
     repeated_circuit_operation = cirq.CircuitOperation(
         circuit_to_repeat.freeze()
