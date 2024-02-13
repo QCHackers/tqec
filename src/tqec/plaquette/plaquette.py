@@ -1,10 +1,9 @@
 import cirq
-
 from tqec.enums import PlaquetteOrientation
+from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.plaquette.schedule import ScheduledCircuit
 from tqec.position import Position
-from tqec.exceptions import TQECException
 
 
 class Plaquette:
@@ -32,6 +31,10 @@ class Plaquette:
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
+
+        Raises:
+            TQECException: if the provided circuit uses qubits not in the list of
+                PlaquetteQubit.
         """
         plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
         circuit_qubits = set(circuit.raw_circuit.all_qubits())
@@ -167,7 +170,8 @@ class RoundedPlaquette(Plaquette):
         the example from the class docstring, an orientation of PlaquetteOrientation.UP
         will return the qubits indexed 3 and 4 (or 2 and 3 in a 0-based indexing).
 
-        :param orientation: plaquette orientation
+        Args:
+            orientation: plaquette orientation
         """
         data_indices: tuple[int, int]
         if orientation == PlaquetteOrientation.RIGHT:

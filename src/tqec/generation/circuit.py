@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import deepcopy
 
 import cirq
@@ -38,9 +40,8 @@ def generate_circuit(
         correction experiment represented by the provided inputs.
 
     Raises:
-        CannotUsePlaquetteWithDifferentShapes: if the provided Plaquette
-            instance do not ALL have the same shape. See
-            https://github.com/QCHackers/tqec/issues/34 for more information.
+        TQECException: if the provided plaquettes do not match the expected
+            number of plaquettes for the given template.
     """
     # Check that the user gave enough plaquettes.
     if len(plaquettes) != template.expected_plaquettes_number:
@@ -56,7 +57,7 @@ def generate_circuit(
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, len(plaquettes) + 1))
-    template_plaquettes = template.instantiate(*_indices)
+    template_plaquettes = template.instantiate(_indices)
     increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
