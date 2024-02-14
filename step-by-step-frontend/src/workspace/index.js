@@ -35,7 +35,7 @@ export default function TqecApp() {
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
 	const guideTopLeftCorners = [[13, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
-	const libraryColors = ['purple', 'green', 'pink', 'gold']
+	const libraryColors = ['purple', 'green', 'darksalmon', 'saddlebrown', 'grey']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
 	for (const [x0, y0] of guideTopLeftCorners) {
@@ -131,7 +131,7 @@ export default function TqecApp() {
 	// Create a button for printing the plaquette's circuit 
 	const printCircuitButton = button('Print circuit', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printCircuitButton);
-	let circuitArt;
+	let circuitArt = null;
 
     printCircuitButton.on('click', (_e) => {
 		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
@@ -146,6 +146,9 @@ export default function TqecApp() {
 	workspace.addChild(confirmCircuitButton);
 
     confirmCircuitButton.on('click', (_e) => {
+		if (savedPlaquettes.length === 0) return; // Failsafe case
+		if (circuitArt === null) return; // Failsafe case
+
 		let plaquette = savedPlaquettes[savedPlaquettes.length-1];
 		plaquette.addChild(circuitArt);
 

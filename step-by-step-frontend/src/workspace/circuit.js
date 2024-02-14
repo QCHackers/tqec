@@ -3,13 +3,20 @@ import { Text, Container, Graphics } from 'pixi.js';
 /**
  * Create the circuit as ASCII art.
  * 
- * Two possible forms of circuits:
- * 1. with Hadamard on the data qubits
- *    and only CNOT controlled on the data qubits targeting the ancilla
- * 2. with Hadamard on the ancilla qubit
- *    and either CNOT or CZ controlled on the ancilla and targeting the data qubits
+ * Two forms of circuits are possible:
+ * 
+ * [] "cnot"
+ *    - Hadamard on the data qubits
+ *    - only CNOT as 2q gates
+ *    - every CNOT is controlled by a data qubit and targets the ancilla
+ * 
+ * [] "univ"
+ *    - Hadamard on the ancilla qubit
+ *    - both CNOT and CZ as 2q gates
+ *    - every CNOT/CZ is controlled by the ancilla and targets a data qubit
  */
-export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, form='cnot') {
+export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, form='univ') {
+	if (form !== 'cnot') form = 'univ'; // Failsafe case of an unknown form option.
 	let lines = [];
 	// Add lines for every data qubit.
 	let idx = 0;
