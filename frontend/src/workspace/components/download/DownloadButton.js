@@ -1,7 +1,8 @@
 import axios from 'axios';
-import Button from './button';
-import Template from '../TemplateClass';
+import Button from '../Button';
+import Template from '../../plaquettes/Template';
 import config from './config';
+import notification from '../notification';
 
 const assert = require('assert');
 
@@ -83,7 +84,7 @@ export default class DownloadButton extends Button {
         URL.revokeObjectURL(href);
       })
       .catch((err) => {
-        console.log(err);
+        notification(this.app, `Error: ${err}`);
       });
   };
 }
