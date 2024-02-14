@@ -1,6 +1,5 @@
 from .xx import (
     XXFinalMeasurementPlaquette,
-    XXFromXXXXPlaquette,
     XXInitialisationPlaquette,
     XXMemoryPlaquette,
     XXSyndromeMeasurementPlaquette,
@@ -13,7 +12,6 @@ from .xxxx import (
 )
 from .zz import (
     ZZFinalMeasurementPlaquette,
-    ZZFromZZZZPlaquette,
     ZZInitialisationPlaquette,
     ZZMemoryPlaquette,
     ZZSyndromeMeasurementPlaquette,
@@ -37,11 +35,9 @@ __all__ = [
     "ZZZZInitialisationPlaquette",
     "ZZZZMemoryPlaquette",
     "XXFinalMeasurementPlaquette",
-    "XXFromXXXXPlaquette",
     "XXInitialisationPlaquette",
     "XXMemoryPlaquette",
     "ZZFinalMeasurementPlaquette",
-    "ZZFromZZZZPlaquette",
     "ZZInitialisationPlaquette",
     "ZZMemoryPlaquette",
 ]
