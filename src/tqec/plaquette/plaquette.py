@@ -85,12 +85,12 @@ class SquarePlaquette(Plaquette):
         super().__init__(self.get_data_qubits() + self.get_syndrome_qubits(), circuit)
 
     _data_qubits: list[PlaquetteQubit] = [
-        PlaquetteQubit(Position(0, 0)),
-        PlaquetteQubit(Position(2, 0)),
-        PlaquetteQubit(Position(0, 2)),
-        PlaquetteQubit(Position(2, 2)),
+        PlaquetteQubit(Position(-1, -1)),
+        PlaquetteQubit(Position(1, -1)),
+        PlaquetteQubit(Position(-1, 1)),
+        PlaquetteQubit(Position(1, 1)),
     ]
-    _syndrome_qubits = [PlaquetteQubit(Position(1, 1))]
+    _syndrome_qubits = [PlaquetteQubit(Position(0, 0))]
 
     @staticmethod
     def get_data_qubits() -> list[PlaquetteQubit]:
