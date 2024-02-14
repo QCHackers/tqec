@@ -121,6 +121,10 @@ class SquarePlaquette(Plaquette):
             data_indices = (2, 3)
         return [SquarePlaquette._data_qubits[i] for i in data_indices]
 
+    @staticmethod
+    def get_qubits_on_side_cirq(side: PlaquetteSide) -> list[cirq.GridQubit]:
+        return [q.to_grid_qubit() for q in SquarePlaquette.get_qubits_on_side(side)]
+
 
 class RoundedPlaquette(SquarePlaquette):
     def __init__(
