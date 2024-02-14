@@ -43,3 +43,10 @@ class PlaquetteOrientation(Enum):
     LEFT = auto()
     DOWN = auto()
     UP = auto()
+
+
+class PlaquetteSide(Enum):
+    RIGHT = auto()
+    LEFT = auto()
+    DOWN = auto()
+    UP = auto()
