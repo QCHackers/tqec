@@ -201,3 +201,8 @@ class RoundedPlaquette(SquarePlaquette):
         return [
             q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
         ]
+
+
+class EmptyPlaquette(Plaquette):
+    def __init__(self) -> None:
+        super().__init__([], ScheduledCircuit(cirq.Circuit()))
