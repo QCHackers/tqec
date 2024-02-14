@@ -34,7 +34,7 @@ export default function TqecApp() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorners = [[11, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
+	const guideTopLeftCorners = [[13, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
 	const libraryColors = ['purple', 'green', 'pink', 'gold']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
@@ -142,7 +142,7 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button for printing the plaquette's circuit 
-	const confirmCircuitButton = button('Confirm circuit', gridSize, 10*gridSize, 'white', 'black');
+	const confirmCircuitButton = button('Confirm circuit', gridSize, 11*gridSize, 'white', 'black');
 	workspace.addChild(confirmCircuitButton);
 
     confirmCircuitButton.on('click', (_e) => {
@@ -157,7 +157,7 @@ export default function TqecApp() {
 
 /////////////////////////////////////////////////////////////
 
-	const addPlaquetteButton = button('Add plaquette to library', gridSize, 11*gridSize, 'white', 'black');
+	const addPlaquetteButton = button('Add plaquette to library', gridSize, 12*gridSize, 'white', 'black');
 	workspace.addChild(addPlaquetteButton);
 
     addPlaquetteButton.on('click', (_e) => {
@@ -175,7 +175,7 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', gridSize, 12*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 13*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {

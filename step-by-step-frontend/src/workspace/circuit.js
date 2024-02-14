@@ -1,30 +1,49 @@
 import { Text, Container, Graphics } from 'pixi.js';
 
 /**
- * Create the circuit as ASCII art
+ * Create the circuit as ASCII art.
+ * 
+ * Two possible forms of circuits:
+ * 1. with Hadamard on the data qubits
+ *    and only CNOT controlled on the data qubits targeting the ancilla
+ * 2. with Hadamard on the ancilla qubit
+ *    and either CNOT or CZ controlled on the ancilla and targeting the data qubits
  */
-export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true) {
+export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, form='cnot') {
 	let lines = [];
 	// Add lines for every data qubit.
 	let idx = 0;
 	data_qubits.forEach(qubit => {
 		let line = `${qubit.name}: ----`
 		// Local change of basis
-		if (qubit.role === 'x') line += '-H--';
-		if (qubit.role === 'z') line += '----';
+		if (form === 'cnot') {
+		    if (qubit.role === 'x') line += '-H--';
+		    if (qubit.role === 'z') line += '----';
+		} else if (form === 'univ') {
+		    line += '----';
+		}
 		// Previous CNOTs
 		for (let i = 0; i<idx; i++) {
 			line += '-|--';
 		}
 		// Current CNOT
-		line += '-*--'
+		if (form === 'cnot') {
+			line += '-*--'
+		} else if (form === 'univ') {
+		    if (qubit.role === 'x') line += '-X--';
+		    if (qubit.role === 'z') line += '-*--';
+		}
 		// Next CNOTs
 		for (let i = idx+1; i<data_qubits.length; i++) {
-			line = line + '----';
+			line += '----';
 		}
 		// Change of basis
-		if (qubit.role === 'x') line = line + '-H--';
-		if (qubit.role === 'z') line = line + '----';
+		if (form === 'cnot') {
+		    if (qubit.role === 'x') line += '-H--';
+		    if (qubit.role === 'z') line += '----';
+		} else if (form === 'univ') {
+		    line += '----';
+		}
 		// End
 		line += '----';
 		lines.push(line);
@@ -47,11 +66,23 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true) {
 	});
 	// Add line for the ancilla qubit.
 	let line = `${anc_qubit.name}: |0> `
-	line = line + '----'; // Change of basis
-	for (let i = 0; i<data_qubits.length; i++) {
-		line = line + '-x--';
+	if (form === 'cnot') {
+		line += '----'; // During the change of basis
+	} else if (form === 'univ') {
+		line += '-H--';
 	}
-	line = line + '---- D~ '
+	for (let i = 0; i<data_qubits.length; i++) {
+		if (form === 'cnot') {
+			line += '-X--';
+		} else if (form === 'univ') {
+			line += '-*--';
+		}
+	}
+	if (form === 'cnot') {
+		line += '---- D~ '
+	} else if (form === 'univ') {
+		line += '-H-- D~ ';
+	}
 	lines.push(line);
 	// Add time ruler.
 	if (with_time) {
@@ -75,6 +106,7 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true) {
 	art += lines[lines.length-1];
 	return art;
 }
+
 
 
 /**
@@ -142,7 +174,7 @@ export default class Circuit extends Container {
 						  + '- there is a unique ancilla qubit\n'
 						  + '- all other qubits are associated with either X- or Z-stabilizers\n'
 					 	 + '- all data qubits are assumed physically connected to the ancilla qubit';
-			message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : warning;
+			message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit, true, 'univ') : warning;
 		}
 		// Create the graphics
 		const artText = new Text(message,
