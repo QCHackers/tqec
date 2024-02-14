@@ -1,4 +1,5 @@
 import numbers
+import typing as ty
 
 import cirq
 from tqec.detectors.operation import make_shift_coords
@@ -20,7 +21,7 @@ class BaseLayer:
     def __init__(
         self,
         template: Template,
-        plaquettes: list[Plaquette],
+        plaquettes: ty.Sequence[Plaquette],
         repetitions: int = 1,
     ) -> None:
         assert repetitions >= 1 and isinstance(repetitions, numbers.Integral)

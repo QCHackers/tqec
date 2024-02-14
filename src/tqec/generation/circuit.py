@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing as ty
 from copy import deepcopy
 
 import cirq
@@ -12,7 +13,7 @@ from tqec.templates.base import Template
 
 def generate_circuit(
     template: Template,
-    plaquettes: list[Plaquette] | dict[int, Plaquette],
+    plaquettes: ty.Sequence[Plaquette] | ty.Mapping[int, Plaquette],
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -51,7 +52,7 @@ def generate_circuit(
         )
 
     # If plaquettes are given as a list, make that a dict to simplify the following operations
-    if isinstance(plaquettes, list):
+    if isinstance(plaquettes, ty.Sequence):
         plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
     # instantiate the template with the appropriate plaquette indices.
