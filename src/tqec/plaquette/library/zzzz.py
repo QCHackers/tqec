@@ -43,6 +43,7 @@ class ZZZZInitialisationPlaquette(ZZZZSyndromeMeasurementPlaquette):
         self,
         schedule: list[int],
         include_detector: bool = True,
+        qubits_to_reset: list[cirq.GridQubit] | None = None,
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
         data_qubits = self.get_data_qubits_cirq()
@@ -51,9 +52,12 @@ class ZZZZInitialisationPlaquette(ZZZZSyndromeMeasurementPlaquette):
             [(cirq.GridQubit(0, 0), -1)],
             time_coordinate=0,
         )
+        if qubits_to_reset is None:
+            qubits_to_reset = [syndrome_qubit, *data_qubits]
+
         super().__init__(
             schedule,
-            qubits_to_reset=[syndrome_qubit, *data_qubits],
+            qubits_to_reset=qubits_to_reset,
             qubits_to_measure=[syndrome_qubit],
             detector=detector if include_detector else None,
         )
@@ -64,6 +68,7 @@ class ZZZZMemoryPlaquette(ZZZZSyndromeMeasurementPlaquette):
         self,
         schedule: list[int],
         include_detector: bool = True,
+        qubits_to_reset: list[cirq.GridQubit] | None = None,
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
         detector = make_detector(
@@ -71,9 +76,12 @@ class ZZZZMemoryPlaquette(ZZZZSyndromeMeasurementPlaquette):
             [(cirq.GridQubit(0, 0), -1), (cirq.GridQubit(0, 0), -2)],
             time_coordinate=0,
         )
+        if qubits_to_reset is None:
+            qubits_to_reset = [syndrome_qubit]
+
         super().__init__(
             schedule,
-            qubits_to_reset=[syndrome_qubit],
+            qubits_to_reset=qubits_to_reset,
             qubits_to_measure=[syndrome_qubit],
             detector=detector if include_detector else None,
         )
