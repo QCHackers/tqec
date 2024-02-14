@@ -3,6 +3,7 @@
 import { Graphics } from 'pixi.js';
 import { convexHull } from './utils'
 import Qubit from './qubit.js'
+import Circuit from './circuit'
 
 /////////////////////////////////////////////////////////////
 
@@ -16,9 +17,12 @@ import Qubit from './qubit.js'
 export default class Plaquette extends Graphics {
     constructor(qubits, color = 'purple') {
         super();
-        // UI properties
         this.color = color;
         this.qubits = qubits
+		// UI properties
+		this.eventMode = 'static';
+		this.buttonMode = true;
+		this.cursor = 'pointer';
         //this.isDragging = false;
         //this.plaquetteMade = false;
         this.name = 'plaquette';
@@ -70,6 +74,7 @@ export default class Plaquette extends Graphics {
      * Then 
 	 */
 	_createConvexHull() {
+        if (this.qubits.length === 0) return;
         // Convert the qubits in coordinate points
         let points = []
         this.qubits.forEach(qubit => {
@@ -87,6 +92,21 @@ export default class Plaquette extends Graphics {
         this.lineTo(hull[0].x, hull[0].y);
 		this.endFill();
 	};
+
+	/**
+	 * Add circuit as child
+	 */
+    showCircuit() {
+		this.children.forEach(child => {
+			if (child instanceof Circuit) {
+                if (child.visible === true) {
+                    child.visible = false;
+                } else {
+                    child.visible = true;
+                }
+            }
+        });
+    };
 
     movePlaquette(dx, dy) {
         // Move the qubits.

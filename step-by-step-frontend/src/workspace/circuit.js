@@ -87,7 +87,7 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true) {
  * @param {number} color - Color filling of the circuit
  */
 export default class Circuit extends Container {
-	constructor(qubits, x, y, color = 'purple') {
+	constructor(qubits, x, y, color = 'purple', message = '') {
 		super();
 		// Color properties (as static fields).
 		// Associated to the role played by the qubit.
@@ -100,7 +100,7 @@ export default class Circuit extends Container {
 		//this.anc_qubit;
 		this.data_qubits = [];
 		this._confirmFormat(qubits);
-		this.art = this._createCircuit();
+		this.art = this._createCircuit(message);
 		this.box = this._createBackground();
 		// Add the text object to the stage
 		this.addChild(this.box);
@@ -135,13 +135,15 @@ export default class Circuit extends Container {
 	/**
 	 * Create the circuit as ASCII art
 	 */
-	_createCircuit() {
-		const warning = 'Plaquette is not compliant.\n\n'
-					  + 'Requirements:\n'
-					  + '- there is a unique ancilla qubit\n'
-					  + '- all other qubits are associated with either X- or Z-stabilizers\n'
-					  + '- all data qubits are assumed physically connected to the ancilla qubit';
-		const message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : warning;
+	_createCircuit(message) {
+		if (message === '') {
+			const warning = 'Plaquette is not compliant.\n\n'
+						  + 'Requirements:\n'
+						  + '- there is a unique ancilla qubit\n'
+						  + '- all other qubits are associated with either X- or Z-stabilizers\n'
+					 	 + '- all data qubits are assumed physically connected to the ancilla qubit';
+			message = (this.isCompatible) ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit) : warning;
+		}
 		// Create the graphics
 		const artText = new Text(message,
 			{
@@ -174,12 +176,14 @@ export default class Circuit extends Container {
 		// Add effects
 		this.eventMode = 'static';
 		// Add hover event
+		/*
 		this.on('pointerover', () => {
 			artBackground.alpha = 0.5;
 		});
 		this.on('pointerout', () => {
 			artBackground.alpha = 1;
 		});
+		*/
 		return artBackground;
 	};
 };

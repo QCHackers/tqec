@@ -26,7 +26,8 @@ export default function TqecApp() {
 
 	// Create the grid container
 	const grid = makeGrid(app, gridSize);
-    workspace.addChild(grid);
+	// We want the grid to be in the lowest layer
+    workspace.addChildAt(grid, 0);
 
 /////////////////////////////////////////////////////////////
 
@@ -71,12 +72,13 @@ export default function TqecApp() {
 			workspace.addChild(pos);
 		}
 	}
+	const num_background_children = workspace.children.length;
+
 
 /////////////////////////////////////////////////////////////
 
 	const infoButton = button('Library of plaquettes', guideTopLeftCorners[1][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
-
 
     // Select the qubits that are part of a plaquette 
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
@@ -94,6 +96,7 @@ export default function TqecApp() {
 				}
 			}
 		});
+		if (selectedQubits.length === 0) return;
 		// For debugging purposes, annotate on the console's log which qubits were selected
 		console.log(selectedQubits);
 
@@ -101,8 +104,8 @@ export default function TqecApp() {
 		const plaquette = new Plaquette(selectedQubits, libraryColors[savedPlaquettes.length])
 		plaquette.interactive = true;
 		savedPlaquettes.push(plaquette)
-		// We want the plaquette to be in the lowest layer
-		workspace.addChildAt(plaquette, 0);
+		// We want the plaquette to be in the layer just above the grid, guides/outlines, and positions.
+		workspace.addChildAt(plaquette, num_background_children);
 	});
 
 /////////////////////////////////////////////////////////////
@@ -132,12 +135,29 @@ export default function TqecApp() {
 
     printCircuitButton.on('click', (_e) => {
 		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
+		circuitArt.visible = true;
 		workspace.addChild(circuitArt);
 	});
 
 /////////////////////////////////////////////////////////////
 
-	const addPlaquetteButton = button('Add plaquette to library', gridSize, 10*gridSize, 'white', 'black');
+	// Create a button for printing the plaquette's circuit 
+	const confirmCircuitButton = button('Confirm circuit', gridSize, 10*gridSize, 'white', 'black');
+	workspace.addChild(confirmCircuitButton);
+
+    confirmCircuitButton.on('click', (_e) => {
+		let plaquette = savedPlaquettes[savedPlaquettes.length-1];
+		plaquette.addChild(circuitArt);
+
+		plaquette.on('click', (_e) => {
+			plaquette.showCircuit()
+		});
+		
+	});
+
+/////////////////////////////////////////////////////////////
+
+	const addPlaquetteButton = button('Add plaquette to library', gridSize, 11*gridSize, 'white', 'black');
 	workspace.addChild(addPlaquetteButton);
 
     addPlaquetteButton.on('click', (_e) => {
@@ -155,7 +175,7 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', gridSize, 11*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 12*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
