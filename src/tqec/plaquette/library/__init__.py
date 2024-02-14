@@ -1,55 +1,47 @@
 from .xx import (
-    BaseXXPlaquette,
     XXFinalMeasurementPlaquette,
     XXFromXXXXPlaquette,
     XXInitialisationPlaquette,
     XXMemoryPlaquette,
-    XXPlaquetteList,
+    XXSyndromeMeasurementPlaquette,
 )
 from .xxxx import (
-    BaseXXXXPlaquette,
     XXXXFinalMeasurementPlaquette,
     XXXXInitialisationPlaquette,
     XXXXMemoryPlaquette,
-    XXXXPlaquetteList,
+    XXXXSyndromeMeasurementPlaquette,
 )
 from .zz import (
-    BaseZZPlaquette,
     ZZFinalMeasurementPlaquette,
     ZZFromZZZZPlaquette,
     ZZInitialisationPlaquette,
     ZZMemoryPlaquette,
-    ZZPlaquetteList,
+    ZZSyndromeMeasurementPlaquette,
 )
 from .zzzz import (
-    BaseZZZZPlaquette,
     ZZZZFinalMeasurementPlaquette,
     ZZZZInitialisationPlaquette,
     ZZZZMemoryPlaquette,
-    ZZZZPlaquetteList,
+    ZZZZSyndromeMeasurementPlaquette,
 )
 
 __all__ = [
-    "BaseXXPlaquette",
-    "BaseXXXXPlaquette",
-    "BaseZZPlaquette",
-    "BaseZZZZPlaquette",
+    "XXSyndromeMeasurementPlaquette",
+    "XXXXSyndromeMeasurementPlaquette",
+    "ZZSyndromeMeasurementPlaquette",
+    "ZZZZSyndromeMeasurementPlaquette",
     "XXXXFinalMeasurementPlaquette",
     "XXXXInitialisationPlaquette",
     "XXXXMemoryPlaquette",
-    "XXXXPlaquetteList",
     "ZZZZFinalMeasurementPlaquette",
     "ZZZZInitialisationPlaquette",
     "ZZZZMemoryPlaquette",
-    "ZZZZPlaquetteList",
     "XXFinalMeasurementPlaquette",
     "XXFromXXXXPlaquette",
     "XXInitialisationPlaquette",
     "XXMemoryPlaquette",
-    "XXPlaquetteList",
     "ZZFinalMeasurementPlaquette",
     "ZZFromZZZZPlaquette",
     "ZZInitialisationPlaquette",
     "ZZMemoryPlaquette",
-    "ZZPlaquetteList",
 ]
