@@ -93,13 +93,11 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 	lines.push(line);
 	// Add time ruler.
 	if (with_time) {
-		line = '';
-		lines.push(line);
 		//      Q(__,__): 
 		line = '          ';
 		let line2 = 'time ruler';
 		for (let i = 0; i<data_qubits.length+4; i++) {
-			line += '└ ┘ ';
+			line += '___ ';
 			line2 += ' ' + i + '  ';
 		}
 		lines.push(line);

@@ -224,8 +224,42 @@ export default function TqecApp() {
 				workspace.removeChild(child);
 		};
 		workspace.removeChild(circuitArt)
-		if (savedPlaquettes[savedPlaquettes.length-1].name === 'WIP plaquette')
+		if (savedPlaquettes.length !== 0 && savedPlaquettes[savedPlaquettes.length-1].name === 'WIP plaquette')
 			savedPlaquettes.pop();
+	});
+
+/////////////////////////////////////////////////////////////
+
+	// Create a button to de-select all qubits 
+	const downloadLibraryButton = button('Download plaquette library', gridSize, 15*gridSize, 'white', 'black');
+	workspace.addChild(downloadLibraryButton);
+
+	downloadLibraryButton.on('click', (_e) => {
+		if (savedPlaquettes.length === 0) return;
+	
+		let message = '';
+		savedPlaquettes.forEach((plaq) => {
+			if (plaq.name !== 'WIP plaquette') {
+				plaq.children.forEach((child) => {
+					if (child instanceof Circuit) {
+						console.log('circuit to add');
+						message += child.art.text;
+						message += '\n';
+						console.log(message);
+					}
+				});
+			}
+		});
+		const blob = new Blob([message], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'plaquette_library.txt';
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
 	});
 
 /////////////////////////////////////////////////////////////
