@@ -30,7 +30,7 @@ function App() {
         </Stage>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <p style={{ marginTop: '200px', marginRight: '20px', fontsize: '20px' }}>Edit circuit:</p>
+          <p style={{ marginTop: '200px', marginRight: '20px', fontsize: '18px' }}>Circuit-editing area:</p>
           <textarea
             type="text"
             id="editableText"

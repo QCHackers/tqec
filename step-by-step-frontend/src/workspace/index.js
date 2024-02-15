@@ -224,7 +224,7 @@ export default function TqecApp() {
 				workspace.removeChild(child);
 		};
 		workspace.removeChild(circuitArt)
-		if (savedPlaquettes[savedPlaquettes.length-1].name == 'WIP plaquette')
+		if (savedPlaquettes[savedPlaquettes.length-1].name === 'WIP plaquette')
 			savedPlaquettes.pop();
 	});
 
