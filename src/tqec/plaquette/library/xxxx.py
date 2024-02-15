@@ -1,5 +1,5 @@
 import cirq
-from tqec.detectors.operation import make_detector
+from tqec.detectors.operation import RelativeMeasurementData, make_detector
 from tqec.plaquette.plaquette import SquarePlaquette
 from tqec.plaquette.schedule import ScheduledCircuit
 
@@ -8,8 +8,6 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
     def __init__(
         self,
         schedule: list[int],
-        qubits_to_reset: list[cirq.GridQubit],
-        qubits_to_measure: list[cirq.GridQubit],
         detector: cirq.Operation | None = None,
     ) -> None:
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
@@ -19,8 +17,7 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
                 cirq.Circuit(
                     [
                         cirq.Moment(
-                            cirq.R(q).with_tags(self._MERGEABLE_TAG)
-                            for q in qubits_to_reset
+                            cirq.R(syndrome_qubit).with_tags(self._MERGEABLE_TAG)
                         ),
                         cirq.Moment(cirq.H(syndrome_qubit)),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
@@ -29,8 +26,7 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[3])),
                         cirq.Moment(cirq.H(syndrome_qubit)),
                         cirq.Moment(
-                            cirq.M(q).with_tags(self._MERGEABLE_TAG)
-                            for q in qubits_to_measure
+                            cirq.M(syndrome_qubit).with_tags(self._MERGEABLE_TAG)
                         ),
                         cirq.Moment(detector) if detector is not None else [],
                     ]
@@ -40,43 +36,24 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
         )
 
 
-class XXXXInitialisationPlaquette(XXXXSyndromeMeasurementPlaquette):
-    def __init__(
-        self,
-        schedule: list[int],
-        include_detector: bool = True,
-    ):
-        (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
-        data_qubits = self.get_data_qubits_cirq()
-        detector = make_detector(
-            syndrome_qubit,
-            [(cirq.GridQubit(0, 0), -1)],
-            time_coordinate=0,
-        )
-        super().__init__(
-            schedule,
-            qubits_to_reset=[syndrome_qubit, *data_qubits],
-            qubits_to_measure=[syndrome_qubit],
-            detector=detector if include_detector else None,
-        )
-
-
 class XXXXMemoryPlaquette(XXXXSyndromeMeasurementPlaquette):
     def __init__(
         self,
         schedule: list[int],
         include_detector: bool = True,
+        is_first_round: bool = False,
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
-        detector = make_detector(
-            syndrome_qubit,
-            [(cirq.GridQubit(0, 0), -1), (cirq.GridQubit(0, 0), -2)],
-            time_coordinate=0,
-        )
+        detector_relative_measurements = [
+            RelativeMeasurementData(cirq.GridQubit(0, 0), -1)
+        ]
+        if not is_first_round:
+            detector_relative_measurements.append(
+                RelativeMeasurementData(cirq.GridQubit(0, 0), -2)
+            )
+        detector = make_detector(syndrome_qubit, detector_relative_measurements)
         super().__init__(
             schedule,
-            qubits_to_reset=[syndrome_qubit],
-            qubits_to_measure=[syndrome_qubit],
             detector=detector if include_detector else None,
         )
 
