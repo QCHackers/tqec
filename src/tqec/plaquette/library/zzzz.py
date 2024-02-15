@@ -16,16 +16,12 @@ class ZZZZSyndromeMeasurementPlaquette(SquarePlaquette):
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        cirq.Moment(
-                            cirq.R(syndrome_qubit).with_tags(self._MERGEABLE_TAG)
-                        ),
+                        cirq.Moment(cirq.R(syndrome_qubit)),
                         cirq.Moment(cirq.CX(data_qubits[0], syndrome_qubit)),
                         cirq.Moment(cirq.CX(data_qubits[2], syndrome_qubit)),
                         cirq.Moment(cirq.CX(data_qubits[1], syndrome_qubit)),
                         cirq.Moment(cirq.CX(data_qubits[3], syndrome_qubit)),
-                        cirq.Moment(
-                            cirq.M(syndrome_qubit).with_tags(self._MERGEABLE_TAG)
-                        ),
+                        cirq.Moment(cirq.M(syndrome_qubit)),
                         cirq.Moment(detector) if detector is not None else [],
                     ]
                 ),
@@ -63,13 +59,10 @@ class ZZZZFinalMeasurementPlaquette(SquarePlaquette):
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
         data_qubits = self.get_data_qubits_cirq()
+        measurement_qubits = [syndrome_qubit, *data_qubits]
         detector = make_detector(
             syndrome_qubit,
-            [
-                (cirq.GridQubit(0, 0), -1),
-                *[(dq - syndrome_qubit, -1) for dq in data_qubits],
-            ],
-            time_coordinate=1,
+            [(meas_qubit - syndrome_qubit, -1) for meas_qubit in measurement_qubits],
         )
         super().__init__(
             circuit=ScheduledCircuit(
