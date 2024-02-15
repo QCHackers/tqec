@@ -100,10 +100,17 @@ export default function TqecApp() {
 		// For debugging purposes, annotate on the console's log which qubits were selected
 		console.log(selectedQubits);
 
+		// Clear WIP plaquette when not saved
+		let numPlaquettes = savedPlaquettes.length;
+		if (numPlaquettes !== 0 && savedPlaquettes[numPlaquettes-1].name === 'WIP plaquette') {
+			workspace.removeChild(savedPlaquettes[numPlaquettes-1]);
+			savedPlaquettes.pop();
+			numPlaquettes -= 1;
+		};
 		// Create and draw the plaquette named 'WIP plaquette'
-		const plaquette = new Plaquette(selectedQubits, libraryColors[savedPlaquettes.length])
+		const plaquette = new Plaquette(selectedQubits, libraryColors[numPlaquettes])
 		plaquette.interactive = true;
-		savedPlaquettes.push(plaquette)
+		savedPlaquettes.push(plaquette);
 		// We want the plaquette to be in the layer just above the grid, guides/outlines, and positions.
 		workspace.addChildAt(plaquette, num_background_children);
 	});
@@ -192,7 +199,10 @@ export default function TqecApp() {
 		const dx = guideTopLeftCorners[numPlaquettes][0]-guideTopLeftCorners[0][0];
 		const dy = guideTopLeftCorners[numPlaquettes][1]-guideTopLeftCorners[0][1];
 		savedPlaquettes[numPlaquettes-1].name = `plaquette ${numPlaquettes}`;
-		savedPlaquettes[numPlaquettes-1].movePlaquette(dx*gridSize, dy*gridSize);
+		savedPlaquettes[numPlaquettes-1].translatePlaquette(dx*gridSize, dy*gridSize);
+		// Make circuit disappear
+		savedPlaquettes[numPlaquettes-1].showCircuit()
+		// Reset the message in the circuit-edit area
 		circuitarea.value = 'Edit the circuit here...';
 	});
 
@@ -210,14 +220,12 @@ export default function TqecApp() {
 		    	workspace.removeChild(child);
 			else if (child instanceof Qubit && child.role === 'none')
 		    	workspace.removeChild(child);
+			else if (child instanceof Plaquette && child.name === 'WIP plaquette')
+				workspace.removeChild(child);
 		};
-
-		const numPlaquettes = savedPlaquettes.length
-		if (savedPlaquettes[numPlaquettes-1].name === `WIP plaquette`) {
-			workspace.removeChild(circuitArt)
-			workspace.removeChild(savedPlaquettes[numPlaquettes-1])
-			savedPlaquettes.pop(); 
-		};
+		workspace.removeChild(circuitArt)
+		if (savedPlaquettes[savedPlaquettes.length-1].name == 'WIP plaquette')
+			savedPlaquettes.pop();
 	});
 
 /////////////////////////////////////////////////////////////

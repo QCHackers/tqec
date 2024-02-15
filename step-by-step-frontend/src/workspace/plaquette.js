@@ -108,7 +108,7 @@ export default class Plaquette extends Graphics {
         });
     };
 
-    movePlaquette(dx, dy) {
+    translatePlaquette(dx, dy) {
         // Move the qubits.
 		this.qubits.forEach(q => {
             q.globalX += dx;
