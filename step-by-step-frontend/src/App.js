@@ -25,9 +25,20 @@ function App() {
         >
           TQEC repo
         </a>
-        <Stage width={1400} height={1000} options={{backgroundColor: 0x2980b9, antialias: true}}>
+        <Stage width={1400} height={900} options={{backgroundColor: 0x2980b9, antialias: true}}>
           <TqecApp />
         </Stage>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ marginTop: '200px', marginRight: '20px', fontsize: '20px' }}>Edit circuit:</p>
+          <textarea
+            type="text"
+            id="editableText"
+            placeholder="Edit the circuit here..."
+            style={{ fontSize: '18px', width: '500px', height: '250px' }}
+          />
+        </div>
+
       </header>
     </div>
   );

@@ -25,7 +25,7 @@ export default class Plaquette extends Graphics {
 		this.cursor = 'pointer';
         //this.isDragging = false;
         //this.plaquetteMade = false;
-        this.name = 'plaquette';
+        this.name = 'WIP plaquette';
         // Draw the plaquette
         // TODO: Only rectangular plaquettes, at the moment
         //this._createRectangle();

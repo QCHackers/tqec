@@ -100,7 +100,7 @@ export default function TqecApp() {
 		// For debugging purposes, annotate on the console's log which qubits were selected
 		console.log(selectedQubits);
 
-		// Create and draw the plaquette
+		// Create and draw the plaquette named 'WIP plaquette'
 		const plaquette = new Plaquette(selectedQubits, libraryColors[savedPlaquettes.length])
 		plaquette.interactive = true;
 		savedPlaquettes.push(plaquette)
@@ -132,12 +132,31 @@ export default function TqecApp() {
 	const printCircuitButton = button('Print circuit', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printCircuitButton);
 	let circuitArt = null;
+    const circuitarea = document.getElementById('editableText');
 
     printCircuitButton.on('click', (_e) => {
 		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
 		circuitArt.visible = true;
 		workspace.addChild(circuitArt);
+		let message = circuitArt.art.text;
+		circuitarea.value = message;
 	});
+
+	// Listen for user input events
+	circuitarea.addEventListener('input', (event) => {
+		const inputValue = event.target.value; // Get the input value
+		console.log('Textarea input event:', inputValue);
+		updateCircuit(inputValue); // Update the text based on the input
+	});
+
+	// Function to update the circuit
+	function updateCircuit(inputValue) {
+		workspace.removeChild(circuitArt);
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1], inputValue);
+		circuitArt.visible = true;
+		workspace.addChild(circuitArt);
+		// You can also add conditional logic here based on the input
+	}
 
 /////////////////////////////////////////////////////////////
 
@@ -172,7 +191,9 @@ export default function TqecApp() {
 		const numPlaquettes = savedPlaquettes.length
 		const dx = guideTopLeftCorners[numPlaquettes][0]-guideTopLeftCorners[0][0];
 		const dy = guideTopLeftCorners[numPlaquettes][1]-guideTopLeftCorners[0][1];
+		savedPlaquettes[numPlaquettes-1].name = `plaquette ${numPlaquettes}`;
 		savedPlaquettes[numPlaquettes-1].movePlaquette(dx*gridSize, dy*gridSize);
+		circuitarea.value = 'Edit the circuit here...';
 	});
 
 /////////////////////////////////////////////////////////////
@@ -189,6 +210,13 @@ export default function TqecApp() {
 		    	workspace.removeChild(child);
 			else if (child instanceof Qubit && child.role === 'none')
 		    	workspace.removeChild(child);
+		};
+
+		const numPlaquettes = savedPlaquettes.length
+		if (savedPlaquettes[numPlaquettes-1].name === `WIP plaquette`) {
+			workspace.removeChild(circuitArt)
+			workspace.removeChild(savedPlaquettes[numPlaquettes-1])
+			savedPlaquettes.pop(); 
 		};
 	});
 
