@@ -1,5 +1,5 @@
 import cirq
-from tqec.detectors.operation import make_detector
+from tqec.detectors.operation import RelativeMeasurementData, make_detector
 from tqec.plaquette.plaquette import SquarePlaquette
 from tqec.plaquette.schedule import ScheduledCircuit
 
@@ -8,8 +8,6 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
     def __init__(
         self,
         schedule: list[int],
-        qubits_to_reset: list[cirq.GridQubit],
-        qubits_to_measure: list[cirq.GridQubit],
         detector: cirq.Operation | None = None,
     ) -> None:
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
@@ -18,20 +16,14 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
             circuit=ScheduledCircuit(
                 cirq.Circuit(
                     [
-                        cirq.Moment(
-                            cirq.R(q).with_tags(self._MERGEABLE_TAG)
-                            for q in qubits_to_reset
-                        ),
+                        cirq.Moment(cirq.R(syndrome_qubit)),
                         cirq.Moment(cirq.H(syndrome_qubit)),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[2])),
                         cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[3])),
                         cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment(
-                            cirq.M(q).with_tags(self._MERGEABLE_TAG)
-                            for q in qubits_to_measure
-                        ),
+                        cirq.Moment(cirq.M(syndrome_qubit)),
                         cirq.Moment(detector) if detector is not None else [],
                     ]
                 ),
@@ -40,51 +32,24 @@ class XXXXSyndromeMeasurementPlaquette(SquarePlaquette):
         )
 
 
-class XXXXInitialisationPlaquette(XXXXSyndromeMeasurementPlaquette):
-    def __init__(
-        self,
-        schedule: list[int],
-        include_detector: bool = True,
-        qubits_to_reset: list[cirq.GridQubit] | None = None,
-    ):
-        (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
-        data_qubits = self.get_data_qubits_cirq()
-        detector = make_detector(
-            syndrome_qubit,
-            [(cirq.GridQubit(0, 0), -1)],
-            time_coordinate=0,
-        )
-        if qubits_to_reset is None:
-            qubits_to_reset = [syndrome_qubit, *data_qubits]
-
-        super().__init__(
-            schedule,
-            qubits_to_reset=qubits_to_reset,
-            qubits_to_measure=[syndrome_qubit],
-            detector=detector if include_detector else None,
-        )
-
-
 class XXXXMemoryPlaquette(XXXXSyndromeMeasurementPlaquette):
     def __init__(
         self,
         schedule: list[int],
         include_detector: bool = True,
-        qubits_to_reset: list[cirq.GridQubit] | None = None,
+        is_first_round: bool = False,
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
-        detector = make_detector(
-            syndrome_qubit,
-            [(cirq.GridQubit(0, 0), -1), (cirq.GridQubit(0, 0), -2)],
-            time_coordinate=0,
-        )
-        if qubits_to_reset is None:
-            qubits_to_reset = [syndrome_qubit]
-
+        detector_relative_measurements = [
+            RelativeMeasurementData(cirq.GridQubit(0, 0), -1)
+        ]
+        if not is_first_round:
+            detector_relative_measurements.append(
+                RelativeMeasurementData(cirq.GridQubit(0, 0), -2)
+            )
+        detector = make_detector(syndrome_qubit, detector_relative_measurements)
         super().__init__(
             schedule,
-            qubits_to_reset=qubits_to_reset,
-            qubits_to_measure=[syndrome_qubit],
             detector=detector if include_detector else None,
         )
 
@@ -96,13 +61,10 @@ class XXXXFinalMeasurementPlaquette(SquarePlaquette):
     ):
         (syndrome_qubit,) = self.get_syndrome_qubits_cirq()
         data_qubits = self.get_data_qubits_cirq()
+        measurement_qubits = [syndrome_qubit, *data_qubits]
         detector = make_detector(
             syndrome_qubit,
-            [
-                (cirq.GridQubit(0, 0), -1),
-                *[(dq - syndrome_qubit, -1) for dq in data_qubits],
-            ],
-            time_coordinate=1,
+            [(meas_qubit - syndrome_qubit, -1) for meas_qubit in measurement_qubits],
         )
         super().__init__(
             circuit=ScheduledCircuit(

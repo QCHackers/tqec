@@ -47,11 +47,11 @@ class CircuitMeasurementMap:
         Args:
             current_moment_index: the moment index for which we want to compute
                 the offset. This method will only backtrack in time, and so will
-                never return measurements that are performed strictly after the 
-                moment provided in this parameter. Also, the measurement record 
-                offset is a local quantity that might change in time (due to 
+                never return measurements that are performed strictly after the
+                moment provided in this parameter. Also, the measurement record
+                offset is a local quantity that might change in time (due to
                 subsequent measurements shifting the offset), meaning that the
-                returned offset should only be considered valid for the moment 
+                returned offset should only be considered valid for the moment
                 provided here, and for no other moments.
             qubit: qubit instance the measurement we are searching for has been
                 performed on.
@@ -157,6 +157,14 @@ class CircuitMeasurementMap:
 
         return global_measurement_indices, global_measurement_index
 
+    def _global_measurement_indices_as_dict(self) -> dict[int, dict[cirq.Qid, int]]:
+        return {i: v for i, v in enumerate(self._global_measurement_indices) if v}
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}({self._global_measurement_indices_as_dict()})"
+        )
+
 
 def compute_global_measurements_lookback_offsets(
     relative_measurements_record: RelativeMeasurementsRecord,
@@ -198,7 +206,7 @@ def compute_global_measurements_lookback_offsets(
             raise TQECException(
                 "An error happened during the measurement offset lookback computation. "
                 f"You asked for the {relative_measurement_offset} measurement on {qubit} "
-                f"at the moment {current_moment_index}. The computed measurement map is"
+                f"at the moment {current_moment_index}. The computed measurement map is "
                 f"{measurement_map}."
             )
         global_measurements_lookback_offsets.append(relative_offset)

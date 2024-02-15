@@ -82,7 +82,10 @@ class SquarePlaquette(Plaquette):
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
         """
-        super().__init__(self.get_data_qubits() + self.get_syndrome_qubits(), circuit)
+        super().__init__(
+            SquarePlaquette.get_data_qubits() + SquarePlaquette.get_syndrome_qubits(),
+            circuit,
+        )
 
     _data_qubits: list[PlaquetteQubit] = [
         PlaquetteQubit(Position(-1, -1)),
