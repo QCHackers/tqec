@@ -238,16 +238,21 @@ export default function TqecApp() {
 		if (savedPlaquettes.length === 0) return;
 	
 		let message = '';
+		let counter = 0;
 		savedPlaquettes.forEach((plaq) => {
 			if (plaq.name !== 'WIP plaquette') {
+				message += '###############\n'
+				message += `# plaquette ${counter} #\n`
+				message += '###############\n\n'
 				plaq.children.forEach((child) => {
 					if (child instanceof Circuit) {
 						console.log('circuit to add');
 						message += child.art.text;
-						message += '\n';
+						message += '\n\n\n';
 						console.log(message);
 					}
 				});
+				counter += 1;
 			}
 		});
 		const blob = new Blob([message], { type: 'text/plain' });

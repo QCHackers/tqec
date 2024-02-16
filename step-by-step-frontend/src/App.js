@@ -35,7 +35,7 @@ function App() {
             type="text"
             id="editableText"
             placeholder="Edit the circuit here..."
-            style={{ fontSize: '18px', width: '500px', height: '250px' }}
+            style={{ fontSize: '18px', width: '700px', height: '250px' }}
           />
         </div>
 
