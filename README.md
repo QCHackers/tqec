@@ -1,8 +1,8 @@
 # tqec
 
-Design automation software tools for Topological Quantum Error Correction
+Design automation software tools (frontend and backend) for Topological Quantum Error Correction.
 
-## How to install (Python package)
+## How to install the backend (Python package)
 
 In order to install the `tqec` package, you can follow the following
 instructions.
@@ -20,8 +20,8 @@ version clash between packages. You can use the default Python package `venv` to
 do that:
 
 ```sh
-python -m venv venv      # Create a "venv" directory in the current directory.
-source venv/bin/activate # On Linux. For MacOS or Windows users, use activate.bat or the MacOS equivalent of that.
+python -m venv venv        # Create a "venv" directory in the current directory.
+source venv/bin/activate   # On Unix. For Windows users, use activate.bat
 ```
 
 You might see a `(venv)` appearing on your terminal prompt, showing that the
@@ -50,11 +50,16 @@ python -m jupyter lab
 
 and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
 
+## Installing the frontend
+
+Refer to [this readme](./frontend/README.md) for instructions.
+
 ## Helpful Links
 
 1. [Google group](https://groups.google.com/g/tqec-design-automation)
 2. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
 3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
+4. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)
 
 ## Before you commit
 
