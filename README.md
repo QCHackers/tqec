@@ -1,6 +1,6 @@
 # tqec
 
-Design automation software tools (frontend and backend) for Topological Quantum Error Correction.
+Design automation software tools for Topological Quantum Error Correction
 
 ## How to install the backend (Python package)
 
@@ -53,6 +53,10 @@ and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
 ## Installing the frontend
 
 Refer to [this readme](./frontend/README.md) for instructions.
+
+## Architecture
+
+Refer to [this wiki page](https://github.com/QCHackers/tqec/wiki/TQEC-Architecture) for more information.
 
 ## Helpful Links
 
