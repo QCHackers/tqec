@@ -1,17 +1,22 @@
 """Example taken from /notebooks/logical_qubit_memory_experiment.ipynb"""
 
 import cirq
-
 from tqec.detectors.operation import make_shift_coords
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.library import (
-    XXPlaquetteList,
-    XXXXPlaquetteList,
-    ZZPlaquetteList,
-    ZZZZPlaquetteList,
+    XXFinalMeasurementPlaquette,
+    XXMemoryPlaquette,
+    XXXXFinalMeasurementPlaquette,
+    XXXXMemoryPlaquette,
+    ZRoundedInitialisationPlaquette,
+    ZSquareInitialisationPlaquette,
+    ZZFinalMeasurementPlaquette,
+    ZZMemoryPlaquette,
+    ZZZZFinalMeasurementPlaquette,
+    ZZZZMemoryPlaquette,
 )
-from tqec.plaquette.plaquette import PlaquetteList
+from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.constructions.qubit import QubitSquareTemplate
 from tqec.templates.scale import Dimension, LinearFunction
 
@@ -41,28 +46,73 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
 
 def _generate_circuit() -> cirq.Circuit:
     template = QubitSquareTemplate(Dimension(2, LinearFunction(2)))
-    plaquettes: list[PlaquetteList] = [
-        XXPlaquetteList(
-            PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8], include_detector=False
-        ),
-        ZZPlaquetteList(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
-        XXXXPlaquetteList([1, 2, 3, 4, 5, 6, 7, 8], include_detector=False),
-        ZZZZPlaquetteList([1, 3, 4, 5, 6, 8]),
-        ZZPlaquetteList(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
-        XXPlaquetteList(
-            PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8], include_detector=False
-        ),
+    plaquettes: list[list[Plaquette]] = [
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.UP),
+            XXMemoryPlaquette(
+                PlaquetteOrientation.UP,
+                [1, 2, 5, 6, 7, 8],
+                include_detector=False,
+                is_first_round=True,
+            ),
+            XXMemoryPlaquette(PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8]),
+            XXFinalMeasurementPlaquette(
+                PlaquetteOrientation.UP, include_detector=False
+            ),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.LEFT),
+            ZZMemoryPlaquette(
+                PlaquetteOrientation.LEFT, [1, 5, 6, 8], is_first_round=True
+            ),
+            ZZMemoryPlaquette(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
+            ZZFinalMeasurementPlaquette(PlaquetteOrientation.LEFT),
+        ],
+        [
+            ZSquareInitialisationPlaquette(),
+            XXXXMemoryPlaquette(
+                [1, 2, 3, 4, 5, 6, 7, 8], include_detector=False, is_first_round=True
+            ),
+            XXXXMemoryPlaquette([1, 2, 3, 4, 5, 6, 7, 8]),
+            XXXXFinalMeasurementPlaquette(include_detector=False),
+        ],
+        [
+            ZSquareInitialisationPlaquette(),
+            ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8], is_first_round=True),
+            ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8]),
+            ZZZZFinalMeasurementPlaquette(),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.RIGHT),
+            ZZMemoryPlaquette(
+                PlaquetteOrientation.RIGHT, [1, 3, 4, 8], is_first_round=True
+            ),
+            ZZMemoryPlaquette(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
+            ZZFinalMeasurementPlaquette(PlaquetteOrientation.RIGHT),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.DOWN),
+            XXMemoryPlaquette(
+                PlaquetteOrientation.DOWN,
+                [1, 2, 3, 4, 7, 8],
+                include_detector=False,
+                is_first_round=True,
+            ),
+            XXMemoryPlaquette(PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8]),
+            XXFinalMeasurementPlaquette(
+                PlaquetteOrientation.DOWN, include_detector=False
+            ),
+        ],
     ]
-
     layer_modificators = {1: _make_repeated_layer}
 
     # 4. Actually create the cirq.Circuit instance by concatenating the circuits generated
     # for each layers and potentially modified by the modifiers defined above.
     circuit = cirq.Circuit()
-    for layer_index in range(3):
+    for layer_index in range(4):
         layer_circuit = generate_circuit(
             template,
-            [plaquette_list.plaquettes[layer_index] for plaquette_list in plaquettes],
+            [plaquette_list[layer_index] for plaquette_list in plaquettes],
         )
         layer_circuit = _normalise_circuit(layer_circuit)
         circuit += layer_modificators.get(layer_index, lambda circ: circ)(layer_circuit)
