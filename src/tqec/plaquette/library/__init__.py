@@ -1,6 +1,6 @@
 from .initialisation import (
-    XInitialisationPlaquette,
     XRoundedInitialisationPlaquette,
+    XSquareInitialisationPlaquette,
     ZRoundedInitialisationPlaquette,
     ZSquareInitialisationPlaquette,
 )
@@ -38,7 +38,7 @@ __all__ = [
     "XXMemoryPlaquette",
     "ZZFinalMeasurementPlaquette",
     "ZZMemoryPlaquette",
-    "XInitialisationPlaquette",
+    "XSquareInitialisationPlaquette",
     "XRoundedInitialisationPlaquette",
     "ZRoundedInitialisationPlaquette",
     "ZSquareInitialisationPlaquette",

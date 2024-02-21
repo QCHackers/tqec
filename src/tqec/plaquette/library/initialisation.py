@@ -38,7 +38,7 @@ class ZRoundedInitialisationPlaquette(RoundedPlaquette):
         super().__init__(ScheduledCircuit(circuit), orientation)
 
 
-class XInitialisationPlaquette(SquarePlaquette):
+class XSquareInitialisationPlaquette(SquarePlaquette):
     def __init__(
         self, qubits_to_initialise: ty.Sequence[cirq.GridQubit] | None = None
     ) -> None:
