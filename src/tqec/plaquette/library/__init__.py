@@ -1,3 +1,4 @@
+from .empty import EmptyRoundedPlaquette, EmptySquarePlaquette
 from .initialisation import (
     XRoundedInitialisationPlaquette,
     XSquareInitialisationPlaquette,
@@ -26,6 +27,8 @@ from .zzzz import (
 )
 
 __all__ = [
+    "EmptyRoundedPlaquette",
+    "EmptySquarePlaquette",
     "XXSyndromeMeasurementPlaquette",
     "XXXXSyndromeMeasurementPlaquette",
     "ZZSyndromeMeasurementPlaquette",
