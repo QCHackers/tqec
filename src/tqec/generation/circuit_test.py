@@ -1,7 +1,8 @@
 """Example taken from /notebooks/logical_qubit_memory_experiment.ipynb"""
 
 import cirq
-from tqec.detectors.gate import ShiftCoordsGate
+
+from tqec.detectors.operation import make_shift_coords
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.library import (
@@ -12,6 +13,7 @@ from tqec.plaquette.library import (
 )
 from tqec.plaquette.plaquette import PlaquetteList
 from tqec.templates.constructions.qubit import QubitSquareTemplate
+from tqec.templates.scale import Dimension, LinearFunction
 
 
 def _normalise_circuit(norm_circuit: cirq.Circuit) -> cirq.Circuit:
@@ -30,9 +32,7 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
     assert (
         any_qubit is not None
     ), "Could not find any qubit in the given Circuit instance."
-    circuit_to_repeat = (
-        cirq.Circuit([ShiftCoordsGate(0, 0, 1).on(any_qubit)]) + repeat_circuit
-    )
+    circuit_to_repeat = cirq.Circuit([make_shift_coords(0, 0, 1)]) + repeat_circuit
     repeated_circuit_operation = cirq.CircuitOperation(
         circuit_to_repeat.freeze()
     ).repeat(9)
@@ -40,7 +40,7 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
 
 
 def _generate_circuit() -> cirq.Circuit:
-    template = QubitSquareTemplate(2)
+    template = QubitSquareTemplate(Dimension(2, LinearFunction(2)))
     plaquettes: list[PlaquetteList] = [
         XXPlaquetteList(
             PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8], include_detector=False
@@ -78,22 +78,54 @@ def test_generate_circuit():
     generate_qubits = [(q.row, q.col) for q in generated_circuit.all_qubits()]
     target_qubits = [
         (7, 3),
+        (4, 8),
+        (4, 10),
+        (2, 2),
+        (11, 7),
+        (9, 9),
+        (2, 6),
+        (3, 1),
+        (7, 5),
+        (3, 3),
+        (7, 7),
+        (2, 4),
+        (8, 2),
+        (8, 4),
+        (5, 3),
+        (2, 8),
+        (8, 6),
+        (2, 10),
+        (8, 8),
+        (3, 5),
+        (7, 9),
+        (10, 2),
+        (3, 7),
+        (10, 4),
+        (10, 8),
+        (5, 7),
+        (5, 5),
+        (8, 10),
+        (6, 2),
+        (6, 4),
+        (3, 9),
+        (10, 6),
+        (6, 8),
+        (9, 3),
+        (1, 5),
+        (10, 10),
+        (4, 2),
+        (5, 9),
         (6, 6),
         (4, 4),
-        (5, 5),
-        (2, 2),
-        (6, 2),
-        (5, 3),
+        (5, 11),
         (4, 6),
-        (5, 7),
-        (6, 4),
-        (2, 6),
-        (3, 5),
-        (3, 1),
-        (1, 5),
-        (3, 3),
-        (2, 4),
-        (4, 2),
+        (11, 3),
+        (9, 5),
+        (6, 10),
+        (9, 7),
+        (1, 9),
+        (7, 1),
+        (9, 11),
     ]
     generate_qubits.sort()
     target_qubits.sort()
