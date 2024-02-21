@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import cirq
 from tqec.detectors.operation import RelativeMeasurementData, make_detector
 from tqec.enums import PlaquetteOrientation
