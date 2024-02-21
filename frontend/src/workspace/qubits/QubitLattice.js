@@ -1,8 +1,6 @@
-import { Point, Graphics, Color } from 'pixi.js';
+import { Point } from 'pixi.js';
 import Qubit from './Qubit';
 import Button from '../components/Button';
-
-const assert = require('assert');
 
 export default class QubitLattice {
   constructor(workspace, app) {
@@ -22,40 +20,6 @@ export default class QubitLattice {
     const relativeX = e.clientX - canvasRect.left;
     const relativeY = e.clientY - canvasRect.top;
     return [relativeX, relativeY];
-  };
-
-  createBoundingBox = () => {
-    // Create a bounding box parallelogram
-    // Determine the vertices of the box. It should contain every qubit,
-    // and every vertex should be a grid intersection point.
-    // This is a "best effort" to minimize the area, but it's not perfect.
-    assert(
-      this.constellation.length > 0,
-      'Constellation must have at least one qubit'
-    );
-    const leftmostQubit = this.constellation.reduce((a, b) => (a.globalX < b.globalX ? a : b));
-    const rightmostQubit = this.constellation.reduce((a, b) => (a.globalX > b.globalX ? a : b));
-    const topmostQubit = this.constellation.reduce((a, b) => (a.globalY < b.globalY ? a : b));
-    const bottommostQubit = this.constellation.reduce((a, b) => (a.globalY > b.globalY ? a : b));
-    const delta = this.workspace.gridSize;
-    const upperLeftCorner = new Point(leftmostQubit.globalX - delta, topmostQubit.globalY - delta);
-    // eslint-disable-next-line max-len
-    const lowerRightCorner = new Point(rightmostQubit.globalX + delta, bottommostQubit.globalY + delta);
-    const width = lowerRightCorner.x - upperLeftCorner.x;
-    const height = lowerRightCorner.y - upperLeftCorner.y;
-    const boundingBox = new Graphics();
-    boundingBox.beginFill(new Color('green').toNumber());
-    boundingBox.lineStyle(2, 0x0000ff, 1);
-    boundingBox.drawRect(upperLeftCorner.x, upperLeftCorner.y, width, height);
-    boundingBox.alpha = 0.5;
-    boundingBox.endFill();
-    boundingBox.visible = true;
-    boundingBox.interactive = true;
-    boundingBox.logicalWidth = rightmostQubit.globalX - leftmostQubit.globalX + 2 * delta;
-    boundingBox.logicalHeight = bottommostQubit.globalY - topmostQubit.globalY + 2 * delta;
-    // TODO: when the bounding box corner is dragged, it should be resized
-    this.upperLeftCorner = upperLeftCorner;
-    this.boundingBox = boundingBox;
   };
 
   pointToGridIntersection = (point) => {
