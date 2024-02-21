@@ -60,7 +60,7 @@ class AlternatingRectangleTemplate(Template):
         self._height = height
 
     def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
-        self._check_plaquette_number(plaquette_indices)
+        self._check_plaquette_number(plaquette_indices, 2)
         p1, p2 = plaquette_indices[:2]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         odd = slice(0, None, 2)
@@ -91,6 +91,7 @@ class AlternatingRectangleTemplate(Template):
         return 2
 
 
+@ty.final
 class RawRectangleTemplate(Template):
     def __init__(
         self,
@@ -107,6 +108,10 @@ class RawRectangleTemplate(Template):
         provided to the ``instantiate`` method. The maximum integer in ``indices``
         is used to compute the expected number of plaquettes to instantiate the
         template, that is ``1 + max(max(line) for line in indices)``.`
+
+        This template cannot be inherited from for the moment. This is to avoid
+        potential mistakes when sub-classing this class and overriding some of its
+        methods.
 
         Args:
             indices: 2-dimensional list of indices that will be used to index the
@@ -166,7 +171,9 @@ class RawRectangleTemplate(Template):
         self._indices = indices
 
     def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
-        self._check_plaquette_number(plaquette_indices)
+        # Warning: self.expected_plaquettes_number is only guaranteed to be correct
+        #          here because RawRectangleTemplate is annotated as final.
+        self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)
         try:
             # Use numpy indexing to instantiate the raw values.
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
