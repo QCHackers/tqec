@@ -1,13 +1,13 @@
 /* eslint-disable react/react-in-jsx-scope */
 import './App.css';
 import { Stage } from '@pixi/react';
-import PixiApp from './workspace';
+import InitiateControlFlow from './control-flow';
 
 const stageOptions = {
   backgroundColor: 0x1099bb
 };
 
-function App() {
+export default function App() {
   return (
     <div>
       <div className="App">
@@ -18,10 +18,8 @@ function App() {
         height={window.innerHeight}
         options={stageOptions}
       >
-        <PixiApp />
+        <InitiateControlFlow />
       </Stage>
     </div>
   );
 }
-
-export default App;
