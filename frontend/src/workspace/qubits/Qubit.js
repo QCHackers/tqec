@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
 
+// const assert = require('assert');
+
 /**
  * Qubit class
  * @extends Graphics
@@ -22,19 +24,25 @@ export default class Qubit extends Graphics {
     this.eventMode = 'static';
     this.buttonMode = true;
     this.cursor = 'pointer';
+    // assert(x % gridSize === 0, 'x must be a multiple of gridSize');
+    // assert(y % gridSize === 0, 'y must be a multiple of gridSize');
     this.globalX = x;
     this.globalY = y;
     this.createCircle(x, y, radius, color);
+    this.gridSize = gridSize;
     this.maxNeighborDist = 2 * this.gridSize;
     this.neighbors = [];
     this.gridSize = gridSize;
     this.qubitType = qubitType;
+    this.name = `Qubit(${x}, ${y})`;
 
     // Adjacent (degree 1) qubits
     this.isQubit = true;
     this.visible = true;
     this.isSelected = false;
   }
+
+  toString = () => this.name;
 
   onPointerOver = () => {
     this.alpha = 0.5;
@@ -103,6 +111,7 @@ export default class Qubit extends Graphics {
 
       // Add the text to the qubit
       this.addChild(text);
+      text.visible = true;
 
       return true;
     }
@@ -157,7 +166,6 @@ export default class Qubit extends Graphics {
         this.neighbors.push(qubit);
       }
     }
-    // console.log(this.neighbors);
     return this.neighbors;
   };
 
@@ -167,5 +175,10 @@ export default class Qubit extends Graphics {
         child.visible = false;
       }
     });
+  };
+
+  applyBoundingBoxCoordinates = (x, y) => {
+    this.bbX = x;
+    this.bbY = y;
   };
 }
