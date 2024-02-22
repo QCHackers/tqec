@@ -9,7 +9,7 @@ from .atomic import (
     AlternatingCornerSquareTemplate,
 )
 
-from .composed import get_corner_position, ComposedTemplate
+from .composed import ComposedTemplate
 
 from .constructions import (
     QubitSquareTemplate,
