@@ -6,9 +6,3 @@ from .rectangle import (
 from .square import (
     AlternatingSquareTemplate,
 )
-
-__all__ = [
-    "AlternatingRectangleTemplate",
-    "RawRectangleTemplate",
-    "AlternatingSquareTemplate",
-]
