@@ -10,12 +10,14 @@
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 2s linear;
+    margin-top: 0.8cm;
+    margin-bottom: 0.4cm;
   }
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 6vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,7 +28,15 @@
 
 .App-link {
   color: #61dafb;
-  min-height: 8vh;
+  margin-bottom: 0.6cm;
+}
+
+.Tabs {
+  margin: 0.4cm;
+}
+
+.Tab-content {
+  display: block; /* Hide tab content by default */
 }
 
 @keyframes App-logo-spin {

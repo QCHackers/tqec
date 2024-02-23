@@ -273,5 +273,5 @@ export default function TqecApp() {
     workspace.visible = true;
 	app.stage.addChild(workspace);
 
-    return;
+    return null;
 }
