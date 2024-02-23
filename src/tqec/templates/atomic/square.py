@@ -72,7 +72,7 @@ class AlternatingCornerSquareTemplate(Template):
         CornerPositionEnum.UPPER_LEFT: lambda arr: arr,
         # Exchange column i and column n - i
         CornerPositionEnum.UPPER_RIGHT: lambda arr: arr[
-            :, numpy.arange(arr.shape[0])[::-1]
+            :, numpy.arange(arr.shape[1])[::-1]
         ],
         # Exchange line i and line n - i
         CornerPositionEnum.LOWER_LEFT: lambda arr: arr[
@@ -80,8 +80,8 @@ class AlternatingCornerSquareTemplate(Template):
         ],
         # Exchange BOTH (line i and line n - i) and (column i and column n - i)
         CornerPositionEnum.LOWER_RIGHT: lambda arr: arr[
-            numpy.arange(arr.shape[0])[::-1], numpy.arange(arr.shape[0])[::-1]
-        ],
+            numpy.arange(arr.shape[0])[::-1], :
+        ][:, numpy.arange(arr.shape[1])[::-1]],
     }
 
     def __init__(
