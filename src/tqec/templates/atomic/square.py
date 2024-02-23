@@ -26,11 +26,11 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
             The following code:
             .. code-block:: python
 
-                from tqec.templates.scale import Dimension
-                from tqec.templates.atomic.rectangle import AlternatingSquareTemplate
+                from tqec.templates.scale import Dimension, LinearFunction
+                from tqec.templates.atomic.square import AlternatingSquareTemplate
                 from tqec.display import display_template
 
-                dim = Dimension(2, scaling_function=lambda k: 2*k)
+                dim = Dimension(2, LinearFunction(2, 0))
                 template = AlternatingSquareTemplate(dim)
 
                 print("Non-scaled template:")
@@ -92,6 +92,49 @@ class AlternatingCornerSquareTemplate(Template):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
+        """Implements an atomic square corner template with alternating plaquettes.
+
+        A corner template is a square, just like the logical qubit, but:
+        - one of its corner is a special plaquette,
+        - the diagonal the special corner is on splits the square in two parts
+          that each have a different pair of alternating plaquettes.
+
+        Args:
+            dimension: width and height of the square template.
+            corner_position: position of the special corner.
+            default_x_increment: default increment in the x direction between
+                two plaquettes.
+            default_y_increment: default increment in the y direction between
+                two plaquettes.
+
+        Example:
+            The following code:
+            .. code-block:: python
+
+                from tqec.templates.scale import Dimension, LinearFunction
+                from tqec.templates.atomic.square import AlternatingCornerSquareTemplate
+                from tqec.display import display_template
+                from tqec.enums import CornerPositionEnum
+
+                dim = Dimension(2, LinearFunction(2, 0))
+                template = AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT)
+
+                print("Non-scaled template:")
+                display_template(template)
+                print("Scaled template:")
+                display_template(template.scale_to(1))
+
+            outputs ::
+
+                Non-scaled template:
+                2  1  2  3
+                1  2  3  4
+                2  3  4  3
+                5  4  3  4
+                Scaled template:
+                2  3
+                5  4
+        """
         super().__init__(
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
@@ -126,26 +169,9 @@ class AlternatingCornerSquareTemplate(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instantiate` method.
-
-        :returns: the number of plaquettes expected from the `instantiate` method.
-        """
         return 5
 
     def scale_to(self, k: int) -> "AlternatingCornerSquareTemplate":
-        """Scales self to the given scale k.
-
-        The scale k of a **scalable template** is defined to be **half** the dimension/size
-        of the **scalable axis** of the template. For example, a scalable 4x4 square T has a
-        scale of 2 for both its axis. This means the dimension/size of the scaled axis is
-        enforced to be even, which avoids some invalid configuration of the template.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
-
-        :param k: the new scale of the template.
-        :returns: self, once scaled.
-        """
         self._dimension.scale_to(k)
         return self
 
