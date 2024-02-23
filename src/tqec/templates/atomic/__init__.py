@@ -5,7 +5,6 @@ from .rectangle import (
 
 from .square import (
     AlternatingSquareTemplate,
-    AlternatingCornerSquareTemplate,
 )
 
 __all__ = [
