@@ -35,7 +35,6 @@ from .plaquette import (
     PlaquetteQubit,
     ScheduleException,
     ScheduledCircuit,
-    ScheduledCircuits,
 )
 
 from .templates import (
@@ -47,7 +46,6 @@ from .templates import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
     AlternatingSquareTemplate,
-    AlternatingCornerSquareTemplate,
     ComposedTemplate,
     QubitSquareTemplate,
     QubitRectangleTemplate,
@@ -55,11 +53,7 @@ from .templates import (
 )
 
 from .detectors import (
-    ShiftCoords,
     RelativeMeasurementData,
-    RelativeMeasurementsRecord,
-    Detector,
-    Observable,
     make_shift_coords,
     make_detector,
     make_observable,
