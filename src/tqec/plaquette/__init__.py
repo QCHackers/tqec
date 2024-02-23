@@ -10,7 +10,6 @@ from .qubit import PlaquetteQubit
 from .schedule import (
     ScheduleException,
     ScheduledCircuit,
-    ScheduledCircuits,
 )
 
 __all__ = [
