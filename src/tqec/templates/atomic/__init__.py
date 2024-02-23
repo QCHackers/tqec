@@ -12,5 +12,4 @@ __all__ = [
     "AlternatingRectangleTemplate",
     "RawRectangleTemplate",
     "AlternatingSquareTemplate",
-    "AlternatingCornerSquareTemplate",
 ]
