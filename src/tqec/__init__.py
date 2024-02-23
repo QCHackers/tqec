@@ -1,73 +1,64 @@
 from . import (
+    detectors,
+    generation,
+    noise_models,
     plaquette,
     templates,
-    generation,
-    detectors,
-    noise_models,
 )
-
 from ._version import __version__
-
-from .exceptions import TQECException
-
-from .position import (
-    Position,
-    Shape2D,
-    Displacement,
+from .detectors import (
+    RelativeMeasurementData,
+    make_detector,
+    make_observable,
+    make_shift_coords,
+    transform_to_stimcirq_compatible,
 )
-
-from .enums import (
-    CornerPositionEnum,
-    TemplateRelativePositionEnum,
-    PlaquetteOrientation,
-)
-
 from .display import (
     display_template,
     display_templates_svg,
 )
-
-from .plaquette import (
-    Plaquette,
-    SquarePlaquette,
-    RoundedPlaquette,
-    PlaquetteList,
-    PlaquetteQubit,
-    ScheduleException,
-    ScheduledCircuit,
+from .enums import (
+    CornerPositionEnum,
+    PlaquetteOrientation,
+    TemplateRelativePositionEnum,
 )
-
-from .templates import (
-    LinearFunction,
-    Dimension,
-    FixedDimension,
-    Template,
-    TemplateWithIndices,
-    AlternatingRectangleTemplate,
-    RawRectangleTemplate,
-    AlternatingSquareTemplate,
-    ComposedTemplate,
-    QubitSquareTemplate,
-    QubitRectangleTemplate,
-    ScalableCorner,
-)
-
-from .detectors import (
-    RelativeMeasurementData,
-    make_shift_coords,
-    make_detector,
-    make_observable,
-    transform_to_stimcirq_compatible,
-)
-
+from .exceptions import TQECException
 from .generation import generate_circuit
-
 from .noise_models import (
-    BaseNoiseModel,
-    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
-    DepolarizingNoiseOnIdlingQubit,
     AfterCliffordDepolarizingNoise,
     AfterResetFlipNoise,
+    BaseNoiseModel,
     BeforeMeasurementFlipNoise,
     BeforeRoundDataDepolarizationNoise,
+    DepolarizingNoiseOnIdlingQubit,
+    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
+)
+from .plaquette import (
+    Plaquette,
+    PlaquetteList,
+    PlaquetteQubit,
+    RoundedPlaquette,
+    ScheduledCircuit,
+    ScheduleException,
+    SquarePlaquette,
+)
+from .position import (
+    Displacement,
+    Position,
+    Shape2D,
+)
+from .templates import (
+    AlternatingCornerSquareTemplate,
+    AlternatingRectangleTemplate,
+    AlternatingSquareTemplate,
+    ComposedTemplate,
+    Dimension,
+    FixedDimension,
+    LinearFunction,
+    QubitRectangleTemplate,
+    QubitSquareTemplate,
+    RawRectangleTemplate,
+    ScalableCorner,
+    Template,
+    TemplateWithIndices,
 )
