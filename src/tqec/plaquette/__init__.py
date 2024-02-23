@@ -20,5 +20,4 @@ __all__ = [
     "PlaquetteQubit",
     "ScheduleException",
     "ScheduledCircuit",
-    "ScheduledCircuits",
 ]
