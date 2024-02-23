@@ -1,6 +1,7 @@
 import typing as ty
 
 import numpy
+
 from tqec.enums import CornerPositionEnum
 from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
@@ -71,17 +72,11 @@ class AlternatingCornerSquareTemplate(Template):
         # in the upper-left part, we have nothing to do.
         CornerPositionEnum.UPPER_LEFT: lambda arr: arr,
         # Exchange column i and column n - i
-        CornerPositionEnum.UPPER_RIGHT: lambda arr: arr[
-            :, numpy.arange(arr.shape[1])[::-1]
-        ],
+        CornerPositionEnum.UPPER_RIGHT: lambda arr: arr[:, ::-1],
         # Exchange line i and line n - i
-        CornerPositionEnum.LOWER_LEFT: lambda arr: arr[
-            numpy.arange(arr.shape[0])[::-1], :
-        ],
+        CornerPositionEnum.LOWER_LEFT: lambda arr: arr[::-1, :],
         # Exchange BOTH (line i and line n - i) and (column i and column n - i)
-        CornerPositionEnum.LOWER_RIGHT: lambda arr: arr[
-            numpy.arange(arr.shape[0])[::-1], :
-        ][:, numpy.arange(arr.shape[1])[::-1]],
+        CornerPositionEnum.LOWER_RIGHT: lambda arr: arr[::-1, ::-1],
     }
 
     def __init__(
