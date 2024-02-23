@@ -2,7 +2,4 @@ from .rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
 )
-
-from .square import (
-    AlternatingSquareTemplate,
-)
+from .square import AlternatingCornerSquareTemplate, AlternatingSquareTemplate

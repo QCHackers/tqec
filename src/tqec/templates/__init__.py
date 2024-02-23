@@ -1,17 +1,14 @@
-from .scale import LinearFunction, Dimension, FixedDimension
-
-from .base import Template, TemplateWithIndices
-
 from .atomic import (
+    AlternatingCornerSquareTemplate,
     AlternatingRectangleTemplate,
-    RawRectangleTemplate,
     AlternatingSquareTemplate,
+    RawRectangleTemplate,
 )
-
+from .base import Template, TemplateWithIndices
 from .composed import ComposedTemplate
-
 from .constructions import (
-    QubitSquareTemplate,
     QubitRectangleTemplate,
+    QubitSquareTemplate,
     ScalableCorner,
 )
+from .scale import Dimension, FixedDimension, LinearFunction

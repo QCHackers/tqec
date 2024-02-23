@@ -1,6 +1,5 @@
-from .qubit import (
-    QubitSquareTemplate,
-    QubitRectangleTemplate,
-)
-
 from .corner import ScalableCorner
+from .qubit import (
+    QubitRectangleTemplate,
+    QubitSquareTemplate,
+)
