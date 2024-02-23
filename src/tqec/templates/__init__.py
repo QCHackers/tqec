@@ -6,7 +6,6 @@ from .atomic import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
     AlternatingSquareTemplate,
-    AlternatingCornerSquareTemplate,
 )
 
 from .composed import ComposedTemplate
