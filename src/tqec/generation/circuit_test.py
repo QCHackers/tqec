@@ -1,19 +1,18 @@
 """Example taken from /notebooks/logical_qubit_memory_experiment.ipynb"""
 
 import cirq
+
 from tqec.detectors.operation import make_shift_coords
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.library import (
-    XXFinalMeasurementPlaquette,
+    MeasurementRoundedPlaquette,
+    MeasurementSquarePlaquette,
     XXMemoryPlaquette,
-    XXXXFinalMeasurementPlaquette,
     XXXXMemoryPlaquette,
     ZRoundedInitialisationPlaquette,
     ZSquareInitialisationPlaquette,
-    ZZFinalMeasurementPlaquette,
     ZZMemoryPlaquette,
-    ZZZZFinalMeasurementPlaquette,
     ZZZZMemoryPlaquette,
 )
 from tqec.plaquette.plaquette import Plaquette
@@ -56,7 +55,7 @@ def _generate_circuit() -> cirq.Circuit:
                 is_first_round=True,
             ),
             XXMemoryPlaquette(PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8]),
-            XXFinalMeasurementPlaquette(
+            MeasurementRoundedPlaquette(
                 PlaquetteOrientation.UP, include_detector=False
             ),
         ],
@@ -66,7 +65,7 @@ def _generate_circuit() -> cirq.Circuit:
                 PlaquetteOrientation.LEFT, [1, 5, 6, 8], is_first_round=True
             ),
             ZZMemoryPlaquette(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
-            ZZFinalMeasurementPlaquette(PlaquetteOrientation.LEFT),
+            MeasurementRoundedPlaquette(PlaquetteOrientation.LEFT),
         ],
         [
             ZSquareInitialisationPlaquette(),
@@ -74,13 +73,13 @@ def _generate_circuit() -> cirq.Circuit:
                 [1, 2, 3, 4, 5, 6, 7, 8], include_detector=False, is_first_round=True
             ),
             XXXXMemoryPlaquette([1, 2, 3, 4, 5, 6, 7, 8]),
-            XXXXFinalMeasurementPlaquette(include_detector=False),
+            MeasurementSquarePlaquette(include_detector=False),
         ],
         [
             ZSquareInitialisationPlaquette(),
             ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8], is_first_round=True),
             ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8]),
-            ZZZZFinalMeasurementPlaquette(),
+            MeasurementSquarePlaquette(),
         ],
         [
             ZRoundedInitialisationPlaquette(PlaquetteOrientation.RIGHT),
@@ -88,7 +87,7 @@ def _generate_circuit() -> cirq.Circuit:
                 PlaquetteOrientation.RIGHT, [1, 3, 4, 8], is_first_round=True
             ),
             ZZMemoryPlaquette(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
-            ZZFinalMeasurementPlaquette(PlaquetteOrientation.RIGHT),
+            MeasurementRoundedPlaquette(PlaquetteOrientation.RIGHT),
         ],
         [
             ZRoundedInitialisationPlaquette(PlaquetteOrientation.DOWN),
@@ -99,7 +98,7 @@ def _generate_circuit() -> cirq.Circuit:
                 is_first_round=True,
             ),
             XXMemoryPlaquette(PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8]),
-            XXFinalMeasurementPlaquette(
+            MeasurementRoundedPlaquette(
                 PlaquetteOrientation.DOWN, include_detector=False
             ),
         ],
