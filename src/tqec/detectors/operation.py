@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 import cirq
 from tqec.exceptions import TQECException
@@ -59,6 +59,9 @@ class ShiftCoords(cirq.Operation):
     def with_qubits(self, *new_qubits: cirq.Qid) -> "ShiftCoords":
         return self
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self._shifts})"
+
 
 @dataclass(frozen=True)
 class RelativeMeasurementData:
@@ -91,6 +94,9 @@ class RelativeMeasurementData:
                 "The relative_measurement_offset should be a negative integer, "
                 f"but got {self.relative_measurement_offset}."
             )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.relative_qubit_positioning}, {self.relative_measurement_offset})"
 
 
 class RelativeMeasurementsRecord(cirq.Operation):
@@ -140,6 +146,9 @@ class RelativeMeasurementsRecord(cirq.Operation):
     def origin(self, new_origin: cirq.GridQubit):
         """The origin of the local coordinate system."""
         self._local_coordinate_system_origin = new_origin
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self._local_coordinate_system_origin}, {self._data})"
 
 
 class Detector(RelativeMeasurementsRecord):
@@ -262,7 +271,9 @@ def make_shift_coords(*shifts: int) -> cirq.Operation:
 
 def make_detector(
     local_coordinate_system_origin: cirq.GridQubit,
-    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    relative_measurements: Sequence[
+        tuple[cirq.GridQubit, int] | RelativeMeasurementData
+    ],
     time_coordinate: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Detector` operation with the
@@ -300,7 +311,9 @@ def make_detector(
 
 def make_observable(
     local_coordinate_system_origin: cirq.GridQubit,
-    relative_measurements: list[tuple[cirq.GridQubit, int] | RelativeMeasurementData],
+    relative_measurements: Sequence[
+        tuple[cirq.GridQubit, int] | RelativeMeasurementData
+    ],
     observable_index: int = 0,
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Observable` operation with the

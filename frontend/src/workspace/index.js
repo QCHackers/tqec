@@ -2,13 +2,15 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 import { useApp } from '@pixi/react';
-import { Container } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
-import makeGrid from './grid';
-import Qubit from './QubitClass';
-import Template from './TemplateClass';
-import Button from './components/button';
-import DownloadButton from './components/downloadButton';
+import notification from './components/notification';
+import Grid from './graphics/Grid';
+import Template from './plaquettes/Template';
+import Qubit from './qubits/Qubit';
+import QubitLattice from './qubits/QubitLattice';
+import Button from './components/Button';
+import DownloadButton from './components/download/DownloadButton';
 
 export default function TQECApp() {
   // Initialize the app
@@ -20,11 +22,17 @@ export default function TQECApp() {
   const workspace = new Container();
   workspace.name = 'workspace';
   // Create the grid container
-  const grid = makeGrid(app, gridSize);
+  const grid = new Grid(gridSize, workspace, app);
 
   workspace.addChild(grid);
+  grid.units.forEach((row) => {
+    row.forEach((unit) => {
+      workspace.addChild(unit);
+    });
+  });
   workspace.selectedPlaquette = null; // Used to update filters
   workspace.gridSize = gridSize;
+  workspace.qubitRadius = 5;
 
   workspace.updateSelectedPlaquette = (newPlaquette) => {
     if (newPlaquette === null) {
@@ -68,93 +76,125 @@ export default function TQECApp() {
     plaquette.destroy({ children: true });
   };
 
-  // Add the qubits to the workspace
-  for (let x = 0; x <= app.renderer.width; x += gridSize) {
-    for (let y = 0; y <= app.renderer.height; y += gridSize) {
-      // Skip every other qubit
-      if (x % (gridSize * 2) === 0 && y % (gridSize * 2) === 0) continue;
-      if (x % (gridSize * 2) === gridSize && y % (gridSize * 2) === gridSize) continue;
-      // Create a qubit
-      const qubit = new Qubit(x, y, 5, gridSize);
-      // Name the qubit according to its position
-      qubit.name = `${x}_${y}`;
-      workspace.addChild(qubit);
-    }
-  }
-  // Give the qubit its neighbors
-  for (const q in workspace.children) {
-    if (workspace.children[q].isQubit === true) {
-      workspace.children[q].setNeighbors();
-    }
-  }
+  workspace.mainButtonPosition = new Point(125, 50);
+  const { x, y } = workspace.mainButtonPosition;
 
-  let selectedQubits = [];
-  const plaquetteButton = new Button('Create plaquette', 100, 120);
-  const template = new Template(
-    selectedQubits,
-    workspace,
-    plaquetteButton,
-    app
+  const createQubitConstellationButton = new Button(
+    'Create Qubit Constellation',
+    x,
+    y
   );
-
-  plaquetteButton.on('click', () => {
-    // Create the plaquettes and template
-    template.createPlaquette();
-    workspace.addChild(template.container);
-    // Clear the selected qubits
-    selectedQubits = [];
+  workspace.addChild(createQubitConstellationButton);
+  const saveQubitConstellationButton = new Button(
+    'Save Qubit Constellation',
+    x,
+    y
+  );
+  const lattice = new QubitLattice(workspace, app);
+  createQubitConstellationButton.on('click', () => {
+    workspace.removeChild(createQubitConstellationButton);
+    workspace.addChild(saveQubitConstellationButton);
+    app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
-  plaquetteButton.visible = false;
+  workspace.addChild(createQubitConstellationButton);
 
-  // FIXME: make use of this function for actually being able to click qubits!!
-  // Select qubits
-  // eslint-disable-next-line no-unused-vars
-  const selectQubit = (e) => {
-    // Check if the click was on a qubit
-    const canvasRect = app.view.getBoundingClientRect(); // Get canvas position
+  saveQubitConstellationButton.on('click', () => {
+    if (lattice.constellation.length === 0) {
+      notification(app, 'Constellation must have at least one qubit');
+    } else {
+      workspace.removeChild(saveQubitConstellationButton);
+      const finalizeBoundingQuadButton = new Button(
+        'Finalize unit cell',
+        x,
+        y
+      );
+      workspace.addChild(finalizeBoundingQuadButton);
+      app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
-    // Calculate the relative click position within the canvas
-    const relativeX = e.clientX - canvasRect.left;
-    const relativeY = e.clientY - canvasRect.top;
-    // Get all the qubits
-    const qubits = workspace.children.filter((child) => child.isQubit === true);
-    const qubit = qubits.find(
-      // Find the qubit that was clicked
-      (q) => q.checkHitArea(relativeX, relativeY) === true
-    );
-    if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
-    // Check that the qubit is not already selected
-    if (selectedQubits.includes(qubit)) {
-      // Remove the qubit from the selected qubits
-      selectedQubits = selectedQubits.filter((q) => q !== qubit);
-      // Hide the button
-      plaquetteButton.visible = false;
-      return;
+      // Make the grid squares selectable
+      grid.units.forEach((row) => {
+        row.forEach((unit) => {
+          app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
+        });
+      });
+
+      finalizeBoundingQuadButton.on('click', () => {
+        // If the bounding box isn't a rectangle or doesn't contain every qubit, notify and return
+        if (!grid.selectedUnitsRectangular()) {
+          notification(app, 'Bounding quad must be rectangular');
+          return;
+        }
+        if (!grid.contains(lattice.constellation)) {
+          notification(app, 'Bounding quad must contain every qubit');
+          return;
+        }
+
+        workspace.removeChild(finalizeBoundingQuadButton);
+        // Grid units shall no longer be selectable
+        grid.units.forEach((row) => {
+          row.forEach((unit) => {
+            workspace.removeChild(unit);
+            app.renderer.view.removeEventListener('click', unit.toggleVisibility);
+          });
+        });
+
+        // Add qubits to the workspace
+        // eslint-disable-next-line max-len
+        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
+          // eslint-disable-next-line max-len
+          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
+            for (const qubit of lattice.constellation) {
+              const newQubit = new Qubit(
+                qubit.bbX + horiz,
+                qubit.bbY + vertic,
+                workspace.qubitRadius,
+                workspace.gridSize
+              );
+              workspace.addChild(newQubit);
+            }
+          }
+        }
+
+        // Make the original qubits invisible to remove redundancy
+        lattice.constellation.forEach((qubit) => {
+          qubit.visible = false;
+        });
+
+        // Initialize button to make plaquettes
+        let selectedQubits = [];
+        const plaquetteButton = new Button('Create plaquette', x, y + 50);
+        const template = new Template(
+          selectedQubits,
+          workspace,
+          plaquetteButton,
+          app
+        );
+
+        // Create the plaquettes and template
+        plaquetteButton.on('click', () => {
+          template.createPlaquette();
+          workspace.addChild(template.container);
+          // Clear the selected qubits
+          selectedQubits = [];
+          plaquetteButton.visible = false;
+        });
+        workspace.addChild(plaquetteButton);
+        workspace.removeChild(finalizeBoundingQuadButton);
+
+        const downloadStimButton = new DownloadButton(
+          workspace,
+          'Download Stim file',
+          x,
+          y,
+          'white',
+          'black'
+        );
+        workspace.addChild(downloadStimButton);
+      });
     }
-    selectedQubits.push(qubit);
-    selectedQubits.forEach((q) => {
-      q.visible = true;
-    });
-    if (selectedQubits.length > 2) {
-      // Show the button
-      plaquetteButton.visible = true;
-    }
-  };
-  workspace.addChild(plaquetteButton);
-
-  // Add download stim button
-  const downloadStimButton = new DownloadButton(
-    workspace,
-    'Download Stim file',
-    100,
-    50,
-    'white',
-    'black'
-  );
-  workspace.addChild(downloadStimButton);
+  });
 
   // Final workspace setup
   workspace.visible = true;
-  // app.stage.addChild(plaquetteButton);
   app.stage.addChild(workspace);
 }

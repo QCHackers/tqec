@@ -81,12 +81,35 @@ class Template(JSONEncodable):
             default_x_increment, default_y_increment
         )
 
+    def _check_plaquette_number(
+        self, plaquette_indices: ty.Sequence[int], expected_plaquettes_number: int
+    ) -> None:
+        """Checks the number of provided plaquettes.
+
+        This method should be called to check that the number of plaquette indices
+        provided to the ``instantiate`` method is correct.
+
+        Args:
+            plaquette_indices: the indices provided to the ``instantiate`` method.
+            expected_plaquettes_number: the number of plaquettes expected in
+                ``plaquette_indices``.
+        Raises:
+            TQECError: when there is not enough plaquette indices to instantiate
+                the ``Template`` instance.
+        """
+        if len(plaquette_indices) < expected_plaquettes_number:
+            raise TQECException(
+                f"{self.__class__.__name__}.instanciate needs "
+                f"{expected_plaquettes_number} plaquettes, but only "
+                f"{len(plaquette_indices)} were provided."
+            )
+
     @abstractmethod
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
         """Generate the numpy array representing the template.
 
         Args:
-            *plaquette_indices: the plaquette indices that will be forwarded to
+            plaquette_indices: the plaquette indices that will be forwarded to
                 the underlying Shape instance's instantiate method.
 
         Returns:
