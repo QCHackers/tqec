@@ -1,5 +1,6 @@
 import cirq
 import pytest
+
 from tqec.detectors.operation import (
     Detector,
     Observable,
@@ -8,6 +9,7 @@ from tqec.detectors.operation import (
     make_observable,
     make_shift_coords,
 )
+from tqec.exceptions import TQECException
 
 _qubits_examples = [
     cirq.GridQubit(0, 0),
@@ -19,10 +21,11 @@ _qubits_examples = [
 
 
 def test_empty_shift_coords():
-    sc_tagged = make_shift_coords()
-    assert isinstance(sc_tagged.untagged, ShiftCoords)
-    sc_untagged: ShiftCoords = sc_tagged.untagged
-    assert sc_untagged.shifts == ()
+    with pytest.raises(
+        TQECException,
+        match="The number of shift coordinates should be between 1 and 16, but got 0.",
+    ):
+        make_shift_coords()
 
 
 def test_shift_coords():
