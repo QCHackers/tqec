@@ -5,23 +5,20 @@ from .initialisation import (
     ZRoundedInitialisationPlaquette,
     ZSquareInitialisationPlaquette,
 )
+from .measurement import MeasurementRoundedPlaquette, MeasurementSquarePlaquette
 from .xx import (
-    XXFinalMeasurementPlaquette,
     XXMemoryPlaquette,
     XXSyndromeMeasurementPlaquette,
 )
 from .xxxx import (
-    XXXXFinalMeasurementPlaquette,
     XXXXMemoryPlaquette,
     XXXXSyndromeMeasurementPlaquette,
 )
 from .zz import (
-    ZZFinalMeasurementPlaquette,
     ZZMemoryPlaquette,
     ZZSyndromeMeasurementPlaquette,
 )
 from .zzzz import (
-    ZZZZFinalMeasurementPlaquette,
     ZZZZMemoryPlaquette,
     ZZZZSyndromeMeasurementPlaquette,
 )
@@ -29,17 +26,15 @@ from .zzzz import (
 __all__ = [
     "EmptyRoundedPlaquette",
     "EmptySquarePlaquette",
+    "MeasurementRoundedPlaquette",
+    "MeasurementSquarePlaquette",
     "XXSyndromeMeasurementPlaquette",
     "XXXXSyndromeMeasurementPlaquette",
     "ZZSyndromeMeasurementPlaquette",
     "ZZZZSyndromeMeasurementPlaquette",
-    "XXXXFinalMeasurementPlaquette",
     "XXXXMemoryPlaquette",
-    "ZZZZFinalMeasurementPlaquette",
     "ZZZZMemoryPlaquette",
-    "XXFinalMeasurementPlaquette",
     "XXMemoryPlaquette",
-    "ZZFinalMeasurementPlaquette",
     "ZZMemoryPlaquette",
     "XSquareInitialisationPlaquette",
     "XRoundedInitialisationPlaquette",
