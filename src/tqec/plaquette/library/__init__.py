@@ -22,22 +22,3 @@ from .zzzz import (
     ZZZZMemoryPlaquette,
     ZZZZSyndromeMeasurementPlaquette,
 )
-
-__all__ = [
-    "EmptyRoundedPlaquette",
-    "EmptySquarePlaquette",
-    "MeasurementRoundedPlaquette",
-    "MeasurementSquarePlaquette",
-    "XXSyndromeMeasurementPlaquette",
-    "XXXXSyndromeMeasurementPlaquette",
-    "ZZSyndromeMeasurementPlaquette",
-    "ZZZZSyndromeMeasurementPlaquette",
-    "XXXXMemoryPlaquette",
-    "ZZZZMemoryPlaquette",
-    "XXMemoryPlaquette",
-    "ZZMemoryPlaquette",
-    "XSquareInitialisationPlaquette",
-    "XRoundedInitialisationPlaquette",
-    "ZRoundedInitialisationPlaquette",
-    "ZSquareInitialisationPlaquette",
-]
