@@ -1,5 +1,6 @@
 import numpy.testing
 import pytest
+
 from tqec.position import Shape2D
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import Template
@@ -30,10 +31,10 @@ def test_stack_template_over_itself(small_alternating_template: Template):
     stack = StackedTemplate()
     stack.push_template_on_top(small_alternating_template)
     stack.push_template_on_top(small_alternating_template)
-    instantiation = stack.instantiate(1, 2, 3, 4)
+    instantiation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_equal(
-        instantiation, small_alternating_template.instantiate(3, 4)
+        instantiation, small_alternating_template.instantiate([3, 4])
     )
 
 
@@ -43,7 +44,7 @@ def test_stack_small_alternating_on_top_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(small_alternating_template)
-    instantiation = stack.instantiate(1, 2, 3, 4)
+    instantiation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_equal(
         instantiation, [[3, 4, 1, 2], [4, 3, 2, 1], [1, 2, 1, 2], [2, 1, 2, 1]]
@@ -79,7 +80,7 @@ def test_stack_small_alternating_with_offset_on_top_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(shifted_small_alternating_template)
-    instantiation = stack.instantiate(1, 2, 3, 4)
+    instantiation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_equal(
         instantiation,
@@ -93,11 +94,11 @@ def test_stack_small_alternating_below_of_larger_alternating(
     stack = StackedTemplate()
     stack.push_template_on_top(small_alternating_template)
     stack.push_template_on_top(larger_alternating_template)
-    instantiation = stack.instantiate(1, 2, 3, 4)
+    instantiation = stack.instantiate([1, 2, 3, 4])
 
     numpy.testing.assert_equal(
         instantiation,
-        larger_alternating_template.instantiate(3, 4),
+        larger_alternating_template.instantiate([3, 4]),
     )
 
 
@@ -108,10 +109,10 @@ def test_stack_template_pop(
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(small_alternating_template)
     stack.pop_template_from_top()
-    instantiation = stack.instantiate(1, 2)
+    instantiation = stack.instantiate([1, 2])
 
     numpy.testing.assert_equal(
-        instantiation, larger_alternating_template.instantiate(1, 2)
+        instantiation, larger_alternating_template.instantiate([1, 2])
     )
 
 
@@ -136,7 +137,7 @@ def test_stack_scale_to(
     stack.push_template_on_top(larger_alternating_template)
     stack.push_template_on_top(small_alternating_template)
     stack.scale_to(2)
-    instantiation = stack.instantiate(1, 2, 3, 4)
+    instantiation = stack.instantiate([1, 2, 3, 4])
     numpy.testing.assert_equal(
         instantiation,
         [

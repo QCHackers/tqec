@@ -1,6 +1,7 @@
 import typing as ty
 
 import numpy
+
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 
@@ -64,24 +65,12 @@ class StackedTemplate(Template):
         return self._stack.pop()
 
     def scale_to(self, k: int) -> "StackedTemplate":
-        """Scales all the scalable templates in the stack to the given scale k.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
-
-        :param k: the new scale of the component templates.
-        :returns: self, once scaled.
-        """
         for t in self._stack:
             t.scale_to(k)
         return self
 
     @property
     def shape(self) -> Shape2D:
-        """Returns the current template shape.
-
-        :returns: the numpy-like shape of the template.
-        """
         shapex, shapey = 0, 0
         for template in self._stack:
             tshape = template.shape
@@ -90,30 +79,15 @@ class StackedTemplate(Template):
         return Shape2D(shapex, shapey)
 
     def to_dict(self) -> dict[str, ty.Any]:
-        """Returns a dict-like representation of the instance.
-
-        Used to implement to_json.
-        """
         return super().to_dict() | {
             "stack": {"templates": [t.to_dict() for t in self._stack]}
         }
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
-
-        :returns: the number of plaquettes expected from the `instanciate` method.
-        """
         return sum(t.expected_plaquettes_number for t in self._stack)
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
-        """Generate the numpy array representing the template.
-
-        :param plaquette_indices: the plaquette indices that will be forwarded to the
-            underlying Shape instance's instanciate method.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
-        """
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         first_non_used_plaquette_index: int = 0
         for template in self._stack:
@@ -122,7 +96,7 @@ class StackedTemplate(Template):
             indices = [plaquette_indices[i] for i in range(istart, istop)]
             first_non_used_plaquette_index = istop
 
-            tarr = template.instantiate(*indices)
+            tarr = template.instantiate(indices)
             yshape, xshape = tarr.shape
 
             # We do not want "0" plaquettes (i.e., "no plaquette" with our convention) to

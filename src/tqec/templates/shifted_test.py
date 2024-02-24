@@ -1,5 +1,6 @@
 import numpy
 import pytest
+
 from tqec.position import Shape2D
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import Template
@@ -47,7 +48,7 @@ def test_zero_shifted_template(default_template: Template, zero_offset: Scalable
     )
     indices = list(range(1, template.expected_plaquettes_number + 1))
     numpy.testing.assert_equal(
-        template.instantiate(*indices), default_template.instantiate(*indices)
+        template.instantiate(indices), default_template.instantiate(indices)
     )
 
 
@@ -61,6 +62,6 @@ def test_shifted_template(default_template: Template, scalable_offset: ScalableO
     indices = list(range(1, template.expected_plaquettes_number + 1))
     assert template.shape == Shape2D(4, 4)
     numpy.testing.assert_equal(
-        template.instantiate(*indices),
+        template.instantiate(indices),
         [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 2], [0, 0, 2, 1]],
     )

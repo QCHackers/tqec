@@ -2,6 +2,7 @@ import typing as ty
 from dataclasses import dataclass
 
 import numpy
+
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
@@ -33,32 +34,16 @@ class ShiftedTemplate(Template):
         self._offset = offset
 
     def scale_to(self, k: int) -> "ShiftedTemplate":
-        """Scales the scalable template and its offset to the given scale k.
-
-        Note that this function scales to INLINE, so the instance on which it is called is
-        modified in-place AND returned.
-
-        :param k: the new scale of the component templates.
-        :returns: self, once scaled.
-        """
         self._shifted_template.scale_to(k)
         self._offset.scale_to(k)
         return self
 
     @property
     def shape(self) -> Shape2D:
-        """Returns the current template shape.
-
-        :returns: the numpy-like shape of the template.
-        """
         tshape = self._shifted_template.shape
         return Shape2D(self._offset.x.value + tshape.x, self._offset.y.value + tshape.y)
 
     def to_dict(self) -> dict[str, ty.Any]:
-        """Returns a dict-like representation of the instance.
-
-        Used to implement to_json.
-        """
         return super().to_dict() | {
             "shifted": {
                 "template": self._shifted_template.to_dict(),
@@ -68,23 +53,14 @@ class ShiftedTemplate(Template):
 
     @property
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instanciate` method.
-
-        :returns: the number of plaquettes expected from the `instanciate` method.
-        """
         return self._shifted_template.expected_plaquettes_number
 
-    def instantiate(self, *plaquette_indices: int) -> numpy.ndarray:
-        """Generate the numpy array representing the template.
-
-        :param plaquette_indices: the plaquette indices that will be used to create the
-            resulting array.
-        :returns: a numpy array with the given plaquette indices arranged according
-            to the underlying shape of the template.
-        """
+    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+        # Do not explicitely check here, the check is forwarded to the
+        # shifted Template instance.
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         tshape = self._shifted_template.shape
         xoffset, yoffset = self._offset.x.value, self._offset.y.value
-        tarr = self._shifted_template.instantiate(*plaquette_indices)
+        tarr = self._shifted_template.instantiate(plaquette_indices)
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr
         return arr
