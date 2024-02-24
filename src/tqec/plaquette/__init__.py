@@ -1,13 +1,10 @@
 from .plaquette import (
     Plaquette,
-    SquarePlaquette,
     RoundedPlaquette,
-    PlaquetteList,
+    SquarePlaquette,
 )
-
 from .qubit import PlaquetteQubit
-
 from .schedule import (
-    ScheduleException,
     ScheduledCircuit,
+    ScheduleException,
 )
