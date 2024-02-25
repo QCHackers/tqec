@@ -60,7 +60,7 @@ class ShiftCoords(cirq.Operation):
         return self
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._shifts})"
+        return f"{self.__class__.__name__}{self._shifts}"
 
 
 @dataclass(frozen=True)
