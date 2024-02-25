@@ -1,4 +1,5 @@
 import cirq
+
 from tqec.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubit
@@ -168,19 +169,6 @@ class RoundedPlaquette(SquarePlaquette):
         self._orientation = orientation
 
     @staticmethod
-    def _get_data_qubit_side_from_plaquette_orientation(
-        orientation: PlaquetteOrientation,
-    ) -> PlaquetteSide:
-        if orientation == PlaquetteOrientation.RIGHT:
-            return PlaquetteSide.LEFT
-        elif orientation == PlaquetteOrientation.LEFT:
-            return PlaquetteSide.RIGHT
-        elif orientation == PlaquetteOrientation.DOWN:
-            return PlaquetteSide.UP
-        else:  # if orientation == PlaquetteOrientation.UP:
-            return PlaquetteSide.DOWN
-
-    @staticmethod
     def get_data_qubits(orientation: PlaquetteOrientation) -> list[PlaquetteQubit]:
         """Returns the two data qubits of the plaquette
 
@@ -191,11 +179,7 @@ class RoundedPlaquette(SquarePlaquette):
         Args:
             orientation: plaquette orientation
         """
-        return RoundedPlaquette.get_qubits_on_side(
-            RoundedPlaquette._get_data_qubit_side_from_plaquette_orientation(
-                orientation
-            )
-        )
+        return RoundedPlaquette.get_qubits_on_side(orientation.to_plaquette_side())
 
     @staticmethod
     def get_data_qubits_cirq(orientation: PlaquetteOrientation) -> list[cirq.GridQubit]:

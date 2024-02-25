@@ -44,6 +44,16 @@ class PlaquetteOrientation(Enum):
     DOWN = auto()
     UP = auto()
 
+    def to_plaquette_side(self) -> "PlaquetteSide":
+        if self.value == PlaquetteOrientation.RIGHT:
+            return PlaquetteSide.LEFT
+        elif self.value == PlaquetteOrientation.LEFT:
+            return PlaquetteSide.RIGHT
+        elif self.value == PlaquetteOrientation.DOWN:
+            return PlaquetteSide.UP
+        else:  # if self.value == PlaquetteOrientation.UP:
+            return PlaquetteSide.DOWN
+
 
 class PlaquetteSide(Enum):
     RIGHT = auto()
