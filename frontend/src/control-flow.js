@@ -1,78 +1,74 @@
-/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 import { useApp } from '@pixi/react';
 import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
-// import { useDispatch } from 'react-redux';
-import notification from './components/components/notification';
-import Grid from './components/graphics/Grid';
-import Template from './components/plaquettes/Template';
-import Qubit from './components/qubits/Qubit';
-import QubitLattice from './components/qubits/QubitLattice';
-import Button from './components/components/Button';
-import DownloadButton from './components/components/download/DownloadButton';
-import Workspace from './components/workspace';
-// import { addQubit } from './actions';
+import notification from './components/notification';
+import Grid from './graphics/Grid';
+import Template from './plaquettes/Template';
+import Qubit from './qubits/Qubit';
+import QubitLattice from './qubits/QubitLattice';
+import Button from './components/Button';
+import DownloadButton from './components/download/DownloadButton';
+import store from './store';
+import { addQubit } from './actions';
 
-export default function InitiateControlFlow() {
+/**
+ * Defines how the app behaves (button and feature placement) upon initialization
+ * @returns {void}
+ */
+export default function InitializeControlFlow() {
   const app = useApp();
   app.stage.removeChildren(); // avoid rendering issues
   const gridSize = 50;
-  const workspaceContainer = new Container();
-  // const workspace = Workspace.fromJSON(JSON.parse(store.getState()?.workspace));
-  const workspace = new Workspace();
-  workspace.qubits = [];
-  workspaceContainer.workspace = workspace; // yes this is horrible please forgive me
+  const workspace = new Container();
   workspace.name = 'workspace';
-  // const dispatch = useDispatch();
-  const grid = new Grid(gridSize, workspaceContainer, app);
+  const grid = new Grid(gridSize, workspace, app);
 
-  workspaceContainer.addChild(grid);
+  workspace.addChild(grid);
   grid.units.forEach((row) => {
     row.forEach((unit) => {
-      workspaceContainer.addChild(unit);
+      workspace.addChild(unit);
     });
   });
-
   workspace.selectedPlaquette = null; // Used to update filters
   workspace.gridSize = gridSize;
   workspace.qubitRadius = 5;
 
-  workspaceContainer.updateSelectedPlaquette = (newPlaquette) => {
+  workspace.updateSelectedPlaquette = (newPlaquette) => {
     if (newPlaquette === null) {
       return;
     }
-    const currentPlaquette = workspaceContainer.selectedPlaquette;
+    const currentPlaquette = workspace.selectedPlaquette;
     if (currentPlaquette === newPlaquette) {
       currentPlaquette.filters = null;
-      workspaceContainer.removeChild(workspaceContainer.getChildByName('control_panel'));
-      workspaceContainer.selectedPlaquette = null;
+      workspace.removeChild(workspace.getChildByName('control_panel'));
+      workspace.selectedPlaquette = null;
     } else {
       if (currentPlaquette != null) {
         currentPlaquette.filters = null;
       }
       newPlaquette.filters = [new AdjustmentFilter({ contrast: 0.5 })];
-      workspaceContainer.removeChild('control_panel');
-      workspaceContainer.addChild(newPlaquette.controlPanel);
-      workspaceContainer.selectedPlaquette = newPlaquette;
+      workspace.removeChild('control_panel');
+      workspace.addChild(newPlaquette.controlPanel);
+      workspace.selectedPlaquette = newPlaquette;
     }
   };
 
-  workspaceContainer.removePlaquette = (plaquette) => {
+  workspace.removePlaquette = (plaquette) => {
     if (plaquette === null) {
       return;
     }
-    if (workspaceContainer.selectedPlaquette === plaquette) {
-      workspaceContainer.selectedPlaquette = null;
+    if (workspace.selectedPlaquette === plaquette) {
+      workspace.selectedPlaquette = null;
     }
     // Remove control panel if it is visible
-    const currentControlPanel = workspaceContainer.getChildByName('control_panel');
+    const currentControlPanel = workspace.getChildByName('control_panel');
     if (currentControlPanel === plaquette.controlPanel) {
-      workspaceContainer.removeChild(currentControlPanel);
+      workspace.removeChild(currentControlPanel);
     }
-    workspaceContainer.children
+    workspace.children
       .filter((child) => child instanceof Template)
       .forEach((template) => {
         if (template.getPlaquettes().includes(plaquette)) {
@@ -85,124 +81,127 @@ export default function InitiateControlFlow() {
   workspace.mainButtonPosition = new Point(125, 50);
   const { x, y } = workspace.mainButtonPosition;
 
-  if (workspace.qubits.length > 0) {
-    workspace.qubits.forEach((qubit) => {
-      workspaceContainer.addChild(qubit);
-    });
-  } else { // Let's add some qubits.
-    const createQubitConstellationButton = new Button(
-      'Create Qubit Constellation',
-      x,
-      y
-    );
-    workspaceContainer.addChild(createQubitConstellationButton);
-    const saveQubitConstellationButton = new Button(
-      'Save Qubit Constellation',
-      x,
-      y
-    );
-    const lattice = new QubitLattice(workspaceContainer, app);
-    createQubitConstellationButton.on('click', () => {
-      workspaceContainer.removeChild(createQubitConstellationButton);
-      workspaceContainer.addChild(saveQubitConstellationButton);
-      app.view.addEventListener('click', lattice.selectQubitForConstellation);
-    });
-    workspaceContainer.addChild(createQubitConstellationButton);
+  const createQubitConstellationButton = new Button(
+    'Create Qubit Constellation',
+    x,
+    y
+  );
+  workspace.addChild(createQubitConstellationButton);
+  const saveQubitConstellationButton = new Button(
+    'Save Qubit Constellation',
+    x,
+    y
+  );
+  const lattice = new QubitLattice(workspace, app);
+  createQubitConstellationButton.on('click', () => {
+    workspace.removeChild(createQubitConstellationButton);
+    workspace.addChild(saveQubitConstellationButton);
+    app.view.addEventListener('click', lattice.selectQubitForConstellation);
+  });
 
-    saveQubitConstellationButton.on('click', () => {
-      if (lattice.constellation.length === 0) {
-        notification(app, 'Constellation must have at least one qubit');
-      } else {
-        workspaceContainer.removeChild(saveQubitConstellationButton);
-        lattice.createBoundingBox();
-        lattice.applyBoundingBoxCoordinatesToQubits();
-        const { boundingBox } = lattice;
-        workspaceContainer.addChild(boundingBox);
-        const finalizeBoundingQuadButton = new Button(
-          'Finalize unit cell',
-          x,
-          y
-        );
-        workspaceContainer.addChild(finalizeBoundingQuadButton);
-        app.view.removeEventListener('click', lattice.selectQubitForConstellation);
+  // TODO: Check the redux store for qubits and add them to the workspace
+  // If there are none, instead offer to create a constellation.
+  workspace.addChild(createQubitConstellationButton);
 
-        // Add recolorable grid squares
+  saveQubitConstellationButton.on('click', () => {
+    if (lattice.constellation.length === 0) {
+      notification(app, 'Constellation must have at least one qubit');
+    } else {
+      workspace.removeChild(saveQubitConstellationButton);
+      const finalizeBoundingQuadButton = new Button(
+        'Finalize unit cell',
+        x,
+        y
+      );
+      workspace.addChild(finalizeBoundingQuadButton);
+      app.view.removeEventListener('click', lattice.selectQubitForConstellation);
+
+      // Make the grid squares selectable
+      grid.units.forEach((row) => {
+        row.forEach((unit) => {
+          app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
+        });
+      });
+
+      finalizeBoundingQuadButton.on('click', () => {
+        // If the bounding box isn't a rectangle or doesn't contain every qubit, notify and return
+        if (!grid.selectedUnitsRectangular()) {
+          notification(app, 'Bounding quad must be rectangular');
+          return;
+        }
+        if (!grid.contains(lattice.constellation)) {
+          notification(app, 'Bounding quad must contain every qubit');
+          return;
+        }
+
+        workspace.removeChild(finalizeBoundingQuadButton);
+        // Grid units shall no longer be selectable
         grid.units.forEach((row) => {
           row.forEach((unit) => {
-            workspaceContainer.addChild(unit);
-            app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
+            workspace.removeChild(unit);
+            app.renderer.view.removeEventListener('click', unit.toggleVisibility);
           });
         });
 
-        finalizeBoundingQuadButton.on('click', () => {
-          workspaceContainer.removeChild(boundingBox);
-          workspaceContainer.removeChild(finalizeBoundingQuadButton);
-          grid.units.forEach((row) => {
-            row.forEach((unit) => {
-              workspaceContainer.removeChild(unit);
-              app.renderer.view.removeEventListener('click', unit.toggleVisibility);
-            });
-          });
-
-          // Add qubits to the workspace
-          for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth) {
-            for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight) {
-              for (const qubit of lattice.constellation) {
-                const newQubit = new Qubit(
-                  qubit.bbX + horiz,
-                  qubit.bbY + vertic,
-                  workspace.qubitRadius,
-                  workspace.gridSize
-                );
-                workspaceContainer.addChild(newQubit);
-                // workspaceContainer.workspace.qubits.push(newQubit);
-                // TODO: use Redux to update the workspace state
-                // dispatch(addQubit(newQubit));
-              }
+        // Add qubits to the workspace
+        // eslint-disable-next-line max-len
+        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
+          // eslint-disable-next-line max-len
+          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
+            for (const qubit of lattice.constellation) {
+              const newQubit = new Qubit(
+                qubit.bbX + horiz,
+                qubit.bbY + vertic,
+                workspace.qubitRadius,
+                workspace.gridSize
+              );
+              workspace.addChild(newQubit);
+              // Add qubit to redux store
+              // store.dispatch(addQubit(newQubit.serialized()));
             }
           }
+        }
 
-          // Make the original qubits invisible to remove redundancy
-          lattice.constellation.forEach((qubit) => {
-            qubit.visible = false;
-          });
-
-          // Initialize button to make plaquettes
-          let selectedQubits = [];
-          const plaquetteButton = new Button('Create plaquette', x, y + 50);
-          const template = new Template(
-            selectedQubits,
-            workspaceContainer,
-            plaquetteButton,
-            app
-          );
-
-          // Create the plaquettes and template
-          plaquetteButton.on('click', () => {
-            template.createPlaquette();
-            workspaceContainer.addChild(template.container);
-            // Clear the selected qubits
-            selectedQubits = [];
-            plaquetteButton.visible = false;
-          });
-          workspaceContainer.addChild(plaquetteButton);
-          workspaceContainer.removeChild(finalizeBoundingQuadButton);
-
-          const downloadStimButton = new DownloadButton(
-            workspaceContainer,
-            'Download Stim file',
-            x,
-            y,
-            'white',
-            'black'
-          );
-          workspaceContainer.addChild(downloadStimButton);
+        // Make the original qubits invisible to remove redundancy
+        lattice.constellation.forEach((qubit) => {
+          qubit.visible = false;
         });
-      }
-    });
-  }
+
+        // Initialize button to make plaquettes
+        let selectedQubits = [];
+        const plaquetteButton = new Button('Create plaquette', x, y + 50);
+        const template = new Template(
+          selectedQubits,
+          workspace,
+          plaquetteButton,
+          app
+        );
+
+        // Create the plaquettes and template
+        plaquetteButton.on('click', () => {
+          template.createPlaquette();
+          workspace.addChild(template.container);
+          // Clear the selected qubits
+          selectedQubits = [];
+          plaquetteButton.visible = false;
+        });
+        workspace.addChild(plaquetteButton);
+        workspace.removeChild(finalizeBoundingQuadButton);
+
+        const downloadStimButton = new DownloadButton(
+          workspace,
+          'Download Stim file',
+          x,
+          y,
+          'white',
+          'black'
+        );
+        workspace.addChild(downloadStimButton);
+      });
+    }
+  });
 
   // Final workspace setup
-  workspaceContainer.visible = true;
-  app.stage.addChild(workspaceContainer);
+  workspace.visible = true;
+  app.stage.addChild(workspace);
 }
