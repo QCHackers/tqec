@@ -157,7 +157,7 @@ export default function InitializeControlFlow() {
               );
               workspace.addChild(newQubit);
               // Add qubit to redux store
-              // store.dispatch(addQubit(newQubit.serialized()));
+              store.dispatch(addQubit(newQubit.serialized()));
             }
           }
         }
