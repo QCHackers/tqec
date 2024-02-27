@@ -19,7 +19,7 @@ class ZZZZMemoryPlaquette(SquarePlaquette):
         data_qubits = SquarePlaquette.get_data_qubits()
 
         circuit = make_pauli_syndrome_measurement_circuit(
-            syndrome_qubit, data_qubits, "ZZZZ"
+            syndrome_qubit, [data_qubits[i] for i in [0, 2, 1, 3]], "ZZZZ"
         )
         if include_detector:
             circuit.append(
