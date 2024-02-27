@@ -12,7 +12,6 @@ import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import DownloadButton from './components/download/DownloadButton';
 import store from './store';
-import { addQubit } from './actions';
 
 /**
  * Defines how the app behaves (button and feature placement) upon initialization
@@ -25,7 +24,8 @@ export default function InitializeControlFlow() {
   const workspace = new Container();
   workspace.name = 'workspace';
   const grid = new Grid(gridSize, workspace, app);
-
+  // Add qubits from redux store
+  // const storedUnitCell = store.getState().unitCell;
   workspace.addChild(grid);
   grid.units.forEach((row) => {
     row.forEach((unit) => {
@@ -143,10 +143,17 @@ export default function InitializeControlFlow() {
           });
         });
 
+        // Commit unit cell to redux store
+        store.dispatch({
+          type: 'SET_UNIT_CELL',
+          payload: {
+            qubits: lattice.constellation,
+            gridSquares: grid.visibleUnits()
+          },
+        });
+
         // Add qubits to the workspace
-        // eslint-disable-next-line max-len
         for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
-          // eslint-disable-next-line max-len
           for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
             for (const qubit of lattice.constellation) {
               const newQubit = new Qubit(
@@ -156,8 +163,6 @@ export default function InitializeControlFlow() {
                 workspace.gridSize
               );
               workspace.addChild(newQubit);
-              // Add qubit to redux store
-              store.dispatch(addQubit(newQubit.serialized()));
             }
           }
         }

@@ -1,10 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
 
-export const initialState = {
-  qubits: [],
-};
-
 // Load state from localStorage
 const loadState = () => {
   try {
