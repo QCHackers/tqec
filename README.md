@@ -4,7 +4,8 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-## How to install the backend (Python package)
+## Installation
+### Backend (Python package)
 
 In order to install the `tqec` package, you can follow the following
 instructions.
