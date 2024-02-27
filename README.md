@@ -53,7 +53,7 @@ python -m jupyter lab
 
 and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
 
-## Installing the frontend
+### Frontend
 
 Refer to [this readme](./frontend/README.md) for instructions.
 
