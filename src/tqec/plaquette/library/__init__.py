@@ -6,19 +6,7 @@ from .initialisation import (
     ZSquareInitialisationPlaquette,
 )
 from .measurement import MeasurementRoundedPlaquette, MeasurementSquarePlaquette
-from .xx import (
-    XXMemoryPlaquette,
-    XXSyndromeMeasurementPlaquette,
-)
-from .xxxx import (
-    XXXXMemoryPlaquette,
-    XXXXSyndromeMeasurementPlaquette,
-)
-from .zz import (
-    ZZMemoryPlaquette,
-    ZZSyndromeMeasurementPlaquette,
-)
-from .zzzz import (
-    ZZZZMemoryPlaquette,
-    ZZZZSyndromeMeasurementPlaquette,
-)
+from .xx import XXMemoryPlaquette
+from .xxxx import XXXXMemoryPlaquette
+from .zz import ZZMemoryPlaquette
+from .zzzz import ZZZZMemoryPlaquette
