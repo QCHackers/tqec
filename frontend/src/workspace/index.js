@@ -103,10 +103,6 @@ export default function TQECApp() {
       notification(app, 'Constellation must have at least one qubit');
     } else {
       workspace.removeChild(saveQubitConstellationButton);
-      lattice.createBoundingBox();
-      lattice.applyBoundingBoxCoordinatesToQubits();
-      const { boundingBox } = lattice;
-      workspace.addChild(boundingBox);
       const finalizeBoundingQuadButton = new Button(
         'Finalize unit cell',
         x,
@@ -115,17 +111,26 @@ export default function TQECApp() {
       workspace.addChild(finalizeBoundingQuadButton);
       app.view.removeEventListener('click', lattice.selectQubitForConstellation);
 
-      // Add recolorable grid squares
+      // Make the grid squares selectable
       grid.units.forEach((row) => {
         row.forEach((unit) => {
-          workspace.addChild(unit);
           app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
         });
       });
 
       finalizeBoundingQuadButton.on('click', () => {
-        workspace.removeChild(boundingBox);
+        // If the bounding box isn't a rectangle or doesn't contain every qubit, notify and return
+        if (!grid.selectedUnitsRectangular()) {
+          notification(app, 'Bounding quad must be rectangular');
+          return;
+        }
+        if (!grid.contains(lattice.constellation)) {
+          notification(app, 'Bounding quad must contain every qubit');
+          return;
+        }
+
         workspace.removeChild(finalizeBoundingQuadButton);
+        // Grid units shall no longer be selectable
         grid.units.forEach((row) => {
           row.forEach((unit) => {
             workspace.removeChild(unit);
@@ -135,9 +140,9 @@ export default function TQECApp() {
 
         // Add qubits to the workspace
         // eslint-disable-next-line max-len
-        for (let horiz = 0; horiz < app.renderer.width; horiz += boundingBox.logicalWidth) {
+        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
           // eslint-disable-next-line max-len
-          for (let vertic = 0; vertic < app.renderer.height; vertic += boundingBox.logicalHeight) {
+          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
             for (const qubit of lattice.constellation) {
               const newQubit = new Qubit(
                 qubit.bbX + horiz,

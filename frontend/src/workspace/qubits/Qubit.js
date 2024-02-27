@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
 
-const assert = require('assert');
+// const assert = require('assert');
 
 /**
  * Qubit class
@@ -24,11 +24,12 @@ export default class Qubit extends Graphics {
     this.eventMode = 'static';
     this.buttonMode = true;
     this.cursor = 'pointer';
-    assert(x % gridSize === 0, 'x must be a multiple of gridSize');
-    assert(y % gridSize === 0, 'y must be a multiple of gridSize');
+    // assert(x % gridSize === 0, 'x must be a multiple of gridSize');
+    // assert(y % gridSize === 0, 'y must be a multiple of gridSize');
     this.globalX = x;
     this.globalY = y;
     this.createCircle(x, y, radius, color);
+    this.gridSize = gridSize;
     this.maxNeighborDist = 2 * this.gridSize;
     this.neighbors = [];
     this.gridSize = gridSize;
