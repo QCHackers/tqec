@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
 
 export const initialState = {
-  workspace: {},
+  qubits: [],
 };
 
 // Load state from localStorage
