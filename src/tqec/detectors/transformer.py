@@ -6,6 +6,7 @@ import cirq
 import numpy
 import stimcirq
 import sympy
+
 from tqec.detectors.measurement_map import (
     CircuitMeasurementMap,
     compute_global_measurements_lookback_offsets,
@@ -37,7 +38,7 @@ def _transform_to_stimcirq_compatible_impl(
                 if isinstance(operation.repetitions, int):
                     operation_repetitions = operation.repetitions
                 elif isinstance(operation.repetitions, sympy.Expr):
-                    operation_repetitions = int(operation.repetitions.evalf())
+                    operation_repetitions = int(operation.repetitions.evalf())  # type: ignore
                 elif isinstance(operation.repetitions, numpy.integer):
                     operation_repetitions = int(operation.repetitions)
                 else:

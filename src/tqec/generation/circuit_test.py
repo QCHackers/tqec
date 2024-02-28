@@ -124,7 +124,7 @@ def test_generate_circuit():
     The target qubits are taken from the orginal notebook output.
     """
     generated_circuit = _generate_circuit()
-    generate_qubits = [(q.row, q.col) for q in generated_circuit.all_qubits()]
+    generate_qubits = [(q.row, q.col) for q in generated_circuit.all_qubits()]  # type: ignore
     target_qubits = [
         (6, 2),
         (3, 7),
