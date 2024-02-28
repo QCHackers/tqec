@@ -1,5 +1,6 @@
 import cirq
 import pytest
+
 from tqec.detectors.measurement_map import CircuitMeasurementMap, flatten
 from tqec.exceptions import TQECException
 
@@ -206,17 +207,3 @@ def test_measurement_map_get_measurement_relative_offset_lot_of_measurements(
                 )
                 is not None
             )
-
-
-# def test_measurement_map_depth1_initialisation(circuit_with_depth1_circuit_operation):
-#     CircuitMeasurementMap(circuit_with_depth1_circuit_operation)
-
-
-# def test_measurement_map_depth2_initialisation(circuit_with_depth2_circuit_operation):
-#     CircuitMeasurementMap(circuit_with_depth2_circuit_operation)
-
-
-# def test_measurement_map_depth1_repeated_initialisation(
-#     circuit_with_depth1_repeated_circuit_operation,
-# ):
-#     CircuitMeasurementMap(circuit_with_depth1_repeated_circuit_operation)

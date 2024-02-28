@@ -4,6 +4,8 @@ import pytest
 from tqec.detectors.operation import (
     Detector,
     Observable,
+    RelativeMeasurementData,
+    RelativeMeasurementsRecord,
     ShiftCoords,
     make_detector,
     make_observable,
@@ -44,15 +46,15 @@ def test_empty_detector(origin):
     assert detector_untagged.coordinates == (origin.row, origin.col, 0)
 
 
-# def test_detector_repeated_relative_measurement():
-#     origin = cirq.GridQubit(0, 0)
-#     relative_measurements: list[tuple[cirq.GridQubit, int]] = [
-#         (cirq.GridQubit(0, 0), -1),
-#         (cirq.GridQubit(0, 0), -1),
-#     ]
-#     with pytest.raises(TQECException):
-#         # Duplicated relative measurements
-#         make_detector(origin, relative_measurements, time_coordinate=0)
+def test_detector_repeated_relative_measurement():
+    origin = cirq.GridQubit(0, 0)
+    relative_measurements: list[tuple[cirq.GridQubit, int]] = [
+        (cirq.GridQubit(0, 0), -1),
+        (cirq.GridQubit(0, 0), -1),
+    ]
+    with pytest.raises(TQECException):
+        # Duplicated relative measurements
+        make_detector(origin, relative_measurements, time_coordinate=0)
 
 
 def test_detector_with_relative_measurement():
@@ -64,6 +66,16 @@ def test_detector_with_relative_measurement():
     make_detector(origin, relative_measurements, time_coordinate=0)
 
 
+def test_detector_negative_time_coordinate():
+    origin = cirq.GridQubit(0, 0)
+    relative_measurements: list[tuple[cirq.GridQubit, int]] = [
+        (cirq.GridQubit(0, 0), -1),
+        (cirq.GridQubit(0, 0), -2),
+    ]
+    with pytest.raises(TQECException):
+        make_detector(origin, relative_measurements, time_coordinate=-1)
+
+
 @pytest.mark.parametrize("origin", _qubits_examples)
 def test_empty_observable(origin):
     observable_tagged = make_observable(origin, [], observable_index=0)
@@ -73,17 +85,6 @@ def test_empty_observable(origin):
     assert observable_untagged.index == 0
 
 
-# def test_observable_repeated_relative_measurement():
-#     origin = cirq.GridQubit(0, 0)
-#     relative_measurements: list[tuple[cirq.GridQubit, int]] = [
-#         (cirq.GridQubit(0, 0), -1),
-#         (cirq.GridQubit(0, 0), -1),
-#     ]
-#     with pytest.raises(TQECException):
-#         # Duplicated relative measurements
-#         make_observable(origin, relative_measurements, observable_index=0)
-
-
 def test_observable_with_relative_measurement():
     origin = cirq.GridQubit(0, 0)
     relative_measurements: list[tuple[cirq.GridQubit, int]] = [
@@ -91,3 +92,33 @@ def test_observable_with_relative_measurement():
         (cirq.GridQubit(0, 0), -2),
     ]
     make_observable(origin, relative_measurements, observable_index=0)
+
+
+def test_observable_negative_index():
+    origin = cirq.GridQubit(0, 0)
+    relative_measurements: list[tuple[cirq.GridQubit, int]] = [
+        (cirq.GridQubit(0, 0), -1),
+        (cirq.GridQubit(0, 0), -2),
+    ]
+    with pytest.raises(TQECException):
+        make_observable(origin, relative_measurements, observable_index=-1)
+
+
+def test_relative_measure_data_negative_index():
+    with pytest.raises(TQECException):
+        RelativeMeasurementData(cirq.GridQubit(0, 0), 0)
+    with pytest.raises(TQECException):
+        RelativeMeasurementData(cirq.GridQubit(0, 0), 1)
+
+
+def test_relative_measurement_record_duplicated_measurement_data():
+    origin = cirq.GridQubit(0, 0)
+    with pytest.raises(TQECException):
+        RelativeMeasurementsRecord(
+            origin,
+            [
+                RelativeMeasurementData(origin, -1),
+                RelativeMeasurementData(origin, -2),
+                RelativeMeasurementData(origin, -1),
+            ],
+        )
