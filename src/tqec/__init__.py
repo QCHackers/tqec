@@ -35,7 +35,6 @@ from .noise_models import (
 )
 from .plaquette import (
     Plaquette,
-    PlaquetteList,
     PlaquetteQubit,
     RoundedPlaquette,
     ScheduledCircuit,

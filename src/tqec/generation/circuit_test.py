@@ -6,12 +6,16 @@ from tqec.detectors.operation import make_shift_coords
 from tqec.enums import PlaquetteOrientation
 from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.library import (
-    XXPlaquetteList,
-    XXXXPlaquetteList,
-    ZZPlaquetteList,
-    ZZZZPlaquetteList,
+    MeasurementRoundedPlaquette,
+    MeasurementSquarePlaquette,
+    XXMemoryPlaquette,
+    XXXXMemoryPlaquette,
+    ZRoundedInitialisationPlaquette,
+    ZSquareInitialisationPlaquette,
+    ZZMemoryPlaquette,
+    ZZZZMemoryPlaquette,
 )
-from tqec.plaquette.plaquette import PlaquetteList
+from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.constructions.qubit import QubitSquareTemplate
 from tqec.templates.scale import Dimension, LinearFunction
 
@@ -41,28 +45,73 @@ def _make_repeated_layer(repeat_circuit: cirq.Circuit) -> cirq.Circuit:
 
 def _generate_circuit() -> cirq.Circuit:
     template = QubitSquareTemplate(Dimension(2, LinearFunction(2)))
-    plaquettes: list[PlaquetteList] = [
-        XXPlaquetteList(
-            PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8], include_detector=False
-        ),
-        ZZPlaquetteList(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
-        XXXXPlaquetteList([1, 2, 3, 4, 5, 6, 7, 8], include_detector=False),
-        ZZZZPlaquetteList([1, 3, 4, 5, 6, 8]),
-        ZZPlaquetteList(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
-        XXPlaquetteList(
-            PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8], include_detector=False
-        ),
+    plaquettes: list[list[Plaquette]] = [
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.UP),
+            XXMemoryPlaquette(
+                PlaquetteOrientation.UP,
+                [1, 2, 5, 6, 7, 8],
+                include_detector=False,
+                is_first_round=True,
+            ),
+            XXMemoryPlaquette(PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8]),
+            MeasurementRoundedPlaquette(
+                PlaquetteOrientation.UP, include_detector=False
+            ),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.LEFT),
+            ZZMemoryPlaquette(
+                PlaquetteOrientation.LEFT, [1, 5, 6, 8], is_first_round=True
+            ),
+            ZZMemoryPlaquette(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
+            MeasurementRoundedPlaquette(PlaquetteOrientation.LEFT),
+        ],
+        [
+            ZSquareInitialisationPlaquette(),
+            XXXXMemoryPlaquette(
+                [1, 2, 3, 4, 5, 6, 7, 8], include_detector=False, is_first_round=True
+            ),
+            XXXXMemoryPlaquette([1, 2, 3, 4, 5, 6, 7, 8]),
+            MeasurementSquarePlaquette(include_detector=False),
+        ],
+        [
+            ZSquareInitialisationPlaquette(),
+            ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8], is_first_round=True),
+            ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8]),
+            MeasurementSquarePlaquette(),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.RIGHT),
+            ZZMemoryPlaquette(
+                PlaquetteOrientation.RIGHT, [1, 3, 4, 8], is_first_round=True
+            ),
+            ZZMemoryPlaquette(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
+            MeasurementRoundedPlaquette(PlaquetteOrientation.RIGHT),
+        ],
+        [
+            ZRoundedInitialisationPlaquette(PlaquetteOrientation.DOWN),
+            XXMemoryPlaquette(
+                PlaquetteOrientation.DOWN,
+                [1, 2, 3, 4, 7, 8],
+                include_detector=False,
+                is_first_round=True,
+            ),
+            XXMemoryPlaquette(PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8]),
+            MeasurementRoundedPlaquette(
+                PlaquetteOrientation.DOWN, include_detector=False
+            ),
+        ],
     ]
-
     layer_modificators = {1: _make_repeated_layer}
 
     # 4. Actually create the cirq.Circuit instance by concatenating the circuits generated
     # for each layers and potentially modified by the modifiers defined above.
     circuit = cirq.Circuit()
-    for layer_index in range(3):
+    for layer_index in range(4):
         layer_circuit = generate_circuit(
             template,
-            [plaquette_list.plaquettes[layer_index] for plaquette_list in plaquettes],
+            [plaquette_list[layer_index] for plaquette_list in plaquettes],
         )
         layer_circuit = _normalise_circuit(layer_circuit)
         circuit += layer_modificators.get(layer_index, lambda circ: circ)(layer_circuit)
@@ -77,55 +126,55 @@ def test_generate_circuit():
     generated_circuit = _generate_circuit()
     generate_qubits = [(q.row, q.col) for q in generated_circuit.all_qubits()]
     target_qubits = [
-        (7, 3),
-        (4, 8),
-        (4, 10),
+        (6, 2),
+        (3, 7),
+        (3, 9),
+        (1, 1),
+        (10, 6),
+        (8, 8),
+        (1, 5),
+        (2, 0),
+        (6, 4),
         (2, 2),
-        (11, 7),
-        (9, 9),
-        (2, 6),
-        (3, 1),
+        (6, 6),
+        (1, 3),
+        (7, 1),
+        (7, 3),
+        (4, 2),
+        (1, 7),
         (7, 5),
-        (3, 3),
+        (1, 9),
         (7, 7),
         (2, 4),
-        (8, 2),
-        (8, 4),
+        (6, 8),
+        (9, 1),
+        (2, 6),
+        (9, 3),
+        (9, 7),
+        (4, 6),
+        (4, 4),
+        (7, 9),
+        (5, 1),
         (5, 3),
         (2, 8),
-        (8, 6),
-        (2, 10),
-        (8, 8),
-        (3, 5),
-        (7, 9),
-        (10, 2),
-        (3, 7),
-        (10, 4),
-        (10, 8),
-        (5, 7),
-        (5, 5),
-        (8, 10),
-        (6, 2),
-        (6, 4),
-        (3, 9),
-        (10, 6),
-        (6, 8),
-        (9, 3),
-        (1, 5),
-        (10, 10),
-        (4, 2),
-        (5, 9),
-        (6, 6),
-        (4, 4),
-        (5, 11),
-        (4, 6),
-        (11, 3),
         (9, 5),
-        (6, 10),
-        (9, 7),
-        (1, 9),
-        (7, 1),
-        (9, 11),
+        (5, 7),
+        (8, 2),
+        (0, 4),
+        (9, 9),
+        (3, 1),
+        (4, 8),
+        (5, 5),
+        (3, 3),
+        (4, 10),
+        (3, 5),
+        (10, 2),
+        (8, 4),
+        (5, 9),
+        (8, 6),
+        (0, 8),
+        (6, 0),
+        (8, 10),
     ]
     generate_qubits.sort()
     target_qubits.sort()
