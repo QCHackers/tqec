@@ -147,8 +147,8 @@ export default function InitializeControlFlow() {
         store.dispatch({
           type: 'SET_UNIT_CELL',
           payload: {
-            qubits: lattice.constellation,
-            gridSquares: grid.visibleUnits()
+            qubits: lattice.constellation.map((q) => q.serialized()),
+            gridSquares: grid.visibleUnits().map((u) => u.serialized())
           },
         });
 

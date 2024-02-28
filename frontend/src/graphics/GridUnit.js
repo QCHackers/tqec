@@ -25,6 +25,13 @@ export default class GridUnit extends Graphics {
     this.workspace.addChild(this);
   }
 
+  serialized = () => ({
+    x: this.x,
+    y: this.y,
+    gridUnitSize: this.gridUnitSize,
+    visible: this.visible,
+  });
+
   // eslint-disable-next-line class-methods-use-this
   viewportX = (x) => Math.floor(x / this.gridUnitSize) * this.gridUnitSize;
 
