@@ -7,11 +7,15 @@ import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 
+//import addListenersToTabButtons from './addListener'
+
 /////////////////////////////////////////////////////////////
 
 export default function TqecApp() {
 	// Initialize the app
 	let app = useApp();
+
+    console.log('test log from workspace/index.js (TqecApp)');
 
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
