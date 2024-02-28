@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tqec"
+version = "0.0.1"
+authors = [
+    { name = "TQEC community", email = "tqec-design-automation@googlegroups.com" },
+]
+description = "A design automation framework for Topological Quantum Error Correction."
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["topological quantum error correction", "qec"]
+requires-python = ">= 3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+Website = "https://tqec.app"
+Repository = "https://github.com/QCHackers/tqec"
+Issues = "https://github.com/QCHackers/tqec/issues"
+
+[project.optional-dependencies]
+test = ["pytest", "mypy", "pytest-cov"]
+dev = ["sinter", "pymatching", "jupyterlab", "tqec[test]"]
+all = ["tqec[test, dev]"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["*test.py"]
+
+[tool.setuptools.package-data]
+tqec = ["py.typed"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
