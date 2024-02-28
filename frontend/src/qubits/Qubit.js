@@ -49,7 +49,7 @@ export default class Qubit extends Graphics {
     y: this.globalY,
     radius: this.radius,
     gridSize: this.gridSize,
-    color: this.black,
+    color: this.color,
     qubitType: this.qubitType
   });
 
