@@ -6,7 +6,7 @@ from copy import deepcopy
 
 import cirq
 
-from tqec.circuit.detectors.operation import Detector, make_detector
+from tqec.circuit.operations.operation import Detector, make_detector
 from tqec.exceptions import TQECException
 
 

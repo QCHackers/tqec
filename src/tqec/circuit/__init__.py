@@ -1,5 +1,5 @@
 from .circuit import generate_circuit
-from .detectors import (
+from .operations import (
     RelativeMeasurementData,
     make_detector,
     make_observable,

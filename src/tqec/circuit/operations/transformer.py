@@ -7,11 +7,11 @@ import numpy
 import stimcirq
 import sympy
 
-from tqec.circuit.detectors.measurement_map import (
+from tqec.circuit.operations.measurement_map import (
     CircuitMeasurementMap,
     compute_global_measurements_lookback_offsets,
 )
-from tqec.circuit.detectors.operation import (
+from tqec.circuit.operations.operation import (
     STIM_TAG,
     Detector,
     Observable,

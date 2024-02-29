@@ -1,6 +1,6 @@
 import cirq
 
-from tqec.circuit.detectors.operation import make_detector
+from tqec.circuit.operations.operation import make_detector
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import RoundedPlaquette, SquarePlaquette
