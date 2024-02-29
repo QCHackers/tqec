@@ -4,7 +4,7 @@ from .plaquette import (
     SquarePlaquette,
 )
 from .qubit import PlaquetteQubit
-from .schedule import (
+from ..circuit.schedule import (
     ScheduledCircuit,
     ScheduleException,
 )
