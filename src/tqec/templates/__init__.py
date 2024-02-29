@@ -11,4 +11,8 @@ from .constructions import (
     QubitSquareTemplate,
     ScalableCorner,
 )
+from .display import (
+    display_template,
+    display_templates_svg,
+)
 from .scale import Dimension, FixedDimension, LinearFunction
