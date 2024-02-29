@@ -1,7 +1,7 @@
 import cirq
 from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import RoundedPlaquette, SquarePlaquette
-from tqec.plaquette.schedule import ScheduledCircuit
+from tqec.circuit.schedule import ScheduledCircuit
 
 
 class EmptySquarePlaquette(SquarePlaquette):

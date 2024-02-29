@@ -1,5 +1,5 @@
 import cirq
-from tqec.detectors.operation import RelativeMeasurementData, make_detector
+from tqec.circuit.detectors.operation import RelativeMeasurementData, make_detector
 from tqec.plaquette.qubit import PlaquetteQubit
 
 

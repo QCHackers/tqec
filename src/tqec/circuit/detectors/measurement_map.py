@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import cirq
-from tqec.detectors.operation import RelativeMeasurementsRecord
+
+from tqec.circuit.detectors.operation import RelativeMeasurementsRecord
 from tqec.exceptions import TQECException
 
 

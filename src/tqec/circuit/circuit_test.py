@@ -2,9 +2,9 @@
 
 import cirq
 
-from tqec.detectors.operation import make_shift_coords
+from tqec.circuit.circuit import generate_circuit
+from tqec.circuit.detectors.operation import make_shift_coords
 from tqec.enums import PlaquetteOrientation
-from tqec.generation.circuit import generate_circuit
 from tqec.plaquette.library import (
     MeasurementRoundedPlaquette,
     MeasurementSquarePlaquette,
