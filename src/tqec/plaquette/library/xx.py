@@ -6,7 +6,7 @@ from tqec.enums import PlaquetteOrientation
 from tqec.plaquette.library.utils.detectors import make_memory_experiment_detector
 from tqec.plaquette.library.utils.pauli import make_pauli_syndrome_measurement_circuit
 from tqec.plaquette.plaquette import RoundedPlaquette
-from tqec.plaquette.schedule import ScheduledCircuit
+from tqec.circuit.schedule import ScheduledCircuit
 
 
 class XXMemoryPlaquette(RoundedPlaquette):

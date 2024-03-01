@@ -1,7 +1,7 @@
 import cirq
 import pytest
 
-from tqec.detectors.operation import (
+from tqec.circuit.operations.operation import (
     Detector,
     Observable,
     RelativeMeasurementData,

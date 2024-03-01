@@ -1,9 +1,9 @@
 import cirq
 import pytest
 
+from tqec.circuit.circuit import generate_circuit
 from tqec.exceptions import TQECException
-from tqec.generation.circuit import generate_circuit
-from tqec.plaquette.library.initialisation import ZSquareInitialisationPlaquette
+from tqec.plaquette.library import ZSquareInitialisationPlaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.atomic.rectangle import RawRectangleTemplate
 from tqec.templates.base import Template

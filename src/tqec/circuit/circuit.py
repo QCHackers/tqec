@@ -5,9 +5,9 @@ from copy import deepcopy
 
 import cirq
 
+from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Displacement
 from tqec.templates.base import Template
 

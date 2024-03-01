@@ -1,7 +1,7 @@
 import cirq
 import pytest
 
-from tqec.detectors.measurement_map import CircuitMeasurementMap, flatten
+from tqec.circuit.operations.measurement_map import CircuitMeasurementMap, flatten
 from tqec.exceptions import TQECException
 
 
