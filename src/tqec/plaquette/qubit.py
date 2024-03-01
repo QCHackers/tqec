@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 
 from cirq import GridQubit
-
 from tqec.position import Position
 
 
-@dataclass
+@dataclass(frozen=True)
 class PlaquetteQubit:
     """Defines a qubit in the plaquette coordinate system
 

@@ -40,7 +40,7 @@ class Plaquette:
         plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
         circuit_qubits = set(circuit.raw_circuit.all_qubits())
         if not circuit_qubits.issubset(plaquette_qubits):
-            wrong_qubits = plaquette_qubits.difference(circuit_qubits)
+            wrong_qubits = circuit_qubits.difference(plaquette_qubits)
             raise TQECException(
                 f"The following qubits ({wrong_qubits}) are in the provided circuit "
                 "but not in the list of PlaquetteQubit."
@@ -128,7 +128,10 @@ class SquarePlaquette(Plaquette):
 
 class RoundedPlaquette(SquarePlaquette):
     def __init__(
-        self, circuit: ScheduledCircuit, orientation: PlaquetteOrientation
+        self,
+        circuit: ScheduledCircuit,
+        orientation: PlaquetteOrientation,
+        add_unused_qubits: bool = False,
     ) -> None:
         """Represents a rounded QEC plaquette
 
