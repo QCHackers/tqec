@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import numpy
+
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
@@ -193,3 +194,17 @@ class TemplateWithIndices:
 
     template: Template
     indices: list[int]
+
+    def __post_init__(self):
+        if self.template.expected_plaquettes_number != len(self.indices):
+            raise TQECException(
+                f"Creating a {self.__class__.__name__} instance with the template "
+                f"{self.template} (that requires {self.template.expected_plaquettes_number} "
+                f"plaquette indices) and a non-matching number of plaquette indices "
+                f"{self.indices}."
+            )
+        if any(i < 0 for i in self.indices):
+            raise TQECException(
+                "Cannot have negative plaquette indices. Found a negative index "
+                f"in {self.indices}."
+            )
