@@ -1,74 +1,49 @@
 from __future__ import annotations
 
-import typing as ty
-
 import cirq
-from tqec.enums import PlaquetteOrientation
-from tqec.plaquette.plaquette import RoundedPlaquette, SquarePlaquette
+
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.enums import PlaquetteOrientation
+from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.qubit import (
+    PlaquetteQubits,
+    RoundedPlaquetteQubits,
+    SquarePlaquetteQubits,
+)
 
 
-class ZSquareInitialisationPlaquette(SquarePlaquette):
-    def __init__(
-        self, qubits_to_initialise: ty.Sequence[cirq.GridQubit] | None = None
-    ) -> None:
-        if qubits_to_initialise is None:
-            qubits_to_initialise = (
-                SquarePlaquette.get_data_qubits_cirq()
-                + SquarePlaquette.get_syndrome_qubits_cirq()
-            )
+class ZInitialisationPlaquette(Plaquette):
+    def __init__(self, qubits: PlaquetteQubits) -> None:
         circuit = cirq.Circuit(
-            cirq.R(q).with_tags(self._MERGEABLE_TAG) for q in qubits_to_initialise
+            cirq.R(q).with_tags(self._MERGEABLE_TAG) for q in qubits.to_grid_qubit()
         )
-        super().__init__(ScheduledCircuit(circuit))
+        super().__init__(qubits, ScheduledCircuit(circuit))
 
 
-class ZRoundedInitialisationPlaquette(RoundedPlaquette):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        qubits_to_initialise: ty.Sequence[cirq.GridQubit] | None = None,
-    ) -> None:
-        if qubits_to_initialise is None:
-            qubits_to_initialise = (
-                RoundedPlaquette.get_data_qubits_cirq(orientation)
-                + RoundedPlaquette.get_syndrome_qubits_cirq()
-            )
-        circuit = cirq.Circuit(
-            cirq.R(q).with_tags(self._MERGEABLE_TAG) for q in qubits_to_initialise
-        )
-        super().__init__(ScheduledCircuit(circuit), orientation)
+class ZSquareInitialisationPlaquette(ZInitialisationPlaquette):
+    def __init__(self) -> None:
+        super().__init__(SquarePlaquetteQubits())
 
 
-class XSquareInitialisationPlaquette(SquarePlaquette):
-    def __init__(
-        self, qubits_to_initialise: ty.Sequence[cirq.GridQubit] | None = None
-    ) -> None:
-        if qubits_to_initialise is None:
-            qubits_to_initialise = (
-                SquarePlaquette.get_data_qubits_cirq()
-                + SquarePlaquette.get_syndrome_qubits_cirq()
-            )
+class ZRoundedInitialisationPlaquette(ZInitialisationPlaquette):
+    def __init__(self, orientation: PlaquetteOrientation) -> None:
+        super().__init__(RoundedPlaquetteQubits(orientation))
+
+
+class XInitialisationPlaquette(Plaquette):
+    def __init__(self, qubits: PlaquetteQubits) -> None:
         circuit = cirq.Circuit(
             (cirq.R(q).with_tags(self._MERGEABLE_TAG), cirq.H(q))
-            for q in qubits_to_initialise
+            for q in qubits.to_grid_qubit()
         )
-        super().__init__(ScheduledCircuit(circuit))
+        super().__init__(qubits, ScheduledCircuit(circuit))
 
 
-class XRoundedInitialisationPlaquette(RoundedPlaquette):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        qubits_to_initialise: ty.Sequence[cirq.GridQubit] | None = None,
-    ) -> None:
-        if qubits_to_initialise is None:
-            qubits_to_initialise = (
-                RoundedPlaquette.get_data_qubits_cirq(orientation)
-                + RoundedPlaquette.get_syndrome_qubits_cirq()
-            )
-        circuit = cirq.Circuit(
-            (cirq.R(q).with_tags(self._MERGEABLE_TAG), cirq.H(q))
-            for q in qubits_to_initialise
-        )
-        super().__init__(ScheduledCircuit(circuit), orientation)
+class XSquareInitialisationPlaquette(XInitialisationPlaquette):
+    def __init__(self) -> None:
+        super().__init__(SquarePlaquetteQubits())
+
+
+class XRoundedInitialisationPlaquette(XInitialisationPlaquette):
+    def __init__(self, orientation: PlaquetteOrientation) -> None:
+        super().__init__(RoundedPlaquetteQubits(orientation))
