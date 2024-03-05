@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Sequence
 
 import cirq
+
 from tqec.exceptions import TQECException
 
 STIM_TAG = "STIM_OPERATION"

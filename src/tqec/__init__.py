@@ -5,7 +5,12 @@ from . import (
     templates,
 )
 from ._version import __version__
-from .circuit import generate_circuit
+from .circuit import (
+    ScheduledCircuit,
+    ScheduleException,
+    generate_circuit,
+    merge_scheduled_circuits,
+)
 from .enums import (
     CornerPositionEnum,
     PlaquetteOrientation,
@@ -24,10 +29,9 @@ from .noise_models import (
 from .plaquette import (
     Plaquette,
     PlaquetteQubit,
-    RoundedPlaquette,
-    ScheduledCircuit,
-    ScheduleException,
-    SquarePlaquette,
+    PlaquetteQubits,
+    RoundedPlaquetteQubits,
+    SquarePlaquetteQubits,
 )
 from .position import (
     Displacement,

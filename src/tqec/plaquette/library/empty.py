@@ -1,14 +1,25 @@
 import cirq
-from tqec.enums import PlaquetteOrientation
-from tqec.plaquette.plaquette import RoundedPlaquette, SquarePlaquette
+
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.enums import PlaquetteOrientation
+from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.qubit import (
+    PlaquetteQubits,
+    RoundedPlaquetteQubits,
+    SquarePlaquetteQubits,
+)
 
 
-class EmptySquarePlaquette(SquarePlaquette):
+class EmptyPlaquette(Plaquette):
+    def __init__(self, qubits: PlaquetteQubits) -> None:
+        super().__init__(qubits, ScheduledCircuit(cirq.Circuit()))
+
+
+class EmptySquarePlaquette(EmptyPlaquette):
     def __init__(self) -> None:
-        super().__init__(ScheduledCircuit(cirq.Circuit()))
+        super().__init__(SquarePlaquetteQubits())
 
 
-class EmptyRoundedPlaquette(RoundedPlaquette):
+class EmptyRoundedPlaquette(EmptyPlaquette):
     def __init__(self, orientation: PlaquetteOrientation) -> None:
-        super().__init__(ScheduledCircuit(cirq.Circuit()), orientation)
+        super().__init__(RoundedPlaquetteQubits(orientation))
