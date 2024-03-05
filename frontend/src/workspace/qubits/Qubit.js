@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
 
-// const assert = require('assert');
+export const CircuitLabels = Object.freeze({
+  ancilla: 'A',
+  measure: 'M',
+  cx: 'CX',
+  cz: 'CZ'
+});
 
 /**
  * Qubit class
@@ -17,7 +22,6 @@ export default class Qubit extends Graphics {
     radius = 5,
     gridSize = 50,
     color = 'black',
-    qubitType = 'data'
   ) {
     super();
     // UI properties
@@ -33,7 +37,6 @@ export default class Qubit extends Graphics {
     this.maxNeighborDist = 2 * this.gridSize;
     this.neighbors = [];
     this.gridSize = gridSize;
-    this.qubitType = qubitType;
     this.name = `Qubit(${x}, ${y})`;
 
     // Adjacent (degree 1) qubits
@@ -180,5 +183,27 @@ export default class Qubit extends Graphics {
   applyBoundingBoxCoordinates = (x, y) => {
     this.bbX = x;
     this.bbY = y;
+  };
+
+  setCircuitLabel = (label) => {
+    this.label = label;
+    const text = new Text(this.label, {
+      fill: 'white',
+      fontSize: 10
+    });
+    text.anchor.set(0.5);
+    text.position.set(this.globalX, this.globalY - 10);
+    text.visible = false;
+    text.zIndex = 2;
+    this.addChild(text);
+    this.text = text;
+  };
+
+  showLabelText = () => {
+    this.text.visible = true;
+  };
+
+  hideLabelText = () => {
+    this.text.visible = false;
   };
 }

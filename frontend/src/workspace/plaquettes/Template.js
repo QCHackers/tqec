@@ -262,8 +262,12 @@ export default class Template {
       return;
     }
     // Render the plaquette
-    const plaquette = new Plaquette(this.selectedQubits, this.workspace);
-    if (!plaquette.plaquetteMade);
+    const plaquette = new Plaquette(this.selectedQubits, this.workspace, this.app);
+    // Remove seleected qubits from the template qubits, so they can be
+    // selected for circuit construction.
+    this.templateQubits = this.templateQubits.filter(
+      (qubit) => !this.selectedQubits.includes(qubit)
+    );
     // Add the plaquette to the tile container
     this.container.addChild(plaquette);
     // For each qubit, remove the text
