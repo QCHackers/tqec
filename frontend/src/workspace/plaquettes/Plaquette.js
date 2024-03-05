@@ -172,7 +172,7 @@ export default class Plaquette extends Graphics {
         const circuit = createCircuitAsciiArt(dataQubits, ancillaQubit, true, 'cnot');
         this.circuitASCIIRectangle = this.circuitASCIIRect(circuit);
         console.log(circuit);
-        this.workspace.addChild(this.circuitASCIIRectangle);
+        // this.workspace.addChild(this.circuitASCIIRectangle);
       });
     });
   };
