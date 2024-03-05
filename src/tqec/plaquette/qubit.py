@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as ty
 from dataclasses import dataclass
 
@@ -49,6 +51,11 @@ class PlaquetteQubits:
     def to_grid_qubit(self) -> list[cirq.GridQubit]:
         # GridQubit are indexed as (row, col)
         return [q.to_grid_qubit() for q in self]
+
+    def permute_data_qubits(self, permutation: ty.Sequence[int]) -> PlaquetteQubits:
+        return PlaquetteQubits(
+            [self.data_qubits[i] for i in permutation], self.syndrome_qubits
+        )
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):
