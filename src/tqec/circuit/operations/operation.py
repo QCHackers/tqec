@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Sequence
 
 import cirq
+
 from tqec.exceptions import TQECException
 
 STIM_TAG = "STIM_OPERATION"
@@ -59,6 +60,9 @@ class ShiftCoords(cirq.Operation):
     def with_qubits(self, *new_qubits: cirq.Qid) -> "ShiftCoords":
         return self
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}{self._shifts}"
+
 
 @dataclass(frozen=True)
 class RelativeMeasurementData:
@@ -91,6 +95,9 @@ class RelativeMeasurementData:
                 "The relative_measurement_offset should be a negative integer, "
                 f"but got {self.relative_measurement_offset}."
             )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.relative_qubit_positioning}, {self.relative_measurement_offset})"
 
 
 class RelativeMeasurementsRecord(cirq.Operation):
@@ -140,6 +147,9 @@ class RelativeMeasurementsRecord(cirq.Operation):
     def origin(self, new_origin: cirq.GridQubit):
         """The origin of the local coordinate system."""
         self._local_coordinate_system_origin = new_origin
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self._local_coordinate_system_origin}, {self._data})"
 
 
 class Detector(RelativeMeasurementsRecord):

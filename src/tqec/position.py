@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Position:
     """Simple wrapper around tuple[int, int].
 
@@ -15,6 +15,10 @@ class Position:
 
     x: int
     y: int
+
+    def to_grid_qubit(self) -> tuple[int, int]:
+        """Returns the position as a tuple following the cirq.GridQubit coordinate system."""
+        return (self.y, self.x)
 
 
 @dataclass

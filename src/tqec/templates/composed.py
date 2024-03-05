@@ -2,6 +2,7 @@ import typing as ty
 
 import networkx as nx
 import numpy
+
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
@@ -264,8 +265,10 @@ class ComposedTemplate(Template):
 
         Returns:
             a mapping between templates indices and their upper-left corner
-            absolute position.
+            absolute position. This mapping is empty if ``self.is_empty``.
         """
+        if self.is_empty:
+            return {}
         ul_positions: dict[int, Position] = {0: Position(0, 0)}
         src: int
         dest: int
@@ -479,3 +482,7 @@ class ComposedTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return self._maximum_plaquette_mapping_index
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self._templates) == 0

@@ -81,6 +81,16 @@ def test_raw_rectangle_init():
     RawRectangleTemplate([[0]])
 
 
+def test_raw_rectangle_empty_init():
+    with pytest.raises(TQECException):
+        RawRectangleTemplate([[]])
+
+
+def test_raw_rectangle_wrongly_sized_init():
+    with pytest.raises(TQECException):
+        RawRectangleTemplate([[0, 1], [1]])
+
+
 def test_raw_rectangle_larger_init():
     RawRectangleTemplate(
         [
