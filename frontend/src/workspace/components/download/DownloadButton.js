@@ -4,8 +4,6 @@ import Template from '../../plaquettes/Template';
 import config from './config';
 import notification from '../notification';
 
-// const assert = require('assert');
-
 export default class DownloadButton extends Button {
   constructor(
     workspace,

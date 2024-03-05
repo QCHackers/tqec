@@ -11,8 +11,6 @@ import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import DownloadButton from './components/download/DownloadButton';
-// eslint-disable-next-line no-unused-vars
-import Circuit from './circuits/circuit';
 
 export default function TQECApp() {
   // Initialize the app

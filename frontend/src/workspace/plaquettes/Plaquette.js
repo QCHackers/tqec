@@ -1,8 +1,11 @@
 /* eslint-disable no-param-reassign */
-import { Graphics, Container, Color } from 'pixi.js';
+import {
+  Graphics, Container, Color, RoundedRectangle
+} from 'pixi.js';
 import Button from '../components/Button';
 import notification from '../components/notification';
 import { CircuitLabels } from '../qubits/Qubit';
+import createCircuitAsciiArt from './circuit';
 
 export const PlaquetteColors = {
   purple: new Color('purple'),
@@ -23,6 +26,7 @@ export default class Plaquette extends Graphics {
     this.plaquetteMade = false;
     this.name = 'plaquette';
     this.template = template;
+    this.circuitASCII = undefined;
 
     // Control panel properties
     this.controlPanel = new Container();
@@ -71,7 +75,7 @@ export default class Plaquette extends Graphics {
     // Make this plaquette's qubits invisible
     this.qubits.forEach((qubit) => {
       qubit.hideQubitLabels();
-      qubit.zIndex = 2;
+      qubit.zIndex = 1;
     });
 
     this.zIndex = 1; // Make the plaquette appear below of the and labels
@@ -82,8 +86,36 @@ export default class Plaquette extends Graphics {
     this.specifyCircuitButton.on('click', () => {
       notification(this.app, 'Step 1: Specify ancilla qubit');
       app.view.addEventListener('click', this.selectAncillaQubit);
+      this.qubits.forEach((allQubit) => {
+        allQubit.zIndex = 2;
+      });
+      this.workspace.sortChildren();
+    });
+
+    // When the mouse hovers over the plaquette, show the circuit if it exists
+    this.on('mouseover', () => {
+      if (this.circuitASCIIRectangle) {
+        this.circuitASCIIRectangle.visible = true;
+      }
+    });
+    this.on('mouseout', () => {
+      if (this.circuitASCIIRectangle) {
+        this.circuitASCIIRectangle.visible = false;
+      }
     });
   }
+
+  circuitASCIIRect = (str) => {
+    const canvasRect = this.app.view.getBoundingClientRect();
+    // Add rectangle to top right of the canvas
+    const x = canvasRect.right - 200;
+    const y = canvasRect.top;
+    const width = 200;
+    const height = 200;
+    const rectangle = new RoundedRectangle(x, y, width, height);
+    rectangle.label = str;
+    return rectangle;
+  };
 
   getRelativeXY = (e) => {
     const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
@@ -94,14 +126,13 @@ export default class Plaquette extends Graphics {
   };
 
   getQubit = (relativeX, relativeY) => this.qubits.find(
-  // Find the qubit that was clicked
     (q) => q.checkHitArea(relativeX, relativeY)
   );
 
   selectAncillaQubit = (e) => {
     const { relativeX, relativeY } = this.getRelativeXY(e);
     const qubit = this.getQubit(relativeX, relativeY);
-    if (!qubit && !(qubit?.isQubit)) return;
+    if (!qubit) return;
     qubit.setCircuitLabel(CircuitLabels.ancilla);
     qubit.showLabelText();
     this.app.view.removeEventListener('click', this.selectAncillaQubit);
@@ -112,9 +143,7 @@ export default class Plaquette extends Graphics {
   selectMeasureQubit = (e) => {
     const { relativeX, relativeY } = this.getRelativeXY(e);
     const qubit = this.getQubit(relativeX, relativeY);
-    if (qubit) return;
-    const ancilla = this.qubits.find((q) => q.label === CircuitLabels.ancilla);
-    ancilla.hideLabelText();
+    if (!qubit) return;
     qubit.setCircuitLabel(CircuitLabels.measure);
     qubit.showLabelText();
     this.app.view.removeEventListener('click', this.selectMeasureQubit);
@@ -128,9 +157,22 @@ export default class Plaquette extends Graphics {
       notification(this.app, 'Step 4: Specify CZ qubits');
       this.app.view.addEventListener('click', this.selectCZQubit);
       this.czDoneButton = new Button('CZ Done', 200, 125, 'black');
+      this.controlPanel.addChild(this.czDoneButton);
       this.czDoneButton.on('click', () => {
+        this.controlPanel.removeChild(this.czDoneButton);
         this.app.view.removeEventListener('click', this.selectCZQubit);
         this.controlPanel.removeChild(this.DoneButton);
+        this.qubits.forEach((allQubit) => {
+          allQubit.hideQubitLabels();
+        });
+        const dataQubits = this.qubits.filter(
+          (_qubit) => _qubit.label === CircuitLabels.cx || _qubit.label === CircuitLabels.cz
+        );
+        const ancillaQubit = this.qubits.find((_qubit) => _qubit.label === CircuitLabels.ancilla);
+        const circuit = createCircuitAsciiArt(dataQubits, ancillaQubit, true, 'cnot');
+        this.circuitASCIIRectangle = this.circuitASCIIRect(circuit);
+        console.log(circuit);
+        this.workspace.addChild(this.circuitASCIIRectangle);
       });
     });
   };

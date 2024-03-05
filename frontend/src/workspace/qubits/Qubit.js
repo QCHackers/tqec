@@ -202,8 +202,4 @@ export default class Qubit extends Graphics {
   showLabelText = () => {
     this.text.visible = true;
   };
-
-  hideLabelText = () => {
-    this.text.visible = false;
-  };
 }
