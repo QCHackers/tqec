@@ -59,7 +59,6 @@ export default class Grid extends Graphics {
   contains = (qubits) => {
     const minX = Math.min(...this.visibleUnits().map((unit) => unit.x));
     const minY = Math.min(...this.visibleUnits().map((unit) => unit.y));
-    console.log('Min x, min y', minX, minY);
     const unitXs = new Set(this.visibleUnits().map((unit) => [unit.x, unit.x + this.gridSize]).flat());
     const unitYs = new Set(this.visibleUnits().map((unit) => [unit.y, unit.y + this.gridSize]).flat());
     for (const qubit of qubits) {
