@@ -11,19 +11,21 @@ import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import DownloadButton from './components/download/DownloadButton';
+import store from './store';
 
-export default function TQECApp() {
-  // Initialize the app
+/**
+ * Defines how the app behaves (button and feature placement) upon initialization
+ * @returns {void}
+ */
+export default function InitializeControlFlow() {
   const app = useApp();
-  // Remove all children from the stage to avoid rendering issues
-  app.stage.removeChildren();
+  app.stage.removeChildren(); // avoid rendering issues
   const gridSize = 50;
-  // Let's create the workspace
   const workspace = new Container();
   workspace.name = 'workspace';
-  // Create the grid container
   const grid = new Grid(gridSize, workspace, app);
-
+  // Add qubits from redux store
+  // const storedUnitCell = store.getState().unitCell;
   workspace.addChild(grid);
   grid.units.forEach((row) => {
     row.forEach((unit) => {
@@ -96,6 +98,9 @@ export default function TQECApp() {
     workspace.addChild(saveQubitConstellationButton);
     app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
+
+  // TODO: Check the redux store for qubits and add them to the workspace
+  // If there are none, instead offer to create a constellation.
   workspace.addChild(createQubitConstellationButton);
 
   saveQubitConstellationButton.on('click', () => {
@@ -138,10 +143,17 @@ export default function TQECApp() {
           });
         });
 
+        // Commit unit cell to redux store
+        store.dispatch({
+          type: 'SET_UNIT_CELL',
+          payload: {
+            qubits: lattice.constellation.map((q) => q.serialized()),
+            gridSquares: grid.visibleUnits().map((u) => u.serialized())
+          },
+        });
+
         // Add qubits to the workspace
-        // eslint-disable-next-line max-len
         for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
-          // eslint-disable-next-line max-len
           for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
             for (const qubit of lattice.constellation) {
               const newQubit = new Qubit(

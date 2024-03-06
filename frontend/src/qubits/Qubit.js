@@ -47,6 +47,15 @@ export default class Qubit extends Graphics {
 
   toString = () => this.name;
 
+  serialized = () => ({
+    x: this.globalX,
+    y: this.globalY,
+    radius: this.radius,
+    gridSize: this.gridSize,
+    color: this.color,
+    qubitType: this.qubitType
+  });
+
   onPointerOver = () => {
     this.alpha = 0.5;
   };
