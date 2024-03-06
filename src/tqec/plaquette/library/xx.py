@@ -1,180 +1,22 @@
-import cirq
-from tqec.detectors.operation import make_detector
+from __future__ import annotations
+
 from tqec.enums import PlaquetteOrientation
-from tqec.plaquette.plaquette import PlaquetteList, RoundedPlaquette
-from tqec.plaquette.schedule import ScheduledCircuit
-from tqec.position import Shape2D
+from tqec.plaquette.library.pauli import PauliMemoryPlaquette
+from tqec.plaquette.qubit import RoundedPlaquetteQubits
 
 
-class BaseXXPlaquette(RoundedPlaquette):
-    def __init__(
-        self, circuit: ScheduledCircuit, orientation: PlaquetteOrientation
-    ) -> None:
-        super().__init__(circuit, orientation)
-
-    @property
-    def shape(self) -> Shape2D:
-        # Hack to check the pre-condition that all Plaquette instances should
-        # have the same shape.
-        return Shape2D(3, 3)
-
-
-class XXInitialisationPlaquette(BaseXXPlaquette):
+class XXMemoryPlaquette(PauliMemoryPlaquette):
     def __init__(
         self,
         orientation: PlaquetteOrientation,
         schedule: list[int],
         include_detector: bool = True,
-    ):
-        (syndrome_qubit,) = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()
-        ]
-        data_qubits = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
-        ]
-        detector = (
-            [
-                cirq.Moment(
-                    make_detector(
-                        syndrome_qubit,
-                        [(cirq.GridQubit(0, 0), -1)],
-                        time_coordinate=0,
-                    )
-                ),
-            ]
-            if include_detector
-            else []
-        )
-        super().__init__(
-            circuit=ScheduledCircuit(
-                cirq.Circuit(
-                    [
-                        cirq.Moment(
-                            cirq.R(q).with_tags(self._MERGEABLE_TAG)
-                            for q in [syndrome_qubit, *data_qubits]
-                        ),
-                        cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
-                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
-                        cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment([cirq.M(syndrome_qubit)]),
-                    ]
-                    + detector
-                ),
-                schedule,
-            ),
-            orientation=orientation,
-        )
-
-
-class XXMemoryPlaquette(BaseXXPlaquette):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        schedule: list[int],
-        include_detector=True,
-    ):
-        (syndrome_qubit,) = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()
-        ]
-        data_qubits = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
-        ]
-        detector = (
-            [
-                cirq.Moment(
-                    make_detector(
-                        syndrome_qubit,
-                        [
-                            (cirq.GridQubit(0, 0), -1),
-                            (cirq.GridQubit(0, 0), -2),
-                        ],
-                        time_coordinate=0,
-                    )
-                ),
-            ]
-            if include_detector
-            else []
-        )
-        super().__init__(
-            circuit=ScheduledCircuit(
-                cirq.Circuit(
-                    [
-                        cirq.Moment(
-                            cirq.R(q).with_tags(self._MERGEABLE_TAG)
-                            for q in [syndrome_qubit]
-                        ),
-                        cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[0])),
-                        cirq.Moment(cirq.CX(syndrome_qubit, data_qubits[1])),
-                        cirq.Moment(cirq.H(syndrome_qubit)),
-                        cirq.Moment(cirq.M(syndrome_qubit)),
-                    ]
-                    + detector
-                ),
-                schedule,
-            ),
-            orientation=orientation,
-        )
-
-
-class XXFinalMeasurementPlaquette(BaseXXPlaquette):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        include_detector: bool = True,
-    ):
-        (syndrome_qubit,) = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_syndrome_qubits()
-        ]
-        data_qubits = [
-            q.to_grid_qubit() for q in RoundedPlaquette.get_data_qubits(orientation)
-        ]
-        detector = (
-            [
-                cirq.Moment(
-                    make_detector(
-                        syndrome_qubit,
-                        [
-                            (cirq.GridQubit(0, 0), -1),
-                            *[(dq - syndrome_qubit, -1) for dq in data_qubits],
-                        ],
-                        time_coordinate=1,
-                    )
-                )
-            ]
-            if include_detector
-            else []
-        )
-        super().__init__(
-            circuit=ScheduledCircuit(
-                cirq.Circuit(
-                    [
-                        cirq.Moment(
-                            [
-                                cirq.M(q).with_tags(self._MERGEABLE_TAG)
-                                for q in data_qubits
-                            ]
-                        ),
-                    ]
-                    + detector
-                ),
-            ),
-            orientation=orientation,
-        )
-
-
-class XXPlaquetteList(PlaquetteList):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        schedule: list[int],
-        include_detector: bool = True,
+        is_first_round: bool = False,
     ):
         super().__init__(
-            [
-                XXInitialisationPlaquette(orientation, schedule, include_detector),
-                XXMemoryPlaquette(orientation, schedule),
-                XXFinalMeasurementPlaquette(orientation, include_detector),
-            ]
+            RoundedPlaquetteQubits(orientation),
+            "XX",
+            schedule,
+            include_detector,
+            is_first_round,
         )

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import typing as ty
 from copy import deepcopy
 
 import cirq
+
+from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.position import Displacement
 from tqec.templates.base import Template
 
@@ -33,21 +35,27 @@ def generate_circuit(
             we want to implement.
         plaquettes: description of the computation that should happen at
             different time-slices of the quantum error correction experiment (or
-            at least part of it).
+            at least part of it). If provided as a dictionary, plaquettes should be
+            1-indexed (i.e., ``0 not in plaquettes`` should be ``True``).
 
     Returns:
         a cirq.Circuit instance implementing the (part of) quantum error
         correction experiment represented by the provided inputs.
 
     Raises:
-        TQECException: if the provided plaquettes do not match the expected
-            number of plaquettes for the given template.
+        TQECException: if ``len(plaquettes) != template.expected_plaquettes_number`` or
+            if plaquettes is provided as a dicitonary and ``0 in plaquettes``.
     """
     # Check that the user gave enough plaquettes.
     if len(plaquettes) != template.expected_plaquettes_number:
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
             f"{template.expected_plaquettes_number} were expected."
+        )
+    if isinstance(plaquettes, ty.Mapping) and 0 in plaquettes:
+        raise TQECException(
+            "If using a dictionary, the input plaquettes parameter should not "
+            f"contain the entry 0. Found a value ({plaquettes[0]}) at entry 0."
         )
 
     # If plaquettes are given as a list, make that a dict to simplify the following operations

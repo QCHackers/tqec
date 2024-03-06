@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import numpy
+
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
@@ -81,7 +82,9 @@ class Template(JSONEncodable):
             default_x_increment, default_y_increment
         )
 
-    def _check_plaquette_number(self, plaquette_indices: ty.Sequence[int]) -> None:
+    def _check_plaquette_number(
+        self, plaquette_indices: ty.Sequence[int], expected_plaquettes_number: int
+    ) -> None:
         """Checks the number of provided plaquettes.
 
         This method should be called to check that the number of plaquette indices
@@ -89,15 +92,16 @@ class Template(JSONEncodable):
 
         Args:
             plaquette_indices: the indices provided to the ``instantiate`` method.
-
+            expected_plaquettes_number: the number of plaquettes expected in
+                ``plaquette_indices``.
         Raises:
             TQECError: when there is not enough plaquette indices to instantiate
                 the ``Template`` instance.
         """
-        if len(plaquette_indices) < self.expected_plaquettes_number:
+        if len(plaquette_indices) < expected_plaquettes_number:
             raise TQECException(
                 f"{self.__class__.__name__}.instanciate needs "
-                f"{self.expected_plaquettes_number} plaquettes, but only "
+                f"{expected_plaquettes_number} plaquettes, but only "
                 f"{len(plaquette_indices)} were provided."
             )
 
@@ -190,3 +194,17 @@ class TemplateWithIndices:
 
     template: Template
     indices: list[int]
+
+    def __post_init__(self):
+        if self.template.expected_plaquettes_number != len(self.indices):
+            raise TQECException(
+                f"Creating a {self.__class__.__name__} instance with the template "
+                f"{self.template} (that requires {self.template.expected_plaquettes_number} "
+                f"plaquette indices) and a non-matching number of plaquette indices "
+                f"{self.indices}."
+            )
+        if any(i < 0 for i in self.indices):
+            raise TQECException(
+                "Cannot have negative plaquette indices. Found a negative index "
+                f"in {self.indices}."
+            )

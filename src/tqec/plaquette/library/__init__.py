@@ -1,28 +1,12 @@
-from .xx import (
-    BaseXXPlaquette,
-    XXFinalMeasurementPlaquette,
-    XXInitialisationPlaquette,
-    XXMemoryPlaquette,
-    XXPlaquetteList,
+from .empty import EmptyRoundedPlaquette, EmptySquarePlaquette
+from .initialisation import (
+    XRoundedInitialisationPlaquette,
+    XSquareInitialisationPlaquette,
+    ZRoundedInitialisationPlaquette,
+    ZSquareInitialisationPlaquette,
 )
-from .xxxx import (
-    BaseXXXXPlaquette,
-    XXXXFinalMeasurementPlaquette,
-    XXXXInitialisationPlaquette,
-    XXXXMemoryPlaquette,
-    XXXXPlaquetteList,
-)
-from .zz import (
-    BaseZZPlaquette,
-    ZZFinalMeasurementPlaquette,
-    ZZInitialisationPlaquette,
-    ZZMemoryPlaquette,
-    ZZPlaquetteList,
-)
-from .zzzz import (
-    BaseZZZZPlaquette,
-    ZZZZFinalMeasurementPlaquette,
-    ZZZZInitialisationPlaquette,
-    ZZZZMemoryPlaquette,
-    ZZZZPlaquetteList,
-)
+from .measurement import MeasurementRoundedPlaquette, MeasurementSquarePlaquette
+from .xx import XXMemoryPlaquette
+from .xxxx import XXXXMemoryPlaquette
+from .zz import ZZMemoryPlaquette
+from .zzzz import ZZZZMemoryPlaquette

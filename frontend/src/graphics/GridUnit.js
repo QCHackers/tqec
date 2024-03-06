@@ -50,7 +50,6 @@ export default class GridUnit extends Graphics {
     }
     // Check whether the click was within the bounds of the grid unit
     if (relativeX === this.x && relativeY === this.y) {
-      console.log('Toggling visibility of ', this.name);
       this.visible = !this.visible;
     }
   };

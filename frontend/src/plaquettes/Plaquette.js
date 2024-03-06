@@ -1,16 +1,23 @@
 /* eslint-disable no-param-reassign */
-import { Graphics, Container, Color } from 'pixi.js';
+import {
+  Graphics, Container, Color, RoundedRectangle
+} from 'pixi.js';
 import Button from '../components/Button';
+import notification from '../components/notification';
+import { CircuitLabels } from '../qubits/Qubit';
+import createCircuitAsciiArt from './circuit';
 
 export const PlaquetteColors = {
   purple: new Color('purple'),
   yellow: new Color('yellow'),
 };
+
 export default class Plaquette extends Graphics {
-  constructor(qubits, workspace, color = PlaquetteColors.purple) {
+  constructor(qubits, workspace, app, template, color = PlaquetteColors.purple) {
     super();
     // UI properties
     this.workspace = workspace;
+    this.app = app;
     this.color = color;
     this.gridSize = workspace.gridSize;
     this.gridOffsetX = this.gridSize;
@@ -18,6 +25,8 @@ export default class Plaquette extends Graphics {
     this.isDragging = false;
     this.plaquetteMade = false;
     this.name = 'plaquette';
+    this.template = template;
+    this.circuitASCII = undefined;
 
     // Control panel properties
     this.controlPanel = new Container();
@@ -53,7 +62,7 @@ export default class Plaquette extends Graphics {
     this.initializeNewButton(this.newButtonLeft, 'new_button_left');
     this.initializeNewButton(this.newButtonBottom, 'new_button_bottom');
 
-    this.makeRotatable(); // Add the rotate button to screen
+    // this.makeRotatable(); // Add the rotate button to screen
     this.initializeClearButton(); // Add the clearbutton to the screen
     this.changeColorButton(); // Add the change color button to the screen
 
@@ -66,8 +75,123 @@ export default class Plaquette extends Graphics {
     // Make this plaquette's qubits invisible
     this.qubits.forEach((qubit) => {
       qubit.hideQubitLabels();
+      qubit.zIndex = 1;
+    });
+
+    this.zIndex = 1; // Make the plaquette appear below of the and labels
+
+    // Specify circuit button
+    this.specifyCircuitButton = new Button('Specify canonical circuit', 200, 725, 'black');
+    this.controlPanel.addChild(this.specifyCircuitButton);
+    this.specifyCircuitButton.on('click', () => {
+      notification(this.app, 'Step 1: Specify ancilla qubit');
+      app.view.addEventListener('click', this.selectAncillaQubit);
+      this.qubits.forEach((allQubit) => {
+        allQubit.zIndex = 2;
+      });
+      this.workspace.sortChildren();
+    });
+
+    // When the mouse hovers over the plaquette, show the circuit if it exists
+    this.on('mouseover', () => {
+      if (this.circuitASCIIRectangle) {
+        this.circuitASCIIRectangle.visible = true;
+      }
+    });
+    this.on('mouseout', () => {
+      if (this.circuitASCIIRectangle) {
+        this.circuitASCIIRectangle.visible = false;
+      }
     });
   }
+
+  circuitASCIIRect = (str) => {
+    const canvasRect = this.app.view.getBoundingClientRect();
+    // Add rectangle to top right of the canvas
+    const x = canvasRect.right - 200;
+    const y = canvasRect.top;
+    const width = 200;
+    const height = 200;
+    const rectangle = new RoundedRectangle(x, y, width, height);
+    rectangle.label = str;
+    return rectangle;
+  };
+
+  getRelativeXY = (e) => {
+    const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+    // Calculate the relative click position within the canvas
+    const relativeX = e.clientX - canvasRect.left;
+    const relativeY = e.clientY - canvasRect.top;
+    return { relativeX, relativeY };
+  };
+
+  getQubit = (relativeX, relativeY) => this.qubits.find(
+    (q) => q.checkHitArea(relativeX, relativeY)
+  );
+
+  selectAncillaQubit = (e) => {
+    const { relativeX, relativeY } = this.getRelativeXY(e);
+    const qubit = this.getQubit(relativeX, relativeY);
+    if (!qubit) return;
+    qubit.setCircuitLabel(CircuitLabels.ancilla);
+    qubit.showLabelText();
+    this.app.view.removeEventListener('click', this.selectAncillaQubit);
+    notification(this.app, 'Step 2: Specify measure qubit');
+    this.app.view.addEventListener('click', this.selectMeasureQubit);
+  };
+
+  selectMeasureQubit = (e) => {
+    const { relativeX, relativeY } = this.getRelativeXY(e);
+    const qubit = this.getQubit(relativeX, relativeY);
+    if (!qubit) return;
+    qubit.setCircuitLabel(CircuitLabels.measure);
+    qubit.showLabelText();
+    this.app.view.removeEventListener('click', this.selectMeasureQubit);
+    notification(this.app, 'Step 3: Specify CX qubits');
+    this.app.view.addEventListener('click', this.selectCXQubit);
+    this.cxDoneButton = new Button('CX Done', 200, 125, 'black');
+    this.controlPanel.addChild(this.cxDoneButton);
+    this.cxDoneButton.on('click', () => {
+      this.controlPanel.removeChild(this.cxDoneButton);
+      this.app.view.removeEventListener('click', this.selectCXQubit);
+      notification(this.app, 'Step 4: Specify CZ qubits');
+      this.app.view.addEventListener('click', this.selectCZQubit);
+      this.czDoneButton = new Button('CZ Done', 200, 125, 'black');
+      this.controlPanel.addChild(this.czDoneButton);
+      this.czDoneButton.on('click', () => {
+        this.controlPanel.removeChild(this.czDoneButton);
+        this.app.view.removeEventListener('click', this.selectCZQubit);
+        this.controlPanel.removeChild(this.DoneButton);
+        this.qubits.forEach((allQubit) => {
+          allQubit.hideQubitLabels();
+        });
+        const dataQubits = this.qubits.filter(
+          (_qubit) => _qubit.label === CircuitLabels.cx || _qubit.label === CircuitLabels.cz
+        );
+        const ancillaQubit = this.qubits.find((_qubit) => _qubit.label === CircuitLabels.ancilla);
+        const circuit = createCircuitAsciiArt(dataQubits, ancillaQubit, true, 'cnot');
+        this.circuitASCIIRectangle = this.circuitASCIIRect(circuit);
+        console.log(circuit);
+        // this.workspace.addChild(this.circuitASCIIRectangle);
+      });
+    });
+  };
+
+  selectCXQubit = (e) => {
+    const { relativeX, relativeY } = this.getRelativeXY(e);
+    const qubit = this.getQubit(relativeX, relativeY);
+    if (!qubit) return;
+    qubit.setCircuitLabel(CircuitLabels.cx);
+    qubit.showLabelText();
+  };
+
+  selectCZQubit = (e) => {
+    const { relativeX, relativeY } = this.getRelativeXY(e);
+    const qubit = this.getQubit(relativeX, relativeY);
+    if (!qubit) return;
+    qubit.setCircuitLabel(CircuitLabels.cz);
+    qubit.showLabelText();
+  };
 
   // Get the leftmost qubit
   mostLeftQubit = () => this.qubitStack.toSorted((a, b) => a.globalX - b.globalX)[0];
@@ -82,7 +206,7 @@ export default class Plaquette extends Graphics {
   mostBottomQubit = () => this.qubitStack.toSorted((a, b) => b.globalY - a.globalY)[0];
 
   calculatePlaquetteCenter = () => {
-    // Get the geometric center of the plaquette
+  // Get the geometric center of the plaquette
     if (this.qubitStack.length === 0) {
       return { x: 0, y: 0 }; // Return the center of an empty polygon as (0, 0).
     }
@@ -102,16 +226,16 @@ export default class Plaquette extends Graphics {
   };
 
   // Function to snap coordinates to the grid
-  snapToGrid(x, y) {
+  snapToGrid = (x, y) => {
     const snappedX = Math.round((x - this.gridOffsetX) / this.gridSize) * this.gridSize
       + this.gridOffsetX;
     const snappedY = Math.round((y - this.gridOffsetY) / this.gridSize) * this.gridSize
       + this.gridOffsetY;
     return { x: snappedX, y: snappedY };
-  }
+  };
 
   createConvexHull = () => {
-    // Create a convex hull using grahams scan credit: https://en.wikipedia.org/wiki/Graham_scan
+  // Create a convex hull using grahams scan credit: https://en.wikipedia.org/wiki/Graham_scan
     const qubitStack = [];
     // Sort the qubits by the leftmost qubit
     const sortedQubits = this.qubits.toSorted((a, b) => a.globalX - b.globalX);
@@ -127,7 +251,7 @@ export default class Plaquette extends Graphics {
 
     // Sort points by polar angle with respect to lowestYQubit
     let sortedPoints = sortedQubits.toSorted((a, b) => {
-      // Calculate the polar angle
+    // Calculate the polar angle
       const polarAngleA = Math.atan2(
         a.globalY - lowestYQubit.globalY,
         a.globalX - lowestYQubit.globalX,
@@ -154,7 +278,7 @@ export default class Plaquette extends Graphics {
     });
 
     sortedPoints = sortedPoints.filter((qubit) => {
-      // If the qubit is the lowestYQubit, then keep it
+    // If the qubit is the lowestYQubit, then keep it
       if (qubit === lowestYQubit) return qubit;
       // Get the qubits that have the same polar angle
       const samepQubits = sortedPoints.filter((q) => q.pAngle === qubit.pAngle);
@@ -166,8 +290,8 @@ export default class Plaquette extends Graphics {
 
     // Create the stack of qubits which contains the convex hull
     sortedPoints.forEach((qubit) => {
-      // Remove qubits from the stack if the angle formed by points next-to-top, top,
-      // and qubit is not counterclockwise
+    // Remove qubits from the stack if the angle formed by points next-to-top, top,
+    // and qubit is not counterclockwise
       while (
         qubitStack.length > 1
         && this.ccw(
@@ -200,7 +324,7 @@ export default class Plaquette extends Graphics {
 
   // eslint-disable-next-line class-methods-use-this
   ccw = (p, q, r) => {
-    // Check if the points are counterclockwise or collinear
+  // Check if the points are counterclockwise or collinear
     const v1 = { x: q.globalX - p.globalX, y: q.globalY - p.globalY };
     const v2 = { x: r.globalX - q.globalX, y: r.globalY - q.globalY };
     // Take the cross product.
@@ -210,8 +334,8 @@ export default class Plaquette extends Graphics {
   };
 
   populatePlaquetteShapeAndInteractionFields = () => {
-    // The graphic should connect the points from the qubits
-    // Create a convex hull
+  // The graphic should connect the points from the qubits
+  // Create a convex hull
     this.createConvexHull();
     const { x, y } = this.calculatePlaquetteCenter();
     // Set the position and pivot of the plaquette
@@ -226,17 +350,17 @@ export default class Plaquette extends Graphics {
   };
 
   makeExtensible = () => {
-    // Make the plaquette extensible
+  // Make the plaquette extensible
     this.buttonMode = true;
     this.on('pointerdown', this.onDragStart);
     this.on('pointermove', this.onDragMove);
     this.on('pointerup', this.onDragEnd);
   };
 
-  onDragStart(event) {
+  onDragStart = (event) => {
     this.isDragging = true;
     this.initialPosition = event.data.getLocalPosition(this.parent);
-  }
+  };
 
   onDragMove = (event) => {
     if (!this.isDragging) {
@@ -256,11 +380,11 @@ export default class Plaquette extends Graphics {
     const threshold = this.gridSize * scaleFactor;
     // If the cursor is moved meaningfully, check which direction to copy to
     if (Math.abs(deltaX) >= threshold || Math.abs(deltaY) >= threshold) {
-      // Check which direction the plaquette is being dragged
+    // Check which direction the plaquette is being dragged
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Dragging horizontally
+      // Dragging horizontally
         if (deltaX > 0) {
-          // Moving to the right
+        // Moving to the right
           shiftQ = this.mostRightQubit();
           // Find the neighboring qubit that is closest to the right
           const newrq = shiftQ.neighbors.find(
@@ -269,8 +393,8 @@ export default class Plaquette extends Graphics {
 
           diff = newrq.globalX - shiftQ.globalX;
         } else {
-          // Moving to the left
-          // Generate the qubits that are closest to the left
+        // Moving to the left
+        // Generate the qubits that are closest to the left
           shiftQ = this.mostLeftQubit();
           // Find the neighboring qubit that is closest to the left
           const newlq = shiftQ.neighbors.find(
@@ -281,14 +405,14 @@ export default class Plaquette extends Graphics {
         // Shift the qubits by the difference
         this.qubits.forEach((qubit) => {
           const shiftedQubit = qubit.neighbors.find(
-            // eslint-disable-next-line no-loop-func
+          // eslint-disable-next-line no-loop-func
             (q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY,
           );
           newQubits.push(shiftedQubit);
         });
       } else {
         if (deltaY > 0) {
-          // Generate the qubits that are closest to the top
+        // Generate the qubits that are closest to the top
           shiftQ = this.mostTopQubit();
           // Find the neighboring qubit that is closest to the top
           const newtq = shiftQ.neighbors.find(
@@ -297,7 +421,7 @@ export default class Plaquette extends Graphics {
 
           diff = newtq.globalY - shiftQ.globalY;
         } else {
-          // Generate the qubits that are closest to the bottom
+        // Generate the qubits that are closest to the bottom
           shiftQ = this.mostBottomQubit();
           // Find the neighboring qubit that is closest to the bottom
           const newbq = shiftQ.neighbors.find(
@@ -318,31 +442,31 @@ export default class Plaquette extends Graphics {
     }
   };
 
-  createNewPlaquette(newQubits) {
+  createNewPlaquette = (newQubits) => {
     const newColor = this.color === PlaquetteColors.purple
       ? PlaquetteColors.yellow
       : PlaquetteColors.purple;
-    const newPlaquette = new Plaquette(newQubits, this.workspace, newColor);
+    const newPlaquette = new Plaquette(newQubits, this.workspace, this.app, newColor);
     return newPlaquette;
-  }
+  };
 
-  changePlaquetteColor(newColor) {
+  changePlaquetteColor = (newColor) => {
     this.color = newColor;
     // Update the color of the convex hull shape.
     this.clear();
     this.populatePlaquetteShapeAndInteractionFields();
-  }
+  };
 
-  onDragEnd() {
+  onDragEnd = () => {
     this.isDragging = false;
     this.initialPosition = null;
-  }
+  };
 
   toggleCtrlButtons = () => {
     this.on('click', () => {
       const currentTime = Date.now();
       if (currentTime - this.lastClickTime < 300) {
-        // Tell the workspace that the current control panel should be this one.
+      // Tell the workspace that the current control panel should be this one.
         this.workspace.updateSelectedPlaquette(this);
       }
       this.lastClickTime = currentTime;
@@ -350,9 +474,9 @@ export default class Plaquette extends Graphics {
   };
 
   makeRotatable = () => {
-    // Rotate the plaquette by 90 degrees. Still needs to make sure it maps to qubits on grid
+  // Rotate the plaquette by 90 degrees. Still needs to make sure it maps to qubits on grid
     this.rotateButton.on('click', () => {
-      // Rotate the plaquette
+    // Rotate the plaquette
       this.rotation += Math.PI / 2; // Rotate 90 degrees
     });
     this.rotateButton.name = 'rotate_button';
@@ -362,7 +486,7 @@ export default class Plaquette extends Graphics {
 
   changeColorButton = () => {
     this.colorButton.on('click', () => {
-      // Change the color of the plaquette
+    // Change the color of the plaquette
       if (this.color === PlaquetteColors.purple) {
         this.changePlaquetteColor(PlaquetteColors.yellow);
       } else {
@@ -433,7 +557,7 @@ export default class Plaquette extends Graphics {
     // eslint-disable-next-line no-restricted-syntax
     for (const qubit of this.qubits) {
       const shiftedQubit = qubit.neighbors.find(
-        // eslint-disable-next-line no-loop-func
+      // eslint-disable-next-line no-loop-func
         (q) => q.globalX === qubit.globalX + diff && q.globalY === qubit.globalY,
       );
       newQubits.push(shiftedQubit);
@@ -442,7 +566,7 @@ export default class Plaquette extends Graphics {
   };
 
   clonedBottomQubits = () => {
-    // Generate the qubits that are closest to the top
+  // Generate the qubits that are closest to the top
     const newQubits = [];
     const shiftQ = this.mostTopQubit();
     // Find the neighboring qubit that is closest to the top
