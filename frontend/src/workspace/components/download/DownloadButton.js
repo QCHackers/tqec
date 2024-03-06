@@ -42,10 +42,6 @@ export default class DownloadButton extends Button {
             .toSorted((a, b) => a.globalX - b.globalX) // leftmost qubits
             .toSorted((a, b) => a.globalY - b.globalY)[0]; // topmost qubit
           plaquette.qubits.forEach((qubit) => {
-            // assert(
-            //   qubit.qubitType === 'data' || qubit.qubitType === 'syndrome',
-            //   "Qubit type must be either 'data' or 'syndrome'",
-            // );
             marshalledPlaquette.qubits.push({
               x:
                 (originQubit.globalX - qubit.globalX) / this.workspace.gridSize,
