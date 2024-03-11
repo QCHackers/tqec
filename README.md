@@ -1,8 +1,12 @@
+
 # tqec
 
 [![Unitary Fund](https://img.shields.io/badge/Supported%20By-UNITARY%20FUND-brightgreen.svg?style=for-the-badge)](https://unitary.fund)
 
 Design automation software tools for Topological Quantum Error Correction
+
+![ezgif-4-8bc47d2444](https://github.com/QCHackers/tqec/assets/16883876/649494f0-6150-447f-a593-7429a4ae23c1)
+
 
 ## Installation
 ### Backend (Python package)
