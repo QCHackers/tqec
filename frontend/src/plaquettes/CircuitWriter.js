@@ -28,6 +28,11 @@ const FMT_STR = '%10s';
  *    - Hadamard on the ancilla qubit
  *    - both CNOT and CZ as 2q gates
  *    - every CNOT/CZ is controlled by the ancilla and targets a data qubit
+ * @function createCircuitAsciiArt
+ * @param {Array} data_qubits - The data qubits.
+ * @param {Object} anc_qubit - The ancilla qubit.
+ * @param {boolean} [withTime=false] 
+ * @param {CircuitForm} [inputForm=CircuitForm.UNIV]
  */
 export function createCircuitAsciiArt(
   data_qubits,
