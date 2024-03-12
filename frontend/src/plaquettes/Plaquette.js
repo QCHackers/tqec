@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
 import {
   Graphics, Container, Color, RoundedRectangle
@@ -5,12 +6,12 @@ import {
 import Button from '../components/Button';
 import notification from '../components/notification';
 import { CircuitLabels } from '../qubits/Qubit';
-import createCircuitAsciiArt from './circuit';
+import { createCircuitAsciiArt, CircuitForm } from './CircuitWriter';
 
-export const PlaquetteColors = {
+export const PlaquetteColors = Object.freeze({
   purple: new Color('purple'),
   yellow: new Color('yellow'),
-};
+});
 
 export default class Plaquette extends Graphics {
   constructor(qubits, workspace, app, template, color = PlaquetteColors.purple) {
@@ -84,7 +85,7 @@ export default class Plaquette extends Graphics {
     this.specifyCircuitButton = new Button('Specify canonical circuit', 200, 725, 'black');
     this.controlPanel.addChild(this.specifyCircuitButton);
     this.specifyCircuitButton.on('click', () => {
-      notification(this.app, 'Step 1: Specify ancilla qubit');
+      notification(this.app, 'Step 1: Specify ancilla/measure qubit');
       app.view.addEventListener('click', this.selectAncillaQubit);
       this.qubits.forEach((allQubit) => {
         allQubit.zIndex = 2;
@@ -132,29 +133,20 @@ export default class Plaquette extends Graphics {
   selectAncillaQubit = (e) => {
     const { relativeX, relativeY } = this.getRelativeXY(e);
     const qubit = this.getQubit(relativeX, relativeY);
-    if (!qubit) return;
+    if (!qubit) {
+      return;
+    }
     qubit.setCircuitLabel(CircuitLabels.ancilla);
     qubit.showLabelText();
     this.app.view.removeEventListener('click', this.selectAncillaQubit);
-    notification(this.app, 'Step 2: Specify measure qubit');
-    this.app.view.addEventListener('click', this.selectMeasureQubit);
-  };
-
-  selectMeasureQubit = (e) => {
-    const { relativeX, relativeY } = this.getRelativeXY(e);
-    const qubit = this.getQubit(relativeX, relativeY);
-    if (!qubit) return;
-    qubit.setCircuitLabel(CircuitLabels.measure);
-    qubit.showLabelText();
-    this.app.view.removeEventListener('click', this.selectMeasureQubit);
-    notification(this.app, 'Step 3: Specify CX qubits');
+    notification(this.app, 'Step 2: Specify CX qubits');
     this.app.view.addEventListener('click', this.selectCXQubit);
     this.cxDoneButton = new Button('CX Done', 200, 125, 'black');
     this.controlPanel.addChild(this.cxDoneButton);
     this.cxDoneButton.on('click', () => {
       this.controlPanel.removeChild(this.cxDoneButton);
       this.app.view.removeEventListener('click', this.selectCXQubit);
-      notification(this.app, 'Step 4: Specify CZ qubits');
+      notification(this.app, 'Step 3: Specify CZ qubits');
       this.app.view.addEventListener('click', this.selectCZQubit);
       this.czDoneButton = new Button('CZ Done', 200, 125, 'black');
       this.controlPanel.addChild(this.czDoneButton);
@@ -169,10 +161,11 @@ export default class Plaquette extends Graphics {
           (_qubit) => _qubit.label === CircuitLabels.cx || _qubit.label === CircuitLabels.cz
         );
         const ancillaQubit = this.qubits.find((_qubit) => _qubit.label === CircuitLabels.ancilla);
-        const circuit = createCircuitAsciiArt(dataQubits, ancillaQubit, true, 'cnot');
-        this.circuitASCIIRectangle = this.circuitASCIIRect(circuit);
+        // eslint-disable-next-line max-len
+        const circuit = createCircuitAsciiArt(dataQubits, ancillaQubit, false, CircuitForm.CNOT);
+        // eslint-disable-next-line no-console
         console.log(circuit);
-        // this.workspace.addChild(this.circuitASCIIRectangle);
+        this.circuitASCII = circuit;
       });
     });
   };
@@ -180,7 +173,9 @@ export default class Plaquette extends Graphics {
   selectCXQubit = (e) => {
     const { relativeX, relativeY } = this.getRelativeXY(e);
     const qubit = this.getQubit(relativeX, relativeY);
-    if (!qubit) return;
+    if (!qubit) {
+      return;
+    }
     qubit.setCircuitLabel(CircuitLabels.cx);
     qubit.showLabelText();
   };
@@ -188,7 +183,9 @@ export default class Plaquette extends Graphics {
   selectCZQubit = (e) => {
     const { relativeX, relativeY } = this.getRelativeXY(e);
     const qubit = this.getQubit(relativeX, relativeY);
-    if (!qubit) return;
+    if (!qubit) {
+      return;
+    }
     qubit.setCircuitLabel(CircuitLabels.cz);
     qubit.showLabelText();
   };
