@@ -44,7 +44,7 @@ export default class Template {
   initializeTemplate = () => {
     // Create the plaquettes and template
     this.selectQubitsButton.on('click', () => {
-      this.selectQubits();
+      this.app.view.addEventListener('click', this.selectQubit);
       this.unselectQubitsButton.visible = true;
       this.selectQubitsButton.visible = false;
       this.createPlaquetteButton.visible = false;
@@ -75,14 +75,6 @@ export default class Template {
     this.workspace.addChild(this.unselectQubitsButton);
     this.workspace.addChild(this.createPlaquetteButton);
   };
-
-  /**
-   * Wrapper function to select qubits
-   * @function selectQubits
-   */
-  selectQubits() {
-    this.app.view.addEventListener('click', this.selectQubit);
-  }
 
   /**
    * Select a qubit from the template
