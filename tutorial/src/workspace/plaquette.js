@@ -2,7 +2,7 @@
 
 import { Graphics } from 'pixi.js';
 import { convexHull } from './utils'
-import Qubit from './qubit.js'
+import { Qubit } from './qubit.js'
 import Circuit from './circuit'
 
 /////////////////////////////////////////////////////////////

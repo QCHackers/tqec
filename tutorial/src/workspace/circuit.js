@@ -1,4 +1,5 @@
 import { Text, Container, Graphics } from 'pixi.js';
+import { QUBIT_ROLES } from './qubit.js'
 
 /**
  * Create the circuit as ASCII art.
@@ -24,8 +25,8 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 		let line = `${qubit.name}: ----`
 		// Local change of basis
 		if (form === 'cnot') {
-		    if (qubit.role === 'x') line += '-H--';
-		    if (qubit.role === 'z') line += '----';
+		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
+		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
 		} else if (form === 'univ') {
 		    line += '----';
 		}
@@ -37,8 +38,8 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 		if (form === 'cnot') {
 			line += '-*--'
 		} else if (form === 'univ') {
-		    if (qubit.role === 'x') line += '-X--';
-		    if (qubit.role === 'z') line += '-*--';
+		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-X--';
+		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '-*--';
 		}
 		// Next CNOTs
 		for (let i = idx+1; i<data_qubits.length; i++) {
@@ -46,8 +47,8 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 		}
 		// Change of basis
 		if (form === 'cnot') {
-		    if (qubit.role === 'x') line += '-H--';
-		    if (qubit.role === 'z') line += '----';
+		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
+		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
 		} else if (form === 'univ') {
 		    line += '----';
 		}
@@ -158,7 +159,7 @@ export default class Circuit extends Container {
             if (qubit.role === 'a') {
 				numAncillas += 1;
 				this.anc_qubit = qubit;
-			} else if (qubit.role !== 'z' && qubit.role !== 'x') {
+			} else if (qubit.role !== QUBIT_ROLES.ZDATA && qubit.role !== QUBIT_ROLES.XDATA) {
 				this.isCompatible = false;
 			} else {
 				this.data_qubits.push(qubit);

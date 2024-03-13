@@ -1,7 +1,7 @@
 import { useApp } from '@pixi/react'
 import { makeGrid } from './grid'
 import { Container, Graphics } from 'pixi.js'
-import Qubit from './qubit'
+import { Qubit } from './qubit'
 import Position from './position'
 import { button } from './button'
 import Plaquette from './plaquette'

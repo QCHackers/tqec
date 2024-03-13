@@ -24,7 +24,7 @@ const QUBIT_ROLES = {
  * @param {number} color - Color filling the circle
  * @param {number} gridSize - Size of the underlying grid
  */
-export default class Qubit extends Position {
+class Qubit extends Position {
 	constructor(x, y, radius = 5) {
 		super();
 		// Color properties (as static fields).
@@ -85,3 +85,6 @@ export default class Qubit extends Position {
 		this.addChild(label);
 	}
 }
+
+// Named exports.
+export { QUBIT_ROLES, Qubit };
