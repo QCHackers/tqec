@@ -21,87 +21,16 @@ export default class Template {
     this.rectangle = new Graphics();
     this.workspace = workspace;
     const { x, y } = workspace.mainButtonPosition;
-    this.templateButton = new Button('Step 1: Define a Template', x, y + 50);
+    this.templateButton = new Button('Step 1: Click here to make a Plaquette', x, y + 50);
     this.templateButton.on('click', () => {
       // Create the template
-      this.renderTemplateControlButtons();
-      this.defineTemplateArea();
+      // this.renderTemplateControlButtons();
+      // this.defineTemplateArea();
       // Clear the selected qubits
       this.selectedQubits = [];
       // Hide the button
       this.templateButton.visible = false;
 
-      // Show a notification to now select qubits within the template to make a plaquette
-    });
-    this.container.addChild(this.templateButton);
-    this.container.addChild(this.plaquetteButton);
-    this.container.name = 'template';
-    // this.workspace.addChild(this.container);
-  }
-
-  // Render the template control buttons
-  renderTemplateControlButtons() {
-    this.isDragging = true;
-    this.container.name = 'template';
-    // Create the buttons
-    const { x, y } = this.workspace.mainButtonPosition;
-    this.clearButton = new Button('Clear', x, y + 50);
-    this.clearButton.on('click', () => {
-      // Clear the template
-      this.clearButton.visible = false;
-      this.templateButton.visible = true;
-      this.makeTileButton.visible = false;
-      this.isDragging = false;
-      this.templateQubits.forEach((qubit) => {
-        qubit.changeColor('black');
-      });
-      // Clear the template qubits
-      this.templateQubits = [];
-      // Remove listeners
-      this.app.view.removeEventListener(
-        'mousedown',
-        this.mouseDownCreateTemplateArea
-      );
-      this.app.view.removeEventListener(
-        'mousemove',
-        this.mouseDragResizeTemplateArea
-      );
-      this.app.view.removeEventListener(
-        'mouseup',
-        this.mouseUpFinishTemplateArea
-      );
-      this.rectangle.visible = false;
-      notification(this.app, 'Step 1: Drag to define a template area');
-    });
-
-    this.makeTileButton = new Button(
-      'Step 2: Confirm Template',
-      100,
-      170,
-      'darkgreen'
-    );
-    this.makeTileButton.on('click', () => {
-      if (this.templateQubits.length === 0) {
-        notification(this.app, 'Template requires +3 qubits');
-        return;
-      }
-      this.makeTileButton.visible = false;
-      this.clearButton.visible = false;
-      this.isDragging = false;
-      // Remove listeners
-      this.app.view.removeEventListener(
-        'mousedown',
-        this.mouseDownCreateTemplateArea
-      );
-      this.app.view.removeEventListener(
-        'mousemove',
-        this.mouseDragResizeTemplateArea
-      );
-      this.app.view.removeEventListener(
-        'mouseup',
-        this.mouseUpFinishTemplateArea
-      );
-      notification(this.app, 'Step 3: Click on 3+ qubits to make a plaquette');
       this.app.view.addEventListener('click', this.selectQubit);
       this.plaquetteButton.visible = true;
       this.plaquetteButton.on('click', () => {
@@ -112,6 +41,48 @@ export default class Template {
         this.selectedQubits = [];
         notification(this.app, 'Step 4: Define the circuit');
       });
+    });
+    this.container.addChild(this.templateButton);
+    this.container.addChild(this.plaquetteButton);
+    this.container.name = 'template';
+    // this.workspace.addChild(this.container);
+  }
+
+  // Render the template control buttons
+  renderTemplateControlButtons() {
+    this.isDragging = false;
+    this.container.name = 'template';
+    // Create the buttons
+    const { x, y } = this.workspace.mainButtonPosition;
+    this.clearButton = new Button('Clear', x, y + 50);
+    this.clearButton.on('click', () => {
+      // Clear the template
+      this.clearButton.visible = false;
+      this.templateButton.visible = false;
+      this.makeTileButton.visible = true;
+      this.isDragging = false;
+      this.selectedQubits = [];
+      //   this.templateQubits.forEach((qubit) => {
+      //     qubit.changeColor('black');
+      //   });
+      //   // Clear the template qubits
+      //   this.templateQubits = [];
+      //   // Remove listeners
+      //   this.app.view.removeEventListener(
+      //     'mousedown',
+      //     this.mouseDownCreateTemplateArea
+      //   );
+      //   this.app.view.removeEventListener(
+      //     'mousemove',
+      //     this.mouseDragResizeTemplateArea
+      //   );
+      //   this.app.view.removeEventListener(
+      //     'mouseup',
+      //     this.mouseUpFinishTemplateArea
+      //   );
+      //   this.rectangle.visible = false;
+      //   notification(this.app, 'Step 1: Create a plaquette');
+      // });
     });
 
     // Add the buttons to the container
@@ -233,7 +204,7 @@ export default class Template {
     const relativeX = e.clientX - canvasRect.left;
     const relativeY = e.clientY - canvasRect.top;
     // Get all the qubits
-    const qubits = this.templateQubits.filter(
+    const qubits = this.workspace.filter(
       (child) => child.isQubit === true
     );
     const qubit = qubits.find(
