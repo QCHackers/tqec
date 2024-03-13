@@ -7,7 +7,7 @@ import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 
-//import addListenersToTabButtons from './addListener'
+//import addListenersToTabButtons from './TEMP_addListener'
 
 /////////////////////////////////////////////////////////////
 
@@ -140,13 +140,25 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button for printing the plaquette's circuit 
-	const printCircuitButton = button('Print circuit', gridSize, 4*gridSize, 'white', 'black');
-	workspace.addChild(printCircuitButton);
+	const printAsciiCircuitButton = button('ASCII circuit', gridSize, 4*gridSize, 'white', 'black');
+	workspace.addChild(printAsciiCircuitButton);
+	const printStimCircuitButton = button(' STIM circuit', 3.5*gridSize, 4*gridSize, 'white', 'black');
+	workspace.addChild(printStimCircuitButton);
 	let circuitArt = null;
     const circuitarea = document.getElementById('editableText');
 
-    printCircuitButton.on('click', (_e) => {
-		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1]);
+    printAsciiCircuitButton.on('click', (_e) => {
+		workspace.removeChild(circuitArt)
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1], 'ascii');
+		circuitArt.visible = true;
+		workspace.addChild(circuitArt);
+		let message = circuitArt.art.text;
+		circuitarea.value = message;
+	});
+
+    printStimCircuitButton.on('click', (_e) => {
+		workspace.removeChild(circuitArt)
+		circuitArt = new Circuit(selectedQubits, gridSize, 5*gridSize, libraryColors[savedPlaquettes.length-1], 'stim');
 		circuitArt.visible = true;
 		workspace.addChild(circuitArt);
 		let message = circuitArt.art.text;
