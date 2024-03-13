@@ -172,25 +172,14 @@ export default function InitializeControlFlow() {
           qubit.visible = false;
         });
 
-        // Initialize button to make plaquettes
-        let selectedQubits = [];
-        const plaquetteButton = new Button('Create plaquette', x, y + 50);
+        // Initialize Template
         const template = new Template(
-          selectedQubits,
           workspace,
-          plaquetteButton,
-          app
+          app,
+          x,
+          y
         );
-
-        // Create the plaquettes and template
-        plaquetteButton.on('click', () => {
-          template.createPlaquette();
-          workspace.addChild(template.container);
-          // Clear the selected qubits
-          selectedQubits = [];
-          plaquetteButton.visible = false;
-        });
-        workspace.addChild(plaquetteButton);
+        workspace.addChild(template.container);
         workspace.removeChild(finalizeBoundingQuadButton);
 
         const downloadStimButton = new DownloadButton(
