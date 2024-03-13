@@ -137,7 +137,7 @@ export default class Circuit extends Container {
 		this.isCompatible = true;
 		//this.anc_qubit;
 		this.data_qubits = [];
-		this._confirmFormat(qubits);
+		this.isCompatible = this._confirmFormat(qubits);
 		this.art = this._createCircuit(message);
 		this.box = this._createBackground();
 		// Add the text object to the stage
@@ -153,20 +153,21 @@ export default class Circuit extends Container {
 	 *   (i.e. they can be involved in 2q gates)
 	 */
 	_confirmFormat(qubits) {
-		this.isCompatible = true;
 		let numAncillas = 0;
-        qubits.forEach(qubit => {
-            if (qubit.role === 'a') {
+		qubits.forEach(qubit => {
+			if (qubit.role === QUBIT_ROLES.ANCILLA) {
 				numAncillas += 1;
 				this.anc_qubit = qubit;
 			} else if (qubit.role !== QUBIT_ROLES.ZDATA && qubit.role !== QUBIT_ROLES.XDATA) {
-				this.isCompatible = false;
+				return false;
 			} else {
 				this.data_qubits.push(qubit);
 			}
-        });
+		});
 		if (numAncillas !== 1) {
-			this.isCompatible = false;
+			return false;
+		} else {
+			return true;
 		}
 	}
 
