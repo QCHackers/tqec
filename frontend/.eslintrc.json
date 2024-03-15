@@ -22,7 +22,7 @@
 		"no-tabs": 1,
 		"react/jsx-indent": "off",
 		"react/jsx-indent-props": "off",
-		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", "tsx", ".native.js"] }],
 		"comma-dangle": ["error", "only-multiline"]
 	}
 }
