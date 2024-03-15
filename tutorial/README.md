@@ -1,18 +1,12 @@
-# Step-by-step coding of the frontend
+# Frontend v2
 
-Are you new to JavaScript, React and Pixi?  
-Do you want to contribute or simply understand the code powering the visual frontend of `tqecjs`?  
-Look no further.  
+The frontend v2 follows an alternative design w.r.t. the frontend in `<repo>/frontend`.
 
-In this folder we will re-build the frontend adding a few lines of codes at a time.
-The commit message will make clear which functionality is added (or, at least, the goal is to have informative commits).
+**NOTE:** The early development of frontend v2 is connected to the beginner's guide
+of building a project in Javascript using React and Pixi.
+The step-by-step guide can still be accessed in the form of commit history from the
+[PR #89 page](https://github.com/QCHackers/tqec/pull/89).
 
-**NOTE:** After merging the commits have been squashed.
-One can access them at the [PR #166 page](https://github.com/QCHackers/tqec/pull/166).
-
-
-**NOTE:** The step-by-step frontend does not exactly match the official one in the `<repo>/frontend` folder.
-This helps to better understand certain design choices while at the same time providing a playground for alternatives.
 
 
 
