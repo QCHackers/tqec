@@ -21,8 +21,10 @@ export default function TqecApp() {
 	app.stage.removeChildren();
 	const gridSize = 50;
 	const qubitRadius = 7;
-	const plaquetteDx = 2;
-	const plaquetteDy = 2;
+	document.getElementById('dxCell').value = 2;
+	document.getElementById('dyCell').value = 2;
+	let plaquetteDx = parseInt(document.getElementById('dxCell').value);
+	let plaquetteDy = parseInt(document.getElementById('dyCell').value);
 
 	// Create the workspace
 	const workspace = new Container();
@@ -38,7 +40,7 @@ export default function TqecApp() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorners = [[13, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
+	let guideTopLeftCorners = [[13, 3], [21, 3], [21, 7], [21, 11], [21, 15]]
 	const libraryColors = ['purple', 'green', 'darksalmon', 'saddlebrown', 'grey']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'red');
@@ -184,7 +186,7 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button for printing the plaquette's circuit 
-	const confirmCircuitButton = button('Confirm circuit', gridSize, 11*gridSize, 'white', 'black');
+	const confirmCircuitButton = button('Confirm circuit', gridSize, 13*gridSize, 'white', 'black');
 	workspace.addChild(confirmCircuitButton);
 
     confirmCircuitButton.on('click', (_e) => {
@@ -202,7 +204,7 @@ export default function TqecApp() {
 
 /////////////////////////////////////////////////////////////
 
-	const addPlaquetteButton = button('Add plaquette to library', gridSize, 12*gridSize, 'white', 'black');
+	const addPlaquetteButton = button('Add plaquette to library', gridSize, 14*gridSize, 'white', 'black');
 	workspace.addChild(addPlaquetteButton);
 
     addPlaquetteButton.on('click', (_e) => {
@@ -225,7 +227,7 @@ export default function TqecApp() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const clearPlaquetteButton = button('Clear plaquette', gridSize, 13*gridSize, 'white', 'black');
+	const clearPlaquetteButton = button('Clear plaquette', gridSize, 15*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
     clearPlaquetteButton.on('click', (_e) => {
@@ -242,12 +244,31 @@ export default function TqecApp() {
 		workspace.removeChild(circuitArt)
 		if (savedPlaquettes.length !== 0 && savedPlaquettes[savedPlaquettes.length-1].name === 'WIP plaquette')
 			savedPlaquettes.pop();
+		// Resize the red guidelines defining the plaquette.
+		outline.clear()
+		outline.lineStyle(2, 'red');
+		plaquetteDx = parseInt(document.getElementById('dxCell').value);
+		plaquetteDy = parseInt(document.getElementById('dyCell').value);
+		guideTopLeftCorners = [[13, 3], [21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
+		for (const [x0, y0] of guideTopLeftCorners) {
+			console.log(plaquetteDx);
+			console.log(plaquetteDy);
+			const x1 = x0 + plaquetteDx;
+			const y1 = y0 + plaquetteDy;
+			console.log(x1);
+			console.log(y1);
+			outline.moveTo(x0*gridSize, y0*gridSize);
+			outline.lineTo(x1*gridSize, y0*gridSize);
+			outline.lineTo(x1*gridSize, y1*gridSize);
+			outline.lineTo(x0*gridSize, y1*gridSize);
+			outline.lineTo(x0*gridSize, y0*gridSize);
+		}
 	});
 
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const downloadLibraryButton = button('Download plaquette library', gridSize, 15*gridSize, 'white', 'black');
+	const downloadLibraryButton = button('Download plaquette library', gridSize, 17*gridSize, 'white', 'black');
 	workspace.addChild(downloadLibraryButton);
 
 	downloadLibraryButton.on('click', (_e) => {

@@ -36,6 +36,24 @@ function App() {
       <div id="Tab-content">
         <div id="content1" className="Tab-content">
           Content of tab 1 <br></br>
+
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <p style={{ margin: '20px', fontsize: '18px' }}>Enter file name:</p>
+            <input
+              type="number"
+              id="dxCell"
+              placeholder="2"
+              style={{ fontSize: '18px', width: '40px', height: '30px' }}
+            />
+            <p style={{ margin: '20px', fontsize: '18px' }}>x</p>
+            <input
+              type="number"
+              id="dyCell"
+              placeholder="2"
+              style={{ fontSize: '18px', width: '40px', height: '30px' }}
+            />
+          </div>
+
           <script>console.log('test log from App.js (content tab 1)')</script>
           <Stage width={1400} height={900} options={{backgroundColor: 0x2980b9, antialias: true}}>
             <TqecApp />
