@@ -4,6 +4,7 @@ import { Container, Graphics } from 'pixi.js'
 //import { Qubit } from '../library/qubit'
 import Position from '../library/position'
 import { button } from '../library/button'
+import Plaquette from '../library/plaquette'
 import PlaquetteType from './plaquette-type'
 import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
@@ -114,11 +115,24 @@ export default function TqecCode() {
 					workspace.addChild(qubit);
 					qubits.push(qubit);
 				});
-				const p_type = new PlaquetteType(qubits, libraryColors[index])
+				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children)
 				plaquetteTypes.push(p_type);
 				workspace.addChildAt(p_type, num_background_children);
 			}
 		});
+	});
+
+/////////////////////////////////////////////////////////////
+
+    // Undo button, meaning that the last plaquette added is removed.
+	const undoButton = button('Remove last plaquette', gridSize, 2*gridSize, 'white', 'black');
+	workspace.addChild(undoButton);
+
+    undoButton.on('click', (_e) => {
+		if (workspace.children[num_background_children] instanceof Plaquette
+			&& !(workspace.children[num_background_children] instanceof PlaquetteType) ) {
+			workspace.removeChildAt(num_background_children);
+		}
 	});
 
 /////////////////////////////////////////////////////////////

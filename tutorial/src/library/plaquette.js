@@ -72,7 +72,7 @@ export default class Plaquette extends Graphics {
      * Start from a verical line left to the qubits.
      * Then 
 	 */
-	_createConvexHull() {
+	_createConvexHull(line_thickness = 10) {
         if (this.qubits.length === 0) return;
         // Convert the qubits in coordinate points
         let points = []
@@ -84,7 +84,7 @@ export default class Plaquette extends Graphics {
 
         // Draw convex hull
 		this.beginFill(this.color);
-        this.lineStyle(10, this.color);
+        this.lineStyle(line_thickness, this.color);
         this.moveTo(hull[0].x, hull[0].y);
         for (let i = 1; i < hull.length; i++) {
             this.lineTo(hull[i].x, hull[i].y);
