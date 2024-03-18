@@ -45,52 +45,55 @@ function App() {
       </header>
 
       <div className="Tabs">
-        <button id="tab1" onClick={() => handleTabClick(1)}>Tab 1</button>
-        <button id="tab2" onClick={() => handleTabClick(2)}>Tab 2</button>
+        <button className="Tab-button" id="tab1" onClick={() => handleTabClick(1)}>Info</button>
+        <button className="Tab-button" id="tab2" onClick={() => handleTabClick(2)}>Compose library</button>
+        <button className="Tab-button" id="tab3" onClick={() => handleTabClick(3)}>Create code</button>
         {/* -- Add more tabs as needed -- */}
       </div>
 
       <div id="Tab-content">
-        <div id="content1" className="Tab-content">
+        <div id="content1" className="Tab-content active">
           {/*-- Content for Tab 1 -- */}
-
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <p style={{ margin: '20px', fontsize: '18px' }}>Enter file name:</p>
-            <input
-              type="number"
-              id="dxCell"
-              placeholder="2"
-              style={{ fontSize: '18px', width: '40px', height: '30px' }}
-            />
-            <p style={{ margin: '20px', fontsize: '18px' }}>x</p>
-            <input
-              type="number"
-              id="dyCell"
-              placeholder="2"
-              style={{ fontSize: '18px', width: '40px', height: '30px' }}
-            />
-          </div>
-
-          <script>console.log('test log from App.js (content tab 1)')</script>
-          <Stage width={1400} height={900} options={{backgroundColor: 0x2980b9, antialias: true}}>
-            <TqecApp />
-          </Stage>
-
-          <p style={{ marginRight: '20px', fontsize: '18px' }}>Circuit-editing area:</p>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <textarea
-              type="text"
-              id="editableText"
-              placeholder="Edit the circuit here..."
-              style={{ fontSize: '18px', width: '700px', height: '250px' }}
-            />
-        </div>
-
+          Content of tab 1
         </div>
 
         <div id="content2" className="Tab-content">
           {/*-- Content for Tab 2 -- */}
-          Content of tab 2
+
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <p className="Comment-paragraph">Enter file name:</p>
+            <input className="Cell-size"
+              type="number"
+              id="dxCell"
+              placeholder="2"
+            />
+            <p className="Comment-paragraph">x</p>
+            <input className="Cell-size"
+              type="number"
+              id="dyCell"
+              placeholder="2"
+            />
+          </div>
+
+          <Stage width={1400} height={900} options={{backgroundColor: 0x2980b9, antialias: true}}>
+            <TqecApp />
+          </Stage>
+
+          <p className="Comment-paragraph">Circuit-editing area:</p>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <textarea
+              className="Text-area"
+              type="text"
+              id="editableText"
+              placeholder="Edit the circuit here..."
+            />
+        </div>
+
+        </div>
+
+        <div id="content3" className="Tab-content">
+          {/*-- Content for Tab 3 -- */}
+          Content of tab 3
         </div>
         {/*-- Add more content areas as needed -- */}
       </div>
