@@ -1,7 +1,8 @@
 import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
-import TqecApp from './library'
+import TqecLibrary from './library'
+import TqecCode from './code'
 import formattedInfoTabContent from './formattedInfoTab';
 
 /* The logo has been created as the SVG rendering of the ASCII:
@@ -53,7 +54,7 @@ function App() {
       </div>
 
       <div id="Tab-content">
-        <div id="content1" className="Tab-content active">
+        <div id="content1" className="Tab-content">
           {/*-- Content for Tab 1 -- */}
           {formattedInfoTabContent}
         </div>
@@ -76,8 +77,8 @@ function App() {
             />
           </div>
 
-          <Stage width={1400} height={900} options={{backgroundColor: 0x2980b9, antialias: true}}>
-            <TqecApp />
+          <Stage width={1400} height={900} options={{backgroundColor: "#a8d1e1", antialias: true}}>
+            <TqecLibrary />
           </Stage>
 
           <p className="Comment-paragraph">Circuit-editing area:</p>
@@ -92,9 +93,11 @@ function App() {
 
         </div>
 
-        <div id="content3" className="Tab-content">
+        <div id="content3" className="Tab-content active">
           {/*-- Content for Tab 3 -- */}
-          Content of tab 3
+          <Stage width={1400} height={900} options={{backgroundColor: '#c1e1a8', antialias: true}}>
+            <TqecCode />
+          </Stage>
         </div>
         {/*-- Add more content areas as needed -- */}
       </div>

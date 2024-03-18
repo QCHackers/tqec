@@ -11,7 +11,7 @@ import Circuit from './circuit'
 
 /////////////////////////////////////////////////////////////
 
-export default function TqecApp() {
+export default function TqecLibrary() {
 	// Initialize the app
 	let app = useApp();
 
@@ -28,7 +28,7 @@ export default function TqecApp() {
 
 	// Create the workspace
 	const workspace = new Container();
-	workspace.name = 'workspace';
+	workspace.name = 'workspace-library';
 
 	// Create the grid container
 	const grid = makeGrid(app, gridSize);
