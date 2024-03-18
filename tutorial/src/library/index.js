@@ -44,7 +44,7 @@ export default function TqecLibrary() {
 	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]]
 	const libraryColors = ['purple', 'green', 'darksalmon', 'saddlebrown', 'grey']
 	const outline = new Graphics();
-	outline.lineStyle(2, 'red');
+	outline.lineStyle(2, 'lightcoral');
 	for (const [x0, y0] of [...libraryTopLeftCorners, guideTopLeftCorner]) {
 		const x1 = x0 + plaquetteDx;
 		const y1 = y0 + plaquetteDy;
@@ -247,7 +247,7 @@ export default function TqecLibrary() {
 			savedPlaquettes.pop();
 		// Resize the red guidelines defining the plaquette.
 		outline.clear()
-		outline.lineStyle(2, 'red');
+		outline.lineStyle(2, 'lightcoral');
 		plaquetteDx = parseInt(document.getElementById('dxCell').value);
 		plaquetteDy = parseInt(document.getElementById('dyCell').value);
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]

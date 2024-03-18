@@ -2,6 +2,14 @@
 const formattedInfoTabContent = (
   <div style={{textAlign: 'center', marginTop: '40px'}}>
     <p>Welcome to the TQEC app!</p>
+    <a
+      className="App-link"
+      href="https://github.com/QCHackers/tqec"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      TQEC repo
+    </a>
     <p>We designed it to facilitate prototyping quantum error correcting codes.</p>
     <ul style={{ listStylePosition: 'inside', paddingLeft: '0' }}>
       <li style={{ paddingLeft: '116px', marginTop: '20px' }}>

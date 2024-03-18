@@ -36,14 +36,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <a
-          className="App-link"
-          href="https://github.com/QCHackers/tqec"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          TQEC repo
-        </a>
       </header>
 
       <div className="Tabs">
@@ -95,7 +87,7 @@ function App() {
 
         <div id="content3" className="Tab-content active">
           {/*-- Content for Tab 3 -- */}
-          <Stage width={1400} height={900} options={{backgroundColor: '#c1e1a8', antialias: true}}>
+          <Stage width={1400} height={1100} options={{backgroundColor: '#c0d6b8', antialias: true}}>
             <TqecCode />
           </Stage>
         </div>
