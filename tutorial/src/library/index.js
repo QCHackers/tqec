@@ -276,6 +276,8 @@ export default function TqecApp() {
 		if (savedPlaquettes.length === 0) return;
 	
 		let message = '';
+		// Add info on cell size
+		message += `cell size [width x height]: ${plaquetteDx} x ${plaquetteDy}\n\n`
 		let counter = 0;
 		savedPlaquettes.forEach((plaq) => {
 			if (plaq.name !== 'WIP plaquette') {

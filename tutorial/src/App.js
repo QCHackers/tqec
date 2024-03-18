@@ -1,7 +1,7 @@
 import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
-import TqecApp from './workspace'
+import TqecApp from './library'
 import formattedInfoTabContent from './formattedInfoTab';
 
 /* The logo has been created as the SVG rendering of the ASCII:
