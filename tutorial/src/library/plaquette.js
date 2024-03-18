@@ -20,7 +20,6 @@ export default class Plaquette extends Graphics {
         this.color = color;
         this.qubits = qubits
 		// UI properties
-		this.eventMode = 'static';
 		this.buttonMode = true;
 		this.cursor = 'pointer';
         //this.isDragging = false;
@@ -81,6 +80,7 @@ export default class Plaquette extends Graphics {
             points.push({x: qubit.globalX, y: qubit.globalY});
         });
         const hull = convexHull(points)
+        console.log(`first point of the convex hull: (${hull[0].x}, ${hull[0].y})`)
 
         // Draw convex hull
 		this.beginFill(this.color);

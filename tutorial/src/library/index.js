@@ -7,15 +7,16 @@ import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 
-//import addListenersToTabButtons from './TEMP_addListener'
+/////////////////////////////////////////////////////////////
+
+let savedPlaquettes = [];
+const libraryColors = ['purple', 'green', 'darksalmon', 'saddlebrown', 'grey'];
 
 /////////////////////////////////////////////////////////////
 
 export default function TqecLibrary() {
 	// Initialize the app
 	let app = useApp();
-
-    console.log('test log from workspace/index.js (TqecApp)');
 
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
@@ -42,7 +43,6 @@ export default function TqecLibrary() {
 	// The first guide is where the plaquette is built, the other guides are for the library.
 	const guideTopLeftCorner = [13, 3]
 	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]]
-	const libraryColors = ['purple', 'green', 'darksalmon', 'saddlebrown', 'grey']
 	const outline = new Graphics();
 	outline.lineStyle(2, 'lightcoral');
 	for (const [x0, y0] of [...libraryTopLeftCorners, guideTopLeftCorner]) {
@@ -90,7 +90,6 @@ export default function TqecLibrary() {
     // Select the qubits that are part of a plaquette 
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
-	let savedPlaquettes = [];
     let selectedQubits = [];
 
     createPlaquetteButton.on('click', (_e) => {
@@ -315,3 +314,5 @@ export default function TqecLibrary() {
 
     return null;
 }
+
+export { savedPlaquettes, libraryColors };

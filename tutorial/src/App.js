@@ -69,7 +69,7 @@ function App() {
             />
           </div>
 
-          <Stage width={1400} height={900} options={{backgroundColor: "#a8d1e1", antialias: true}}>
+          <Stage width={1400} height={900} options={{backgroundColor: "rgb(154, 193, 208)", antialias: true}}>
             <TqecLibrary />
           </Stage>
 
@@ -87,7 +87,7 @@ function App() {
 
         <div id="content3" className="Tab-content active">
           {/*-- Content for Tab 3 -- */}
-          <Stage width={1400} height={1100} options={{backgroundColor: '#c0d6b8', antialias: true}}>
+          <Stage width={1400} height={1100} options={{backgroundColor: 'rgb(157, 191, 145)', antialias: true}}>
             <TqecCode />
           </Stage>
         </div>

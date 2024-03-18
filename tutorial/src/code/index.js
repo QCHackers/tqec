@@ -1,13 +1,13 @@
 import { useApp } from '@pixi/react'
 import { makeGrid } from '../library/grid'
 import { Container, Graphics } from 'pixi.js'
-import { Qubit } from '../library/qubit'
+//import { Qubit } from '../library/qubit'
 import Position from '../library/position'
 import { button } from '../library/button'
-//import Plaquette from '../library/plaquette'
+import PlaquetteType from './plaquette-type'
 import Circuit from '../library/circuit'
-
-//import addListenersToTabButtons from './TEMP_addListener'
+import { savedPlaquettes, libraryColors } from '../library'
+import { Qubit } from '../library/qubit'
 
 /////////////////////////////////////////////////////////////
 
@@ -53,20 +53,10 @@ export default function TqecCode() {
                 continue;
 			// Create a qubit
 			const pos = new Position(x*gridSize, y*gridSize, qubitRadius-2);
-    		pos.on('click', (_e) => {
-				const qubit = new Qubit(x*gridSize, y*gridSize, qubitRadius);
-				// Name the qubit according to its position relative to the top-left
-				// corner of the plaquette-building area.
-				qubit.name = `Q(${String(x-guideTopLeftCorner[0]).padStart(2, ' ')},${String(y-guideTopLeftCorner[1]).padStart(2, ' ')})`;
-				qubit.interactive = true;
-				qubit.on('click', qubit.select)
-				qubit.select()
-				workspace.addChild(qubit);
-			});
 			workspace.addChild(pos);
 		}
 	}
-	//const num_background_children = workspace.children.length;
+	const num_background_children = workspace.children.length;
 
 /////////////////////////////////////////////////////////////
 
@@ -76,7 +66,7 @@ export default function TqecCode() {
     // Select the qubits that are part of a plaquette 
 	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(importPlaquettesButton);
-	let savedPlaquettes = [];
+	let codePlaquettes = [];
 
     importPlaquettesButton.on('click', (_e) => {
 		outline.clear()
@@ -84,11 +74,11 @@ export default function TqecCode() {
 		plaquetteDy = parseInt(document.getElementById('dyCell').value);
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
 		outline.lineStyle(2, 'lightcoral');
-		// Add workspace
+		// Add workspace guidelines.
 		let y0 = guideTopLeftCorner[1];
-		while (y0 + plaquetteDy < 19) {
+		while (y0 + plaquetteDy < 21) {
 			let x0 = guideTopLeftCorner[0];
-			while (x0 + plaquetteDx < libraryTopLeftCorners[0][0] && y0 + plaquetteDy < 19) {
+			while (x0 + plaquetteDx < libraryTopLeftCorners[0][0]) {
 				const x1 = x0 + plaquetteDx;
 				const y1 = y0 + plaquetteDy;
 				outline.moveTo(x0*gridSize, y0*gridSize);
@@ -100,7 +90,7 @@ export default function TqecCode() {
 			}
 			y0 += plaquetteDy;
 		}
-		// Add library
+		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
 			const x1 = x0 + plaquetteDx;
 			const y1 = y0 + plaquetteDy;
@@ -110,22 +100,41 @@ export default function TqecCode() {
 			outline.lineTo(x0*gridSize, y1*gridSize);
 			outline.lineTo(x0*gridSize, y0*gridSize);
 		}
+		// Add library plaquettes.
+		//const library_workspace = document.getElementsByName('workspace-library');
+		let plaquetteTypes = [];
+		//const numPlaquettes = savedPlaquettes.length;
+		savedPlaquettes.forEach((plaq, index) => {
+			if (plaq.name !== 'WIP plaquette') {
+				let qubits = [];
+				plaq.qubits.forEach((q) => {
+					const qubit = new Qubit(q.globalX, q.globalY, q.Radius);
+					qubit.name = q.name;
+					qubit.updateLabel();
+					workspace.addChild(qubit);
+					qubits.push(qubit);
+				});
+				const p_type = new PlaquetteType(qubits, libraryColors[index])
+				plaquetteTypes.push(p_type);
+				workspace.addChildAt(p_type, num_background_children);
+			}
+		});
 	});
 
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const downloadCodeButton = button('Download QEC code', gridSize, 19*gridSize, 'white', 'black');
+	const downloadCodeButton = button('Download QEC code', gridSize, 21*gridSize, 'white', 'black');
 	workspace.addChild(downloadCodeButton);
 
 	downloadCodeButton.on('click', (_e) => {
-		if (savedPlaquettes.length === 0) return;
+		if (codePlaquettes.length === 0) return;
 	
 		let message = '';
 		// Add info on cell size
 		message += 'This is the complete QEC code.\n'
 		let counter = 0;
-		savedPlaquettes.forEach((plaq) => {
+		codePlaquettes.forEach((plaq) => {
 			if (plaq.name !== 'WIP plaquette') {
 				message += '###############\n'
 				message += `# plaquette ${counter} #\n`
