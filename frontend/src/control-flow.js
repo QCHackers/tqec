@@ -6,7 +6,7 @@ import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import notification from './components/notification';
 import Grid from './graphics/Grid';
-import Template from './plaquettes/Template';
+import Footprint from './plaquettes/Footprint';
 import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
@@ -69,7 +69,7 @@ export default function InitializeControlFlow() {
       workspace.removeChild(currentControlPanel);
     }
     workspace.children
-      .filter((child) => child instanceof Template)
+      .filter((child) => child instanceof Footprint)
       .forEach((template) => {
         if (template.getPlaquettes().includes(plaquette)) {
           template.removeChild(plaquette);
@@ -173,7 +173,7 @@ export default function InitializeControlFlow() {
         });
 
         // Initialize Template
-        const template = new Template(
+        const template = new Footprint(
           workspace,
           app,
           x,

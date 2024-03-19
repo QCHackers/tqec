@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Button from '../Button';
-import Template from '../../plaquettes/Template';
+import Footprint from '../../plaquettes/Footprint';
 import config from './config';
 import notification from '../notification';
 
@@ -29,7 +29,7 @@ export default class DownloadButton extends Button {
   onClick = () => {
     const payload = { plaquettes: [] };
     this.workspace.children
-      .filter((child) => child instanceof Template)
+      .filter((child) => child instanceof Footprint)
       .forEach((tile) => {
         tile.getPlaquettes().forEach((plaquette) => {
           const marshalledPlaquette = {

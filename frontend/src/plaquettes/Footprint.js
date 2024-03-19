@@ -4,15 +4,15 @@ import notification from '../components/notification';
 import Button from '../components/Button';
 
 /**
- * Template class to create the template for the plaquettes
- * @class Template
+ * Footprint class to create the footprint for the plaquettes
+ * @class footprint
  * @param {Container} workspace - The workspace container
  * @param {PIXI.Application} app - The PIXI application
  * @param {number} x - The x coordinate
  * @param {number} y - The y coordinate
  * @returns {void}
  */
-export default class Template {
+export default class Footprint {
   constructor(workspace, app, x, y) {
     // UI Properties
     this.app = app;
@@ -32,17 +32,17 @@ export default class Template {
     this.selectedQubits = [];
     this.rectangle = new Graphics();
     this.workspace = workspace;
-    this.container.name = 'template';
-    this.initializeTemplate();
+    this.container.name = 'footprint';
+    this.initializeFootprint();
   }
 
   /**
-   * Initialize the template
-   * @function initializeTemplate
+   * Initialize the footprint
+   * @function initializefootprint
    * @returns {void}
    */
-  initializeTemplate = () => {
-    // Create the plaquettes and template
+  initializeFootprint = () => {
+    // Create the plaquettes and footprint
     this.selectQubitsButton.on('click', () => {
       this.app.view.addEventListener('click', this.selectQubit);
       this.unselectQubitsButton.visible = true;
@@ -77,7 +77,7 @@ export default class Template {
   };
 
   /**
-   * Select a qubit from the template
+   * Select a qubit from the footprint
    * @function selectQubit
    * @param {Event} e - The click event
    * @returns {void}
@@ -116,12 +116,12 @@ export default class Template {
   };
 
   /**
-   * Create the plaquette from the selected qubits and assign it to the template
+   * Create the plaquette from the selected qubits and assign it to the footprint
    * @function createPlaquette
    * @returns {void}
   */
   createPlaquette = () => {
-    // Check that the selected qubits are part of the template area
+    // Check that the selected qubits are part of the footprint area
     if (this.selectedQubits.length < 3) {
       notification(this.app, 'Plaquette requires 3+ qubits');
       return;
@@ -130,7 +130,7 @@ export default class Template {
     const plaquette = new Plaquette(this.selectedQubits, this.workspace, this.app);
     // Add the plaquette to the tile container
     this.container.addChild(plaquette);
-    // Remove seleected qubits from the template qubits, so they can be used again
+    // Remove seleected qubits from the footprint qubits, so they can be used again
     // For each qubit, remove the text
     this.selectedQubits.forEach((qubit) => {
       qubit.removeChildren();
