@@ -99,6 +99,7 @@ export default class PlaquetteType extends Plaquette {
         let qubits_of_copy = []
 		this.qubits.forEach((q) => {
             const qubit = new Qubit(q.globalX + translate_x, q.globalY + translate_y, q.radius);
+			qubit.name = `Q(${String(qubit.globalX/GRID_SIZE_CODE_WORKSPACE - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[0]).padStart(2, ' ')},${String(qubit.globalY/GRID_SIZE_CODE_WORKSPACE - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[1]).padStart(2, ' ')})`;
             qubits_of_copy.push(qubit);
         });
         const copy = new Plaquette(qubits_of_copy, this.color);
