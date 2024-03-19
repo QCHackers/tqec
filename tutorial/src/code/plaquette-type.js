@@ -14,6 +14,7 @@ import Plaquette from '../library/plaquette';
  * @constructor
  * @param {array} qubits - The qubits which are part of the plaquette
  * @param {color} color - Color filling of the plaquette
+ * @param {num_background_children} num_background_children - Used to place the latest plaquette on top of the workspace background but below every other elements
  */
 export default class PlaquetteType extends Plaquette {
     constructor(qubits, color = 'purple', num_background_children = -1) {
@@ -58,26 +59,29 @@ export default class PlaquetteType extends Plaquette {
         this.alpha = 1;
         console.log(`overall move is (dx,dy) = (${this.x}, ${this.y})`);
 
-        // Create a copy of the plaquette at the current position
+        // Find the closest position to the first qubit.
+        // Use it to compute the expected translation vector.
+        let temp_x = this.qubits[0].globalX + this.x;
+        let temp_y = this.qubits[0].globalY + this.y;
+        let min_distance = 10000;
+        let translate_x = 0;
+        let translate_y = 0;
+	    this.parent.children.forEach((child) => {
+	        if (child instanceof Position) {
+                const d = (temp_x-child.globalX)**2 + (temp_y-child.globalY)**2;
+                if (d < min_distance) {
+                    min_distance = d;
+                    translate_x = child.globalX - this.qubits[0].globalX;
+                    translate_y = child.globalY - this.qubits[0].globalY;
+                }
+            }
+        });
+        // If the translator vector does not lead to cell, log an error and return.
+
+        // Create a copy of the plaquette at the current position.
         let qubits_of_copy = []
 		this.qubits.forEach((q) => {
-            // Find the closest position
-            let temp_x = q.globalX + this.x;
-            let temp_y = q.globalY + this.y;
-            let min_distance = 10000;
-            let closest_x = 0;
-            let closest_y = 0;
-		    this.parent.children.forEach((child) => {
-			    if (child instanceof Position) {
-                    const d = (temp_x-child.globalX)**2 + (temp_y-child.globalY)**2;
-                    if (d < min_distance) {
-                        min_distance = d;
-                        closest_x = child.globalX;
-                        closest_y = child.globalY;
-                    }
-                }
-            });
-            const qubit = new Qubit(closest_x, closest_y, q.radius);
+            const qubit = new Qubit(q.globalX + translate_x, q.globalY + translate_y, q.radius);
             qubits_of_copy.push(qubit);
         });
         const copy = new Plaquette(qubits_of_copy, this.color);
