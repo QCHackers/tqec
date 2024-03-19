@@ -1,10 +1,9 @@
 // Define class Plaquette and its methods
 
-//import { Graphics } from 'pixi.js';
 import { Qubit } from '../library/qubit';
 import Position from '../library/position';
-//import Circuit from './circuit'
 import Plaquette from '../library/plaquette';
+import { GRID_SIZE_CODE_WORKSPACE } from '../constants';
 
 /////////////////////////////////////////////////////////////
 
@@ -15,11 +14,13 @@ import Plaquette from '../library/plaquette';
  * @param {array} qubits - The qubits which are part of the plaquette
  * @param {color} color - Color filling of the plaquette
  * @param {num_background_children} num_background_children - Used to place the latest plaquette on top of the workspace background but below every other elements
+ * @param {base_translate_vector} base_translate_vector - Used to confirm that the latest plaquette is snapped to a cell
  */
 export default class PlaquetteType extends Plaquette {
-    constructor(qubits, color = 'purple', num_background_children = -1) {
+    constructor(qubits, color = 'purple', num_background_children = -1, base_translate_vector = {x:0, y:0}) {
         super(qubits, color);
         this.add_at = num_background_children;
+        this.base_translate_vector = base_translate_vector;
         this.interactive = true;
         this.buttonMode = true;
         this.on('pointerdown', this.onDragStart)
@@ -41,8 +42,6 @@ export default class PlaquetteType extends Plaquette {
         this.dragging = true;
         this.dragData = event.data;
         this.startPosition = this.dragData.getLocalPosition(this.parent);
-        console.log(`start position of drag = ${this.startPosition}`);
-        console.log(`while the global (x,y) of the first qubit are = (${this.qubits[0].globalX}, ${this.qubits[0].globalY})`);
         this.alpha = 0.5;
     }
 
@@ -57,7 +56,6 @@ export default class PlaquetteType extends Plaquette {
     onDragEnd() {
         this.dragging = false;
         this.alpha = 1;
-        console.log(`overall move is (dx,dy) = (${this.x}, ${this.y})`);
 
         // Find the closest position to the first qubit.
         // Use it to compute the expected translation vector.
@@ -77,7 +75,16 @@ export default class PlaquetteType extends Plaquette {
             }
         });
         // If the translator vector does not lead to cell, log an error and return.
-
+		const plaquetteDx = parseInt(document.getElementById('dxCell').value);
+		const plaquetteDy = parseInt(document.getElementById('dyCell').value);
+        if (    (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) % plaquetteDx !== 0
+             || (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) % plaquetteDy !== 0 ) {
+            console.log('WARNING: Wrong translation for plaquette -> rejected')
+            // Reset the position of the original plaquette
+            this.x = 0;
+            this.y = 0;
+            return;
+        }
         // Create a copy of the plaquette at the current position.
         let qubits_of_copy = []
 		this.qubits.forEach((q) => {
@@ -91,7 +98,6 @@ export default class PlaquetteType extends Plaquette {
         }
 
         // Reset the position of the original plaquette
-        console.log(`move back to the start position = ${this.startPosition}`);
         this.x = 0;
         this.y = 0;
     }

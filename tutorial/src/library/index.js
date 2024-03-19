@@ -6,6 +6,7 @@ import Position from './position'
 import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
+import { GRID_SIZE_LIBRARY_WORKSPACE, GUIDE_TOP_LEFT_CORNER_LIBRARY_WORKSPACE } from '../constants'
 
 /////////////////////////////////////////////////////////////
 
@@ -20,7 +21,7 @@ export default function TqecLibrary() {
 
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
-	const gridSize = 50;
+	const gridSize = GRID_SIZE_LIBRARY_WORKSPACE;
 	const qubitRadius = 7;
 	document.getElementById('dxCell').value = 2;
 	document.getElementById('dyCell').value = 2;
@@ -41,8 +42,8 @@ export default function TqecLibrary() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorner = [13, 3]
-	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]]
+	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_LIBRARY_WORKSPACE;
+	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]];
 	const outline = new Graphics();
 	outline.lineStyle(2, 'lightcoral');
 	for (const [x0, y0] of [...libraryTopLeftCorners, guideTopLeftCorner]) {

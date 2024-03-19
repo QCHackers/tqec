@@ -1,7 +1,6 @@
 import { useApp } from '@pixi/react'
 import { makeGrid } from '../library/grid'
 import { Container, Graphics } from 'pixi.js'
-//import { Qubit } from '../library/qubit'
 import Position from '../library/position'
 import { button } from '../library/button'
 import Plaquette from '../library/plaquette'
@@ -9,6 +8,7 @@ import PlaquetteType from './plaquette-type'
 import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
+import { GRID_SIZE_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
 
 /////////////////////////////////////////////////////////////
 
@@ -18,7 +18,7 @@ export default function TqecCode() {
 
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
-	const gridSize = 50;
+	const gridSize = GRID_SIZE_CODE_WORKSPACE;
 	const qubitRadius = 7;
 	document.getElementById('dxCell').value = 2;
 	document.getElementById('dyCell').value = 2;
@@ -39,8 +39,8 @@ export default function TqecCode() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorner = [3, 3]
-	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]]
+	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE;
+	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]];
 	const outline = new Graphics();
 	workspace.addChild(outline);
 
@@ -115,7 +115,11 @@ export default function TqecCode() {
 					workspace.addChild(qubit);
 					qubits.push(qubit);
 				});
-				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children)
+				// Recall that plaquette names are like "plaquette 12", starting from "plaquette 1"
+				const plaquette_id = parseInt(plaq.name.match(/\d+/)[0]);
+				const base_translate_vector = {x: guideTopLeftCorner[0] - libraryTopLeftCorners[plaquette_id-1][0],
+				                               y: guideTopLeftCorner[1] - libraryTopLeftCorners[plaquette_id-1][1]};
+				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children, base_translate_vector)
 				plaquetteTypes.push(p_type);
 				workspace.addChildAt(p_type, num_background_children);
 			}
