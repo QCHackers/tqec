@@ -26,7 +26,7 @@ export default class Footprint {
     this.startX = 0;
     this.startY = 0;
     this.plaquette = null;
-    this.selectQubitsButton = new Button('Select 3 qubits to make a Plaquette', x, y + 50);
+    this.selectQubitsButton = new Button('Select 3+ qubits to make a Footprint', x, y + 50);
     this.unselectQubitsButton = new Button('Unselect Qubits', x, y + 100);
     this.createPlaquetteButton = new Button('Make Plaquette', x, y + 50);
     this.selectedQubits = [];
