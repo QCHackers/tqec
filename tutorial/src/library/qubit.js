@@ -2,17 +2,9 @@
 
 import { Text } from 'pixi.js'
 import Position from './position'
+import { QUBIT_ROLES } from '../constants'
 
 /////////////////////////////////////////////////////////////
-
-const QUBIT_ROLES = {
-  NONE: 'none',
-  XDATA: 'x',
-  YDATA: 'y',
-  ZDATA: 'z',
-  ANCILLA: 'a',
-  BRIDGE: 'b'
-}
 
 /**
  * Qubit class

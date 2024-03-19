@@ -1,5 +1,5 @@
 import { Text, Container, Graphics } from 'pixi.js';
-import { QUBIT_ROLES } from './qubit.js'
+import { QUBIT_ROLES } from '../constants'
 
 /**
  * Create the circuit as ASCII art.
