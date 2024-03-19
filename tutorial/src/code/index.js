@@ -8,7 +8,7 @@ import PlaquetteType from './plaquette-type'
 import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
-import { GRID_SIZE_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
+import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
 
 /////////////////////////////////////////////////////////////
 
@@ -77,9 +77,9 @@ export default function TqecCode() {
 		outline.lineStyle(2, 'lightcoral');
 		// Add workspace guidelines.
 		let y0 = guideTopLeftCorner[1];
-		while (y0 + plaquetteDy < 21) {
+		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
 			let x0 = guideTopLeftCorner[0];
-			while (x0 + plaquetteDx < libraryTopLeftCorners[0][0]) {
+			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
 				const x1 = x0 + plaquetteDx;
 				const y1 = y0 + plaquetteDy;
 				outline.moveTo(x0*gridSize, y0*gridSize);
