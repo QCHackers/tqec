@@ -78,7 +78,7 @@ function App() {
             <textarea
               className="Text-area"
               type="text"
-              id="editableText"
+              id="editableCircuitArea"
               placeholder="Edit the circuit here..."
             />
         </div>
@@ -90,6 +90,17 @@ function App() {
           <Stage width={1400} height={1100} options={{backgroundColor: 'rgb(157, 191, 145)', antialias: true}}>
             <TqecCode />
           </Stage>
+
+          <p className="Comment-paragraph">Compact representation of the QEC code:</p>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <textarea
+              className="Text-area"
+              type="text"
+              id="codeSummary"
+              placeholder="Code will appear here..."
+            />
+        </div>
+
         </div>
         {/*-- Add more content areas as needed -- */}
       </div>

@@ -77,6 +77,7 @@ export default function TqecCode() {
 		outline.lineStyle(2, 'lightcoral');
 		// Add workspace guidelines.
 		let y0 = guideTopLeftCorner[1];
+		let message = '';
 		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
 			let x0 = guideTopLeftCorner[0];
 			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
@@ -88,8 +89,10 @@ export default function TqecCode() {
 				outline.lineTo(x0*gridSize, y1*gridSize);
 				outline.lineTo(x0*gridSize, y0*gridSize);
 				x0 += plaquetteDx;
+				message += '  .';
 			}
 			y0 += plaquetteDy;
+			message += '\n';
 		}
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
@@ -101,6 +104,9 @@ export default function TqecCode() {
 			outline.lineTo(x0*gridSize, y1*gridSize);
 			outline.lineTo(x0*gridSize, y0*gridSize);
 		}
+        // Create the compact representation of the (empty) QEC code
+        const codesummary = document.getElementById('codeSummary');
+        codesummary.value = message;
 		// Add library plaquettes.
 		//const library_workspace = document.getElementsByName('workspace-library');
 		let plaquetteTypes = [];
@@ -120,6 +126,7 @@ export default function TqecCode() {
 				const base_translate_vector = {x: guideTopLeftCorner[0] - libraryTopLeftCorners[plaquette_id-1][0],
 				                               y: guideTopLeftCorner[1] - libraryTopLeftCorners[plaquette_id-1][1]};
 				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children, base_translate_vector)
+				p_type.name = plaq.name;
 				plaquetteTypes.push(p_type);
 				workspace.addChildAt(p_type, num_background_children);
 			}

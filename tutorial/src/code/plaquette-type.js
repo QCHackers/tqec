@@ -3,7 +3,7 @@
 import { Qubit } from '../library/qubit';
 import Position from '../library/position';
 import Plaquette from '../library/plaquette';
-import { GRID_SIZE_CODE_WORKSPACE } from '../constants';
+import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants';
 
 /////////////////////////////////////////////////////////////
 
@@ -74,11 +74,21 @@ export default class PlaquetteType extends Plaquette {
                 }
             }
         });
-        // If the translator vector does not lead to cell, log an error and return.
+        // If the translator vector does not lead to a cell, log an error and return.
 		const plaquetteDx = parseInt(document.getElementById('dxCell').value);
 		const plaquetteDy = parseInt(document.getElementById('dyCell').value);
-        if (    (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) % plaquetteDx !== 0
-             || (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) % plaquetteDy !== 0 ) {
+        console.log('this.base_translate_vector = ', this.base_translate_vector[0])
+        // Horizontally aligned with a cell.
+        let is_valid_translation = (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) % plaquetteDx === 0;
+        // Vertically aligned with a cell.
+        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) % plaquetteDy === 0; 
+        // Horizontally within the cells in the guide.
+        is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0] - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[0];
+        is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) >= 0;
+        // Vertically within the cells in the guide.
+        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1] - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[1];
+        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) >= 0;
+        if ( is_valid_translation === false ) {
             console.log('WARNING: Wrong translation for plaquette -> rejected')
             // Reset the position of the original plaquette
             this.x = 0;
@@ -100,6 +110,21 @@ export default class PlaquetteType extends Plaquette {
         // Reset the position of the original plaquette
         this.x = 0;
         this.y = 0;
+
+        // Update the compact representation of teh QEC code
+        const codesummary = document.getElementById('codeSummary');
+        let message = codesummary.value.split('\n');
+        let lines = message;
+        console.log(lines)
+		// Recall that plaquette names are like "plaquette 12", starting from "plaquette 1"
+		const plaquette_id = parseInt(this.name.match(/\d+/)[0]);
+        const col = (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) / plaquetteDx;
+        const row = (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) / plaquetteDy;
+        // TODO: Here we assume that there is a single space before every plaquette id is left padded with spaces
+        console.log(row, col)
+        let modifiedLine = lines[row].substring(0, 3*col) + `${String(plaquette_id).padStart(3, ' ')}` + lines[row].substring(3*col+3);
+        lines[row] = modifiedLine;
+        codesummary.value = lines.join('\n');
     }
 
 }

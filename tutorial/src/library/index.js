@@ -148,7 +148,7 @@ export default function TqecLibrary() {
 	const printStimCircuitButton = button(' STIM circuit', 3.5*gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printStimCircuitButton);
 	let circuitArt = null;
-    const circuitarea = document.getElementById('editableText');
+    const circuitarea = document.getElementById('editableCircuitArea');
 
     printAsciiCircuitButton.on('click', (_e) => {
 		workspace.removeChild(circuitArt)
