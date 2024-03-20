@@ -43,7 +43,7 @@ export default class Footprint {
    * @returns {void}
    */
   initializeFootprint = () => {
-    // Create the plaquettes and footprint
+    // Create the footprint
     this.selectQubitsButton.on('click', () => {
       this.app.view.addEventListener('click', this.selectQubit);
       this.unselectQubitsButton.visible = true;
