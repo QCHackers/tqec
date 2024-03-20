@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Container, Graphics, Color } from 'pixi.js';
 import Plaquette from './Plaquette';
 import notification from '../components/notification';
 import Button from '../components/Button';
@@ -142,5 +142,131 @@ export default class Footprint {
     this.selectQubitsButton.visible = true;
     this.createPlaquetteButton.visible = false;
     this.unselectQubitsButton.visible = false;
+  };
+
+  /**
+   * Render the footprint
+   * @function renderFootprintControlButtons
+   * @returns {void}
+   */
+  renderFootprintControlButtons() {
+    this.isDragging = true;
+    this.container.name = 'footprint';
+    // Create the buttons
+    const { x, y } = this.workspace.mainButtonPosition;
+    this.clearButton = new Button('Clear', x, y + 50);
+    this.clearButton.on('click', () => {
+      // Clear the footprint
+      this.clearButton.visible = false;
+      this.footprintButton.visible = true;
+      this.makeTileButton.visible = false;
+      this.isDragging = false;
+      this.footprintQubits.forEach((qubit) => {
+        qubit.changeColor('black');
+      });
+      // Clear the footprint qubits
+      this.footprintQubits = [];
+      // Remove listeners
+      this.app.view.removeEventListener(
+        'mousedown',
+        this.mouseDownCreateFootprintArea
+      );
+      this.app.view.removeEventListener(
+        'mousemove',
+        this.mouseDragResizeFootprintArea
+      );
+      this.app.view.removeEventListener(
+        'mouseup',
+        this.mouseUpFinishFootprintArea
+      );
+      this.rectangle.visible = false;
+      notification(this.app, 'Step 1: Drag to define a footprint area');
+    });
+  }
+
+  /**
+   * Create the footprint area
+   * @param {*} event
+   * @returns {void}
+   */
+  mouseDownCreateFootprintArea = (event) => {
+    // Get the canvas position
+    const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+    // Calculate the relative click position within the canvas
+    const relativeX = event.clientX - canvasRect.left;
+    const relativeY = event.clientY - canvasRect.top;
+
+    // Check that the event does not click on the clear button or the make tile button
+    if (this.makeTileButton.getBounds().contains(relativeX, relativeY)) {
+      return;
+    }
+    this.isDragging = true;
+
+    // Untint the qubits
+    this.templateQubits.forEach((qubit) => {
+      qubit.changeColor('black');
+    });
+
+    // Set the start position
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+    this.rectangle.position.set(relativeX, relativeY);
+    this.rectangle.visible = true;
+  };
+
+  /**
+   * mouseDragResizeFootprintArea
+   * @param {*} event
+   * @returns {void}
+   */
+  mouseDragResizeFootprintArea = (event) => {
+    if (this.isDragging) {
+      // Get the canvas position
+      const width = event.clientX - this.startX;
+      const height = event.clientY - this.startY;
+      this.rectangle.clear();
+      this.rectangle.lineStyle(2, new Color('red').toNumber());
+      this.rectangle.drawRect(0, 0, width, height);
+      // Find the qubits within the this.rectangle
+      // eslint-disable-next-line consistent-return
+      this.workspace.children.forEach((child) => {
+        const canvasRect = this.app.view.getBoundingClientRect(); // Get canvas position
+        // Calculate the relative click position within the canvas
+        const relativeX = this.startX - canvasRect.left;
+        const relativeY = this.startY - canvasRect.top;
+
+        if (child.isQubit) {
+          const qubitX = child.globalX;
+          const qubitY = child.globalY;
+          if (
+            qubitX <= relativeX + width
+            && qubitX >= relativeX
+            && qubitY >= relativeY
+            && qubitY <= relativeY + height
+          ) {
+            // Change the color of the qubits
+            child.changeColor('red');
+            this.templateQubits.push(child);
+            return child;
+          } if (this.templateQubits.includes(child)) {
+            // If the qubit is no longer in the template area,
+            // remove it from the template
+            this.templateQubits = this.templateQubits.filter(
+              (qubit) => qubit !== child
+            );
+            child.changeColor('black');
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * mouseUpFinishFootprintArea
+   * @returns {void}
+   */
+  mouseUpFinishFootprintArea = () => {
+    this.isDragging = false;
+    this.rectangle.visible = false;
   };
 }
