@@ -33,6 +33,7 @@ export default class Footprint {
     this.rectangle = new Graphics();
     this.workspace = workspace;
     this.container.name = 'footprint';
+    this.footprintQubits = [];
     this.initializeFootprint();
   }
 
@@ -203,7 +204,7 @@ export default class Footprint {
     this.isDragging = true;
 
     // Untint the qubits
-    this.templateQubits.forEach((qubit) => {
+    this.footprintQubits.forEach((qubit) => {
       qubit.changeColor('black');
     });
 
@@ -246,12 +247,12 @@ export default class Footprint {
           ) {
             // Change the color of the qubits
             child.changeColor('red');
-            this.templateQubits.push(child);
+            this.footprintQubits.push(child);
             return child;
-          } if (this.templateQubits.includes(child)) {
-            // If the qubit is no longer in the template area,
-            // remove it from the template
-            this.templateQubits = this.templateQubits.filter(
+          } if (this.footprintQubits.includes(child)) {
+            // If the qubit is no longer in the footprint area,
+            // remove it from the footprint
+            this.footprintQubits = this.footprintQubits.filter(
               (qubit) => qubit !== child
             );
             child.changeColor('black');
