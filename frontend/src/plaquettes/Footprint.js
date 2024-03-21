@@ -146,11 +146,11 @@ export default class Footprint {
   };
 
   /**
-   * Render the footprint
-   * @function renderFootprintControlButtons
+   * Update the visibility and event listeners
+   * @function updateVisiblityAndEventListeners
    * @returns {void}
    */
-  renderFootprintControlButtons() {
+  updateVisiblityAndEventListeners() {
     this.isDragging = true;
     this.container.name = 'footprint';
     // Create the buttons
