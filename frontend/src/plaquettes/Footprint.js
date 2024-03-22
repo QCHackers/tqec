@@ -1,5 +1,6 @@
 import { Container, Graphics, Color } from 'pixi.js';
 import Plaquette from './Plaquette';
+import Qubit from '../qubits/Qubit';
 import notification from '../components/notification';
 import Button from '../components/Button';
 
@@ -92,13 +93,13 @@ export default class Footprint {
     const relativeY = e.clientY - canvasRect.top;
     // Get all the qubits
     const qubits = this.workspace.children.filter(
-      (child) => child.isQubit === true
+      (child) => child instanceof Qubit
     );
     const qubit = qubits.find(
       // Find the qubit that was clicked
       (q) => q.checkHitArea(relativeX, relativeY) === true
     );
-    if (!qubit && !(qubit?.isQubit === true)) return; // Check that the qubit exists
+    if (!qubit && !(qubit instanceof Qubit)) return; // Check that the qubit exists
     // Check that the qubit is not already selected
     if (this.selectedQubits.includes(qubit)) {
       // Remove the qubit from the selected qubits
@@ -236,7 +237,7 @@ export default class Footprint {
         const relativeX = this.startX - canvasRect.left;
         const relativeY = this.startY - canvasRect.top;
 
-        if (child.isQubit) {
+        if (child instanceof Qubit) {
           const qubitX = child.globalX;
           const qubitY = child.globalY;
           if (
