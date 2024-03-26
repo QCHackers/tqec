@@ -27,7 +27,6 @@ export default class Footprint {
     this.startX = 0;
     this.startY = 0;
     this.plaquette = null;
-    this.selectQubitsButton = new Button('Select 3+ qubits to make a Footprint', x, y + 50);
     this.unselectQubitsButton = new Button('Unselect Qubits', x, y + 100);
     this.createPlaquetteButton = new Button('Make Plaquette', x, y + 50);
     this.selectedQubits = [];
@@ -45,12 +44,10 @@ export default class Footprint {
    */
   initializeFootprint = () => {
     // Create the footprint
-    this.selectQubitsButton.on('click', () => {
-      this.app.view.addEventListener('click', this.selectQubit);
-      this.unselectQubitsButton.visible = true;
-      this.selectQubitsButton.visible = false;
-      this.createPlaquetteButton.visible = false;
-    });
+    notification(this.app, 'Select 3+ qubits to create a plaquette');
+    this.app.view.addEventListener('click', this.selectQubit);
+    this.unselectQubitsButton.visible = true;
+    this.createPlaquetteButton.visible = false;
     this.unselectQubitsButton.on('click', () => {
       // Unselect the qubits
       this.selectedQubits.forEach((qubit) => {
@@ -60,7 +57,6 @@ export default class Footprint {
       });
       // Clear the selected qubits
       this.selectedQubits = [];
-      this.selectQubitsButton.visible = true;
       this.unselectQubitsButton.visible = false;
       this.createPlaquetteButton.visible = false;
     });
@@ -71,9 +67,7 @@ export default class Footprint {
 
     // Initialize the buttons
     this.unselectQubitsButton.visible = false;
-    this.selectQubitsButton.visible = true;
     this.createPlaquetteButton.visible = false;
-    this.workspace.addChild(this.selectQubitsButton);
     this.workspace.addChild(this.unselectQubitsButton);
     this.workspace.addChild(this.createPlaquetteButton);
   };
@@ -112,7 +106,6 @@ export default class Footprint {
     // Check if the selected qubits are 3 or more
     if (this.selectedQubits.length > 2) {
       // Show the button
-      this.selectQubitsButton.visible = false;
       this.createPlaquetteButton.visible = true;
     }
   };
@@ -141,7 +134,6 @@ export default class Footprint {
     this.selectedQubits = [];
     // Notify the user that the plaquette has been created
     notification(this.app, 'Plaquette created');
-    this.selectQubitsButton.visible = true;
     this.createPlaquetteButton.visible = false;
     this.unselectQubitsButton.visible = false;
   };
