@@ -34,7 +34,6 @@ export default class Qubit extends Position {
 		this.factor = 2; // To expand the hitarea.
 		this._createCircle(x, y, radius, Qubit.color_none);
 		// QC properties
-		this.isQubit = true;
 		this.role = 'none';
 	}
 
