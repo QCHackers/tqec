@@ -40,7 +40,6 @@ export default class Qubit extends Graphics {
     this.name = `Qubit(${x}, ${y})`;
 
     // Adjacent (degree 1) qubits
-    this.isQubit = true;
     this.visible = true;
     this.isSelected = false;
   }
