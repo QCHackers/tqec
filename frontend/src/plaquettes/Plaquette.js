@@ -6,7 +6,8 @@ import {
 import Button from '../components/Button';
 import notification from '../components/notification';
 import { CircuitLabels } from '../qubits/Qubit';
-import { createCircuitAsciiArt, CircuitForm } from './CircuitWriter';
+import { createCircuitAsciiArt, CircuitForm } from './AsciiCircuitWriter';
+import createCircuitStimCode from './StimCircuitWriter';
 
 export const PlaquetteColors = Object.freeze({
   purple: new Color('purple'),

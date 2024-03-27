@@ -1,14 +1,12 @@
-# Step-by-step coding of the frontend
+# Alternative Frontend
 
-Are you new to JavaScript, React and Pixi?  
-Do you want to contribute or simply understand the code powering the visual frontend of `tqecjs`?  
-Look no further.  
+The alternative frontend follows a different design w.r.t. the official frontend in `<repo>/frontend`.
 
-In this folder we will re-build the frontend adding a few lines of codes at a time.
-The commit message will make clear which functionality is added (or, at least, the goal is to have informative commits).
+**NOTE:** The early development of this alternative frontend is connected to the beginner's guide
+of building a project in Javascript using React and Pixi.
+The step-by-step guide can still be accessed in the form of commit history from the
+[PR #89 page](https://github.com/QCHackers/tqec/pull/89).
 
-**NOTE:** The step-by-step frontend does not exactly match the official one in the `<repo>/frontend` folder.
-This helps to better understand certain design choices while at the same time providing a playground for alternatives.
 
 
 

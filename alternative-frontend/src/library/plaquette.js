@@ -2,7 +2,7 @@
 
 import { Graphics } from 'pixi.js';
 import { convexHull } from './utils'
-import Qubit from './qubit.js'
+import { Qubit } from './qubit.js'
 import Circuit from './circuit'
 
 /////////////////////////////////////////////////////////////
@@ -20,7 +20,6 @@ export default class Plaquette extends Graphics {
         this.color = color;
         this.qubits = qubits
 		// UI properties
-		this.eventMode = 'static';
 		this.buttonMode = true;
 		this.cursor = 'pointer';
         //this.isDragging = false;
@@ -73,7 +72,7 @@ export default class Plaquette extends Graphics {
      * Start from a verical line left to the qubits.
      * Then 
 	 */
-	_createConvexHull() {
+	_createConvexHull(line_thickness = 10) {
         if (this.qubits.length === 0) return;
         // Convert the qubits in coordinate points
         let points = []
@@ -81,10 +80,11 @@ export default class Plaquette extends Graphics {
             points.push({x: qubit.globalX, y: qubit.globalY});
         });
         const hull = convexHull(points)
+        console.log(`first point of the convex hull: (${hull[0].x}, ${hull[0].y})`)
 
         // Draw convex hull
 		this.beginFill(this.color);
-        this.lineStyle(10, this.color);
+        this.lineStyle(line_thickness, this.color);
         this.moveTo(hull[0].x, hull[0].y);
         for (let i = 1; i < hull.length; i++) {
             this.lineTo(hull[i].x, hull[i].y);
