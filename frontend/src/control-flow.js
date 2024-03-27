@@ -6,7 +6,7 @@ import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
 import notification from './components/notification';
 import Grid from './graphics/Grid';
-import Template from './plaquettes/Template';
+import Footprint from './plaquettes/Footprint';
 import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
@@ -69,7 +69,7 @@ export default function InitializeControlFlow() {
       workspace.removeChild(currentControlPanel);
     }
     workspace.children
-      .filter((child) => child instanceof Template)
+      .filter((child) => child instanceof Footprint)
       .forEach((template) => {
         if (template.getPlaquettes().includes(plaquette)) {
           template.removeChild(plaquette);
@@ -172,25 +172,14 @@ export default function InitializeControlFlow() {
           qubit.visible = false;
         });
 
-        // Initialize button to make plaquettes
-        let selectedQubits = [];
-        const plaquetteButton = new Button('Create plaquette', x, y + 50);
-        const template = new Template(
-          selectedQubits,
+        // Initialize Template
+        const template = new Footprint(
           workspace,
-          plaquetteButton,
-          app
+          app,
+          x,
+          y
         );
-
-        // Create the plaquettes and template
-        plaquetteButton.on('click', () => {
-          template.createPlaquette();
-          workspace.addChild(template.container);
-          // Clear the selected qubits
-          selectedQubits = [];
-          plaquetteButton.visible = false;
-        });
-        workspace.addChild(plaquetteButton);
+        workspace.addChild(template.container);
         workspace.removeChild(finalizeBoundingQuadButton);
 
         const downloadStimButton = new DownloadButton(
