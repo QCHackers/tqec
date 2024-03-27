@@ -131,6 +131,8 @@ export default function TqecCode() {
 				workspace.addChildAt(p_type, num_background_children);
 			}
 		});
+		// FIXME: Some plaquettes in the red-delimited space may already be there.
+		//        Compose the compact representation of the code accordingly.
 	});
 
 /////////////////////////////////////////////////////////////
@@ -143,6 +145,7 @@ export default function TqecCode() {
 		if (workspace.children[num_background_children] instanceof Plaquette
 			&& !(workspace.children[num_background_children] instanceof PlaquetteType) ) {
 			workspace.removeChildAt(num_background_children);
+			// FIXME: correct the compact representation of the code!
 		}
 	});
 

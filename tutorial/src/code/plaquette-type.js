@@ -88,6 +88,7 @@ export default class PlaquetteType extends Plaquette {
         // Vertically within the cells in the guide.
         is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1] - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[1];
         is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) >= 0;
+		// FIXME: Check that the cell is still "free".
         if ( is_valid_translation === false ) {
             console.log('WARNING: Wrong translation for plaquette -> rejected')
             // Reset the position of the original plaquette

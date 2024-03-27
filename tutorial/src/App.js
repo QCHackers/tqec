@@ -46,7 +46,7 @@ function App() {
       </div>
 
       <div id="Tab-content">
-        <div id="content1" className="Tab-content">
+        <div id="content1" className="Tab-content active">
           {/*-- Content for Tab 1 -- */}
           {formattedInfoTabContent}
         </div>
@@ -85,7 +85,7 @@ function App() {
 
         </div>
 
-        <div id="content3" className="Tab-content active">
+        <div id="content3" className="Tab-content">
           {/*-- Content for Tab 3 -- */}
           <Stage width={1400} height={1100} options={{backgroundColor: 'rgb(157, 191, 145)', antialias: true}}>
             <TqecCode />
