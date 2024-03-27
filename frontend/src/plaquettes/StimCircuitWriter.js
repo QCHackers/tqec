@@ -18,8 +18,9 @@ import qubitLabels from '../qubits/Qubit';
  * @function createCircuitStimCode
  * @param {Array} data_qubits - The data qubits.
  * @param {Object} anc_qubit - The ancilla qubit.
+ * @param {boolean} [addTickMarks=false] - Add TICK marks as part of the stim code
  */
-export default function createCircuitStimCode(data_qubits, anc_qubit) {
+export default function createCircuitStimCode(data_qubits, anc_qubit, addTickMarks = false) {
   const { cx, cz } = qubitLabels;
   let lines = [];
   // Qubit coordinates.
@@ -36,11 +37,11 @@ export default function createCircuitStimCode(data_qubits, anc_qubit) {
   // In the first time step, reset the ancilla qubit.
   line = 'R ' + id_ancilla;
   lines.push(line);
-  lines.push('TICK');
+  if (addTickMarks) lines.push('TICK');
   // In the second time step, apply the Hadamard to the ancilla qubit.
   line = 'H ' + id_ancilla;
   lines.push(line);
-  lines.push('TICK');
+  if (addTickMarks) lines.push('TICK');
   // Then apply one CNOt or CZ at a time, everyone controlled by the ancilla
   // and acting on a different data qubit.
   q = 1;
@@ -50,15 +51,15 @@ export default function createCircuitStimCode(data_qubits, anc_qubit) {
     line += id_ancilla + ` ${q}`;
     q += 1;
     lines.push(line);
-    lines.push('TICK');
+    if (addTickMarks) lines.push('TICK');
   });
   // Finally, apply the Hadamard to the ancilla qubit and measure it.
   line = 'H ' + id_ancilla;
   lines.push(line);
-  lines.push('TICK');
+  if (addTickMarks) lines.push('TICK');
   line = 'MR ' + id_ancilla;
   lines.push(line);
-  lines.push('TICK');
+  if (addTickMarks) lines.push('TICK');
   // We do not add detectors at this stage.
   // Create the message
   let stim = '';
