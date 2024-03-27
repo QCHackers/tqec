@@ -1,8 +1,8 @@
-# Frontend v2
+# Alternative Frontend
 
-The frontend v2 follows an alternative design w.r.t. the frontend in `<repo>/frontend`.
+The alternative frontend follows a different design w.r.t. the official frontend in `<repo>/frontend`.
 
-**NOTE:** The early development of frontend v2 is connected to the beginner's guide
+**NOTE:** The early development of this alternative frontend is connected to the beginner's guide
 of building a project in Javascript using React and Pixi.
 The step-by-step guide can still be accessed in the form of commit history from the
 [PR #89 page](https://github.com/QCHackers/tqec/pull/89).
