@@ -22,24 +22,24 @@ import qubitLabels from '../qubits/Qubit';
  */
 export default function createCircuitStimCode(data_qubits, anc_qubit, addTickMarks = false) {
   const { cx, cz } = qubitLabels;
-  let lines = [];
+  const lines = [];
   // Qubit coordinates.
   let q = 1;
   let line = '';
   data_qubits.forEach((qubit) => {
-    line = 'QUBIT_COORDS' + qubit.name.slice(1) + ` ${q}`;
+    line = `QUBIT_COORDS${qubit.name.slice(1)} ${q}`;
     q += 1;
     lines.push(line);
   });
   const id_ancilla = `${data_qubits.length + 1}`;
-  line = 'QUBIT_COORDS' + anc_qubit.name.slice(1) + ' ' + id_ancilla;
+  line = `QUBIT_COORDS${anc_qubit.name.slice(1)} ${id_ancilla}`;
   lines.push(line);
   // In the first time step, reset the ancilla qubit.
-  line = 'R ' + id_ancilla;
+  line = `R ${id_ancilla}`;
   lines.push(line);
   if (addTickMarks) lines.push('TICK');
   // In the second time step, apply the Hadamard to the ancilla qubit.
-  line = 'H ' + id_ancilla;
+  line = `H ${id_ancilla}`;
   lines.push(line);
   if (addTickMarks) lines.push('TICK');
   // Then apply one CNOt or CZ at a time, everyone controlled by the ancilla
@@ -48,23 +48,23 @@ export default function createCircuitStimCode(data_qubits, anc_qubit, addTickMar
   data_qubits.forEach((qubit) => {
     if (qubit.role === cx) line = 'CX ';
     if (qubit.role === cz) line = 'CZ ';
-    line += id_ancilla + ` ${q}`;
+    line += `${id_ancilla} ${q}`;
     q += 1;
     lines.push(line);
     if (addTickMarks) lines.push('TICK');
   });
   // Finally, apply the Hadamard to the ancilla qubit and measure it.
-  line = 'H ' + id_ancilla;
+  line = `H ${id_ancilla}`;
   lines.push(line);
   if (addTickMarks) lines.push('TICK');
-  line = 'MR ' + id_ancilla;
+  line = `MR ${id_ancilla}`;
   lines.push(line);
   if (addTickMarks) lines.push('TICK');
   // We do not add detectors at this stage.
   // Create the message
   let stim = '';
   lines.slice(0, -1).forEach((line) => {
-    stim = stim + line + '\n';
+    stim = `${stim + line}\n`;
   });
   stim += lines[lines.length - 1];
   return stim;
