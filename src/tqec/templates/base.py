@@ -109,7 +109,7 @@ class Template(JSONEncodable):
         """
         if len(plaquette_indices) < expected_plaquettes_number:
             raise TQECException(
-                f"Calling an instanciate method that requires "
+                f"Calling an instantiate method that requires "
                 f"{expected_plaquettes_number} plaquettes, but only "
                 f"{len(plaquette_indices)} were provided."
             )
