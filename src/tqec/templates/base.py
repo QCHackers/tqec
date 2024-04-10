@@ -90,6 +90,15 @@ class Template(JSONEncodable):
         This method should be called to check that the number of plaquette indices
         provided to the ``instantiate`` method is correct.
 
+        Note:
+            Be warry when calling this method by providing ``self.expected_plaquettes_number``
+            as it is the number of expected plaquettes for the type of the self instance,
+            which might NOT be the same as the number of expected plaquette for the
+            ``instantiate`` method this method is called in (e.g., if a Template subclass `C`
+            is delegating at least part of its ``instantiate`` method to a parent class `P`,
+            ``type(self)`` will always be `C` and ``self.expected_plaquettes_number`` will
+            always be ``C.expected_plaquettes_number``, even if we are within ``S.instantiate``).
+
         Args:
             plaquette_indices: the indices provided to the ``instantiate`` method.
             expected_plaquettes_number: the number of plaquettes expected in
