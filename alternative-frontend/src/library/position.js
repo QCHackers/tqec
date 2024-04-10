@@ -26,7 +26,6 @@ export default class Position extends Graphics {
 		this.radius = radius;
 		this.factor = 3; // TO expand the hitarea.
 		this._createCircle(x, y, radius, Position.color);
-		this.isQubit = false;
 	}
 
 	_onPointerOver = () => {

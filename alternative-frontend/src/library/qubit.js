@@ -2,6 +2,7 @@
 
 import { Text } from 'pixi.js'
 import Position from './position'
+import { QUBIT_ROLES } from '../constants'
 
 /////////////////////////////////////////////////////////////
 
@@ -15,7 +16,7 @@ import Position from './position'
  * @param {number} color - Color filling the circle
  * @param {number} gridSize - Size of the underlying grid
  */
-export default class Qubit extends Position {
+class Qubit extends Position {
 	constructor(x, y, radius = 5) {
 		super();
 		// Color properties (as static fields).
@@ -35,7 +36,7 @@ export default class Qubit extends Position {
 		this._createCircle(x, y, radius, Qubit.color_none);
 		// QC properties
 		this.isQubit = true;
-		this.role = 'none';
+		this.role = QUBIT_ROLES.NONE;
 	}
 
     changeColor(color) {
@@ -44,20 +45,20 @@ export default class Qubit extends Position {
 	}
 
 	select() {
-		if (this.role === 'none') {
-		    this.role = 'x';
+		if (this.role === QUBIT_ROLES.NONE) {
+		    this.role = QUBIT_ROLES.XDATA;
 			this.changeColor(Qubit.color_x);
 			this.name = this.name.replace(/[QZA]/g, 'X');
-		} else if (this.role === 'x') {
-		    this.role = 'z';
+		} else if (this.role === QUBIT_ROLES.XDATA) {
+		    this.role = QUBIT_ROLES.ZDATA;
 			this.changeColor(Qubit.color_z);
 			this.name = this.name.replace(/[QXA]/g, 'Z');
-		} else if (this.role === 'z') {
-		    this.role = 'a';
+		} else if (this.role === QUBIT_ROLES.ZDATA) {
+		    this.role = QUBIT_ROLES.ANCILLA;
 			this.changeColor(Qubit.color_a);
 			this.name = this.name.replace(/[QXZ]/g, 'A');
-		} else if (this.role === 'a') {
-		    this.role = 'none';
+		} else if (this.role === QUBIT_ROLES.ANCILLA) {
+		    this.role = QUBIT_ROLES.NONE;
 			this.changeColor(Qubit.color_none);
 			this.name = this.name.replace(/[ZXA]/g, 'Q');
 		};
@@ -76,3 +77,6 @@ export default class Qubit extends Position {
 		this.addChild(label);
 	}
 }
+
+// Named exports.
+export { QUBIT_ROLES, Qubit };

@@ -27,7 +27,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #e42023;
   margin-bottom: 0.6cm;
 }
 
@@ -35,9 +35,39 @@
   margin: 0.4cm;
 }
 
-.Tab-content {
-  display: block; /* Hide tab content by default */
+.Tab-button {
+  margin-right: 20px; /* Add margin to the right of each tab button */
+  font-size: 18px;
+  color: #f91a1a;
+  cursor: pointer;
 }
+
+.Tab-content {
+  display: none;
+}
+
+.Tab-content.active {
+  display: block;
+}
+
+.Cell-size {
+  font-size: 18px;
+  width: 40px;
+  height: 30px;
+}
+
+.Comment-paragraph {
+  margin: 20px;
+  font-size: 18px;
+}
+
+.Text-area {
+  font-size: 18px;
+  width: 700px;
+  height: 250px;
+}
+
+
 
 @keyframes App-logo-spin {
   from {
