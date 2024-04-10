@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from tqec.enums import PlaquetteOrientation
-from tqec.plaquette.library.pauli import PauliMemoryPlaquette, pauli_memory_plaquette
+from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import RoundedPlaquetteQubits
 
@@ -19,20 +19,3 @@ def zz_memory_plaquette(
         include_detector,
         is_first_round,
     )
-
-
-class ZZMemoryPlaquette(PauliMemoryPlaquette):
-    def __init__(
-        self,
-        orientation: PlaquetteOrientation,
-        schedule: list[int],
-        include_detector: bool = True,
-        is_first_round: bool = False,
-    ):
-        super().__init__(
-            RoundedPlaquetteQubits(orientation),
-            "ZZ",
-            schedule,
-            include_detector,
-            is_first_round,
-        )
