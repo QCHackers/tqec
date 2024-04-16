@@ -112,7 +112,7 @@ def transform_to_stimcirq_compatible(
     - :class:`ShiftCoords`: converted to `stimcirq.ShiftCoordsAnnotation`.
     - :class:`Detector`: converted to `stimcirq.DetAnnotation` with the correct relative keys computed.
     - :class:`Observable`: converted to `stimcirq.CumulativeObservableAnnotation` with the correct
-    relative keys computed.
+      relative keys computed.
 
     Args:
         circuit: The circuit to transform, which may contain tqec specific
