@@ -179,3 +179,4 @@ pyvenv.cfg
 
 # Sphinx
 docs/_build
+docs/source

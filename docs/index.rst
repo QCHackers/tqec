@@ -10,8 +10,8 @@ Welcome to TQEC's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
-
+   source/modules
+   
 Indices and tables
 ==================
 
