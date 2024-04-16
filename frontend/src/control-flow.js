@@ -93,9 +93,15 @@ export default function InitializeControlFlow() {
     y
   );
   const lattice = new QubitLattice(workspace, app);
+  const cancelQubitConstellationButton = new Button(
+    'Cancel Qubit Constellation',
+    x,
+    y
+  );
   createQubitConstellationButton.on('click', () => {
     workspace.removeChild(createQubitConstellationButton);
     workspace.addChild(saveQubitConstellationButton);
+    workspace.addChild(cancelQubitConstellationButton);
     app.view.addEventListener('click', lattice.selectQubitForConstellation);
   });
 
@@ -193,6 +199,18 @@ export default function InitializeControlFlow() {
         workspace.addChild(downloadStimButton);
       });
     }
+  });
+  // Add the cancelQubitConstellationButton click event here
+  cancelQubitConstellationButton.on('click', () => {
+    // Remove the saveQubitConstellationButton and cancelQubitConstellationButton from the workspace
+    workspace.removeChild(saveQubitConstellationButton);
+    workspace.removeChild(cancelQubitConstellationButton);
+  
+    // Add back the createQubitConstellationButton to the workspace
+    workspace.addChild(createQubitConstellationButton);
+  
+    // Remove the event listener for selecting a qubit for the constellation
+    app.view.removeEventListener('click', lattice.selectQubitForConstellation);
   });
 
   // Final workspace setup
