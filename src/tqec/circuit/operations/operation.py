@@ -34,7 +34,8 @@ class ShiftCoords(cirq.Operation):
 
         Warning:
             you should use `make_shift_coords` to create instances of this class.
-            If you do not, read attentively the documentation below.
+            To understand how to use this class directly, please refer to the
+            documentation above.
 
         Args:
             *shifts: How much to shift each coordinate.
@@ -175,8 +176,8 @@ class Detector(RelativeMeasurementsRecord):
 
         Warning:
             you should use `make_detector` to create instances of this class.
-            If you do not, read attentively the documentation below.
-
+            To understand how to use this class directly, please refer to the
+            documentation above.
         Args:
             local_coordinate_system_origin: origin of the local coordinate
                 system. The origin along with the local coordinate system will
@@ -231,8 +232,8 @@ class Observable(RelativeMeasurementsRecord):
 
         Warning:
             you should use `make_observable` to create instances of this class.
-            If you do not, read attentively the documentation below.
-
+            To understand how to use this class directly, please refer to the
+            documentation above.
         Args:
             local_coordinate_system_origin: origin of the local coordinate
                 system. The origin along with the local coordinate system will
