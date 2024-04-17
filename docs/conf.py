@@ -59,6 +59,13 @@ source_suffix = {
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
+# See https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
+html_theme_options = {
+    "style_external_links": True,
+    "navigation_depth": 4,
+}
+
+
 # -- Options for Napoleon extension ------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
 napoleon_google_docstring = True
