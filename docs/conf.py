@@ -6,6 +6,7 @@
 # -- Updating sys.path to let autodoc find the tqec package ------------------
 import sys
 from pathlib import Path
+import typing as ty
 
 DOCUMENTATION_DIRECTORY = Path(__file__).parent
 PROJECT_DIRECTORY = DOCUMENTATION_DIRECTORY.parent
@@ -53,6 +54,11 @@ source_suffix = {
     ".md": "markdown",
 }
 
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-maximum_signature_line_length
+# maximum_signature_line_length = 150
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-add_module_names
+add_module_names = False
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
@@ -82,3 +88,29 @@ napoleon_use_rtype = True
 napoleon_preprocess_types = False
 napoleon_type_aliases = None
 napoleon_attr_annotations = True
+
+# -- Options for autodoc extension -------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
+
+
+# Do not document tests.
+def autodoc_skip_member_handler(
+    app,
+    what: ty.Literal["module", "class", "exception", "function", "method", "attribute"],
+    name: str,
+    obj,
+    skip: bool,
+    options,
+) -> bool | None:
+    # Skips test files
+    if name.startswith("test_"):
+        return True
+    # Any non-test file is left to other filters.
+    return None
+
+
+# Automatically called by sphinx at startup
+# From https://stackoverflow.com/a/53888481
+def setup(app):
+    # Connect the autodoc-skip-member event from apidoc to the callback
+    app.connect("autodoc-skip-member", autodoc_skip_member_handler)
