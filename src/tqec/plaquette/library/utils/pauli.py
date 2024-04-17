@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import cirq
 from tqec.exceptions import TQECException
+from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
 
 _SUPPORTED_PAULI: set[str] = set("xz")
@@ -53,7 +54,7 @@ def make_pauli_syndrome_measurement_circuit(
 
     circuit = cirq.Circuit()
     if reset_syndrome_qubit:
-        circuit.append(cirq.Moment(cirq.R(sq)))
+        circuit.append(cirq.Moment(cirq.R(sq).with_tags(Plaquette._MERGEABLE_TAG)))
 
     is_in_X_basis: bool = False
     for i, pauli in enumerate(pauli_string.lower()):
