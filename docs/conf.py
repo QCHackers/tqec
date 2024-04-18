@@ -3,10 +3,12 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+from __future__ import annotations
+
 # -- Updating sys.path to let autodoc find the tqec package ------------------
 import sys
-from pathlib import Path
 import typing as ty
+from pathlib import Path
 
 DOCUMENTATION_DIRECTORY = Path(__file__).parent
 PROJECT_DIRECTORY = DOCUMENTATION_DIRECTORY.parent
