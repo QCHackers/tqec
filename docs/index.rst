@@ -1,23 +1,15 @@
 TQEC
 ====
 
-The TQEC (for Topological Quantum Error Correction) project aims at implementing 
-the right tools to help engineers and researchers working on quantum error correction
-building codes in practice and experimenting.
-
-It is composed of two sub-projects:
-
-1. a frontend, implemented mostly in Javascript and available at 
-   `https://tqec.app/ <https://tqec.app/>`_,
-2. a backend, implemented in Python.
-
-This documentation is, for the moment, only about the backend. The frontend 
-documentation might eventually be added.
+.. See https://stackoverflow.com/a/69134918 and
+.. https://myst-parser.readthedocs.io/en/latest/faq/index.html#include-markdown-files-into-an-rst-file
+.. include:: ../README.md
+   :parser: myst_parser.sphinx_
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
    source/tqec
    
 Indices and tables
