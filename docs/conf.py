@@ -105,7 +105,7 @@ def autodoc_skip_member_handler(
     options,
 ) -> bool | None:
     # Skips test files
-    if name.startswith("test_"):
+    if name.startswith("test_") or name.endswith("_test"):
         return True
     # Any non-test file is left to other filters.
     return None
