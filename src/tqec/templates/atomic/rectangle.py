@@ -1,5 +1,6 @@
 import typing as ty
 
+import cirq
 import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
@@ -89,6 +90,28 @@ class AlternatingRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return 2
+
+    def default_observable_qubits(
+        self, horizontal: bool = True
+    ) -> ty.Sequence[tuple[cirq.GridQubit, int]]:
+        observable_qubits = []
+        if horizontal:
+            midline = self._height.value + 2
+            for i in range(
+                -1,
+                self._width.value * self._default_increments.x,
+                self._default_increments.x,
+            ):
+                observable_qubits.append((cirq.GridQubit(i, midline), 0))
+            return observable_qubits
+        midline = self._width.value + 2
+        for i in range(
+            -1,
+            self._height.value * self._default_increments.y,
+            self._default_increments.y,
+        ):
+            observable_qubits.append((cirq.GridQubit(midline, i), 0))
+        return observable_qubits
 
 
 @ty.final
@@ -202,3 +225,23 @@ class RawRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
+
+    def default_observable_qubits(
+        self, horizontal: bool = True
+    ) -> ty.Sequence[tuple[cirq.GridQubit, int]]:
+        observable_qubits = []
+        if horizontal:
+            midline = self.shape.y + 1
+            for i in range(
+                -1,
+                self.shape.x * self._default_increments.x,
+                self._default_increments.x,
+            ):
+                observable_qubits.append((cirq.GridQubit(i, midline), 0))
+            return observable_qubits
+        midline = self.shape.x + 1
+        for i in range(
+            -1, self.shape.y * self._default_increments.y, self._default_increments.y
+        ):
+            observable_qubits.append((cirq.GridQubit(midline, i), 0))
+        return observable_qubits
