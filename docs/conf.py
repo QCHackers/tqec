@@ -116,3 +116,6 @@ def autodoc_skip_member_handler(
 def setup(app):
     # Connect the autodoc-skip-member event from apidoc to the callback
     app.connect("autodoc-skip-member", autodoc_skip_member_handler)
+
+
+autoclass_content = "init"
