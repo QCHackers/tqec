@@ -5,7 +5,6 @@ import typing as ty
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-import cirq
 import numpy
 
 from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
@@ -162,19 +161,22 @@ class Template(JSONEncodable):
         pass
 
     @abstractmethod
-    def default_observable_qubits(
-        self, horizontal: bool = True
-    ) -> ty.Sequence[tuple[cirq.GridQubit, int]]:
+    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
         """Returns the default observable qubits for the template.
 
-        If the template has a simple shape, this returns the qubits on the ``midline''
+        If the template has a simple shape, this returns the plaquettes on the ``midline''
         of the template.
+        By convention, it returns the plaquettes above the midline for the horizontal case
+        and to the left of the midline for the vertical case.
 
         Args:
             horizontal (bool, optional): Horizontal or vertical qubits. Defaults to True.
 
         Returns:
-            ty.Sequence[tuple[cirq.GridQubit, int]]: The sequence of qubits and offsets.
+            list[tuple[int,int]]: The sequence of qubits and offsets.
+
+        Raises:
+            TQECException: If the midline is not uniquely defined.
         """
 
     def to_dict(self) -> dict[str, ty.Any]:
