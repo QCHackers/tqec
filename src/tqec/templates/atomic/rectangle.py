@@ -1,6 +1,5 @@
 import typing as ty
 
-import cirq
 import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
@@ -91,27 +90,8 @@ class AlternatingRectangleTemplate(Template):
     def expected_plaquettes_number(self) -> int:
         return 2
 
-    def default_observable_qubits(
-        self, horizontal: bool = True
-    ) -> ty.Sequence[tuple[cirq.GridQubit, int]]:
-        observable_qubits = []
-        if horizontal:
-            midline = self._height.value + 2
-            for i in range(
-                -1,
-                self._width.value * self._default_increments.x,
-                self._default_increments.x,
-            ):
-                observable_qubits.append((cirq.GridQubit(i, midline), 0))
-            return observable_qubits
-        midline = self._width.value + 2
-        for i in range(
-            -1,
-            self._height.value * self._default_increments.y,
-            self._default_increments.y,
-        ):
-            observable_qubits.append((cirq.GridQubit(midline, i), 0))
-        return observable_qubits
+    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
+        raise TQECException("AlternatingRectangleTemplate does not have a midline yet.")
 
 
 @ty.final
@@ -202,15 +182,15 @@ class RawRectangleTemplate(Template):
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
             indices = numpy.array(self._indices, dtype=int)
             return plaquette_indices_array[indices]
-        except IndexError:
+        except IndexError as ex:
             raise TQECException(
                 "RawRectangleTemplate instances should be constructed with 2-dimensional arrays "
                 "that contain indices that will index the plaquette_indices provided to "
-                "this method. The bigest index you provided at this instance creation is "
+                "this method. The biggest index you provided at this instance creation is "
                 f"{max(max(index) for index in self._indices)} "
                 f"but you provided only {len(plaquette_indices)} plaquette indices "
                 "when calling this method."
-            )
+            ) from ex
 
     def scale_to(self, _: int) -> "RawRectangleTemplate":
         return self
@@ -226,22 +206,15 @@ class RawRectangleTemplate(Template):
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
 
-    def default_observable_qubits(
-        self, horizontal: bool = True
-    ) -> ty.Sequence[tuple[cirq.GridQubit, int]]:
-        observable_qubits = []
+    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
         if horizontal:
-            midline = self.shape.y + 1
-            for i in range(
-                -1,
-                self.shape.x * self._default_increments.x,
-                self._default_increments.x,
-            ):
-                observable_qubits.append((cirq.GridQubit(i, midline), 0))
-            return observable_qubits
-        midline = self.shape.x + 1
-        for i in range(
-            -1, self.shape.y * self._default_increments.y, self._default_increments.y
-        ):
-            observable_qubits.append((cirq.GridQubit(midline, i), 0))
-        return observable_qubits
+            if self.shape.y % 2 == 1:
+                raise TQECException("Midline is not defined for odd height.")
+            midline = self.shape.y // 2 - 1
+            indices = self._indices[midline]
+            return [(midline, column ) for column, _ in enumerate(indices)]
+
+        if self.shape.x % 2 == 1:
+            raise TQECException("Midline is not defined for odd width.")
+        midline = self.shape.x // 2 - 1
+        return [(row, midline) for row in range(self.shape.y)]
