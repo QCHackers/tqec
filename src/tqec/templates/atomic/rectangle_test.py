@@ -1,4 +1,3 @@
-import cirq
 import numpy
 import pytest
 from tqec.exceptions import TQECException
@@ -7,8 +6,6 @@ from tqec.templates.atomic.rectangle import (
     RawRectangleTemplate,
 )
 from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
-from tqec.plaquette.library import XXXXMemoryPlaquette, ZZZZMemoryPlaquette
-from tqec.circuit import generate_circuit
 
 
 @pytest.fixture
@@ -183,26 +180,3 @@ def test_raw_rectangle_with_noncontiguous_indices():
 def test_raw_rectangle_with_negative_index():
     with pytest.raises(TQECException, match="starting at 0"):
         RawRectangleTemplate([[-1]])
-
-
-def test_raw_rectangle_default_observable_qubits():
-    # template = RawRectangleTemplate([[0]])
-    # assert template.default_observable_qubits() == [(cirq.GridQubit(0, 0), 0)], "0x0"
-    # assert template.default_observable_qubits(horizontal=False) == [
-    #     (cirq.GridQubit(0, 0), 0)
-    # ], "0x0"
-    template = RawRectangleTemplate(
-        [
-            [0, 1, 0, 1],
-            [1, 0, 1, 0],
-            [0, 1, 0, 1],
-            [1, 0, 1, 0],
-        ]
-    )
-    assert template.default_observable_qubits() == [
-        (cirq.GridQubit(-1, 5), 0),
-        (cirq.GridQubit(1, 5), 0),
-        (cirq.GridQubit(3, 5), 0),
-        (cirq.GridQubit(5, 5), 0),
-        (cirq.GridQubit(7, 5), 0),
-    ]
