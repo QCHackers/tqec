@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "assert": "^2.1.0",
     "axios": "^1.6.7",
+    "cypress": "^13.8.1",
     "install": "^0.13.0",
     "npm": "^10.2.5",
     "pixi-filters": "^5.2.1",
