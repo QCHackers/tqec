@@ -3,7 +3,7 @@ import pytest
 
 from tqec.circuit.circuit import generate_circuit
 from tqec.exceptions import TQECException
-from tqec.plaquette.library import ZSquareInitialisationPlaquette
+from tqec.plaquette.library import z_initialisation_square_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.atomic.rectangle import RawRectangleTemplate
 from tqec.templates.base import Template
@@ -11,7 +11,7 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def initialisation_plaquette() -> Plaquette:
-    return ZSquareInitialisationPlaquette()
+    return z_initialisation_square_plaquette()
 
 
 @pytest.fixture
