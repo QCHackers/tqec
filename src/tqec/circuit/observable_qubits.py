@@ -18,10 +18,9 @@ def observable_qubits_from_template(
     """Return the default observable qubits for the given template and its plaquettes.
 
     Args:
-        template (Template): The template to get the default observable qubits from.
-        plaquettes (list[Plaquette] | dict[int, Plaquette]): The plaquettes to use to get the
-        acurate positions of the observable qubits.
-        horizontal (bool, optional): Whether to get the observable qubits from
+        template: The template to get the default observable qubits from.
+        plaquettes: The plaquettes to use to get the acurate positions of the observable qubits.
+        horizontal: Whether to get the observable qubits from
             the horizontal or vertical midline. Defaults to True -> Horizontal.
 
     Raises:
@@ -30,7 +29,7 @@ def observable_qubits_from_template(
         TQECException: If the template does not have a definable midline.
 
     Returns:
-        Sequence[tuple[cirq.GridQubit, int]]
+        The sequence of qubits and offsets for the observable qubits.
     """
     if len(plaquettes) != template.expected_plaquettes_number:
         raise TQECException(

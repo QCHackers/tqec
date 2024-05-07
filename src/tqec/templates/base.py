@@ -176,10 +176,10 @@ class Template(JSONEncodable):
         and to the left of the midline for the vertical case.
 
         Args:
-            horizontal (bool, optional): Horizontal or vertical qubits. Defaults to True.
+            horizontal: Horizontal or vertical qubits. Defaults to True.
 
         Returns:
-            list[tuple[int,int]]: The sequence of qubits and offsets.
+            The sequence of qubits and offsets.
 
         Raises:
             TQECException: If the midline is not uniquely defined.
