@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.templates.base &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.templates.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.templates.base</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
+
+
+<span class="k">def</span> <span class="nf">_json_encoding_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define additional defaults to transform instances to JSON.</span>
+
+<span class="sd">    This function is given as parameter to json.dumps to provide a</span>
+<span class="sd">    way to translate the enumerations used by some templates to JSON</span>
+<span class="sd">    data.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: if an instance of a unimplemented type is provided as</span>
+<span class="sd">            parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not encodable in JSON&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="JSONEncodable">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable">[docs]</a>
+<span class="k">class</span> <span class="nc">JSONEncodable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="JSONEncodable.to_dict">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable.to_dict">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict-like representation of the instance.</span>
+
+<span class="sd">        Used to implement to_json.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="JSONEncodable.to_json">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable.to_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs: keyword arguments forwarded to the json.dumps function.</span>
+<span class="sd">                The &quot;default&quot; keyword argument should NOT be present.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the JSON representation of the instance.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the &quot;default&quot; key is present in kwargs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;default&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The &#39;default&#39; key has been found with value &#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; in the provided kwargs.&quot;</span>
+                <span class="s2">&quot; &#39;default&#39; key is prohibited in the public API as it is changed internally.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="n">_json_encoding_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Template">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template">[docs]</a>
+<span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="n">JSONEncodable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">default_x_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_y_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base class for all the templates.</span>
+
+<span class="sd">        This class is the base of all templates and provide the necessary interface</span>
+<span class="sd">        that all templates should implement to be usable by the library.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default_x_increment: default increment in the x direction between</span>
+<span class="sd">                two plaquettes.</span>
+<span class="sd">            default_y_increment: default increment in the y direction between</span>
+<span class="sd">                two plaquettes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
+            <span class="n">default_x_increment</span><span class="p">,</span> <span class="n">default_y_increment</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_plaquette_number</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">expected_plaquettes_number</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks the number of provided plaquettes.</span>
+
+<span class="sd">        This method should be called to check that the number of plaquette indices</span>
+<span class="sd">        provided to the ``instantiate`` method is correct.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Be warry when calling this method by providing ``self.expected_plaquettes_number``</span>
+<span class="sd">            as it is the number of expected plaquettes for the type of the self instance,</span>
+<span class="sd">            which might NOT be the same as the number of expected plaquette for the</span>
+<span class="sd">            ``instantiate`` method this method is called in (e.g., if a Template subclass `C`</span>
+<span class="sd">            is delegating at least part of its ``instantiate`` method to a parent class `P`,</span>
+<span class="sd">            ``type(self)`` will always be `C` and ``self.expected_plaquettes_number`` will</span>
+<span class="sd">            always be ``C.expected_plaquettes_number``, even if we are within ``S.instantiate``).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plaquette_indices: the indices provided to the ``instantiate`` method.</span>
+<span class="sd">            expected_plaquettes_number: the number of plaquettes expected in</span>
+<span class="sd">                ``plaquette_indices``.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECError: when there is not enough plaquette indices to instantiate</span>
+<span class="sd">                the ``Template`` instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">expected_plaquettes_number</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Calling an instantiate method that requires &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expected_plaquettes_number</span><span class="si">}</span><span class="s2"> plaquettes, but only &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> were provided.&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Template.instantiate">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.instantiate">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the numpy array representing the template.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plaquette_indices: the plaquette indices that will be forwarded to</span>
+<span class="sd">                the underlying Shape instance&#39;s instantiate method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a numpy array with the given plaquette indices arranged according to</span>
+<span class="sd">            the underlying shape of the template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Template.scale_to">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.scale_to">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Template&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales self to the given scale k.</span>
+
+<span class="sd">        Note that this function scales the template instance INLINE. Rephrasing, the</span>
+<span class="sd">        instance on which this method is called is modified in-place AND returned.</span>
+
+<span class="sd">        The input parameter ``k`` corresponds to an abstract scale that may be</span>
+<span class="sd">        forwarded to</span>
+
+<span class="sd">        1. various :class:`Dimension` instances,</span>
+<span class="sd">        2. other :class:`Template` instances in the case of templates modifying</span>
+<span class="sd">           existing instances,</span>
+<span class="sd">        3. anything else that the subclass might implement.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: the new scale of the template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            self, once scaled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current template shape.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the shape of the template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Template.to_dict">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict-like representation of the instance.</span>
+
+<span class="sd">        Used to implement to_json.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.__class__ is the type of the instance this method is called on, taking into</span>
+        <span class="c1"># account inheritance. So this is not always &quot;Template&quot; here, as a subclass of</span>
+        <span class="c1"># Template could use this method and self.__class__ would be this subclass type.</span>
+        <span class="c1"># This is intentional.</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s2">&quot;default_increments&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of plaquettes expected from the `instantiate` method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the number of plaquettes expected from the `instantiate` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Template.get_increments">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.get_increments">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_increments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Displacement</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the default increments of the template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a displacement of the default increments in the x and y directions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TemplateWithIndices">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.TemplateWithIndices">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TemplateWithIndices</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper around a Template instance and the indices representing the plaquettes</span>
+<span class="sd">    it should be instantiated with.&quot;&quot;&quot;</span>
+
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Creating a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> instance with the template &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="si">}</span><span class="s2"> (that requires </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;plaquette indices) and a non-matching number of plaquette indices &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot have negative plaquette indices. Found a negative index &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

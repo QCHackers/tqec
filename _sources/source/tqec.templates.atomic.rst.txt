@@ -1,0 +1,29 @@
+tqec.templates.atomic package
+=============================
+
+Submodules
+----------
+
+tqec.templates.atomic.rectangle module
+--------------------------------------
+
+.. automodule:: tqec.templates.atomic.rectangle
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.atomic.square module
+-----------------------------------
+
+.. automodule:: tqec.templates.atomic.square
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.templates.atomic
+   :members:
+   :undoc-members:
+   :show-inheritance:

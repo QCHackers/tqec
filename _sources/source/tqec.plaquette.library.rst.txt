@@ -1,0 +1,77 @@
+tqec.plaquette.library package
+==============================
+
+Submodules
+----------
+
+tqec.plaquette.library.empty module
+-----------------------------------
+
+.. automodule:: tqec.plaquette.library.empty
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.initialisation module
+--------------------------------------------
+
+.. automodule:: tqec.plaquette.library.initialisation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.measurement module
+-----------------------------------------
+
+.. automodule:: tqec.plaquette.library.measurement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.pauli module
+-----------------------------------
+
+.. automodule:: tqec.plaquette.library.pauli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.xx module
+--------------------------------
+
+.. automodule:: tqec.plaquette.library.xx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.xxxx module
+----------------------------------
+
+.. automodule:: tqec.plaquette.library.xxxx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.zz module
+--------------------------------
+
+.. automodule:: tqec.plaquette.library.zz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.library.zzzz module
+----------------------------------
+
+.. automodule:: tqec.plaquette.library.zzzz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.plaquette.library
+   :members:
+   :undoc-members:
+   :show-inheritance:

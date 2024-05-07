@@ -1,0 +1,70 @@
+tqec.templates package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tqec.templates.atomic
+   tqec.templates.constructions
+
+Submodules
+----------
+
+tqec.templates.base module
+--------------------------
+
+.. automodule:: tqec.templates.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.composed module
+------------------------------
+
+.. automodule:: tqec.templates.composed
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.display module
+-----------------------------
+
+.. automodule:: tqec.templates.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.scale module
+---------------------------
+
+.. automodule:: tqec.templates.scale
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.shifted module
+-----------------------------
+
+.. automodule:: tqec.templates.shifted
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.stack module
+---------------------------
+
+.. automodule:: tqec.templates.stack
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.plaquette package &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.plaquette.library package" href="tqec.plaquette.library.html" />
+    <link rel="prev" title="tqec.noise_models package" href="tqec.noise_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.html">tqec.circuit package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.plaquette package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.plaquette.plaquette">tqec.plaquette.plaquette module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.plaquette.qubit">tqec.plaquette.qubit module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.plaquette">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.html">tqec.templates package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.enums">tqec.enums module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.exceptions">tqec.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.position">tqec.position module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec package</a></li>
+      <li class="breadcrumb-item active">tqec.plaquette package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/tqec.plaquette.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-plaquette-package">
+<h1>tqec.plaquette package<a class="headerlink" href="#tqec-plaquette-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tqec.plaquette.library.html">tqec.plaquette.library package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.empty">tqec.plaquette.library.empty module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.empty.empty_plaquette"><code class="docutils literal notranslate"><span class="pre">empty_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.empty.empty_rounded_plaquette"><code class="docutils literal notranslate"><span class="pre">empty_rounded_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.empty.empty_square_plaquette"><code class="docutils literal notranslate"><span class="pre">empty_square_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.initialisation">tqec.plaquette.library.initialisation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.x_initialisation_plaquette"><code class="docutils literal notranslate"><span class="pre">x_initialisation_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.x_initialisation_rounded_plaquette"><code class="docutils literal notranslate"><span class="pre">x_initialisation_rounded_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.x_initialisation_square_plaquette"><code class="docutils literal notranslate"><span class="pre">x_initialisation_square_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.z_initialisation_plaquette"><code class="docutils literal notranslate"><span class="pre">z_initialisation_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.z_initialisation_rounded_plaquette"><code class="docutils literal notranslate"><span class="pre">z_initialisation_rounded_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.initialisation.z_initialisation_square_plaquette"><code class="docutils literal notranslate"><span class="pre">z_initialisation_square_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.measurement">tqec.plaquette.library.measurement module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.measurement.measurement_plaquette"><code class="docutils literal notranslate"><span class="pre">measurement_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.measurement.measurement_rounded_plaquette"><code class="docutils literal notranslate"><span class="pre">measurement_rounded_plaquette()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.measurement.measurement_square_plaquette"><code class="docutils literal notranslate"><span class="pre">measurement_square_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.pauli">tqec.plaquette.library.pauli module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.pauli_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">pauli_memory_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.xx">tqec.plaquette.library.xx module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.xx.xx_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">xx_memory_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.xxxx">tqec.plaquette.library.xxxx module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.xxxx.xxxx_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">xxxx_memory_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.zz">tqec.plaquette.library.zz module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.zz.zz_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">zz_memory_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.zzzz">tqec.plaquette.library.zzzz module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.zzzz.zzzz_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">zzzz_memory_plaquette()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tqec.plaquette.plaquette">
+<span id="tqec-plaquette-plaquette-module"></span><h2>tqec.plaquette.plaquette module<a class="headerlink" href="#module-tqec.plaquette.plaquette" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plaquette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a QEC plaquette</p>
+<p>This class stores qubits in the plaquette local coordinate system and a scheduled
+circuit that should be applied on those qubits to perform the QEC experiment.</p>
+<p>By convention, the local plaquette coordinate system is composed of a X-axis pointing
+to the right and a Y-axis pointing down.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qubits</strong> – qubits used by the plaquette circuit, given in the local
+plaquette coordinate system.</p></li>
+<li><p><strong>circuit</strong> – scheduled quantum circuit implementing the computation that
+the plaquette should represent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit uses qubits not in the list of
+    PlaquetteQubit.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.circuit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">circuit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></em><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.circuit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.get_mergeable_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_mergeable_tag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette.get_mergeable_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.get_mergeable_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Position" title="tqec.position.Position"><span class="pre">Position</span></a></em><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.origin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.qubits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></em><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tqec.plaquette.qubit">
+<span id="tqec-plaquette-qubit-module"></span><h2>tqec.plaquette.qubit module<a class="headerlink" href="#module-tqec.plaquette.qubit" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PlaquetteQubit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position" title="tqec.position.Position"><span class="pre">Position</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubit" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Defines a qubit in the plaquette coordinate system</p>
+<p>This class initially had more attributes, which ended-up being flagged
+as superfluous and so have been removed.
+For now, it only stores the position of the qubit in the plaquette
+coordinate system and implements an helper method to get a cirq.GridQubit
+instance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubit.position">
+<span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Position" title="tqec.position.Position"><span class="pre">Position</span></a></em><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubit.position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubit.to_grid_qubit">
+<span class="sig-name descname"><span class="pre">to_grid_qubit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GridQubit</span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubit.to_grid_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubit.to_grid_qubit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PlaquetteQubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'list[PlaquetteQubit]'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syndrome_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'list[PlaquetteQubit]'</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.data_qubits">
+<span class="sig-name descname"><span class="pre">data_qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.data_qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_data_qubits">
+<span class="sig-name descname"><span class="pre">get_data_qubits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_data_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_data_qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_data_qubits_cirq">
+<span class="sig-name descname"><span class="pre">get_data_qubits_cirq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">GridQubit</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_data_qubits_cirq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_data_qubits_cirq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits">
+<span class="sig-name descname"><span class="pre">get_syndrome_qubits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_syndrome_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits_cirq">
+<span class="sig-name descname"><span class="pre">get_syndrome_qubits_cirq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">GridQubit</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_syndrome_qubits_cirq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits_cirq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.permute_data_qubits">
+<span class="sig-name descname"><span class="pre">permute_data_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permutation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.permute_data_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.permute_data_qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.syndrome_qubits">
+<span class="sig-name descname"><span class="pre">syndrome_qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.syndrome_qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.to_grid_qubit">
+<span class="sig-name descname"><span class="pre">to_grid_qubit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">GridQubit</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.to_grid_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.to_grid_qubit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.RoundedPlaquetteQubits">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RoundedPlaquetteQubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.PlaquetteOrientation" title="tqec.enums.PlaquetteOrientation"><span class="pre">PlaquetteOrientation</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#RoundedPlaquetteQubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.RoundedPlaquetteQubits" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlaquetteQubits</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.SquarePlaquetteQubits">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SquarePlaquetteQubits</span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#SquarePlaquetteQubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.SquarePlaquetteQubits" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlaquetteQubits</span></code></a></p>
+</dd></dl>
+
+</section>
+<section id="module-tqec.plaquette">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tqec.plaquette" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.noise_models.html" class="btn btn-neutral float-left" title="tqec.noise_models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.plaquette.library.html" class="btn btn-neutral float-right" title="tqec.plaquette.library package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

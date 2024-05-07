@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.templates package &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.templates.atomic package" href="tqec.templates.atomic.html" />
+    <link rel="prev" title="tqec.plaquette.library package" href="tqec.plaquette.library.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.html">tqec.circuit package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.templates package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.base">tqec.templates.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.composed">tqec.templates.composed module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.display">tqec.templates.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.scale">tqec.templates.scale module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.shifted">tqec.templates.shifted module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates.stack">tqec.templates.stack module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tqec.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.enums">tqec.enums module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.exceptions">tqec.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.position">tqec.position module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec package</a></li>
+      <li class="breadcrumb-item active">tqec.templates package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/tqec.templates.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-templates-package">
+<h1>tqec.templates package<a class="headerlink" href="#tqec-templates-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tqec.templates.atomic.html">tqec.templates.atomic package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#module-tqec.templates.atomic.rectangle">tqec.templates.atomic.rectangle module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.instantiate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.scale_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.shape"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.shape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.to_dict"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.instantiate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.scale_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.shape"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.shape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.to_dict"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#module-tqec.templates.atomic.square">tqec.templates.atomic.square module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.instantiate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.scale_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.shape"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.shape</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingSquareTemplate"><code class="docutils literal notranslate"><span class="pre">AlternatingSquareTemplate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#module-tqec.templates.atomic">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tqec.templates.constructions.html">tqec.templates.constructions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions.corner">tqec.templates.constructions.corner module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.corner.ScalableCorner"><code class="docutils literal notranslate"><span class="pre">ScalableCorner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions.qubit">tqec.templates.constructions.qubit module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tqec.templates.base">
+<span id="tqec-templates-base-module"></span><h2>tqec.templates.base module<a class="headerlink" href="#module-tqec.templates.base" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.base.JSONEncodable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">JSONEncodable</span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#JSONEncodable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.JSONEncodable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.JSONEncodable.to_dict">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#JSONEncodable.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.JSONEncodable.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict-like representation of the instance.</p>
+<p>Used to implement to_json.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.JSONEncodable.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#JSONEncodable.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.JSONEncodable.to_json" title="Link to this definition"></a></dt>
+<dd><p>Returns a JSON representation of the instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments forwarded to the json.dumps function.
+The “default” keyword argument should NOT be present.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the JSON representation of the instance.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the “default” key is present in kwargs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.base.Template">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.templates.base.JSONEncodable" title="tqec.templates.base.JSONEncodable"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncodable</span></code></a></p>
+<p>Base class for all the templates.</p>
+<p>This class is the base of all templates and provide the necessary interface
+that all templates should implement to be usable by the library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>default_x_increment</strong> – default increment in the x direction between
+two plaquettes.</p></li>
+<li><p><strong>default_y_increment</strong> – default increment in the y direction between
+two plaquettes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.expected_plaquettes_number">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.base.Template.expected_plaquettes_number" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.get_increments">
+<span class="sig-name descname"><span class="pre">get_increments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.get_increments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.get_increments" title="Link to this definition"></a></dt>
+<dd><p>Get the default increments of the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a displacement of the default increments in the x and y directions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.instantiate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.instantiate" title="Link to this definition"></a></dt>
+<dd><p>Generate the numpy array representing the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plaquette_indices</strong> – the plaquette indices that will be forwarded to
+the underlying Shape instance’s instantiate method.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a numpy array with the given plaquette indices arranged according to
+the underlying shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.scale_to">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.scale_to" title="Link to this definition"></a></dt>
+<dd><p>Scales self to the given scale k.</p>
+<p>Note that this function scales the template instance INLINE. Rephrasing, the
+instance on which this method is called is modified in-place AND returned.</p>
+<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
+forwarded to</p>
+<ol class="arabic simple">
+<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
+<li><p>other <a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instances in the case of templates modifying
+existing instances,</p></li>
+<li><p>anything else that the subclass might implement.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>self, once scaled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.shape">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.base.Template.shape" title="Link to this definition"></a></dt>
+<dd><p>Returns the current template shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict-like representation of the instance.</p>
+<p>Used to implement to_json.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.base.TemplateWithIndices">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateWithIndices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/base.html#TemplateWithIndices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.TemplateWithIndices" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper around a Template instance and the indices representing the plaquettes
+it should be instantiated with.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.base.TemplateWithIndices.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.base.TemplateWithIndices.indices" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.base.TemplateWithIndices.template">
+<span class="sig-name descname"><span class="pre">template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></em><a class="headerlink" href="#tqec.templates.base.TemplateWithIndices.template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.composed">
+<span id="tqec-templates-composed-module"></span><h2>tqec.templates.composed module<a class="headerlink" href="#module-tqec.templates.composed" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ComposedTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.base.TemplateWithIndices" title="tqec.templates.base.TemplateWithIndices"><span class="pre">TemplateWithIndices</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a></p>
+<p>Manages templates positioned relatively to each other.</p>
+<p>This class manages a list of user-provided templates and user-provided relative
+positions to build and scale quantum error correction code.</p>
+<p>Template instances are stored in an ordered list. Relative positioning of these
+templates are stored in an oriented graph with:
+- vertices that are integers, representing indices of Template instances stored</p>
+<blockquote>
+<div><p>in the ordered list stored alongside the graph,</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>edges that are connecting two vertices (i.e., two Template instances) that
+are relatively positionned between each other.</p></li>
+</ul>
+<p>The relative position is internally stored as a tuple of corners that should
+represent the same underlying qubit. Each edge between vertices A and B should
+have a “weight” (as per networkx definition of the term) under the key
+“relative_position” that is a <code class="docutils literal notranslate"><span class="pre">tuple[CornerPositionEnum,</span> <span class="pre">CornerPositionEnum]</span></code>.
+If an edge from A to B has a “relative_position” weight of (corner1, corner2),
+that means that corner1 over the template A and corner2 of the template B are
+on the same location (i.e., same physical qubit).</p>
+<p>The main logic in this class is located in the (private) method
+<code class="docutils literal notranslate"><span class="pre">_compute_ul_absolute_position</span></code> that, as its name indicate, computes the upper-left
+absolute position of each template (i.e., absolute position of the upper-left
+corner of each template).</p>
+<dl>
+<dt>The coordinate system used internally by this class is:</dt><dd><blockquote>
+<div><p>x-axis</p>
+</div></blockquote>
+<p>0 ————&gt;
+|</p>
+</dd>
+</dl>
+<p>y |
+| |
+a |
+x |
+i |
+s |</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>V</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>templates</strong> – a list of templates forwarded to the <code class="docutils literal notranslate"><span class="pre">add_templates</span></code> method
+at the end of instance initialisation.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if the templates provided have different default
+    increments.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_corner_relation">
+<span class="sig-name descname"><span class="pre">add_corner_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_corner_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_corner_relation" title="Link to this definition"></a></dt>
+<dd><p>Add a relative positioning between two templates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template_id_to_position_corner</strong> – a tuple containing the index of the
+template that should be positionned relatively to the provided
+anchor and the corner that should be considered.</p></li>
+<li><p><strong>anchor_id_corner</strong> – a tuple containing the index of the (anchor)
+template that should be used to position the template instance
+provided in the first parameter, and the corner that should be
+considered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code>, to be able to chain calls to this method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_relation">
+<span class="sig-name descname"><span class="pre">add_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateRelativePositionEnum" title="tqec.enums.TemplateRelativePositionEnum"><span class="pre">TemplateRelativePositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_relation" title="Link to this definition"></a></dt>
+<dd><p>Add a relative positioning between two templates.</p>
+<p>This method has the same effect as <code class="docutils literal notranslate"><span class="pre">add_corner_relation</span></code> (it
+internally calls it), but provide another interface to add a
+relation between two templates.</p>
+<p>This method is kept in the interface because the interface
+it provides is simpler to use and read than <code class="docutils literal notranslate"><span class="pre">add_corner_relation</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template_id_to_position</strong> – index of the template that should be
+positionned relatively to the provided anchor.</p></li>
+<li><p><strong>relative_position</strong> – the relative position of the template provided as
+first parameter with respect to the anchor provided as third
+parameter. Can be any of <code class="docutils literal notranslate"><span class="pre">LEFT_OF</span></code>, <code class="docutils literal notranslate"><span class="pre">RIGHT_OF</span></code>, <code class="docutils literal notranslate"><span class="pre">BELOW_OF</span></code>
+and <code class="docutils literal notranslate"><span class="pre">ABOVE_OF</span></code>.</p></li>
+<li><p><strong>anchor_id</strong> – index of the anchor template, i.e., the template with
+respect to which the template provided in first parameter will
+be positioned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code>, to be able to chain calls to this method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_template">
+<span class="sig-name descname"><span class="pre">add_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_to_insert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.TemplateWithIndices" title="tqec.templates.base.TemplateWithIndices"><span class="pre">TemplateWithIndices</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_template" title="Link to this definition"></a></dt>
+<dd><p>Add the provided template to the data structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>template_to_insert</strong> – the template to insert, along with the indices
+that should be used to index the plaquette indices provided
+to the <code class="docutils literal notranslate"><span class="pre">instantiate</span></code> method.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the index of the newly inserted template in the list of templates.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – if the template to insert has different default
+    increments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_templates">
+<span class="sig-name descname"><span class="pre">add_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates_to_insert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.base.TemplateWithIndices" title="tqec.templates.base.TemplateWithIndices"><span class="pre">TemplateWithIndices</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_templates" title="Link to this definition"></a></dt>
+<dd><p>Add the provided templates to the data structure.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.default_increments">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_increments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.default_increments" title="Link to this definition"></a></dt>
+<dd><p>Get the increments between plaquettes of the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a Displacement(x increment, y increment) representing the increments
+between plaquettes of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.expected_plaquettes_number">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.expected_plaquettes_number" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.instantiate">
+<span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.instantiate" title="Link to this definition"></a></dt>
+<dd><p>Generate the numpy array representing the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plaquette_indices</strong> – the plaquette indices that will be used to
+instantiate the different orchestrated templates.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a numpy array with the given plaquette indices arranged according to
+the underlying shape of the template.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In previous implementations of this class, the instantiate method was
+expecting a plaquette “0” to be positioned first in the provided plaquette
+indices.
+This expectation was:
+1. not documented anywhere,
+2. an exposition of internal implementation details,
+3. very error-prone for external users.</p>
+<p>It also made the interface of ComposedTemplate slightly different from
+its parent Template class.</p>
+<p>The current implementation does not expect such a plaquette anymore.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.is_empty">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.is_empty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.scale_to">
+<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.scale_to" title="Link to this definition"></a></dt>
+<dd><p>Scales all the scalable component templates to the given scale <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
+<p>Note that this function scales the template instance INLINE. Rephrasing, the
+instance on which this method is called is modified in-place AND returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> – the new scale of the component templates. Forwarded to all the</p></li>
+<li><p><strong>instance.</strong> (<em>Template instances added to this ComposedTemplate</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code>, once scaled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.shape" title="Link to this definition"></a></dt>
+<dd><p>Returns the current template shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict-like representation of the instance.</p>
+<p>Used to implement to_json.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.templates.composed.get_corner_position">
+<span class="sig-name descname"><span class="pre">get_corner_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position" title="tqec.position.Position"><span class="pre">Position</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.html#tqec.position.Position" title="tqec.position.Position"><span class="pre">Position</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#get_corner_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.get_corner_position" title="Link to this definition"></a></dt>
+<dd><p>Get the position of a template corner.</p>
+<p>This function helps in computing the position of any corner of a given
+template as long as we have the position of one of its corners.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_corner_position</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span> <span class="n">Shape2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+<span class="go">Position(x=0, y=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_corner_position</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span> <span class="n">Shape2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_LEFT</span><span class="p">)</span>
+<span class="go">Position(x=0, y=2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_corner_position</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span> <span class="n">Shape2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_RIGHT</span><span class="p">)</span>
+<span class="go">Position(x=2, y=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_corner_position</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span> <span class="n">Shape2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_RIGHT</span><span class="p">)</span>
+<span class="go">Position(x=2, y=2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_corner_position</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_RIGHT</span><span class="p">,</span> <span class="n">Shape2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+<span class="go">Position(x=-2, y=-2)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – position of the “anchor” corner.</p></li>
+<li><p><strong>position_corner</strong> – corner which position is given as first argument.</p></li>
+<li><p><strong>shape</strong> – 2-dimensional shape of the considerer template.</p></li>
+<li><p><strong>expected_corner</strong> – the corner we want to compute the position of.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the position of the <code class="docutils literal notranslate"><span class="pre">expected_corner</span></code> of a template of the given <code class="docutils literal notranslate"><span class="pre">shape</span></code>,
+knowing that the corner <code class="docutils literal notranslate"><span class="pre">position_corner</span></code> is at the given <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.display">
+<span id="tqec-templates-display-module"></span><h2>tqec.templates.display module<a class="headerlink" href="#module-tqec.templates.display" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.templates.display.display_template">
+<span class="sig-name descname"><span class="pre">display_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ty.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/display.html#display_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.display.display_template" title="Link to this definition"></a></dt>
+<dd><p>Display a template instance with ASCII output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template</strong> – the Template instance to display.</p></li>
+<li><p><strong>plaquette_indices</strong> – the plaquette indices that are forwarded to the call
+to <cite>template.instantiate</cite> to get the actual template representation.
+If None, default to <code class="docutils literal notranslate"><span class="pre">range(1,</span> <span class="pre">template.expected_plaquettes_number</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.templates.display.display_templates_svg">
+<span class="sig-name descname"><span class="pre">display_templates_svg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_svg_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/tqec/templates/display.html#display_templates_svg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.display.display_templates_svg" title="Link to this definition"></a></dt>
+<dd><p>Display the templates as an SVG file.</p>
+<p>This function is useful to debug the templates and their relative positions.
+However, note that the implementation iterates over all the plaquettes of all
+the templates, it can be very slow for large templates and results in huge
+svg files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>templates</strong> – the ComposedTemplate instance to display.</p></li>
+<li><p><strong>write_svg_file</strong> – the path to the SVG file to write.</p></li>
+<li><p><strong>canvas_height</strong> – the height of the canvas in pixels to draw on.</p></li>
+<li><p><strong>*plaquette_indices</strong> – the plaquette indices that are forwarded to the call
+to <cite>template.instantiate</cite> to get the actual template representation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the SVG string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.scale">
+<span id="tqec-templates-scale-module"></span><h2>tqec.templates.scale module<a class="headerlink" href="#module-tqec.templates.scale" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.scale.Dimension">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_scale_parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#Dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.Dimension" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represent an integer dimension that may or may not be scalable.</p>
+<p>This class helps in representing an integer dimension that can be either
+fixed (i.e., does not scale, even when <code class="docutils literal notranslate"><span class="pre">scale_to</span></code> is called) or scalable
+(i.e., <code class="docutils literal notranslate"><span class="pre">scale_to</span></code> modify in-place the instance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_scale_parameter</strong> – initial scale that will be input to the
+specified <code class="docutils literal notranslate"><span class="pre">scaling_function</span></code> to compute the first value the
+<code class="docutils literal notranslate"><span class="pre">Dimension</span></code> instance should take.</p></li>
+<li><p><strong>scaling_function</strong> – a function that takes exactly one integer as
+input (the scale provided to the <code class="docutils literal notranslate"><span class="pre">scale_to</span></code> method) and outputs the
+value this <code class="docutils literal notranslate"><span class="pre">Dimension</span></code> instance should take.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.Dimension.scale_to">
+<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#Dimension.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.Dimension.scale_to" title="Link to this definition"></a></dt>
+<dd><p>Scale the dimension to the provided scale <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
+<p>This method calls the <code class="docutils literal notranslate"><span class="pre">scaling_function</span></code> with the provided scale <code class="docutils literal notranslate"><span class="pre">k</span></code>
+and sets the instance value to the output of this call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k</strong> – scale that should be used to set the instance value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code>, potentially modified in-place if the instance is scalable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.Dimension.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#Dimension.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.Dimension.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Encodes the instance into a JSON-compatible dictionary.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.scale.Dimension.value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.scale.Dimension.value" title="Link to this definition"></a></dt>
+<dd><p>Returns the instance value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.scale.FixedDimension">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FixedDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#FixedDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.FixedDimension" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Dimension</span></code> that does not scale.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.invert">
+<span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.invert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.invert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.offset">
+<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.offset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.slope">
+<span class="sig-name descname"><span class="pre">slope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.slope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.to_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.shifted">
+<span id="tqec-templates-shifted-module"></span><h2>tqec.templates.shifted module<a class="headerlink" href="#module-tqec.templates.shifted" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ScalableOffset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScalableOffset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">tqec.templates.scale.Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">tqec.templates.scale.Dimension</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ScalableOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ScalableOffset" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ScalableOffset.scale_to">
+<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ScalableOffset.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ScalableOffset.scale_to" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ScalableOffset.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ScalableOffset.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ScalableOffset.to_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ScalableOffset.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></em><a class="headerlink" href="#tqec.templates.shifted.ScalableOffset.x" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ScalableOffset.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></em><a class="headerlink" href="#tqec.templates.shifted.ScalableOffset.y" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ShiftedTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.shifted.ScalableOffset" title="tqec.templates.shifted.ScalableOffset"><span class="pre">ScalableOffset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a></p>
+<p>Base class for all the templates.</p>
+<p>This class is the base of all templates and provide the necessary interface
+that all templates should implement to be usable by the library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>default_x_increment</strong> – default increment in the x direction between
+two plaquettes.</p></li>
+<li><p><strong>default_y_increment</strong> – default increment in the y direction between
+two plaquettes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.expected_plaquettes_number">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.expected_plaquettes_number" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.instantiate">
+<span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.instantiate" title="Link to this definition"></a></dt>
+<dd><p>Generate the numpy array representing the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plaquette_indices</strong> – the plaquette indices that will be forwarded to
+the underlying Shape instance’s instantiate method.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a numpy array with the given plaquette indices arranged according to
+the underlying shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.scale_to">
+<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.shifted.ShiftedTemplate" title="tqec.templates.shifted.ShiftedTemplate"><span class="pre">ShiftedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.scale_to" title="Link to this definition"></a></dt>
+<dd><p>Scales self to the given scale k.</p>
+<p>Note that this function scales the template instance INLINE. Rephrasing, the
+instance on which this method is called is modified in-place AND returned.</p>
+<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
+forwarded to</p>
+<ol class="arabic simple">
+<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
+<li><p>other <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instances in the case of templates modifying
+existing instances,</p></li>
+<li><p>anything else that the subclass might implement.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>self, once scaled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.shape" title="Link to this definition"></a></dt>
+<dd><p>Returns the current template shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict-like representation of the instance.</p>
+<p>Used to implement to_json.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.stack">
+<span id="tqec-templates-stack-module"></span><h2>tqec.templates.stack module<a class="headerlink" href="#module-tqec.templates.stack" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StackedTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a></p>
+<p>A template composed of templates stacked on top of each others.</p>
+<p>This class implements a naive stack of Template instances. Each Template instance
+added to this class will be superposed on top of the previously added templates,
+potentially hiding parts of these.</p>
+<p>## Warning
+This class does no effort to simplify the stack of templates. In particular, the
+plaquette indices that should be provided to the instanciate method are directly
+forwarded to the stacked templates, from bottom to top. If a stacked Template
+instance is hidding completly at least one kind of plaquette, this plaquette index
+should still be provided.</p>
+<p>### Example
+Stacking the following template
+<code class="docutils literal notranslate"><span class="pre">`text</span>
+<span class="pre">1</span> <span class="pre">2</span>
+<span class="pre">2</span> <span class="pre">1</span>
+<span class="pre">`</span></code>
+on itself will require 4 (FOUR) template indices when calling <cite>instanciate</cite>:
+- the first 2 indices being forwarded to the bottom-most Template,
+- the last 2 indices being forwarded to the Template on top of it.</p>
+<p>The instanciation of such a stack using
+<code class="docutils literal notranslate"><span class="pre">`py</span>
+<span class="pre">stack.instanciate(1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4)</span>
+<span class="pre">`</span></code>
+will return
+<code class="docutils literal notranslate"><span class="pre">`text</span>
+<span class="pre">3</span> <span class="pre">4</span>
+<span class="pre">4</span> <span class="pre">3</span>
+<span class="pre">`</span></code>
+as the last 2 indices (3 and 4) are forwarded to the top-most Template instance
+that hides the bottom one.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.expected_plaquettes_number">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.expected_plaquettes_number" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.instantiate">
+<span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.instantiate" title="Link to this definition"></a></dt>
+<dd><p>Generate the numpy array representing the template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plaquette_indices</strong> – the plaquette indices that will be forwarded to
+the underlying Shape instance’s instantiate method.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a numpy array with the given plaquette indices arranged according to
+the underlying shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.pop_template_from_top">
+<span class="sig-name descname"><span class="pre">pop_template_from_top</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.pop_template_from_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.pop_template_from_top" title="Link to this definition"></a></dt>
+<dd><p>Removes the top-most template from the stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.push_template_on_top">
+<span class="sig-name descname"><span class="pre">push_template_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.push_template_on_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.push_template_on_top" title="Link to this definition"></a></dt>
+<dd><p>Place a new template on the top of the stack.</p>
+<p>The new template can be offset by a certain amount, that might be scalable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any of the specified offset coordinates is not positive.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.scale_to">
+<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.stack.StackedTemplate" title="tqec.templates.stack.StackedTemplate"><span class="pre">StackedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.scale_to" title="Link to this definition"></a></dt>
+<dd><p>Scales self to the given scale k.</p>
+<p>Note that this function scales the template instance INLINE. Rephrasing, the
+instance on which this method is called is modified in-place AND returned.</p>
+<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
+forwarded to</p>
+<ol class="arabic simple">
+<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
+<li><p>other <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instances in the case of templates modifying
+existing instances,</p></li>
+<li><p>anything else that the subclass might implement.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>self, once scaled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.shape" title="Link to this definition"></a></dt>
+<dd><p>Returns the current template shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the shape of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict-like representation of the instance.</p>
+<p>Used to implement to_json.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tqec.templates" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.plaquette.library.html" class="btn btn-neutral float-left" title="tqec.plaquette.library package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.templates.atomic.html" class="btn btn-neutral float-right" title="tqec.templates.atomic package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

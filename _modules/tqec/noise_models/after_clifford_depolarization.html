@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.noise_models.after_clifford_depolarization &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.noise_models.after_clifford_depolarization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.noise_models.after_clifford_depolarization</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cirq</span>
+<span class="kn">import</span> <span class="nn">stim</span>
+
+<span class="kn">from</span> <span class="nn">tqec.noise_models.base</span> <span class="kn">import</span> <span class="n">BaseNoiseModel</span>
+
+
+<div class="viewcode-block" id="is_clifford">
+<a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.after_clifford_depolarization.is_clifford">[docs]</a>
+<span class="k">def</span> <span class="nf">is_clifford</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inefficiently checks if a given operation implements a Clifford operation</span>
+
+<span class="sd">    The check is implemented by recovering the unitary matrix of the operation and</span>
+<span class="sd">    trying to initialise a stim.Tableau from it. Both steps are costly for large</span>
+<span class="sd">    operations, which is the reason why this function will print a warning if the</span>
+<span class="sd">    provided operation is considered &quot;large&quot; (3 qubits or more at the moment).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        operation: the operation that will be checked.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if the provided cirq.Operation instance is a Clifford operation,</span>
+<span class="sd">        else False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_qubits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_qubits</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: checking if an operation with </span><span class="si">{</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2"> is Clifford.&quot;</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">cirq</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">unitary</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">gate</span><span class="p">)</span>
+        <span class="n">stim</span><span class="o">.</span><span class="n">Tableau</span><span class="o">.</span><span class="n">from_unitary_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="c1"># Could not retrieve the operation unitary matrix</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># Operation is not a Clifford operation</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># No exception thrown, operation is a Clifford operation</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="AfterCliffordDepolarizingNoise">
+<a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.after_clifford_depolarization.AfterCliffordDepolarizingNoise">[docs]</a>
+<span class="k">class</span> <span class="nc">AfterCliffordDepolarizingNoise</span><span class="p">(</span><span class="n">BaseNoiseModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies a depolarising noise after each Clifford operation.</span>
+
+<span class="sd">        The depolarising noise applied is a cirq.DepolarizingChannel with the same</span>
+<span class="sd">        number of qubits as the Clifford operation. For a number of qubits `n &gt; 1`,</span>
+<span class="sd">        this is different from applying `n` times a 1-qubit depolarizing noise to each</span>
+<span class="sd">        of the involved qubits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            p: strength (probability of error) of the applied noise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AfterCliffordDepolarizingNoise.noisy_operation">
+<a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.after_clifford_depolarization.AfterCliffordDepolarizingNoise.noisy_operation">[docs]</a>
+    <span class="k">def</span> <span class="nf">noisy_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">OP_TREE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitOperation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">recurse_in_operation_if_circuit_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_clifford</span><span class="p">(</span><span class="n">operation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">operation</span><span class="p">,</span>
+                <span class="n">cirq</span><span class="o">.</span><span class="n">depolarize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prob</span><span class="p">,</span> <span class="n">n_qubits</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">qubits</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="o">*</span><span class="n">operation</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">()),</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">operation</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

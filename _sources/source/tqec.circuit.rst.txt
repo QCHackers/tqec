@@ -1,0 +1,37 @@
+tqec.circuit package
+====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tqec.circuit.operations
+
+Submodules
+----------
+
+tqec.circuit.circuit module
+---------------------------
+
+.. automodule:: tqec.circuit.circuit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.circuit.schedule module
+----------------------------
+
+.. automodule:: tqec.circuit.schedule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.circuit
+   :members:
+   :undoc-members:
+   :show-inheritance:

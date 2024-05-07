@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.operations package &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.noise_models package" href="tqec.noise_models.html" />
+    <link rel="prev" title="tqec.circuit package" href="tqec.circuit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="tqec.circuit.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#module-tqec.circuit.circuit">tqec.circuit.circuit module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#module-tqec.circuit.schedule">tqec.circuit.schedule module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#module-tqec.circuit">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.html">tqec.templates package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.enums">tqec.enums module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.exceptions">tqec.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-tqec.position">tqec.position module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec package</a></li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.html">tqec.circuit package</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.operations package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/tqec.circuit.operations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-circuit-operations-package">
+<h1>tqec.circuit.operations package<a class="headerlink" href="#tqec-circuit-operations-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tqec.circuit.operations.measurement_map">
+<span id="tqec-circuit-operations-measurement-map-module"></span><h2>tqec.circuit.operations.measurement_map module<a class="headerlink" href="#module-tqec.circuit.operations.measurement_map" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.measurement_map.CircuitMeasurementMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CircuitMeasurementMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AbstractCircuit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/measurement_map.html#CircuitMeasurementMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.measurement_map.CircuitMeasurementMap" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stores information about all the measurements found in the provided circuit</p>
+<p>This class provides a method to recover the global record offset of a given
+measurement from local information about this measurement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>circuit</strong> – the circuit instance to analyse.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.operations.measurement_map.CircuitMeasurementMap.get_measurement_relative_offset">
+<span class="sig-name descname"><span class="pre">get_measurement_relative_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_moment_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.Qid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/measurement_map.html#CircuitMeasurementMap.get_measurement_relative_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.measurement_map.CircuitMeasurementMap.get_measurement_relative_offset" title="Link to this definition"></a></dt>
+<dd><p>Recover the record offset of the given local measurement description</p>
+<p>This is the main method of CircuitMeasurementMap. It allows to query for measurements
+with their local temporal description and to recover the global offset that should be
+used to get the measurement result from the global measurement record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current_moment_index</strong> – the moment index for which we want to compute
+the offset. This method will only backtrack in time, and so will
+never return measurements that are performed strictly after the
+moment provided in this parameter. Also, the measurement record
+offset is a local quantity that might change in time (due to
+subsequent measurements shifting the offset), meaning that the
+returned offset should only be considered valid for the moment
+provided here, and for no other moments.</p></li>
+<li><p><strong>qubit</strong> – qubit instance the measurement we are searching for has been
+performed on.</p></li>
+<li><p><strong>measurement_offset</strong> – the temporally-local, negative, measurement
+offset. A value of -1 means “the last measurement performed on
+this qubit” (“last” should always be read as “last from the
+current_moment_index moment view”), -2 means “the measurement
+just before the last measurement performed on this qubit”, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the global measurement record offset, only valid for the provided
+current_moment_index, or None if the searched offset does not exist.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided measurement_offset value is positive or
+    if the <code class="docutils literal notranslate"><span class="pre">current_moment_index</span></code> provided is not a valid moment of
+    the cirq.Circuit instance this instance has been constructed from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets">
+<span class="sig-name descname"><span class="pre">compute_global_measurements_lookback_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_measurements_record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="tqec.circuit.operations.operation.RelativeMeasurementsRecord"><span class="pre">RelativeMeasurementsRecord</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.circuit.operations.measurement_map.CircuitMeasurementMap" title="tqec.circuit.operations.measurement_map.CircuitMeasurementMap"><span class="pre">CircuitMeasurementMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_moment_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/measurement_map.html#compute_global_measurements_lookback_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets" title="Link to this definition"></a></dt>
+<dd><p>Computes, from the data in the given measurement_map, the global measurement offsets</p>
+<p>This method uses the global data computed in the CircuitMeasurementMap instance given as
+parameter to compute the measurement record indices for the current gate instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>relative_measurements_record</strong> – the record of relative measurements to
+compute global measurements offset from.</p></li>
+<li><p><strong>measurement_map</strong> – global measurement data obtained from the complete
+quantum circuit.</p></li>
+<li><p><strong>current_moment_index</strong> – index of the moment this gate instance is found
+in. Used to recover the correct data from the given measurement_map.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the computed list of global measurements lookback offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the global measurement offset computation fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.measurement_map.flatten">
+<span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.Moment</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">cirq.AbstractCircuit</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cirq.Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/measurement_map.html#flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.measurement_map.flatten" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-tqec.circuit.operations.operation">
+<span id="tqec-circuit-operations-operation-module"></span><h2>tqec.circuit.operations.operation module<a class="headerlink" href="#module-tqec.circuit.operations.operation" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.Detector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_coordinate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#Detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.Detector" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="tqec.circuit.operations.operation.RelativeMeasurementsRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord</span></code></a></p>
+<p>Operation representing a detector.</p>
+<p>Since the operation is not a real quantum operation, it does not have qubits
+and is not applied to any qubits. This might cause surprising behavior if you
+try to append or insert it into a circuit. It is always recommended to containerize
+this operation in a <cite>cirq.Moment</cite> before appending it to a circuit.</p>
+<p>In <cite>tqec</cite>, this kind of annotation operation should be tagged with the <cite>cirq.VirtualTag</cite>
+and the <cite>STIM_TAG</cite> to work correctly with the circuit transformation and the noise model.
+You can use the <cite>make_detector</cite> helper function to create an instance of this class
+with the correct tags. Otherwise, you might need to manually tag the operation with the
+<cite>cirq.VirtualTag</cite> and the <cite>STIM_TAG</cite>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>you should use <cite>make_detector</cite> to create instances of this class.
+To understand how to use this class directly, please refer to the
+documentation above.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_coordinate_system_origin</strong> – origin of the local coordinate
+system. The origin along with the local coordinate system will
+be pinned to the global coordinate system to resolve the actual
+qubit coordinates the measurements applied to.</p></li>
+<li><p><strong>relative_measurement_data</strong> – a list of <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a> that composed the
+relative measurements’ operation.</p></li>
+<li><p><strong>time_coordinate</strong> – an annotation that will be forwarded to the
+DETECTOR Stim structure as the last coordinate.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.Detector.coordinates">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.Detector.coordinates" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#Observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.Observable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="tqec.circuit.operations.operation.RelativeMeasurementsRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord</span></code></a></p>
+<p>Operation representing an observable.</p>
+<p>Since the operation is not a real quantum operation, it does not have qubits
+and is not applied to any qubits. This might cause surprising behavior if you
+try to append or insert it into a circuit. It is always recommended to containerize
+this operation in a <cite>cirq.Moment</cite> before appending it to a circuit.</p>
+<p>In <cite>tqec</cite>, this kind of annotation operation should be tagged with the <cite>cirq.VirtualTag</cite>
+and the <cite>STIM_TAG</cite> to work correctly with the circuit transformation and the noise model.
+You can use the <cite>make_observable</cite> helper function to create an instance of this class
+with the correct tags. Otherwise, you might need to manually tag the operation with the
+<cite>cirq.VirtualTag</cite> and the <cite>STIM_TAG</cite>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>you should use <cite>make_observable</cite> to create instances of this class.
+To understand how to use this class directly, please refer to the
+documentation above.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_coordinate_system_origin</strong> – origin of the local coordinate
+system. The origin along with the local coordinate system will
+be pinned to the global coordinate system to resolve the actual
+qubit coordinates the measurements applied to.</p></li>
+<li><p><strong>relative_measurement_data</strong> – a list of <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a> that composed the
+relative measurements’ operation.</p></li>
+<li><p><strong>observable_index</strong> – the index of the observable.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.circuit.operations.operation.Observable.index" title="Link to this definition"></a></dt>
+<dd><p>Return the index of the observable.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RelativeMeasurementData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_qubit_positioning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurement_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#RelativeMeasurementData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The relative_measurement_data of a spatially and temporally relative measurement</p>
+<p>This class stores two attributes (relative_qubit_positioning and
+relative_measurement_offset) that respectively represent a spatial
+offset (a <strong>relative</strong> positioning with respect to some origin) and
+a temporal offset (with respect to a given Moment index).</p>
+<p>This relative information will be analysed by the fill_in_global_record_indices
+transformer and replaced by real qubit and global measurement records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>relative_qubit_positioning</strong> – The qubit coordinate offset. This will be added to a
+qubit coordinate system origin to obtain the actual qubit the measurement
+has been performed on.</p></li>
+<li><p><strong>relative_measurement_offset</strong> – The relative measurement offset. The measurements
+performed on the qubit specified bt the relative_qubit_positioning will be
+accessed using this offset. For example, a value of -1 means the last
+measurement performed on the qubit till the time of the current operation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementData.relative_measurement_offset">
+<span class="sig-name descname"><span class="pre">relative_measurement_offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementData.relative_measurement_offset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementData.relative_qubit_positioning">
+<span class="sig-name descname"><span class="pre">relative_qubit_positioning</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">GridQubit</span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementData.relative_qubit_positioning" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementsRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RelativeMeasurementsRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#RelativeMeasurementsRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code></p>
+<p>A group of relative measurement data representing measurements relative
+to the origin of local coordinate system and current measurement timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_coordinate_system_origin</strong> – origin of the local coordinate
+system. The origin along with the local coordinate system will
+be pinned to the global coordinate system to resolve the actual
+qubit coordinates the measurements applied to.</p></li>
+<li><p><strong>relative_measurement_data</strong> – a list of <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a> that composed the
+relative measurements’ operation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementsRecord.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">GridQubit</span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord.origin" title="Link to this definition"></a></dt>
+<dd><p>The origin of the local coordinate system.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementsRecord.qubits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Qid</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord.qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementsRecord.relative_measurement_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">relative_measurement_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord.relative_measurement_data" title="Link to this definition"></a></dt>
+<dd><p>The recorded relative measurement data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">
+<span class="sig-name descname"><span class="pre">with_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">new_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="tqec.circuit.operations.operation.RelativeMeasurementsRecord"><span class="pre">RelativeMeasurementsRecord</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#RelativeMeasurementsRecord.with_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits" title="Link to this definition"></a></dt>
+<dd><p>Returns the same operation, but applied to different qubits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*new_qubits</strong> – The new qubits to apply the operation to. The order must
+exactly match the order of qubits returned from the operation’s
+<cite>qubits</cite> property.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ShiftCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shifts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#ShiftCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code></p>
+<p>Annotates that the qubit/detector coordinate origin is being moved.</p>
+<p>This is a replication of the
+[stimcirq.ShiftCoordsAnnotation](<a class="reference external" href="https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py">https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py</a>)
+class. We can directly use <cite>stimcirq.ShiftCoordsAnnotation</cite> here, however,
+replication brings the class into the <cite>tqec</cite> namespace and is useful for the
+potential future iteration.</p>
+<p>Since the operation is not a real quantum operation, it does not have qubits
+and is not applied to any qubits. This might cause surprising behavior if you
+try to append or insert it into a circuit. It is always recommended to containerize
+this operation in a <cite>cirq.Moment</cite> before appending it to a circuit.</p>
+<p>In <cite>tqec</cite>, this kind of annotation operation should be tagged with the <cite>cirq.VirtualTag</cite>
+and the <cite>STIM_TAG</cite> to work correctly with the circuit transformation and the noise model.
+You can use the <cite>make_shift_coords</cite> helper function to create an instance of this class
+with the correct tags. Otherwise, you might need to manually tag the operation with the
+<cite>cirq.VirtualTag</cite> and the <cite>STIM_TAG</cite>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>you should use <cite>make_shift_coords</cite> to create instances of this class.
+To understand how to use this class directly, please refer to the
+documentation above.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*shifts</strong> – How much to shift each coordinate.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords.qubits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Qid</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords.qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords.shifts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shifts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords.shifts" title="Link to this definition"></a></dt>
+<dd><p>The shifts the operation represents.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords.with_qubits">
+<span class="sig-name descname"><span class="pre">with_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">new_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.operations.operation.ShiftCoords" title="tqec.circuit.operations.operation.ShiftCoords"><span class="pre">ShiftCoords</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#ShiftCoords.with_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords.with_qubits" title="Link to this definition"></a></dt>
+<dd><p>Returns the same operation, but applied to different qubits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*new_qubits</strong> – The new qubits to apply the operation to. The order must
+exactly match the order of qubits returned from the operation’s
+<cite>qubits</cite> property.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.make_detector">
+<span class="sig-name descname"><span class="pre">make_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">cirq.GridQubit</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_coordinate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cirq.Operation</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#make_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.make_detector" title="Link to this definition"></a></dt>
+<dd><p>This is a helper function to make a <a class="reference internal" href="#tqec.circuit.operations.operation.Detector" title="tqec.circuit.operations.operation.Detector"><code class="xref py py-class docutils literal notranslate"><span class="pre">Detector</span></code></a> operation with the
+<cite>cirq.VirtualTag</cite> tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_coordinate_system_origin</strong> – origin of the local coordinate system.
+The origin along with the local coordinate system will be pinned to
+the global coordinate system to resolve the actual qubit coordinates
+the measurements applied to.</p></li>
+<li><p><strong>relative_measurements</strong> – a list of relative measurements that compose the
+parity check of the detector. Each element of the list is a tuple of
+(relative_qubit_position, relative_measurement_offset) or a
+<a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a> instance. When a tuple is provided,
+the first element is the position of the qubit relative to the local
+coordinate system origin and the second element is the relative
+measurement offset with respect to the most recent measurement
+performed on the qubit.</p></li>
+<li><p><strong>time_coordinate</strong> – an annotation that will be forwarded to the DETECTOR
+Stim structure as the last coordinate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="#tqec.circuit.operations.operation.Detector" title="tqec.circuit.operations.operation.Detector"><code class="xref py py-class docutils literal notranslate"><span class="pre">Detector</span></code></a> operation with the <cite>cirq.VirtualTag</cite> tag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.make_observable">
+<span class="sig-name descname"><span class="pre">make_observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">cirq.GridQubit</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cirq.Operation</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#make_observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.make_observable" title="Link to this definition"></a></dt>
+<dd><p>This is a helper function to make a <a class="reference internal" href="#tqec.circuit.operations.operation.Observable" title="tqec.circuit.operations.operation.Observable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Observable</span></code></a> operation with the
+<cite>cirq.VirtualTag</cite> tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_coordinate_system_origin</strong> – origin of the local coordinate system.
+The origin along with the local coordinate system will be pinned to
+the global coordinate system to resolve the actual qubit coordinates
+the measurements applied to.</p></li>
+<li><p><strong>relative_measurements</strong> – a list of relative measurements that compose the
+parity check of the observable. Each element of the list is a tuple
+of (relative_qubit_position, relative_measurement_offset) or a
+<a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a> instance. When a tuple is provided,
+the first element is the position of the qubit relative to the local
+coordinate system origin and the second element is the relative
+measurement offset with respect to the most recent measurement
+performed on the qubit.</p></li>
+<li><p><strong>observable_index</strong> – the index of the observable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="#tqec.circuit.operations.operation.Observable" title="tqec.circuit.operations.operation.Observable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Observable</span></code></a> operation with the <cite>cirq.VirtualTag</cite> tag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.make_shift_coords">
+<span class="sig-name descname"><span class="pre">make_shift_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shifts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Operation</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#make_shift_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.make_shift_coords" title="Link to this definition"></a></dt>
+<dd><p>This is a helper function to make a :class:~ShiftCoords operation with the
+<cite>cirq.VirtualTag</cite> tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*shifts</strong> – How much to shift each coordinate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="#tqec.circuit.operations.operation.ShiftCoords" title="tqec.circuit.operations.operation.ShiftCoords"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftCoords</span></code></a> operation with the <cite>cirq.VirtualTag</cite> tag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tqec.circuit.operations.transformer">
+<span id="tqec-circuit-operations-transformer-module"></span><h2>tqec.circuit.operations.transformer module<a class="headerlink" href="#module-tqec.circuit.operations.transformer" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.circuit.operations.transformer.transform_to_stimcirq_compatible">
+<span class="sig-name descname"><span class="pre">transform_to_stimcirq_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.AbstractCircuit</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cirq.TransformerContext</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cirq.Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/transformer.html#transform_to_stimcirq_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.transformer.transform_to_stimcirq_compatible" title="Link to this definition"></a></dt>
+<dd><p>Transform the circuit to be compatible with stimcirq.</p>
+<p>stimcirq is a library that allows to convert cirq circuits to stim circuits. It defines a set of
+annotations in cirq that are used to represent the operations specific to stim. In tqec, we define
+the same annotations with different semantics. This transformer is used to convert the tqec
+annotations to the stimcirq annotations. The transformed operations are:</p>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftCoords</span></code>: converted to <cite>stimcirq.ShiftCoordsAnnotation</cite>.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Detector</span></code>: converted to <cite>stimcirq.DetAnnotation</cite> with the correct relative keys computed.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Observable</span></code>: converted to <cite>stimcirq.CumulativeObservableAnnotation</cite> with the correct
+relative keys computed.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circuit</strong> – The circuit to transform, which may contain tqec specific
+operations.</p></li>
+<li><p><strong>context</strong> – See <cite>cirq.transformer</cite> documentation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new circuit with the tqec specific operations transformed to stimcirq
+compatible operations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tqec.circuit.operations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tqec.circuit.operations" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.circuit.html" class="btn btn-neutral float-left" title="tqec.circuit package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.noise_models.html" class="btn btn-neutral float-right" title="tqec.noise_models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

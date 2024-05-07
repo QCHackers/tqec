@@ -1,0 +1,69 @@
+tqec.noise\_models package
+==========================
+
+Submodules
+----------
+
+tqec.noise\_models.after\_clifford\_depolarization module
+---------------------------------------------------------
+
+.. automodule:: tqec.noise_models.after_clifford_depolarization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.after\_reset\_flip module
+--------------------------------------------
+
+.. automodule:: tqec.noise_models.after_reset_flip
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.base module
+------------------------------
+
+.. automodule:: tqec.noise_models.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.before\_measure\_flip module
+-----------------------------------------------
+
+.. automodule:: tqec.noise_models.before_measure_flip
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.before\_round\_data\_depolarization module
+-------------------------------------------------------------
+
+.. automodule:: tqec.noise_models.before_round_data_depolarization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.idle\_qubits module
+--------------------------------------
+
+.. automodule:: tqec.noise_models.idle_qubits
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.noise\_models.multi\_qubit\_gates module
+---------------------------------------------
+
+.. automodule:: tqec.noise_models.multi_qubit_gates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.noise_models
+   :members:
+   :undoc-members:
+   :show-inheritance:

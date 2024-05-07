@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.templates.composed &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.templates.composed</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.templates.composed</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">Shape2D</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span><span class="p">,</span> <span class="n">TemplateWithIndices</span>
+
+
+<div class="viewcode-block" id="get_corner_position">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.get_corner_position">[docs]</a>
+<span class="k">def</span> <span class="nf">get_corner_position</span><span class="p">(</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Position</span><span class="p">,</span>
+    <span class="n">position_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span>
+    <span class="n">expected_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the position of a template corner.</span>
+
+<span class="sd">    This function helps in computing the position of any corner of a given</span>
+<span class="sd">    template as long as we have the position of one of its corners.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)</span>
+<span class="sd">        Position(x=0, y=0)</span>
+<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_LEFT)</span>
+<span class="sd">        Position(x=0, y=2)</span>
+<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_RIGHT)</span>
+<span class="sd">        Position(x=2, y=0)</span>
+<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_RIGHT)</span>
+<span class="sd">        Position(x=2, y=2)</span>
+<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)</span>
+<span class="sd">        Position(x=-2, y=-2)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        position: position of the &quot;anchor&quot; corner.</span>
+<span class="sd">        position_corner: corner which position is given as first argument.</span>
+<span class="sd">        shape: 2-dimensional shape of the considerer template.</span>
+<span class="sd">        expected_corner: the corner we want to compute the position of.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the position of the ``expected_corner`` of a template of the given ``shape``,</span>
+<span class="sd">        knowing that the corner ``position_corner`` is at the given ``position``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transformation</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">expected_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">position_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">expected_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">position_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Position</span><span class="p">(</span>
+        <span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">transformation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">transformation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">shape</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ComposedTemplate">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">ComposedTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateWithIndices</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manages templates positioned relatively to each other.</span>
+
+<span class="sd">        This class manages a list of user-provided templates and user-provided relative</span>
+<span class="sd">        positions to build and scale quantum error correction code.</span>
+
+<span class="sd">        Template instances are stored in an ordered list. Relative positioning of these</span>
+<span class="sd">        templates are stored in an oriented graph with:</span>
+<span class="sd">        - vertices that are integers, representing indices of Template instances stored</span>
+<span class="sd">          in the ordered list stored alongside the graph,</span>
+<span class="sd">        - edges that are connecting two vertices (i.e., two Template instances) that</span>
+<span class="sd">          are relatively positionned between each other.</span>
+
+<span class="sd">        The relative position is internally stored as a tuple of corners that should</span>
+<span class="sd">        represent the same underlying qubit. Each edge between vertices A and B should</span>
+<span class="sd">        have a &quot;weight&quot; (as per networkx definition of the term) under the key</span>
+<span class="sd">        &quot;relative_position&quot; that is a ``tuple[CornerPositionEnum, CornerPositionEnum]``.</span>
+<span class="sd">        If an edge from A to B has a &quot;relative_position&quot; weight of (corner1, corner2),</span>
+<span class="sd">        that means that corner1 over the template A and corner2 of the template B are</span>
+<span class="sd">        on the same location (i.e., same physical qubit).</span>
+
+<span class="sd">        The main logic in this class is located in the (private) method</span>
+<span class="sd">        ``_compute_ul_absolute_position`` that, as its name indicate, computes the upper-left</span>
+<span class="sd">        absolute position of each template (i.e., absolute position of the upper-left</span>
+<span class="sd">        corner of each template).</span>
+
+<span class="sd">        The coordinate system used internally by this class is:</span>
+<span class="sd">               x-axis</span>
+<span class="sd">          0 ------------&gt;</span>
+<span class="sd">          |</span>
+<span class="sd">        y |</span>
+<span class="sd">        | |</span>
+<span class="sd">        a |</span>
+<span class="sd">        x |</span>
+<span class="sd">        i |</span>
+<span class="sd">        s |</span>
+<span class="sd">          |</span>
+<span class="sd">          V</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            templates: a list of templates forwarded to the ``add_templates`` method</span>
+<span class="sd">                at the end of instance initialisation.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the templates provided have different default</span>
+<span class="sd">                increments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Template</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_templates</span><span class="p">(</span><span class="n">templates</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_template_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">template_id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Asking for element identified by </span><span class="si">{</span><span class="n">template_id</span><span class="si">}</span><span class="s2"> when only &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span><span class="si">}</span><span class="s2"> templates have been added to &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> instance.&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="ComposedTemplate.add_template">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.add_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">template_to_insert</span><span class="p">:</span> <span class="n">TemplateWithIndices</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided template to the data structure.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template_to_insert: the template to insert, along with the indices</span>
+<span class="sd">                that should be used to index the plaquette indices provided</span>
+<span class="sd">                to the ``instantiate`` method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the index of the newly inserted template in the list of templates.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the template to insert has different default</span>
+<span class="sd">                increments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">!=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Template </span><span class="si">{</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; has different default increments than the other templates.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">template_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">template_id</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">indices</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">template_id</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.add_templates">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.add_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_templates</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">templates_to_insert</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateWithIndices</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided templates to the data structure.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span> <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">templates_to_insert</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.add_relation">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.add_relation">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_relation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">template_id_to_position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">relative_position</span><span class="p">:</span> <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
+        <span class="n">anchor_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a relative positioning between two templates.</span>
+
+<span class="sd">        This method has the same effect as ``add_corner_relation`` (it</span>
+<span class="sd">        internally calls it), but provide another interface to add a</span>
+<span class="sd">        relation between two templates.</span>
+
+<span class="sd">        This method is kept in the interface because the interface</span>
+<span class="sd">        it provides is simpler to use and read than ``add_corner_relation``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template_id_to_position: index of the template that should be</span>
+<span class="sd">                positionned relatively to the provided anchor.</span>
+<span class="sd">            relative_position: the relative position of the template provided as</span>
+<span class="sd">                first parameter with respect to the anchor provided as third</span>
+<span class="sd">                parameter. Can be any of ``LEFT_OF``, ``RIGHT_OF``, ``BELOW_OF``</span>
+<span class="sd">                and ``ABOVE_OF``.</span>
+<span class="sd">            anchor_id: index of the anchor template, i.e., the template with</span>
+<span class="sd">                respect to which the template provided in first parameter will</span>
+<span class="sd">                be positioned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``, to be able to chain calls to this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_template_id</span><span class="p">(</span><span class="n">template_id_to_position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_template_id</span><span class="p">(</span><span class="n">anchor_id</span><span class="p">)</span>
+
+        <span class="n">anchor_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
+        <span class="n">template_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
+        <span class="k">if</span> <span class="n">relative_position</span> <span class="o">==</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">ABOVE_OF</span><span class="p">:</span>
+            <span class="n">anchor_corner</span><span class="p">,</span> <span class="n">template_corner</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_LEFT</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">relative_position</span> <span class="o">==</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">BELOW_OF</span><span class="p">:</span>
+            <span class="n">anchor_corner</span><span class="p">,</span> <span class="n">template_corner</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_LEFT</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">relative_position</span> <span class="o">==</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">RIGHT_OF</span><span class="p">:</span>
+            <span class="n">anchor_corner</span><span class="p">,</span> <span class="n">template_corner</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_RIGHT</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># relative_position == TemplateRelativePositionEnum.LEFT_OF:</span>
+            <span class="n">anchor_corner</span><span class="p">,</span> <span class="n">template_corner</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_RIGHT</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_corner_relation</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">template_id_to_position</span><span class="p">,</span> <span class="n">template_corner</span><span class="p">),</span> <span class="p">(</span><span class="n">anchor_id</span><span class="p">,</span> <span class="n">anchor_corner</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.add_corner_relation">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.add_corner_relation">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_corner_relation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">template_id_to_position_corner</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">],</span>
+        <span class="n">anchor_id_corner</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a relative positioning between two templates.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template_id_to_position_corner: a tuple containing the index of the</span>
+<span class="sd">                template that should be positionned relatively to the provided</span>
+<span class="sd">                anchor and the corner that should be considered.</span>
+<span class="sd">            anchor_id_corner: a tuple containing the index of the (anchor)</span>
+<span class="sd">                template that should be used to position the template instance</span>
+<span class="sd">                provided in the first parameter, and the corner that should be</span>
+<span class="sd">                considered.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``, to be able to chain calls to this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anchor_id</span><span class="p">,</span> <span class="n">anchor_corner</span> <span class="o">=</span> <span class="n">anchor_id_corner</span>
+        <span class="n">template_id</span><span class="p">,</span> <span class="n">template_corner</span> <span class="o">=</span> <span class="n">template_id_to_position_corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_template_id</span><span class="p">(</span><span class="n">template_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_template_id</span><span class="p">(</span><span class="n">anchor_id</span><span class="p">)</span>
+        <span class="c1"># Add 2 symmetric edges on the graph to encode the relative positioning information</span>
+        <span class="c1"># provided by the user by calling this methods.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="n">anchor_id</span><span class="p">,</span>
+            <span class="n">template_id</span><span class="p">,</span>
+            <span class="n">relative_position</span><span class="o">=</span><span class="p">(</span><span class="n">anchor_corner</span><span class="p">,</span> <span class="n">template_corner</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="n">template_id</span><span class="p">,</span>
+            <span class="n">anchor_id</span><span class="p">,</span>
+            <span class="n">relative_position</span><span class="o">=</span><span class="p">(</span><span class="n">template_corner</span><span class="p">,</span> <span class="n">anchor_corner</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_compute_ul_absolute_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the absolute position of each template upper-left corner.</span>
+
+<span class="sd">        This is the main method of the ``ComposedTemplate`` class. It explores templates</span>
+<span class="sd">        by performing a BFS on the graph of relations between templates, starting by the</span>
+<span class="sd">        first template inserted (but any template connected to the others should work</span>
+<span class="sd">        fine).</span>
+
+<span class="sd">        The first template upper-left corner is arbitrarily positioned at the (0, 0)</span>
+<span class="sd">        position, and each template upper-left corner is then computed from this position.</span>
+<span class="sd">        This means in particular that this method can return positions with negative</span>
+<span class="sd">        coordinates.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a mapping between templates indices and their upper-left corner</span>
+<span class="sd">            absolute position. This mapping is empty if ``self.is_empty``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}</span>
+        <span class="n">src</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="c1"># Compute the upper-left (ul) position of all the templates</span>
+        <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">bfs_edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">relative_position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span>
+                <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">CornerPositionEnum</span>
+            <span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;relative_position&quot;</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">relative_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Found an edge from </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">dest</span><span class="si">}</span><span class="s2"> that does not have a relative position.&quot;</span>
+            <span class="c1"># Getting the positions and shape that will be needed to compute the ul_position</span>
+            <span class="c1"># for dest.</span>
+            <span class="c1"># ul_positions[src] is guaranteed to exist due to the BFS exploration order.</span>
+            <span class="n">src_ul_position</span> <span class="o">=</span> <span class="n">ul_positions</span><span class="p">[</span><span class="n">src</span><span class="p">]</span>
+            <span class="n">src_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">dest_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="n">src_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
+            <span class="n">dest_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
+            <span class="n">src_corner</span><span class="p">,</span> <span class="n">dest_corner</span> <span class="o">=</span> <span class="n">relative_position</span>
+            <span class="c1"># Compute the anchor corner</span>
+            <span class="n">anchor_position</span><span class="p">:</span> <span class="n">Position</span> <span class="o">=</span> <span class="n">get_corner_position</span><span class="p">(</span>
+                <span class="n">src_ul_position</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+                <span class="n">src_shape</span><span class="p">,</span>
+                <span class="n">src_corner</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Compute the upper-left position of the destination</span>
+            <span class="n">ul_positions</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_corner_position</span><span class="p">(</span>
+                <span class="n">anchor_position</span><span class="p">,</span>
+                <span class="n">dest_corner</span><span class="p">,</span>
+                <span class="n">dest_shape</span><span class="p">,</span>
+                <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ul_positions</span>
+
+    <span class="k">def</span> <span class="nf">_get_bounding_box_from_ul_positions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Position</span><span class="p">,</span> <span class="n">Position</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box containing all the templates from their</span>
+<span class="sd">        upper-left corner position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ul_positions: a mapping between templates indices and their upper-left</span>
+<span class="sd">                corner absolute position.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a tuple (upper-left position, bottom-right position) representing</span>
+<span class="sd">            the bounding box. Coordinates in each positions are not guaranteed</span>
+<span class="sd">            to be positive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ul: upper-left</span>
+        <span class="c1"># br: bottom-right</span>
+        <span class="n">ul</span><span class="p">,</span> <span class="n">br</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># tid: template id</span>
+        <span class="c1"># tulx: template upper-left</span>
+        <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tul</span> <span class="ow">in</span> <span class="n">ul_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># tshape: template shape</span>
+            <span class="n">tshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">ul</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+            <span class="n">br</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ul</span><span class="p">,</span> <span class="n">br</span>
+
+    <span class="k">def</span> <span class="nf">_get_shape_from_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ul</span><span class="p">:</span> <span class="n">Position</span><span class="p">,</span> <span class="n">br</span><span class="p">:</span> <span class="n">Position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the bounding box.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ul: upper-left corner position of the bounding box.</span>
+<span class="sd">            br: bottom-right corner position of the bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ul: upper-left</span>
+        <span class="c1"># br: bottom-right</span>
+        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">br</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_shape_from_ul_positions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the upper-left corner positions of each template.&quot;&quot;&quot;</span>
+        <span class="c1"># ul: upper-left</span>
+        <span class="c1"># br: bottom-right</span>
+        <span class="n">ul</span><span class="p">,</span> <span class="n">br</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_box_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_bounding_box</span><span class="p">(</span><span class="n">ul</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices_map</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="c1"># ul: upper-left</span>
+        <span class="n">ul_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ul_absolute_position</span><span class="p">()</span>
+        <span class="c1"># bbul: bounding-box upper-left</span>
+        <span class="c1"># bbbr: bounding-box bottom-right</span>
+        <span class="n">bbul</span><span class="p">,</span> <span class="n">bbbr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_box_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_bounding_box</span><span class="p">(</span><span class="n">bbul</span><span class="p">,</span> <span class="n">bbbr</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1"># tid: template id</span>
+        <span class="c1"># tul: template upper-left</span>
+        <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tul</span> <span class="ow">in</span> <span class="n">ul_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span>
+            <span class="c1"># tshapex: template shape x coordinate</span>
+            <span class="c1"># tshapey: template shape y coordinate</span>
+            <span class="n">tshapey</span><span class="p">,</span> <span class="n">tshapex</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span>
+            <span class="n">plaquette_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">indices_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">tid</span><span class="p">][</span><span class="s2">&quot;plaquette_indices&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="c1"># Subtracting bbul (upper-left bounding box position) from each coordinate to stick</span>
+            <span class="c1"># the represented code to the axes and avoid having negative indices.</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span>
+            <span class="c1"># Numpy indexing is (y, x) in our coordinate system convention.</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">y</span> <span class="p">:</span> <span class="n">y</span> <span class="o">+</span> <span class="n">tshapey</span><span class="p">,</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">tshapex</span><span class="p">]</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>
+                <span class="n">plaquette_indices</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+<div class="viewcode-block" id="ComposedTemplate.instantiate">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.instantiate">[docs]</a>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the numpy array representing the template.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plaquette_indices: the plaquette indices that will be used to</span>
+<span class="sd">                instantiate the different orchestrated templates.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a numpy array with the given plaquette indices arranged according to</span>
+<span class="sd">            the underlying shape of the template.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            In previous implementations of this class, the instantiate method was</span>
+<span class="sd">            expecting a plaquette &quot;0&quot; to be positioned first in the provided plaquette</span>
+<span class="sd">            indices.</span>
+<span class="sd">            This expectation was:</span>
+<span class="sd">            1. not documented anywhere,</span>
+<span class="sd">            2. an exposition of internal implementation details,</span>
+<span class="sd">            3. very error-prone for external users.</span>
+
+<span class="sd">            It also made the interface of ComposedTemplate slightly different from</span>
+<span class="sd">            its parent Template class.</span>
+
+<span class="sd">            The current implementation does not expect such a plaquette anymore.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">plaquette_indices</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not expect a plaquette 0 anymore.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expecting </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="si">}</span><span class="s2"> plaquettes indices &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> were provided.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">plaquette_indices</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_increments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Displacement</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the increments between plaquettes of the template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a Displacement(x increment, y increment) representing the increments</span>
+<span class="sd">            between plaquettes of the template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span>
+
+<div class="viewcode-block" id="ComposedTemplate.scale_to">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.scale_to">[docs]</a>
+    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales all the scalable component templates to the given scale ``k``.</span>
+
+<span class="sd">        Note that this function scales the template instance INLINE. Rephrasing, the</span>
+<span class="sd">        instance on which this method is called is modified in-place AND returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: the new scale of the component templates. Forwarded to all the</span>
+<span class="sd">            ``Template`` instances added to this ``ComposedTemplate`` instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``, once scaled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_ul_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_ul_absolute_position</span><span class="p">())</span>
+
+<div class="viewcode-block" id="ComposedTemplate.to_dict">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="c1"># self.__class__ is &quot;ComposedTemplate&quot; here, whatever the type of self is. This is different</span>
+            <span class="c1"># from what is done in the Template base class. This is done to avoid users subclassing this</span>
+            <span class="c1"># class and having a subclass name we do not control in the &quot;type&quot; entry.</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;templates&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;connections&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;source_idx&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
+                    <span class="s2">&quot;target_idx&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;source_corner&quot;</span><span class="p">:</span> <span class="n">source_corner</span><span class="p">,</span>
+                    <span class="s2">&quot;target_corner&quot;</span><span class="p">:</span> <span class="n">target_corner</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="n">source_corner</span><span class="p">,</span>
+                    <span class="n">target_corner</span><span class="p">,</span>
+                <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                    <span class="s2">&quot;relative_position&quot;</span>  <span class="c1"># type: ignore</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">}</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

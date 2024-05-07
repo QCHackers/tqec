@@ -1,0 +1,48 @@
+tqec package
+============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tqec.circuit
+   tqec.noise_models
+   tqec.plaquette
+   tqec.templates
+
+Submodules
+----------
+
+tqec.enums module
+-----------------
+
+.. automodule:: tqec.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.exceptions module
+----------------------
+
+.. automodule:: tqec.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.position module
+--------------------
+
+.. automodule:: tqec.position
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec
+   :members:
+   :undoc-members:
+   :show-inheritance:

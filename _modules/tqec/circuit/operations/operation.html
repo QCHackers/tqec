@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.operations.operation &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.operations.operation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.circuit.operations.operation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">cirq</span>
+
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+<span class="n">STIM_TAG</span> <span class="o">=</span> <span class="s2">&quot;STIM_OPERATION&quot;</span>
+
+
+<div class="viewcode-block" id="ShiftCoords">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords">[docs]</a>
+<span class="k">class</span> <span class="nc">ShiftCoords</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Annotates that the qubit/detector coordinate origin is being moved.</span>
+
+<span class="sd">        This is a replication of the</span>
+<span class="sd">        [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)</span>
+<span class="sd">        class. We can directly use `stimcirq.ShiftCoordsAnnotation` here, however,</span>
+<span class="sd">        replication brings the class into the `tqec` namespace and is useful for the</span>
+<span class="sd">        potential future iteration.</span>
+
+<span class="sd">        Since the operation is not a real quantum operation, it does not have qubits</span>
+<span class="sd">        and is not applied to any qubits. This might cause surprising behavior if you</span>
+<span class="sd">        try to append or insert it into a circuit. It is always recommended to containerize</span>
+<span class="sd">        this operation in a `cirq.Moment` before appending it to a circuit.</span>
+
+<span class="sd">        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`</span>
+<span class="sd">        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.</span>
+<span class="sd">        You can use the `make_shift_coords` helper function to create an instance of this class</span>
+<span class="sd">        with the correct tags. Otherwise, you might need to manually tag the operation with the</span>
+<span class="sd">        `cirq.VirtualTag` and the `STIM_TAG`.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            you should use `make_shift_coords` to create instances of this class.</span>
+<span class="sd">            To understand how to use this class directly, please refer to the</span>
+<span class="sd">            documentation above.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *shifts: How much to shift each coordinate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The number of shift coordinates should be between 1 and 16.</span>
+        <span class="c1"># See [SHIFT_COORDS](https://github.com/quantumlib/Stim/blob/main/doc/gates.md#SHIFT_COORDS)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shifts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The number of shift coordinates should be between 1 and 16, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shifts</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">=</span> <span class="n">shifts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The shifts the operation represents.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="ShiftCoords.with_qubits">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords.with_qubits">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ShiftCoords&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="RelativeMeasurementData">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">RelativeMeasurementData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The relative_measurement_data of a spatially and temporally relative measurement</span>
+
+<span class="sd">    This class stores two attributes (relative_qubit_positioning and</span>
+<span class="sd">    relative_measurement_offset) that respectively represent a spatial</span>
+<span class="sd">    offset (a **relative** positioning with respect to some origin) and</span>
+<span class="sd">    a temporal offset (with respect to a given Moment index).</span>
+
+<span class="sd">    This relative information will be analysed by the fill_in_global_record_indices</span>
+<span class="sd">    transformer and replaced by real qubit and global measurement records.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        relative_qubit_positioning: The qubit coordinate offset. This will be added to a</span>
+<span class="sd">            qubit coordinate system origin to obtain the actual qubit the measurement</span>
+<span class="sd">            has been performed on.</span>
+<span class="sd">        relative_measurement_offset: The relative measurement offset. The measurements</span>
+<span class="sd">            performed on the qubit specified bt the relative_qubit_positioning will be</span>
+<span class="sd">            accessed using this offset. For example, a value of -1 means the last</span>
+<span class="sd">            measurement performed on the qubit till the time of the current operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">relative_qubit_positioning</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span>
+    <span class="n">relative_measurement_offset</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The relative_measurement_offset should be a negative integer, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_qubit_positioning</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="RelativeMeasurementsRecord">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord">[docs]</a>
+<span class="k">class</span> <span class="nc">RelativeMeasurementsRecord</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
+        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of relative measurement data representing measurements relative</span>
+<span class="sd">        to the origin of local coordinate system and current measurement timestamp.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
+<span class="sd">                system. The origin along with the local coordinate system will</span>
+<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
+<span class="sd">                qubit coordinates the measurements applied to.</span>
+<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
+<span class="sd">                relative measurements&#39; operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check there is no duplicate relative_measurement_data</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">relative_measurement_data</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_measurement_data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The relative_measurement_data should not contain duplicate elements.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span> <span class="o">=</span> <span class="n">local_coordinate_system_origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">relative_measurement_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="RelativeMeasurementsRecord.with_qubits">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RelativeMeasurementsRecord&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">relative_measurement_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The recorded relative measurement data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The origin of the local coordinate system.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span>
+
+    <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The origin of the local coordinate system.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span> <span class="o">=</span> <span class="n">new_origin</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Detector">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Detector">[docs]</a>
+<span class="k">class</span> <span class="nc">Detector</span><span class="p">(</span><span class="n">RelativeMeasurementsRecord</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
+        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
+        <span class="n">time_coordinate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Operation representing a detector.</span>
+
+<span class="sd">        Since the operation is not a real quantum operation, it does not have qubits</span>
+<span class="sd">        and is not applied to any qubits. This might cause surprising behavior if you</span>
+<span class="sd">        try to append or insert it into a circuit. It is always recommended to containerize</span>
+<span class="sd">        this operation in a `cirq.Moment` before appending it to a circuit.</span>
+
+<span class="sd">        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`</span>
+<span class="sd">        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.</span>
+<span class="sd">        You can use the `make_detector` helper function to create an instance of this class</span>
+<span class="sd">        with the correct tags. Otherwise, you might need to manually tag the operation with the</span>
+<span class="sd">        `cirq.VirtualTag` and the `STIM_TAG`.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            you should use `make_detector` to create instances of this class.</span>
+<span class="sd">            To understand how to use this class directly, please refer to the</span>
+<span class="sd">            documentation above.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
+<span class="sd">                system. The origin along with the local coordinate system will</span>
+<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
+<span class="sd">                qubit coordinates the measurements applied to.</span>
+<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
+<span class="sd">                relative measurements&#39; operation.</span>
+<span class="sd">            time_coordinate: an annotation that will be forwarded to the</span>
+<span class="sd">                DETECTOR Stim structure as the last coordinate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">time_coordinate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The time_coordinate should be a non-negative integer, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="n">time_coordinate</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurement_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_coordinate</span> <span class="o">=</span> <span class="n">time_coordinate</span>
+
+    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Detector(</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">row</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">col</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_coordinate</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Observable">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Observable">[docs]</a>
+<span class="k">class</span> <span class="nc">Observable</span><span class="p">(</span><span class="n">RelativeMeasurementsRecord</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
+        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
+        <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Operation representing an observable.</span>
+
+<span class="sd">        Since the operation is not a real quantum operation, it does not have qubits</span>
+<span class="sd">        and is not applied to any qubits. This might cause surprising behavior if you</span>
+<span class="sd">        try to append or insert it into a circuit. It is always recommended to containerize</span>
+<span class="sd">        this operation in a `cirq.Moment` before appending it to a circuit.</span>
+
+<span class="sd">        In `tqec`, this kind of annotation operation should be tagged with the `cirq.VirtualTag`</span>
+<span class="sd">        and the `STIM_TAG` to work correctly with the circuit transformation and the noise model.</span>
+<span class="sd">        You can use the `make_observable` helper function to create an instance of this class</span>
+<span class="sd">        with the correct tags. Otherwise, you might need to manually tag the operation with the</span>
+<span class="sd">        `cirq.VirtualTag` and the `STIM_TAG`.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            you should use `make_observable` to create instances of this class.</span>
+<span class="sd">            To understand how to use this class directly, please refer to the</span>
+<span class="sd">            documentation above.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
+<span class="sd">                system. The origin along with the local coordinate system will</span>
+<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
+<span class="sd">                qubit coordinates the measurements applied to.</span>
+<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
+<span class="sd">                relative measurements&#39; operation.</span>
+<span class="sd">            observable_index: the index of the observable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">observable_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The observable_index should be a non-negative integer, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="n">observable_index</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurement_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span> <span class="o">=</span> <span class="n">observable_index</span>
+
+    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitDiagramInfoArgs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Observable(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the index of the observable.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span></div>
+
+
+
+<div class="viewcode-block" id="make_shift_coords">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_shift_coords">[docs]</a>
+<span class="k">def</span> <span class="nf">make_shift_coords</span><span class="p">(</span><span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:~ShiftCoords operation with the</span>
+<span class="sd">    `cirq.VirtualTag` tag.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *shifts: How much to shift each coordinate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`ShiftCoords` operation with the `cirq.VirtualTag` tag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ShiftCoords</span><span class="p">(</span><span class="o">*</span><span class="n">shifts</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_detector">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_detector">[docs]</a>
+<span class="k">def</span> <span class="nf">make_detector</span><span class="p">(</span>
+    <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
+    <span class="n">relative_measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span>
+        <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">RelativeMeasurementData</span>
+    <span class="p">],</span>
+    <span class="n">time_coordinate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Detector` operation with the</span>
+<span class="sd">    `cirq.VirtualTag` tag.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        local_coordinate_system_origin: origin of the local coordinate system.</span>
+<span class="sd">            The origin along with the local coordinate system will be pinned to</span>
+<span class="sd">            the global coordinate system to resolve the actual qubit coordinates</span>
+<span class="sd">            the measurements applied to.</span>
+<span class="sd">        relative_measurements: a list of relative measurements that compose the</span>
+<span class="sd">            parity check of the detector. Each element of the list is a tuple of</span>
+<span class="sd">            (relative_qubit_position, relative_measurement_offset) or a</span>
+<span class="sd">            :class:`RelativeMeasurementData` instance. When a tuple is provided,</span>
+<span class="sd">            the first element is the position of the qubit relative to the local</span>
+<span class="sd">            coordinate system origin and the second element is the relative</span>
+<span class="sd">            measurement offset with respect to the most recent measurement</span>
+<span class="sd">            performed on the qubit.</span>
+<span class="sd">        time_coordinate: an annotation that will be forwarded to the DETECTOR</span>
+<span class="sd">            Stim structure as the last coordinate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`Detector` operation with the `cirq.VirtualTag` tag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">relative_measurements_data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">RelativeMeasurementData</span><span class="p">(</span><span class="o">*</span><span class="n">rm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm</span><span class="p">,</span> <span class="n">RelativeMeasurementData</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">rm</span>
+        <span class="k">for</span> <span class="n">rm</span> <span class="ow">in</span> <span class="n">relative_measurements</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">Detector</span><span class="p">(</span>
+        <span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurements_data</span><span class="p">,</span> <span class="n">time_coordinate</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_observable">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_observable">[docs]</a>
+<span class="k">def</span> <span class="nf">make_observable</span><span class="p">(</span>
+    <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
+    <span class="n">relative_measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span>
+        <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">RelativeMeasurementData</span>
+    <span class="p">],</span>
+    <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Observable` operation with the</span>
+<span class="sd">    `cirq.VirtualTag` tag.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        local_coordinate_system_origin: origin of the local coordinate system.</span>
+<span class="sd">            The origin along with the local coordinate system will be pinned to</span>
+<span class="sd">            the global coordinate system to resolve the actual qubit coordinates</span>
+<span class="sd">            the measurements applied to.</span>
+<span class="sd">        relative_measurements: a list of relative measurements that compose the</span>
+<span class="sd">            parity check of the observable. Each element of the list is a tuple</span>
+<span class="sd">            of (relative_qubit_position, relative_measurement_offset) or a</span>
+<span class="sd">            :class:`RelativeMeasurementData` instance. When a tuple is provided,</span>
+<span class="sd">            the first element is the position of the qubit relative to the local</span>
+<span class="sd">            coordinate system origin and the second element is the relative</span>
+<span class="sd">            measurement offset with respect to the most recent measurement</span>
+<span class="sd">            performed on the qubit.</span>
+<span class="sd">        observable_index: the index of the observable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`Observable` operation with the `cirq.VirtualTag` tag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">relative_measurements_data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">RelativeMeasurementData</span><span class="p">(</span><span class="o">*</span><span class="n">rm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm</span><span class="p">,</span> <span class="n">RelativeMeasurementData</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">rm</span>
+        <span class="k">for</span> <span class="n">rm</span> <span class="ow">in</span> <span class="n">relative_measurements</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">Observable</span><span class="p">(</span>
+        <span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurements_data</span><span class="p">,</span> <span class="n">observable_index</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

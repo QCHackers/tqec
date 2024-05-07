@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.enums &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.enums</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.enums</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position</span>
+
+
+<div class="viewcode-block" id="CornerPositionEnum">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.enums.CornerPositionEnum">[docs]</a>
+<span class="k">class</span> <span class="nc">CornerPositionEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a corner.</span>
+
+<span class="sd">    Corner positions are stored as coordinates in the coordinate system with:</span>
+<span class="sd">    - the origin on the upper-left corner</span>
+<span class="sd">    - the X-axis that goes from the origin to the upper-right corner</span>
+<span class="sd">    - the Y-axis that goes from the origin to the lower-left corner</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOWER_LEFT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">LOWER_RIGHT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">UPPER_LEFT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">UPPER_RIGHT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TemplateRelativePositionEnum">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.enums.TemplateRelativePositionEnum">[docs]</a>
+<span class="k">class</span> <span class="nc">TemplateRelativePositionEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a relative position between two Template instances.</span>
+
+<span class="sd">    Template relative positions are stored as the relative displacement needed to</span>
+<span class="sd">    encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template</span>
+<span class="sd">    on the left is one unit backwards on the X-axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LEFT_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">RIGHT_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ABOVE_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">BELOW_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<span class="n">LEFT_OF</span> <span class="o">=</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">LEFT_OF</span>
+<span class="n">RIGHT_OF</span> <span class="o">=</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">RIGHT_OF</span>
+<span class="n">ABOVE_OF</span> <span class="o">=</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">ABOVE_OF</span>
+<span class="n">BELOW_OF</span> <span class="o">=</span> <span class="n">TemplateRelativePositionEnum</span><span class="o">.</span><span class="n">BELOW_OF</span>
+
+
+<div class="viewcode-block" id="PlaquetteOrientation">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.enums.PlaquetteOrientation">[docs]</a>
+<span class="k">class</span> <span class="nc">PlaquetteOrientation</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">LEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DOWN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PlaquetteOrientation.to_plaquette_side">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.enums.PlaquetteOrientation.to_plaquette_side">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_plaquette_side</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PlaquetteSide&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if self == PlaquetteOrientation.UP:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PlaquetteSide">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.enums.PlaquetteSide">[docs]</a>
+<span class="k">class</span> <span class="nc">PlaquetteSide</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">LEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DOWN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+tqec.plaquette package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tqec.plaquette.library
+
+Submodules
+----------
+
+tqec.plaquette.plaquette module
+-------------------------------
+
+.. automodule:: tqec.plaquette.plaquette
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.plaquette.qubit module
+---------------------------
+
+.. automodule:: tqec.plaquette.qubit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.plaquette
+   :members:
+   :undoc-members:
+   :show-inheritance:

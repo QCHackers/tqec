@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.circuit &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.circuit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.circuit.circuit</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">cirq</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span><span class="p">,</span> <span class="n">merge_scheduled_circuits</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
+
+
+<div class="viewcode-block" id="generate_circuit">
+<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.circuit.generate_circuit">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_circuit</span><span class="p">(</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span>
+    <span class="n">plaquettes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Plaquette</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a quantum circuit from a template and its plaquettes</span>
+
+<span class="sd">    This is one of the core methods of the `tqec` package. It generates a quantum circuit</span>
+<span class="sd">    from the description of the template that should be implemented as well as the plaquettes</span>
+<span class="sd">    that should be used to instantiate the provided template.</span>
+
+<span class="sd">    This function requires that a few pre-conditions on the inputs are met:</span>
+<span class="sd">    1. the number of plaquettes provided should match the number of plaquettes required by</span>
+<span class="sd">    the provided template.</span>
+<span class="sd">    2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.</span>
+
+<span class="sd">    If any of the above pre-conditions is not met, the inputs are considered invalid, in which</span>
+<span class="sd">    case this function **might** raise an error.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template: spatial description of the quantum error correction experiment</span>
+<span class="sd">            we want to implement.</span>
+<span class="sd">        plaquettes: description of the computation that should happen at</span>
+<span class="sd">            different time-slices of the quantum error correction experiment (or</span>
+<span class="sd">            at least part of it). If provided as a dictionary, plaquettes should be</span>
+<span class="sd">            1-indexed (i.e., ``0 not in plaquettes`` should be ``True``).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a cirq.Circuit instance implementing the (part of) quantum error</span>
+<span class="sd">        correction experiment represented by the provided inputs.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if ``len(plaquettes) != template.expected_plaquettes_number`` or</span>
+<span class="sd">            if plaquettes is provided as a dicitonary and ``0 in plaquettes``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check that the user gave enough plaquettes.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)</span> <span class="o">!=</span> <span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)</span><span class="si">}</span><span class="s2"> plaquettes have been provided, but &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="si">}</span><span class="s2"> were expected.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">plaquettes</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="s2">&quot;If using a dictionary, the input plaquettes parameter should not &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;contain the entry 0. Found a value (</span><span class="si">{</span><span class="n">plaquettes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">) at entry 0.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># If plaquettes are given as a list, make that a dict to simplify the following operations</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">plaquettes</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">plaquette</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plaquette</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)}</span>
+
+    <span class="c1"># instantiate the template with the appropriate plaquette indices.</span>
+    <span class="c1"># Index 0 is &quot;no plaquette&quot; by convention and should not be included here.</span>
+    <span class="n">_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">template_plaquettes</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">_indices</span><span class="p">)</span>
+    <span class="n">increments</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+    <span class="c1"># Plaquettes indices are starting at 1 in template_plaquettes. To avoid</span>
+    <span class="c1"># offsets in the following code, we add an empty circuit at position 0.</span>
+    <span class="n">plaquette_circuits</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">())}</span> <span class="o">|</span> <span class="p">{</span>
+        <span class="n">i</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">circuit</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plaquettes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Generate the ScheduledCircuit instances for each plaquette instanciation</span>
+    <span class="n">all_scheduled_circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">plaquette_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">template_plaquettes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">column_index</span><span class="p">,</span> <span class="n">plaquette_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">plaquette_index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">scheduled_circuit</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">plaquette_circuits</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">])</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
+                    <span class="n">column_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">row_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">y</span>
+                <span class="p">)</span>
+                <span class="n">plaquette</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">]</span>
+                <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">_create_mapping</span><span class="p">(</span><span class="n">plaquette</span><span class="p">,</span> <span class="n">scheduled_circuit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+                <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">all_scheduled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scheduled_circuit</span><span class="p">)</span>
+
+    <span class="c1"># Merge everything!</span>
+    <span class="k">return</span> <span class="n">merge_scheduled_circuits</span><span class="p">(</span><span class="n">all_scheduled_circuits</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_create_mapping</span><span class="p">(</span>
+    <span class="n">plaquette</span><span class="p">:</span> <span class="n">Plaquette</span><span class="p">,</span> <span class="n">scheduled_circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">Displacement</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">]:</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">plaquette</span><span class="o">.</span><span class="n">origin</span>
+
+    <span class="n">qubit_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># GridQubit are indexed as (row, col), so (y, x)</span>
+        <span class="c1"># Qubits are given relative to an origin, so we need to add the offset</span>
+        <span class="n">qubit</span><span class="p">:</span> <span class="n">qubit</span> <span class="o">+</span> <span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">offset</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">mappable_qubits</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">qubit_map</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

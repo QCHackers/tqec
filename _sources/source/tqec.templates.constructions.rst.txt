@@ -1,0 +1,29 @@
+tqec.templates.constructions package
+====================================
+
+Submodules
+----------
+
+tqec.templates.constructions.corner module
+------------------------------------------
+
+.. automodule:: tqec.templates.constructions.corner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.constructions.qubit module
+-----------------------------------------
+
+.. automodule:: tqec.templates.constructions.qubit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.templates.constructions
+   :members:
+   :undoc-members:
+   :show-inheritance:

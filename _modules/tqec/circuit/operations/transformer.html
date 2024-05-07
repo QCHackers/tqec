@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.operations.transformer &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/tqec.html">tqec package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.operations.transformer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.circuit.operations.transformer</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">cirq</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">stimcirq</span>
+<span class="kn">import</span> <span class="nn">sympy</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.measurement_map</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CircuitMeasurementMap</span><span class="p">,</span>
+    <span class="n">compute_global_measurements_lookback_offsets</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.operation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">STIM_TAG</span><span class="p">,</span>
+    <span class="n">Detector</span><span class="p">,</span>
+    <span class="n">Observable</span><span class="p">,</span>
+    <span class="n">ShiftCoords</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+
+<span class="k">def</span> <span class="nf">_transform_to_stimcirq_compatible_impl</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">,</span>
+    <span class="n">global_measurement_map</span><span class="p">:</span> <span class="n">CircuitMeasurementMap</span><span class="p">,</span>
+    <span class="n">current_moment_index_offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">current_moment_index_offset</span>
+
+    <span class="k">for</span> <span class="n">moment</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">moments</span><span class="p">:</span>
+        <span class="n">operations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">number_of_moments_explored</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">moment</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitOperation</span><span class="p">):</span>
+                <span class="c1"># Getting the number of repetitions as an integer.</span>
+                <span class="n">operation_repetitions</span><span class="p">:</span> <span class="nb">int</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">operation_repetitions</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+                    <span class="n">operation_repetitions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>  <span class="c1"># type: ignore</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+                    <span class="n">operation_repetitions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Wrong type for cirq.CircuitOperation.repetitions: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">repetitions</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="c1"># Recursively fill-in the detectors.</span>
+                <span class="p">(</span>
+                    <span class="n">modified_circuit</span><span class="p">,</span>
+                    <span class="n">index_of_last_explored_moment</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="n">_transform_to_stimcirq_compatible_impl</span><span class="p">(</span>
+                    <span class="n">operation</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">(),</span>
+                    <span class="n">global_measurement_map</span><span class="o">=</span><span class="n">global_measurement_map</span><span class="p">,</span>
+                    <span class="n">current_moment_index_offset</span><span class="o">=</span><span class="n">current_moment_index</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">number_of_moments_explored</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">index_of_last_explored_moment</span> <span class="o">-</span> <span class="n">current_moment_index</span>
+                <span class="p">)</span> <span class="o">*</span> <span class="n">operation_repetitions</span>
+                <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">modified_circuit</span><span class="o">.</span><span class="n">freeze</span><span class="p">()))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># All the stim-related annotations should have been tagged with STIM_TAG</span>
+            <span class="k">if</span> <span class="n">STIM_TAG</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">operation</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+                <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">operation</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="n">untagged</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">untagged</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">untagged</span><span class="p">,</span> <span class="n">ShiftCoords</span><span class="p">):</span>
+                <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stimcirq</span><span class="o">.</span><span class="n">ShiftCoordsAnnotation</span><span class="p">(</span><span class="n">untagged</span><span class="o">.</span><span class="n">shifts</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">untagged</span><span class="p">,</span> <span class="n">Detector</span><span class="p">):</span>
+                <span class="n">relative_keys</span> <span class="o">=</span> <span class="n">compute_global_measurements_lookback_offsets</span><span class="p">(</span>
+                    <span class="n">untagged</span><span class="p">,</span> <span class="n">global_measurement_map</span><span class="p">,</span> <span class="n">current_moment_index</span>
+                <span class="p">)</span>
+                <span class="n">detector_annotation</span> <span class="o">=</span> <span class="n">stimcirq</span><span class="o">.</span><span class="n">DetAnnotation</span><span class="p">(</span>
+                    <span class="n">relative_keys</span><span class="o">=</span><span class="n">relative_keys</span><span class="p">,</span>
+                    <span class="n">coordinate_metadata</span><span class="o">=</span><span class="n">untagged</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">detector_annotation</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">untagged</span><span class="p">,</span> <span class="n">Observable</span><span class="p">):</span>
+                <span class="n">relative_keys</span> <span class="o">=</span> <span class="n">compute_global_measurements_lookback_offsets</span><span class="p">(</span>
+                    <span class="n">untagged</span><span class="p">,</span> <span class="n">global_measurement_map</span><span class="p">,</span> <span class="n">current_moment_index</span>
+                <span class="p">)</span>
+                <span class="n">observable_annotation</span> <span class="o">=</span> <span class="n">stimcirq</span><span class="o">.</span><span class="n">CumulativeObservableAnnotation</span><span class="p">(</span>
+                    <span class="n">relative_keys</span><span class="o">=</span><span class="n">relative_keys</span><span class="p">,</span>
+                    <span class="n">observable_index</span><span class="o">=</span><span class="n">untagged</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">observable_annotation</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The operation </span><span class="si">{</span><span class="n">untagged</span><span class="si">}</span><span class="s2"> is tagged with </span><span class="si">{</span><span class="n">STIM_TAG</span><span class="si">}</span><span class="s2"> but is not an operation&quot;</span>
+                    <span class="s2">&quot;recognized by tqec.&quot;</span>
+                <span class="p">)</span>
+        <span class="n">moments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">(</span><span class="o">*</span><span class="n">operations</span><span class="p">))</span>
+        <span class="n">current_moment_index</span> <span class="o">+=</span> <span class="n">number_of_moments_explored</span>
+
+    <span class="k">return</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">(</span><span class="n">moments</span><span class="p">),</span> <span class="n">current_moment_index</span>
+
+
+<div class="viewcode-block" id="transform_to_stimcirq_compatible">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.transformer.transform_to_stimcirq_compatible">[docs]</a>
+<span class="nd">@cirq</span><span class="o">.</span><span class="n">transformer</span>
+<span class="k">def</span> <span class="nf">transform_to_stimcirq_compatible</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">TransformerContext</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform the circuit to be compatible with stimcirq.</span>
+
+<span class="sd">    stimcirq is a library that allows to convert cirq circuits to stim circuits. It defines a set of</span>
+<span class="sd">    annotations in cirq that are used to represent the operations specific to stim. In tqec, we define</span>
+<span class="sd">    the same annotations with different semantics. This transformer is used to convert the tqec</span>
+<span class="sd">    annotations to the stimcirq annotations. The transformed operations are:</span>
+
+<span class="sd">    - :class:`ShiftCoords`: converted to `stimcirq.ShiftCoordsAnnotation`.</span>
+<span class="sd">    - :class:`Detector`: converted to `stimcirq.DetAnnotation` with the correct relative keys computed.</span>
+<span class="sd">    - :class:`Observable`: converted to `stimcirq.CumulativeObservableAnnotation` with the correct</span>
+<span class="sd">      relative keys computed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: The circuit to transform, which may contain tqec specific</span>
+<span class="sd">            operations.</span>
+<span class="sd">        context: See `cirq.transformer` documentation.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A new circuit with the tqec specific operations transformed to stimcirq</span>
+<span class="sd">        compatible operations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_annotation_safety_check</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+    <span class="n">measurement_map</span> <span class="o">=</span> <span class="n">CircuitMeasurementMap</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+    <span class="n">transformed_circuit</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_transform_to_stimcirq_compatible_impl</span><span class="p">(</span>
+        <span class="n">circuit</span><span class="p">,</span> <span class="n">measurement_map</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">transformed_circuit</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_annotation_safety_check</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the first moment of the circuit for the presence of specific tqec annotations.</span>
+
+<span class="sd">    The `Detector`/`Observable` annotations should not be present in the first moment of the circuit</span>
+<span class="sd">    as there are no measurements to refer to. This function checks for the presence of these annotations</span>
+<span class="sd">    and raises an exception if they are present.</span>
+
+<span class="sd">    This exception is commonly raised when the user tries to append or insert a `Detector`/`Observable`</span>
+<span class="sd">    operation directly to the circuit without a `cirq.Moment` around it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">first_moment</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">first_moment</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="o">.</span><span class="n">untagged</span><span class="p">,</span> <span class="p">(</span><span class="n">Detector</span><span class="p">,</span> <span class="n">Observable</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The operation </span><span class="si">{</span><span class="n">operation</span><span class="o">.</span><span class="n">untagged</span><span class="si">}</span><span class="s2"> is a tqec specific operation that refers to a measurement&quot;</span>
+                <span class="s2">&quot; but is present in the first moment of the circuit. This is not allowed as there are no&quot;</span>
+                <span class="s2">&quot; measurements to refer to. This is likely due to the user trying to append or insert this&quot;</span>
+                <span class="s2">&quot; operation directly to the circuit without a cirq.Moment around it.&quot;</span>
+            <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
