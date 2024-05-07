@@ -3,7 +3,11 @@ import typing as ty
 import networkx as nx
 import numpy
 
-from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.enums import (
+    CornerPositionEnum,
+    TemplateRelativePositionEnum,
+    TemplateOrientation,
+)
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
@@ -274,10 +278,10 @@ class ComposedTemplate(Template):
         dest: int
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
-            relative_position: tuple[
-                CornerPositionEnum, CornerPositionEnum
-            ] | None = self._relative_position_graph.get_edge_data(src, dest).get(
-                "relative_position"
+            relative_position: tuple[CornerPositionEnum, CornerPositionEnum] | None = (
+                self._relative_position_graph.get_edge_data(src, dest).get(
+                    "relative_position"
+                )
             )
             assert (
                 relative_position is not None
@@ -486,3 +490,8 @@ class ComposedTemplate(Template):
     @property
     def is_empty(self) -> bool:
         return len(self._templates) == 0
+
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        raise NotImplementedError
