@@ -94,7 +94,17 @@ class AlternatingRectangleTemplate(Template):
     def get_midline_plaquettes(
         self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        raise TQECException("AlternatingRectangleTemplate does not have a midline yet.")
+        midline_shape, iteration_shape = self.shape.y, self.shape.x
+        if horizontal == TemplateOrientation.VERTICAL:
+            midline_shape, iteration_shape = iteration_shape, midline_shape
+
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        return [(midline, column) for column in range(iteration_shape)]
 
 
 @ty.final
