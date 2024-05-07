@@ -2,7 +2,7 @@ import cirq
 import pytest
 
 from tqec.circuit.observable_qubits import observable_qubits_from_template
-from tqec.plaquette.library import XXXXMemoryPlaquette, ZZZZMemoryPlaquette
+from tqec.plaquette.library import xxxx_memory_plaquette, zzzz_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates import RawRectangleTemplate
 
@@ -10,8 +10,8 @@ from tqec.templates import RawRectangleTemplate
 @pytest.fixture
 def plaquettes() -> list[Plaquette]:
     return [
-        XXXXMemoryPlaquette([1, 2, 3, 4, 5, 6, 7, 8]),
-        ZZZZMemoryPlaquette([1, 3, 4, 5, 6, 8]),
+        xxxx_memory_plaquette([1, 2, 3, 4, 5, 6, 7, 8]),
+        zzzz_memory_plaquette([1, 3, 4, 5, 6, 8]),
     ]
 
 
