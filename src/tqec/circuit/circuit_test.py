@@ -21,7 +21,7 @@ def one_by_one_template() -> Template:
 
 def test_generate_initialisation_circuit_list(
     initialisation_plaquette: Plaquette, one_by_one_template
-):
+) -> None:
     circuit = generate_circuit(one_by_one_template, [initialisation_plaquette])
     assert circuit == cirq.Circuit(
         cirq.R(q.to_grid_qubit()) for q in initialisation_plaquette.qubits
