@@ -105,8 +105,8 @@ class AlternatingRectangleTemplate(Template):
             )
         midline = midline_shape // 2 - 1
         if horizontal == TemplateOrientation.VERTICAL:
-            return [(midline, column) for column in range(iteration_shape)]
-        return [(row, midline) for row in range(iteration_shape)]
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
 
 
 @ty.final
@@ -235,5 +235,6 @@ class RawRectangleTemplate(Template):
             )
         midline = midline_shape // 2 - 1
         if horizontal == TemplateOrientation.VERTICAL:
-            return [(midline, column) for column in range(iteration_shape)]
-        return [(row, midline) for row in range(iteration_shape)]
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
+

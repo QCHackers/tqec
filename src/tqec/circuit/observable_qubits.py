@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Mapping, Sequence, Union
 
 import cirq
@@ -11,7 +12,7 @@ from tqec.templates.base import Template
 
 def observable_qubits_from_template(
     template: Template,
-    plaquettes: Union[Sequence[Plaquette], Mapping[int, Plaquette]],
+    plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
     horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> Sequence[tuple[cirq.GridQubit, int]]:
     """Return the default observable qubits for the given template and its plaquettes.
@@ -72,7 +73,7 @@ def observable_qubits_from_template(
             (qubit.to_grid_qubit() + offset, 0)
             for qubit in _get_edge_qubits(plaquette, horizontal)
         ]
-    return list(set(observable_qubits))
+    return sorted(set(observable_qubits))
 
 
 def _get_edge_qubits(
@@ -86,9 +87,7 @@ def _get_edge_qubits(
             else qubit.position.x
         )
 
-    max_index = max_index = max(
-        _get_relevant_value(q) for q in plaquette.qubits.data_qubits
-    )
+    max_index = max(_get_relevant_value(q) for q in plaquette.qubits.data_qubits)
     return [
         qubit
         for qubit in plaquette.qubits.data_qubits

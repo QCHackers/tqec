@@ -15,7 +15,7 @@ def plaquettes() -> list[Plaquette]:
     ]
 
 
-def test_raw_rectangle_default_observable_qubits(plaquettes: list[Plaquette]):
+def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]):
     template = RawRectangleTemplate(
         [
             [0, 1, 0, 1],
@@ -33,4 +33,4 @@ def test_raw_rectangle_default_observable_qubits(plaquettes: list[Plaquette]):
         (cirq.GridQubit(3, 5), 0),
         (cirq.GridQubit(3, 7), 0),
     ]
-    assert sorted(obs, key=lambda t: t[0].col == result)
+    assert sorted(obs, key=lambda t: t[0].col) == result

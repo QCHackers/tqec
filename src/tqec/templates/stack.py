@@ -132,7 +132,7 @@ class StackedTemplate(Template):
                 horizontal == TemplateOrientation.VERTICAL
                 and template.shape.x == midline_shape
             ):
-                template.get_midline_plaquettes(horizontal)
+                return template.get_midline_plaquettes(horizontal)
         raise TQECException(
             "No template with the expected midline shape was found in the stack."
         )
