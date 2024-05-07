@@ -1,11 +1,10 @@
 import cirq
 import pytest
 
-from tqec.plaquette.library.xxxx import XXXXMemoryPlaquette
-from tqec.plaquette.library.zzzz import ZZZZMemoryPlaquette
+from tqec.circuit.observable_qubits import observable_qubits_from_template
+from tqec.plaquette.library import XXXXMemoryPlaquette, ZZZZMemoryPlaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates import RawRectangleTemplate
-from tqec.circuit.observable_qubits import observable_qubits_from_template
 
 
 @pytest.fixture
