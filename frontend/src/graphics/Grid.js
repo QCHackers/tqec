@@ -39,21 +39,7 @@ export default class Grid extends Graphics {
     const selectedUnits = this.visibleUnits();
     const xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
     const ySorted = Array.from(new Set(selectedUnits.map((unit) => unit.y))).sort((a, b) => a.y - b.y);
-    // FIXME: delegate these side effects to elsewhere
-    this.physicalWidth = xSorted.length * this.gridSize;
-    this.physicalHeight = ySorted.length * this.gridSize;
-    for (let i = 0; i < xSorted.length - 2; i += 1) {
-      if (xSorted[i] + this.gridSize !== xSorted[i + 1]) {
-        return false;
-      }
-    }
-    // check ySorted
-    for (let i = 0; i < ySorted.length - 2; i += 1) {
-      if (ySorted[i] + this.gridSize !== ySorted[i + 1]) {
-        return false;
-      }
-    }
-    return true;
+    return xSorted.length * ySorted.length === selectedUnits.length;
   };
 
   contains = (qubits) => {
