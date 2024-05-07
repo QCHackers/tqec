@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Sequence
+from typing import Mapping, Sequence, Union
 
 import cirq
 
@@ -11,7 +11,7 @@ from tqec.templates.base import Template
 
 def observable_qubits_from_template(
     template: Template,
-    plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
+    plaquettes: Union[Sequence[Plaquette], Mapping[int, Plaquette]],
     horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> Sequence[tuple[cirq.GridQubit, int]]:
     """Return the default observable qubits for the given template and its plaquettes.
