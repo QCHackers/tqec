@@ -183,4 +183,6 @@ class AlternatingCornerSquareTemplate(Template):
                 + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
             )
         midline = midline_shape // 2 - 1
-        return [(midline, column) for column in range(iteration_shape)]
+        if horizontal == TemplateOrientation.VERTICAL:
+            return [(midline, column) for column in range(iteration_shape)]
+        return [(row, midline) for row in range(iteration_shape)]
