@@ -2,6 +2,7 @@ import typing as ty
 
 import numpy
 from tqec.exceptions import TQECException
+from tqec.enums import TemplateOrientation
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
@@ -90,7 +91,9 @@ class AlternatingRectangleTemplate(Template):
     def expected_plaquettes_number(self) -> int:
         return 2
 
-    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
         raise TQECException("AlternatingRectangleTemplate does not have a midline yet.")
 
 
@@ -206,15 +209,17 @@ class RawRectangleTemplate(Template):
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
 
-    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
-        if horizontal:
-            if self.shape.y % 2 == 1:
-                raise TQECException("Midline is not defined for odd height.")
-            midline = self.shape.y // 2 - 1
-            indices = self._indices[midline]
-            return [(midline, column ) for column, _ in enumerate(indices)]
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.y, self.shape.x
+        if horizontal == TemplateOrientation.VERTICAL:
+            midline_shape, iteration_shape = iteration_shape, midline_shape
 
-        if self.shape.x % 2 == 1:
-            raise TQECException("Midline is not defined for odd width.")
-        midline = self.shape.x // 2 - 1
-        return [(row, midline) for row in range(self.shape.y)]
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        return [(midline, column) for column in range(iteration_shape)]

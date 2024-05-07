@@ -7,7 +7,11 @@ from dataclasses import dataclass
 
 import numpy
 
-from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.enums import (
+    CornerPositionEnum,
+    TemplateOrientation,
+    TemplateRelativePositionEnum,
+)
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 
@@ -161,7 +165,9 @@ class Template(JSONEncodable):
         pass
 
     @abstractmethod
-    def get_midline_plaquettes(self, horizontal: bool = True) -> list[tuple[int, int]]:
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
         """Returns the default observable qubits for the template.
 
         If the template has a simple shape, this returns the plaquettes on the ``midline''

@@ -6,9 +6,8 @@ from typing import Any, Mapping, Sequence
 import cirq
 
 from tqec.exceptions import TQECException
-
-from tqec.plaquette import Plaquette
-from tqec.templates import Template
+from tqec.enums import TemplateOrientation
+from tqec.templates.base import Template
 
 STIM_TAG = "STIM_OPERATION"
 
@@ -358,9 +357,12 @@ def make_observable(
 
 def observable_qubits_from_template(
     template: Template,
-    plaquettes: list[Plaquette] | dict[int, Plaquette],
-    horizontal: bool = True,
-) -> Sequence[tuple[cirq.GridQubit, int]] | None:
+    plaquettes: (
+        Sequence[Plaquette]
+        | Mapping[int, Plaquette]
+    ),
+    horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
+) -> Sequence[tuple[cirq.GridQubit, int]]:
     """Return the default observable qubits for the given template and its plaquettes.
 
     Args:
@@ -373,10 +375,10 @@ def observable_qubits_from_template(
     Raises:
         TQECException: If the number of plaquettes does not match the expected number.
         TQECException: If the plaquettes are provided as a dictionary and 0 is in the keys.
+        TQECException: If the template does not have a definable midline.
 
     Returns:
-        Sequence[tuple[cirq.GridQubit, int]] | None: The observable qubits and their offsets.
-            None if no midline can be defined.
+        Sequence[tuple[cirq.GridQubit, int]]
     """
     if len(plaquettes) != template.expected_plaquettes_number:
         raise TQECException(
@@ -398,12 +400,14 @@ def observable_qubits_from_template(
 
     try:
         midline_indices = template.get_midline_plaquettes(horizontal)
-    except TQECException:
-        return None
+    except TQECException as e:
+        raise TQECException(
+            "The template does not have a midline. "
+            "The observable qubits cannot be defined."
+        ) from e
 
     observable_qubits = []
-    for index in midline_indices:
-        row_index, column_index = index
+    for row_index, column_index in midline_indices:
         plaquette_index = template_plaquettes[row_index][column_index]
         if plaquette_index == 0:
             continue
@@ -420,19 +424,22 @@ def observable_qubits_from_template(
     return list(set(observable_qubits))
 
 
-def _get_edge_qubits(plaquette, horizontal) -> list[Any]:
-    if horizontal:
-        max_index = max(
-            plaquette.qubits.data_qubits, key=lambda q: q.position.y
-        ).position.y
-        return [
-            qubit
-            for qubit in plaquette.qubits.data_qubits
-            if (qubit.position.y == max_index)
-        ]
-    max_index = max(plaquette.qubits.data_qubits, key=lambda q: q.position.x).position.x
+def _get_edge_qubits(
+    plaquette: Plaquette,
+    horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
+) -> list[PlaquetteQubit]:
+    def _get_relevant_value(qubit: PlaquetteQubit) -> int:
+        return (
+            qubit.position.y
+            if horizontal == TemplateOrientation.HORIZONTAL
+            else qubit.position.x
+        )
+
+    max_index = max_index = max(
+        _get_relevant_value(q) for q in plaquette.qubits.data_qubits
+    )
     return [
         qubit
         for qubit in plaquette.qubits.data_qubits
-        if (qubit.position.x == max_index)
+        if (_get_relevant_value(qubit) == max_index)
     ]
