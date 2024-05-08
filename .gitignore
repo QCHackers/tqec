@@ -176,3 +176,7 @@ web/requirements.txt
 # created by virtualenv
 bin
 pyvenv.cfg
+
+# Sphinx
+docs/_build
+docs/source
