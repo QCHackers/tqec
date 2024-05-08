@@ -7,6 +7,9 @@ of building a project in Javascript using React and Pixi.
 The step-by-step guide can still be accessed in the form of commit history from the
 [PR #89 page](https://github.com/QCHackers/tqec/pull/89).
 
+**NOTE:** The codebase has been moved out of the official tqec repository with
+[PR #216](https://github.com/QCHackers/tqec/pull/216)
+and to [tqec-alternative-frontend](https://github.com/QCHackers/tqec-alternative-frontend).
 
 
 
