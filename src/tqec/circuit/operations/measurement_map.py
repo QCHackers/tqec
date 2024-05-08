@@ -148,9 +148,9 @@ class CircuitMeasurementMap:
             global_measurement_indices.append(dict())
             for op in moment.operations:
                 if isinstance(op.gate, cirq.MeasurementGate):
-                    if len(op.qubits) > 1:
+                    if len(op.qubits) != 1:
                         raise TQECException(
-                            f"Found a measurement applied on multiple qubits ({op.qubits})."
+                            f"Found a measurement applied on an invalid number of qubits ({op.qubits})."
                         )
                     qubit: cirq.Qid = op.qubits[0]
                     global_measurement_indices[-1][qubit] = global_measurement_index
