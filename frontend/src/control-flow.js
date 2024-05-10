@@ -7,7 +7,6 @@ import { AdjustmentFilter } from 'pixi-filters';
 import notification from './components/notification';
 import Grid from './graphics/Grid';
 import Footprint from './plaquettes/Footprint';
-import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import DownloadButton from './components/download/DownloadButton';
@@ -133,12 +132,14 @@ export default function InitializeControlFlow() {
           notification(app, 'Bounding quad must contain every qubit');
           return;
         }
-
+        if (!grid.boundaryQubitsValid(lattice.constellation)) {
+          notification(app, 'Bounding quad must contain no overlapping qubits');
+          return;
+        }
         workspace.removeChild(finalizeBoundingQuadButton);
         // Grid units shall no longer be selectable
         grid.units.forEach((row) => {
           row.forEach((unit) => {
-            workspace.removeChild(unit);
             app.renderer.view.removeEventListener('click', unit.toggleVisibility);
           });
         });
@@ -152,34 +153,6 @@ export default function InitializeControlFlow() {
           },
         });
 
-        // Add qubits to the workspace
-        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
-          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
-            for (const qubit of lattice.constellation) {
-              const newQubit = new Qubit(
-                qubit.bbX + horiz,
-                qubit.bbY + vertic,
-                workspace.qubitRadius,
-                workspace.gridSize
-              );
-              workspace.addChild(newQubit);
-            }
-          }
-        }
-
-        // Make the original qubits invisible to remove redundancy
-        lattice.constellation.forEach((qubit) => {
-          qubit.visible = false;
-        });
-
-        // Initialize Template
-        const template = new Footprint(
-          workspace,
-          app,
-          x,
-          y
-        );
-        workspace.addChild(template.container);
         workspace.removeChild(finalizeBoundingQuadButton);
 
         const downloadStimButton = new DownloadButton(

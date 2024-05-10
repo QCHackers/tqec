@@ -43,16 +43,39 @@ export default class Grid extends Graphics {
   };
 
   contains = (qubits) => {
-    const minX = Math.min(...this.visibleUnits().map((unit) => unit.x));
-    const minY = Math.min(...this.visibleUnits().map((unit) => unit.y));
     const unitXs = new Set(this.visibleUnits().map((unit) => [unit.x, unit.x + this.gridSize]).flat());
     const unitYs = new Set(this.visibleUnits().map((unit) => [unit.y, unit.y + this.gridSize]).flat());
     for (const qubit of qubits) {
       if (!unitXs.has(qubit.globalX) || !unitYs.has(qubit.globalY)) {
         return false;
       }
-      // FIXME: remove this side-effect
+    }
+    return true;
+  };
+
+  boundaryQubitsValid = (qubits) => {
+    if (this.visibleUnits().length === 0) {
+      throw new Error('No visible units in grid');
+    }
+    if (!this.selectedUnitsRectangular()) {
+      return false;
+    }
+    const minX = Math.min(...this.visibleUnits().map((unit) => unit.x));
+    const minY = Math.min(...this.visibleUnits().map((unit) => unit.y));
+    for (const qubit of qubits) {
       qubit.applyBoundingBoxCoordinates(qubit.globalX - minX, qubit.globalY - minY);
+    }
+    const xLeftboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === 0).map((qubit) => qubit.bbY));
+    const xLen = this.units.length * this.gridSize;
+    const xRightboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === xLen).map((qubit) => qubit.bbY));
+    if (xLeftboundaryQubits.intersection(xRightboundaryQubits).length > 0) {
+      return false;
+    }
+    const yLen = this.units[0].length * this.gridSize;
+    const yboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === 0).map((qubit) => qubit.bbX).flat());
+    const yTopboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === yLen).map((qubit) => qubit.bbX).flat());
+    if (yboundaryQubits.intersection(yTopboundaryQubits).length > 0) {
+      return false;
     }
     return true;
   };

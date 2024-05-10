@@ -43,7 +43,7 @@ export default class QubitLattice {
     );
     if (qubit) {
       // this qubit is already in the constellation
-      this.constellation = this.constellation.filter((q) => q !== qubit);
+      this.constellation = this.constellation.filter((q) => q !== qubit).flat();
       this.workspace.removeChild(qubit);
     } else {
       // this qubit is not in the constellation
