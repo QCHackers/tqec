@@ -37,9 +37,9 @@ export default class Grid extends Graphics {
 
   selectedUnitsRectangular = () => {
     const selectedUnits = this.visibleUnits();
-    const xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
-    const ySorted = Array.from(new Set(selectedUnits.map((unit) => unit.y))).sort((a, b) => a.y - b.y);
-    return xSorted.length * ySorted.length === selectedUnits.length;
+    this.xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
+    this.ySorted = Array.from(new Set(selectedUnits.map((unit) => unit.y))).sort((a, b) => a.y - b.y);
+    return this.xSorted.length * this.ySorted.length === selectedUnits.length;
   };
 
   contains = (qubits) => {
@@ -66,17 +66,18 @@ export default class Grid extends Graphics {
       qubit.applyBoundingBoxCoordinates(qubit.globalX - minX, qubit.globalY - minY);
     }
     const xLeftboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === 0).map((qubit) => qubit.bbY));
-    const xLen = this.units.length * this.gridSize;
+    const xLen = this.xSorted.length * this.gridSize;
     const xRightboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === xLen).map((qubit) => qubit.bbY));
-    if (xLeftboundaryQubits.intersection(xRightboundaryQubits).length > 0) {
+    if (xLeftboundaryQubits.intersection(xRightboundaryQubits).size > 0) {
       return false;
     }
-    const yLen = this.units[0].length * this.gridSize;
+    const yLen = this.ySorted.length * this.gridSize;
     const yboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === 0).map((qubit) => qubit.bbX).flat());
     const yTopboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === yLen).map((qubit) => qubit.bbX).flat());
-    if (yboundaryQubits.intersection(yTopboundaryQubits).length > 0) {
+    if (yboundaryQubits.intersection(yTopboundaryQubits).size > 0) {
       return false;
     }
+    console.log(yboundaryQubits, yTopboundaryQubits);
     return true;
   };
 
