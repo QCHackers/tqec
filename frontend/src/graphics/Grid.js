@@ -65,6 +65,7 @@ export default class Grid extends Graphics {
     for (const qubit of qubits) {
       qubit.applyBoundingBoxCoordinates(qubit.globalX - minX, qubit.globalY - minY);
     }
+    // Check if boundary qubits overlap
     const xLeftboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === 0).map((qubit) => qubit.bbY));
     const xLen = this.xSorted.length * this.gridSize;
     const xRightboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === xLen).map((qubit) => qubit.bbY));
@@ -77,7 +78,22 @@ export default class Grid extends Graphics {
     if (yboundaryQubits.intersection(yTopboundaryQubits).size > 0) {
       return false;
     }
-    console.log(yboundaryQubits, yTopboundaryQubits);
+    // Check if top left and bottom right corner qubits exist
+    const upperLeftCornerQubit = qubits.filter((qubit) => qubit.bbX === 0 && qubit.bbY === 0);
+    if (upperLeftCornerQubit.length === 1) {
+      const bottomRightCornerQubit = qubits.filter((qubit) => qubit.bbX === xLen && qubit.bbY === yLen);
+      if (bottomRightCornerQubit.length === 1) {
+        return false;
+      }
+    }
+    // Check if top right and bottom left corner qubits exist
+    const upperRightCornerQubit = qubits.filter((qubit) => qubit.bbX === xLen && qubit.bbY === 0);
+    if (upperRightCornerQubit.length === 1) {
+      const bottomLeftCornerQubit = qubits.filter((qubit) => qubit.bbX === 0 && qubit.bbY === yLen);
+      if (bottomLeftCornerQubit.length === 1) {
+        return false;
+      }
+    }
     return true;
   };
 
