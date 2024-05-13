@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-continue */
 import { useApp } from '@pixi/react';
 import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
+import Qubit from './qubits/Qubit';
 import notification from './components/notification';
 import Grid from './graphics/Grid';
 import Footprint from './plaquettes/Footprint';
@@ -147,6 +147,26 @@ export default function InitializeControlFlow() {
           gridSquares: grid.visibleUnits().map((u) => u.serialized())
         },
       });
+
+      // Remove lattice qubits from workspace
+      lattice.constellation.forEach((qubit) => {
+        workspace.removeChild(qubit);
+      });
+
+      // Add qubits to the workspace
+      for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
+        for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
+          for (const qubit of lattice.constellation) {
+            const newQubit = new Qubit(
+              qubit.bbX + horiz,
+              qubit.bbY + vertic,
+              workspace.qubitRadius,
+              workspace.gridSize
+            );
+            workspace.addChild(newQubit);
+          }
+        }
+      }
 
       app.renderer.view.removeEventListener('click', lattice.selectQubitForConstellation);
       workspace.removeChild(saveFootprintButton);

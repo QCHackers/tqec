@@ -35,6 +35,16 @@ export default class Grid extends Graphics {
 
   visibleUnits = () => this.units.flat().filter((unit) => unit.visible);
 
+  footprintWidth = () => {
+    const selectedUnits = this.visibleUnits();
+    return Math.max(...selectedUnits.map((unit) => unit.x)) - Math.min(...selectedUnits.map((unit) => unit.x)) + this.gridSize;
+  };
+
+  footprintHeight = () => {
+    const selectedUnits = this.visibleUnits();
+    return Math.max(...selectedUnits.map((unit) => unit.y)) - Math.min(...selectedUnits.map((unit) => unit.y)) + this.gridSize;
+  };
+
   selectedUnitsRectangular = () => {
     const selectedUnits = this.visibleUnits();
     this.xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
