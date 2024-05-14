@@ -170,11 +170,7 @@ export default class Qubit extends Graphics {
       fill: 'white'
     });
     label.anchor.set(0.5);
-    if (this.label === QubitLabels.ancilla) {
-      label.position.set(this.globalX, this.globalY - 10);
-    } else {
-      label.position.set(this.globalX + 10, this.globalY - 10);
-    }
+    label.position.set(this.globalX + 10, this.globalY - 10);
     label.visible = true;
     label.zIndex = 0.5;
     // Remove all children

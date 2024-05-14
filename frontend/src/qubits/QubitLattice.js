@@ -119,7 +119,6 @@ export default class QubitLattice {
   };
 
   applyBoundingBoxCoordinatesToQubits = () => {
-    // Apply the bounding box coordinates to the qubits
     // eslint-disable-next-line no-restricted-syntax
     for (const qubit of this.constellation) {
       qubit.applyBoundingBoxCoordinates(
