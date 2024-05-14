@@ -201,6 +201,8 @@ export default function InitializeControlFlow() {
           // Remove ancilla selection button
           workspace.removeChild(finalizeAncillaButton);
           // Now select X and Z qubits
+          app.renderer.view.addEventListener('click', lattice.selectDataQubit);
+          notification(app, 'Choose data qubits. Press a number key [0-9] to specify time steps.');
         });
       });
     });

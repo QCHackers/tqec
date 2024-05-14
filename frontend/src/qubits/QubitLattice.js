@@ -2,6 +2,7 @@ import { Point } from 'pixi.js';
 import Qubit from './Qubit';
 import QubitLabels from './QubitLabels';
 import Button from '../components/Button';
+import notification from '../components/notification';
 
 export default class QubitLattice {
   constructor(workspace, app) {
@@ -57,8 +58,6 @@ export default class QubitLattice {
   selectAncillaQubit = (e) => {
     const [relativeX, relativeY] = this.relativeXY(e);
     const qubitPoint = this.pointToGridIntersection(new Point(relativeX, relativeY));
-    // Is this qubit already in the constellation? If so, remove it; otherwise, add it
-    // FIXME: can we eliminate redundancy by cutting out the constellation instance variable?
     const qubit = this.constellation.find(
       (q) => q.checkHitArea(qubitPoint.x, qubitPoint.y) === true
     );
@@ -75,6 +74,38 @@ export default class QubitLattice {
         qubit.removeLabel();
       } else {
         qubit.setCircuitLabel(QubitLabels.ancilla);
+      }
+    }
+  };
+
+  selectDataQubit = (e) => {
+    const [relativeX, relativeY] = this.relativeXY(e);
+    const qubitPoint = this.pointToGridIntersection(new Point(relativeX, relativeY));
+    const qubit = this.constellation.find(
+      (q) => q.checkHitArea(qubitPoint.x, qubitPoint.y) === true
+    );
+    if (qubit) {
+      if (qubit.timestep === QubitLabels.noLabel) {
+        // eslint-disable-next-line no-alert
+        const input = prompt('Please specify a time step for this qubit.');
+        const timeStep = parseInt(input, 10);
+        if (Number.isNaN(timeStep) || timeStep < 0 || timeStep > 9) {
+          notification(this.app, 'Please specify a time step between 0 and 9.');
+          return;
+        }
+        qubit.setTimestep(timeStep);
+      }
+      // Cycle to the next label.
+      const labelCycle = [QubitLabels.noLabel, QubitLabels.cx, QubitLabels.cz];
+      // eslint-disable-next-line no-plusplus
+      for (let k = 0; k < labelCycle.length; k++) {
+        if (qubit.getLabel() === labelCycle[k]) {
+          qubit.setCircuitLabel(labelCycle[(k + 1) % labelCycle.length]);
+          break;
+        }
+      }
+      if (qubit.label === QubitLabels.noLabel) {
+        qubit.setTimestep(QubitLabels.noLabel);
       }
     }
   };

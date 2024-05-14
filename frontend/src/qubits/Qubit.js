@@ -35,6 +35,9 @@ export default class Qubit extends Graphics {
     // Adjacent (degree 1) qubits
     this.visible = true;
     this.isSelected = false;
+
+    this.timestep = QubitLabels.noLabel;
+    this.label = QubitLabels.noLabel;
   }
 
   toString = () => this.name;
@@ -159,20 +162,25 @@ export default class Qubit extends Graphics {
     this.bbY = y;
   };
 
-  setCircuitLabel = (label) => {
-    const text = new Text(label, {
-      fill: 'white',
-      fontSize: 10
+  updateLabel = () => {
+    const label = new Text(`${this.label}${this.timestep}`, {
+      fontSize: 10,
+      fill: 'white'
     });
-    text.anchor.set(0.5);
-    text.position.set(this.globalX, this.globalY - 10);
-    text.visible = true;
-    text.zIndex = 2;
-    if (this.children.length > 0) {
-      this.removeChildAt(0);
-    }
-    this.addChild(text);
+    label.anchor.set(0.5);
+    label.position.set(this.globalX, this.globalY - 10);
+    label.visible = true;
+    label.zIndex = 0.5;
+    // Remove all children
+    this.children.forEach((child) => {
+      this.removeChild(child);
+    });
+    this.addChild(label);
+  };
+
+  setCircuitLabel = (label) => {
     this.label = label;
+    this.updateLabel();
   };
 
   getLabel = () => this.label;
@@ -183,6 +191,11 @@ export default class Qubit extends Graphics {
         child.visible = false;
       }
     });
+  };
+
+  setTimestep = (timestep) => {
+    this.timestep = timestep;
+    this.updateLabel();
   };
 
   removeLabel = () => {
