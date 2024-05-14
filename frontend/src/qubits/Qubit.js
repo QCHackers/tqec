@@ -166,11 +166,11 @@ export default class Qubit extends Graphics {
 
   updateLabel = () => {
     const label = new Text(`${this.label}${this.timestep}`, {
-      fontSize: 10,
+      fontSize: 15,
       fill: 'white'
     });
     label.anchor.set(0.5);
-    label.position.set(this.globalX + 10, this.globalY - 10);
+    label.position.set(this.globalX + 15, this.globalY - 15);
     label.visible = true;
     label.zIndex = 0.5;
     // Remove all children
