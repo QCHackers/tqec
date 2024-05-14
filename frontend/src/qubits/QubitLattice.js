@@ -93,6 +93,13 @@ export default class QubitLattice {
           notification(this.app, 'Please specify a time step between 0 and 9.');
           return;
         }
+        // eslint-disable-next-line no-restricted-syntax
+        for (const q of this.constellation) {
+          if (q.timestep === timeStep) {
+            notification(this.app, 'A qubit with this time step already exists in the footprint.');
+            return;
+          }
+        }
         qubit.setTimestep(timeStep);
       }
       // Cycle to the next label.

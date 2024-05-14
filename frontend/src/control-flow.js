@@ -203,6 +203,8 @@ export default function InitializeControlFlow() {
           // Now select X and Z qubits
           app.renderer.view.addEventListener('click', lattice.selectDataQubit);
           notification(app, 'Choose data qubits. Press a number key [0-9] to specify time steps.');
+          const savePlaquetteButton = new Button('Save plaquette', x, y);
+          workspace.addChild(savePlaquetteButton);
         });
       });
     });
