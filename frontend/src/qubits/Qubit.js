@@ -1,12 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
-
-export const CircuitLabels = Object.freeze({
-  ancilla: 'A',
-  measure: 'M',
-  cx: 'CX',
-  cz: 'CZ'
-});
+import QubitLabels from './QubitLabels';
 
 /**
  * Qubit class
@@ -28,8 +22,7 @@ export default class Qubit extends Graphics {
     this.eventMode = 'static';
     this.buttonMode = true;
     this.cursor = 'pointer';
-    // assert(x % gridSize === 0, 'x must be a multiple of gridSize');
-    // assert(y % gridSize === 0, 'y must be a multiple of gridSize');
+
     this.globalX = x;
     this.globalY = y;
     this.createCircle(x, y, radius, color);
@@ -63,13 +56,6 @@ export default class Qubit extends Graphics {
     this.alpha = 1;
   };
 
-  /**
-   * Creates a circle
-   * @param {*} x
-   * @param {*} y
-   * @param {*} radius
-   * @param {*} color
-   */
   createCircle(x, y, radius, color) {
     // Create a circle
     this.beginFill(color);
@@ -110,31 +96,11 @@ export default class Qubit extends Graphics {
         return true;
       }
       this.isSelected = true;
-      // Create a text element
-      const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
-        fill: 'white',
-        fontSize: 10
-      }); // White text color
-      text.anchor.set(0.5);
-      text.position.set(eventX, eventY + 10);
       this.onPointerOver();
       this.color = 0xffffff;
-
-      // Add the text to the qubit
-      this.addChild(text);
-      text.visible = true;
-
       return true;
     }
     return false; // If no hit
-  }
-
-  /**
-   * Sets the qubit state
-   * @param {*} state
-   */
-  setQuantumState(state) {
-    this.quantumState = state;
   }
 
   /**
@@ -194,20 +160,32 @@ export default class Qubit extends Graphics {
   };
 
   setCircuitLabel = (label) => {
-    this.label = label;
-    const text = new Text(this.label, {
+    const text = new Text(label, {
       fill: 'white',
       fontSize: 10
     });
     text.anchor.set(0.5);
     text.position.set(this.globalX, this.globalY - 10);
-    text.visible = false;
+    text.visible = true;
     text.zIndex = 2;
+    if (this.children.length > 0) {
+      this.removeChildAt(0);
+    }
     this.addChild(text);
-    this.text = text;
+    this.label = label;
   };
 
-  showLabelText = () => {
-    this.text.visible = true;
+  getLabel = () => this.label;
+
+  hideLabel = () => {
+    this.children.forEach((child) => {
+      if (child instanceof Text) {
+        child.visible = false;
+      }
+    });
+  };
+
+  removeLabel = () => {
+    this.setCircuitLabel(QubitLabels.noLabel);
   };
 }

@@ -1,5 +1,6 @@
 import { Point } from 'pixi.js';
 import Qubit from './Qubit';
+import QubitLabels from './QubitLabels';
 import Button from '../components/Button';
 
 export default class QubitLattice {
@@ -50,6 +51,31 @@ export default class QubitLattice {
       const newQubit = new Qubit(qubitPoint.x, qubitPoint.y);
       this.constellation.push(newQubit);
       this.workspace.addChild(newQubit);
+    }
+  };
+
+  selectAncillaQubit = (e) => {
+    const [relativeX, relativeY] = this.relativeXY(e);
+    const qubitPoint = this.pointToGridIntersection(new Point(relativeX, relativeY));
+    // Is this qubit already in the constellation? If so, remove it; otherwise, add it
+    // FIXME: can we eliminate redundancy by cutting out the constellation instance variable?
+    const qubit = this.constellation.find(
+      (q) => q.checkHitArea(qubitPoint.x, qubitPoint.y) === true
+    );
+    if (qubit) {
+      // Remove the ancilla label, if there is one.
+      const ancilla = this.constellation.find((q) => q.getLabel() === QubitLabels.ancilla);
+      if (ancilla !== undefined) {
+        ancilla.removeLabel();
+        if (ancilla === qubit) {
+          return;
+        }
+      }
+      if (qubit.getLabel() === QubitLabels.ancilla) {
+        qubit.removeLabel();
+      } else {
+        qubit.setCircuitLabel(QubitLabels.ancilla);
+      }
     }
   };
 

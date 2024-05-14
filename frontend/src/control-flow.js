@@ -9,8 +9,10 @@ import Grid from './graphics/Grid';
 import Footprint from './plaquettes/Footprint';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
-import DownloadButton from './components/download/DownloadButton';
 import store from './store';
+import QubitLabels from './qubits/QubitLabels';
+
+const fullPopMode = false; // Set to true to populate the workspace with qubits
 
 /**
  * Defines how the app behaves (button and feature placement) upon initialization
@@ -148,22 +150,24 @@ export default function InitializeControlFlow() {
         },
       });
 
-      // Remove lattice qubits from workspace
-      lattice.constellation.forEach((qubit) => {
-        workspace.removeChild(qubit);
-      });
+      if (fullPopMode) {
+        // Remove lattice qubits from workspace
+        lattice.constellation.forEach((qubit) => {
+          workspace.removeChild(qubit);
+        });
 
-      // Add qubits to the workspace
-      for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
-        for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
-          for (const qubit of lattice.constellation) {
-            const newQubit = new Qubit(
-              qubit.bbX + horiz,
-              qubit.bbY + vertic,
-              workspace.qubitRadius,
-              workspace.gridSize
-            );
-            workspace.addChild(newQubit);
+        // Add qubits to the workspace
+        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
+          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
+            for (const qubit of lattice.constellation) {
+              const newQubit = new Qubit(
+                qubit.bbX + horiz,
+                qubit.bbY + vertic,
+                workspace.qubitRadius,
+                workspace.gridSize
+              );
+              workspace.addChild(newQubit);
+            }
           }
         }
       }
@@ -171,15 +175,34 @@ export default function InitializeControlFlow() {
       app.renderer.view.removeEventListener('click', lattice.selectQubitForConstellation);
       workspace.removeChild(saveFootprintButton);
 
-      const downloadStimButton = new DownloadButton(
-        workspace,
-        'Download Stim file',
+      // Add "Create canonical plaquette" button
+      const createPlaquetteButton = new Button(
+        'Create canonical plaquette',
         x,
-        y,
-        'white',
-        'black'
+        y
       );
-      workspace.addChild(downloadStimButton);
+      workspace.addChild(createPlaquetteButton);
+      createPlaquetteButton.on('click', () => {
+        notification(app, 'Choose ancilla qubit.');
+        workspace.removeChild(createPlaquetteButton);
+        // Add ancilla qubit selection
+        app.renderer.view.addEventListener('click', lattice.selectAncillaQubit);
+        const finalizeAncillaButton = new Button('Finalize ancilla', x, y);
+        workspace.addChild(finalizeAncillaButton);
+        finalizeAncillaButton.on('click', () => {
+          // Make sure an ancilla is selected before proceeding
+          const ancilla = lattice.constellation.find((q) => q.getLabel() === QubitLabels.ancilla);
+          if (ancilla === undefined) {
+            notification(app, 'Please select an ancilla qubit before proceeding.');
+            return;
+          }
+          // Remove ancilla selection
+          app.renderer.view.removeEventListener('click', lattice.selectAncillaQubit);
+          // Remove ancilla selection button
+          workspace.removeChild(finalizeAncillaButton);
+          // Now select X and Z qubits
+        });
+      });
     });
   });
 
