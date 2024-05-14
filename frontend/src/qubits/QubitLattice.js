@@ -114,6 +114,7 @@ export default class QubitLattice {
       if (qubit.label === QubitLabels.noLabel) {
         qubit.setTimestep(QubitLabels.noLabel);
       }
+      // TODO: Rotate the qubit label
     }
   };
 
