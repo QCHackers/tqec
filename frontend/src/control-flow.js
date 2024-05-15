@@ -1,17 +1,18 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unreachable */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-continue */
 import { useApp } from '@pixi/react';
 import { Container, Point } from 'pixi.js';
 import { AdjustmentFilter } from 'pixi-filters';
+import Qubit from './qubits/Qubit';
 import notification from './components/notification';
 import Grid from './graphics/Grid';
 import Footprint from './plaquettes/Footprint';
-import Qubit from './qubits/Qubit';
 import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
-import DownloadButton from './components/download/DownloadButton';
 import store from './store';
+import QubitLabels from './qubits/QubitLabels';
 
 /**
  * Defines how the app behaves (button and feature placement) upon initialization
@@ -81,118 +82,154 @@ export default function InitializeControlFlow() {
   workspace.mainButtonPosition = new Point(125, 50);
   const { x, y } = workspace.mainButtonPosition;
 
-  const createQubitConstellationButton = new Button(
-    'Create Qubit Constellation',
+  const saveFootprintButton = new Button(
+    'Save footprint',
     x,
     y
   );
-  workspace.addChild(createQubitConstellationButton);
-  const saveQubitConstellationButton = new Button(
-    'Save Qubit Constellation',
-    x,
-    y
-  );
-  const lattice = new QubitLattice(workspace, app);
-  createQubitConstellationButton.on('click', () => {
-    workspace.removeChild(createQubitConstellationButton);
-    workspace.addChild(saveQubitConstellationButton);
-    app.view.addEventListener('click', lattice.selectQubitForConstellation);
+  workspace.addChild(saveFootprintButton);
+  notification(app, 'Specify a rectangular footprint.');
+  // Make the grid squares selectable
+  grid.units.forEach((row) => {
+    row.forEach((unit) => {
+      app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
+    });
   });
 
-  // TODO: Check the redux store for qubits and add them to the workspace
-  // If there are none, instead offer to create a constellation.
-  workspace.addChild(createQubitConstellationButton);
+  saveFootprintButton.on('click', () => {
+    if (grid.visibleUnits().length === 0) {
+      notification(app, 'No units selected');
+      return;
+    }
+    if (!grid.selectedUnitsRectangular()) {
+      notification(app, 'Footprint must be rectangular');
+      return;
+    }
+    workspace.removeChild(saveFootprintButton);
+    // Grid units shall no longer be selectable
+    grid.units.forEach((row) => {
+      row.forEach((unit) => {
+        app.renderer.view.removeEventListener('mousedown', unit.toggleVisibility);
+      });
+    });
+    notification(app, 'Specify qubits within the footprint.');
+    const saveQubitConstellationButton = new Button(
+      'Save Qubit Constellation',
+      x,
+      y
+    );
+    const lattice = new QubitLattice(workspace, app);
+    workspace.addChild(saveQubitConstellationButton);
 
-  saveQubitConstellationButton.on('click', () => {
-    if (lattice.constellation.length === 0) {
-      notification(app, 'Constellation must have at least one qubit');
-    } else {
+    app.renderer.view.addEventListener('click', lattice.selectQubitForConstellation);
+
+    // TODO: Check the redux store for qubits and add them to the workspace
+    // If there are none, instead offer to create a constellation.
+
+    saveQubitConstellationButton.on('click', () => {
+      if (lattice.constellation.length === 0) {
+        notification(app, 'Constellation must have at least one qubit');
+        return;
+      }
+      if (!grid.contains(lattice.constellation)) {
+        notification(app, 'Footprint must contain each specified qubit');
+        return;
+      }
+      if (!grid.boundaryQubitsValid(lattice.constellation)) {
+        notification(app, 'Footprint must contain no overlapping qubits');
+        return;
+      }
       workspace.removeChild(saveQubitConstellationButton);
-      const finalizeBoundingQuadButton = new Button(
-        'Finalize unit cell',
+
+      // Commit footprint to redux store
+      store.dispatch({
+        type: 'SET_FOOTPRINT',
+        payload: {
+          qubits: lattice.constellation.map((q) => q.serialized()),
+          gridSquares: grid.visibleUnits().map((u) => u.serialized())
+        },
+      });
+
+      // Remove lattice qubits from workspace
+      lattice.constellation.forEach((qubit) => {
+        workspace.removeChild(qubit);
+      });
+      // const testPoint = [300, 100];
+      // Add qubits to the workspace
+      const qubitMap = new Map();
+      for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
+        for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
+          for (const qubit of lattice.constellation) {
+            const newQubit = new Qubit(
+              qubit.bbX + horiz,
+              qubit.bbY + vertic,
+              workspace.qubitRadius,
+              workspace.gridSize
+            );
+            const key = `${newQubit.globalX},${newQubit.globalY}`;
+            qubitMap.set(key, newQubit);
+          }
+        }
+      }
+      qubitMap.entries().forEach(([, value]) => {
+        workspace.addChild(value);
+      });
+
+      app.renderer.view.removeEventListener('click', lattice.selectQubitForConstellation);
+      workspace.removeChild(saveFootprintButton);
+
+      // Change lattice constellation to include the footprint qubits
+      // Find the intersection of qubits in the workspace and the lattice constellation
+      const topRightCorner = new Point(
+        Math.min(...grid.visibleUnits().map((unit) => unit.x)),
+        Math.min(...grid.visibleUnits().map((unit) => unit.y))
+      );
+      const footprintPointSet = new Set();
+      for (let k = topRightCorner.x; k <= topRightCorner.x + grid.footprintWidth(); k += workspace.gridSize) {
+        for (let j = topRightCorner.y; j <= topRightCorner.y + grid.footprintHeight(); j += workspace.gridSize) {
+          const key = `${k},${j}`;
+          footprintPointSet.add(key);
+        }
+      }
+      const keys = new Set(qubitMap.keys());
+      const newLattice = [];
+      keys.intersection(footprintPointSet).forEach((point) => {
+        newLattice.push(qubitMap.get(point));
+      });
+      lattice.constellation = newLattice; // TODO: this is probably bad.
+      // Add "Create canonical plaquette" button
+      const createPlaquetteButton = new Button(
+        'Create canonical plaquette',
         x,
         y
       );
-      workspace.addChild(finalizeBoundingQuadButton);
-      app.view.removeEventListener('click', lattice.selectQubitForConstellation);
-
-      // Make the grid squares selectable
-      grid.units.forEach((row) => {
-        row.forEach((unit) => {
-          app.renderer.view.addEventListener('mousedown', unit.toggleVisibility);
-        });
-      });
-
-      finalizeBoundingQuadButton.on('click', () => {
-        // If the bounding box isn't a rectangle or doesn't contain every qubit, notify and return
-        if (!grid.selectedUnitsRectangular()) {
-          notification(app, 'Bounding quad must be rectangular');
-          return;
-        }
-        if (!grid.contains(lattice.constellation)) {
-          notification(app, 'Bounding quad must contain every qubit');
-          return;
-        }
-
-        workspace.removeChild(finalizeBoundingQuadButton);
-        // Grid units shall no longer be selectable
-        grid.units.forEach((row) => {
-          row.forEach((unit) => {
-            workspace.removeChild(unit);
-            app.renderer.view.removeEventListener('click', unit.toggleVisibility);
-          });
-        });
-
-        // Commit unit cell to redux store
-        store.dispatch({
-          type: 'SET_UNIT_CELL',
-          payload: {
-            qubits: lattice.constellation.map((q) => q.serialized()),
-            gridSquares: grid.visibleUnits().map((u) => u.serialized())
-          },
-        });
-
-        // Add qubits to the workspace
-        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.physicalWidth) {
-          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.physicalHeight) {
-            for (const qubit of lattice.constellation) {
-              const newQubit = new Qubit(
-                qubit.bbX + horiz,
-                qubit.bbY + vertic,
-                workspace.qubitRadius,
-                workspace.gridSize
-              );
-              workspace.addChild(newQubit);
-            }
+      workspace.addChild(createPlaquetteButton);
+      createPlaquetteButton.on('click', () => {
+        notification(app, 'Choose ancilla qubit.');
+        workspace.removeChild(createPlaquetteButton);
+        // Add ancilla qubit selection
+        app.renderer.view.addEventListener('click', lattice.selectAncillaQubit);
+        const finalizeAncillaButton = new Button('Finalize ancilla', x, y);
+        workspace.addChild(finalizeAncillaButton);
+        finalizeAncillaButton.on('click', () => {
+          // Make sure an ancilla is selected before proceeding
+          const ancilla = lattice.constellation.find((q) => q.getLabel() === QubitLabels.ancilla);
+          if (ancilla === undefined) {
+            notification(app, 'Please select an ancilla qubit before proceeding.');
+            return;
           }
-        }
-
-        // Make the original qubits invisible to remove redundancy
-        lattice.constellation.forEach((qubit) => {
-          qubit.visible = false;
+          // Remove ancilla selection
+          app.renderer.view.removeEventListener('click', lattice.selectAncillaQubit);
+          // Remove ancilla selection button
+          workspace.removeChild(finalizeAncillaButton);
+          // Now select X and Z qubits
+          app.renderer.view.addEventListener('click', lattice.selectDataQubit);
+          notification(app, 'Choose data qubits. Press a number key [0-9] to specify time steps.');
+          const savePlaquetteButton = new Button('Save plaquette', x, y);
+          workspace.addChild(savePlaquetteButton);
         });
-
-        // Initialize Template
-        const template = new Footprint(
-          workspace,
-          app,
-          x,
-          y
-        );
-        workspace.addChild(template.container);
-        workspace.removeChild(finalizeBoundingQuadButton);
-
-        const downloadStimButton = new DownloadButton(
-          workspace,
-          'Download Stim file',
-          x,
-          y,
-          'white',
-          'black'
-        );
-        workspace.addChild(downloadStimButton);
       });
-    }
+    });
   });
 
   // Final workspace setup
