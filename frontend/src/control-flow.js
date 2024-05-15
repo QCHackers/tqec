@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unreachable */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 import { useApp } from '@pixi/react';
@@ -11,8 +13,6 @@ import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import store from './store';
 import QubitLabels from './qubits/QubitLabels';
-
-const fullPopMode = false; // Set to true to populate the workspace with qubits
 
 /**
  * Defines how the app behaves (button and feature placement) upon initialization
@@ -150,31 +150,53 @@ export default function InitializeControlFlow() {
         },
       });
 
-      if (fullPopMode) {
-        // Remove lattice qubits from workspace
-        lattice.constellation.forEach((qubit) => {
-          workspace.removeChild(qubit);
-        });
-
-        // Add qubits to the workspace
-        for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
-          for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
-            for (const qubit of lattice.constellation) {
-              const newQubit = new Qubit(
-                qubit.bbX + horiz,
-                qubit.bbY + vertic,
-                workspace.qubitRadius,
-                workspace.gridSize
-              );
-              workspace.addChild(newQubit);
-            }
+      // Remove lattice qubits from workspace
+      lattice.constellation.forEach((qubit) => {
+        workspace.removeChild(qubit);
+      });
+      // const testPoint = [300, 100];
+      // Add qubits to the workspace
+      const qubitMap = new Map();
+      for (let horiz = 0; horiz < app.renderer.width; horiz += grid.footprintWidth()) {
+        for (let vertic = 0; vertic < app.renderer.height; vertic += grid.footprintHeight()) {
+          for (const qubit of lattice.constellation) {
+            const newQubit = new Qubit(
+              qubit.bbX + horiz,
+              qubit.bbY + vertic,
+              workspace.qubitRadius,
+              workspace.gridSize
+            );
+            const key = `${newQubit.globalX},${newQubit.globalY}`;
+            qubitMap.set(key, newQubit);
           }
         }
       }
+      qubitMap.entries().forEach(([, value]) => {
+        workspace.addChild(value);
+      });
 
       app.renderer.view.removeEventListener('click', lattice.selectQubitForConstellation);
       workspace.removeChild(saveFootprintButton);
 
+      // Change lattice constellation to include the footprint qubits
+      // Find the intersection of qubits in the workspace and the lattice constellation
+      const topRightCorner = new Point(
+        Math.min(...grid.visibleUnits().map((unit) => unit.x)),
+        Math.min(...grid.visibleUnits().map((unit) => unit.y))
+      );
+      const footprintPointSet = new Set();
+      for (let k = topRightCorner.x; k <= topRightCorner.x + grid.footprintWidth(); k += workspace.gridSize) {
+        for (let j = topRightCorner.y; j <= topRightCorner.y + grid.footprintHeight(); j += workspace.gridSize) {
+          const key = `${k},${j}`;
+          footprintPointSet.add(key);
+        }
+      }
+      const keys = new Set(qubitMap.keys());
+      const newLattice = [];
+      keys.intersection(footprintPointSet).forEach((point) => {
+        newLattice.push(qubitMap.get(point));
+      });
+      lattice.constellation = newLattice; // TODO: this is probably bad.
       // Add "Create canonical plaquette" button
       const createPlaquetteButton = new Button(
         'Create canonical plaquette',
