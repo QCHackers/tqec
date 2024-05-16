@@ -1,12 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { Graphics, Text } from 'pixi.js';
+import QubitLabels from './QubitLabels';
 
-export const CircuitLabels = Object.freeze({
-  ancilla: 'A',
-  measure: 'M',
-  cx: 'CX',
-  cz: 'CZ'
-});
+// const LABEL_ROTATIONS = [[10, -10], [-10, -10], [-10, 10], [10, 10]];
 
 /**
  * Qubit class
@@ -28,8 +24,7 @@ export default class Qubit extends Graphics {
     this.eventMode = 'static';
     this.buttonMode = true;
     this.cursor = 'pointer';
-    // assert(x % gridSize === 0, 'x must be a multiple of gridSize');
-    // assert(y % gridSize === 0, 'y must be a multiple of gridSize');
+
     this.globalX = x;
     this.globalY = y;
     this.createCircle(x, y, radius, color);
@@ -42,6 +37,9 @@ export default class Qubit extends Graphics {
     // Adjacent (degree 1) qubits
     this.visible = true;
     this.isSelected = false;
+
+    this.timestep = QubitLabels.noLabel;
+    this.label = QubitLabels.noLabel;
   }
 
   toString = () => this.name;
@@ -63,13 +61,6 @@ export default class Qubit extends Graphics {
     this.alpha = 1;
   };
 
-  /**
-   * Creates a circle
-   * @param {*} x
-   * @param {*} y
-   * @param {*} radius
-   * @param {*} color
-   */
   createCircle(x, y, radius, color) {
     // Create a circle
     this.beginFill(color);
@@ -110,31 +101,11 @@ export default class Qubit extends Graphics {
         return true;
       }
       this.isSelected = true;
-      // Create a text element
-      const text = new Text(`Qubit:(${this.globalX},${this.globalY})`, {
-        fill: 'white',
-        fontSize: 10
-      }); // White text color
-      text.anchor.set(0.5);
-      text.position.set(eventX, eventY + 10);
       this.onPointerOver();
       this.color = 0xffffff;
-
-      // Add the text to the qubit
-      this.addChild(text);
-      text.visible = true;
-
       return true;
     }
     return false; // If no hit
-  }
-
-  /**
-   * Sets the qubit state
-   * @param {*} state
-   */
-  setQuantumState(state) {
-    this.quantumState = state;
   }
 
   /**
@@ -193,21 +164,43 @@ export default class Qubit extends Graphics {
     this.bbY = y;
   };
 
-  setCircuitLabel = (label) => {
-    this.label = label;
-    const text = new Text(this.label, {
-      fill: 'white',
-      fontSize: 10
+  updateLabel = () => {
+    const label = new Text(`${this.label}${this.timestep}`, {
+      fontSize: 15,
+      fill: 'white'
     });
-    text.anchor.set(0.5);
-    text.position.set(this.globalX, this.globalY - 10);
-    text.visible = false;
-    text.zIndex = 2;
-    this.addChild(text);
-    this.text = text;
+    label.anchor.set(0.5);
+    label.position.set(this.globalX + 15, this.globalY - 15);
+    label.visible = true;
+    label.zIndex = 0.5;
+    // Remove all children
+    this.children.forEach((child) => {
+      this.removeChild(child);
+    });
+    this.addChild(label);
   };
 
-  showLabelText = () => {
-    this.text.visible = true;
+  setCircuitLabel = (label) => {
+    this.label = label;
+    this.updateLabel();
+  };
+
+  getLabel = () => this.label;
+
+  hideLabel = () => {
+    this.children.forEach((child) => {
+      if (child instanceof Text) {
+        child.visible = false;
+      }
+    });
+  };
+
+  setTimestep = (timestep) => {
+    this.timestep = timestep;
+    this.updateLabel();
+  };
+
+  removeLabel = () => {
+    this.setCircuitLabel(QubitLabels.noLabel);
   };
 }
