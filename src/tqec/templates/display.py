@@ -64,15 +64,15 @@ def display_templates_ascii(
     h_space = 5
     empty_line = ' '*numpy.shape(arr)[1]*h_space
     cross_mark = '■'
-    # Instead of print to screen, we create a multi-line buffer string.
-    # when completed, we print the buffer.
+    # Instead of printing to screen, we create a multi-line buffer string.
+    # When completed, we print the buffer.
     buffer_lines = []
     buffer_lines.append(empty_line)
     for line in arr:
         buffer = ''
         for element in line:
             element = str(element) if element != 0 else "."
-            buffer += f"{element:^{h_space}}"
+            buffer += ' ' + f"{element:^{h_space-1}}"
         buffer_lines.append(buffer)
         buffer_lines.append(empty_line)
     # Add separations of the templates.
