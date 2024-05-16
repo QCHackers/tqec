@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import pathlib
 import typing as ty
+import numpy
 
 from tqec.templates.base import Template
 from tqec.templates.composed import ComposedTemplate
@@ -27,6 +28,74 @@ def display_template(
             element = str(element) if element != 0 else "."
             print(f"{element:>3}", end="")
         print()
+
+
+def display_templates_ascii(
+    templates: ComposedTemplate,
+    plaquette_indices: ty.Sequence[int] | None = None,
+) -> None:
+    """Display the templates as an ASCII art (multi-line string).
+
+    Args:
+        templates: the ComposedTemplate instance to display.
+        *plaquette_indices: the plaquette indices that are forwarded to the call
+            to `template.instantiate` to get the actual template representation.
+    """
+    if plaquette_indices is None:
+        plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
+    # Numpy array including all templates.
+    arr = templates.instantiate(plaquette_indices)
+    # Upper-left and bottom-right corners of every template, expressed as (row, column) of the array returned.
+    ul_pos = {}
+    br_pos = {}
+    ul_positions = templates._compute_ul_absolute_position()
+    bbul, _ = templates._get_bounding_box_from_ul_positions(ul_positions)
+    for tid, tul in ul_positions.items():
+        # We follow the same procedure as in Template.instantiate():
+        # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
+        # the represented code to the axes and avoid having negative indices.
+        x = tul.x - bbul.x
+        y = tul.y - bbul.y
+        # Recall that numpy indexing is (y, x) in our coordinate system convention.
+        tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
+        ul_pos[tid] = (y, x)
+        br_pos[tid] = (y + tshapey, x + tshapex)
+    # Format of the ASCII art.   
+    h_space = 5
+    empty_line = ' '*numpy.shape(arr)[1]*h_space
+    cross_mark = '■'
+    # Instead of print to screen, we create a multi-line buffer string.
+    # when completed, we print the buffer.
+    buffer_lines = []
+    buffer_lines.append(empty_line)
+    for line in arr:
+        buffer = ''
+        for element in line:
+            element = str(element) if element != 0 else "."
+            buffer += f"{element:^{h_space}}"
+        buffer_lines.append(buffer)
+        buffer_lines.append(empty_line)
+    # Add separations of the templates.
+    for tid, tul in ul_pos.items():
+        col = tul[1] * h_space
+        num_h_sep = br_pos[tid][1]*h_space - col
+        # Add horizontal lines at the top and bottom.
+        for row in [tul[0], br_pos[tid][0]]:
+        #for row in [tul[0]]:
+        #for row in [br_pos[tid][0]]:
+            row *= 2
+            line = buffer_lines[row]
+            line = line[:col] + cross_mark + '-'*(num_h_sep-1) + cross_mark + line[col+num_h_sep+1:]
+            buffer_lines[row] = line
+        # Add vertical lines on the left and right.
+        for col in [tul[1], br_pos[tid][1]]:
+            col *= h_space
+            for row in range(tul[0]*2+1, br_pos[tid][0]*2):
+                line = buffer_lines[row]
+                line = line[:col] + '|' + line[col+1:]
+                buffer_lines[row] = line
+    for line in buffer_lines:
+        print(line)
 
 
 def display_templates_svg(
