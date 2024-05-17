@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import pathlib
 import typing as ty
+
 import numpy
 
 from tqec.templates.base import Template
@@ -49,13 +50,19 @@ def display_templates_ascii(
     if plaquette_indices is None:
         plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
     if h_space < 4:
-        print(f"WARNING: horizontal space value {h_space} is not enough. Changed to default value 5.")
+        print(
+            f"WARNING: horizontal space value {h_space} is not enough. Changed to default value 5."
+        )
         h_space = 5
     if v_space < 2:
-        print(f"WARNING: vertical space value {v_space} is not enough. Changed to default value 2.")
+        print(
+            f"WARNING: vertical space value {v_space} is not enough. Changed to default value 2."
+        )
         v_space = 2
     if len(corner_mark) != 1:
-        print(f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '■'")
+        print(
+            f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '■'"
+        )
         corner_mark = "■"
     # Numpy array including all templates.
     arr = templates.instantiate(plaquette_indices)
@@ -74,9 +81,9 @@ def display_templates_ascii(
         tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
         ul_pos[tid] = (y, x)
         br_pos[tid] = (y + tshapey, x + tshapex)
-    # Format of the ASCII art.   
+    # Format of the ASCII art.
     x_size = numpy.shape(arr)[1]
-    empty_line = " "*x_size*h_space
+    empty_line = " " * x_size * h_space
     # Instead of printing to screen, we create a multi-line buffer string.
     # When completed, we print the buffer.
     buffer_lines = []
@@ -87,26 +94,32 @@ def display_templates_ascii(
             element = str(element) if element != 0 else "."
             buffer += f" {element:^{h_space-1}}"
         buffer_lines.append(buffer)
-        for _ in range(v_space-1):
+        for _ in range(v_space - 1):
             buffer_lines.append(empty_line)
     # Add separations of the templates.
     for tid, tul in ul_pos.items():
         col = tul[1] * h_space
-        num_h_sep = br_pos[tid][1]*h_space - col
+        num_h_sep = br_pos[tid][1] * h_space - col
         # Add horizontal lines at the top and bottom.
         for row in [tul[0], br_pos[tid][0]]:
-        #for row in [tul[0]]:
-        #for row in [br_pos[tid][0]]:
+            # for row in [tul[0]]:
+            # for row in [br_pos[tid][0]]:
             row *= v_space
             line = buffer_lines[row]
-            line = line[:col] + corner_mark + "-"*(num_h_sep-1) + corner_mark + line[col+num_h_sep+1:]
+            line = (
+                line[:col]
+                + corner_mark
+                + "-" * (num_h_sep - 1)
+                + corner_mark
+                + line[col + num_h_sep + 1 :]
+            )
             buffer_lines[row] = line
         # Add vertical lines on the left and right.
         for col in [tul[1], br_pos[tid][1]]:
             col *= h_space
-            for row in range(tul[0]*v_space+1, br_pos[tid][0]*v_space):
+            for row in range(tul[0] * v_space + 1, br_pos[tid][0] * v_space):
                 line = buffer_lines[row]
-                line = line[:col] + "|" + line[col+1:]
+                line = line[:col] + "|" + line[col + 1 :]
                 buffer_lines[row] = line
     for line in buffer_lines:
         print(line)
