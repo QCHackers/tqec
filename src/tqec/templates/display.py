@@ -62,7 +62,8 @@ def display_templates_ascii(
         br_pos[tid] = (y + tshapey, x + tshapex)
     # Format of the ASCII art.   
     h_space = 5
-    empty_line = ' '*numpy.shape(arr)[1]*h_space
+    x_size = numpy.shape(arr)[1]
+    empty_line = " "*x_size*h_space
     cross_mark = '■'
     # Instead of printing to screen, we create a multi-line buffer string.
     # When completed, we print the buffer.
@@ -72,7 +73,7 @@ def display_templates_ascii(
         buffer = ''
         for element in line:
             element = str(element) if element != 0 else "."
-            buffer += ' ' + f"{element:^{h_space-1}}"
+            buffer += f" {element:^{h_space-1}}"
         buffer_lines.append(buffer)
         buffer_lines.append(empty_line)
     # Add separations of the templates.
@@ -84,16 +85,12 @@ def display_templates_ascii(
         #for row in [tul[0]]:
         #for row in [br_pos[tid][0]]:
             row *= 2
-            line = buffer_lines[row]
-            line = line[:col] + cross_mark + '-'*(num_h_sep-1) + cross_mark + line[col+num_h_sep+1:]
-            buffer_lines[row] = line
+            buffer_lines[row][col:col+num_h_sep+2] = cross_mark + '-'*(num_h_sep-1) + cross_mark
         # Add vertical lines on the left and right.
         for col in [tul[1], br_pos[tid][1]]:
             col *= h_space
             for row in range(tul[0]*2+1, br_pos[tid][0]*2):
-                line = buffer_lines[row]
-                line = line[:col] + '|' + line[col+1:]
-                buffer_lines[row] = line
+                buffer_lines[row][col] = "|"
     for line in buffer_lines:
         print(line)
 
