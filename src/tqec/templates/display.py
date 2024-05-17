@@ -34,20 +34,26 @@ def display_templates_ascii(
     templates: ComposedTemplate,
     plaquette_indices: ty.Sequence[int] | None = None,
     h_space: int = 5,
+    v_space: int = 2,
     corner_mark: str = "■",
 ) -> None:
     """Display the templates as an ASCII art (multi-line string).
 
     Args:
         templates: the ComposedTemplate instance to display.
-        *plaquette_indices: the plaquette indices that are forwarded to the call
+        plaquette_indices: the plaquette indices that are forwarded to the call
             to `template.instantiate` to get the actual template representation.
+        h_space: horizontal space allocated to each plaquette location (for index and separation element)
+        v_space: vertical space between two rows of plaquettes (value = 1 + num additional lines)
     """
     if plaquette_indices is None:
         plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
     if h_space < 4:
         print(f"WARNING: horizontal space value {h_space} is not enough. Changed to default value 5.")
         h_space = 5
+    if v_space < 2:
+        print(f"WARNING: vertical space value {v_space} is not enough. Changed to default value 2.")
+        v_space = 2
     if len(corner_mark) != 1:
         print(f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '■'")
         corner_mark = "■"
@@ -81,7 +87,8 @@ def display_templates_ascii(
             element = str(element) if element != 0 else "."
             buffer += f" {element:^{h_space-1}}"
         buffer_lines.append(buffer)
-        buffer_lines.append(empty_line)
+        for _ in range(v_space-1):
+            buffer_lines.append(empty_line)
     # Add separations of the templates.
     for tid, tul in ul_pos.items():
         col = tul[1] * h_space
@@ -90,14 +97,14 @@ def display_templates_ascii(
         for row in [tul[0], br_pos[tid][0]]:
         #for row in [tul[0]]:
         #for row in [br_pos[tid][0]]:
-            row *= 2
+            row *= v_space
             line = buffer_lines[row]
             line = line[:col] + corner_mark + "-"*(num_h_sep-1) + corner_mark + line[col+num_h_sep+1:]
             buffer_lines[row] = line
         # Add vertical lines on the left and right.
         for col in [tul[1], br_pos[tid][1]]:
             col *= h_space
-            for row in range(tul[0]*2+1, br_pos[tid][0]*2):
+            for row in range(tul[0]*v_space+1, br_pos[tid][0]*v_space):
                 line = buffer_lines[row]
                 line = line[:col] + "|" + line[col+1:]
                 buffer_lines[row] = line
