@@ -85,12 +85,16 @@ def display_templates_ascii(
         #for row in [tul[0]]:
         #for row in [br_pos[tid][0]]:
             row *= 2
-            buffer_lines[row][col:col+num_h_sep+2] = cross_mark + '-'*(num_h_sep-1) + cross_mark
+            line = buffer_lines[row]
+            line = line[:col] + cross_mark + '-'*(num_h_sep-1) + cross_mark + line[col+num_h_sep+1:]
+            buffer_lines[row] = line
         # Add vertical lines on the left and right.
         for col in [tul[1], br_pos[tid][1]]:
             col *= h_space
             for row in range(tul[0]*2+1, br_pos[tid][0]*2):
-                buffer_lines[row][col] = "|"
+                line = buffer_lines[row]
+                line = line[:col] + '|' + line[col+1:]
+                buffer_lines[row] = line
     for line in buffer_lines:
         print(line)
 
