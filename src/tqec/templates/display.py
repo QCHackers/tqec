@@ -33,6 +33,8 @@ def display_template(
 def display_templates_ascii(
     templates: ComposedTemplate,
     plaquette_indices: ty.Sequence[int] | None = None,
+    h_space: int = 5,
+    corner_mark: str = "■",
 ) -> None:
     """Display the templates as an ASCII art (multi-line string).
 
@@ -43,6 +45,12 @@ def display_templates_ascii(
     """
     if plaquette_indices is None:
         plaquette_indices = tuple(range(1, templates.expected_plaquettes_number + 1))
+    if h_space < 4:
+        print(f"WARNING: horizontal space value {h_space} is not enough. Changed to default value 5.")
+        h_space = 5
+    if len(corner_mark) != 1:
+        print(f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '■'")
+        corner_mark = "■"
     # Numpy array including all templates.
     arr = templates.instantiate(plaquette_indices)
     # Upper-left and bottom-right corners of every template, expressed as (row, column) of the array returned.
@@ -61,16 +69,14 @@ def display_templates_ascii(
         ul_pos[tid] = (y, x)
         br_pos[tid] = (y + tshapey, x + tshapex)
     # Format of the ASCII art.   
-    h_space = 5
     x_size = numpy.shape(arr)[1]
     empty_line = " "*x_size*h_space
-    cross_mark = '■'
     # Instead of printing to screen, we create a multi-line buffer string.
     # When completed, we print the buffer.
     buffer_lines = []
     buffer_lines.append(empty_line)
     for line in arr:
-        buffer = ''
+        buffer = ""
         for element in line:
             element = str(element) if element != 0 else "."
             buffer += f" {element:^{h_space-1}}"
@@ -86,14 +92,14 @@ def display_templates_ascii(
         #for row in [br_pos[tid][0]]:
             row *= 2
             line = buffer_lines[row]
-            line = line[:col] + cross_mark + '-'*(num_h_sep-1) + cross_mark + line[col+num_h_sep+1:]
+            line = line[:col] + corner_mark + "-"*(num_h_sep-1) + corner_mark + line[col+num_h_sep+1:]
             buffer_lines[row] = line
         # Add vertical lines on the left and right.
         for col in [tul[1], br_pos[tid][1]]:
             col *= h_space
             for row in range(tul[0]*2+1, br_pos[tid][0]*2):
                 line = buffer_lines[row]
-                line = line[:col] + '|' + line[col+1:]
+                line = line[:col] + "|" + line[col+1:]
                 buffer_lines[row] = line
     for line in buffer_lines:
         print(line)
