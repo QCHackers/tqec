@@ -5,7 +5,7 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-![ezgif-4-8bc47d2444](https://github.com/QCHackers/tqec/assets/16883876/649494f0-6150-447f-a593-7429a4ae23c1)
+Live endpoint: https://tqec.app
 
 ## Installation
 
