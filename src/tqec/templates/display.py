@@ -36,7 +36,7 @@ def display_templates_ascii(
     plaquette_indices: ty.Sequence[int] | None = None,
     h_space: int = 5,
     v_space: int = 2,
-    corner_mark: str = "■",
+    corner_mark: str = "+",
 ) -> None:
     """Display the templates as an ASCII art (multi-line string).
 
@@ -61,9 +61,9 @@ def display_templates_ascii(
         v_space = 2
     if len(corner_mark) != 1:
         print(
-            f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '■'"
+            f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '+'"
         )
-        corner_mark = "■"
+        corner_mark = "+"
     # Numpy array including all templates.
     arr = templates.instantiate(plaquette_indices)
     # Upper-left and bottom-right corners of every template, expressed as (row, column) of the array returned.
@@ -88,13 +88,17 @@ def display_templates_ascii(
     # When completed, we print the buffer.
     buffer_lines = []
     buffer_lines.append(empty_line)
+    empty_lines_number_before = (v_space - 1) // 2
+    empty_lines_number_after = v_space - 1 - empty_lines_number_before
     for line in arr:
+        for _ in range(empty_lines_number_before):
+            buffer_lines.append(empty_line)
         buffer = ""
         for element in line:
             element = str(element) if element != 0 else "."
             buffer += f" {element:^{h_space-1}}"
         buffer_lines.append(buffer)
-        for _ in range(v_space - 1):
+        for _ in range(empty_lines_number_after):
             buffer_lines.append(empty_line)
     # Add separations of the templates.
     for tid, tul in ul_pos.items():
