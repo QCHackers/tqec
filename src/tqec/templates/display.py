@@ -106,8 +106,6 @@ def display_templates_ascii(
         num_h_sep = br_pos[tid][1] * h_space - col
         # Add horizontal lines at the top and bottom.
         for row in [tul[0], br_pos[tid][0]]:
-            # for row in [tul[0]]:
-            # for row in [br_pos[tid][0]]:
             row *= v_space
             line = buffer_lines[row]
             line = (
