@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import typing as ty
-from dataclasses import dataclass
 
 import cirq
+from pydantic.dataclasses import dataclass
 
 from tqec.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.position import Position

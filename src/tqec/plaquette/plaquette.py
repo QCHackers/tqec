@@ -1,8 +1,10 @@
-import cirq
+from __future__ import annotations
 
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.circuit.schemas import ScheduledCircuitModel, SupportedCircuitTypeEnum
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
+from tqec.plaquette.schemas import PlaquetteModel
 from tqec.position import Position
 
 
@@ -58,3 +60,12 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    @staticmethod
+    def from_model(model: PlaquetteModel) -> Plaquette:
+        return Plaquette(model.qubits, ScheduledCircuit.from_model(model.circuit))
+
+    def to_model(self, encoding: SupportedCircuitTypeEnum) -> PlaquetteModel:
+        return PlaquetteModel(
+            qubits=self.qubits, circuit=self.circuit.to_model(encoding)
+        )
