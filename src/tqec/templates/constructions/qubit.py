@@ -115,7 +115,7 @@ class QubitRectangleTemplate(ComposedTemplate):
     def get_midline_plaquettes(
         self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.y, self.shape.x
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
         if horizontal == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 
