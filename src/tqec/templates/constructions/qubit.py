@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF
+from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
@@ -49,6 +50,20 @@ class QubitSquareTemplate(ComposedTemplate):
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if horizontal == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
+
 
 class QubitRectangleTemplate(ComposedTemplate):
     def __init__(
@@ -96,3 +111,20 @@ class QubitRectangleTemplate(ComposedTemplate):
         super().__init__(_templates)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
+
+    def get_midline_plaquettes(
+        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.y, self.shape.x
+        if horizontal == TemplateOrientation.VERTICAL:
+            midline_shape, iteration_shape = iteration_shape, midline_shape
+
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if horizontal == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
