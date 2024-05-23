@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from pydantic.dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -21,7 +21,7 @@ class Position:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Shape2D:
     """Simple wrapper around tuple[int, int].
 
@@ -46,7 +46,7 @@ class Shape2D:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
