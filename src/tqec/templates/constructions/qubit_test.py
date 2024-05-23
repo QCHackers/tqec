@@ -1,5 +1,6 @@
 import pytest
 from tqec.enums import TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.templates.constructions.qubit import (
     QubitRectangleTemplate,
     QubitSquareTemplate,
@@ -18,11 +19,11 @@ def dim2x3():
 
 
 @pytest.fixture
-def dim2():
-    return FixedDimension(2)
+def dim3():
+    return FixedDimension(3)
 
 
-def test_qubit_square_midline(dim2x2):
+def test_qubit_square_midline(dim2x2, dim3):
     template = QubitSquareTemplate(dim2x2)
     midline = template.get_midline_plaquettes()
     assert midline == [(2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5)]
@@ -42,7 +43,9 @@ def test_qubit_square_midline(dim2x2):
         (4, 8),
         (4, 9),
     ]
-
+    template = QubitSquareTemplate(dim3)
+    with pytest.raises(TQECException, match="Midline is not defined for odd height."):
+        template.get_midline_plaquettes()
 
 def test_qubit_rectangle_midline(dim2x2, dim2x3):
     template = QubitRectangleTemplate(dim2x2, dim2x3)
@@ -69,3 +72,6 @@ def test_qubit_rectangle_midline(dim2x2, dim2x3):
         (4, 12),
         (4, 13)
     ]
+    template.scale_to(3)
+    with pytest.raises(TQECException, match="Midline is not defined for odd width."):
+        template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
