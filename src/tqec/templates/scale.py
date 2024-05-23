@@ -1,5 +1,7 @@
 import typing as ty
-from dataclasses import dataclass
+
+from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 
@@ -43,11 +45,12 @@ class LinearFunction:
         return (value - self.offset) // self.slope
 
 
-class Dimension:
+class Dimension(BaseModel):
+    scaling_function: LinearFunction
+    value: int
+
     def __init__(
-        self,
-        initial_scale_parameter: int,
-        scaling_function: LinearFunction,
+        self, initial_scale_parameter: int, scaling_function: LinearFunction, **kwargs
     ) -> None:
         """Represent an integer dimension that may or may not be scalable.
 
@@ -63,8 +66,11 @@ class Dimension:
                 input (the scale provided to the ``scale_to`` method) and outputs the
                 value this ``Dimension`` instance should take.
         """
-        self._scaling_function = scaling_function
-        self._value = self._scaling_function(initial_scale_parameter)
+        super().__init__(
+            scaling_function=scaling_function,
+            value=scaling_function(initial_scale_parameter),
+            **kwargs,
+        )
 
     def scale_to(self, k: int) -> "Dimension":
         """Scale the dimension to the provided scale ``k``.
@@ -78,31 +84,19 @@ class Dimension:
         Returns:
             ``self``, potentially modified in-place if the instance is scalable.
         """
-        self._value = self._scaling_function(k)
+        self.value = self.scaling_function(k)
         return self
-
-    @property
-    def value(self) -> int:
-        """Returns the instance value."""
-        return self._value
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        """Encodes the instance into a JSON-compatible dictionary."""
-        return {
-            "value": self._value,
-            "scaling_function": self._scaling_function.to_dict(),
-        }
 
     def __add__(self, other: "Dimension") -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function + other._scaling_function,
+            self.scaling_function.invert(self.value),
+            self.scaling_function + other.scaling_function,
         )
 
     def __sub__(self, other: "Dimension") -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function - other._scaling_function,
+            self.scaling_function.invert(self.value),
+            self.scaling_function - other.scaling_function,
         )
 
     def __mul__(self, other: int) -> "Dimension":
@@ -110,8 +104,8 @@ class Dimension:
 
     def __rmul__(self, other: int) -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function * other,
+            self.scaling_function.invert(self.value),
+            self.scaling_function * other,
         )
 
 
