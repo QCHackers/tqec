@@ -237,4 +237,3 @@ class RawRectangleTemplate(Template):
         if horizontal == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
-
