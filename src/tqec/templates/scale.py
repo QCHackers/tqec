@@ -113,3 +113,13 @@ class FixedDimension(Dimension):
     def __init__(self, value: int) -> None:
         """A ``Dimension`` that does not scale."""
         super().__init__(value, LinearFunction(0, value))
+
+
+@dataclass
+class ScalableOffset:
+    x: Dimension
+    y: Dimension
+
+    def scale_to(self, k: int) -> None:
+        self.x.scale_to(k)
+        self.y.scale_to(k)

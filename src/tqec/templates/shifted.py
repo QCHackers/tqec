@@ -1,21 +1,10 @@
 import typing as ty
 
 import numpy
-from pydantic.dataclasses import dataclass
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
-
-
-@dataclass
-class ScalableOffset:
-    x: Dimension
-    y: Dimension
-
-    def scale_to(self, k: int) -> None:
-        self.x.scale_to(k)
-        self.y.scale_to(k)
+from tqec.templates.scale import ScalableOffset
 
 
 class ShiftedTemplate(Template):
