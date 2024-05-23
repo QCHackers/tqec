@@ -53,7 +53,12 @@ def get_corner_position(
 
 
 class ComposedTemplate(Template):
-    def __init__(self, templates: list[TemplateWithIndices]) -> None:
+    def __init__(
+        self,
+        templates: list[TemplateWithIndices],
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Manages templates positioned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
@@ -100,10 +105,10 @@ class ComposedTemplate(Template):
             ValueError: if the templates provided have different default
                 increments.
         """
+        super().__init__(default_x_increment, default_y_increment)
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
-        self._default_increments = Displacement(2, 2)
         self.add_templates(templates)
 
     def _check_template_id(self, template_id: int) -> None:
