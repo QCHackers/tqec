@@ -1,7 +1,7 @@
 import typing as ty
-from dataclasses import dataclass
 
 import numpy
+from pydantic.dataclasses import dataclass
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
@@ -16,9 +16,6 @@ class ScalableOffset:
     def scale_to(self, k: int) -> None:
         self.x.scale_to(k)
         self.y.scale_to(k)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {"x": self.x.to_dict(), "y": self.y.to_dict()}
 
 
 class ShiftedTemplate(Template):
