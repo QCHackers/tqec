@@ -78,11 +78,6 @@ class StackedTemplate(Template):
             shapey = max(shapey, tshape.y)
         return Shape2D(shapex, shapey)
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "stack": {"templates": [t.to_dict() for t in self._stack]}
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return sum(t.expected_plaquettes_number for t in self._stack)
