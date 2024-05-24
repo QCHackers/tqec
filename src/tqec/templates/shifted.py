@@ -5,6 +5,7 @@ import numpy
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import ScalableOffset
+from tqec.templates.schemas import ShiftedTemplateModel
 
 
 class ShiftedTemplate(Template):
@@ -42,3 +43,11 @@ class ShiftedTemplate(Template):
         tarr = self._shifted_template.instantiate(plaquette_indices)
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr
         return arr
+
+    def to_model(self) -> ShiftedTemplateModel:
+        return ShiftedTemplateModel(
+            default_increments=self._default_increments,
+            shifted_template=self._shifted_template.to_model(),
+            offset=self._offset,
+            tag="Shifted",
+        )

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as ty
 
 import numpy
@@ -6,6 +8,10 @@ from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
+from tqec.templates.schemas import (
+    AlternatingRectangleTemplateModel,
+    RawRectangleTemplateModel,
+)
 
 
 class AlternatingRectangleTemplate(Template):
@@ -84,6 +90,14 @@ class AlternatingRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return 2
+
+    def to_model(self) -> AlternatingRectangleTemplateModel:
+        return AlternatingRectangleTemplateModel(
+            default_increments=self._default_increments,
+            width=self._width,
+            height=self._height,
+            tag="AlternatingRectangle",
+        )
 
 
 @ty.final
@@ -194,3 +208,10 @@ class RawRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
+
+    def to_model(self) -> RawRectangleTemplateModel:
+        return RawRectangleTemplateModel(
+            default_increments=self._default_increments,
+            indices=self._indices,
+            tag="RawRectangle",
+        )

@@ -7,6 +7,7 @@ from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
+from tqec.templates.schemas import ComposedTemplateModel, RelativePositionsModel
 
 
 def get_corner_position(
@@ -466,3 +467,13 @@ class ComposedTemplate(Template):
     @property
     def is_empty(self) -> bool:
         return len(self._templates) == 0
+
+    def to_model(self) -> ComposedTemplateModel:
+        return ComposedTemplateModel(
+            default_increments=self._default_increments,
+            templates=[t.to_model() for t in self._templates],
+            relative_positions=RelativePositionsModel.from_networkx(
+                self._relative_position_graph
+            ),
+            tag="Composed",
+        )

@@ -7,6 +7,10 @@ from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
+from tqec.templates.schemas import (
+    AlternatingCornerSquareTemplateModel,
+    AlternatingSquareTemplateModel,
+)
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
@@ -55,6 +59,13 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
             dimension,
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
+        )
+
+    def to_model(self) -> AlternatingSquareTemplateModel:
+        return AlternatingSquareTemplateModel(
+            default_increments=self._default_increments,
+            dimension=self._width,
+            tag="AlternatingSquare",
         )
 
 
@@ -171,3 +182,11 @@ class AlternatingCornerSquareTemplate(Template):
     @property
     def shape(self) -> Shape2D:
         return Shape2D(self._dimension.value, self._dimension.value)
+
+    def to_model(self) -> AlternatingCornerSquareTemplateModel:
+        return AlternatingCornerSquareTemplateModel(
+            default_increments=self._default_increments,
+            dimension=self._dimension,
+            corner_position=self._corner_position,
+            tag="AlternatingCornerSquare",
+        )

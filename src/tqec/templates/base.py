@@ -8,6 +8,7 @@ import numpy
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.schemas import InstanciableTemplateModel
 
 
 class Template:
@@ -128,6 +129,10 @@ class Template:
             a displacement of the default increments in the x and y directions.
         """
         return self._default_increments
+
+    @abstractmethod
+    def to_model(self) -> InstanciableTemplateModel:
+        pass
 
 
 @dataclass

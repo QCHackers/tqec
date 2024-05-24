@@ -4,6 +4,7 @@ import numpy
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
+from tqec.templates.schemas import StackedTemplateModel
 
 
 class StackedTemplate(Template):
@@ -100,3 +101,10 @@ class StackedTemplate(Template):
             nonzeros = tarr.nonzero()
             arr[0:yshape, 0:xshape][nonzeros] = tarr[nonzeros]
         return arr
+
+    def to_model(self) -> StackedTemplateModel:
+        return StackedTemplateModel(
+            default_increments=self._default_increments,
+            stack=[t.to_model() for t in self._stack],
+            tag="Stacked",
+        )
