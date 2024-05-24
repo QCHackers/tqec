@@ -6,7 +6,7 @@ from tqec.enums import CornerPositionEnum
 from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, ScalableShape2D
 from tqec.templates.schemas import (
     AlternatingCornerSquareTemplateModel,
     AlternatingSquareTemplateModel,
@@ -190,3 +190,12 @@ class AlternatingCornerSquareTemplate(Template):
             corner_position=self._corner_position,
             tag="AlternatingCornerSquare",
         )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        return ScalableShape2D(self._dimension, self._dimension)

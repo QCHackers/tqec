@@ -4,6 +4,7 @@ import numpy
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
+from tqec.templates.scale import ScalableShape2D
 from tqec.templates.schemas import StackedTemplateModel
 
 
@@ -108,3 +109,12 @@ class StackedTemplate(Template):
             stack=[t.to_model() for t in self._stack],
             tag="Stacked",
         )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        raise NotImplementedError()

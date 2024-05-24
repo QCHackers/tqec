@@ -4,7 +4,7 @@ import numpy
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import ScalableOffset
+from tqec.templates.scale import ScalableOffset, ScalableShape2D
 from tqec.templates.schemas import ShiftedTemplateModel
 
 
@@ -51,3 +51,12 @@ class ShiftedTemplate(Template):
             offset=self._offset,
             tag="Shifted",
         )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        return self._shifted_template.scalable_shape + self._offset

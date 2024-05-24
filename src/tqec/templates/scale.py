@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as ty
 
 from pydantic import BaseModel
@@ -148,3 +150,6 @@ class ScalableShape2D:
         instance to a numpy shape transparently for the user.
         """
         return (self.y.value, self.x.value)
+
+    def __add__(self, other: ScalableShape2D | ScalableOffset) -> ScalableShape2D:
+        return ScalableShape2D(self.x + other.x, self.y + other.y)

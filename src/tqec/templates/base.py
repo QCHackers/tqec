@@ -8,6 +8,7 @@ import numpy
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.scale import ScalableShape2D
 from tqec.templates.schemas import InstanciableTemplateModel
 
 
@@ -105,6 +106,16 @@ class Template:
     @property
     @abstractmethod
     def shape(self) -> Shape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def scalable_shape(self) -> ScalableShape2D:
         """Returns the current template shape.
 
         Returns:

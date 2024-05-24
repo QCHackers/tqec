@@ -7,7 +7,7 @@ import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, FixedDimension, ScalableShape2D
 from tqec.templates.schemas import (
     AlternatingRectangleTemplateModel,
     RawRectangleTemplateModel,
@@ -98,6 +98,15 @@ class AlternatingRectangleTemplate(Template):
             height=self._height,
             tag="AlternatingRectangle",
         )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        return ScalableShape2D(self._width, self._height)
 
 
 @ty.final
@@ -214,4 +223,16 @@ class RawRectangleTemplate(Template):
             default_increments=self._default_increments,
             indices=self._indices,
             tag="RawRectangle",
+        )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+
+        return ScalableShape2D(
+            FixedDimension(self.shape.x), FixedDimension(self.shape.y)
         )

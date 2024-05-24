@@ -7,6 +7,7 @@ from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
+from tqec.templates.scale import ScalableShape2D
 from tqec.templates.schemas import ComposedTemplateModel, RelativePositionsModel
 
 
@@ -477,3 +478,12 @@ class ComposedTemplate(Template):
             ),
             tag="Composed",
         )
+
+    @property
+    def scalable_shape(self) -> ScalableShape2D:
+        """Returns the current template shape.
+
+        Returns:
+            the shape of the template.
+        """
+        raise NotImplementedError()
