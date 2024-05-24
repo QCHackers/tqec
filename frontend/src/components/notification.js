@@ -5,6 +5,8 @@
 
 import { Graphics, Text, Container } from 'pixi.js';
 
+const NOTIFICATION_DURATION = 1200;
+
 /**
  *
  * @param {*} text'
@@ -49,5 +51,5 @@ export default function notification(app, text) {
     app.stage.removeChild(notificationContainer);
     // Avoid memory leaks
     notificationContainer.destroy();
-  }, 900);
+  }, NOTIFICATION_DURATION);
 }

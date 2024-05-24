@@ -5,7 +5,7 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-![ezgif-4-8bc47d2444](https://github.com/QCHackers/tqec/assets/16883876/649494f0-6150-447f-a593-7429a4ae23c1)
+Live endpoint: https://tqec.app
 
 ## Installation
 
@@ -71,6 +71,7 @@ Refer to [this wiki page](https://github.com/QCHackers/tqec/wiki/TQEC-Architectu
 2. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
 3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
 4. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)
+5. [Developer documentation for the `tqec` project](https://qchackers.github.io/tqec/)
 
 ## Before you commit
 

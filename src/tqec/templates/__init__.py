@@ -13,6 +13,7 @@ from .constructions import (
 )
 from .display import (
     display_template,
+    display_templates_ascii,
     display_templates_svg,
 )
 from .scale import Dimension, FixedDimension, LinearFunction
