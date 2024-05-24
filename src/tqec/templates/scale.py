@@ -123,3 +123,28 @@ class ScalableOffset:
     def scale_to(self, k: int) -> None:
         self.x.scale_to(k)
         self.y.scale_to(k)
+
+
+@dataclass(frozen=True)
+class ScalableShape2D:
+    """Simple wrapper around tuple[Dimension, Dimension].
+
+    This class is here to explicitly name the type of variables as shapes
+    instead of having a tuple[Dimension, Dimension] that could be:
+    - a position,
+    - a shape,
+    - coefficients for positions,
+    - displacements.
+    """
+
+    x: Dimension
+    y: Dimension
+
+    def to_numpy_shape(self) -> tuple[int, int]:
+        """Returns the shape according to numpy indexing.
+
+        In the coordinate system used in this library, numpy indexes arrays
+        using (y, x) coordinates. This method is here to translate a Shape
+        instance to a numpy shape transparently for the user.
+        """
+        return (self.y.value, self.x.value)
