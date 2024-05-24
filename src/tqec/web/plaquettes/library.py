@@ -41,13 +41,15 @@ for _pq in _PLAQUETTE_QUBITS:
     PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(x_initialisation_plaquette(_pq))
     PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(z_initialisation_plaquette(_pq))
 PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(
-    xxxx_memory_plaquette([1, 2, 3, 4, 5, 6, 7, 8])
+    xxxx_memory_plaquette([1, 2, 3, 4, 5, 6, 7, 8], False)
 )
-PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(zzzz_memory_plaquette([1, 3, 4, 5, 6, 8]))
+PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(
+    zzzz_memory_plaquette([1, 3, 4, 5, 6, 8], False)
+)
 for orientation in PlaquetteOrientation:
     PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(
-        xx_memory_plaquette(orientation, [1, 2, 5, 6, 7, 8])
+        xx_memory_plaquette(orientation, [1, 2, 5, 6, 7, 8], False)
     )
     PREDEFINED_PLAQUETTES_LIBRARY.add_plaquette(
-        zz_memory_plaquette(orientation, [1, 3, 4, 8])
+        zz_memory_plaquette(orientation, [1, 3, 4, 8], False)
     )
