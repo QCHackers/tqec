@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from tqec.enums import CornerPositionEnum
 from tqec.position import Displacement
-from tqec.templates.scale import Dimension, ScalableOffset
+from tqec.templates.scale import Dimension, ScalableOffset, ScalableShape2D
 
 
 class TemplateModel(BaseModel):
@@ -110,3 +110,9 @@ InstanciableTemplateModelsUnion = Union[
 InstanciableTemplateModel = Annotated[
     InstanciableTemplateModelsUnion, Field(discriminator="tag")
 ]
+
+
+class InstantiableTemplateModel(BaseModel):
+    name: str
+    shape: ScalableShape2D
+    instantiation: list[list[int]]
