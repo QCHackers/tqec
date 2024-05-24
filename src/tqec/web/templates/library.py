@@ -9,26 +9,32 @@ from tqec.templates.scale import (
     FixedDimension,
     LinearFunction,
 )
-from tqec.templates.schemas import InstantiableTemplateModel
+from tqec.templates.schemas import (
+    InstantiableTemplateDescriptionModel,
+    TemplateLibraryModel,
+)
 
 
 class TemplateLibrary:
     def __init__(self) -> None:
-        self._templates: list[Template] = []
-        self._descriptions: list[InstantiableTemplateModel] = []
+        self._templates: dict[str, Template] = dict()
 
     def add_template(self, name: str, template: Template):
-        indices = list(range(1, template.expected_plaquettes_number + 1))
-        description = InstantiableTemplateModel(
-            name=name,
-            shape=template.scalable_shape,
-            instantiation=template.instantiate(indices).tolist(),
-        )
-        self._templates.append(template)
-        self._descriptions.append(description)
+        self._templates[name] = template
 
-    def get_descriptions(self) -> list[InstantiableTemplateModel]:
-        return self._descriptions
+    def to_model(self) -> TemplateLibraryModel:
+        return TemplateLibraryModel(
+            templates=[
+                InstantiableTemplateDescriptionModel(
+                    name=name,
+                    shape=template.scalable_shape,
+                    instantiation=template.instantiate(
+                        list(range(1, template.expected_plaquettes_number + 1))
+                    ).tolist(),
+                )
+                for name, template in self._templates.items()
+            ]
+        )
 
 
 PREDEFINED_TEMPLATES_LIBRARY = TemplateLibrary()

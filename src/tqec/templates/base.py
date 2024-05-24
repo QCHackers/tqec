@@ -9,7 +9,7 @@ import numpy
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 from tqec.templates.scale import ScalableShape2D
-from tqec.templates.schemas import InstanciableTemplateModel
+from tqec.templates.schemas import InstantiableTemplateModel
 
 
 class Template:
@@ -142,7 +142,7 @@ class Template:
         return self._default_increments
 
     @abstractmethod
-    def to_model(self) -> InstanciableTemplateModel:
+    def to_model(self) -> InstantiableTemplateModel:
         pass
 
 

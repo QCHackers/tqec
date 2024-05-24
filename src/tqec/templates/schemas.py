@@ -15,7 +15,7 @@ class TemplateModel(BaseModel):
 
 
 class TemplateWithIndicesModel(BaseModel):
-    template: InstanciableTemplateModel
+    template: InstantiableTemplateModel
     indices: list[int]
 
 
@@ -83,19 +83,19 @@ class RelativePositionsModel(BaseModel):
 
 class ComposedTemplateModel(TemplateModel):
     tag: Literal["Composed"]
-    templates: list[InstanciableTemplateModel]
+    templates: list[InstantiableTemplateModel]
     relative_positions: RelativePositionsModel
 
 
 class ShiftedTemplateModel(TemplateModel):
     tag: Literal["Shifted"]
-    shifted_template: InstanciableTemplateModel
+    shifted_template: InstantiableTemplateModel
     offset: ScalableOffset
 
 
 class StackedTemplateModel(TemplateModel):
     tag: Literal["Stacked"]
-    stack: list[InstanciableTemplateModel]
+    stack: list[InstantiableTemplateModel]
 
 
 InstanciableTemplateModelsUnion = Union[
@@ -107,12 +107,16 @@ InstanciableTemplateModelsUnion = Union[
     ShiftedTemplateModel,
     StackedTemplateModel,
 ]
-InstanciableTemplateModel = Annotated[
+InstantiableTemplateModel = Annotated[
     InstanciableTemplateModelsUnion, Field(discriminator="tag")
 ]
 
 
-class InstantiableTemplateModel(BaseModel):
+class InstantiableTemplateDescriptionModel(BaseModel):
     name: str
     shape: ScalableShape2D
     instantiation: list[list[int]]
+
+
+class TemplateLibraryModel(BaseModel):
+    templates: list[InstantiableTemplateDescriptionModel]

@@ -3,7 +3,7 @@ from copy import deepcopy
 from fastapi import FastAPI
 from tqec.circuit.schemas import SupportedCircuitTypeEnum
 from tqec.plaquette.schemas import PlaquetteLibraryModel
-from tqec.templates.schemas import InstantiableTemplateModel
+from tqec.templates.schemas import TemplateLibraryModel
 from tqec.web.session import UserSession
 
 app = FastAPI()
@@ -21,5 +21,5 @@ def get_plaquette_library() -> PlaquetteLibraryModel:
 
 
 @app.get("/templates/list")
-def get_instanciable_templates() -> list[InstantiableTemplateModel]:
-    return session.template_library.get_descriptions()
+def get_instanciable_templates() -> TemplateLibraryModel:
+    return session.template_library.to_model()
