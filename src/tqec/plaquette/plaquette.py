@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from pydantic.dataclasses import dataclass
+
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.circuit.schemas import ScheduledCircuitModel, SupportedCircuitTypeEnum
+from tqec.circuit.schemas import SupportedCircuitTypeEnum
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.plaquette.schemas import PlaquetteModel
@@ -69,3 +71,8 @@ class Plaquette:
         return PlaquetteModel(
             qubits=self.qubits, circuit=self.circuit.to_model(encoding)
         )
+
+
+@dataclass
+class PlaquetteLibrary:
+    plaquettes: list[Plaquette]
