@@ -5,7 +5,7 @@ import numpy
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, ScalableShape2D
 
 
 @dataclass
@@ -39,17 +39,9 @@ class ShiftedTemplate(Template):
         return self
 
     @property
-    def shape(self) -> Shape2D:
+    def shape(self) -> ScalableShape2D:
         tshape = self._shifted_template.shape
-        return Shape2D(self._offset.x.value + tshape.x, self._offset.y.value + tshape.y)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "shifted": {
-                "template": self._shifted_template.to_dict(),
-                "offset": self._offset.to_dict(),
-            }
-        }
+        return ScalableShape2D(self._offset.x + tshape.x, self._offset.y + tshape.y)
 
     @property
     def expected_plaquettes_number(self) -> int:
@@ -59,7 +51,7 @@ class ShiftedTemplate(Template):
         # Do not explicitely check here, the check is forwarded to the
         # shifted Template instance.
         arr = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
-        tshape = self._shifted_template.shape
+        tshape = self._shifted_template.shape.instantiate()
         xoffset, yoffset = self._offset.x.value, self._offset.y.value
         tarr = self._shifted_template.instantiate(plaquette_indices)
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr

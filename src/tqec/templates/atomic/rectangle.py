@@ -1,10 +1,11 @@
 import typing as ty
 
 import numpy
+
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, FixedDimension, ScalableShape2D
 
 
 class AlternatingRectangleTemplate(Template):
@@ -77,14 +78,8 @@ class AlternatingRectangleTemplate(Template):
         return self
 
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(self._width.value, self._height.value)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "width": self._width.to_dict(),
-            "height": self._height.to_dict(),
-        }
+    def shape(self) -> ScalableShape2D:
+        return ScalableShape2D(self._width, self._height)
 
     @property
     def expected_plaquettes_number(self) -> int:
@@ -193,11 +188,10 @@ class RawRectangleTemplate(Template):
         return self
 
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(len(self._indices[0]), len(self._indices))
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {"indices": self._indices}
+    def shape(self) -> ScalableShape2D:
+        return ScalableShape2D(
+            FixedDimension(len(self._indices[0])), FixedDimension(len(self._indices))
+        )
 
     @property
     def expected_plaquettes_number(self) -> int:

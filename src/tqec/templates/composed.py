@@ -7,14 +7,15 @@ from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
+from tqec.templates.scale import FixedDimension, ScalablePosition2D, ScalableShape2D
 
 
 def get_corner_position(
-    position: Position,
+    position: ScalablePosition2D,
     position_corner: CornerPositionEnum,
-    shape: Shape2D,
+    shape: ScalableShape2D,
     expected_corner: CornerPositionEnum,
-) -> Position:
+) -> ScalablePosition2D:
     """Get the position of a template corner.
 
     This function helps in computing the position of any corner of a given
@@ -46,7 +47,7 @@ def get_corner_position(
         expected_corner.value.x - position_corner.value.x,
         expected_corner.value.y - position_corner.value.y,
     )
-    return Position(
+    return ScalablePosition2D(
         position.x + transformation[0] * shape.x,
         position.y + transformation[1] * shape.y,
     )
@@ -136,7 +137,7 @@ class ComposedTemplate(Template):
             self._default_increments = template_to_insert.template.get_increments()
         elif self._default_increments != template_to_insert.template.get_increments():
             raise ValueError(
-                f"Template {template_to_insert.template.to_dict()}"
+                f"Template {template_to_insert.template}"
                 + " has different default increments than the other templates."
             )
         template_id: int = len(self._templates)
@@ -250,7 +251,7 @@ class ComposedTemplate(Template):
         )
         return self
 
-    def _compute_ul_absolute_position(self) -> dict[int, Position]:
+    def _compute_ul_absolute_position(self) -> dict[int, ScalablePosition2D]:
         """Computes the absolute position of each template upper-left corner.
 
         This is the main method of the ``ComposedTemplate`` class. It explores templates
@@ -269,15 +270,17 @@ class ComposedTemplate(Template):
         """
         if self.is_empty:
             return {}
-        ul_positions: dict[int, Position] = {0: Position(0, 0)}
+        ul_positions: dict[int, ScalablePosition2D] = {
+            0: ScalablePosition2D(FixedDimension(0), FixedDimension(0))
+        }
         src: int
         dest: int
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
-            relative_position: tuple[
-                CornerPositionEnum, CornerPositionEnum
-            ] | None = self._relative_position_graph.get_edge_data(src, dest).get(
-                "relative_position"
+            relative_position: tuple[CornerPositionEnum, CornerPositionEnum] | None = (
+                self._relative_position_graph.get_edge_data(
+                    src, dest
+                ).get("relative_position")
             )
             assert (
                 relative_position is not None
@@ -293,7 +296,7 @@ class ComposedTemplate(Template):
             dest_corner: CornerPositionEnum
             src_corner, dest_corner = relative_position
             # Compute the anchor corner
-            anchor_position: Position = get_corner_position(
+            anchor_position: ScalablePosition2D = get_corner_position(
                 src_ul_position,
                 CornerPositionEnum.UPPER_LEFT,
                 src_shape,
@@ -310,8 +313,8 @@ class ComposedTemplate(Template):
         return ul_positions
 
     def _get_bounding_box_from_ul_positions(
-        self, ul_positions: dict[int, Position]
-    ) -> tuple[Position, Position]:
+        self, ul_positions: dict[int, ScalablePosition2D]
+    ) -> tuple[ScalablePosition2D, ScalablePosition2D]:
         """Get the bounding box containing all the templates from their
         upper-left corner position.
 
@@ -324,9 +327,11 @@ class ComposedTemplate(Template):
             the bounding box. Coordinates in each positions are not guaranteed
             to be positive.
         """
+        raise NotImplementedError()
         # ul: upper-left
         # br: bottom-right
-        ul, br = Position(0, 0), Position(0, 0)
+        ul = ScalablePosition2D(FixedDimension(0), FixedDimension(0))
+        br = ScalablePosition2D(FixedDimension(0), FixedDimension(0))
         # tid: template id
         # tulx: template upper-left
         for tid, tul in ul_positions.items():
@@ -336,7 +341,9 @@ class ComposedTemplate(Template):
             br = Position(max(br.x, tul.x + tshape.x), max(br.y, tul.y + tshape.y))
         return ul, br
 
-    def _get_shape_from_bounding_box(self, ul: Position, br: Position) -> Shape2D:
+    def _get_shape_from_bounding_box(
+        self, ul: ScalablePosition2D, br: ScalablePosition2D
+    ) -> ScalableShape2D:
         """Get the shape of the represented code from the bounding box.
 
         Args:
@@ -345,11 +352,11 @@ class ComposedTemplate(Template):
         """
         # ul: upper-left
         # br: bottom-right
-        return Shape2D(br.x - ul.x, br.y - ul.y)
+        return ScalableShape2D(br.x - ul.x, br.y - ul.y)
 
     def _get_shape_from_ul_positions(
-        self, ul_positions: dict[int, Position]
-    ) -> Shape2D:
+        self, ul_positions: dict[int, ScalablePosition2D]
+    ) -> ScalableShape2D:
         """Get the shape of the represented code from the upper-left corner positions of each template."""
         # ul: upper-left
         # br: bottom-right
@@ -378,8 +385,8 @@ class ComposedTemplate(Template):
             ]
             # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
             # the represented code to the axes and avoid having negative indices.
-            x = tul.x - bbul.x
-            y = tul.y - bbul.y
+            x = (tul.x - bbul.x).value
+            y = (tul.y - bbul.y).value
             # Numpy indexing is (y, x) in our coordinate system convention.
             ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
                 plaquette_indices
@@ -451,33 +458,8 @@ class ComposedTemplate(Template):
         return self
 
     @property
-    def shape(self) -> Shape2D:
+    def shape(self) -> ScalableShape2D:
         return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {
-            # self.__class__ is "ComposedTemplate" here, whatever the type of self is. This is different
-            # from what is done in the Template base class. This is done to avoid users subclassing this
-            # class and having a subclass name we do not control in the "type" entry.
-            "type": self.__class__.__name__,
-            "kwargs": {
-                "templates": [t.to_dict() for t in self._templates],
-            },
-            "connections": [
-                {
-                    "source_idx": source,
-                    "target_idx": target,
-                    "source_corner": source_corner,
-                    "target_corner": target_corner,
-                }
-                for source, target, (
-                    source_corner,
-                    target_corner,
-                ) in self._relative_position_graph.edges.data(
-                    "relative_position"  # type: ignore
-                )
-            ],
-        }
 
     @property
     def expected_plaquettes_number(self) -> int:

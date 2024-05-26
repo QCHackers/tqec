@@ -4,6 +4,7 @@ import numpy
 
 from tqec.position import Shape2D
 from tqec.templates.base import Template
+from tqec.templates.scale import ScalableShape2D
 
 
 class StackedTemplate(Template):
@@ -70,18 +71,8 @@ class StackedTemplate(Template):
         return self
 
     @property
-    def shape(self) -> Shape2D:
-        shapex, shapey = 0, 0
-        for template in self._stack:
-            tshape = template.shape
-            shapex = max(shapex, tshape.x)
-            shapey = max(shapey, tshape.y)
-        return Shape2D(shapex, shapey)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "stack": {"templates": [t.to_dict() for t in self._stack]}
-        }
+    def shape(self) -> ScalableShape2D:
+        raise NotImplementedError()
 
     @property
     def expected_plaquettes_number(self) -> int:

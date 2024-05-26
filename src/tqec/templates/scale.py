@@ -2,6 +2,7 @@ import typing as ty
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
+from tqec.position import Shape2D
 
 
 @dataclass(frozen=True)
@@ -119,3 +120,23 @@ class FixedDimension(Dimension):
     def __init__(self, value: int) -> None:
         """A ``Dimension`` that does not scale."""
         super().__init__(value, LinearFunction(0, value))
+
+
+@dataclass
+class Scalable2D:
+    x: Dimension
+    y: Dimension
+
+
+@dataclass
+class ScalablePosition2D(Scalable2D):
+    pass
+
+
+@dataclass
+class ScalableShape2D(Scalable2D):
+    def to_numpy_shape(self) -> tuple[int, int]:
+        return self.instantiate().to_numpy_shape()
+
+    def instantiate(self) -> Shape2D:
+        return Shape2D(self.x.value, self.y.value)

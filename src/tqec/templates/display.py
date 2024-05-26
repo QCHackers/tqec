@@ -75,8 +75,8 @@ def display_templates_ascii(
         # We follow the same procedure as in Template.instantiate():
         # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
         # the represented code to the axes and avoid having negative indices.
-        x = tul.x - bbul.x
-        y = tul.y - bbul.y
+        x = (tul.x - bbul.x).value
+        y = (tul.y - bbul.y).value
         # Recall that numpy indexing is (y, x) in our coordinate system convention.
         tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
         ul_pos[tid] = (y, x)
@@ -155,8 +155,8 @@ def display_templates_svg(
     template_list = templates._templates
     ul_positions = templates._compute_ul_absolute_position()
     box = templates._get_bounding_box_from_ul_positions(ul_positions)
-    box_width: float = box[1].x - box[0].x
-    box_height: float = box[1].y - box[0].y
+    box_width: float = (box[1].x - box[0].x).value
+    box_height: float = (box[1].y - box[0].y).value
     pad = max(box_width, box_height) * 0.1
     box_width += pad
     box_height += pad
@@ -166,8 +166,8 @@ def display_templates_svg(
     def rect(
         x: int, y: int, width: int, height: int, label: int = 0, outmost: bool = False
     ) -> list[str]:
-        x_scaled = (x - box[0].x + pad / 2) * scale_factor
-        y_scaled = (y - box[0].y + pad / 2) * scale_factor
+        x_scaled = (x - box[0].x.value + pad / 2) * scale_factor
+        y_scaled = (y - box[0].y.value + pad / 2) * scale_factor
         width_scaled = width * scale_factor
         height_scaled = height * scale_factor
         lines: list[str] = []
@@ -209,14 +209,20 @@ def display_templates_svg(
         ]
         arr = template.instantiate(indices)
         outer_rects.extend(
-            rect(ul_position.x, ul_position.y, len(arr[0]), len(arr), outmost=True)
+            rect(
+                ul_position.x.value,
+                ul_position.y.value,
+                len(arr[0]),
+                len(arr),
+                outmost=True,
+            )
         )
         for shape_y, line in enumerate(arr):
             for shape_x, element in enumerate(line):
                 if element == 0:
                     continue
-                x = ul_position.x + shape_x
-                y = ul_position.y + shape_y
+                x = ul_position.x.value + shape_x
+                y = ul_position.y.value + shape_y
                 inner_rects.extend(rect(x, y, 1, 1, element))
 
     svg_lines.extend(inner_rects)
