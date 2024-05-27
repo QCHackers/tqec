@@ -1,5 +1,6 @@
 import numpy
 import pytest
+
 from tqec.enums import CornerPositionEnum
 from tqec.templates.atomic.square import (
     AlternatingCornerSquareTemplate,

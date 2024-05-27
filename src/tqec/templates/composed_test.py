@@ -5,7 +5,7 @@ from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
 )
-from tqec.templates.base import TemplateWithIndices
+from tqec.templates.base import Template, TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
 from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
 
@@ -29,7 +29,7 @@ def test_empty():
 
 
 @pytest.mark.parametrize("atomic_template_and_indices", _TEMPLATES_AND_INDICES)
-def test_one_template(atomic_template_and_indices):
+def test_one_template(atomic_template_and_indices: tuple[Template, list[int]]):
     atomic_template, indices = atomic_template_and_indices
     template = ComposedTemplate([TemplateWithIndices(atomic_template, indices)])
     assert template.shape == atomic_template.shape

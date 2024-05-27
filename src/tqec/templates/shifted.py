@@ -3,22 +3,8 @@ from dataclasses import dataclass
 
 import numpy
 
-from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension, ScalableShape2D
-
-
-@dataclass
-class ScalableOffset:
-    x: Dimension
-    y: Dimension
-
-    def scale_to(self, k: int) -> None:
-        self.x.scale_to(k)
-        self.y.scale_to(k)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {"x": self.x.to_dict(), "y": self.y.to_dict()}
+from tqec.templates.scale import ScalableOffset, ScalableShape2D
 
 
 class ShiftedTemplate(Template):

@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 from tqec.exceptions import TQECException
@@ -74,3 +76,20 @@ def test_dimension_operators():
     assert (da - db).scale_to(3).value == sfa(3) - sfb(3)
     assert (3 * da).scale_to(54).value == 3 * sfa(54)
     assert (da * 3).scale_to(54).value == 3 * sfa(54)
+
+
+def test_random_linear_function_intersection():
+    for _ in range(100):
+        intersection = LinearFunction(random.randint(0, 2**31)).intersection(
+            LinearFunction(random.randint(0, 2**31))
+        )
+        assert intersection.value is not None
+        assert abs(intersection.value) < 1e-10
+
+
+def test_linear_function_intersection():
+    lf1 = LinearFunction(1, 10)
+    lf2 = LinearFunction(-1, 20)
+    intersection = lf1.intersection(lf2)
+    assert intersection.value is not None
+    assert abs(intersection.value - 5) < 1e-8

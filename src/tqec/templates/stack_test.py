@@ -4,8 +4,13 @@ import pytest
 from tqec.position import Shape2D
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
-from tqec.templates.shifted import ScalableOffset, ShiftedTemplate
+from tqec.templates.scale import (
+    Dimension,
+    FixedDimension,
+    LinearFunction,
+    ScalableOffset,
+)
+from tqec.templates.shifted import ShiftedTemplate
 from tqec.templates.stack import StackedTemplate
 
 
