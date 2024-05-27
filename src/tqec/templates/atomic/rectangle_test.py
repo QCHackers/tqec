@@ -1,5 +1,6 @@
 import numpy
 import pytest
+
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
@@ -41,24 +42,24 @@ def test_rectangle_template_same_scaling(dim2x2, dim3x2):
     template = AlternatingRectangleTemplate(dim2x2, dim3x2)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2 * 30
-    assert shape.y == 2 * 30
+    assert shape.x.value == 2 * 30
+    assert shape.y.value == 2 * 30
 
 
 def test_rectangle_template_different_scaling(dim2x2, dim2x40p3):
     template = AlternatingRectangleTemplate(dim2x2, dim2x40p3)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2 * 30
-    assert shape.y == 40 * 30 + 3
+    assert shape.x.value == 2 * 30
+    assert shape.y.value == 40 * 30 + 3
 
 
 def test_rectangle_template_one_fixed_scaling(dim2x2, dim2):
     template = AlternatingRectangleTemplate(dim2x2, dim2)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2 * 30
-    assert shape.y == 2
+    assert shape.x.value == 2 * 30
+    assert shape.y.value == 2
 
 
 def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes(
@@ -105,8 +106,8 @@ def test_raw_rectangle_larger_init():
 
 def test_raw_rectangle_shape():
     template = RawRectangleTemplate([[0]])
-    assert template.shape.x == 1
-    assert template.shape.y == 1
+    assert template.shape.x.value == 1
+    assert template.shape.y.value == 1
 
 
 def test_raw_rectangle_larger_shape():
@@ -119,14 +120,14 @@ def test_raw_rectangle_larger_shape():
             [0, 0, 0, 0, 0],
         ]
     )
-    assert template.shape.x == 5
-    assert template.shape.y == 5
+    assert template.shape.x.value == 5
+    assert template.shape.y.value == 5
 
 
 def test_raw_rectangle_uneven_shape():
     template = RawRectangleTemplate([[0, 0, 0, 0, 0]])
-    assert template.shape.x == 5
-    assert template.shape.y == 1
+    assert template.shape.x.value == 5
+    assert template.shape.y.value == 1
 
 
 def test_raw_rectangle_invalid_indices():

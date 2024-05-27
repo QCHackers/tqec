@@ -41,16 +41,16 @@ def test_square_template_scaling(dim2x2):
     template = AlternatingSquareTemplate(dim2x2)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2 * 30
-    assert shape.y == 2 * 30
+    assert shape.x.value == 2 * 30
+    assert shape.y.value == 2 * 30
 
 
 def test_square_template_one_fixed_scaling(dim2):
     template = AlternatingSquareTemplate(dim2)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2
-    assert shape.y == 2
+    assert shape.x.value == 2
+    assert shape.y.value == 2
 
 
 def test_square_template_instantiate_default_plaquettes(dim2x2):
@@ -88,13 +88,13 @@ def test_corner_square_template_scaling(dim2x2):
     template = AlternatingCornerSquareTemplate(dim2x2, CornerPositionEnum.LOWER_LEFT)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2 * 30
-    assert shape.y == 2 * 30
+    assert shape.x.value == 2 * 30
+    assert shape.y.value == 2 * 30
 
 
 def test_corner_square_template_one_fixed_scaling(dim2):
     template = AlternatingCornerSquareTemplate(dim2, CornerPositionEnum.LOWER_LEFT)
     template.scale_to(30)
     shape = template.shape
-    assert shape.x == 2
-    assert shape.y == 2
+    assert shape.x.value == 2
+    assert shape.y.value == 2
