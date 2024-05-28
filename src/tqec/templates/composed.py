@@ -7,7 +7,12 @@ from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
-from tqec.templates.scale import FixedDimension, ScalablePosition2D, ScalableShape2D
+from tqec.templates.scale import (
+    Dimension,
+    FixedDimension,
+    ScalablePosition2D,
+    ScalableShape2D,
+)
 
 
 def get_corner_position(
@@ -327,7 +332,7 @@ class ComposedTemplate(Template):
             the bounding box. Coordinates in each positions are not guaranteed
             to be positive.
         """
-        raise NotImplementedError()
+        # raise NotImplementedError()
         # ul: upper-left
         # br: bottom-right
         ul = ScalablePosition2D(FixedDimension(0), FixedDimension(0))
@@ -337,8 +342,13 @@ class ComposedTemplate(Template):
         for tid, tul in ul_positions.items():
             # tshape: template shape
             tshape = self._templates[tid].shape
-            ul = Position(min(ul.x, tul.x), min(ul.y, tul.y))
-            br = Position(max(br.x, tul.x + tshape.x), max(br.y, tul.y + tshape.y))
+            ul = ScalablePosition2D(
+                Dimension.min(ul.x, tul.x), Dimension.min(ul.y, tul.y)
+            )
+            br = ScalablePosition2D(
+                Dimension.max(br.x, tul.x + tshape.x),
+                Dimension.max(br.y, tul.y + tshape.y),
+            )
         return ul, br
 
     def _get_shape_from_bounding_box(

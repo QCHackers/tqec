@@ -302,25 +302,47 @@ class Dimension:
         """Returns the instance value."""
         return self._value
 
-    def __add__(self, other: "Dimension") -> "Dimension":
+    def __add__(self, other: Dimension) -> Dimension:
         return Dimension(
             self._scaling_function.invert(self.value),
             self._scaling_function + other._scaling_function,
         )
 
-    def __sub__(self, other: "Dimension") -> "Dimension":
+    def __sub__(self, other: Dimension) -> Dimension:
         return Dimension(
             self._scaling_function.invert(self.value),
             self._scaling_function - other._scaling_function,
         )
 
-    def __mul__(self, other: int) -> "Dimension":
+    def __mul__(self, other: int) -> Dimension:
         return other * self
 
-    def __rmul__(self, other: int) -> "Dimension":
+    def __rmul__(self, other: int) -> Dimension:
         return Dimension(
             self._scaling_function.invert(self.value),
             self._scaling_function * other,
+        )
+
+    @staticmethod
+    def min(lhs: Dimension, rhs: Dimension) -> Dimension:
+        lhs_initial_value = lhs._scaling_function.invert(lhs.value)
+        rhs_initial_value = rhs._scaling_function.invert(rhs.value)
+        assert lhs_initial_value == rhs_initial_value, "Limitation for the moment."
+
+        return Dimension(
+            lhs_initial_value,
+            PiecewiseLinearFunction.min(lhs._scaling_function, rhs._scaling_function),
+        )
+
+    @staticmethod
+    def max(lhs: Dimension, rhs: Dimension) -> Dimension:
+        lhs_initial_value = lhs._scaling_function.invert(lhs.value)
+        rhs_initial_value = rhs._scaling_function.invert(rhs.value)
+        assert lhs_initial_value == rhs_initial_value, "Limitation for the moment."
+
+        return Dimension(
+            lhs_initial_value,
+            PiecewiseLinearFunction.max(lhs._scaling_function, rhs._scaling_function),
         )
 
 
