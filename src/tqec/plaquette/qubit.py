@@ -5,7 +5,7 @@ import typing as ty
 import cirq
 from pydantic.dataclasses import dataclass
 
-from tqec.enums import PlaquetteOrientation, PlaquetteSide
+from tqec.enums import PlaquetteOrientation, PlaquetteSide, TemplateOrientation
 from tqec.position import Position
 
 
@@ -56,6 +56,34 @@ class PlaquetteQubits:
         return PlaquetteQubits(
             [self.data_qubits[i] for i in permutation], self.syndrome_qubits
         )
+
+    def get_edge_qubits(
+        self,
+        orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
+    ) -> list[PlaquetteQubit]:
+        """Return the data qubits on the edge of the plaquette.
+        By convention, the edge is the one with the highest index in the relevant axis.
+
+        Args:
+            orientation (TemplateOrientation, optional): Wheter to use horizontal or
+                vertical orientation. Defaults to horizontal.
+        Returns:
+            list[PlaquetteQubit]: The qubits on the edge of the plaquette.
+        """
+
+        def _get_relevant_value(qubit: PlaquetteQubit) -> int:
+            return (
+                qubit.position.y
+                if orientation == TemplateOrientation.HORIZONTAL
+                else qubit.position.x
+            )
+
+        max_index = max(_get_relevant_value(q) for q in self.data_qubits)
+        return [
+            qubit
+            for qubit in self.data_qubits
+            if (_get_relevant_value(qubit) == max_index)
+        ]
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):

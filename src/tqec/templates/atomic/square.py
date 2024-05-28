@@ -2,7 +2,8 @@ import typing as ty
 
 import numpy
 
-from tqec.enums import CornerPositionEnum
+from tqec.enums import CornerPositionEnum, TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
@@ -191,11 +192,16 @@ class AlternatingCornerSquareTemplate(Template):
             tag="AlternatingCornerSquare",
         )
 
-    @property
-    def scalable_shape(self) -> ScalableShape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
-        """
-        return ScalableShape2D(self._dimension, self._dimension)
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]

@@ -2,6 +2,7 @@ import typing as ty
 
 import numpy
 
+from tqec.enums import TemplateOrientation
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import ScalableOffset, ScalableShape2D
@@ -52,11 +53,12 @@ class ShiftedTemplate(Template):
             tag="Shifted",
         )
 
-    @property
-    def scalable_shape(self) -> ScalableShape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
-        """
-        return self._shifted_template.scalable_shape + self._offset
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        return [
+            (row + self._offset.x.value, column + self._offset.y.value)
+            for row, column in self._shifted_template.get_midline_plaquettes(
+                orientation
+            )
+        ]

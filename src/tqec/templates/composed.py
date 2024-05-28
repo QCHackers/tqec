@@ -3,7 +3,11 @@ import typing as ty
 import networkx as nx
 import numpy
 
-from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.enums import (
+    CornerPositionEnum,
+    TemplateOrientation,
+    TemplateRelativePositionEnum,
+)
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
@@ -479,11 +483,7 @@ class ComposedTemplate(Template):
             tag="Composed",
         )
 
-    @property
-    def scalable_shape(self) -> ScalableShape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
-        """
-        raise NotImplementedError()
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        raise NotImplementedError

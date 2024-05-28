@@ -2,6 +2,8 @@ import typing as ty
 
 import numpy
 
+from tqec.enums import TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import ScalableShape2D
@@ -110,11 +112,31 @@ class StackedTemplate(Template):
             tag="Stacked",
         )
 
-    @property
-    def scalable_shape(self) -> ScalableShape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        """We assumme the midline is defined by the template with the largest shape.
+        This also assumes that operators are moved on the biggest template.
         """
-        raise NotImplementedError()
+        midline_shape = self.shape.y
+        if orientation == TemplateOrientation.VERTICAL:
+            midline_shape = self.shape.x
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        for template in self._stack:
+            if (
+                orientation == TemplateOrientation.HORIZONTAL
+                and template.shape.y == midline_shape
+            ):
+                return template.get_midline_plaquettes(orientation)
+            if (
+                orientation == TemplateOrientation.VERTICAL
+                and template.shape.x == midline_shape
+            ):
+                return template.get_midline_plaquettes(orientation)
+        raise TQECException(
+            "No template with the expected midline shape was found in the stack."
+        )

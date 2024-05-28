@@ -1,7 +1,8 @@
 import numpy
 import pytest
 
-from tqec.enums import CornerPositionEnum
+from tqec.enums import CornerPositionEnum, TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.templates.atomic.square import (
     AlternatingCornerSquareTemplate,
     AlternatingSquareTemplate,
@@ -27,6 +28,11 @@ def dim2x40p3():
 @pytest.fixture
 def dim2():
     return FixedDimension(2)
+
+
+@pytest.fixture
+def dim3():
+    return FixedDimension(3)
 
 
 def test_square_template_init(dim2x2):
@@ -99,3 +105,26 @@ def test_corner_square_template_one_fixed_scaling(dim2):
     shape = template.shape
     assert shape.x == 2
     assert shape.y == 2
+
+
+def test_corner_square_template_midline(dim2x2, dim3):
+    template = AlternatingCornerSquareTemplate(dim2x2, CornerPositionEnum.LOWER_LEFT)
+    midline = template.get_midline_plaquettes()
+    assert midline == [(1, 0), (1, 1), (1, 2), (1, 3)]
+    midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
+    assert midline == [(0, 1), (1, 1), (2, 1), (3, 1)]
+    template.scale_to(4)
+    midline = template.get_midline_plaquettes()
+    assert midline == [
+        (3, 0),
+        (3, 1),
+        (3, 2),
+        (3, 3),
+        (3, 4),
+        (3, 5),
+        (3, 6),
+        (3, 7),
+    ]
+    template = AlternatingCornerSquareTemplate(dim3, CornerPositionEnum.LOWER_LEFT)
+    with pytest.raises(TQECException, match="Midline is not defined for odd height."):
+        template.get_midline_plaquettes()
