@@ -105,9 +105,9 @@ class StackedTemplate(Template):
         """We assumme the midline is defined by the template with the largest shape.
         This also assumes that operators are moved on the biggest template.
         """
-        midline_shape = self.shape.y
+        midline_shape = self.shape.y.value
         if orientation == TemplateOrientation.VERTICAL:
-            midline_shape = self.shape.x
+            midline_shape = self.shape.x.value
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "

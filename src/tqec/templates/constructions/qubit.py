@@ -53,7 +53,7 @@ class QubitSquareTemplate(ComposedTemplate):
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        midline_shape, iteration_shape = self.shape.x.value, self.shape.y.value
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
@@ -115,7 +115,7 @@ class QubitRectangleTemplate(ComposedTemplate):
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        midline_shape, iteration_shape = self.shape.x.value, self.shape.y.value
         if orientation == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 

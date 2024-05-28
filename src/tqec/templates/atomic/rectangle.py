@@ -2,8 +2,8 @@ import typing as ty
 
 import numpy
 
-from tqec.exceptions import TQECException
 from tqec.enums import TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension, FixedDimension, ScalableShape2D
@@ -89,7 +89,7 @@ class AlternatingRectangleTemplate(Template):
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        midline_shape, iteration_shape = self.shape.x.value, self.shape.y.value
         if orientation == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 
@@ -218,7 +218,7 @@ class RawRectangleTemplate(Template):
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        midline_shape, iteration_shape = self.shape.x.value, self.shape.y.value
         if orientation == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 
