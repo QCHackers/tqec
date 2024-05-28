@@ -67,9 +67,9 @@ class ShiftedTemplate(Template):
         return arr
 
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         return [
             (row + self._offset.x.value, column + self._offset.y.value)
-            for row, column in self._shifted_template.get_midline_plaquettes(horizontal)
+            for row, column in self._shifted_template.get_midline_plaquettes(orientation)
         ]

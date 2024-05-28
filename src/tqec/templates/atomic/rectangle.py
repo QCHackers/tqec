@@ -92,19 +92,19 @@ class AlternatingRectangleTemplate(Template):
         return 2
 
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if horizontal == TemplateOrientation.VERTICAL:
+        if orientation == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
-                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
             )
         midline = midline_shape // 2 - 1
-        if horizontal == TemplateOrientation.VERTICAL:
+        if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
 
@@ -222,18 +222,18 @@ class RawRectangleTemplate(Template):
         return max(max(line) for line in self._indices) + 1
 
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if horizontal == TemplateOrientation.VERTICAL:
+        if orientation == TemplateOrientation.VERTICAL:
             midline_shape, iteration_shape = iteration_shape, midline_shape
 
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
-                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
             )
         midline = midline_shape // 2 - 1
-        if horizontal == TemplateOrientation.VERTICAL:
+        if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]

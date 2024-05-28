@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Mapping, Sequence, Union
+from typing import Mapping, Sequence
 
 import cirq
 
@@ -13,15 +13,15 @@ from tqec.templates.base import Template
 def observable_qubits_from_template(
     template: Template,
     plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
-    horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
+    orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> Sequence[tuple[cirq.GridQubit, int]]:
     """Return the default observable qubits for the given template and its plaquettes.
 
     Args:
         template: The template to get the default observable qubits from.
         plaquettes: The plaquettes to use to get the acurate positions of the observable qubits.
-        horizontal: Whether to get the observable qubits from
-            the horizontal or vertical midline. Defaults to True -> Horizontal.
+        orientation: Whether to get the observable qubits from
+            the horizontal or vertical midline. Defaults to horizontal.
 
     Raises:
         TQECException: If the number of plaquettes does not match the expected number.
@@ -50,7 +50,7 @@ def observable_qubits_from_template(
     increments = template.get_increments()
 
     try:
-        midline_indices = template.get_midline_plaquettes(horizontal)
+        midline_indices = template.get_midline_plaquettes(orientation)
     except TQECException as e:
         raise TQECException(
             "The template does not have a midline. "
@@ -70,19 +70,19 @@ def observable_qubits_from_template(
         )
         observable_qubits += [
             (qubit.to_grid_qubit() + offset, 0)
-            for qubit in _get_edge_qubits(plaquette, horizontal)
+            for qubit in _get_edge_qubits(plaquette, orientation)
         ]
     return sorted(set(observable_qubits))
 
 
 def _get_edge_qubits(
     plaquette: Plaquette,
-    horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL,
+    orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> list[PlaquetteQubit]:
     def _get_relevant_value(qubit: PlaquetteQubit) -> int:
         return (
             qubit.position.y
-            if horizontal == TemplateOrientation.HORIZONTAL
+            if orientation == TemplateOrientation.HORIZONTAL
             else qubit.position.x
         )
 

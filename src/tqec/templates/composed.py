@@ -492,6 +492,6 @@ class ComposedTemplate(Template):
         return len(self._templates) == 0
 
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         raise NotImplementedError

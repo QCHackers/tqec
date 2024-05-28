@@ -109,30 +109,30 @@ class StackedTemplate(Template):
         return arr
 
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         """We assumme the midline is defined by the template with the largest shape.
         This also assumes that operators are moved on the biggest template.
         """
         midline_shape = self.shape.y
-        if horizontal == TemplateOrientation.VERTICAL:
+        if orientation == TemplateOrientation.VERTICAL:
             midline_shape = self.shape.x
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
-                + f"{'height' if horizontal == TemplateOrientation.HORIZONTAL else 'width'}."
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
             )
         for template in self._stack:
             if (
-                horizontal == TemplateOrientation.HORIZONTAL
+                orientation == TemplateOrientation.HORIZONTAL
                 and template.shape.y == midline_shape
             ):
-                return template.get_midline_plaquettes(horizontal)
+                return template.get_midline_plaquettes(orientation)
             if (
-                horizontal == TemplateOrientation.VERTICAL
+                orientation == TemplateOrientation.VERTICAL
                 and template.shape.x == midline_shape
             ):
-                return template.get_midline_plaquettes(horizontal)
+                return template.get_midline_plaquettes(orientation)
         raise TQECException(
             "No template with the expected midline shape was found in the stack."
         )

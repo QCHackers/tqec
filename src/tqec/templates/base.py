@@ -167,7 +167,7 @@ class Template(JSONEncodable):
 
     @abstractmethod
     def get_midline_plaquettes(
-        self, horizontal: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         """Returns the default observable qubits for the template.
 
@@ -177,7 +177,7 @@ class Template(JSONEncodable):
         and to the left of the midline for the vertical case.
 
         Args:
-            horizontal: Horizontal or vertical qubits. Defaults to True.
+            orientation: Horizontal or vertical qubits. Defaults to horizontal.
 
         Returns:
             The sequence of qubits and offsets.
