@@ -70,25 +70,6 @@ def observable_qubits_from_template(
         )
         observable_qubits += [
             (qubit.to_grid_qubit() + offset, 0)
-            for qubit in _get_edge_qubits(plaquette, orientation)
+            for qubit in plaquette.qubits.get_edge_qubits(orientation)
         ]
     return sorted(set(observable_qubits))
-
-
-def _get_edge_qubits(
-    plaquette: Plaquette,
-    orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
-) -> list[PlaquetteQubit]:
-    def _get_relevant_value(qubit: PlaquetteQubit) -> int:
-        return (
-            qubit.position.y
-            if orientation == TemplateOrientation.HORIZONTAL
-            else qubit.position.x
-        )
-
-    max_index = max(_get_relevant_value(q) for q in plaquette.qubits.data_qubits)
-    return [
-        qubit
-        for qubit in plaquette.qubits.data_qubits
-        if (_get_relevant_value(qubit) == max_index)
-    ]
