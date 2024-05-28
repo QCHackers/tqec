@@ -80,7 +80,11 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span>
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CornerPositionEnum</span><span class="p">,</span>
+    <span class="n">TemplateOrientation</span><span class="p">,</span>
+    <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
 
@@ -250,6 +254,30 @@
 <span class="sd">            the shape of the template.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
+
+<div class="viewcode-block" id="Template.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.get_midline_plaquettes">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the default observable qubits for the template.</span>
+
+<span class="sd">        If the template has a simple shape, this returns the plaquettes on the ``midline&#39;&#39;</span>
+<span class="sd">        of the template.</span>
+<span class="sd">        By convention, it returns the plaquettes above the midline for the horizontal case</span>
+<span class="sd">        and to the left of the midline for the vertical case.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            orientation: Horizontal or vertical qubits. Defaults to horizontal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The sequence of qubits and offsets.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If the midline is not uniquely defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
 
 <div class="viewcode-block" id="Template.to_dict">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.to_dict">[docs]</a>

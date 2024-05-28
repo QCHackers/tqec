@@ -110,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#module-tqec.templates.atomic.rectangle">tqec.templates.atomic.rectangle module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.get_midline_plaquettes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.instantiate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.scale_to()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.shape"><code class="docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate.shape</span></code></a></li>
@@ -118,6 +119,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.get_midline_plaquettes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.instantiate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.scale_to()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.shape"><code class="docutils literal notranslate"><span class="pre">RawRectangleTemplate.shape</span></code></a></li>
@@ -129,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.atomic.html#module-tqec.templates.atomic.square">tqec.templates.atomic.square module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.get_midline_plaquettes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.instantiate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.scale_to()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.atomic.html#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.shape"><code class="docutils literal notranslate"><span class="pre">AlternatingCornerSquareTemplate.shape</span></code></a></li>
@@ -147,8 +150,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions.qubit">tqec.templates.constructions.qubit module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate.get_midline_plaquettes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate.get_midline_plaquettes()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions">Module contents</a></li>
@@ -228,6 +237,27 @@ two plaquettes.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a displacement of the default increments in the x and y directions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.base.Template.get_midline_plaquettes">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id1"><span class="problematic" id="id2">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -467,6 +497,27 @@ between plaquettes of the template.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id3"><span class="problematic" id="id4">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -783,6 +834,27 @@ two plaquettes.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id5"><span class="problematic" id="id6">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.shifted.ShiftedTemplate.instantiate">
 <span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/shifted.html#ShiftedTemplate.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.shifted.ShiftedTemplate.instantiate" title="Link to this definition"></a></dt>
 <dd><p>Generate the numpy array representing the template.</p>
@@ -888,6 +960,13 @@ that hides the bottom one.</p>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.stack.StackedTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/stack.html#StackedTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.stack.StackedTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>We assumme the midline is defined by the template with the largest shape.
+This also assumes that operators are moved on the biggest template.</p>
 </dd></dl>
 
 <dl class="py method">

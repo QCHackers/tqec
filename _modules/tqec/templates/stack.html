@@ -75,6 +75,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
 
@@ -194,6 +196,38 @@
             <span class="n">nonzeros</span> <span class="o">=</span> <span class="n">tarr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
             <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">yshape</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">xshape</span><span class="p">][</span><span class="n">nonzeros</span><span class="p">]</span> <span class="o">=</span> <span class="n">tarr</span><span class="p">[</span><span class="n">nonzeros</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">arr</span></div>
+
+
+<div class="viewcode-block" id="StackedTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.stack.StackedTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;We assumme the midline is defined by the template with the largest shape.</span>
+<span class="sd">        This also assumes that operators are moved on the biggest template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">midline_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="n">midline_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+                <span class="ow">and</span> <span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">midline_shape</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">get_midline_plaquettes</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span>
+                <span class="ow">and</span> <span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">midline_shape</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">get_midline_plaquettes</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="s2">&quot;No template with the expected midline shape was found in the stack.&quot;</span>
+        <span class="p">)</span></div>
 </div>
 
 </pre></div>

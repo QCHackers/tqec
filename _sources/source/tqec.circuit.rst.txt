@@ -20,6 +20,14 @@ tqec.circuit.circuit module
    :undoc-members:
    :show-inheritance:
 
+tqec.circuit.observable\_qubits module
+--------------------------------------
+
+.. automodule:: tqec.circuit.observable_qubits
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.circuit.schedule module
 ----------------------------
 

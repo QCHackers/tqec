@@ -163,6 +163,27 @@ display_template(template.scale_to(1))</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id1"><span class="problematic" id="id2">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.instantiate">
 <span class="sig-name descname"><span class="pre">instantiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaquette_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate.instantiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.instantiate" title="Link to this definition"></a></dt>
 <dd><p>Generate the numpy array representing the template.</p>
@@ -277,6 +298,27 @@ display_template(template)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.RawRectangleTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#RawRectangleTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id3"><span class="problematic" id="id4">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -400,6 +442,27 @@ display_template(template.scale_to(1))</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingCornerSquareTemplate.get_midline_plaquettes">
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingCornerSquareTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<dd><p>Returns the default observable qubits for the template.</p>
+<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id5"><span class="problematic" id="id6">``</span></a>midline’’
+of the template.
+By convention, it returns the plaquettes above the midline for the horizontal case
+and to the left of the midline for the vertical case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sequence of qubits and offsets.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -76,6 +76,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">Dimension</span>
@@ -156,6 +157,17 @@
         <span class="n">tarr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifted_template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span>
         <span class="n">arr</span><span class="p">[</span><span class="n">yoffset</span> <span class="p">:</span> <span class="n">yoffset</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">xoffset</span> <span class="p">:</span> <span class="n">xoffset</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">tarr</span>
         <span class="k">return</span> <span class="n">arr</span></div>
+
+
+<div class="viewcode-block" id="ShiftedTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.shifted.ShiftedTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">column</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifted_template</span><span class="o">.</span><span class="n">get_midline_plaquettes</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+        <span class="p">]</span></div>
 </div>
 
 </pre></div>

@@ -245,6 +245,25 @@ instance.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_edge_qubits">
+<span class="sig-name descname"><span class="pre">get_edge_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_edge_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_edge_qubits" title="Link to this definition"></a></dt>
+<dd><p>Return the data qubits on the edge of the plaquette.
+By convention, the edge is the one with the highest index in the relevant axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orientation</strong> (<a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><em>TemplateOrientation</em></a><em>, </em><em>optional</em>) – Wheter to use horizontal or
+vertical orientation. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The qubits on the edge of the plaquette.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit">PlaquetteQubit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits">
 <span class="sig-name descname"><span class="pre">get_syndrome_qubits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_syndrome_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits" title="Link to this definition"></a></dt>
 <dd></dd></dl>

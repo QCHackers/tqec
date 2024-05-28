@@ -73,7 +73,8 @@
   <h1>Source code for tqec.templates.constructions.qubit</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">ABOVE_OF</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="n">LEFT_OF</span><span class="p">,</span> <span class="n">RIGHT_OF</span>
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">ABOVE_OF</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="n">LEFT_OF</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="n">TemplateOrientation</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.atomic.rectangle</span> <span class="kn">import</span> <span class="n">AlternatingRectangleTemplate</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.atomic.square</span> <span class="kn">import</span> <span class="n">AlternatingSquareTemplate</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">TemplateWithIndices</span>
@@ -122,7 +123,24 @@
         <span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_templates</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">_relations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QubitSquareTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+</div>
 
 
 
@@ -173,7 +191,27 @@
         <span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_templates</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">_relations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QubitRectangleTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="n">iteration_shape</span><span class="p">,</span> <span class="n">midline_shape</span>
+
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+</div>
 
 </pre></div>
 

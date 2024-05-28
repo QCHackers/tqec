@@ -76,7 +76,11 @@
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span>
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CornerPositionEnum</span><span class="p">,</span>
+    <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
+    <span class="n">TemplateOrientation</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span><span class="p">,</span> <span class="n">TemplateWithIndices</span>
@@ -364,10 +368,10 @@
         <span class="n">dest</span><span class="p">:</span> <span class="nb">int</span>
         <span class="c1"># Compute the upper-left (ul) position of all the templates</span>
         <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">bfs_edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="n">relative_position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span>
-                <span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">CornerPositionEnum</span>
-            <span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;relative_position&quot;</span>
+            <span class="n">relative_position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s2">&quot;relative_position&quot;</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">relative_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -584,7 +588,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="ComposedTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
 
 </pre></div>
 

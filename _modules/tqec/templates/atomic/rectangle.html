@@ -75,6 +75,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">Dimension</span>
@@ -172,7 +173,27 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">2</span></div>
+        <span class="k">return</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="AlternatingRectangleTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.atomic.html#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="n">iteration_shape</span><span class="p">,</span> <span class="n">midline_shape</span>
+
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+</div>
 
 
 
@@ -268,15 +289,15 @@
             <span class="n">plaquette_indices_array</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">plaquette_indices_array</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;RawRectangleTemplate instances should be constructed with 2-dimensional arrays &quot;</span>
                 <span class="s2">&quot;that contain indices that will index the plaquette_indices provided to &quot;</span>
-                <span class="s2">&quot;this method. The bigest index you provided at this instance creation is &quot;</span>
+                <span class="s2">&quot;this method. The biggest index you provided at this instance creation is &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;but you provided only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> plaquette indices &quot;</span>
                 <span class="s2">&quot;when calling this method.&quot;</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
 
 <div class="viewcode-block" id="RawRectangleTemplate.scale_to">
@@ -297,7 +318,27 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></div>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="RawRectangleTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="n">iteration_shape</span><span class="p">,</span> <span class="n">midline_shape</span>
+
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+</div>
 
 </pre></div>
 
