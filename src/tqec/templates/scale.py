@@ -1,5 +1,9 @@
+from __future__ import annotations
+
 import typing as ty
-from dataclasses import dataclass
+
+from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 
@@ -43,11 +47,12 @@ class LinearFunction:
         return (value - self.offset) // self.slope
 
 
-class Dimension:
+class Dimension(BaseModel):
+    scaling_function: LinearFunction
+    value: int
+
     def __init__(
-        self,
-        initial_scale_parameter: int,
-        scaling_function: LinearFunction,
+        self, initial_scale_parameter: int, scaling_function: LinearFunction, **kwargs
     ) -> None:
         """Represent an integer dimension that may or may not be scalable.
 
@@ -63,8 +68,11 @@ class Dimension:
                 input (the scale provided to the ``scale_to`` method) and outputs the
                 value this ``Dimension`` instance should take.
         """
-        self._scaling_function = scaling_function
-        self._value = self._scaling_function(initial_scale_parameter)
+        super().__init__(
+            scaling_function=scaling_function,
+            value=scaling_function(initial_scale_parameter),
+            **kwargs,
+        )
 
     def scale_to(self, k: int) -> "Dimension":
         """Scale the dimension to the provided scale ``k``.
@@ -78,31 +86,19 @@ class Dimension:
         Returns:
             ``self``, potentially modified in-place if the instance is scalable.
         """
-        self._value = self._scaling_function(k)
+        self.value = self.scaling_function(k)
         return self
-
-    @property
-    def value(self) -> int:
-        """Returns the instance value."""
-        return self._value
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        """Encodes the instance into a JSON-compatible dictionary."""
-        return {
-            "value": self._value,
-            "scaling_function": self._scaling_function.to_dict(),
-        }
 
     def __add__(self, other: "Dimension") -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function + other._scaling_function,
+            self.scaling_function.invert(self.value),
+            self.scaling_function + other.scaling_function,
         )
 
     def __sub__(self, other: "Dimension") -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function - other._scaling_function,
+            self.scaling_function.invert(self.value),
+            self.scaling_function - other.scaling_function,
         )
 
     def __mul__(self, other: int) -> "Dimension":
@@ -110,8 +106,8 @@ class Dimension:
 
     def __rmul__(self, other: int) -> "Dimension":
         return Dimension(
-            self._scaling_function.invert(self.value),
-            self._scaling_function * other,
+            self.scaling_function.invert(self.value),
+            self.scaling_function * other,
         )
 
 
@@ -119,3 +115,41 @@ class FixedDimension(Dimension):
     def __init__(self, value: int) -> None:
         """A ``Dimension`` that does not scale."""
         super().__init__(value, LinearFunction(0, value))
+
+
+@dataclass
+class ScalableOffset:
+    x: Dimension
+    y: Dimension
+
+    def scale_to(self, k: int) -> None:
+        self.x.scale_to(k)
+        self.y.scale_to(k)
+
+
+@dataclass(frozen=True)
+class ScalableShape2D:
+    """Simple wrapper around tuple[Dimension, Dimension].
+
+    This class is here to explicitly name the type of variables as shapes
+    instead of having a tuple[Dimension, Dimension] that could be:
+    - a position,
+    - a shape,
+    - coefficients for positions,
+    - displacements.
+    """
+
+    x: Dimension
+    y: Dimension
+
+    def to_numpy_shape(self) -> tuple[int, int]:
+        """Returns the shape according to numpy indexing.
+
+        In the coordinate system used in this library, numpy indexes arrays
+        using (y, x) coordinates. This method is here to translate a Shape
+        instance to a numpy shape transparently for the user.
+        """
+        return (self.y.value, self.x.value)
+
+    def __add__(self, other: ScalableShape2D | ScalableOffset) -> ScalableShape2D:
+        return ScalableShape2D(self.x + other.x, self.y + other.y)

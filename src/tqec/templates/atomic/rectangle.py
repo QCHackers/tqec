@@ -1,11 +1,18 @@
+from __future__ import annotations
+
 import typing as ty
 
 import numpy
-from tqec.exceptions import TQECException
+
 from tqec.enums import TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.scale import Dimension, FixedDimension, ScalableShape2D
+from tqec.templates.schemas import (
+    AlternatingRectangleTemplateModel,
+    RawRectangleTemplateModel,
+)
 
 
 class AlternatingRectangleTemplate(Template):
@@ -81,15 +88,17 @@ class AlternatingRectangleTemplate(Template):
     def shape(self) -> Shape2D:
         return Shape2D(self._width.value, self._height.value)
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "width": self._width.to_dict(),
-            "height": self._height.to_dict(),
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return 2
+
+    def to_model(self) -> AlternatingRectangleTemplateModel:
+        return AlternatingRectangleTemplateModel(
+            default_increments=self._default_increments,
+            width=self._width,
+            height=self._height,
+            tag="AlternatingRectangle",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
@@ -214,12 +223,16 @@ class RawRectangleTemplate(Template):
     def shape(self) -> Shape2D:
         return Shape2D(len(self._indices[0]), len(self._indices))
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {"indices": self._indices}
-
     @property
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
+
+    def to_model(self) -> RawRectangleTemplateModel:
+        return RawRectangleTemplateModel(
+            default_increments=self._default_increments,
+            indices=self._indices,
+            tag="RawRectangle",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL

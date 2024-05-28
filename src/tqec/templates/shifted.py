@@ -1,25 +1,12 @@
 import typing as ty
-from dataclasses import dataclass
 
 import numpy
 
 from tqec.enums import TemplateOrientation
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
-
-
-@dataclass
-class ScalableOffset:
-    x: Dimension
-    y: Dimension
-
-    def scale_to(self, k: int) -> None:
-        self.x.scale_to(k)
-        self.y.scale_to(k)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {"x": self.x.to_dict(), "y": self.y.to_dict()}
+from tqec.templates.scale import ScalableOffset, ScalableShape2D
+from tqec.templates.schemas import ShiftedTemplateModel
 
 
 class ShiftedTemplate(Template):
@@ -44,14 +31,6 @@ class ShiftedTemplate(Template):
         tshape = self._shifted_template.shape
         return Shape2D(self._offset.x.value + tshape.x, self._offset.y.value + tshape.y)
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "shifted": {
-                "template": self._shifted_template.to_dict(),
-                "offset": self._offset.to_dict(),
-            }
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return self._shifted_template.expected_plaquettes_number
@@ -66,10 +45,20 @@ class ShiftedTemplate(Template):
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr
         return arr
 
+    def to_model(self) -> ShiftedTemplateModel:
+        return ShiftedTemplateModel(
+            default_increments=self._default_increments,
+            shifted_template=self._shifted_template.to_model(),
+            offset=self._offset,
+            tag="Shifted",
+        )
+
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         return [
             (row + self._offset.x.value, column + self._offset.y.value)
-            for row, column in self._shifted_template.get_midline_plaquettes(orientation)
+            for row, column in self._shifted_template.get_midline_plaquettes(
+                orientation
+            )
         ]

@@ -1,5 +1,6 @@
 import numpy
 import pytest
+
 from tqec.enums import CornerPositionEnum, TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.square import (
@@ -67,8 +68,8 @@ def test_square_template_instantiate_default_plaquettes(dim2x2):
     )
 
 
-def test_square_template_one_fixed_scaling_instantiate_random_plaquettes(dim2x2, dim2):
-    template = AlternatingSquareTemplate(dim2x2, dim2)
+def test_square_template_one_fixed_scaling_instantiate_random_plaquettes(dim2x2):
+    template = AlternatingSquareTemplate(dim2x2, 2)
     arr = template.instantiate([78, 195])
     numpy.testing.assert_equal(
         arr,

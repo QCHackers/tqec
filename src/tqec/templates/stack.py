@@ -6,6 +6,8 @@ from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
+from tqec.templates.scale import ScalableShape2D
+from tqec.templates.schemas import StackedTemplateModel
 
 
 class StackedTemplate(Template):
@@ -80,11 +82,6 @@ class StackedTemplate(Template):
             shapey = max(shapey, tshape.y)
         return Shape2D(shapex, shapey)
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "stack": {"templates": [t.to_dict() for t in self._stack]}
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return sum(t.expected_plaquettes_number for t in self._stack)
@@ -107,6 +104,13 @@ class StackedTemplate(Template):
             nonzeros = tarr.nonzero()
             arr[0:yshape, 0:xshape][nonzeros] = tarr[nonzeros]
         return arr
+
+    def to_model(self) -> StackedTemplateModel:
+        return StackedTemplateModel(
+            default_increments=self._default_increments,
+            stack=[t.to_model() for t in self._stack],
+            tag="Stacked",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL

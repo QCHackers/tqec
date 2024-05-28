@@ -5,12 +5,14 @@ import numpy
 
 from tqec.enums import (
     CornerPositionEnum,
-    TemplateRelativePositionEnum,
     TemplateOrientation,
+    TemplateRelativePositionEnum,
 )
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
+from tqec.templates.scale import ScalableShape2D
+from tqec.templates.schemas import ComposedTemplateModel, RelativePositionsModel
 
 
 def get_corner_position(
@@ -57,7 +59,12 @@ def get_corner_position(
 
 
 class ComposedTemplate(Template):
-    def __init__(self, templates: list[TemplateWithIndices]) -> None:
+    def __init__(
+        self,
+        templates: list[TemplateWithIndices],
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Manages templates positioned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
@@ -104,10 +111,10 @@ class ComposedTemplate(Template):
             ValueError: if the templates provided have different default
                 increments.
         """
+        super().__init__(default_x_increment, default_y_increment)
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
-        self._default_increments = Displacement(2, 2)
         self.add_templates(templates)
 
     def _check_template_id(self, template_id: int) -> None:
@@ -140,8 +147,8 @@ class ComposedTemplate(Template):
             self._default_increments = template_to_insert.template.get_increments()
         elif self._default_increments != template_to_insert.template.get_increments():
             raise ValueError(
-                f"Template {template_to_insert.template.to_dict()}"
-                + " has different default increments than the other templates."
+                f"Template {template_to_insert.template} has different default "
+                "increments than the other templates."
             )
         template_id: int = len(self._templates)
         indices = template_to_insert.indices
@@ -279,9 +286,9 @@ class ComposedTemplate(Template):
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
             relative_position: tuple[CornerPositionEnum, CornerPositionEnum] | None = (
-                self._relative_position_graph.get_edge_data(src, dest).get(
-                    "relative_position"
-                )
+                self._relative_position_graph.get_edge_data(
+                    src, dest
+                ).get("relative_position")
             )
             assert (
                 relative_position is not None
@@ -458,31 +465,6 @@ class ComposedTemplate(Template):
     def shape(self) -> Shape2D:
         return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {
-            # self.__class__ is "ComposedTemplate" here, whatever the type of self is. This is different
-            # from what is done in the Template base class. This is done to avoid users subclassing this
-            # class and having a subclass name we do not control in the "type" entry.
-            "type": self.__class__.__name__,
-            "kwargs": {
-                "templates": [t.to_dict() for t in self._templates],
-            },
-            "connections": [
-                {
-                    "source_idx": source,
-                    "target_idx": target,
-                    "source_corner": source_corner,
-                    "target_corner": target_corner,
-                }
-                for source, target, (
-                    source_corner,
-                    target_corner,
-                ) in self._relative_position_graph.edges.data(
-                    "relative_position"  # type: ignore
-                )
-            ],
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return self._maximum_plaquette_mapping_index
@@ -490,6 +472,16 @@ class ComposedTemplate(Template):
     @property
     def is_empty(self) -> bool:
         return len(self._templates) == 0
+
+    def to_model(self) -> ComposedTemplateModel:
+        return ComposedTemplateModel(
+            default_increments=self._default_increments,
+            templates=[t.to_model() for t in self._templates],
+            relative_positions=RelativePositionsModel.from_networkx(
+                self._relative_position_graph
+            ),
+            tag="Composed",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
