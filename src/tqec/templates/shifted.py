@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 import numpy
 
+from tqec.enums import TemplateOrientation
 from tqec.templates.base import Template
 from tqec.templates.scale import ScalableOffset, ScalableShape2D
 
@@ -42,3 +43,13 @@ class ShiftedTemplate(Template):
         tarr = self._shifted_template.instantiate(plaquette_indices)
         arr[yoffset : yoffset + tshape.y, xoffset : xoffset + tshape.x] = tarr
         return arr
+
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        return [
+            (row + self._offset.x.value, column + self._offset.y.value)
+            for row, column in self._shifted_template.get_midline_plaquettes(
+                orientation
+            )
+        ]

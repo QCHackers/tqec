@@ -7,6 +7,7 @@ import cirq
 
 from tqec.exceptions import TQECException
 
+
 STIM_TAG = "STIM_OPERATION"
 
 
@@ -304,9 +305,11 @@ def make_detector(
         A :class:`Detector` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm)
-        if not isinstance(rm, RelativeMeasurementData)
-        else rm
+        (
+            RelativeMeasurementData(*rm)
+            if not isinstance(rm, RelativeMeasurementData)
+            else rm
+        )
         for rm in relative_measurements
     ]
     return Detector(
@@ -343,9 +346,11 @@ def make_observable(
         A :class:`Observable` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm)
-        if not isinstance(rm, RelativeMeasurementData)
-        else rm
+        (
+            RelativeMeasurementData(*rm)
+            if not isinstance(rm, RelativeMeasurementData)
+            else rm
+        )
         for rm in relative_measurements
     ]
     return Observable(

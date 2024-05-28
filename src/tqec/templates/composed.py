@@ -3,7 +3,11 @@ import typing as ty
 import networkx as nx
 import numpy
 
-from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.enums import (
+    CornerPositionEnum,
+    TemplateOrientation,
+    TemplateRelativePositionEnum,
+)
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
@@ -478,3 +482,8 @@ class ComposedTemplate(Template):
     @property
     def is_empty(self) -> bool:
         return len(self._templates) == 0
+
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        raise NotImplementedError
