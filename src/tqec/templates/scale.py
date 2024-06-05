@@ -11,6 +11,18 @@ from tqec.position import Shape2D
 
 @dataclass(frozen=True)
 class IntersectionResults:
+    """Stores the necessary data to represent the intersection between
+    two linear functions.
+
+    Some conditions should be met by the attributes stored by this dataclass,
+    and are checked just after construction:
+
+    - ``lhs`` and ``rhs`` should either intersect on a single point or be colinear.
+    - If ``lhs`` and ``rhs`` intersect on a single point ``a`` (that might be real) then:
+        - for any integer ``x < a``, ``lhs(x) < rhs(x)``,
+        - for any integer ``x > a``, ``lhs(x) > rhs(x)``.
+    """
+
     lhs: LinearFunction
     rhs: LinearFunction
     value: float | None
@@ -23,6 +35,15 @@ class IntersectionResults:
             assert self.lhs(after) > self.rhs(after)
 
     def is_within(self, start: int | float, end: int | float) -> bool:
+        """Check if the intersection value is within the provided interval ``[start, end)``.
+
+        Args:
+            start (int | float): inclusive start of the interval.
+            end (int | float): exclusive end of the interval.
+
+        Returns:
+            bool: if the intersection is within the provided interval.
+        """
         return self.value is not None and start <= self.value < end
 
     def before_intersection(self, is_min: bool) -> LinearFunction:
@@ -34,11 +55,30 @@ class IntersectionResults:
     def get_function_on_interval(
         self, start: int | float, end: int | float, is_min: bool
     ) -> tuple[list[int], list[LinearFunction]]:
+        """Get the min/max functions on the provided interval.
+
+        Args:
+            start (int | float): inclusive start of the interval.
+            end (int | float): exclusive end of the interval.
+            is_min (bool): if True, the minimum functions are returned, else the
+                maximum functions are.
+
+        Returns:
+            tuple[list[int], list[LinearFunction]]: a tuple composed of 1. the
+                list of separators that should be added within the provided interval
+                (for this method, this list is either empty or contains one integer
+                value) and 2. a list of LinearFunction that contains one more entry
+                than the list of separators in one.
+        """
         if self.value is None:
+            # If the two linear functions do not intersect then the min/max one is
+            # determined by their offsets (works also for equal linear functions).
             return [], [
                 (min if is_min else max)((self.lhs, self.rhs), key=lambda lf: lf.offset)
             ]
         elif self.value <= start:
+            # If the intersection is before the the interval, then return the function
+            # that is the min/max, after the intersection (i.e., on the interval).
             return [], [self.after_intersection(is_min)]
         elif start < self.value < end:
             # ceil is used here because we require separators to be integers
@@ -49,33 +89,56 @@ class IntersectionResults:
                 self.after_intersection(is_min),
             ]
         else:
+            # If the intersection is after the the interval, then return the function
+            # that is the min/max, before the intersection (i.e., on the interval).
             return [], [self.before_intersection(is_min)]
 
 
 @dataclass(frozen=True)
 class LinearFunction:
+    """Represents a simple linear function with integer coefficients (slope and offset)."""
+
     slope: int = 1
     offset: int = 0
 
     def __call__(self, x: int) -> int:
+        """Compute the value of the represented linear function on the provided point."""
         return self.slope * x + self.offset
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {"type": type(self).__name__, "slope": self.slope, "offset": self.offset}
-
-    def __add__(self, other: "LinearFunction") -> "LinearFunction":
+    def __add__(self, other: LinearFunction) -> LinearFunction:
+        """Add two linear functions."""
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
-    def __sub__(self, other: "LinearFunction") -> "LinearFunction":
+    def __sub__(self, other: LinearFunction) -> LinearFunction:
+        """Subtract one linear function from another."""
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
-    def __mul__(self, other: int) -> "LinearFunction":
+    def __mul__(self, other: int) -> LinearFunction:
+        """Multiply a linear function by a constant integer coefficient."""
         return self.__rmul__(other)
 
-    def __rmul__(self, other: int) -> "LinearFunction":
+    def __rmul__(self, other: int) -> LinearFunction:
+        """Multiply a linear function by a constant integer coefficient."""
         return LinearFunction(other * self.slope, other * self.offset)
 
     def invert(self, value: int) -> int:
+        """Try to invert a linear function, finding the input that would result in the
+        provided value, if it exists.
+
+        Args:
+            value (int): The value to solve for. The equation
+                ``self.slope * x + self.offset = value`` is solved for ``x``.
+
+        Raises:
+            TQECException: If the slope of the represented linear function is 0, in
+                which case both possible outcomes (no solutions if ``self.offset != value``
+                or an infinite number of solutions if ``self.offset == value``) are
+                considered an error.
+            TQECException: If the resulting input is not an integer.
+
+        Returns:
+            int: a value ``y`` such that ``self(y) == value``.
+        """
         if self.slope == 0:
             raise TQECException(
                 f"Cannot invert {self}: the linear function is constant and so "
