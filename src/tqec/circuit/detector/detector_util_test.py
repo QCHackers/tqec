@@ -1,13 +1,11 @@
 import stim
-import pytest
 
 from tqec.circuit.detector.detector_util import (
-    PauliString,
-    split_stim_circuit_into_fragments,
     Fragment,
     FragmentLoop,
+    PauliString,
+    split_stim_circuit_into_fragments,
 )
-from tqec import TQECException
 
 
 def test_pauli_string_construction():
@@ -32,9 +30,9 @@ def test_pauli_string_interop_with_stim():
         stim.Tableau.from_named_gate("CZ"), targets=[0, 1]
     ) == PauliString.from_stim_pauli_string(stim.PauliString("+ZXYZ"))
 
-    assert PauliString.from_stim_pauli_string(stim.PauliString("IXYZ"), ignore_identity=False) == PauliString(
-        {0: "I", 1: "X", 2: "Y", 3: "Z"}
-    )
+    assert PauliString.from_stim_pauli_string(
+        stim.PauliString("IXYZ"), ignore_identity=False
+    ) == PauliString({0: "I", 1: "X", 2: "Y", 3: "Z"})
 
 
 def test_pauli_string_mul():
@@ -89,6 +87,7 @@ def test_split_stim_circuit_into_fragments():
 
     assert f2.repetitions == d - 1
     assert len(f2.fragments) == 1
+    assert isinstance(f2.fragments[0], Fragment)
     assert f2.fragments[0].circuit[-38:-26] == f1.circuit[-25:-13]
 
     assert f3.circuit.num_measurements == d**2
