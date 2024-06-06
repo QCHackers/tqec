@@ -25,6 +25,18 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
 
 @dataclasses.dataclass(frozen=True)
 class BoundaryStabilizer:
+    """Represents the state of a stabilizer on the boundary of a Fragment.
+
+    Attributes:
+        before_collapse: stabiliser before applying any collapsing operation.
+        after_collapse: stabiliser after applying the collapsing operations in the
+            moment.
+        coords: TODO
+        commute_collapse_indices: TODO
+        anticommute_collapse_indices: TODO
+        source_measurement_indices: TODO
+    """
+
     before_collapse: PauliString
     after_collapse: PauliString
     coords: tuple[float, ...]
@@ -43,6 +55,8 @@ class BoundaryStabilizer:
 
 @dataclasses.dataclass(frozen=True)
 class MatchedDetector:
+    """Represents a detector, automatically matched."""
+
     coords: tuple[float, ...]
     measurement_indices: frozenset[int]
 
@@ -51,15 +65,22 @@ class MatchedDetector:
 class State:
     """Singleton state to be used during detector construction.
 
-    We always focus on the beginning of the current fragment, where the end stabilizers
-    from the previous fragment and the beginning stabilizers of the current fragment intersect.
+    We always focus on the beginning of the current fragment, where the
+    end stabilizers from the previous fragment and the beginning stabilizers
+    of the current fragment intersect.
+
+    Attributes:
+        resets_passed_in: list of collapsing operations originating from reset
+            instructions from the previous Fragment instance and performed after
+            the instance measurements.
+        previous_measurements: list of collapsing operations originating from
+            the measurements found in the previous Fragment instance.
+        end_stabilizers: list of stabilizers at the end of the previous Fragment
+            instance.
     """
 
-    # resets from previous fragment(MR)
     resets_passed_in: list[PauliString]
-    # measurements at previous fragment
     previous_measurements: list[PauliString]
-    # end stabilizers from previous fragment
     end_stabilizers: list[BoundaryStabilizer]
 
     def clear(self):
@@ -72,6 +93,18 @@ def compile_fragments_to_circuit(
     fragments: Iterable[Fragment | FragmentLoop],
     qubit_coords_map: dict[int, list[float]],
 ) -> stim.Circuit:
+    """Entry-point to generate a valid `stim.Circuit` from a list of Fragments.
+
+    Args:
+        fragments (Iterable[Fragment  |  FragmentLoop]): the fragments that
+            have been generated from the original circuit.
+        qubit_coords_map (dict[int, list[float]]): a mapping from qubit indices
+            to their coordinates.
+
+    Returns:
+        stim.Circuit: a valid `stim.Circuit` instance with automatically computed
+            detectors inserted.
+    """
     all_qubits = sorted(qubit_coords_map.keys())
     state = State(
         resets_passed_in=list(),
@@ -241,7 +274,7 @@ def construct_boundary_stabilizers(
 ) -> list[BoundaryStabilizer]:
     if boundary_collapse is None:
         boundary_collapse = []
-        
+
     # since the circuit is from a fragment, it's safe to ignore collapses
     circuit_tableau = circuit.to_tableau(
         ignore_noise=True, ignore_measurement=True, ignore_reset=True
@@ -255,7 +288,6 @@ def construct_boundary_stabilizers(
             if len(circuit_tableau) > 0
             else source
         )
-        after_collapse = before_collapse.collapse_by(boundary_collapse)
         commute_collapse_indices = []
         anticommute_collapse_indices = []
         for i, collapse in enumerate(boundary_collapse):
@@ -277,7 +309,7 @@ def construct_boundary_stabilizers(
         stabilizers.append(
             BoundaryStabilizer(
                 before_collapse=before_collapse,
-                after_collapse=after_collapse,
+                after_collapse=before_collapse.collapse_by(boundary_collapse),
                 commute_collapse_indices=frozenset(commute_collapse_indices),
                 anticommute_collapse_indices=frozenset(anticommute_collapse_indices),
                 coords=pauli_string_mean_coords(source, qubit_coords_map),
