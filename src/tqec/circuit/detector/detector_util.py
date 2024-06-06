@@ -346,7 +346,18 @@ def _collapse_pauli_strings_at_moment(
 @dataclass
 class Fragment:
     """A sub-circuit guaranteed to span the locations between two nearest collapsing
-    moments or those outside the error detection regions."""
+    moments or those outside the error detection regions.
+
+    Attributes:
+        circuit: the circuit represented by the instance.
+        end_stabilizer_sources: sources (reset instructions) that generate the
+            stabilizers that might be found at the end of the circuit.
+        begin_stabilizer_sources: sources (measurement instructions) that generate
+            the stabilizers that might be found at the beginning of the circuit.
+        sources_for_next_fragment: sources (reset instructions) that generate
+            stabilizers after the measurements of this Fragment instance and so
+            should be accounted for in the next Fragment.
+    """
 
     circuit: stim.Circuit
     end_stabilizer_sources: list[PauliString] = field(default_factory=list)
