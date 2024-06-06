@@ -55,7 +55,7 @@ class BoundaryStabilizer:
 
 @dataclasses.dataclass(frozen=True)
 class MatchedDetector:
-    """Represents a detector, automatically matched."""
+    """Represents an automatically computed detector."""
 
     coords: tuple[float, ...]
     measurement_indices: frozenset[int]
@@ -96,14 +96,11 @@ def compile_fragments_to_circuit(
     """Entry-point to generate a valid `stim.Circuit` from a list of Fragments.
 
     Args:
-        fragments (Iterable[Fragment  |  FragmentLoop]): the fragments that
-            have been generated from the original circuit.
-        qubit_coords_map (dict[int, list[float]]): a mapping from qubit indices
-            to their coordinates.
+        fragments: the fragments that have been generated from the original circuit.
+        qubit_coords_map: a mapping from qubit indices to their coordinates.
 
     Returns:
-        stim.Circuit: a valid `stim.Circuit` instance with automatically computed
-            detectors inserted.
+        a valid `stim.Circuit` instance with automatically computed detectors inserted.
     """
     all_qubits = sorted(qubit_coords_map.keys())
     state = State(
@@ -132,6 +129,20 @@ def _compile_fragments_into_circuit(
     qubit_coords_map: dict[int, list[float]],
     compile_final_state_once_more: bool = False,
 ) -> None:
+    """Compile the provided fragments into `out_circuit`, mutating the input parameters.
+
+    Warning:
+        This function **mutates** its parameters in-place.
+
+    Args:
+        fragments: the fragments composing the circuit to build.
+        state: current state of the circuit building.
+        out_circuit: circuit that will be built in-place.
+        qubit_coords_map: a map associating qubit indices to their coordinates.
+        compile_final_state_once_more: compile the final state at the end of the function,
+            ensuring that no open end stabilizer is left at the end of the circuit.
+            Defaults to False.
+    """
     for fragment in fragments:
         _compile_fragment_into_circuit(fragment, state, out_circuit, qubit_coords_map)
     # clean up open end stabilizers at the end of circuit
@@ -171,13 +182,29 @@ def _compile_atomic_fragment_into_circuit(
     out_circuit: stim.Circuit,
     qubit_coords_map: dict[int, list[float]],
 ) -> None:
+    """Compile the provided fragment into the provided circuit.
+
+    Warning:
+        This function **mutates** its parameters in-place.
+
+    Args:
+        fragment: fragment to compile.
+        state: current state of the compilation.
+        out_circuit: circuit that will be built in-place.
+        qubit_coords_map: a map associating qubit indices to their coordinates.
+    """
+    # If the fragment does not introduce any potential stabilizer and the previous
+    # fragment did not left any stabilizers to take into account here, just add the
+    # circuit of the current fragment to the main circuit and return.
+    # No need to clear the state here, as it is already empty according to the
+    # condition within the if branch.
     if not fragment.have_detector_sources and not state.end_stabilizers:
         out_circuit += fragment.circuit
-        state.clear()
         return
+    # We gather all the potential sources (reset instructions) for the end stabilizers.
     end_stabilizer_sources = state.resets_passed_in + fragment.end_stabilizer_sources
     # construct begin stabilizers
-    begin_stabilizers = construct_boundary_stabilizers(
+    begin_stabilizers = _construct_boundary_stabilizers(
         sources=fragment.begin_stabilizer_sources,
         circuit=fragment.circuit,
         qubit_coords_map=qubit_coords_map,
@@ -214,7 +241,7 @@ def _compile_atomic_fragment_into_circuit(
     # construct end stabilizers and update state
     state.resets_passed_in = fragment.sources_for_next_fragment
     state.previous_measurements = fragment.begin_stabilizer_sources
-    state.end_stabilizers = construct_boundary_stabilizers(
+    state.end_stabilizers = _construct_boundary_stabilizers(
         sources=end_stabilizer_sources,
         circuit=fragment.circuit,
         qubit_coords_map=qubit_coords_map,
@@ -265,13 +292,32 @@ def _compile_fragment_loop_into_circuit(
             out_circuit += second_loop_circuit * (fragment_loop.repetitions - 1)
 
 
-def construct_boundary_stabilizers(
+def _construct_boundary_stabilizers(
     sources: list[PauliString],
     circuit: stim.Circuit,
     qubit_coords_map: dict[int, list[float]],
     inverse: bool = False,
     boundary_collapse: list[PauliString] | None = None,
 ) -> list[BoundaryStabilizer]:
+    """Compute the boundary stabilizers originating from the provided sources.
+
+    Args:
+        sources: Collapsing operations that generate propagating paulis at the circuit
+            beginning (depending on the value provided to the `inverse` parameter, this
+            might be the start or the end of the circuit).
+        circuit: circuit considered.
+        qubit_coords_map: a map associating qubit indices to their coordinates.
+        inverse: Set to `True` if stabilizer propagation should be computed from the end
+            to the beginning. Defaults to `False`, i.e., stabilizer propagation is
+            computed in the circuit order.
+        boundary_collapse: Collapsing operations at the final boundary.
+            Defaults to `None` which translates to no collapsing operation.
+
+    Returns:
+        a list of stabilizers resulting from the propagation of the pauli stabilizers
+        generated by `sources` through `circuit` and collapsed with `boundary_collapse`,
+        in the provided `circuit` order if `inverse` is `False`, else in the reverse order.
+    """
     if boundary_collapse is None:
         boundary_collapse = []
 
@@ -281,13 +327,18 @@ def construct_boundary_stabilizers(
     )
     if inverse:
         circuit_tableau = circuit_tableau.inverse(unsigned=True)
+
     stabilizers = []
     for source_index, source in enumerate(sources):
+        # For each source, compute the resulting stabilizer at the other boundary.
+        # 1. the stabilizers
         before_collapse = (
             source.after(circuit_tableau, targets=range(circuit.num_qubits))
             if len(circuit_tableau) > 0
             else source
         )
+        after_collapse = before_collapse.collapse_by(boundary_collapse)
+        # 2. the commuting and anti-commuting indices
         commute_collapse_indices = []
         anticommute_collapse_indices = []
         for i, collapse in enumerate(boundary_collapse):
@@ -298,6 +349,7 @@ def construct_boundary_stabilizers(
                 commute_collapse_indices.append(index)
             else:
                 anticommute_collapse_indices.append(index)
+        # 3. the source measurement index
         if inverse:
             if source.weight == 0:
                 source_measurement_indices = frozenset()
@@ -305,11 +357,11 @@ def construct_boundary_stabilizers(
                 source_measurement_indices = frozenset([source_index - len(sources)])
         else:
             source_measurement_indices = None
-
+        # Append the boundary stabilizer.
         stabilizers.append(
             BoundaryStabilizer(
                 before_collapse=before_collapse,
-                after_collapse=before_collapse.collapse_by(boundary_collapse),
+                after_collapse=after_collapse,
                 commute_collapse_indices=frozenset(commute_collapse_indices),
                 anticommute_collapse_indices=frozenset(anticommute_collapse_indices),
                 coords=pauli_string_mean_coords(source, qubit_coords_map),
