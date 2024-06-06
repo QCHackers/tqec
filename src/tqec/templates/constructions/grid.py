@@ -17,8 +17,8 @@ class TemplateGrid(ComposedTemplate):
                     template,
                     list(
                         range(
-                            1 + (i * rows + j) * plaquettes_indices_per_qubit,
-                            1 + (i * rows + j + 1) * plaquettes_indices_per_qubit,
+                            1 + (i * cols + j) * plaquettes_indices_per_qubit,
+                            1 + (i * cols + j + 1) * plaquettes_indices_per_qubit,
                         )
                     ),
                 )
