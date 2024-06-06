@@ -343,21 +343,15 @@ def _collapse_pauli_strings_at_moment(
     ]
 
 
+@dataclass
 class Fragment:
-    def __init__(
-        self,
-        circuit: stim.Circuit,
-        end_stabilizer_sources: list[PauliString] | None = None,
-        begin_stabilizer_sources: list[PauliString] | None = None,
-        sources_for_next_fragment: list[PauliString] | None = None,
-    ):
-        """A sub-circuit guaranteed to span the locations between two nearest collapsing
-        moments or those outside the error detection regions."""
+    """A sub-circuit guaranteed to span the locations between two nearest collapsing
+    moments or those outside the error detection regions."""
 
-        self.circuit = circuit
-        self.end_stabilizer_sources = list(end_stabilizer_sources or [])
-        self.begin_stabilizer_sources = list(begin_stabilizer_sources or [])
-        self.sources_for_next_fragment = list(sources_for_next_fragment or [])
+    circuit: stim.Circuit
+    end_stabilizer_sources: list[PauliString] = field(default_factory=list)
+    begin_stabilizer_sources: list[PauliString] = field(default_factory=list)
+    sources_for_next_fragment: list[PauliString] = field(default_factory=list)
 
     @property
     def have_detector_sources(self) -> bool:
@@ -368,10 +362,10 @@ class Fragment:
         )
 
 
+@dataclass
 class FragmentLoop:
-    def __init__(self, fragments: Iterable[Fragment | FragmentLoop], repetitions: int):
-        self.fragments = tuple(fragments)
-        self.repetitions = repetitions
+    fragments: list[Fragment | FragmentLoop]
+    repetitions: int
 
     def with_repetitions(self, repetitions: int) -> FragmentLoop:
         return FragmentLoop(fragments=self.fragments, repetitions=repetitions)
