@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Iterable
 
-import numpy as np
+import numpy
 import stim
 
 from tqec.exceptions import TQECException
@@ -498,5 +498,5 @@ def split_stim_circuit_into_fragments(
 def pauli_string_mean_coords(
     pauli_string: PauliString, qubit_coords_map: dict[int, list[float]]
 ) -> tuple[float, ...]:
-    all_coords_items = [qubit_coords_map[i] for i in pauli_string.qubits.keys()]
-    return tuple(np.mean(np.asarray(all_coords_items), axis=0)) + (0.0,)
+    all_coords_items = [qubit_coords_map[i] for i in pauli_string.qubit2pauli.keys()]
+    return tuple(numpy.mean(numpy.asarray(all_coords_items), axis=0)) + (0.0,)
