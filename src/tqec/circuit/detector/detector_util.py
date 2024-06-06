@@ -186,6 +186,19 @@ def iter_stim_circuit_by_moments(
 def collapsing_inst_to_pauli_strings(
     inst: stim.CircuitInstruction,
 ) -> list[PauliString]:
+    """Create the `PauliString` instances representing the provided collapsing instruction.
+
+    Args:
+        inst (stim.CircuitInstruction): a collapsing instruction.
+
+    Raises:
+        TQECException: If the provided collapsing instruction has any non-qubit target.
+        TQECException: If the provided instruction is not a collapsing instruction.
+
+    Returns:
+        list[PauliString]: a list of `PauliString` instances representing the collapsing
+            instruction provided as input.
+    """
     name = inst.name
     targets = inst.targets_copy()
     if any(not t.is_qubit_target for t in targets):
@@ -218,10 +231,19 @@ def has_measurement(
     """Check if a `stim.Circuit` moment contains measurement instructions.
 
     Args:
-        moment: The moment to check.
-        check_are_all_measurements: If `True`, when the moment contains a measurement, then all
-            instructions except for annotations and noise instructions must be measurement
-            instructions, otherwise exception is raised.
+        moment (stim.Circuit): The moment to check.
+        check_are_all_measurements (bool, optional): If `True`, when the moment contains a
+            measurement, then all instructions except for annotations and noise instructions
+            must be measurement instructions, otherwise an exception is raised.
+            Defaults to `False`.
+
+    Raises:
+        TQECException: If `check_are_all_measurement == True`, at least one instruction
+        in the provided moment is a measurement, and at least one instruction is
+        not a measurement.
+
+    Returns:
+        bool: `True` if the provided moment has a measurement, else `False`.
     """
     if not any(stim.gate_data(inst.name).produces_measurements for inst in moment):
         return False
@@ -241,10 +263,19 @@ def has_reset(moment: stim.Circuit, check_are_all_resets: bool = False) -> bool:
     """Check if a `stim.Circuit` moment contains reset instructions.
 
     Args:
-        moment: The moment to check.
-        check_are_all_resets: If `True`, when the moment contains a reset, then all
-            instructions except for annotations and noise instructions must be reset
-            instructions, otherwise exception is raised.
+        moment (stim.Circuit): The moment to check.
+        check_are_all_resets (bool, optional): If `True`, when the moment contains a
+            reset, then all instructions except for annotations and noise instructions
+            must be reset instructions, otherwise an exception is raised.
+            Defaults to `False`.
+
+    Raises:
+        TQECException: If `check_are_all_resets == True`, at least one instruction
+            in the provided moment is a reset, and at least one instruction is
+            not a reset.
+
+    Returns:
+        bool: `True` if the provided moment has a reset, else `False`.
     """
     if not any(stim.gate_data(inst.name).is_reset for inst in moment):
         return False
@@ -265,17 +296,45 @@ def has_reset(moment: stim.Circuit, check_are_all_resets: bool = False) -> bool:
     return True
 
 
-def collapse_pauli_strings_at_moment(moment: stim.Circuit, is_reset: bool):
-    def predicate(inst: stim.CircuitInstruction) -> bool:
-        if is_reset:
-            return stim.gate_data(inst.name).is_reset
-        return stim.gate_data(inst.name).produces_measurements
+def _collapse_pauli_strings_at_moment(
+    moment: stim.Circuit, is_reset: bool
+) -> list[PauliString]:
+    """Compute and return the list of PauliString instances representing all the
+    collapsing operations found in the provided moment.
 
+    This function has the following pre-condition: all the instructions in the provided
+    moment should be instances of `stim.CircuitInstruction`.
+
+    This pre-condition can be ensured by only providing `stim.Circuit` instances returned
+    by the `iter_stim_circuit_by_moments` function, ensuring before calling that the
+    moment is not an instance of `stim.CircuitRepeatBlock`.
+
+    Args:
+        moment (stim.Circuit): A circuit moment that does not contain any
+            `stim.CircuitRepeatBlock` instance.
+        is_reset (bool): If `True`, only return `PauliString` instances corresponding
+            to reset collapsing operations. Else, only return `PauliString` instances
+            corresponding to measurement collapsing operations.
+
+    Raises:
+        TQECException: If the pre-conditions of this function are not met.
+
+    Returns:
+        list[PauliString]: instances of `PauliString` representing each collapsing operation
+            found in the provided moment, according to the provided value of `is_reset`.
+    """
+    # Pre-condition check
     if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in moment):
         raise TQECException(
             "Pre-condition failed: collapse_pauli_strings_at_moment is expecting "
             "moments without repeat blocks."
         )
+
+    def predicate(inst: stim.CircuitInstruction) -> bool:
+        if is_reset:
+            return stim.gate_data(inst.name).is_reset
+        return stim.gate_data(inst.name).produces_measurements
+
     return [
         pauli_string
         for inst in moment
@@ -324,6 +383,15 @@ class FragmentLoop:
 
 @dataclass
 class SplitState:
+    """Represents the current state of a circuit exploration.
+
+    This dataclass is used to accumulate the information gained by exploring
+    a circuit until a fragment can be produced with that information.
+
+    Its goal is really to be a stupid accumulator, the logic being implemented
+    by the user of that class.
+    """
+
     cur_fragment: stim.Circuit = field(default_factory=stim.Circuit)
     end_stabilizer_sources: list[PauliString] = field(default_factory=list)
     sources_for_next_fragment: list[PauliString] = field(default_factory=list)
@@ -351,31 +419,58 @@ class SplitState:
 def split_stim_circuit_into_fragments(
     circuit: stim.Circuit,
 ) -> list[Fragment | FragmentLoop]:
-    """Split the circuit into fragments."""
+    """Split the circuit into fragments.
+
+    The provided circuit should check a few pre-conditions:
+
+    - If there is one measurement (resp. reset) instruction between two TICK
+      annotation, then only measurement (resp. reset) instructions, annotations
+      and noisy gates can appear between these two TICK. Any other instruction
+      will result in an exception being raised.
+
+    Args:
+        circuit (stim.Circuit): the circuit to split into Fragment instances.
+
+    Raises:
+        TQECException: If the circuit contains at least one moment (i.e., group of
+        instructions between two TICK annotations) that are composed of at least one
+        measurement (resp. one reset) and at least one non-annotation,
+        non-measurement (resp. non-reset) instruction.
+
+    Returns:
+        list[Fragment | FragmentLoop]: the resulting fragments.
+    """
     fragments = []
     state = SplitState()
+    # Iterate the whole circuit TICK by TICK
     for moment in iter_stim_circuit_by_moments(circuit):
+        # If we have a REPEAT block
         if isinstance(moment, stim.CircuitRepeatBlock):
+            # Purge the current split state by producing a Fragment before
+            # producing the FragmentLoop for the current moment.
             if state.cur_fragment:
                 fragments.append(state.to_fragment())
                 state.clear()
+            # Recurse to produce the Fragment instances for the loop body.
             body_fragments = split_stim_circuit_into_fragments(moment.body_copy())
             fragments.append(
                 FragmentLoop(fragments=body_fragments, repetitions=moment.repeat_count)
             )
+        # If this is a measurement moment
         elif has_measurement(moment, check_are_all_measurements=True):
             state.cur_fragment += moment
             state.begin_stabilizer_sources.extend(
-                collapse_pauli_strings_at_moment(moment, is_reset=False)
+                _collapse_pauli_strings_at_moment(moment, is_reset=False)
             )
             state.seen_measurement_at_tail = True
             state.sources_for_next_fragment.extend(
-                collapse_pauli_strings_at_moment(moment, is_reset=True)
+                _collapse_pauli_strings_at_moment(moment, is_reset=True)
                 if has_reset(moment, check_are_all_resets=False)
                 else []
             )
+        # If this is a reset moment
         elif has_reset(moment, check_are_all_resets=True):
-            pauli_strings = collapse_pauli_strings_at_moment(moment, is_reset=True)
+            pauli_strings = _collapse_pauli_strings_at_moment(moment, is_reset=True)
             if state.seen_measurement_at_tail:
                 state.cur_fragment += moment
                 state.sources_for_next_fragment.extend(pauli_strings)
@@ -389,13 +484,18 @@ def split_stim_circuit_into_fragments(
                 state.cur_fragment += moment
                 state.end_stabilizer_sources.extend(pauli_strings)
                 state.seen_reset_at_head = True
-
+        # This is not a reset, not a measurement, and not a REPEAT block moment.
+        # If we found measurements but did not generate the Fragment instance yet,
+        # do it now and start a new Fragment with the current moment.
         elif state.seen_measurement_at_tail:
             fragments.append(state.to_fragment())
             state.clear()
             state.cur_fragment += moment
+        # This is a regular instruction, just add it to the current Fragment.
         else:
             state.cur_fragment += moment
+    # If there is any part of the circuit left, purge the split state by creating
+    # one last Fragment with the left-over moments.
     if state.cur_fragment:
         fragments.append(state.to_fragment())
     return fragments
