@@ -215,6 +215,19 @@ class PiecewiseLinearFunction:
         index = bisect.bisect_left(self.separators, x)
         return self.functions[index](x)
 
+    @property
+    def intervals(self) -> ty.Iterable[tuple[int | float, int | float]]:
+        """Returns the intervals on which each linear function is defined.
+
+        Yields:
+            an iterator over the interval of definition for each `LinearFunction`
+            instance stored in `self`.
+        """
+        yield float("-inf"), self.separators[0]
+        for i in range(1, len(self.separators)):
+            yield self.separators[i - 1], self.separators[i]
+        yield self.separators[-1], float("inf")
+
     def invert(self, x: int) -> int:
         index = bisect.bisect_left(self.separators, x)
         return self.functions[index].invert(x)
