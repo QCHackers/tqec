@@ -52,10 +52,7 @@ class PauliString:
                 }
             )
         return PauliString(
-            {
-                q: "IXYZ"[stim_pauli_string[q]]
-                for q in range(len(stim_pauli_string))
-            }
+            {q: "IXYZ"[stim_pauli_string[q]] for q in range(len(stim_pauli_string))}
         )
 
     def to_stim_pauli_string(self, length: int | None) -> stim.PauliString:
@@ -280,17 +277,17 @@ class Fragment:
     def __init__(
         self,
         circuit: stim.Circuit,
-        end_stabilizer_sources: list[PauliString] = (),
-        begin_stabilizer_sources: list[PauliString] = (),
-        sources_for_next_fragment: list[PauliString] = (),
+        end_stabilizer_sources: list[PauliString] | None = None,
+        begin_stabilizer_sources: list[PauliString] | None = None,
+        sources_for_next_fragment: list[PauliString] | None = None,
     ):
         """A sub-circuit guaranteed to span the locations between two nearest collapsing
         moments or those outside the error detection regions."""
 
         self.circuit = circuit
-        self.end_stabilizer_sources = list(end_stabilizer_sources)
-        self.begin_stabilizer_sources = list(begin_stabilizer_sources)
-        self.sources_for_next_fragment = list(sources_for_next_fragment)
+        self.end_stabilizer_sources = list(end_stabilizer_sources or [])
+        self.begin_stabilizer_sources = list(begin_stabilizer_sources or [])
+        self.sources_for_next_fragment = list(sources_for_next_fragment or [])
 
     @property
     def have_detector_sources(self) -> bool:
@@ -302,9 +299,7 @@ class Fragment:
 
 
 class FragmentLoop:
-    def __init__(
-        self, fragments: Iterable[Fragment | "FragmentLoop"], repetitions: int
-    ):
+    def __init__(self, fragments: Iterable[Fragment | FragmentLoop], repetitions: int):
         self.fragments = tuple(fragments)
         self.repetitions = repetitions
 

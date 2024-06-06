@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import dataclasses
 import functools
-from typing import Iterable
 import itertools
+from typing import Iterable
 
 import stim
 
@@ -237,8 +237,11 @@ def construct_boundary_stabilizers(
     circuit: stim.Circuit,
     qubit_coords_map: dict[int, list[float]],
     inverse: bool = False,
-    boundary_collapse: list[PauliString] = (),
+    boundary_collapse: list[PauliString] | None = None,
 ) -> list[BoundaryStabilizer]:
+    if boundary_collapse is None:
+        boundary_collapse = []
+        
     # since the circuit is from a fragment, it's safe to ignore collapses
     circuit_tableau = circuit.to_tableau(
         ignore_noise=True, ignore_measurement=True, ignore_reset=True
