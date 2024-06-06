@@ -186,16 +186,20 @@ def collapsing_inst_to_pauli_strings(
 ) -> list[PauliString]:
     name = inst.name
     targets = inst.targets_copy()
+    if any(not t.is_qubit_target for t in targets):
+        raise TQECException(
+            "Found a stim instruction with non-qubit target. This is not supported."
+        )
     if name in ["RX", "MX", "MRX"]:
-        return [PauliString({target.qubit_value: "X"}) for target in targets]
+        return [PauliString({target.qubit_value: "X"}) for target in targets]  # type: ignore
     if name in ["RY", "MY", "MRY"]:
-        return [PauliString({target.qubit_value: "Y"}) for target in targets]
+        return [PauliString({target.qubit_value: "Y"}) for target in targets]  # type: ignore
     if name in ["R", "RZ", "M", "MZ", "MR", "MRZ"]:
-        return [PauliString({target.qubit_value: "Z"}) for target in targets]
+        return [PauliString({target.qubit_value: "Z"}) for target in targets]  # type: ignore
     if name in ["MXX", "MYY", "MZZ"]:
         pauli = name[1]
         return [
-            PauliString({t1.qubit_value: pauli, t2.qubit_value: pauli})
+            PauliString({t1.qubit_value: pauli, t2.qubit_value: pauli})  # type: ignore
             for t1, t2 in zip(targets[::2], targets[1::2])
         ]
     if name == "MPP":
@@ -265,11 +269,16 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit, is_reset: bool):
             return stim.gate_data(inst.name).is_reset
         return stim.gate_data(inst.name).produces_measurements
 
+    if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in moment):
+        raise TQECException(
+            "Pre-condition failed: collapse_pauli_strings_at_moment is expecting "
+            "moments without repeat blocks."
+        )
     return [
         pauli_string
         for inst in moment
-        if predicate(inst)
-        for pauli_string in collapsing_inst_to_pauli_strings(inst)
+        if predicate(inst)  # type: ignore
+        for pauli_string in collapsing_inst_to_pauli_strings(inst)  # type: ignore
     ]
 
 
