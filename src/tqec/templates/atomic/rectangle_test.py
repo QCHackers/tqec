@@ -1,5 +1,6 @@
 import numpy
 import pytest
+from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
@@ -26,6 +27,11 @@ def dim2x40p3():
 @pytest.fixture
 def dim2():
     return FixedDimension(2)
+
+
+@pytest.fixture
+def dim2x3():
+    return Dimension(2, LinearFunction(3))
 
 
 def test_rectangle_template_init(dim2x2, dim3x2):
@@ -180,3 +186,54 @@ def test_raw_rectangle_with_noncontiguous_indices():
 def test_raw_rectangle_with_negative_index():
     with pytest.raises(TQECException, match="starting at 0"):
         RawRectangleTemplate([[-1]])
+
+
+def test_raw_rectangle_midline():
+    template = RawRectangleTemplate(
+        [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+        ]
+    )
+    midline = template.get_midline_plaquettes()
+    assert midline == [(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5)]
+    midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
+    assert midline == [(0, 2), (1, 2), (2, 2), (3, 2)]
+    template.scale_to(4)
+    midline = template.get_midline_plaquettes()
+    # shoudl be 4*3 elements
+    template = RawRectangleTemplate([[0]])
+    with pytest.raises(TQECException, match="Midline is not defined for odd height."):
+        template.get_midline_plaquettes()
+
+
+def test_rectangle_midline(dim2x2, dim2x3):
+    template = AlternatingRectangleTemplate(dim2x2, dim2x3)
+    midline = template.get_midline_plaquettes()
+    assert midline == [(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5)]
+    midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
+    assert midline == [(0, 2), (1, 2), (2, 2), (3, 2)]
+    template.scale_to(4)
+    midline = template.get_midline_plaquettes()
+    # shoudl be 4*3 elements
+    assert midline == [
+        (3, 0),
+        (3, 1),
+        (3, 2),
+        (3, 3),
+        (3, 4),
+        (3, 5),
+        (3, 6),
+        (3, 7),
+        (3, 8),
+        (3, 9),
+        (3, 10),
+        (3, 11),
+    ]
+    template.scale_to(3)
+    with pytest.raises(TQECException, match="Midline is not defined for odd width."):
+        template.get_midline_plaquettes(TemplateOrientation.VERTICAL)

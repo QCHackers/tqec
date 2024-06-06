@@ -6,7 +6,7 @@ import {
 } from 'pixi.js';
 import Button from '../components/Button';
 import notification from '../components/notification';
-import { CircuitLabels } from '../qubits/Qubit';
+import QubitLabels from '../qubits/QubitLabels';
 import { createCircuitAsciiArt, CircuitForm } from './AsciiCircuitWriter';
 
 export const PlaquetteColors = Object.freeze({
@@ -146,7 +146,7 @@ export default class Plaquette extends Graphics {
     if (!qubit) {
       return;
     }
-    qubit.setCircuitLabel(CircuitLabels.ancilla);
+    qubit.setCircuitLabel(QubitLabels.ancilla);
     qubit.showLabelText();
     this.app.view.removeEventListener('click', this.selectAncillaQubit);
     notification(this.app, 'Step 2: Specify CX qubits');
@@ -168,11 +168,11 @@ export default class Plaquette extends Graphics {
           allQubit.hideQubitLabels();
         });
         const dataQubits = this.qubits.filter(
-          (_qubit) => _qubit.label === CircuitLabels.cx
-            || _qubit.label === CircuitLabels.cz,
+          (_qubit) => _qubit.label === QubitLabels.cx
+            || _qubit.label === QubitLabels.cz,
         );
         const ancillaQubit = this.qubits.find(
-          (_qubit) => _qubit.label === CircuitLabels.ancilla,
+          (_qubit) => _qubit.label === QubitLabels.ancilla,
         );
         // eslint-disable-next-line max-len
         const circuit = createCircuitAsciiArt(
@@ -194,7 +194,7 @@ export default class Plaquette extends Graphics {
     if (!qubit) {
       return;
     }
-    qubit.setCircuitLabel(CircuitLabels.cx);
+    qubit.setCircuitLabel(QubitLabels.cx);
     qubit.showLabelText();
   };
 
@@ -204,7 +204,7 @@ export default class Plaquette extends Graphics {
     if (!qubit) {
       return;
     }
-    qubit.setCircuitLabel(CircuitLabels.cz);
+    qubit.setCircuitLabel(QubitLabels.cz);
     qubit.showLabelText();
   };
 
