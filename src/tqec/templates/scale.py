@@ -3,7 +3,7 @@ from __future__ import annotations
 import bisect
 import typing as ty
 from dataclasses import dataclass
-from math import ceil, floor
+from math import ceil, floor, isinf
 
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
@@ -120,7 +120,7 @@ class LinearFunction:
         """Multiply a linear function by a constant integer coefficient."""
         return LinearFunction(other * self.slope, other * self.offset)
 
-    def invert(self, value: int) -> int:
+    def invert(self, value: int) -> int | None:
         """Try to invert a linear function, finding the input that would result in the
         provided value, if it exists.
 
@@ -129,16 +129,19 @@ class LinearFunction:
                 `self.slope * x + self.offset = value` is solved for `x`.
 
         Raises:
-            TQECException: If the slope of the represented linear function is 0, in
-                which case both possible outcomes (no solutions if `self.offset != value`
-                or an infinite number of solutions if `self.offset == value`) are
-                considered an error.
+            TQECException: If the slope of the represented linear function is 0, and its
+                offset is different from the provided value. In this case no solution
+                exist.
             TQECException: If the resulting input is not an integer.
 
         Returns:
-            int: a value `y` such that `self(y) == value`.
+            a value `y` such that `self(y) == value`, or `None` if there is an infinity
+            of valid pre-images.
+
         """
         if self.slope == 0:
+            if self.offset == value:
+                return None
             raise TQECException(
                 f"Cannot invert {self}: the linear function is constant and so "
                 f"has an infinite set of inverse for {self.offset} and no inverse "
@@ -249,7 +252,13 @@ class PiecewiseLinearFunction:
         for (a, b), f in zip(self.intervals, self.functions):
             try:
                 inv = f.invert(x)
-                if a <= inv < b:
+                if inv is None:
+                    # Any value is a valid inverse.
+                    if isinf(a):
+                        possible_inverses.append(0 if isinf(b) else int(b - 1))
+                    else:
+                        possible_inverses.append(int(a))
+                elif a <= inv < b:
                     possible_inverses.append(inv)
             except TQECException:
                 continue
@@ -491,15 +500,31 @@ class Dimension:
         """Returns the instance value."""
         return self._value
 
+    def _get_common_scale_parameter_or_raise(self, other: Dimension) -> int:
+        self_value = self._scaling_function.invert(self.value)
+        other_value = other._scaling_function.invert(other._value)
+        # TODO: Remove that hack eventually
+        if self_value == 0:
+            return other_value
+        if other_value == 0:
+            return self_value
+        # End of the hack
+        if self_value != other_value:
+            raise TQECException(
+                f"Cannot get a common scale parameter. Computed {self_value} "
+                f"and {other_value} that are not equal."
+            )
+        return self_value
+
     def __add__(self, other: Dimension) -> Dimension:
         return Dimension(
-            self._scaling_function.invert(self.value),
+            self._get_common_scale_parameter_or_raise(other),
             self._scaling_function + other._scaling_function,
         )
 
     def __sub__(self, other: Dimension) -> Dimension:
         return Dimension(
-            self._scaling_function.invert(self.value),
+            self._get_common_scale_parameter_or_raise(other),
             self._scaling_function - other._scaling_function,
         )
 
@@ -514,25 +539,20 @@ class Dimension:
 
     @staticmethod
     def min(lhs: Dimension, rhs: Dimension) -> Dimension:
-        lhs_initial_value = lhs._scaling_function.invert(lhs.value)
-        rhs_initial_value = rhs._scaling_function.invert(rhs.value)
-        assert lhs_initial_value == rhs_initial_value, "Limitation for the moment."
-
         return Dimension(
-            lhs_initial_value,
+            lhs._get_common_scale_parameter_or_raise(rhs),
             PiecewiseLinearFunction.min(lhs._scaling_function, rhs._scaling_function),
         )
 
     @staticmethod
     def max(lhs: Dimension, rhs: Dimension) -> Dimension:
-        lhs_initial_value = lhs._scaling_function.invert(lhs.value)
-        rhs_initial_value = rhs._scaling_function.invert(rhs.value)
-        assert lhs_initial_value == rhs_initial_value, "Limitation for the moment."
-
         return Dimension(
-            lhs_initial_value,
+            lhs._get_common_scale_parameter_or_raise(rhs),
             PiecewiseLinearFunction.max(lhs._scaling_function, rhs._scaling_function),
         )
+
+    def __repr__(self) -> str:
+        return f"Dimension({self._value}, {self._scaling_function})"
 
 
 class FixedDimension(Dimension):

@@ -32,8 +32,7 @@ def test_linear_function_invert():
 
 def test_linear_function_constant_invert():
     a = LinearFunction(0, 5)
-    with pytest.raises(TQECException):
-        a.invert(5)
+    assert a.invert(5) is None
 
 
 def test_linear_function_non_exact_invert():
