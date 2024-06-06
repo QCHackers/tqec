@@ -229,8 +229,34 @@ class PiecewiseLinearFunction:
         yield self.separators[-1], float("inf")
 
     def invert(self, x: int) -> int:
-        index = bisect.bisect_left(self.separators, x)
-        return self.functions[index].invert(x)
+        """Try to find the preimage of `x`.
+
+        Args:
+            x: image of the piecewise linear function.
+
+        Raises:
+            TQECException: If no preimage could be found.
+            TQECException: If multiple preimage have been found.
+
+        Returns:
+            the preimage of the provided value `x`.
+        """
+        possible_inverses: list[int] = []
+        for (a, b), f in zip(self.intervals, self.functions):
+            try:
+                inv = f.invert(x)
+                if a <= inv < b:
+                    possible_inverses.append(inv)
+            except TQECException:
+                continue
+        if not possible_inverses:
+            raise TQECException(
+                f"Could not find an inverse for {self} on the value {x}."
+            )
+        elif len(possible_inverses) == 1:
+            return possible_inverses[0]
+        else:  #  len(possible_inverses) > 1
+            raise TQECException(f"Found multiple inverses for {self} on the value {x}.")
 
     def _functions_in_common(
         self, other: PiecewiseLinearFunction
