@@ -223,6 +223,10 @@ class PiecewiseLinearFunction:
             an iterator over the interval of definition for each `LinearFunction`
             instance stored in `self`.
         """
+        if not self.separators:
+            yield float("-inf"), float("+inf")
+            return
+
         yield float("-inf"), self.separators[0]
         for i in range(1, len(self.separators)):
             yield self.separators[i - 1], self.separators[i]
