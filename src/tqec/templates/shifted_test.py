@@ -1,6 +1,8 @@
 import numpy
 import pytest
 
+from tqec.enums import TemplateOrientation
+from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import Template
@@ -65,3 +67,30 @@ def test_shifted_template(default_template: Template, scalable_offset: ScalableO
         template.instantiate(indices),
         [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 2], [0, 0, 2, 1]],
     )
+
+
+def test_shifted_template_midline(
+    default_template: Template, scalable_offset: ScalableOffset
+):
+    template = ShiftedTemplate(default_template, scalable_offset)
+    midline = template.get_midline_plaquettes()
+    assert midline == [(5, 4), (5, 5), (5, 6), (5, 7)]
+    midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
+    assert midline == [(4, 5), (5, 5), (6, 5), (7, 5)]
+    template.scale_to(4)
+    midline = template.get_midline_plaquettes()
+    assert midline == [
+        (11, 8),
+        (11, 9),
+        (11, 10),
+        (11, 11),
+        (11, 12),
+        (11, 13),
+        (11, 14),
+        (11, 15),
+    ]
+    template = ShiftedTemplate(
+        AlternatingSquareTemplate(FixedDimension(3)), scalable_offset
+    )
+    with pytest.raises(TQECException, match="Midline is not defined for odd height."):
+        template.get_midline_plaquettes()
