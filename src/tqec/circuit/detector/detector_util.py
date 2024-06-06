@@ -18,19 +18,19 @@ ANNOTATIONS = {
 
 
 class PauliString:
-    def __init__(self, qubits: dict[int, str]):
+    def __init__(self, qubits2pauli: dict[int, str]):
         """A mapping from qubits to Pauli operators that represent a Pauli string.
 
         Args:
-            qubits: A dictionary mapping qubit indices to Pauli operators. The
+            qubits2pauli: A dictionary mapping qubit indices to Pauli operators. The
                 Pauli operators should be one of "I", "X", "Y", or "Z".
         """
-        for qubit, pauli in qubits.items():
+        for qubit, pauli in qubits2pauli.items():
             if pauli not in "IXYZ":
                 raise TQECException(
                     f"Invalid Pauli operator {pauli} for qubit {qubit}, expected I, X, Y, or Z."
                 )
-        self.qubits = {q: qubits[q] for q in sorted(qubits.keys())}
+        self.qubits = {q: qubits2pauli[q] for q in sorted(qubits2pauli.keys())}
         self._hash = hash(tuple(self.qubits.items()))
 
     @property
