@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import dataclasses
+from dataclasses import dataclass, field
 from typing import Iterable
 
 import numpy as np
@@ -312,7 +312,7 @@ class FragmentLoop:
         self.fragments = tuple(fragments)
         self.repetitions = repetitions
 
-    def with_repetitions(self, repetitions: int) -> "FragmentLoop":
+    def with_repetitions(self, repetitions: int) -> FragmentLoop:
         return FragmentLoop(fragments=self.fragments, repetitions=repetitions)
 
     @property
@@ -320,16 +320,12 @@ class FragmentLoop:
         return any(fragment.have_detector_sources for fragment in self.fragments)
 
 
-@dataclasses.dataclass
+@dataclass
 class SplitState:
-    cur_fragment: stim.Circuit = dataclasses.field(default_factory=stim.Circuit)
-    end_stabilizer_sources: list[PauliString] = dataclasses.field(default_factory=list)
-    sources_for_next_fragment: list[PauliString] = dataclasses.field(
-        default_factory=list
-    )
-    begin_stabilizer_sources: list[PauliString] = dataclasses.field(
-        default_factory=list
-    )
+    cur_fragment: stim.Circuit = field(default_factory=stim.Circuit)
+    end_stabilizer_sources: list[PauliString] = field(default_factory=list)
+    sources_for_next_fragment: list[PauliString] = field(default_factory=list)
+    begin_stabilizer_sources: list[PauliString] = field(default_factory=list)
     seen_reset_at_head: bool = False
     seen_measurement_at_tail: bool = False
 
