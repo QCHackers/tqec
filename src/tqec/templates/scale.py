@@ -17,10 +17,10 @@ class IntersectionResults:
     Some conditions should be met by the attributes stored by this dataclass,
     and are checked just after construction:
 
-    - ``lhs`` and ``rhs`` should either intersect on a single point or be colinear.
-    - If ``lhs`` and ``rhs`` intersect on a single point ``a`` (that might be real) then:
-        - for any integer ``x < a``, ``lhs(x) < rhs(x)``,
-        - for any integer ``x > a``, ``lhs(x) > rhs(x)``.
+    - `lhs` and `rhs` should either intersect on a single point or be colinear.
+    - If `lhs` and `rhs` intersect on a single point `a` (that might be real) then:
+        - for any integer `x < a`, `lhs(x) < rhs(x)`,
+        - for any integer `x > a`, `lhs(x) > rhs(x)`.
     """
 
     lhs: LinearFunction
@@ -35,11 +35,11 @@ class IntersectionResults:
             assert self.lhs(after) > self.rhs(after)
 
     def is_within(self, start: int | float, end: int | float) -> bool:
-        """Check if the intersection value is within the provided interval ``[start, end)``.
+        """Check if the intersection value is within the provided interval `[start, end)`.
 
         Args:
-            start (int | float): inclusive start of the interval.
-            end (int | float): exclusive end of the interval.
+            start: inclusive start of the interval.
+            end: exclusive end of the interval.
 
         Returns:
             bool: if the intersection is within the provided interval.
@@ -58,17 +58,16 @@ class IntersectionResults:
         """Get the min/max functions on the provided interval.
 
         Args:
-            start (int | float): inclusive start of the interval.
-            end (int | float): exclusive end of the interval.
-            is_min (bool): if True, the minimum functions are returned, else the
+            start: inclusive start of the interval.
+            end: exclusive end of the interval.
+            is_min: if True, the minimum functions are returned, else the
                 maximum functions are.
 
         Returns:
-            tuple[list[int], list[LinearFunction]]: a tuple composed of 1. the
-                list of separators that should be added within the provided interval
-                (for this method, this list is either empty or contains one integer
-                value) and 2. a list of LinearFunction that contains one more entry
-                than the list of separators in one.
+            a tuple composed of 1. the list of separators that should be added
+            within the provided interval (for this method, this list is either
+            empty or contains one integer value) and 2. a list of LinearFunction
+            that contains one more entry than the list of separators in one.
         """
         if self.value is None:
             # If the two linear functions do not intersect then the min/max one is
@@ -126,18 +125,18 @@ class LinearFunction:
         provided value, if it exists.
 
         Args:
-            value (int): The value to solve for. The equation
-                ``self.slope * x + self.offset = value`` is solved for ``x``.
+            value: The value to solve for. The equation
+                `self.slope * x + self.offset = value` is solved for `x`.
 
         Raises:
             TQECException: If the slope of the represented linear function is 0, in
-                which case both possible outcomes (no solutions if ``self.offset != value``
-                or an infinite number of solutions if ``self.offset == value``) are
+                which case both possible outcomes (no solutions if `self.offset != value`
+                or an infinite number of solutions if `self.offset == value`) are
                 considered an error.
             TQECException: If the resulting input is not an integer.
 
         Returns:
-            int: a value ``y`` such that ``self(y) == value``.
+            int: a value `y` such that `self(y) == value`.
         """
         if self.slope == 0:
             raise TQECException(
@@ -154,6 +153,16 @@ class LinearFunction:
         return (value - self.offset) // self.slope
 
     def intersection(self, other: LinearFunction) -> IntersectionResults:
+        """Compute the intersection between two linear functions.
+
+        Args:
+            other: the `LinearFunction` instance to intersect with `self`.
+
+        Returns:
+            an instance of `IntersectionResults` containing the necessary
+            data to know when the two `LinearFunction` instances intersect
+            and which one is above/below before/after the intersection.
+        """
         if self.slope == other.slope:
             # When parallel, even if equal.
             return IntersectionResults(self, other, None)
@@ -167,14 +176,42 @@ class LinearFunction:
 
 @dataclass(frozen=True)
 class PiecewiseLinearFunction:
+    """A piecewise linear function.
+
+    This dataclass encodes a piecewise linear function (that does not need
+    to be continuous) by storing:
+
+    - a list of `n` separators representing the `n` points at which the
+      linear function encoded change and,
+    - a list of `n+1` instances of `LinearFunction`, representing the linear
+      functions on each of the `n+1` intervals represented by the `n` separators
+      (and both -infinity and +infinity that are never stored explicitely).
+    """
+
     separators: list[int]
     functions: list[LinearFunction]
 
     def __post_init__(self):
+        """Check the invariants that should be met by any instance of this class.
+
+        First, there should be one more `LinearFunction` instance than there are
+        separators stored in the class.
+
+        Secondly, separators should be sorted in increasing order.
+        """
         assert len(self.separators) + 1 == len(self.functions)
         assert sorted(self.separators) == self.separators
 
     def __call__(self, x: int) -> int:
+        """Compute the value of the piecewise linear function at point `x`.
+
+        Args:
+            x: point to compute the value of.
+
+        Returns:
+            the value taken by the represented piecewise linear function at the
+            provided point.
+        """
         index = bisect.bisect_left(self.separators, x)
         return self.functions[index](x)
 
@@ -185,6 +222,34 @@ class PiecewiseLinearFunction:
     def _functions_in_common(
         self, other: PiecewiseLinearFunction
     ) -> tuple[list[int], list[tuple[LinearFunction, LinearFunction]]]:
+        """Helper method to compute the common separators between two
+        `PiecewiseLinearFunction` instances.
+
+        This method returns a tuple composed of two lists:
+
+        1. the list of separators that should be
+           `sorted(set(self.separators) | set(other.separators))`.
+        2. a list of pairs of `LinearFunction` instances representing the
+           linear functions from `self` (in the first entry of each pair) and
+           `other` (in the second entry of each pair) that appear together
+           in the interval.
+
+        These lists can then be used to easily compute binary functions between two
+        `PiecewiseLinearFunction` instances.
+
+        Args:
+            other (PiecewiseLinearFunction): second instance to consider.
+
+        Returns:
+            a tuple composed of two lists
+
+            1. the list of separators that should be
+               `sorted(set(self.separators) | set(other.separators))`.
+            2. a list of pairs of `LinearFunction` instances representing the
+               linear functions from `self` (in the first entry of each pair) and
+               `other` (in the second entry of each pair) that appear together
+               in the interval.
+        """
         separators: list[int] = []
         functions: list[tuple[LinearFunction, LinearFunction]] = []
 
@@ -236,6 +301,12 @@ class PiecewiseLinearFunction:
         )
 
     def simplify(self) -> PiecewiseLinearFunction:
+        """Reduce the number of intervals this function is defined on, if possible.
+
+        Returns:
+            a new instance with a number of separators that is lower or equal to
+            the number of separators in `self`.
+        """
         separators: list[int] = []
         functions: list[LinearFunction] = [self.functions[0]]
 
@@ -251,6 +322,18 @@ class PiecewiseLinearFunction:
     def _minmax(
         lhs: PiecewiseLinearFunction, rhs: PiecewiseLinearFunction, is_min: bool
     ) -> PiecewiseLinearFunction:
+        """Compute the min/max between two `PiecewiseLinearFunction` instances.
+
+        Args:
+            lhs: left-hand side.
+            rhs: right-hand side.
+            is_min: if `True`, the minimum is computed. Else, the maximum
+                is computed.
+
+        Returns:
+            a new instance of `PiecewiseLinearFunction` that represents the minimum
+            or maximum of the two provided `PiecewiseLinearFunction` instances.
+        """
         separators: list[int] = []
         functions: list[LinearFunction] = []
 
@@ -327,16 +410,16 @@ class Dimension:
         """Represent an integer dimension that may or may not be scalable.
 
         This class helps in representing an integer dimension that can be either
-        fixed (i.e., does not scale, even when ``scale_to`` is called) or scalable
-        (i.e., ``scale_to`` modify in-place the instance).
+        fixed (i.e., does not scale, even when `scale_to` is called) or scalable
+        (i.e., `scale_to` modify in-place the instance).
 
         Args:
             initial_scale_parameter: initial scale that will be input to the
-                specified ``scaling_function`` to compute the first value the
-                ``Dimension`` instance should take.
+                specified `scaling_function` to compute the first value the
+                `Dimension` instance should take.
             scaling_function: a function that takes exactly one integer as
-                input (the scale provided to the ``scale_to`` method) and outputs the
-                value this ``Dimension`` instance should take.
+                input (the scale provided to the `scale_to` method) and outputs the
+                value this `Dimension` instance should take.
         """
         self._scaling_function = (
             scaling_function
@@ -346,16 +429,16 @@ class Dimension:
         self._value = self._scaling_function(initial_scale_parameter)
 
     def scale_to(self, k: int) -> "Dimension":
-        """Scale the dimension to the provided scale ``k``.
+        """Scale the dimension to the provided scale `k`.
 
-        This method calls the ``scaling_function`` with the provided scale ``k``
+        This method calls the `scaling_function` with the provided scale `k`
         and sets the instance value to the output of this call.
 
         Args:
             k: scale that should be used to set the instance value.
 
         Returns:
-            ``self``, potentially modified in-place if the instance is scalable.
+            `self`, potentially modified in-place if the instance is scalable.
         """
         self._value = self._scaling_function(k)
         return self
@@ -411,7 +494,7 @@ class Dimension:
 
 class FixedDimension(Dimension):
     def __init__(self, value: int) -> None:
-        """A ``Dimension`` that does not scale."""
+        """A `Dimension` that does not scale."""
         super().__init__(value, LinearFunction(0, value))
 
 
