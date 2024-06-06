@@ -22,7 +22,7 @@ class PauliString:
         """A mapping from qubits to Pauli operators that represent a Pauli string.
 
         Args:
-            qubits: A dictionary mapping qubit indices to Pauli operators. The
+            qubits2pauli: A dictionary mapping qubit indices to Pauli operators. The
                 Pauli operators should be one of "I", "X", "Y", or "Z".
         """
         for qubit, pauli in qubit2pauli.items():

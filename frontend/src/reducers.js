@@ -1,5 +1,5 @@
 /* eslint-disable default-param-last */
-import { SET_UNIT_CELL } from './actions';
+import { SET_FOOTPRINT } from './actions';
 
 export const initialState = {
   untiCell: {
@@ -10,7 +10,7 @@ export const initialState = {
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-  case SET_UNIT_CELL:
+  case SET_FOOTPRINT:
     return {
       unitCell: {
         qubits: action.payload.qubits,

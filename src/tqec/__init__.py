@@ -14,6 +14,7 @@ from .circuit import (
 from .enums import (
     CornerPositionEnum,
     PlaquetteOrientation,
+    TemplateOrientation,
     TemplateRelativePositionEnum,
 )
 from .exceptions import TQECException
