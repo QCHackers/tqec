@@ -366,10 +366,10 @@ class Fragment:
 
     @property
     def have_detector_sources(self) -> bool:
-        return not (
-            len(self.end_stabilizer_sources) == 0
-            and len(self.begin_stabilizer_sources) == 0
-            and len(self.sources_for_next_fragment) == 0
+        return bool(
+            self.end_stabilizer_sources
+            or self.begin_stabilizer_sources
+            or self.sources_for_next_fragment
         )
 
 
