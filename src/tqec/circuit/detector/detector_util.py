@@ -262,7 +262,7 @@ def has_reset(moment: stim.Circuit, check_are_all_resets: bool = False) -> bool:
     return True
 
 
-def collapse_pauli_strings_at_moment(moment: stim.Circuit, is_reset: bool):
+def collapse_pauli_strings_at_moment(moment: stim.Circuit, is_reset: bool) -> list[PauliString]:
     def predicate(inst: stim.CircuitInstruction) -> bool:
         if is_reset:
             return stim.gate_data(inst.name).is_reset
