@@ -41,7 +41,7 @@ class PauliString:
     def from_stim_pauli_string(
         stim_pauli_string: stim.PauliString,
         ignore_identity: bool = True,
-    ) -> "PauliString":
+    ) -> PauliString:
         """Convert a `stim.PauliString` to a `PauliString` instance, ignoring the sign."""
         if ignore_identity:
             return PauliString(
@@ -76,7 +76,7 @@ class PauliString:
     def __bool__(self):
         return bool(self.qubit2pauli)
 
-    def __mul__(self, other: "PauliString") -> "PauliString":
+    def __mul__(self, other: PauliString) -> PauliString:
         result = {}
         for q in self.qubit2pauli.keys() | other.qubit2pauli.keys():
             a = self.qubit2pauli.get(q, "I")
@@ -102,11 +102,11 @@ class PauliString:
     def __len__(self):
         return len(self.qubit2pauli)
 
-    def commutes(self, other: "PauliString") -> bool:
+    def commutes(self, other: PauliString) -> bool:
         """Check if this Pauli string commutes with another Pauli string."""
         return not self.anticommutes(other)
 
-    def anticommutes(self, other: "PauliString") -> bool:
+    def anticommutes(self, other: PauliString) -> bool:
         """Check if this Pauli string anticommutes with another Pauli string."""
         t = 0
         for q in self.qubit2pauli.keys() & other.qubit2pauli.keys():
@@ -130,17 +130,17 @@ class PauliString:
                     pauli_string_copy.qubit2pauli[q] = "I"
         return pauli_string_copy
 
-    def after(self, tableau: stim.Tableau, targets: Iterable[int]) -> "PauliString":
+    def after(self, tableau: stim.Tableau, targets: Iterable[int]) -> PauliString:
         stim_pauli_string = self.to_stim_pauli_string(
             length=max(list(targets) + list(self.qubit2pauli.keys())) + 1
         )
         stim_pauli_string_after = stim_pauli_string.after(tableau, targets=targets)
         return PauliString.from_stim_pauli_string(stim_pauli_string_after)
 
-    def intersects(self, other: "PauliString") -> bool:
+    def intersects(self, other: PauliString) -> bool:
         return bool(self.qubit2pauli.keys() & other.qubit2pauli.keys())
 
-    def contains(self, other: "PauliString") -> bool:
+    def contains(self, other: PauliString) -> bool:
         return self.qubit2pauli.items() >= other.qubit2pauli.items()
 
     def __hash__(self):
