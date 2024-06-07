@@ -144,8 +144,30 @@ class PauliString:
         return self._hash
 
     def __eq__(self, other):
+        """Check if two PauliString are equal.
+
+        Warning:
+            Currently, this does **NOT** implement mathematical equality.
+            For example, with the current implementation:
+            ```py
+            p1 = PauliString.from_stim_pauli_string("_X")
+            p2 = PauliString.from_stim_pauli_string("__")
+
+            assert p1 * p1 == p2, "This will raise"
+            ```
+            This is due to the fact that the class does not ensure that
+            identity Pauli string are removed from the internal representation
+            (so `p1 * p1 == "_I"` above) and that the current implementation
+            of `__eq__` compares directly the internal representations.
+
+        Args:
+            other: the instance to compare to.
+
+        Returns:
+            `True` if the two `PauliString` instances are equal, else False.
+        """
         if not isinstance(other, PauliString):
-            return NotImplemented
+            return False
         return self.qubit2pauli == other.qubit2pauli
 
 
