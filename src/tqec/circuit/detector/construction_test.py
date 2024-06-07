@@ -1,14 +1,14 @@
 import itertools
 import pathlib
 
-import stim
 import pytest
+import stim
 
 from tqec.circuit.detector.construction import annotate_detectors_automatically
-from tqec.circuit.detector.detector_util import (
-    iter_stim_circuit_by_moments,
+from tqec.circuit.detector.utils import (
     has_measurement,
     has_reset,
+    iter_stim_circuit_by_moments,
 )
 
 
@@ -140,7 +140,9 @@ def gen_test_cases() -> list[tuple[str, stim.Circuit]]:
             circuit = replace_MR_with_M_then_R(circuit)
         cases.append((circuit_id, circuit))
 
-    extra_cases = load_extra_test_cases()  # Should fail due to the absence of anti-commuting grouping
+    extra_cases = (
+        load_extra_test_cases()
+    )  # Should fail due to the absence of anti-commuting grouping
     return cases
     # return extra_cases
 
@@ -159,5 +161,3 @@ def test_annotate_detectors_automatically(circuit_id: str, circuit: stim.Circuit
     dem1 = circuit.flattened().detector_error_model()
     dem2 = circuit_automatic_detectors.flattened().detector_error_model()
     assert dem1.approx_equals(dem2, atol=1e-6)
-
-
