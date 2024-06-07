@@ -353,6 +353,8 @@ def split_stim_circuit_into_fragments(
     fragments = []
     state = SplitState()
     for moment in iter_stim_circuit_by_moments(circuit):
+        # When we encounter a repeat block, we commit the
+        # current fragment anyway.
         if isinstance(moment, stim.CircuitRepeatBlock):
             if state.cur_fragment:
                 fragments.append(state.to_fragment())
@@ -361,25 +363,43 @@ def split_stim_circuit_into_fragments(
             fragments.append(
                 FragmentLoop(fragments=body_fragments, repetitions=moment.repeat_count)
             )
+        # If the moment consists of all measurement operations, then it
+        # indicates the end of the fragment.
+        # Note that composite operation like MR counts as measurement operation too.
         elif has_measurement(moment, check_are_all_measurements=True):
             state.cur_fragment += moment
             state.begin_stabilizer_sources.extend(
                 collapse_pauli_strings_at_moment(moment, is_reset=False)
             )
             state.seen_measurement_at_tail = True
+            # The resets in the composite MR-type operations are included
+            # in the stabilizer sources for the next fragment.
             state.sources_for_next_fragment.extend(
                 collapse_pauli_strings_at_moment(moment, is_reset=True)
                 if has_reset(moment, check_are_all_resets=False)
                 else []
             )
+        # If the moment consists of all reset operations, then it
+        # indicates the end of the current tracing fragment(if exists)
+        # and the start of a new fragment.
         elif has_reset(moment, check_are_all_resets=True):
             pauli_strings = collapse_pauli_strings_at_moment(moment, is_reset=True)
+            # If we are at the end of a fragment, we add the
+            # resets to the current fragment and mark them as
+            # stabilizer sources for the next fragment.
             if state.seen_measurement_at_tail:
                 state.cur_fragment += moment
                 state.sources_for_next_fragment.extend(pauli_strings)
+            # If we are at the start of a fragment, we mark the
+            # resets as stabilizer sources for the current fragment.
+            # This typically happens when the circuit starts with
+            # several contiguous reset moments.
             elif state.seen_reset_at_head:
                 state.cur_fragment += moment
                 state.end_stabilizer_sources.extend(pauli_strings)
+            # Currently we are not within an error detection fragment.
+            # We can safely commit the current fragment and start a
+            # new one.
             else:
                 if state.cur_fragment:
                     fragments.append(state.to_fragment())
@@ -387,13 +407,15 @@ def split_stim_circuit_into_fragments(
                 state.cur_fragment += moment
                 state.end_stabilizer_sources.extend(pauli_strings)
                 state.seen_reset_at_head = True
-
+        # Commit current fragment and start a new one when we have
+        # seen the measurements and no more resets are presented.
         elif state.seen_measurement_at_tail:
             fragments.append(state.to_fragment())
             state.clear()
             state.cur_fragment += moment
         else:
             state.cur_fragment += moment
+    # Clear up the last fragment if it exists.
     if state.cur_fragment:
         fragments.append(state.to_fragment())
     return fragments
