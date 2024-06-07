@@ -31,10 +31,13 @@ class BoundaryStabilizer:
         before_collapse: stabiliser before applying any collapsing operation.
         after_collapse: stabiliser after applying the collapsing operations in the
             moment.
-        coords: TODO
+        coords: coordinates of the stabilizer, forwarded to the detectors when
+            a detector is found.
         commute_collapse_indices: TODO
         anticommute_collapse_indices: TODO
-        source_measurement_indices: TODO
+        source_measurement_indices: If this instance represents a stabilizer that has
+            been propagated from a reset gate, this attribute is `None`. Else (i.e.,
+            the propagation started from a measurement instruction), TODO
     """
 
     before_collapse: PauliString
@@ -256,6 +259,17 @@ def _compile_fragment_loop_into_circuit(
     out_circuit: stim.Circuit,
     qubit_coords_map: dict[int, list[float]],
 ) -> None:
+    """Compile the provided fragment into the provided circuit.
+
+    Warning:
+        This function **mutates** its parameters in-place.
+
+    Args:
+        fragment_loop: fragment to compile.
+        state: current state of the compilation.
+        out_circuit: circuit that will be built in-place.
+        qubit_coords_map: a map associating qubit indices to their coordinates.
+    """
     if not fragment_loop.have_detector_sources and not state.end_stabilizers:
         body_circuit = compile_fragments_to_circuit(
             fragment_loop.fragments, qubit_coords_map
@@ -349,7 +363,10 @@ def _construct_boundary_stabilizers(
                 commute_collapse_indices.append(index)
             else:
                 anticommute_collapse_indices.append(index)
-        # 3. the source measurement index
+        # 3. If the inverse parameter is True, the source is a measurement instruction.
+        #    If that is the case, we want to save that information for later as we will
+        #    need a way to recover information on this measurement to include it in the
+        #    detectors.
         if inverse:
             if source.weight == 0:
                 source_measurement_indices = frozenset()
@@ -473,7 +490,7 @@ def match_by_disjoint_cover(
         subsets = find_cover(target, covering_stabilizers)
         if subsets is None:
             continue
-        if target.is_begin_stabilizer:
+        if target.source_measurement_indices is not None:  # target.is_begin_stabilizer
             measurement_indices = target.source_measurement_indices | frozenset(
                 i - measurement_offset
                 for i in functools.reduce(
