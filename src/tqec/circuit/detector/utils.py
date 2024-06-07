@@ -2,7 +2,6 @@ import typing as ty
 
 import numpy
 import stim
-
 from tqec.circuit.detector.pauli import PauliString
 from tqec.exceptions import TQECException
 
@@ -17,7 +16,7 @@ ANNOTATIONS = {
 
 def iter_stim_circuit_by_moments(
     circuit: stim.Circuit,
-) -> ty.Iterable[stim.Circuit | stim.CircuitRepeatBlock]:
+) -> ty.Iterator[stim.Circuit | stim.CircuitRepeatBlock]:
     """Iterate over the `stim.Circuit` by moments.
 
     A moment in a `stim.Circuit` is a sequence of instructions between two `TICK`
