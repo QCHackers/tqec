@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import dataclasses
+from dataclasses import dataclass
 from typing import Iterable
 
 import stim
-
 from tqec.circuit.detector.fragment import (
     Fragment,
     FragmentLoop,
@@ -23,7 +22,7 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
     )
 
 
-@dataclasses.dataclass
+@dataclass
 class State:
     """Singleton state to be used during detector construction.
 
