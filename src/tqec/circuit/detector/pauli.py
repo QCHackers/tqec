@@ -1,9 +1,16 @@
+"""Introduces a convenience `PauliString` class.
+
+This module implements an internal `PauliString` class with methods
+that are used across the package. This class can easily be converted from
+and to `stim.PauliString` and implement a subset of the `stim.PauliString`
+API.
+"""
+
 from __future__ import annotations
 
 import typing as ty
 
 import stim
-
 from tqec.exceptions import TQECException
 
 

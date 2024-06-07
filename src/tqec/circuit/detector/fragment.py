@@ -1,10 +1,40 @@
+"""Introduces the necessary classes to split a `stim.Circuit` into fragments.
+
+This module introduce the code notion of a fragment. A fragment is a contiguous
+subset of a `stim.Circuit` instance that has collapsing operations (i.e.,
+measurements or resets) on both sides (start and end). Reset operations might be
+found in the `Fragment` instance before (see `sources_for_next_fragment`), and
+so the `stim.Circuit` instance stored does not have to start by reset instructions
+(as they can be in the previous `Fragment`) and might finish with reset instructions
+instead of measurement ones.
+Following that definition, a `Fragment` is defined as a subset of a `stim.Circuit`
+(encoded as a `stim.Circuit` instance itself) and lists of stabilizers:
+
+- `end_stabilizer_sources` that list the possible sources for stabilizers that
+  might propagate forward to the end of the `Fragment`. These sources are
+  necessarily reset operations.
+- `begin_stabilizer_sources` that list the possible sources for stabilizers that
+  might propagate backwards to the beginning of the `Fragment`. These sources are
+  necessarily measurement operations.
+- `sources_for_next_fragment` that list the possible sources for stabilizers that
+  might propagate forward to the beginning of the next `Fragment`. These sources
+  are necessarily reset operations, and are often due to the usage of instructions
+  that combine measurements and resets (e.g., "MR" in `stim`).
+
+Repeated blocks are handled by a specific `FragmentLoop` class that simply stores
+the `Fragment` instances (or other `FragmentLoop` instances) representing the
+inner body of the loop along with a number of repetitions.
+
+The `split_stim_circuit_into_fragments` function perform the conversion from an
+instance of `stim.Circuit` to a list of `Fragment`/`FragmentLoop` instances
+splitting that `stim.Circuit` instance on collapsing operations.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import numpy
 import stim
-
 from tqec.circuit.detector.pauli import PauliString, collapse_pauli_strings_at_moment
 from tqec.circuit.detector.utils import (
     has_measurement,
@@ -13,7 +43,7 @@ from tqec.circuit.detector.utils import (
 )
 
 
-@dataclass
+@dataclass(frozen=True)
 class Fragment:
     """A sub-circuit guaranteed to span the locations between two nearest collapsing
     moments or those outside the error detection regions.
@@ -43,7 +73,7 @@ class Fragment:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class FragmentLoop:
     fragments: list[Fragment | FragmentLoop]
     repetitions: int

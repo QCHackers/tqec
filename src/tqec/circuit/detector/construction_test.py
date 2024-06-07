@@ -3,7 +3,6 @@ import pathlib
 
 import pytest
 import stim
-
 from tqec.circuit.detector.construction import annotate_detectors_automatically
 from tqec.circuit.detector.utils import (
     has_measurement,
