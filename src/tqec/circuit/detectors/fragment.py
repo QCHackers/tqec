@@ -69,15 +69,36 @@ class Fragment:
                     "Breaking invariant: found a moment with at least one measurement "
                     "instruction and a non-measurement instruction."
                 )
-            self._measurements.extend(collapse_pauli_strings_at_moment(moment))
+            # Insert new measurement at the front to keep them correctly ordered.
+            self._measurements = (
+                collapse_pauli_strings_at_moment(moment) + self._measurements
+            )
 
     @property
     def resets(self) -> list[PauliString]:
+        """Get the reset instructions at the front on the Fragment.
+
+        Returns:
+            all the reset instructions that appear at the beginning of the represented
+            circuit, in the order of appearance, and in increasing qubit order for resets
+            that are performed in parallel.
+        """
         return self._resets
 
     @property
     def measurements(self) -> list[PauliString]:
+        """Get the measurement instructions at the front on the Fragment.
+
+        Returns:
+            all the measirement instructions that appear at the end of the represented
+            circuit, in the order of appearance, and in increasing qubit order for
+            measurements that are performed in parallel.
+        """
         return self._measurements
+
+    @property
+    def num_measurements(self) -> int:
+        return len(self._measurements)
 
     def get_tableau(self) -> stim.Tableau:
         return self._circuit.to_tableau(

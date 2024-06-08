@@ -4,14 +4,20 @@ import typing as ty
 from dataclasses import dataclass
 
 from tqec.circuit.detectors.fragment import Fragment, FragmentLoop
-from tqec.circuit.detectors.measurement import MeasurementLocation
+from tqec.circuit.detectors.measurement import (
+    RelativeMeasurementLocation,
+    get_relative_measurement_index,
+)
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
 
 
 class BoundaryStabilizer:
     def __init__(
-        self, stabilizer: PauliString, collapsing_operations: ty.Iterable[PauliString]
+        self,
+        stabilizer: PauliString,
+        collapsing_operations: ty.Iterable[PauliString],
+        involved_measurements: list[RelativeMeasurementLocation],
     ):
         """Represents a stabilizer that has been propagated and is now at the boundary
         of a Fragment.
@@ -25,8 +31,13 @@ class BoundaryStabilizer:
                 has been applied.
             collapsing_operations: The collapsing operations the stabilizer will have to
                 go through to exit the Fragment.
+            involved_measurements: measurement offsets relative to the **end** of the
+                fragment (even if the created BoundaryStabilizer instance represents a
+                stabilizer on the beginning boundary) of measurements that are involved
+                in this stabilizer.
         """
         self._stabilizer = stabilizer
+        self._involved_measurements = involved_measurements
         self._commuting_operations: list[PauliString] = []
         self._anticommuting_operations: list[PauliString] = []
         for op in collapsing_operations:
@@ -72,6 +83,10 @@ class BoundaryStabilizer:
         yield from self._commuting_operations
         yield from self._anticommuting_operations
 
+    @property
+    def involved_measurements(self) -> list[RelativeMeasurementLocation]:
+        return self._involved_measurements
+
     def merge(self, other: BoundaryStabilizer) -> BoundaryStabilizer:
         """Merge two boundary stabilizers together.
 
@@ -97,12 +112,18 @@ class BoundaryStabilizer:
                 f"Collapsing operations for right-hand side: {other_collapsing_operations}.\n"
             )
         stabilizer = self._stabilizer * other._stabilizer
-        return BoundaryStabilizer(stabilizer, self_collapsing_operations)
+        involved_measurements = list(
+            set(self._involved_measurements) | set(other._involved_measurements)
+        )
+        return BoundaryStabilizer(
+            stabilizer, self_collapsing_operations, involved_measurements
+        )
 
     def __repr__(self) -> str:
         return (
             f"BoundaryStabilizers(stabilizer={self._stabilizer!r}, "
-            f"collapsing_operations={list(self.collapsing_operations)!r})"
+            f"collapsing_operations={list(self.collapsing_operations)!r}, "
+            f"involved_measurements={self._involved_measurements!r})"
         )
 
 
@@ -123,7 +144,7 @@ class FragmentFlows:
     """
 
     creation: list[BoundaryStabilizer]
-    destruction: list[tuple[MeasurementLocation, BoundaryStabilizer]]
+    destruction: list[BoundaryStabilizer]
 
     def remove_creation(self, index: int):
         self.creation.pop(index)
@@ -150,7 +171,7 @@ class FragmentLoopFlows:
         return self.fragment_flows[-1].creation
 
     @property
-    def destruction(self) -> list[tuple[MeasurementLocation, BoundaryStabilizer]]:
+    def destruction(self) -> list[BoundaryStabilizer]:
         return self.fragment_flows[0].destruction
 
     def remove_creation(self, index: int):
@@ -197,23 +218,36 @@ def build_flows_from_fragments(
 def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     tableau = fragment.get_tableau()
     targets = list(range(len(tableau)))
+    sorted_qubit_involved_in_measurements = [
+        next(iter(m.qubits)) for m in fragment.measurements
+    ]
+
     # First compute the flows created within the Fragment (i.e., originating from
     # reset instructions).
-    creation_flows = []
+    creation_flows: list[BoundaryStabilizer] = []
     for reset_stabilizer in fragment.resets:
         final_stabilizer = reset_stabilizer.after(tableau, targets)
-        touched_measurements = [
+        involved_measurements = [
             m for m in fragment.measurements if final_stabilizer.contains(m)
         ]
+        involved_measurements_offsets = [
+            get_relative_measurement_index(
+                sorted_qubit_involved_in_measurements, next(iter(m.qubits))
+            )
+            for m in involved_measurements
+        ]
+
         creation_flows.append(
-            BoundaryStabilizer(final_stabilizer, touched_measurements)
+            BoundaryStabilizer(
+                final_stabilizer, involved_measurements, involved_measurements_offsets
+            )
         )
 
     # Then, compute the flows destructed by the Fragment (i.e., if that flow is
     # given as input, a set of measurements from the Fragment will commute with
     # the entire flow and collapse it to "no flow").
     tableau_inv = tableau.inverse()
-    destruction_flows: list[tuple[MeasurementLocation, BoundaryStabilizer]] = []
+    destruction_flows: list[BoundaryStabilizer] = []
     for measurement in fragment.measurements:
         if measurement.weight != 1:
             raise TQECException(
@@ -221,14 +255,19 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
                 "This is not implemented (yet?)."
             )
         (qubit,) = measurement.qubits
-        measurement_location = MeasurementLocation(qubit)
+
         initial_stabilizer = measurement.after(tableau_inv, targets)
         touched_resets = [r for r in fragment.resets if initial_stabilizer.contains(r)]
         destruction_flows.append(
-            (
-                measurement_location,
-                BoundaryStabilizer(initial_stabilizer, touched_resets),
-            )
+            BoundaryStabilizer(
+                initial_stabilizer,
+                touched_resets,
+                [
+                    get_relative_measurement_index(
+                        sorted_qubit_involved_in_measurements, qubit
+                    )
+                ],
+            ),
         )
 
     return FragmentFlows(creation=creation_flows, destruction=destruction_flows)

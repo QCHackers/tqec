@@ -1,29 +1,31 @@
 from dataclasses import dataclass
 
+from tqec.exceptions import TQECException
+
 
 @dataclass(frozen=True)
-class MeasurementLocation:
-    """Represents a unique measurement.
+class RelativeMeasurementLocation:
+    """Represents a unique measurement with an offset.
 
-    A simple qubit index is in general not enough to locate unambiguously a
-    single measurement, but this structure will only be used internally and
-    in conditions (explicited below) that makes this information unambiguous.
-
-    The following conditions are checked:
-
-    Any given fragment cannot have multiple measurements involving the same
-    qubit.
-    This restriction means that if we can link a MeasurementLocation with one
-    fragment, the measurement it represents is unique.
-
-    Now, because build_flows_from_fragments from flow.py returns a list with
-    the same "shape" (see the function documentation for more explanations on
-    the meaning of that word), we keep a link between the original fragment and
-    its related flows.
-
-    In the end, as long as we keep each flow with its represented fragment,
-    the qubit index is a sufficient information to retrieve unambiguously a
-    given measurement.
+    Measurements are represented with the same method as stim: by a negative
+    offset. This means that instances of this class have no meaning if they
+    are not associated with a precise point in the circuit, but this also
+    means that they can represent measurements without the need for global
+    information.
     """
 
-    qubit: int
+    offset: int
+
+    def __post_init__(self):
+        if self.offset >= 0:
+            raise TQECException(
+                "Relative measurement offsets should be strictly negative."
+            )
+
+
+def get_relative_measurement_index(
+    all_measured_qubits: list[int], measured_qubit: int
+) -> RelativeMeasurementLocation:
+    return RelativeMeasurementLocation(
+        all_measured_qubits.index(measured_qubit) - len(all_measured_qubits)
+    )

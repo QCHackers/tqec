@@ -281,13 +281,8 @@ def _collapsing_inst_to_pauli_strings(
         return [PauliString({target.qubit_value: "Y"}) for target in targets]  # type: ignore
     if name in ["R", "RZ", "M", "MZ", "MR", "MRZ"]:
         return [PauliString({target.qubit_value: "Z"}) for target in targets]  # type: ignore
-    if name == "MPP":
-        stim_pauli_strings = [
-            stim.PauliString(pauli) for pauli in str(inst).split(" ")[1:]
-        ]
-        return [PauliString.from_stim_pauli_string(s) for s in stim_pauli_strings]
     raise TQECException(
-        f"Not a collapsing instruction: {name}. "
+        f"Not a supported collapsing instruction: {name}. "
         "See https://github.com/quantumlib/Stim/wiki/Stim-v1.13-Gate-Reference "
         "for a list of collapsing instructions."
     )
@@ -304,6 +299,9 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
     by the `iter_stim_circuit_by_moments` function, ensuring before calling that the
     moment is not an instance of `stim.CircuitRepeatBlock`.
 
+    This function ensures that the returned Pauli strings are ordered w.r.t the
+    qubit index the collapsing operation was applied on.
+
     Args:
         moment: A circuit moment that does not contain any `stim.CircuitRepeatBlock`
             instance.
@@ -312,8 +310,8 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
         TQECException: If the pre-conditions of this function are not met.
 
     Returns:
-        list[PauliString]: instances of `PauliString` representing each collapsing operation
-            found in the provided moment.
+        instances of `PauliString` representing each collapsing operation found in the
+            provided moment, sorted by qubits.
     """
     # Pre-condition check
     if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in moment):
@@ -322,9 +320,12 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
             f"moments without repeat blocks. Found:\n{moment}"
         )
 
-    return [
-        pauli_string
-        for inst in moment
-        if not is_virtual_instruction(inst)  # type: ignore
-        for pauli_string in _collapsing_inst_to_pauli_strings(inst)  # type: ignore
-    ]
+    return sorted(
+        (
+            pauli_string
+            for inst in moment
+            if not is_virtual_instruction(inst)  # type: ignore
+            for pauli_string in _collapsing_inst_to_pauli_strings(inst)  # type: ignore
+        ),
+        key=lambda ps: next(iter(ps.qubits)),
+    )
