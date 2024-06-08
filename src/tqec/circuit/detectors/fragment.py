@@ -46,6 +46,8 @@ class Fragment:
         self._measurements: list[PauliString] = []
 
         for moment in moments:
+            if is_virtual_moment(moment):
+                continue
             if not has_reset(moment):
                 break
             if not has_only_reset(moment):
@@ -56,6 +58,8 @@ class Fragment:
             self._resets.extend(collapse_pauli_strings_at_moment(moment))
 
         for moment in reversed(moments):
+            if is_virtual_moment(moment):
+                continue
             if not has_measurement(moment):
                 break
             if not has_only_measurement(moment):
