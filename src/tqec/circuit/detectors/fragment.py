@@ -3,13 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import stim
-from tqec.circuit.detectors.pauli import PauliString, collapse_pauli_strings_at_moment
+from tqec.circuit.detectors.pauli import PauliString
 from tqec.circuit.detectors.utils import (
+    collapse_pauli_strings_at_moment,
     has_circuit_repeat_block,
     has_measurement,
     has_only_measurement,
     has_only_reset,
     has_reset,
+    is_virtual_moment,
     iter_stim_circuit_by_moments,
     split_combined_measurement_reset_in_moment,
 )
@@ -136,7 +138,7 @@ def split_stim_circuit_into_fragments(
         if isinstance(moment, stim.CircuitRepeatBlock):
             # Purge the current fragment
             if current_fragment:
-                fragments.append(Fragment(current_fragment))
+                fragments.append(Fragment(current_fragment.copy()))
                 current_fragment.clear()
             # Recurse to produce the Fragment instances for the loop body.
             body_fragments = split_stim_circuit_into_fragments(moment.body_copy())
@@ -147,13 +149,13 @@ def split_stim_circuit_into_fragments(
         elif has_only_measurement(moment) and has_reset(moment):
             measurements, resets = split_combined_measurement_reset_in_moment(moment)
             current_fragment += measurements
-            fragments.append(Fragment(current_fragment))
+            fragments.append(Fragment(current_fragment.copy()))
             current_fragment.clear()
             current_fragment += resets
         # If this is a measurement moment
         elif has_only_measurement(moment):
             current_fragment += moment
-            fragments.append(Fragment(current_fragment))
+            fragments.append(Fragment(current_fragment.copy()))
             current_fragment.clear()
         # This is either a regular instruction or a reset moment. In any case,
         # just add it to the current fragment.
