@@ -11,11 +11,9 @@ from __future__ import annotations
 import typing as ty
 
 import stim
-from attr import dataclass
 from tqec.exceptions import TQECException
 
 
-@dataclass(frozen=True)
 class PauliString:
     """A mapping from qubits to Pauli operators that represent a Pauli string.
 
@@ -25,18 +23,22 @@ class PauliString:
         As such, it is illegal to initialise this class with an identity term.
     """
 
-    pauli_by_qubit: dict[int, str]
-
-    def __post_init__(self):
-        for qubit, pauli in self.pauli_by_qubit.items():
+    def __init__(self, pauli_by_qubit: dict[int, str]) -> None:
+        for qubit, pauli in pauli_by_qubit.items():
             if pauli not in "XYZ":
                 raise TQECException(
                     f"Invalid Pauli operator {pauli} for qubit {qubit}, expected X, Y, or Z."
                 )
+        self._pauli_by_qubit = pauli_by_qubit
+        self._hash = hash(tuple(self._pauli_by_qubit.items()))
 
     @property
     def weight(self) -> int:
-        return len(self.pauli_by_qubit)
+        return len(self._pauli_by_qubit)
+
+    @property
+    def qubits(self) -> ty.Iterable[int]:
+        return self._pauli_by_qubit.keys()
 
     @staticmethod
     def from_stim_pauli_string(
@@ -58,25 +60,25 @@ class PauliString:
             length: The length of the `stim.PauliString`. If `None`, the length is set to the
                 maximum qubit index in the `PauliString` plus one.
         """
-        max_qubit_index = max(self.pauli_by_qubit.keys())
+        max_qubit_index = max(self._pauli_by_qubit.keys())
         length = length or max_qubit_index + 1
         if length <= max_qubit_index:
             raise TQECException(
                 f"The length specified {length} <= the maximum qubit index {max_qubit_index} in the pauli string."
             )
         stim_pauli_string = stim.PauliString(length)
-        for q, p in self.pauli_by_qubit.items():
+        for q, p in self._pauli_by_qubit.items():
             stim_pauli_string[q] = p
         return stim_pauli_string
 
     def __bool__(self):
-        return bool(self.pauli_by_qubit)
+        return bool(self._pauli_by_qubit)
 
     def __mul__(self, other: PauliString) -> PauliString:
         result = {}
-        for q in self.pauli_by_qubit.keys() | other.pauli_by_qubit.keys():
-            a = self.pauli_by_qubit.get(q, "I")
-            b = other.pauli_by_qubit.get(q, "I")
+        for q in self._pauli_by_qubit.keys() | other._pauli_by_qubit.keys():
+            a = self._pauli_by_qubit.get(q, "I")
+            b = other._pauli_by_qubit.get(q, "I")
             ax = a in "XY"
             az = a in "YZ"
             bx = b in "XY"
@@ -89,15 +91,15 @@ class PauliString:
         return PauliString(result)
 
     def __repr__(self):
-        return f"PauliString(qubits={self.pauli_by_qubit!r})"
+        return f"PauliString(qubits={self._pauli_by_qubit!r})"
 
     def __str__(self):
         return "*".join(
-            f"{self.pauli_by_qubit[q]}{q}" for q in sorted(self.pauli_by_qubit.keys())
+            f"{self._pauli_by_qubit[q]}{q}" for q in sorted(self._pauli_by_qubit.keys())
         )
 
     def __len__(self):
-        return len(self.pauli_by_qubit)
+        return len(self._pauli_by_qubit)
 
     def commutes(self, other: PauliString) -> bool:
         """Check if this Pauli string commutes with another Pauli string."""
@@ -106,8 +108,8 @@ class PauliString:
     def anticommutes(self, other: PauliString) -> bool:
         """Check if this Pauli string anticommutes with another Pauli string."""
         t = 0
-        for q in self.pauli_by_qubit.keys() & other.pauli_by_qubit.keys():
-            t += self.pauli_by_qubit[q] != other.pauli_by_qubit[q]
+        for q in self._pauli_by_qubit.keys() & other._pauli_by_qubit.keys():
+            t += self._pauli_by_qubit[q] != other._pauli_by_qubit[q]
         return t % 2 == 1
 
     def collapse_by(self, collapse_operators: ty.Iterable[PauliString]):
@@ -127,7 +129,7 @@ class PauliString:
         Returns:
             a copy of self, collapsed by the provided operators.
         """
-        ret = PauliString(self.pauli_by_qubit.copy())
+        ret = PauliString(self._pauli_by_qubit.copy())
         for operator in collapse_operators:
             if not ret.commutes(operator):
                 raise TQECException(
@@ -138,16 +140,16 @@ class PauliString:
 
     def after(self, tableau: stim.Tableau, targets: ty.Iterable[int]) -> PauliString:
         stim_pauli_string = self.to_stim_pauli_string(
-            length=max(list(targets) + list(self.pauli_by_qubit.keys())) + 1
+            length=max(list(targets) + list(self._pauli_by_qubit.keys())) + 1
         )
         stim_pauli_string_after = stim_pauli_string.after(tableau, targets=targets)
         return PauliString.from_stim_pauli_string(stim_pauli_string_after)
 
     def intersects(self, other: PauliString) -> bool:
-        return bool(self.pauli_by_qubit.keys() & other.pauli_by_qubit.keys())
+        return bool(self._pauli_by_qubit.keys() & other._pauli_by_qubit.keys())
 
     def contains(self, other: PauliString) -> bool:
-        return self.pauli_by_qubit.items() >= other.pauli_by_qubit.items()
+        return self._pauli_by_qubit.items() >= other._pauli_by_qubit.items()
 
     def __eq__(self, other):
         """Check if two PauliString are equal.
@@ -160,7 +162,10 @@ class PauliString:
         """
         if not isinstance(other, PauliString):
             return False
-        return self.pauli_by_qubit == other.pauli_by_qubit
+        return self._pauli_by_qubit == other._pauli_by_qubit
+
+    def __hash__(self) -> int:
+        return self._hash
 
 
 def _collapsing_inst_to_pauli_strings(

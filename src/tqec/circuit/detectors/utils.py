@@ -224,5 +224,5 @@ def split_combined_measurement_reset(circuit: stim.Circuit) -> stim.Circuit:
 def pauli_string_mean_coords(
     pauli_string: PauliString, qubit_coords_map: dict[int, list[float]]
 ) -> tuple[float, ...]:
-    all_coords_items = [qubit_coords_map[i] for i in pauli_string.pauli_by_qubit.keys()]
+    all_coords_items = [qubit_coords_map[i] for i in pauli_string.qubits]
     return tuple(numpy.mean(numpy.asarray(all_coords_items), axis=0)) + (0.0,)
