@@ -73,6 +73,14 @@ class Fragment:
     def measurements(self) -> list[PauliString]:
         return self._measurements
 
+    def get_tableau(self) -> stim.Tableau:
+        return self._circuit.to_tableau(
+            ignore_measurement=True, ignore_noise=True, ignore_reset=True
+        )
+
+    def __repr__(self) -> str:
+        return f"Fragment(circuit={self._circuit!r})"
+
 
 @dataclass(frozen=True)
 class FragmentLoop:
@@ -87,6 +95,9 @@ class FragmentLoop:
 
     def with_repetitions(self, repetitions: int) -> FragmentLoop:
         return FragmentLoop(fragments=self.fragments, repetitions=repetitions)
+
+    def __repr__(self) -> str:
+        return f"FragmentLoop(repetitions={self.repetitions}, fragments={self.fragments!r})"
 
 
 def split_stim_circuit_into_fragments(
@@ -147,6 +158,13 @@ def split_stim_circuit_into_fragments(
     # If current_fragment is not empty here, this means that the circuit did not finish
     # with a measurement. This is strange, so for the moment raise an exception.
     if current_fragment:
+        if has_only_reset(current_fragment):
+            raise TQECException(
+                "Found left-over reset gates when splitting a circuit. Make "
+                "sure that each reset (even resets from measurement/reset "
+                "combined instruction) is eventually followed by a measurement. "
+                f"Unprocessed fragment:\n{current_fragment}"
+            )
         raise TQECException(
             "Circuit splitting did not finish on a measurement. "
             f"Unprocessed fragment: \n{current_fragment}"
