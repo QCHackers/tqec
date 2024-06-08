@@ -226,3 +226,80 @@ def pauli_string_mean_coords(
 ) -> tuple[float, ...]:
     all_coords_items = [qubit_coords_map[i] for i in pauli_string.qubits]
     return tuple(numpy.mean(numpy.asarray(all_coords_items), axis=0)) + (0.0,)
+
+
+def _collapsing_inst_to_pauli_strings(
+    inst: stim.CircuitInstruction,
+) -> list[PauliString]:
+    """Create the `PauliString` instances representing the provided collapsing instruction.
+
+    Args:
+        inst: a collapsing instruction.
+
+    Raises:
+        TQECException: If the provided collapsing instruction has any non-qubit target.
+        TQECException: If the provided instruction is not a collapsing instruction.
+
+    Returns:
+        a list of `PauliString` instances representing the collapsing instruction
+        provided as input.
+    """
+    name = inst.name
+    targets = inst.targets_copy()
+    if any(not t.is_qubit_target for t in targets):
+        raise TQECException(
+            "Found a stim instruction with non-qubit target. This is not supported."
+        )
+    if name in ["RX", "MX", "MRX"]:
+        return [PauliString({target.qubit_value: "X"}) for target in targets]  # type: ignore
+    if name in ["RY", "MY", "MRY"]:
+        return [PauliString({target.qubit_value: "Y"}) for target in targets]  # type: ignore
+    if name in ["R", "RZ", "M", "MZ", "MR", "MRZ"]:
+        return [PauliString({target.qubit_value: "Z"}) for target in targets]  # type: ignore
+    if name == "MPP":
+        stim_pauli_strings = [
+            stim.PauliString(pauli) for pauli in str(inst).split(" ")[1:]
+        ]
+        return [PauliString.from_stim_pauli_string(s) for s in stim_pauli_strings]
+    raise TQECException(
+        f"Not a collapsing instruction: {name}. "
+        "See https://github.com/quantumlib/Stim/wiki/Stim-v1.13-Gate-Reference "
+        "for a list of collapsing instructions."
+    )
+
+
+def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
+    """Compute and return the list of PauliString instances representing all the
+    collapsing operations found in the provided moment.
+
+    This function has the following pre-condition: all the instructions in the provided
+    moment should be instances of `stim.CircuitInstruction`.
+
+    This pre-condition can be ensured by only providing `stim.Circuit` instances returned
+    by the `iter_stim_circuit_by_moments` function, ensuring before calling that the
+    moment is not an instance of `stim.CircuitRepeatBlock`.
+
+    Args:
+        moment: A circuit moment that does not contain any `stim.CircuitRepeatBlock`
+            instance.
+
+    Raises:
+        TQECException: If the pre-conditions of this function are not met.
+
+    Returns:
+        list[PauliString]: instances of `PauliString` representing each collapsing operation
+            found in the provided moment.
+    """
+    # Pre-condition check
+    if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in moment):
+        raise TQECException(
+            "Breaking pre-condition: collapse_pauli_strings_at_moment is expecting "
+            f"moments without repeat blocks. Found:\n{moment}"
+        )
+
+    return [
+        pauli_string
+        for inst in moment
+        if not is_virtual_instruction(inst)  # type: ignore
+        for pauli_string in _collapsing_inst_to_pauli_strings(inst)  # type: ignore
+    ]
