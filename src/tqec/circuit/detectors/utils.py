@@ -150,6 +150,31 @@ def has_only_reset(moment: stim.Circuit) -> bool:
     return True
 
 
+def is_virtual_instruction(inst: stim.CircuitInstruction) -> bool:
+    return inst.name in ANNOTATIONS  # type: ignore
+
+
+def is_virtual_moment(moment: stim.Circuit) -> bool:
+    """Check if the provided moment only contains virtual instructions.
+
+    Virtual instructions are noisy instructions or instructions whose name is
+    in the `ANNOTATIONS` structure.
+
+    Args:
+        moment: circuit to check.
+
+    Returns:
+        `True` if the provided circuit is only composed of virtual instructions,
+        else `False`.
+    """
+    if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in moment):
+        raise TQECException(
+            "Breaking invariant: you provided a circuit with a stim.CircuitRepeatBlock "
+            "instruction to is_virtual_moment. This is not supported."
+        )
+    return all(is_virtual_instruction(inst) for inst in moment)  # type:ignore
+
+
 def split_combined_measurement_reset_in_moment(
     moment: stim.Circuit,
 ) -> tuple[stim.Circuit, stim.Circuit]:
