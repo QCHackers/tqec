@@ -129,12 +129,13 @@ class FragmentFlows:
 @dataclass
 class FragmentLoopFlows:
     """Store stabilizer flows for a FragmentLoop instance.
-    
+
     This class is currently quite dumb and does not provide a sufficient
-    API for generic stabilizer matching, but is enough for detectors 
-    that only include measurements from the current round and fron the 
+    API for generic stabilizer matching, but is enough for detectors
+    that only include measurements from the current round and fron the
     previous round.
     """
+
     fragment_flows: list[FragmentFlows | FragmentLoopFlows]
     repeat: int
 
@@ -150,6 +151,29 @@ class FragmentLoopFlows:
 def build_flows_from_fragments(
     fragments: list[Fragment | FragmentLoop],
 ) -> list[FragmentFlows | FragmentLoopFlows]:
+    """Compute and return the stabilizer flows of the provided fragments.
+
+    This function ensures that the returned list will have the same "shape"
+    as the input one. In more details, that means that the following property
+    should be checked (recursively if there is any FragmentLoop instance in
+    the provided fragments):
+
+    ```py
+    fragments: list[Fragment | FragmentLoop] = []  # anything here
+    flows = build_flows_from_fragments(fragments)
+    for frag, flow in zip(fragments, flows):
+        assert (isinstance(frag, Fragment) and isinstance(flow, FragmentFlow)) or (
+            isinstance(frag, FragmentLoop) and isinstance(flow, FragmentLoopFlow)
+        )
+    ```
+
+    Args:
+        fragments: the fragments composing the circuit to study and for which this
+            function should compute flows.
+
+    Returns:
+        the computed flows for each of the provided fragments.
+    """
     return [
         _build_flows_from_fragment(fragment)
         if isinstance(fragment, Fragment)
