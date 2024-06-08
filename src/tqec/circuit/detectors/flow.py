@@ -123,7 +123,13 @@ class FragmentFlows:
     """
 
     creation: list[BoundaryStabilizer]
-    destruction: dict[MeasurementLocation, BoundaryStabilizer]
+    destruction: list[tuple[MeasurementLocation, BoundaryStabilizer]]
+
+    def remove_creation(self, index: int):
+        self.creation.pop(index)
+
+    def remove_destruction(self, index: int):
+        self.destruction.pop(index)
 
 
 @dataclass
@@ -144,8 +150,14 @@ class FragmentLoopFlows:
         return self.fragment_flows[-1].creation
 
     @property
-    def destruction(self) -> dict[MeasurementLocation, BoundaryStabilizer]:
+    def destruction(self) -> list[tuple[MeasurementLocation, BoundaryStabilizer]]:
         return self.fragment_flows[0].destruction
+
+    def remove_creation(self, index: int):
+        self.creation.pop(index)
+
+    def remove_destruction(self, index: int):
+        self.destruction.pop(index)
 
 
 def build_flows_from_fragments(
@@ -201,7 +213,7 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     # given as input, a set of measurements from the Fragment will commute with
     # the entire flow and collapse it to "no flow").
     tableau_inv = tableau.inverse()
-    destruction_flows: dict[MeasurementLocation, BoundaryStabilizer] = dict()
+    destruction_flows: list[tuple[MeasurementLocation, BoundaryStabilizer]] = []
     for measurement in fragment.measurements:
         if measurement.weight != 1:
             raise TQECException(
@@ -212,8 +224,11 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
         measurement_location = MeasurementLocation(qubit)
         initial_stabilizer = measurement.after(tableau_inv, targets)
         touched_resets = [r for r in fragment.resets if initial_stabilizer.contains(r)]
-        destruction_flows[measurement_location] = BoundaryStabilizer(
-            initial_stabilizer, touched_resets
+        destruction_flows.append(
+            (
+                measurement_location,
+                BoundaryStabilizer(initial_stabilizer, touched_resets),
+            )
         )
 
     return FragmentFlows(creation=creation_flows, destruction=destruction_flows)
