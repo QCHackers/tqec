@@ -65,7 +65,7 @@ def has_combined_measurement_reset(moment: stim.Circuit) -> bool:
     """
     for inst in moment:
         gate_data = stim.gate_data(inst.name)  # type: ignore
-        if gate_data.is_noisy_gate or inst.name in ANNOTATIONS:
+        if inst.name in ANNOTATIONS:
             continue
         if gate_data.is_reset and gate_data.produces_measurements:
             return True
@@ -100,7 +100,7 @@ def has_only_measurement(moment: stim.Circuit) -> bool:
     """Check if a `stim.Circuit` moment contains only measurement instructions.
 
     Note:
-        Annotations and noisy gates are ignored by this function.
+        Annotations are ignored by this function.
 
     Args:
         moment: The moment to check.
@@ -110,7 +110,7 @@ def has_only_measurement(moment: stim.Circuit) -> bool:
     """
     for inst in moment:
         gate_data = stim.gate_data(inst.name)  # type: ignore
-        if gate_data.is_noisy_gate or inst.name in ANNOTATIONS:
+        if inst.name in ANNOTATIONS:
             continue
         if not gate_data.produces_measurements:
             return False
@@ -133,7 +133,7 @@ def has_only_reset(moment: stim.Circuit) -> bool:
     """Check if a `stim.Circuit` moment contains only reset instructions.
 
     Note:
-        Annotations and noisy gates are ignored by this function.
+        Annotations are ignored by this function.
 
     Args:
         moment: The moment to check.
@@ -143,7 +143,7 @@ def has_only_reset(moment: stim.Circuit) -> bool:
     """
     for inst in moment:
         gate_data = stim.gate_data(inst.name)  # type: ignore
-        if gate_data.is_noisy_gate or inst.name in ANNOTATIONS:
+        if inst.name in ANNOTATIONS:
             continue
         if not gate_data.is_reset:
             return False
