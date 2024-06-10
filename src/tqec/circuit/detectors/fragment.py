@@ -97,6 +97,14 @@ class Fragment:
         return self._measurements
 
     @property
+    def measurements_qubits(self) -> list[int]:
+        qubits = []
+        for measurement in self.measurements:
+            (qubit,) = measurement.qubits
+            qubits.append(qubit)
+        return qubits
+
+    @property
     def num_measurements(self) -> int:
         return len(self._measurements)
 

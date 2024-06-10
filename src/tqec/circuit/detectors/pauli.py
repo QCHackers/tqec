@@ -40,6 +40,15 @@ class PauliString:
     def qubits(self) -> ty.Iterable[int]:
         return self._pauli_by_qubit.keys()
 
+    @property
+    def qubit(self) -> int:
+        if len(self._pauli_by_qubit) != 1:
+            raise TQECException(
+                "Cannot retrieve only one qubit from a Pauli string with "
+                f"{len(self._pauli_by_qubit)} qubits."
+            )
+        return next(iter(self.qubits))
+
     @staticmethod
     def from_stim_pauli_string(
         stim_pauli_string: stim.PauliString,

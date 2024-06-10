@@ -218,9 +218,7 @@ def build_flows_from_fragments(
 def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     tableau = fragment.get_tableau()
     targets = list(range(len(tableau)))
-    sorted_qubit_involved_in_measurements = [
-        next(iter(m.qubits)) for m in fragment.measurements
-    ]
+    sorted_qubit_involved_in_measurements = fragment.measurements_qubits
 
     # First compute the flows created within the Fragment (i.e., originating from
     # reset instructions).
@@ -232,7 +230,7 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
         ]
         involved_measurements_offsets = [
             get_relative_measurement_index(
-                sorted_qubit_involved_in_measurements, next(iter(m.qubits))
+                sorted_qubit_involved_in_measurements, m.qubit
             )
             for m in involved_measurements
         ]
