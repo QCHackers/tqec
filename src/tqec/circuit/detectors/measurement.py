@@ -12,9 +12,13 @@ class RelativeMeasurementLocation:
     are not associated with a precise point in the circuit, but this also
     means that they can represent measurements without the need for global
     information.
+
+    This class also stores the qubit that is being measured in order to be able
+    to retrieve its coordinate to build a detector when found.
     """
 
     offset: int
+    qubit_index: int
 
     def __post_init__(self):
         if self.offset >= 0:
@@ -27,5 +31,6 @@ def get_relative_measurement_index(
     all_measured_qubits: list[int], measured_qubit: int
 ) -> RelativeMeasurementLocation:
     return RelativeMeasurementLocation(
-        all_measured_qubits.index(measured_qubit) - len(all_measured_qubits)
+        all_measured_qubits.index(measured_qubit) - len(all_measured_qubits),
+        measured_qubit,
     )
