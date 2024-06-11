@@ -160,6 +160,9 @@ class PauliString:
     def contains(self, other: PauliString) -> bool:
         return self._pauli_by_qubit.items() >= other._pauli_by_qubit.items()
 
+    def overlaps(self, other: PauliString) -> bool:
+        return bool(self._pauli_by_qubit.keys() & other._pauli_by_qubit.keys())
+
     def __eq__(self, other):
         """Check if two PauliString are equal.
 
