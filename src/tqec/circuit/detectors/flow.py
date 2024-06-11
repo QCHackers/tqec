@@ -168,6 +168,11 @@ class FragmentFlows:
     destruction: list[BoundaryStabilizer]
     total_number_of_measurements: int
 
+    @property
+    def all_flows(self) -> ty.Iterator[BoundaryStabilizer]:
+        yield from self.creation
+        yield from self.destruction
+
     def remove_creation(self, index: int):
         self.creation.pop(index)
 
@@ -201,12 +206,17 @@ class FragmentLoopFlows:
         return self.fragment_flows[-1].creation
 
     @property
-    def total_number_of_measurements(self) -> int:
-        return sum(flow.total_number_of_measurements for flow in self.fragment_flows)
-
-    @property
     def destruction(self) -> list[BoundaryStabilizer]:
         return self.fragment_flows[0].destruction
+
+    @property
+    def all_flows(self) -> ty.Iterator[BoundaryStabilizer]:
+        yield from self.creation
+        yield from self.destruction
+
+    @property
+    def total_number_of_measurements(self) -> int:
+        return sum(flow.total_number_of_measurements for flow in self.fragment_flows)
 
     def remove_creation(self, index: int):
         self.creation.pop(index)
