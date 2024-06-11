@@ -147,6 +147,13 @@ class BoundaryStabilizer:
         ]
         return tuple(numpy.mean(measurement_coordinates, axis=0))
 
+    def with_measurement_offset(self, offset: int) -> BoundaryStabilizer:
+        return BoundaryStabilizer(
+            self._stabilizer,
+            self.collapsing_operations,
+            [m.offset_by(offset) for m in self.involved_measurements],
+        )
+
 
 @dataclass
 class FragmentFlows:
