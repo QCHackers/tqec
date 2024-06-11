@@ -172,6 +172,14 @@ class FragmentFlows:
     def remove_destruction(self, index: int):
         self.destruction.pop(index)
 
+    def remove_creations(self, indices: ty.Iterable[int]):
+        for i in sorted(indices, reverse=True):
+            self.remove_creation(i)
+
+    def remove_destructions(self, indices: ty.Iterable[int]):
+        for i in sorted(indices, reverse=True):
+            self.remove_destruction(i)
+
 
 @dataclass
 class FragmentLoopFlows:
@@ -199,6 +207,14 @@ class FragmentLoopFlows:
 
     def remove_destruction(self, index: int):
         self.destruction.pop(index)
+
+    def remove_creations(self, indices: ty.Iterable[int]):
+        for i in sorted(indices, reverse=True):
+            self.remove_creation(i)
+
+    def remove_destructions(self, indices: ty.Iterable[int]):
+        for i in sorted(indices, reverse=True):
+            self.remove_destruction(i)
 
 
 def build_flows_from_fragments(
