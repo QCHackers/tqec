@@ -142,7 +142,8 @@ class BoundaryStabilizer:
             the boundary stabilizer coordinates.
         """
         measurement_coordinates = [
-            qubit_coordinates[co.qubit] for co in self.collapsing_operations
+            qubit_coordinates[measurement.qubit_index]
+            for measurement in self.involved_measurements
         ]
         return tuple(numpy.mean(measurement_coordinates, axis=0))
 
