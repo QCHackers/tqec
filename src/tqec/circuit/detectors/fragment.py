@@ -55,7 +55,7 @@ class Fragment:
             if not has_only_reset(moment):
                 raise TQECException(
                     "Breaking invariant: found a moment with at least one reset "
-                    "instruction and a non-reset instruction."
+                    f"instruction and a non-reset instruction:\n{moment}"
                 )
             self._resets.extend(collapse_pauli_strings_at_moment(moment))
 
@@ -67,7 +67,7 @@ class Fragment:
             if not has_only_measurement(moment):
                 raise TQECException(
                     "Breaking invariant: found a moment with at least one measurement "
-                    "instruction and a non-measurement instruction."
+                    f"instruction and a non-measurement instruction:\n{moment}"
                 )
             # Insert new measurement at the front to keep them correctly ordered.
             self._measurements = (
@@ -170,7 +170,12 @@ def split_stim_circuit_into_fragments(
                 fragments.append(Fragment(current_fragment.copy()))
                 current_fragment.clear()
             # Recurse to produce the Fragment instances for the loop body.
-            body_fragments = split_stim_circuit_into_fragments(moment.body_copy())
+            try:
+                body_fragments = split_stim_circuit_into_fragments(moment.body_copy())
+            except TQECException as e:
+                raise TQECException(
+                    f"Error when splitting the following REPEAT block:\n{moment.body_copy()}"
+                ) from e
             fragments.append(
                 FragmentLoop(fragments=body_fragments, repetitions=moment.repeat_count)
             )
