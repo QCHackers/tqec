@@ -262,7 +262,7 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     for reset_stabilizer in fragment.resets:
         final_stabilizer = reset_stabilizer.after(tableau, targets)
         involved_measurements = [
-            m for m in fragment.measurements if final_stabilizer.contains(m)
+            m for m in fragment.measurements if final_stabilizer.overlaps(m)
         ]
         involved_measurements_offsets = [
             get_relative_measurement_index(
