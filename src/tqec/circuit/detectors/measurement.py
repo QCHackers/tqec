@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
@@ -25,6 +27,11 @@ class RelativeMeasurementLocation:
             raise TQECException(
                 "Relative measurement offsets should be strictly negative."
             )
+
+    def offset_by(self, offset: int) -> RelativeMeasurementLocation:
+        return RelativeMeasurementLocation(
+            offset=self.offset + offset, qubit_index=self.qubit_index
+        )
 
 
 def get_relative_measurement_index(
