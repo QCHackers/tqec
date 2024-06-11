@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing as ty
 from dataclasses import dataclass
 
+import numpy
 from tqec.circuit.detectors.fragment import Fragment, FragmentLoop
 from tqec.circuit.detectors.measurement import (
     RelativeMeasurementLocation,
@@ -125,6 +126,25 @@ class BoundaryStabilizer:
             f"collapsing_operations={list(self.collapsing_operations)!r}, "
             f"involved_measurements={self._involved_measurements!r})"
         )
+
+    def coordinates(
+        self, qubit_coordinates: dict[int, tuple[float, ...]]
+    ) -> tuple[float, ...]:
+        """Compute and return the coordinates of the boundary stabilizer.
+
+        The coordinates of a given boundary stabilizer is defined as the average of
+        the coordinates of each collapsing operations it represents.
+
+        Args:
+            qubit_coordinates: mapping from qubit indices to coordinates
+
+        Returns:
+            the boundary stabilizer coordinates.
+        """
+        measurement_coordinates = [
+            qubit_coordinates[co.qubit] for co in self.collapsing_operations
+        ]
+        return tuple(numpy.mean(measurement_coordinates, axis=0))
 
 
 @dataclass
