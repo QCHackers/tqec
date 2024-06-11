@@ -6,9 +6,10 @@ from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
 
 ANNOTATIONS = {
-    "QUBIT_COORDS",
     "DETECTOR",
+    "MPAD",
     "OBSERVABLE_INCLUDE",
+    "QUBIT_COORDS",
     "SHIFT_COORDS",
     "TICK",
 }
@@ -51,6 +52,29 @@ def iter_stim_circuit_by_moments(
         yield cur_moment
 
 
+def _is_measurement(instruction: stim.CircuitInstruction) -> bool:
+    return instruction.name in ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ"]
+
+
+def _is_reset(instruction: stim.CircuitInstruction) -> bool:
+    return stim.gate_data(instruction.name).is_reset  # type: ignore
+
+
+def _is_noisy_gate(instruction: stim.CircuitInstruction) -> bool:
+    return (
+        not _is_measurement(instruction)
+        and stim.gate_data(instruction.name).is_noisy_gate
+    )
+
+
+def _is_annotation(instruction: stim.CircuitInstruction) -> bool:
+    return instruction.name in ANNOTATIONS
+
+
+def _is_virtual_instruction(inst: stim.CircuitInstruction) -> bool:
+    return _is_annotation(inst) or _is_noisy_gate(inst)  # type: ignore
+
+
 def has_combined_measurement_reset(moment: stim.Circuit) -> bool:
     """Check if a `stim.Circuit` moment contains combined instructions.
 
@@ -64,10 +88,9 @@ def has_combined_measurement_reset(moment: stim.Circuit) -> bool:
         `True` if the provided moment has a combined instruction, else `False`.
     """
     for inst in moment:
-        gate_data = stim.gate_data(inst.name)  # type: ignore
-        if inst.name in ANNOTATIONS:
+        if _is_virtual_instruction(inst):  # type: ignore
             continue
-        if gate_data.is_reset and gate_data.produces_measurements:
+        if _is_reset(inst) and _is_measurement(inst):  # type: ignore
             return True
     return False
 
@@ -93,7 +116,7 @@ def has_measurement(moment: stim.Circuit) -> bool:
     Returns:
         `True` if the provided moment has a measurement, else `False`.
     """
-    return any(stim.gate_data(inst.name).produces_measurements for inst in moment)  # type:ignore
+    return any(_is_measurement(inst) for inst in moment)  # type:ignore
 
 
 def has_only_measurement(moment: stim.Circuit) -> bool:
@@ -109,10 +132,9 @@ def has_only_measurement(moment: stim.Circuit) -> bool:
         `True` if the provided moment has a measurement, else `False`.
     """
     for inst in moment:
-        gate_data = stim.gate_data(inst.name)  # type: ignore
-        if inst.name in ANNOTATIONS:
+        if _is_virtual_instruction(inst):  # type: ignore
             continue
-        if not gate_data.produces_measurements:
+        if not _is_measurement(inst):  # type: ignore
             return False
     return True
 
@@ -126,7 +148,7 @@ def has_reset(moment: stim.Circuit) -> bool:
     Returns:
         `True` if the provided moment has a reset, else `False`.
     """
-    return any(stim.gate_data(inst.name).is_reset for inst in moment)  # type:ignore
+    return any(_is_reset(inst) for inst in moment)  # type:ignore
 
 
 def has_only_reset(moment: stim.Circuit) -> bool:
@@ -142,16 +164,11 @@ def has_only_reset(moment: stim.Circuit) -> bool:
         `True` if the provided moment has a reset, else `False`.
     """
     for inst in moment:
-        gate_data = stim.gate_data(inst.name)  # type: ignore
-        if inst.name in ANNOTATIONS:
+        if _is_virtual_instruction(inst):  # type: ignore
             continue
-        if not gate_data.is_reset:
+        if not _is_reset(inst):  # type: ignore
             return False
     return True
-
-
-def is_virtual_instruction(inst: stim.CircuitInstruction) -> bool:
-    return inst.name in ANNOTATIONS  # type: ignore
 
 
 def is_virtual_moment(moment: stim.Circuit) -> bool:
@@ -172,7 +189,7 @@ def is_virtual_moment(moment: stim.Circuit) -> bool:
             "Breaking invariant: you provided a circuit with a stim.CircuitRepeatBlock "
             "instruction to is_virtual_moment. This is not supported."
         )
-    return all(is_virtual_instruction(inst) for inst in moment)  # type:ignore
+    return all(_is_virtual_instruction(inst) for inst in moment)  # type:ignore
 
 
 def split_combined_measurement_reset_in_moment(
@@ -324,7 +341,7 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
         (
             pauli_string
             for inst in moment
-            if not is_virtual_instruction(inst)  # type: ignore
+            if not _is_virtual_instruction(inst)  # type: ignore
             for pauli_string in _collapsing_inst_to_pauli_strings(inst)  # type: ignore
         ),
         key=lambda ps: next(iter(ps.qubits)),
