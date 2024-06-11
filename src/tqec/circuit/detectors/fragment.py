@@ -150,6 +150,21 @@ def split_stim_circuit_into_fragments(
       annotation, then only measurement (resp. reset) instructions, annotations
       and noisy gates can appear between these two TICK. Any other instruction
       will result in an exception being raised.
+    - The circuit should be (recursively if it contains one or more instance of
+      `stim.CircuitRepeatBlock`) composed of a succession of layers that should
+      have the same shape:
+
+      - starts with zero or more moments containing exclusively reset operations,
+      - continuing with zero or more moments containing any non-collapsing operation
+        (i.e., anything except reset and measurement operations).
+      - ends with one or more moments containing exclusively measurement operations.
+
+      For this reason, be careful with reset/measurement combined operations (e.g.,
+      the `stim` instruction `MR` that performs in one instruction a measurement and
+      a reset in the Z basis). These instructions are replaced by their non-combined
+      equivalent (e.g., the `MR` operation is replaced by a `M` operation, followed
+      by a `R` operation), and the resulting circuit should check the above
+      pre-condition.
 
     Args:
         circuit (stim.Circuit): the circuit to split into Fragment instances.
