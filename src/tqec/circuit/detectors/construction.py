@@ -11,7 +11,7 @@ from tqec.circuit.detectors.match import (
 )
 
 
-def detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
+def _detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
     """Transform a list of detectors into a circuit.
 
     Args:
@@ -34,6 +34,15 @@ def detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
             )
         )
 
+    return circuit
+
+
+def _shift_time_instruction(number_of_spatial_coordinates: int) -> stim.Circuit:
+    args = tuple(0.0 for _ in range(number_of_spatial_coordinates)) + (1.0,)
+    circuit = stim.Circuit()
+    circuit.append(
+        stim.CircuitInstruction("SHIFT_COORDS", targets=[], gate_args=list(args))
+    )
     return circuit
 
 
@@ -70,12 +79,15 @@ def compile_fragments_to_circuit(
     circuit = stim.Circuit()
 
     for fragment, detectors in zip(fragments, detectors):
-        detectors_circuit = detectors_to_circuit(detectors)
+        detectors_circuit = _detectors_to_circuit(detectors)
         if isinstance(fragment, Fragment):
             circuit += fragment.circuit + detectors_circuit
         else:  # isinstance(fragment, FragmentLoop):
+            shift_circuit = _shift_time_instruction(len(detectors[0].coords))
             loop_body = compile_fragments_to_circuit(
                 fragment.fragments, qubit_coords_map
             )
-            circuit += (loop_body + detectors_circuit) * fragment.repetitions
+            circuit += (
+                shift_circuit + loop_body + detectors_circuit
+            ) * fragment.repetitions
     return circuit
