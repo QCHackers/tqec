@@ -108,6 +108,10 @@ class Fragment:
     def num_measurements(self) -> int:
         return len(self._measurements)
 
+    @property
+    def circuit(self) -> stim.Circuit:
+        return self._circuit
+
     def get_tableau(self) -> stim.Tableau:
         return self._circuit.to_tableau(
             ignore_measurement=True, ignore_noise=True, ignore_reset=True
