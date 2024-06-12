@@ -66,10 +66,24 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
     qubit_coords_map = {
         q: tuple(coords) for q, coords in circuit.get_final_qubit_coordinates().items()
     }
-    return compile_fragments_to_circuit(fragments, qubit_coords_map)
+    return compile_fragments_to_circuit_with_detectors(fragments, qubit_coords_map)
 
 
 def compile_fragments_to_circuit(
+    fragments: list[Fragment | FragmentLoop],
+) -> stim.Circuit:
+    circuit = stim.Circuit()
+
+    for fragment in fragments:
+        if isinstance(fragment, Fragment):
+            circuit += fragment.circuit
+        else:  # isinstance(fragment, FragmentLoop):
+            loop_body = compile_fragments_to_circuit(fragment.fragments)
+            circuit += loop_body * fragment.repetitions
+    return circuit
+
+
+def compile_fragments_to_circuit_with_detectors(
     fragments: list[Fragment | FragmentLoop],
     qubit_coords_map: dict[int, tuple[float, ...]],
 ) -> stim.Circuit:
@@ -84,7 +98,7 @@ def compile_fragments_to_circuit(
             circuit += fragment.circuit + detectors_circuit
         else:  # isinstance(fragment, FragmentLoop):
             shift_circuit = _shift_time_instruction(len(detectors[0].coords))
-            loop_body = compile_fragments_to_circuit(
+            loop_body = compile_fragments_to_circuit_with_detectors(
                 fragment.fragments, qubit_coords_map
             )
             circuit += (
