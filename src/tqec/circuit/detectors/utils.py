@@ -203,7 +203,7 @@ def split_combined_measurement_reset_in_moment(
     """Split a moment that contains combined operations into two moments.
 
     The moment should only contain annotations, noisy operations, or combined
-    measurement/reset operations. Combined operations should appear in one block.
+    measurement/reset operations.
 
     Args:
         moment: a valid moment (i.e., sub-circuit contained between two TICK
@@ -226,7 +226,8 @@ def split_combined_measurement_reset_in_moment(
     measurements = stim.Circuit()
     resets = stim.Circuit()
 
-    # Checking pre-condition:
+    measured_qubits: set[int] = set()
+
     for inst in moment:
         if isinstance(inst, stim.CircuitRepeatBlock):
             raise TQECException(
@@ -234,34 +235,60 @@ def split_combined_measurement_reset_in_moment(
                 "allowed in split_combined_measurement_reset_in_moment. Did you "
                 "provide a moment obtained from calling iter_stim_circuit_by_moments?"
             )
+        if _is_annotation(inst):
+            measurements.append(inst)
+            continue
+        if not all(t.is_qubit_target for t in inst.targets_copy()):
+            raise TQECException(
+                f"Could not split with gate that have non-qubit targets. Found {inst}."
+            )
+        # Have to be of that type as checked above.
+        targets: list[object] = list(inst.targets_copy())
+        qubit_targets: set[int] = {t.qubit_value for t in inst.targets_copy()}  # type:ignore
+        if _is_combined_measurement_reset(inst):
+            if qubit_targets & measured_qubits:
+                raise TQECException(
+                    "Found an instruction on an already measured qubit, did you really "
+                    "provide a *moment* or rather a full circuit? Consider calling "
+                    "split_combined_measurement_reset for a full circuit."
+                )
+            if inst.name in ["MR", "MRZ"]:
+                measurements.append(stim.CircuitInstruction("M", targets))
+                resets.append(stim.CircuitInstruction("R", targets))
+            elif inst.name in ["MRX", "MRY"]:
+                meas_name = f"M{inst.name[2]}"
+                measurements.append(stim.CircuitInstruction(meas_name, targets))
+                resets.append(stim.CircuitInstruction(inst.name[1:], targets))
+            measured_qubits |= qubit_targets
+        elif _is_measurement(inst):
+            measurements.append(inst)
+            measured_qubits |= qubit_targets
+        elif _is_reset(inst):
+            resets.append(inst)
+            if not qubit_targets.issubset(measured_qubits):
+                raise TQECException(
+                    "Found a reset on a non-measured qubit. Should that be allowed?\n"
+                    f"Moment:\n{moment}"
+                )
+        else:
+            # An annotation or a noisy instruction.
+            # If none of the qubits the instruction is applied on has already been
+            # measured, this means that we can insert the instruction in measurements.
+            if not qubit_targets & measured_qubits:
+                measurements.append(inst)
+            # Else, if all the qubits the instruction is applied on has already been
+            # measured, this means that we can insert the instruction in resets.
+            elif qubit_targets.issubset(measured_qubits):
+                resets.append(inst)
+            # Else, some of the qubits have been measured and others have not, this is
+            # not supposed to happen.
+            else:
+                raise TQECException(
+                    "Found an instruction applied on partially measured qubits.\n"
+                    f"The instruction: {inst}\n"
+                    f"Measured qubits: {measured_qubits}"
+                )
 
-    i: int = 0
-    # First, non-measurements that might be noisy gates such as X_ERROR.
-    while i < len(moment) and not _is_measurement(moment[i]):  # type:ignore
-        measurements.append(moment[i])
-        i += 1
-    # Then, combined reset/measurement instructions
-    while i < len(moment) and _is_measurement(moment[i]) and _is_reset(moment[i]):  # type:ignore
-        inst = moment[i]
-        targets: list[object] = list(inst.targets_copy())  # type:ignore
-        if inst.name in ["MR", "MRZ"]:
-            measurements.append(stim.CircuitInstruction("M", targets))
-            resets.append(stim.CircuitInstruction("R", targets))
-        elif inst.name in ["MRX", "MRY"]:
-            meas_name = f"M{inst.name[2]}"
-            measurements.append(stim.CircuitInstruction(meas_name, targets))
-            resets.append(stim.CircuitInstruction(inst.name[1:], targets))
-        i += 1
-    # Finally again, non-measurements that might be noisy gates such as X_ERROR.
-    while i < len(moment) and not (_is_measurement(moment[i]) or _is_reset(moment[i])):  # type:ignore
-        resets.append(moment[i])
-        i += 1
-    # If the previous loop did not exhaust the circuit gates, this is an error.
-    if i < len(moment):
-        raise TQECException(
-            "Could not correctly split combined instruction. "
-            "Did you ensure that the pre-conditions were checked?"
-        )
     # Ensure that both measurements and resets end with a TICK operation
     for m in (measurements, resets):
         if m[-1].name != "TICK":
