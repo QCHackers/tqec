@@ -398,12 +398,13 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
             f"moments without repeat blocks. Found:\n{moment}"
         )
 
-    return sorted(
-        (
-            pauli_string
-            for inst in moment
-            if not _is_virtual_instruction(inst)  # type: ignore
-            for pauli_string in _collapsing_inst_to_pauli_strings(inst)  # type: ignore
-        ),
-        key=lambda ps: next(iter(ps.qubits)),
-    )
+    pauli_strings: list[PauliString] = []
+    for inst in moment:
+        if _is_virtual_instruction(inst):  # type: ignore
+            continue
+        collapsing_operations = _collapsing_inst_to_pauli_strings(inst)  # type: ignore
+        collapsing_operations_sorted_by_qubit = sorted(
+            collapsing_operations, key=lambda ps: ps.qubit
+        )
+        pauli_strings.extend(collapsing_operations_sorted_by_qubit)
+    return pauli_strings
