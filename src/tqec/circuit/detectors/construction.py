@@ -88,6 +88,16 @@ def compile_fragments_to_circuit(
     return circuit
 
 
+def _tick_circuit() -> stim.Circuit:
+    return stim.Circuit("TICK")
+
+
+def _remove_last_tick_instruction(circuit: stim.Circuit) -> stim.Circuit:
+    if circuit[-1].name == "TICK":
+        return circuit[:-1]
+    return circuit
+
+
 def compile_fragments_to_circuit_with_detectors(
     fragments: list[Fragment | FragmentLoop],
     qubit_coords_map: dict[int, tuple[float, ...]],
@@ -98,15 +108,22 @@ def compile_fragments_to_circuit_with_detectors(
     circuit = stim.Circuit()
 
     for fragment, detectors in zip(fragments, detectors):
-        detectors_circuit = _detectors_to_circuit(detectors)
+        detectors_circuit = _detectors_to_circuit(detectors, [0.0])
         if isinstance(fragment, Fragment):
-            circuit += fragment.circuit + detectors_circuit
+            circuit += (
+                _remove_last_tick_instruction(fragment.circuit)
+                + detectors_circuit
+                + _tick_circuit()
+            )
         else:  # isinstance(fragment, FragmentLoop):
             shift_circuit = _shift_time_instruction(len(detectors[0].coords))
             loop_body = compile_fragments_to_circuit_with_detectors(
                 fragment.fragments, qubit_coords_map
             )
             circuit += (
-                shift_circuit + loop_body + detectors_circuit
+                shift_circuit
+                + _remove_last_tick_instruction(loop_body)
+                + detectors_circuit
+                + _tick_circuit()
             ) * fragment.repetitions
     return circuit
