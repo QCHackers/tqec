@@ -154,6 +154,13 @@ class BoundaryStabilizer:
             [m.offset_by(offset) for m in self.involved_measurements],
         )
 
+    def is_trivial(self) -> bool:
+        return (
+            not self.has_anticommuting_operations
+            and self.after_collapse.weight == 0
+            and len(self._stabilizer) == 1
+        )
+
 
 @dataclass
 class FragmentFlows:
@@ -193,6 +200,13 @@ class FragmentFlows:
     def remove_destructions(self, indices: ty.Iterable[int]):
         for i in sorted(indices, reverse=True):
             self.remove_destruction(i)
+
+    def without_trivial_flows(self) -> FragmentFlows:
+        return FragmentFlows(
+            creation=[bs for bs in self.creation if bs.is_trivial()],
+            destruction=[bs for bs in self.destruction if bs.is_trivial()],
+            total_number_of_measurements=self.total_number_of_measurements,
+        )
 
 
 @dataclass
@@ -238,6 +252,14 @@ class FragmentLoopFlows:
     def remove_destructions(self, indices: ty.Iterable[int]):
         for i in sorted(indices, reverse=True):
             self.remove_destruction(i)
+
+    def without_trivial_flows(self) -> FragmentLoopFlows:
+        return FragmentLoopFlows(
+            fragment_flows=[
+                flow.without_trivial_flows() for flow in self.fragment_flows
+            ],
+            repeat=self.repeat,
+        )
 
 
 def build_flows_from_fragments(
