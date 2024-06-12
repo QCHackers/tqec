@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 
 import stim
@@ -90,7 +91,7 @@ class Fragment:
         """Get the measurement instructions at the front on the Fragment.
 
         Returns:
-            all the measirement instructions that appear at the end of the represented
+            all the measurement instructions that appear at the end of the represented
             circuit, in the order of appearance, and in increasing qubit order for
             measurements that are performed in parallel.
         """
@@ -218,14 +219,16 @@ def split_stim_circuit_into_fragments(
     # with a measurement. This is strange, so for the moment raise an exception.
     if current_fragment:
         if has_only_reset(current_fragment):
-            raise TQECException(
+            warnings.warn(
                 "Found left-over reset gates when splitting a circuit. Make "
                 "sure that each reset (even resets from measurement/reset "
                 "combined instruction) is eventually followed by a measurement. "
-                f"Unprocessed fragment:\n{current_fragment}"
+                f"Unprocessed fragment:\n{current_fragment}",
+                RuntimeWarning,
             )
-        raise TQECException(
-            "Circuit splitting did not finish on a measurement. "
-            f"Unprocessed fragment: \n{current_fragment}"
-        )
+        else:
+            raise TQECException(
+                "Circuit splitting did not finish on a measurement. "
+                f"Unprocessed fragment: \n{current_fragment}"
+            )
     return fragments
