@@ -11,7 +11,9 @@ from tqec.circuit.detectors.match import (
 )
 
 
-def _detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
+def _detectors_to_circuit(
+    detectors: list[MatchedDetector], additional_coordinates: list[float] | None = None
+) -> stim.Circuit:
     """Transform a list of detectors into a circuit.
 
     Args:
@@ -20,6 +22,9 @@ def _detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
     Returns:
         A `stim.Circuit` instance containing all the provided detectors.
     """
+    if additional_coordinates is None:
+        additional_coordinates = []
+
     circuit = stim.Circuit()
 
     for detector in detectors:
@@ -30,7 +35,7 @@ def _detectors_to_circuit(detectors: list[MatchedDetector]) -> stim.Circuit:
                     stim.target_rec(i)
                     for i in sorted(m.offset for m in detector.measurements)
                 ],
-                gate_args=list(detector.coords),
+                gate_args=list(detector.coords) + additional_coordinates,
             )
         )
 
