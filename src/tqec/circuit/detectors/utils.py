@@ -235,10 +235,21 @@ def split_combined_measurement_reset_in_moment(
                 "allowed in split_combined_measurement_reset_in_moment. Did you "
                 "provide a moment obtained from calling iter_stim_circuit_by_moments?"
             )
+        if inst.name == "TICK":
+            # In theory, we are in a moment here, so we should only find TICK instructions
+            # at the end of the circuit. To avoid adding too much TICK instructions, and
+            # as TICKs are added at the end of that function.
+            continue
         if _is_annotation(inst):
+            # We expect annotations (DETECTOR, OBSERVABLE_INCLUDE, ...) to make sense
+            # after measurements rather than after resets. This might be a wrong
+            # assumption, so this might change in the future.
             measurements.append(inst)
             continue
         if not all(t.is_qubit_target for t in inst.targets_copy()):
+            # The only instructions that might not have qubit targets are DETECTOR or
+            # OBSERVABLE_INCLUDE annotations, that have already been handled before and
+            # so should never reach this point.
             raise TQECException(
                 f"Could not split with gate that have non-qubit targets. Found {inst}."
             )
