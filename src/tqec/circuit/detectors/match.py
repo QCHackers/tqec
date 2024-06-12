@@ -110,7 +110,7 @@ def match_detectors_within_fragment(
     matched_detectors: list[MatchedDetector] = []
 
     creation_non_propagating_flows_indices = list(
-        _find_non_propagating_flows(flows.creation)
+        _find_non_propagating_non_trivial_flows(flows.creation)
     )
     for i in creation_non_propagating_flows_indices:
         flow = flows.creation[i]
@@ -123,7 +123,7 @@ def match_detectors_within_fragment(
     flows.remove_creations(creation_non_propagating_flows_indices)
 
     destruction_non_propagating_flows_indices = list(
-        _find_non_propagating_flows(flows.destruction)
+        _find_non_propagating_non_trivial_flows(flows.destruction)
     )
     for i in destruction_non_propagating_flows_indices:
         flow = flows.destruction[i]
@@ -138,7 +138,7 @@ def match_detectors_within_fragment(
     return matched_detectors
 
 
-def _find_non_propagating_flows(
+def _find_non_propagating_non_trivial_flows(
     boundary_stabilizers: list[BoundaryStabilizer],
 ) -> ty.Iterator[int]:
     """Find all the boundary stabilizers that do not have any anti-commuting
@@ -153,7 +153,11 @@ def _find_non_propagating_flows(
         operations.
     """
     for i, bs in enumerate(boundary_stabilizers):
-        if not bs.has_anticommuting_operations and bs.after_collapse.weight == 0:
+        if (
+            not bs.is_trivial()
+            and not bs.has_anticommuting_operations
+            and bs.after_collapse.weight == 0
+        ):
             yield i
 
 
