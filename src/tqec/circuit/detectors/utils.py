@@ -76,6 +76,10 @@ def _is_virtual_instruction(inst: stim.CircuitInstruction) -> bool:
     return _is_annotation(inst) or _is_noisy_gate(inst)  # type: ignore
 
 
+def _is_combined_measurement_reset(instruction: stim.CircuitInstruction) -> bool:
+    return _is_measurement(instruction) and _is_reset(instruction)
+
+
 def has_combined_measurement_reset(moment: stim.Circuit) -> bool:
     """Check if a `stim.Circuit` moment contains combined instructions.
 
@@ -91,7 +95,7 @@ def has_combined_measurement_reset(moment: stim.Circuit) -> bool:
     for inst in moment:
         if _is_virtual_instruction(inst):  # type: ignore
             continue
-        if _is_reset(inst) and _is_measurement(inst):  # type: ignore
+        if _is_combined_measurement_reset(inst):  # type: ignore
             return True
     return False
 
@@ -284,7 +288,7 @@ def split_combined_measurement_reset(circuit: stim.Circuit) -> stim.Circuit:
                     repeat_count=moment.repeat_count,
                 )
             )
-        elif has_only_measurement(moment) and has_reset(moment):
+        elif has_combined_measurement_reset(moment):
             measurements, resets = split_combined_measurement_reset_in_moment(moment)
             new_circuit += measurements
             new_circuit += resets
