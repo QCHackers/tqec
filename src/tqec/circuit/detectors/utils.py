@@ -39,8 +39,9 @@ def iter_stim_circuit_by_moments(
     cur_moment = stim.Circuit()
     for inst in circuit:
         if isinstance(inst, stim.CircuitRepeatBlock):
-            yield cur_moment
-            cur_moment.clear()
+            if cur_moment:
+                yield cur_moment
+                cur_moment.clear()
             yield inst
         elif inst.name == "TICK":
             cur_moment.append(inst)
