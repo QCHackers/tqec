@@ -182,10 +182,10 @@ def match_boundary_stabilizers(
     )
     if should_sanity_check:
         matched_detectors_within_loop = match_boundary_stabilizers(
-            deepcopy(left_flows),
             # Type checking is disabled below. right_flows is guaranteed to be of type
             # FragmentLoopFlows (per the value of should_sanity_check), and so have a
             # "fragment_flows" attribute.
+            deepcopy(right_flows.fragment_flows[-1]),  # type: ignore
             deepcopy(right_flows.fragment_flows[0]),  # type: ignore
             qubit_coordinates,
         )
