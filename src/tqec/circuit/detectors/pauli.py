@@ -13,6 +13,8 @@ import typing as ty
 import stim
 from tqec.exceptions import TQECException
 
+_IXYZ: list[ty.Literal["I", "X", "Y", "Z"]] = ["I", "X", "Y", "Z"]
+
 
 class PauliString:
     """A mapping from qubits to Pauli operators that represent a Pauli string.
@@ -23,7 +25,9 @@ class PauliString:
         As such, it is illegal to initialise this class with an identity term.
     """
 
-    def __init__(self, pauli_by_qubit: dict[int, str]) -> None:
+    def __init__(
+        self, pauli_by_qubit: dict[int, ty.Literal["I", "X", "Y", "Z"]]
+    ) -> None:
         for qubit, pauli in pauli_by_qubit.items():
             if pauli not in "XYZ":
                 raise TQECException(
@@ -56,7 +60,7 @@ class PauliString:
         """Convert a `stim.PauliString` to a `PauliString` instance, ignoring the sign."""
         return PauliString(
             {
-                q: "IXYZ"[stim_pauli_string[q]]
+                q: _IXYZ[stim_pauli_string[q]]
                 for q in range(len(stim_pauli_string))
                 if stim_pauli_string[q]
             }
@@ -178,3 +182,6 @@ class PauliString:
 
     def __hash__(self) -> int:
         return self._hash
+
+    def __getitem__(self, index: int) -> ty.Literal["I", "X", "Y", "Z"]:
+        return self._pauli_by_qubit.get(index, "I")
