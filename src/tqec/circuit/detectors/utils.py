@@ -205,6 +205,19 @@ def split_combined_measurement_reset_in_moment(
     The moment should only contain annotations, noisy operations, or combined
     measurement/reset operations.
 
+    Warning:
+        This function assumes that any annotation encountered in the provided
+        moment should appear just after all the measurements:
+        ```
+        measurements - TICK - resets
+                     ^
+            All annotations are inserted here.
+        ```
+        This assumption seems reasonable for `DETECTOR` and `OBSERVABLE_INCLUDE`
+        annotations, which are expected to be the most commonly found in a
+        combined measurement/reset moment.
+        Nevertheless, be aware of that limitation when using that function.
+
     Args:
         moment: a valid moment (i.e., sub-circuit contained between two TICK
             instructions) containing only measurement or combined instructions.
@@ -216,7 +229,10 @@ def split_combined_measurement_reset_in_moment(
     Returns:
         two `stim.Circuit` instances `(measurements, resets)` that repectively
         contain all measurements and all resets found in the provided `moment`.
-        The two returned circuits are guaranteed to finish by a TICK instruction.
+        The returned `measurements` circuit is guaranteed to finish by a TICK
+        instruction.
+        The returned `resets` circuit is guaranteed to not finish by a TICK
+        instruction.
         `measurements` is guaranteed to contain all the instructions that appeared
         before the combined operation.
         `resets` is guaranteed to contain all the instructions that appeared
@@ -227,7 +243,7 @@ def split_combined_measurement_reset_in_moment(
     resets = stim.Circuit()
 
     measured_qubits: set[int] = set()
-
+    tick_instruction_encountered: bool = False
     for inst in moment:
         if isinstance(inst, stim.CircuitRepeatBlock):
             raise TQECException(
@@ -238,7 +254,9 @@ def split_combined_measurement_reset_in_moment(
         if inst.name == "TICK":
             # In theory, we are in a moment here, so we should only find TICK instructions
             # at the end of the circuit. To avoid adding too much TICK instructions, and
-            # as TICKs are added at the end of that function.
+            # because TICK instructions are appropriately added at the end of that function,
+            # we filter out any TICK instruction here.
+            tick_instruction_encountered = True
             continue
         if _is_annotation(inst):
             # We expect annotations (DETECTOR, OBSERVABLE_INCLUDE, ...) to make sense
@@ -300,15 +318,20 @@ def split_combined_measurement_reset_in_moment(
                     f"Measured qubits: {measured_qubits}"
                 )
 
-    # Ensure that both measurements and resets end with a TICK operation
-    for m in (measurements, resets):
-        if m[-1].name != "TICK":
-            m.append(stim.CircuitInstruction("TICK", []))
+    # Ensure that measurements ends with a TICK operation and that resets does
+    # only if a TICK instruction has been encountered when iterating on instructions.
+    # As TICK instructions are filtered out early when interating on instructions,
+    # neither measurements nor resets should have a TICK instruction, so we can add
+    # the instruction without checking for 
+    measurements.append(stim.CircuitInstruction("TICK", []))
+    if tick_instruction_encountered:
+        resets.append(stim.CircuitInstruction("TICK", []))
     return measurements, resets
 
 
 def split_combined_measurement_reset(circuit: stim.Circuit) -> stim.Circuit:
-    """Replace all the combined measurement/reset instructions with 1 measurement and 1 reset.
+    """Replace all the combined measurement/reset instructions with 1 measurement
+    and 1 reset.
 
     Args:
         circuit: original circuit that may contain combined instruction.
