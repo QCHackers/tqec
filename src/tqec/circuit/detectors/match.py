@@ -51,14 +51,13 @@ def match_detectors_from_flows_shallow(
         but will not recurse in the loop.
 
         In practice, this limitation should not be a huge issue. As the loops are
-        still considered as an atomic operation, resets in the firsts moments of
-        the loop body and measurements in the lasts moments of the loop body are
+        still considered as an atomic operation, resets in the last fragment of
+        the loop body and measurements in the first fragment of the loop body are
         still accounted for.
         This means that if the loop body only implements a simple QEC round (e.g.,
-        surface code or repetition code), or more generally if there is no
-        collapsing operation (resets/measurements) outside of the firsts and last
-        moments of the loop body, the detectors will be appropriately matched and
-        returned.
+        surface code or repetition code), or more generally if the loop body is
+        considered as a single :class:`Fragment` instance, the detectors will be
+        appropriately matched and returned.
 
     Args:
         flows: a list of fragment flow to search detectors in.
@@ -69,8 +68,9 @@ def match_detectors_from_flows_shallow(
     Returns:
         the list of all the detectors found. These detectors are only valid if inserted
         at the end of the fragment represented by the last provided flow in the input
-        parameter `flows`. If the last provided flow is an instance of `FragmentLoopFlows`
-        then the returned detectors should be inserted at the end of the loop body.
+        parameter `flows`. If the last provided flow is an instance of
+        :class:`FragmentLoopFlows` then the returned detectors should be inserted at
+        the end of the loop body.
     """
     detectors: list[list[MatchedDetector]] = [
         match_detectors_within_fragment(flow, qubit_coordinates) for flow in flows
@@ -94,7 +94,8 @@ def match_detectors_within_fragment(
     case during the initialisation of any code: some measurements from the first round
     have a pre-defined value that should be constant in the absence of errors.
 
-    This function try to match these detectors.
+    Note that this function ignores "trivial" flows to avoid trivial detectors to be
+    matched on some particular cases (e.g., 1-round repetition code).
 
     Args:
         flows: pre-computed flows for the fragment of interest. If any detector is
@@ -224,10 +225,10 @@ def _match_commute_stabilizers(
     before `f2`. There is a stabilizer boundary at the interface between `f1`
     and `f2`. Considering only the stabilizers that propagated forward from
     the resets of `f1` and commuted with all the measurements they encountered
-    (listed in `begin_stabilizers`) as well as the stabilizers that propagated
-    backewards from the measurements of `f2` and commuted with all the resets
-    they encountered (listed in `end_stabilizers`), we can try to match these
-    stabilizers at the interface.
+    as well as the stabilizers that propagated backwards from the measurements 
+    of `f2` and commuted with all the resets they encountered, we can try to 
+    match these stabilizers at the interface.
+    
     This method performs a "dumb" matching between stabilizers, only matching
     if one stabilizer from `f1` exactly matches with one stabilizer from `f2`.
 
