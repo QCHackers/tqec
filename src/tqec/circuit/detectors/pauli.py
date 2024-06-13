@@ -185,3 +185,16 @@ class PauliString:
 
     def __getitem__(self, index: int) -> ty.Literal["I", "X", "Y", "Z"]:
         return self._pauli_by_qubit.get(index, "I")
+
+
+def pauli_literal_to_bools(
+    literal: ty.Literal["I", "X", "Y", "Z"],
+) -> tuple[bool, bool]:
+    if literal == "I":
+        return (False, False)
+    elif literal == "X":
+        return (True, False)
+    elif literal == "Y":
+        return (True, True)
+    elif literal == "Z":
+        return (False, True)
