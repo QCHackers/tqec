@@ -121,8 +121,8 @@ def compile_fragments_to_circuit_with_detectors(
                 fragment.fragments, qubit_coords_map
             )
             circuit += (
-                shift_circuit
-                + _remove_last_tick_instruction(loop_body)
+                _remove_last_tick_instruction(loop_body)
+                + shift_circuit
                 + detectors_circuit
                 + _tick_circuit()
             ) * fragment.repetitions
