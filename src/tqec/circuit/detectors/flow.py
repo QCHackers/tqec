@@ -46,6 +46,7 @@ class BoundaryStabilizer:
                 self._commuting_operations.append(op)
             else:
                 self._anticommuting_operations.append(op)
+        self._after_collapse_cache: PauliString | None = None
 
     @property
     def has_anticommuting_operations(self) -> bool:
@@ -74,7 +75,11 @@ class BoundaryStabilizer:
                 "Cannot collapse a BoundaryStabilizer if it has "
                 "anticommuting operations."
             )
-        return self._stabilizer.collapse_by(self._commuting_operations)
+        if self._after_collapse_cache is None:
+            self._after_collapse_cache = self._stabilizer.collapse_by(
+                self._commuting_operations
+            )
+        return self._after_collapse_cache
 
     @property
     def collapsing_operations(self) -> ty.Iterator[PauliString]:
