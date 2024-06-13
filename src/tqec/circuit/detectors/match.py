@@ -350,6 +350,11 @@ def _match_by_disjoint_cover(
     right_boundary_stabilizers = [
         bs for bs in right_flows.destruction if not bs.has_anticommuting_operations
     ]
+    # Check that there is at least a hope that a cover exist
+    if len(left_boundary_stabilizers) == 0 or len(right_boundary_stabilizers) == 0:
+        return []
+    if len(left_boundary_stabilizers) == 1 and len(right_boundary_stabilizers) == 1:
+        return []
     # Try to find a cover composed of measurements from the right flows that will
     # cancel the stabilizer propagated from one reset in the left flows.
     forward_detectors, left_indices_to_remove = (
