@@ -1,6 +1,11 @@
 import typing as ty
 
+import pysat
+import pysat.solvers
 from tqec.circuit.detectors.flow import BoundaryStabilizer
+from tqec.circuit.detectors.match_utils.sat import (
+    encode_pauli_string_cover_sat_problem_in_solver,
+)
 from tqec.circuit.detectors.pauli import PauliString
 
 
@@ -96,3 +101,36 @@ def find_cover(
                 if picked_stabilizers[i]
             ]
     return None
+
+
+def find_cover_sat(
+    target: BoundaryStabilizer, sources: list[BoundaryStabilizer]
+) -> list[BoundaryStabilizer] | None:
+    """Try to find a set of boundary stabilizers from `sources` that
+    generate target.
+
+    Args:
+        target: the stabilizers to cover with stabilizers from `sources`.
+        sources: stabilizers that can be used to cover `target`.
+
+    Returns:
+        Either a list of a stabilizers that, when combined, cover exactly
+        the provided `target`, or None if such a list could not be found.
+    """
+    if not sources:
+        return None
+    with pysat.solvers.CryptoMinisat() as solver:
+        encode_pauli_string_cover_sat_problem_in_solver(
+            solver, target.after_collapse, [source.after_collapse for source in sources]
+        )
+        if solver.solve():
+            # We can ignore type errors in the line below because we know for sure
+            # that solver.solve() returned True, so solver.get_model() should return
+            # a list of integers representing a solution to the SAT problem.
+            # A negative integer `-x` tells that the Pauli string represented by `x`
+            # should not be included, whereas a positive integer `x` tells that
+            # the Pauli string should be included.
+            satisfying_proof: list[int] = solver.get_model()  # type: ignore
+            return [sources[i - 1] for i in satisfying_proof if i > 0]
+        else:
+            return None

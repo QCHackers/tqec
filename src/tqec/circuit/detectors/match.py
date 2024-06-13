@@ -11,7 +11,7 @@ from tqec.circuit.detectors.flow import (
     FragmentFlows,
     FragmentLoopFlows,
 )
-from tqec.circuit.detectors.match_utils.cover import find_cover
+from tqec.circuit.detectors.match_utils.cover import find_cover_sat
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.exceptions import TQECException
 
@@ -306,7 +306,7 @@ def _match_boundary_stabilizers_by_disjoint_cover(
     detectors: list[MatchedDetector] = []
     targets_to_remove: list[int] = []
     for i, target in enumerate(target_stabilizers):
-        cover = find_cover(target, covering_stabilizers, qubit_coordinates)
+        cover = find_cover_sat(target, covering_stabilizers)
         if cover is None:
             continue
 
