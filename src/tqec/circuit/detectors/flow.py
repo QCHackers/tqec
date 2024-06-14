@@ -241,10 +241,10 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
                 "Found a measurement applied on several qubits. "
                 "This is not implemented (yet?)."
             )
-        (qubit,) = measurement.qubits
+        qubit = measurement.qubit
 
         initial_stabilizer = measurement.after(tableau_inv, targets)
-        touched_resets = [r for r in fragment.resets if initial_stabilizer.contains(r)]
+        touched_resets = [r for r in fragment.resets if initial_stabilizer.overlaps(r)]
         destruction_flows.append(
             BoundaryStabilizer(
                 initial_stabilizer,
