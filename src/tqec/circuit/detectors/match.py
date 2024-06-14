@@ -105,31 +105,74 @@ def match_detectors_within_fragment(
     """
     matched_detectors: list[MatchedDetector] = []
 
-    creation_non_propagating_flows_indices = list(
-        _find_non_propagating_non_trivial_flows(flows.creation)
-    )
-    for i in creation_non_propagating_flows_indices:
-        flow = flows.creation[i]
-        matched_detectors.append(
-            MatchedDetector(
-                coords=flow.coordinates(qubit_coordinates),
-                measurements=frozenset(flow.involved_measurements),
-            )
+    matched_detectors.extend(
+        _match_non_propagating_non_trivial_flows_inline(
+            flows.creation, qubit_coordinates
         )
-    flows.remove_creations(creation_non_propagating_flows_indices)
+    )
+    matched_detectors.extend(
+        _match_non_propagating_non_trivial_flows_inline(
+            flows.destruction, qubit_coordinates
+        )
+    )
+    return matched_detectors
 
-    destruction_non_propagating_flows_indices = list(
-        _find_non_propagating_non_trivial_flows(flows.destruction)
+
+def _match_non_propagating_non_trivial_flows_inline(
+    boundary_stabilizers: list[BoundaryStabilizer],
+    qubit_coordinates: dict[int, tuple[float, ...]],
+) -> list[MatchedDetector]:
+    """Match all the detectors that can be trivially resolved and remove the
+    matched boundary stabilizers from the provided list.
+
+    This function **mutates its input in-place**.
+
+    This function guarantees the following:
+
+    ```py
+    boundary_stabilizers = []   # Fill it!
+    qubit_coordinates = {}      # Fill it!
+    len_bs_before = len(boundary_stabilizers)
+
+    detectors = _match_non_propagating_non_trivial_flows_inline(
+        boundary_stabilizers, qubit_coordinates
     )
-    for i in destruction_non_propagating_flows_indices:
-        flow = flows.destruction[i]
+    assert len_bs_before == len(detectors) + len(boundary_stabilizers)
+    ```
+
+    Args:
+        boundary_stabilizers: list of boundary stabilizers to match trivially.
+            This list is modified in-place: when a detector is found, the
+            boundary_stabilizer associated with this detector is removed from
+            the list.
+        qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate
+            the matched detectors with the coordinates from the qubits involved in the
+            measurement forming the detector.
+
+    Returns:
+        all matched detectors.
+    """
+    matched_detectors: list[MatchedDetector] = []
+    non_propagating_flows_indices = list(
+        _find_non_propagating_non_trivial_flows(boundary_stabilizers)
+    )
+    for i in non_propagating_flows_indices:
+        flow = boundary_stabilizers[i]
         matched_detectors.append(
             MatchedDetector(
                 coords=flow.coordinates(qubit_coordinates),
                 measurements=frozenset(flow.involved_measurements),
             )
         )
-    flows.remove_destructions(destruction_non_propagating_flows_indices)
+
+    # Note that the call to sorted here is not really needed as
+    # _find_non_propagating_non_trivial_flows guarantees that the returned indices
+    # are sorted, so `non_propagating_flows_indices[::-1]` should be enough.
+    # We still call sorted here to avoid subtle bugs in case the above-mentionned
+    # post-condition is changed one day, and because the number of indices
+    # is not expected to be large here.
+    for i in sorted(non_propagating_flows_indices, reverse=True):
+        boundary_stabilizers.pop(i)
 
     return matched_detectors
 
