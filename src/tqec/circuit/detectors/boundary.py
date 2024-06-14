@@ -20,7 +20,7 @@ class BoundaryStabilizer:
 
         Internally, this class separates the provided collapsing operations into
         commuting and anti-commuting collapsing operations. If there is any
-        anti-commuting operation, some methods/properties will raise.
+        anti-commuting operation, some methods/properties will raise an exception.
 
         Args:
             stabilizer: The propagated stabilizer **before** any collapsing operation
