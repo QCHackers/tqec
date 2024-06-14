@@ -435,42 +435,55 @@ def _match_by_disjoint_cover(
         the list of all the detectors found.
     """
     # Build the correct stabilizer lists
-    left_boundary_stabilizers = [
-        bs.with_measurement_offset(-right_flows.total_number_of_measurements)
-        for bs in left_flows.creation
-        if not bs.has_anticommuting_operations
-    ]
-    right_boundary_stabilizers = [
-        bs for bs in right_flows.destruction if not bs.has_anticommuting_operations
-    ]
+    left_boundary_stabilizers: list[BoundaryStabilizer] = []
+    left_boundary_indices_map: list[int] = []
+    for i, bs in enumerate(left_flows.creation):
+        if not bs.has_anticommuting_operations:
+            left_boundary_stabilizers.append(
+                bs.with_measurement_offset(-right_flows.total_number_of_measurements)
+            )
+            left_boundary_indices_map.append(i)
+
+    right_boundary_stabilizers: list[BoundaryStabilizer] = []
+    right_boundary_indices_map: list[int] = []
+    for i, bs in enumerate(right_flows.destruction):
+        if not bs.has_anticommuting_operations:
+            right_boundary_stabilizers.append(bs)
+            right_boundary_indices_map.append(i)
+
     # Check that there is at least a hope that a cover exist
     if len(left_boundary_stabilizers) == 0 or len(right_boundary_stabilizers) == 0:
         return []
     if len(left_boundary_stabilizers) == 1 and len(right_boundary_stabilizers) == 1:
         return []
+
     # Try to find a cover composed of measurements from the right flows that will
     # cancel the stabilizer propagated from one reset in the left flows.
-    forward_detectors, left_indices_to_remove = (
+    forward_detectors, left_reduced_indices_to_remove = (
         _match_boundary_stabilizers_by_disjoint_cover(
             left_boundary_stabilizers, right_boundary_stabilizers, qubit_coordinates
         )
     )
     # Remove all the left flows that have been matched with a cover. Both the actual flow
     # and the temporary list created above should be updated.
-    left_flows.remove_creations(left_indices_to_remove)
-    for i in sorted(left_indices_to_remove, reverse=True):
+    for i in sorted(left_reduced_indices_to_remove, reverse=True):
         left_boundary_stabilizers.pop(i)
+        left_flows.remove_creation(left_boundary_indices_map[i])
+
     # Try to find a cover composed of resets from the left flows that will cancel the
     # stabilizer propagated backward from one measurement in the right flows.
-    backward_detectors, right_indices_to_remove = (
+    backward_detectors, right_reduced_indices_to_remove = (
         _match_boundary_stabilizers_by_disjoint_cover(
             right_boundary_stabilizers, left_boundary_stabilizers, qubit_coordinates
         )
     )
     # Remove all the right flows that have been matched with a cover. Both the actual flow
     # and the temporary list created above should be updated.
-    right_flows.remove_destructions(right_indices_to_remove)
-    for i in sorted(right_indices_to_remove, reverse=True):
+    # TODO: Bug, the removed indices here correspond to right_boundary_stabilizers and
+    #       NOT to left_flows.destruction...
+    for i in sorted(right_reduced_indices_to_remove, reverse=True):
         right_boundary_stabilizers.pop(i)
+        right_flows.remove_destruction(right_reduced_indices_to_remove[i])
+
     # Return all the detectors that have been found.
     return forward_detectors + backward_detectors
