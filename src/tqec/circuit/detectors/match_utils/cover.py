@@ -1,7 +1,7 @@
 import typing as ty
 
 import pysat.solvers
-from tqec.circuit.detectors.flow import BoundaryStabilizer
+from tqec.circuit.detectors.boundary import BoundaryStabilizer
 from tqec.circuit.detectors.match_utils.sat import (
     encode_pauli_string_commuting_cover_sat_problem_in_solver,
     encode_pauli_string_exact_cover_sat_problem_in_solver,

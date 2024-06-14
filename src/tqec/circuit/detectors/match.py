@@ -6,11 +6,8 @@ from copy import deepcopy
 from dataclasses import dataclass
 
 import numpy
-from tqec.circuit.detectors.flow import (
-    BoundaryStabilizer,
-    FragmentFlows,
-    FragmentLoopFlows,
-)
+from tqec.circuit.detectors.boundary import BoundaryStabilizer
+from tqec.circuit.detectors.flow import FragmentFlows, FragmentLoopFlows
 from tqec.circuit.detectors.match_utils.cover import find_exact_cover_sat
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.exceptions import TQECException
