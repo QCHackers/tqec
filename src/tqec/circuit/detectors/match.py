@@ -11,7 +11,7 @@ from tqec.circuit.detectors.flow import (
     FragmentFlows,
     FragmentLoopFlows,
 )
-from tqec.circuit.detectors.match_utils.cover import find_cover_sat
+from tqec.circuit.detectors.match_utils.cover import find_exact_cover_sat
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.exceptions import TQECException
 
@@ -188,10 +188,12 @@ def match_boundary_stabilizers(
             qubit_coordinates,
         )
 
-    # 1. match stabilizers 1-to-1 without anti-commuting collapses
+    # 1. Match stabilizers 1-to-1 without anti-commuting collapses
     matched_detectors.extend(
         _match_commute_stabilizers(left_flows, right_flows, qubit_coordinates)
     )
+    # 2. Try to match remaining stabilizers without any anti-commuting collapses
+    #    by trying to find covers.
     matched_detectors.extend(
         _match_by_disjoint_cover(left_flows, right_flows, qubit_coordinates)
     )
@@ -306,12 +308,16 @@ def _match_boundary_stabilizers_by_disjoint_cover(
     detectors: list[MatchedDetector] = []
     targets_to_remove: list[int] = []
     for i, target in enumerate(target_stabilizers):
-        cover = find_cover_sat(target, covering_stabilizers)
-        if cover is None:
+        cover_indices = find_exact_cover_sat(
+            target.after_collapse, [cs.after_collapse for cs in covering_stabilizers]
+        )
+        if cover_indices is None:
             continue
 
         measurements_involved_in_cover = frozenset(
-            itertools.chain.from_iterable(bs.involved_measurements for bs in cover)
+            itertools.chain.from_iterable(
+                covering_stabilizers[i].involved_measurements for i in cover_indices
+            )
         )
         detectors.append(
             MatchedDetector(
