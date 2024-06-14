@@ -320,9 +320,9 @@ def split_combined_measurement_reset_in_moment(
 
     # Ensure that measurements ends with a TICK operation and that resets does
     # only if a TICK instruction has been encountered when iterating on instructions.
-    # As TICK instructions are filtered out early when interating on instructions,
+    # As TICK instructions are filtered out early when iterating on instructions,
     # neither measurements nor resets should have a TICK instruction, so we can add
-    # the instruction without checking for 
+    # the instruction without checking for its existence beforehand.
     measurements.append(stim.CircuitInstruction("TICK", []))
     if tick_instruction_encountered:
         resets.append(stim.CircuitInstruction("TICK", []))
@@ -442,3 +442,129 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
         )
         pauli_strings.extend(collapsing_operations_sorted_by_qubit)
     return pauli_strings
+
+
+def reorder_resets(
+    circuit: stim.Circuit,
+    finishing_resets_to_ignore: stim.Circuit | None = None,
+) -> stim.Circuit:
+    """Take a quantum circuit with combined measurement/reset gates and re-adapt
+    it to a more usable circuit with resets and measurements.
+
+    One of the main pre-condition of the :class:`Fragment` class is that it should
+    represent a quantum circuit of the form (annotations and noisy gates that are
+    not measurements ignored):
+    ```
+    (resets) (computation) measurements
+    ```
+    with `(resets)` being an optional moment filled with reset gates, `(computation)`
+    being an optional sequence of moments containing any quantum gate that is neither
+    a reset nor a measurement and `measurements` being a required moment filled with
+    measurement gates.
+
+    Combined measurement/reset gate break that assumption, in particular in REPEAT
+    structures. For example, this distance 3 repetition code:
+    ```
+    R 0 1 2 3 4
+    TICK
+    CX 0 1 2 3
+    TICK
+    CX 2 1 4 3
+    TICK
+    MR 1 3
+    REPEAT 9 {
+        TICK
+        CX 0 1 2 3
+        TICK
+        CX 2 1 4 3
+        TICK
+        MR 1 3
+    }
+    M 0 2 4
+    ```
+    is functionally equivalent to
+    ```
+    R 0 1 2 3 4
+    TICK
+    CX 0 1 2 3
+    TICK
+    CX 2 1 4 3
+    TICK
+    M 1 3
+    REPEAT 9 {
+        R 1 3
+        TICK
+        CX 0 1 2 3
+        TICK
+        CX 2 1 4 3
+        TICK
+        M 1 3
+    }
+    M 0 2 4
+    ```
+    with the exception that the first circuit include 2 resets (on qubits 1 and 3)
+    that are not followed by any quantum gate or measurements (i.e., reseting qubits
+    that are not used anymore).
+
+    This function aims at transforming quantum circuits as shown in the first example
+    into quantum circuits with no combined measurement/reset gates, such as shown
+    in the second example.
+
+    Args:
+        circuit: input circuit.
+        finishing_resets_to_ignore: this input is used when recursing into REPEAT
+            structures. It stores the reset gates found just before the REPEAT
+            instruction, expecting to find the exact same code at the end of the
+            loop body. Defaults to None.
+
+    Raises:
+        TQECException: If `finishing_resets_to_ignore` is not `None` and the provided
+            `circuit` does not end with `finishing_resets_to_ignore`. This will likely
+            be raised in recursion.
+
+    Returns:
+        a functionally equivalent circuit without combined measurement/reset operations.
+    """
+    new_circuit = stim.Circuit()
+    reset_instructions_pending = stim.Circuit()
+    for moment in iter_stim_circuit_by_moments(circuit):
+        if isinstance(moment, stim.CircuitRepeatBlock):
+            new_circuit.append(
+                stim.CircuitRepeatBlock(
+                    moment.repeat_count,
+                    reorder_resets(
+                        reset_instructions_pending + moment.body_copy(),
+                        reset_instructions_pending,
+                    ),
+                )
+            )
+            reset_instructions_pending = stim.Circuit()
+            continue
+
+        if reset_instructions_pending:
+            if moment[0].name == "TICK":
+                new_circuit += stim.Circuit("TICK")
+                moment = moment[1:]
+            new_circuit += reset_instructions_pending
+            reset_instructions_pending = stim.Circuit()
+
+        if has_combined_measurement_reset(moment):
+            measurements, resets = split_combined_measurement_reset_in_moment(moment)
+            reset_instructions_pending = resets.copy()
+            new_circuit += measurements
+
+        elif has_only_reset(moment):
+            reset_instructions_pending = moment.copy()
+        else:
+            new_circuit += moment
+
+    if finishing_resets_to_ignore is None:
+        new_circuit += reset_instructions_pending
+    elif reset_instructions_pending != finishing_resets_to_ignore:
+        raise TQECException(
+            "Cannot reorder reset instructions correctly. Expected\n"
+            f"{finishing_resets_to_ignore}\nbut got\n{reset_instructions_pending}\n"
+            f"Full circuit:\n{circuit}"
+        )
+
+    return new_circuit
