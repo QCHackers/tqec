@@ -82,6 +82,16 @@ class BoundaryStabilizer:
         return self._after_collapse_cache
 
     @property
+    def before_collapse(self) -> PauliString:
+        """Return the stabilizer obtained before applying the collapsing operations.
+
+        Returns:
+            The Pauli string that goes out of the Fragment, before applying any
+            collapsing operation.
+        """
+        return self._stabilizer
+
+    @property
     def collapsing_operations(self) -> ty.Iterator[PauliString]:
         """Iterate on all the collapsing operations defining the boundary this
         stabilizer is applied to.
