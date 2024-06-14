@@ -18,6 +18,23 @@ def _anti_commuting_stabilizers_indices(flows: list[BoundaryStabilizer]) -> list
 
 
 def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
+    """Merge as much anti-commuting flows as possible from the provided flows.
+
+    This function try to merge together several :class:`BoundaryStabilizer`
+    instances that anti-commute with their collapsing operations and provided
+    in `flows`. It **modifies in-place the provided parameter**, removing
+    anti-commuting flows and replacing them with the resulting commuting
+    flow when found.
+
+    Args:
+        flows: a list of flows that might or might not contains flows that
+            anti-commute with its collapsing operations.
+
+    Raises:
+        TQECException: if the provided flows have different collapsing
+            operations, hinting that they are not part of the same boundary,
+            in which case it makes no sense to try to merge them together.
+    """
     # Filtering out commuting operations as they cannot make anti-commuting
     # operations commuting.
     anti_commuting_indices: list[int] = _anti_commuting_stabilizers_indices(flows)
