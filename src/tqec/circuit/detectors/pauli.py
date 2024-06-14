@@ -8,6 +8,8 @@ API.
 
 from __future__ import annotations
 
+import functools
+import operator
 import typing as ty
 
 import stim
@@ -143,12 +145,12 @@ class PauliString:
             a copy of self, collapsed by the provided operators.
         """
         ret = PauliString(self._pauli_by_qubit.copy())
-        for operator in collapse_operators:
-            if not ret.commutes(operator):
+        for op in collapse_operators:
+            if not ret.commutes(op):
                 raise TQECException(
-                    f"Cannot collapse {ret} by a non-commuting operator {operator}."
+                    f"Cannot collapse {ret} by a non-commuting operator {op}."
                 )
-            ret *= operator
+            ret *= op
         return ret
 
     def after(self, tableau: stim.Tableau, targets: ty.Iterable[int]) -> PauliString:
@@ -198,3 +200,7 @@ def pauli_literal_to_bools(
         return (True, True)
     elif literal == "Z":
         return (False, True)
+
+
+def pauli_product(paulis: ty.Iterable[PauliString]) -> PauliString:
+    return functools.reduce(operator.mul, paulis, PauliString({}))
