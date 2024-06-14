@@ -143,12 +143,12 @@ def _find_cover_sat(
 def find_exact_cover_sat(
     target: PauliString, sources: list[PauliString]
 ) -> list[int] | None:
-    """Try to find a set of boundary stabilizers from `sources` that
-    generate exactly target.
+    """Try to find a set of pauli strings from `sources` that generate exactly
+    target.
 
-    The Pauli strings returned, once multiplied together, should be exactly
-    equal to `target`. In particular, the following post-condition should
-    hold:
+    The Pauli strings returned (via indices over the provided `sources`), once
+    multiplied together, should be exactly equal to `target`. In particular, the
+    following post-condition should hold:
 
     ```python
     target = None     # to replace
@@ -166,11 +166,15 @@ def find_exact_cover_sat(
 
     Returns:
         Either a list of indices over `sources` that, when combined, cover
-        exactly the provided `target` on all the qubits provided in
-        `on_qubits`, or None if such a list could not be found.
+        exactly the provided `target`, or None if such a list could not be found.
     """
     if not sources:
         return None
+
+    # We want an exact (i.e., equality) cover on all qubits, to be sure that
+    # the post-condition in the docstring holds. For that, it is sufficient to
+    # only consider all the qubits where either `target` or at least one of the
+    # items of `sources` acts non-trivially (i.e., something else than the identity).
     involved_qubits = frozenset(target.qubits)
     for source in sources:
         involved_qubits |= frozenset(source.qubits)

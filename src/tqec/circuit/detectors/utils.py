@@ -271,8 +271,9 @@ def split_combined_measurement_reset_in_moment(
             raise TQECException(
                 f"Could not split with gate that have non-qubit targets. Found {inst}."
             )
-        # Have to be of that type as checked above.
         targets: list[object] = list(inst.targets_copy())
+        # `qubit_value` have to returns a non-None value as all target are
+        # qubit_targets as checked above.
         qubit_targets: set[int] = {t.qubit_value for t in inst.targets_copy()}  # type:ignore
         if _is_combined_measurement_reset(inst):
             if qubit_targets & measured_qubits:
@@ -300,7 +301,7 @@ def split_combined_measurement_reset_in_moment(
                     f"Moment:\n{moment}"
                 )
         else:
-            # An annotation or a noisy instruction.
+            # A noisy instruction.
             # If none of the qubits the instruction is applied on has already been
             # measured, this means that we can insert the instruction in measurements.
             if not qubit_targets & measured_qubits:

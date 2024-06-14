@@ -206,13 +206,43 @@ def match_boundary_stabilizers(
     qubit_coordinates: dict[int, tuple[float, ...]],
     perform_sanity_check: bool = True,
 ) -> list[MatchedDetector]:
+    """Match detectors using the boundary stabilizers between the two given
+    flows.
+
+    This function try to match detectors that will be valid at the end of
+    `right_flows` by looking at destruction boundary stabilizers back-propagated
+    from measurements in `right_flows` and creation boundary stabilizers
+    propagated from resets in `left_flows`.
+    The above 2 stabilizer types should meet at the interface between the two
+    provided flows. If we find any creation stabilizer matching (i.e. being
+    equal to) any other destruction stabilizer, these form a detector!
+
+    This function **mutates `left_flows` and `right_flows` in-place** if
+    a detector is found.
+
+    Args:
+        left_flows: pre-computed flows from the left fragment.
+        right_flows: pre-computed flows from the right fragment.
+        qubit_coordinates: _description_
+        perform_sanity_check: If True and if `right_flows` is an instance of
+            :class:`FragmentLoopFlows`, detectors found between `left_flows`
+            and `right_flows` are compared to the detectors found between the
+            last and first fragments of the body of `right_flows`. If the two
+            sets are not equal, an exception is raised. Defaults to True.
+
+    Raises:
+        TQECException: if the sanity check does not pass.
+
+    Returns:
+        all matched detectors.
+    """
     matched_detectors: list[MatchedDetector] = []
 
-    # Sanity check: if the provided right flow is a FragmentLoopFlows, we will compute
-    #     the detectors between the first iteration of the loop and the previous
-    #     fragment. If the circuit is valid, the computed detectors should be exactly
-    #     the same between the fragments of two loop bodies (if the loop is repeated
-    #     at least twice).
+    # Sanity check: if the provided right flow is a FragmentLoopFlows, this function
+    #     will compute the detectors between the first iteration of the loop and the
+    #     previous fragment. If the circuit is valid, the computed detectors should
+    #     be exactly the same between the fragments of two loop bodies (if the loop
+    #     is repeated at least twice).
     #     Because the matching functions are modifying flows in-place, we pre-compute the
     #     detectors here on copies and will compare them before returning.
     should_sanity_check = perform_sanity_check and (
@@ -272,9 +302,9 @@ def _match_commute_stabilizers(
     right_flows: FragmentFlows | FragmentLoopFlows,
     qubit_coordinates: dict[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
-    """Take stabilizers from two contiguous Fragments and try to match them.
+    """Take stabilizers from two contiguous fragments and try to match them.
 
-    Let use the two `Fragment` instances `f1` and `f2` such that `f1` is just
+    Let use the two fragment instances `f1` and `f2` such that `f1` is just
     before `f2`. There is a stabilizer boundary at the interface between `f1`
     and `f2`. Considering only the stabilizers that propagated forward from
     the resets of `f1` and commuted with all the measurements they encountered
@@ -360,7 +390,11 @@ def _match_boundary_stabilizers_by_disjoint_cover(
     """
     detectors: list[MatchedDetector] = []
     targets_to_remove: list[int] = []
+    # For each target, try to find a cover.
     for i, target in enumerate(target_stabilizers):
+        # Try to find the cover. If unsuccessful, skip `target` and continue the loop.
+        # Else, a detector is matched, so insert it into the returned list and mark
+        # `target` as "to remove".
         cover_indices = find_exact_cover_sat(
             target.after_collapse, [cs.after_collapse for cs in covering_stabilizers]
         )
