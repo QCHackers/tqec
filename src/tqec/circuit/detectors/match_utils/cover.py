@@ -1,10 +1,10 @@
 import typing as ty
 
-import pysat
 import pysat.solvers
 from tqec.circuit.detectors.flow import BoundaryStabilizer
 from tqec.circuit.detectors.match_utils.sat import (
-    encode_pauli_string_cover_sat_problem_in_solver,
+    encode_pauli_string_commuting_cover_sat_problem_in_solver,
+    encode_pauli_string_exact_cover_sat_problem_in_solver,
 )
 from tqec.circuit.detectors.pauli import PauliString
 
@@ -103,25 +103,29 @@ def find_cover(
     return None
 
 
-def find_cover_sat(
-    target: BoundaryStabilizer, sources: list[BoundaryStabilizer]
-) -> list[BoundaryStabilizer] | None:
+def _find_cover_sat(
+    target: PauliString, sources: list[PauliString], on_qubits: frozenset[int]
+) -> list[int] | None:
     """Try to find a set of boundary stabilizers from `sources` that
-    generate target.
+    generate target on qubits `on_qubits`.
 
     Args:
         target: the stabilizers to cover with stabilizers from `sources`.
         sources: stabilizers that can be used to cover `target`.
+        on_qubits: qubits to consider when trying to cover `target` with
+            `sources`.
 
     Returns:
-        Either a list of a stabilizers that, when combined, cover exactly
-        the provided `target`, or None if such a list could not be found.
+        Either a list of indices over `sources` that, when combined, cover
+        exactly the provided `target` on all the qubits provided in
+        `on_qubits`, or None if such a list could not be found.
     """
     if not sources:
         return None
+
     with pysat.solvers.CryptoMinisat() as solver:
-        encode_pauli_string_cover_sat_problem_in_solver(
-            solver, target.after_collapse, [source.after_collapse for source in sources]
+        encode_pauli_string_exact_cover_sat_problem_in_solver(
+            solver, target, sources, on_qubits
         )
         if solver.solve():
             # We can ignore type errors in the line below because we know for sure
@@ -131,6 +135,93 @@ def find_cover_sat(
             # should not be included, whereas a positive integer `x` tells that
             # the Pauli string should be included.
             satisfying_proof: list[int] = solver.get_model()  # type: ignore
-            return [sources[i - 1] for i in satisfying_proof if i > 0]
+            return [i - 1 for i in satisfying_proof if i > 0]
+        else:
+            return None
+
+
+def find_exact_cover_sat(
+    target: PauliString, sources: list[PauliString]
+) -> list[int] | None:
+    """Try to find a set of boundary stabilizers from `sources` that
+    generate exactly target.
+
+    The Pauli strings returned, once multiplied together, should be exactly
+    equal to `target`. In particular, the following post-condition should
+    hold:
+
+    ```python
+    target = None     # to replace
+    sources = [None]  # to replace
+    cover_indices = find_exact_cover_sat(target, sources)
+    resulting_pauli_string = PauliString({})
+    for i in cover_indices:
+        resulting_pauli_string = resulting_pauli_string * sources[i]
+    assert resulting_pauli_string == target, "Should hold"
+    ```
+
+    Args:
+        target: the stabilizers to cover with stabilizers from `sources`.
+        sources: stabilizers that can be used to cover `target`.
+
+    Returns:
+        Either a list of indices over `sources` that, when combined, cover
+        exactly the provided `target` on all the qubits provided in
+        `on_qubits`, or None if such a list could not be found.
+    """
+    if not sources:
+        return None
+    involved_qubits = frozenset(target.qubits)
+    for source in sources:
+        involved_qubits |= frozenset(source.qubits)
+
+    return _find_cover_sat(target, sources, involved_qubits)
+
+
+def find_commuting_cover_on_target_qubits_sat(
+    target: PauliString, sources: list[PauliString]
+) -> list[int] | None:
+    """Try to find a set of boundary stabilizers from `sources` that
+    generate a superset of target.
+
+    This function try to find a set of Pauli strings from `sources` that
+    includes `target` (i.e., on every qubit where `target` is non-trivial,
+    the product of each of the returned Pauli strings should commute with
+    `target`).
+
+    The differences with :func:`find_cover_sat` are:
+    1. this function does not restrict the output of the product of each of
+       the returned Pauli string on qubits where `target` acts trivially (i.e.
+       "I"). So in practice, on qubits where `target[qubit] == "I"`, the value
+       of the returned Pauli string can be anything.
+    2. this function does not restrict the output of the product of each of
+       the returned Pauli string to exactly match `target` on qubits where
+       it acts non-trivially, but rather requires the output to commute with
+       `target` on those qubits.
+
+    Args:
+        target: the stabilizers to cover with stabilizers from `sources`.
+        sources: stabilizers that can be used to cover `target`.
+
+    Returns:
+        Either a list of a stabilizers that, when combined, commute with
+        the provided `target`, or None if such a list could not be found.
+    """
+    if not sources:
+        return None
+
+    with pysat.solvers.CryptoMinisat() as solver:
+        encode_pauli_string_commuting_cover_sat_problem_in_solver(
+            solver, target, sources, frozenset(target.qubits)
+        )
+        if solver.solve():
+            # We can ignore type errors in the line below because we know for sure
+            # that solver.solve() returned True, so solver.get_model() should return
+            # a list of integers representing a solution to the SAT problem.
+            # A negative integer `-x` tells that the Pauli string represented by `x`
+            # should not be included, whereas a positive integer `x` tells that
+            # the Pauli string should be included.
+            satisfying_proof: list[int] = solver.get_model()  # type: ignore
+            return [i - 1 for i in satisfying_proof if i > 0]
         else:
             return None
