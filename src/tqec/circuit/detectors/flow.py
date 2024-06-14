@@ -5,11 +5,14 @@ from dataclasses import dataclass
 
 import numpy
 from tqec.circuit.detectors.fragment import Fragment, FragmentLoop
+from tqec.circuit.detectors.match_utils.cover import (
+    find_commuting_cover_on_target_qubits_sat,
+)
 from tqec.circuit.detectors.measurement import (
     RelativeMeasurementLocation,
     get_relative_measurement_index,
 )
-from tqec.circuit.detectors.pauli import PauliString
+from tqec.circuit.detectors.pauli import PauliString, pauli_product
 from tqec.exceptions import TQECException
 
 
@@ -177,6 +180,54 @@ class BoundaryStabilizer:
         )
 
 
+def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
+    # Filtering out commuting operations as they cannot make anti-commuting
+    # operations commuting.
+    indices_map: dict[int, int] = {}
+    anticommuting_stabilizers: list[PauliString] = []
+    collapsing_operations: list[set[PauliString]] = []
+    for i, flow in enumerate(flows):
+        if flow.has_anticommuting_operations:
+            indices_map[len(indices_map)] = i
+            anticommuting_stabilizers.append(flow.before_collapse)
+            collapsing_operations.append(set(flow.collapsing_operations))
+    # Checking a few invariants that are expected:
+    # 1. all the provided flows are defined on the same boundary. This is
+    #    checked by comparing the collapsing operations for each anti-commuting
+    #    stabilizer and asserting that they are all equal.
+    for i in range(1, len(collapsing_operations)):
+        if collapsing_operations[0] != collapsing_operations[i]:
+            raise TQECException(
+                "Cannot merge anti-commuting flows defined on different collapsing "
+                "operations. Found the following difference:\nFlow 0 has the "
+                "collapsing operations:\n\t"
+                + "\n\t".join(f"- {c}" for c in collapsing_operations[0])
+                + f"\nFlow {i} has the collapsing operations:\n\t"
+                + "\n\t".join(f"- {c}" for c in collapsing_operations[i])
+                + "\n"
+            )
+    collapsing_pauli = pauli_product(collapsing_operations[0])
+    # Now, we want to find flows in anticommuting_stabilizers that, when taken
+    # into account together, commute with collapsing_pauli.
+    indices_to_merge = find_commuting_cover_on_target_qubits_sat(
+        collapsing_pauli, anticommuting_stabilizers
+    )
+    while indices_to_merge is not None:
+        removed_stabilizers = [
+            flows.pop(i) for i in sorted(indices_to_merge, reverse=True)
+        ]
+        new_commuting_stabilizer = removed_stabilizers[0]
+        for removed_stabilizer in removed_stabilizers[1:]:
+            new_commuting_stabilizer = new_commuting_stabilizer.merge(
+                removed_stabilizer
+            )
+        flows.append(new_commuting_stabilizer)
+        # Update for loop condition
+        indices_to_merge = find_commuting_cover_on_target_qubits_sat(
+            collapsing_pauli, anticommuting_stabilizers
+        )
+
+
 @dataclass
 class FragmentFlows:
     """Stores stabilizer flows for a Fragment instance.
@@ -222,6 +273,10 @@ class FragmentFlows:
             destruction=[bs for bs in self.destruction if bs.is_trivial()],
             total_number_of_measurements=self.total_number_of_measurements,
         )
+
+    def try_merge_anticommuting_flows(self):
+        _try_merge_anticommuting_flows_inplace(self.creation)
+        _try_merge_anticommuting_flows_inplace(self.destruction)
 
 
 @dataclass
@@ -275,6 +330,10 @@ class FragmentLoopFlows:
             ],
             repeat=self.repeat,
         )
+
+    def try_merge_anticommuting_flows(self):
+        _try_merge_anticommuting_flows_inplace(self.creation)
+        _try_merge_anticommuting_flows_inplace(self.destruction)
 
 
 def build_flows_from_fragments(
