@@ -31,11 +31,15 @@ class PauliString:
         self, pauli_by_qubit: dict[int, ty.Literal["I", "X", "Y", "Z"]]
     ) -> None:
         for qubit, pauli in pauli_by_qubit.items():
-            if pauli not in "XYZ":
+            if pauli not in "IXYZ":
                 raise TQECException(
-                    f"Invalid Pauli operator {pauli} for qubit {qubit}, expected X, Y, or Z."
+                    f"Invalid Pauli operator {pauli} for qubit {qubit}, expected I, X, Y, or Z."
                 )
-        self._pauli_by_qubit = pauli_by_qubit
+        self._pauli_by_qubit: dict[int, ty.Literal["I", "X", "Y", "Z"]] = {
+            q: pauli_by_qubit[q]
+            for q in sorted(pauli_by_qubit.keys())
+            if pauli_by_qubit[q] != "I"
+        }
         self._hash = hash(tuple(self._pauli_by_qubit.items()))
 
     @property
