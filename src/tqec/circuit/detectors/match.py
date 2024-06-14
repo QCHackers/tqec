@@ -228,19 +228,32 @@ def match_boundary_stabilizers(
             qubit_coordinates,
         )
 
+    # 0. Combining anti-commuting stabilizers
+    # We try to combine stabilizers anti-commuting with their collapsing operations
+    # here because:
+    #   1. the `try_merge_anticommuting_flows` method does not consider commuting
+    #      stabilizers, so calling this method has the same cost now and after a first
+    #      round of matching.
+    #   2. the different matching methods are now quite efficient and so should not
+    #      suffer too much (in terms of performance) from the commuting stabilizers
+    #      potentially added at this step.
+    # If commuting stabilizer computation is experiencing performance issues, it might
+    # be interesting to perform this step AFTER a first round of commuting stabilizer
+    # matching, and repeating the matching steps after to match newly added commuting
+    # stabilizers into detectors.
+    left_flows.try_merge_anticommuting_flows()
+    right_flows.try_merge_anticommuting_flows()
+
     # 1. Match stabilizers 1-to-1 without anti-commuting collapses
     matched_detectors.extend(
         _match_commute_stabilizers(left_flows, right_flows, qubit_coordinates)
     )
+
     # 2. Try to match remaining stabilizers without any anti-commuting collapses
     #    by trying to find covers.
     matched_detectors.extend(
         _match_by_disjoint_cover(left_flows, right_flows, qubit_coordinates)
     )
-    # # 3. combine anti-commuting stabilizers
-    # if not ((commute_bs or anticommute_bs) and (commute_es or anticommute_es)):
-    #     return matched_detectors
-    # # TODO: COMBINE ANTI-COMMUTING STABILIZERS
 
     # Perform the sanity check if needed.
     if should_sanity_check:
