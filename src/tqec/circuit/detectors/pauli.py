@@ -164,9 +164,6 @@ class PauliString:
         stim_pauli_string_after = stim_pauli_string.after(tableau, targets=targets)
         return PauliString.from_stim_pauli_string(stim_pauli_string_after)
 
-    def intersects(self, other: PauliString) -> bool:
-        return bool(self._pauli_by_qubit.keys() & other._pauli_by_qubit.keys())
-
     def contains(self, other: PauliString) -> bool:
         return self._pauli_by_qubit.items() >= other._pauli_by_qubit.items()
 

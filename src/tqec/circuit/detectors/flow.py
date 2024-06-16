@@ -143,7 +143,7 @@ class FragmentLoopFlows:
 
     This class is currently quite dumb and does not provide a sufficient
     API for generic stabilizer matching, but is enough for detectors
-    that only include measurements from the current round and fron the
+    that only include measurements from the current round and from the
     previous round.
     """
 

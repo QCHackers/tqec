@@ -93,7 +93,7 @@ def match_detectors_within_fragment(
     matched on some particular cases (e.g., 1-round repetition code).
 
     Args:
-        flows: pre-computed flows for the fragment of interest. If any detector is
+        flows: pre-computed flows for the fragment of interest. If any detector
             is found, the involved flow(s) will be removed from the provided instance.
             This means that **this parameter may be mutated inline**.
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate

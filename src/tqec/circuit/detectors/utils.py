@@ -33,7 +33,7 @@ def iter_stim_circuit_by_moments(
     Invariants:
         - All the instructions of the provided circuit (even TICK ones) are
           eventually yielded by the generator returned by this function.
-        - TICK instructions can only appear at the end of a `stim.Circuit`
+        - In the yield items, TICK instructions can only appear at the end of a `stim.Circuit`
           or within the body of a `stim.CircuitRepeatBlock`.
     """
     cur_moment = stim.Circuit()

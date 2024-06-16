@@ -88,7 +88,7 @@ class Fragment:
 
     @property
     def measurements(self) -> list[PauliString]:
-        """Get the measurement instructions at the front on the Fragment.
+        """Get the measurement instructions at the back on the Fragment.
 
         Returns:
             all the measurement instructions that appear at the end of the represented

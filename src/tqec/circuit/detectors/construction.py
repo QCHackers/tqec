@@ -103,11 +103,11 @@ def compile_fragments_to_circuit_with_detectors(
     qubit_coords_map: dict[int, tuple[float, ...]],
 ) -> stim.Circuit:
     flows = build_flows_from_fragments(fragments)
-    detectors = match_detectors_from_flows_shallow(flows, qubit_coords_map)
+    detectors_from_flows = match_detectors_from_flows_shallow(flows, qubit_coords_map)
 
     circuit = stim.Circuit()
 
-    for fragment, detectors in zip(fragments, detectors):
+    for fragment, detectors in zip(fragments, detectors_from_flows):
         detectors_circuit = _detectors_to_circuit(detectors, [0.0])
         if isinstance(fragment, Fragment):
             circuit += (
