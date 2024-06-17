@@ -135,6 +135,8 @@ def has_only_measurement(moment: stim.Circuit) -> bool:
 
     Returns:
         `True` if the provided moment has a measurement, else `False`.
+        Note that this function returns `True` on a moment that only contains
+        annotations and noisy-gates (measurements excluded).
     """
     for inst in moment:
         if _is_virtual_instruction(inst):  # type: ignore
@@ -166,7 +168,9 @@ def has_only_reset(moment: stim.Circuit) -> bool:
         moment: The moment to check.
 
     Returns:
-        `True` if the provided moment has a reset, else `False`.
+        `True` if the provided moment has only reset instructions, else `False`.
+        Note that this function returns `True` on a moment that only contains
+        annotations and noisy-gates (measurements excluded).
     """
     for inst in moment:
         if _is_virtual_instruction(inst):  # type: ignore
@@ -237,7 +241,6 @@ def split_combined_measurement_reset_in_moment(
         before the combined operation.
         `resets` is guaranteed to contain all the instructions that appeared
         after the combined operation.
-
     """
     measurements = stim.Circuit()
     resets = stim.Circuit()
