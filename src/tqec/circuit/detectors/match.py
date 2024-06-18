@@ -327,14 +327,16 @@ def _match_commute_stabilizers(
     """
     detectors: list[MatchedDetector] = []
     left_flows_indices_to_remove: list[int] = []
-    right_flows_indices_to_remove: list[int] = []
 
     for ilhs, creation_flow in enumerate(left_flows.creation):
         if creation_flow.has_anticommuting_operations:
             continue
+
+        right_flows_index_to_remove: int | None = None
         for irhs, destruction_flow in enumerate(right_flows.destruction):
             if destruction_flow.has_anticommuting_operations:
                 continue
+
             # If the stabilizers are not exactly the same, this is not a match.
             if creation_flow.after_collapse != destruction_flow.after_collapse:
                 continue
@@ -350,15 +352,19 @@ def _match_commute_stabilizers(
                 )
             )
             left_flows_indices_to_remove.append(ilhs)
-            right_flows_indices_to_remove.append(irhs)
+            right_flows_index_to_remove = irhs
             # break here because the begin stabilizer `bs` is matched and
             # will be removed, so there is no point trying to match it with
             # other end stabilizers.
             break
+        # Here, we finished the iteration on right_flows, so we can remove
+        # the matched flows.
+        if right_flows_index_to_remove is not None:
+            right_flows.remove_destruction(right_flows_index_to_remove)
 
-    # Clean-up the stabilizer lists
+    # Here, we finished the iteration on left_flows, so we can remove the
+    # matched flows.
     left_flows.remove_creations(left_flows_indices_to_remove)
-    right_flows.remove_destructions(right_flows_indices_to_remove)
     return detectors
 
 
