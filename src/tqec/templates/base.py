@@ -7,7 +7,11 @@ from dataclasses import dataclass
 
 import numpy
 
-from tqec.enums import CornerPositionEnum, TemplateRelativePositionEnum
+from tqec.enums import (
+    CornerPositionEnum,
+    TemplateOrientation,
+    TemplateRelativePositionEnum,
+)
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 
@@ -137,6 +141,7 @@ class Template(JSONEncodable):
 
         The input parameter ``k`` corresponds to an abstract scale that may be
         forwarded to
+
         1. various :class:`Dimension` instances,
         2. other :class:`Template` instances in the case of templates modifying
            existing instances,
@@ -159,6 +164,27 @@ class Template(JSONEncodable):
             the shape of the template.
         """
         pass
+
+    @abstractmethod
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        """Returns the default observable qubits for the template.
+
+        If the template has a simple shape, this returns the plaquettes on the ``midline''
+        of the template.
+        By convention, it returns the plaquettes above the midline for the horizontal case
+        and to the left of the midline for the vertical case.
+
+        Args:
+            orientation: Horizontal or vertical qubits. Defaults to horizontal.
+
+        Returns:
+            The sequence of qubits and offsets.
+
+        Raises:
+            TQECException: If the midline is not uniquely defined.
+        """
 
     def to_dict(self) -> dict[str, ty.Any]:
         """Returns a dict-like representation of the instance.

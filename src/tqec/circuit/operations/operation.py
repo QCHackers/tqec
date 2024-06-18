@@ -7,6 +7,7 @@ import cirq
 
 from tqec.exceptions import TQECException
 
+
 STIM_TAG = "STIM_OPERATION"
 
 
@@ -14,9 +15,6 @@ class ShiftCoords(cirq.Operation):
     def __init__(self, *shifts: int) -> None:
         """
         Annotates that the qubit/detector coordinate origin is being moved.
-
-        WARNING: you should use `make_shift_coords` to create instances of this class.
-        If you do not, read attentively the documentation below.
 
         This is a replication of the
         [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
@@ -34,6 +32,11 @@ class ShiftCoords(cirq.Operation):
         You can use the `make_shift_coords` helper function to create an instance of this class
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
+
+        Warning:
+            you should use `make_shift_coords` to create instances of this class.
+            To understand how to use this class directly, please refer to the
+            documentation above.
 
         Args:
             *shifts: How much to shift each coordinate.
@@ -76,7 +79,7 @@ class RelativeMeasurementData:
     This relative information will be analysed by the fill_in_global_record_indices
     transformer and replaced by real qubit and global measurement records.
 
-    Attributes:
+    Parameters:
         relative_qubit_positioning: The qubit coordinate offset. This will be added to a
             qubit coordinate system origin to obtain the actual qubit the measurement
             has been performed on.
@@ -161,9 +164,6 @@ class Detector(RelativeMeasurementsRecord):
     ) -> None:
         """Operation representing a detector.
 
-        WARNING: you should use `make_detector` to create instances of this class.
-        If you do not, read attentively the documentation below.
-
         Since the operation is not a real quantum operation, it does not have qubits
         and is not applied to any qubits. This might cause surprising behavior if you
         try to append or insert it into a circuit. It is always recommended to containerize
@@ -175,6 +175,10 @@ class Detector(RelativeMeasurementsRecord):
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
 
+        Warning:
+            you should use `make_detector` to create instances of this class.
+            To understand how to use this class directly, please refer to the
+            documentation above.
         Args:
             local_coordinate_system_origin: origin of the local coordinate
                 system. The origin along with the local coordinate system will
@@ -216,9 +220,6 @@ class Observable(RelativeMeasurementsRecord):
     ) -> None:
         """Operation representing an observable.
 
-        WARNING: you should use `make_observable` to create instances of this class.
-        If you do not, read attentively the documentation below.
-
         Since the operation is not a real quantum operation, it does not have qubits
         and is not applied to any qubits. This might cause surprising behavior if you
         try to append or insert it into a circuit. It is always recommended to containerize
@@ -230,6 +231,10 @@ class Observable(RelativeMeasurementsRecord):
         with the correct tags. Otherwise, you might need to manually tag the operation with the
         `cirq.VirtualTag` and the `STIM_TAG`.
 
+        Warning:
+            you should use `make_observable` to create instances of this class.
+            To understand how to use this class directly, please refer to the
+            documentation above.
         Args:
             local_coordinate_system_origin: origin of the local coordinate
                 system. The origin along with the local coordinate system will
@@ -300,9 +305,11 @@ def make_detector(
         A :class:`Detector` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm)
-        if not isinstance(rm, RelativeMeasurementData)
-        else rm
+        (
+            RelativeMeasurementData(*rm)
+            if not isinstance(rm, RelativeMeasurementData)
+            else rm
+        )
         for rm in relative_measurements
     ]
     return Detector(
@@ -339,9 +346,11 @@ def make_observable(
         A :class:`Observable` operation with the `cirq.VirtualTag` tag.
     """
     relative_measurements_data = [
-        RelativeMeasurementData(*rm)
-        if not isinstance(rm, RelativeMeasurementData)
-        else rm
+        (
+            RelativeMeasurementData(*rm)
+            if not isinstance(rm, RelativeMeasurementData)
+            else rm
+        )
         for rm in relative_measurements
     ]
     return Observable(

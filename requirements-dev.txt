@@ -1,3 +1,9 @@
 sinter
 pymatching
 jupyterlab
+sphinx
+myst-parser
+sphinx-rtd-theme
+pytest
+mypy
+pytest-cov

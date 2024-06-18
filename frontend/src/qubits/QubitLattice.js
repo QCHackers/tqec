@@ -1,6 +1,8 @@
 import { Point } from 'pixi.js';
 import Qubit from './Qubit';
+import QubitLabels from './QubitLabels';
 import Button from '../components/Button';
+import notification from '../components/notification';
 
 export default class QubitLattice {
   constructor(workspace, app) {
@@ -43,7 +45,7 @@ export default class QubitLattice {
     );
     if (qubit) {
       // this qubit is already in the constellation
-      this.constellation = this.constellation.filter((q) => q !== qubit);
+      this.constellation = this.constellation.filter((q) => q !== qubit).flat();
       this.workspace.removeChild(qubit);
     } else {
       // this qubit is not in the constellation
@@ -53,8 +55,70 @@ export default class QubitLattice {
     }
   };
 
+  selectAncillaQubit = (e) => {
+    const [relativeX, relativeY] = this.relativeXY(e);
+    const qubitPoint = this.pointToGridIntersection(new Point(relativeX, relativeY));
+    const qubit = this.constellation.find(
+      (q) => q.checkHitArea(qubitPoint.x, qubitPoint.y) === true
+    );
+    if (qubit) {
+      // Remove the ancilla label, if there is one.
+      const ancilla = this.constellation.find((q) => q.getLabel() === QubitLabels.ancilla);
+      if (ancilla !== undefined) {
+        ancilla.removeLabel();
+        if (ancilla === qubit) {
+          return;
+        }
+      }
+      if (qubit.getLabel() === QubitLabels.ancilla) {
+        qubit.removeLabel();
+      } else {
+        qubit.setCircuitLabel(QubitLabels.ancilla);
+      }
+    }
+  };
+
+  selectDataQubit = (e) => {
+    const [relativeX, relativeY] = this.relativeXY(e);
+    const qubitPoint = this.pointToGridIntersection(new Point(relativeX, relativeY));
+    const qubit = this.constellation.find(
+      (q) => q.checkHitArea(qubitPoint.x, qubitPoint.y) === true
+    );
+    if (qubit) {
+      if (qubit.timestep === QubitLabels.noLabel) {
+        // eslint-disable-next-line no-alert
+        const input = prompt('Please specify a time step for this qubit.');
+        const timeStep = parseInt(input, 10);
+        if (Number.isNaN(timeStep) || timeStep < 0 || timeStep > 9) {
+          notification(this.app, 'Please specify a time step between 0 and 9.');
+          return;
+        }
+        // eslint-disable-next-line no-restricted-syntax
+        for (const q of this.constellation) {
+          if (q.timestep === timeStep) {
+            notification(this.app, 'A qubit with this time step already exists in the footprint.');
+            return;
+          }
+        }
+        qubit.setTimestep(timeStep);
+      }
+      // Cycle to the next label.
+      const labelCycle = [QubitLabels.noLabel, QubitLabels.cx, QubitLabels.cz];
+      // eslint-disable-next-line no-plusplus
+      for (let k = 0; k < labelCycle.length; k++) {
+        if (qubit.getLabel() === labelCycle[k]) {
+          qubit.setCircuitLabel(labelCycle[(k + 1) % labelCycle.length]);
+          break;
+        }
+      }
+      if (qubit.label === QubitLabels.noLabel) {
+        qubit.setTimestep(QubitLabels.noLabel);
+      }
+      // TODO: Rotate the qubit label
+    }
+  };
+
   applyBoundingBoxCoordinatesToQubits = () => {
-    // Apply the bounding box coordinates to the qubits
     // eslint-disable-next-line no-restricted-syntax
     for (const qubit of this.constellation) {
       qubit.applyBoundingBoxCoordinates(

@@ -5,10 +5,10 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-![ezgif-4-8bc47d2444](https://github.com/QCHackers/tqec/assets/16883876/649494f0-6150-447f-a593-7429a4ae23c1)
-
+Live endpoint: https://tqec.app
 
 ## Installation
+
 ### Backend (Python package)
 
 In order to install the `tqec` package, you can follow the following
@@ -41,7 +41,7 @@ python -m pip install "."
 ```
 
 If you want to run the
-[`logical_qubit_memory_experiment.ipynb`](./notebooks/logical_qubit_memory_experiment.ipynb)
+[`logical_qubit_memory_experiment.ipynb`](https://github.com/QCHackers/tqec/blob/main/notebooks/logical_qubit_memory_experiment.ipynb)
 notebook, you will also have to install a few other packages:
 
 ```sh
@@ -55,11 +55,11 @@ lab server
 python -m jupyter lab
 ```
 
-and to run some of the notebooks in the [`notebooks`](./notebooks/) directory.
+and to run some of the notebooks in the [`notebooks`](https://github.com/QCHackers/tqec/tree/main/notebooks) directory.
 
 ### Frontend
 
-Refer to [this readme](./frontend/README.md) for instructions.
+Refer to [this folder](https://github.com/QCHackers/tqec/tree/main/frontend) for instructions.
 
 ## Architecture
 
@@ -71,6 +71,7 @@ Refer to [this wiki page](https://github.com/QCHackers/tqec/wiki/TQEC-Architectu
 2. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
 3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
 4. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)
+5. [Developer documentation for the `tqec` project](https://qchackers.github.io/tqec/)
 
 ## Before you commit
 

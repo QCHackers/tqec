@@ -35,38 +35,74 @@ export default class Grid extends Graphics {
 
   visibleUnits = () => this.units.flat().filter((unit) => unit.visible);
 
+  footprintWidth = () => {
+    const selectedUnits = this.visibleUnits();
+    return Math.max(...selectedUnits.map((unit) => unit.x)) - Math.min(...selectedUnits.map((unit) => unit.x)) + this.gridSize;
+  };
+
+  footprintHeight = () => {
+    const selectedUnits = this.visibleUnits();
+    return Math.max(...selectedUnits.map((unit) => unit.y)) - Math.min(...selectedUnits.map((unit) => unit.y)) + this.gridSize;
+  };
+
   selectedUnitsRectangular = () => {
     const selectedUnits = this.visibleUnits();
-    const xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
-    const ySorted = Array.from(new Set(selectedUnits.map((unit) => unit.y))).sort((a, b) => a.y - b.y);
-    // FIXME: delegate these side effects to elsewhere
-    this.physicalWidth = xSorted.length * this.gridSize;
-    this.physicalHeight = ySorted.length * this.gridSize;
-    for (let i = 0; i < xSorted.length - 2; i += 1) {
-      if (xSorted[i] + this.gridSize !== xSorted[i + 1]) {
-        return false;
-      }
-    }
-    // check ySorted
-    for (let i = 0; i < ySorted.length - 2; i += 1) {
-      if (ySorted[i] + this.gridSize !== ySorted[i + 1]) {
-        return false;
-      }
-    }
-    return true;
+    this.xSorted = Array.from(new Set(selectedUnits.map((unit) => unit.x))).sort((a, b) => a.x - b.x);
+    this.ySorted = Array.from(new Set(selectedUnits.map((unit) => unit.y))).sort((a, b) => a.y - b.y);
+    return this.xSorted.length * this.ySorted.length === selectedUnits.length;
   };
 
   contains = (qubits) => {
-    const minX = Math.min(...this.visibleUnits().map((unit) => unit.x));
-    const minY = Math.min(...this.visibleUnits().map((unit) => unit.y));
     const unitXs = new Set(this.visibleUnits().map((unit) => [unit.x, unit.x + this.gridSize]).flat());
     const unitYs = new Set(this.visibleUnits().map((unit) => [unit.y, unit.y + this.gridSize]).flat());
     for (const qubit of qubits) {
       if (!unitXs.has(qubit.globalX) || !unitYs.has(qubit.globalY)) {
         return false;
       }
-      // FIXME: remove this side-effect
+    }
+    return true;
+  };
+
+  boundaryQubitsValid = (qubits) => {
+    if (this.visibleUnits().length === 0) {
+      throw new Error('No visible units in grid');
+    }
+    if (!this.selectedUnitsRectangular()) {
+      return false;
+    }
+    const minX = Math.min(...this.visibleUnits().map((unit) => unit.x));
+    const minY = Math.min(...this.visibleUnits().map((unit) => unit.y));
+    for (const qubit of qubits) {
       qubit.applyBoundingBoxCoordinates(qubit.globalX - minX, qubit.globalY - minY);
+    }
+    // Check if boundary qubits overlap
+    const xLeftboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === 0).map((qubit) => qubit.bbY));
+    const xLen = this.xSorted.length * this.gridSize;
+    const xRightboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbX === xLen).map((qubit) => qubit.bbY));
+    if (xLeftboundaryQubits.intersection(xRightboundaryQubits).size > 0) {
+      return false;
+    }
+    const yLen = this.ySorted.length * this.gridSize;
+    const yboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === 0).map((qubit) => qubit.bbX).flat());
+    const yTopboundaryQubits = new Set(qubits.filter((qubit) => qubit.bbY === yLen).map((qubit) => qubit.bbX).flat());
+    if (yboundaryQubits.intersection(yTopboundaryQubits).size > 0) {
+      return false;
+    }
+    // Check if top left and bottom right corner qubits exist
+    const upperLeftCornerQubit = qubits.filter((qubit) => qubit.bbX === 0 && qubit.bbY === 0);
+    if (upperLeftCornerQubit.length === 1) {
+      const bottomRightCornerQubit = qubits.filter((qubit) => qubit.bbX === xLen && qubit.bbY === yLen);
+      if (bottomRightCornerQubit.length === 1) {
+        return false;
+      }
+    }
+    // Check if top right and bottom left corner qubits exist
+    const upperRightCornerQubit = qubits.filter((qubit) => qubit.bbX === xLen && qubit.bbY === 0);
+    if (upperRightCornerQubit.length === 1) {
+      const bottomLeftCornerQubit = qubits.filter((qubit) => qubit.bbX === 0 && qubit.bbY === yLen);
+      if (bottomLeftCornerQubit.length === 1) {
+        return false;
+      }
     }
     return true;
   };

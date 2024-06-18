@@ -3,7 +3,7 @@ import pytest
 
 from tqec.circuit.circuit import generate_circuit
 from tqec.exceptions import TQECException
-from tqec.plaquette.library import ZSquareInitialisationPlaquette
+from tqec.plaquette.library import z_initialisation_square_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.atomic.rectangle import RawRectangleTemplate
 from tqec.templates.base import Template
@@ -11,7 +11,7 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def initialisation_plaquette() -> Plaquette:
-    return ZSquareInitialisationPlaquette()
+    return z_initialisation_square_plaquette()
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def one_by_one_template() -> Template:
 
 def test_generate_initialisation_circuit_list(
     initialisation_plaquette: Plaquette, one_by_one_template
-):
+) -> None:
     circuit = generate_circuit(one_by_one_template, [initialisation_plaquette])
     assert circuit == cirq.Circuit(
         cirq.R(q.to_grid_qubit()) for q in initialisation_plaquette.qubits

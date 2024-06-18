@@ -2,6 +2,7 @@ import typing as ty
 
 import numpy
 from tqec.exceptions import TQECException
+from tqec.enums import TemplateOrientation
 from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.scale import Dimension
@@ -89,6 +90,23 @@ class AlternatingRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return 2
+
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if orientation == TemplateOrientation.VERTICAL:
+            midline_shape, iteration_shape = iteration_shape, midline_shape
+
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
 
 
 @ty.final
@@ -179,15 +197,15 @@ class RawRectangleTemplate(Template):
             plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
             indices = numpy.array(self._indices, dtype=int)
             return plaquette_indices_array[indices]
-        except IndexError:
+        except IndexError as ex:
             raise TQECException(
                 "RawRectangleTemplate instances should be constructed with 2-dimensional arrays "
                 "that contain indices that will index the plaquette_indices provided to "
-                "this method. The bigest index you provided at this instance creation is "
+                "this method. The biggest index you provided at this instance creation is "
                 f"{max(max(index) for index in self._indices)} "
                 f"but you provided only {len(plaquette_indices)} plaquette indices "
                 "when calling this method."
-            )
+            ) from ex
 
     def scale_to(self, _: int) -> "RawRectangleTemplate":
         return self
@@ -202,3 +220,20 @@ class RawRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
+
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if orientation == TemplateOrientation.VERTICAL:
+            midline_shape, iteration_shape = iteration_shape, midline_shape
+
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
