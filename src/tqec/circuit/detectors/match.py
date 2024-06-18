@@ -125,6 +125,15 @@ def _match_non_propagating_non_trivial_flows_inline(
     """Match all the detectors that can be trivially resolved and remove the
     matched boundary stabilizers from the provided list.
 
+    This function try to find a trivial match for each of the provided boundary
+    stabilizers. A trivial match is defined here as a flow that is fully
+    collapsed by the collapsing operations it encounters, stopping its
+    propagation.
+
+    Note that an approximation is made in this function: trivial flows (not to
+    be confused with trivial matches) are excluded from the search because they
+    generate unwanted detectors.
+
     This function **mutates its input in-place**.
 
     This function guarantees the following:
@@ -186,8 +195,8 @@ def _find_non_propagating_non_trivial_flows(
 
     Yields:
         indices (in ascending order) of boundary stabilizers in the provided
-        `boundary_stabilizers` list that are fully collapsed by the commuting
-        operations.
+        `boundary_stabilizers` list that are non-trivial and fully collapsed
+        by the commuting operations.
     """
     for i, stabilizer in enumerate(boundary_stabilizers):
         if (
