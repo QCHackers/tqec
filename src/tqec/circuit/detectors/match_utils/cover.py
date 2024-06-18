@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing as ty
 
 import pysat.solvers
-from tqec.circuit.detectors.boundary import BoundaryStabilizer
+from tqec.circuit.detectors.boundary import BoundaryStabilizer, manhattan_distance
 from tqec.circuit.detectors.match_utils.sat import (
     encode_pauli_string_commuting_cover_sat_problem_in_solver,
     encode_pauli_string_exact_cover_sat_problem_in_solver,
@@ -116,13 +116,10 @@ def find_cover(
         could be found.
     """
 
-    def manhattan_dist_from_target(source: BoundaryStabilizer) -> float:
-        target_coordinates = target.coordinates(qubit_coordinates)
-        source_coordinates = source.coordinates(qubit_coordinates)
-        return sum(abs(t - s) for t, s in zip(target_coordinates, source_coordinates))
-
     sources = [
-        s for s in sources if manhattan_dist_from_target(s) <= maximum_qubit_distance
+        s
+        for s in sources
+        if manhattan_distance(target, s, qubit_coordinates) <= maximum_qubit_distance
     ]
 
     after_collapse_sources = [s.after_collapse for s in sources]

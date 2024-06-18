@@ -170,3 +170,13 @@ class BoundaryStabilizer:
             and self.after_collapse.weight == 0
             and len(self._stabilizer) == 1
         )
+
+
+def manhattan_distance(
+    lhs: BoundaryStabilizer,
+    rhs: BoundaryStabilizer,
+    qubit_coordinates: dict[int, tuple[float, ...]],
+) -> float:
+    lhs_coords = lhs.coordinates(qubit_coordinates)
+    rhs_coords = rhs.coordinates(qubit_coordinates)
+    return sum(abs(left - right) for left, right in zip(lhs_coords, rhs_coords))
