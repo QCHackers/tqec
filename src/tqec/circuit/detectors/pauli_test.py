@@ -79,9 +79,9 @@ def test_pauli_string_weight():
     X0Z1 = PauliString({0: "X", 1: "Z", 2: "I"})
     Z0 = PauliString({0: "Z"})
     I0to20 = PauliString({i: "I" for i in range(20)})
-    assert X0Z1.weight == 2
-    assert Z0.weight == 1
-    assert I0to20.weight == 0
+    assert X0Z1.non_trivial_pauli_count == 2
+    assert Z0.non_trivial_pauli_count == 1
+    assert I0to20.non_trivial_pauli_count == 0
 
 
 def test_pauli_string_qubit():

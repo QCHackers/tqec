@@ -41,7 +41,7 @@ class PauliString:
         self._hash = hash(tuple(self._pauli_by_qubit.items()))
 
     @property
-    def weight(self) -> int:
+    def non_trivial_pauli_count(self) -> int:
         return len(self._pauli_by_qubit)
 
     @property

@@ -294,7 +294,7 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     tableau_inv = tableau.inverse()
     destruction_flows: list[BoundaryStabilizer] = []
     for measurement in fragment.measurements:
-        if measurement.weight != 1:
+        if measurement.non_trivial_pauli_count != 1:
             raise TQECException(
                 "Found a measurement applied on several qubits. "
                 "This is not implemented (yet?)."

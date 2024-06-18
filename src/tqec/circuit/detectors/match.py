@@ -202,7 +202,7 @@ def _find_non_propagating_non_trivial_flows(
         if (
             not stabilizer.is_trivial()
             and not stabilizer.has_anticommuting_operations
-            and stabilizer.after_collapse.weight == 0
+            and stabilizer.after_collapse.non_trivial_pauli_count == 0
         ):
             yield i
 

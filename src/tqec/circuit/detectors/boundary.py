@@ -167,7 +167,7 @@ class BoundaryStabilizer:
     def is_trivial(self) -> bool:
         return (
             not self.has_anticommuting_operations
-            and self.after_collapse.weight == 0
+            and self.after_collapse.non_trivial_pauli_count == 0
             and len(self._stabilizer) == 1
         )
 
