@@ -156,14 +156,6 @@ def _match_non_propagating_non_trivial_flows_inline(
     non_propagating_flows_indices = list(
         _find_non_propagating_non_trivial_flows(boundary_stabilizers)
     )
-    for i in non_propagating_flows_indices:
-        flow = boundary_stabilizers[i]
-        matched_detectors.append(
-            MatchedDetector(
-                coords=flow.coordinates(qubit_coordinates),
-                measurements=frozenset(flow.involved_measurements),
-            )
-        )
 
     # Note that the call to sorted here is not really needed as
     # _find_non_propagating_non_trivial_flows guarantees that the returned indices
@@ -172,7 +164,13 @@ def _match_non_propagating_non_trivial_flows_inline(
     # post-condition is changed one day, and because the number of indices
     # is not expected to be large here.
     for i in sorted(non_propagating_flows_indices, reverse=True):
-        boundary_stabilizers.pop(i)
+        flow = boundary_stabilizers.pop(i)
+        matched_detectors.append(
+            MatchedDetector(
+                coords=flow.coordinates(qubit_coordinates),
+                measurements=frozenset(flow.involved_measurements),
+            )
+        )
 
     return matched_detectors
 
@@ -446,7 +444,9 @@ def _match_by_disjoint_cover(
     for i, stabilizer in enumerate(left_flows.creation):
         if not stabilizer.has_anticommuting_operations:
             left_boundary_stabilizers.append(
-                stabilizer.with_measurement_offset(-right_flows.total_number_of_measurements)
+                stabilizer.with_measurement_offset(
+                    -right_flows.total_number_of_measurements
+                )
             )
             left_boundary_indices_map.append(i)
 
