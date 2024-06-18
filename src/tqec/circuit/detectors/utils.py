@@ -126,8 +126,9 @@ def has_measurement(moment: stim.Circuit) -> bool:
     return any(_is_measurement(inst) for inst in moment)  # type:ignore
 
 
-def has_only_measurement(moment: stim.Circuit) -> bool:
-    """Check if a `stim.Circuit` moment contains only measurement instructions.
+def has_only_measurement_or_is_virtual(moment: stim.Circuit) -> bool:
+    """Check if a `stim.Circuit` moment contains only measurement instructions or is
+    a virtual moment.
 
     Note:
         Annotations are ignored by this function.
@@ -160,8 +161,9 @@ def has_reset(moment: stim.Circuit) -> bool:
     return any(_is_reset(inst) for inst in moment)  # type:ignore
 
 
-def has_only_reset(moment: stim.Circuit) -> bool:
-    """Check if a `stim.Circuit` moment contains only reset instructions.
+def has_only_reset_or_is_virtual(moment: stim.Circuit) -> bool:
+    """Check if a `stim.Circuit` moment contains only reset instructions or is
+    a virtual moment.
 
     Note:
         Annotations are ignored by this function.
@@ -558,7 +560,7 @@ def reorder_resets(
             reset_instructions_pending = resets.copy()
             new_circuit += measurements
 
-        elif has_only_reset(moment):
+        elif has_only_reset_or_is_virtual(moment):
             reset_instructions_pending = moment.copy()
         else:
             new_circuit += moment

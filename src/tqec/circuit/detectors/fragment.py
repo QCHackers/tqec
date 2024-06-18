@@ -10,8 +10,8 @@ from tqec.circuit.detectors.utils import (
     collapse_pauli_strings_at_moment,
     has_circuit_repeat_block,
     has_measurement,
-    has_only_measurement,
-    has_only_reset,
+    has_only_measurement_or_is_virtual,
+    has_only_reset_or_is_virtual,
     has_reset,
     is_virtual_moment,
     iter_stim_circuit_by_moments,
@@ -55,7 +55,7 @@ class Fragment:
                 continue
             if not has_reset(moment):
                 break
-            if not has_only_reset(moment):
+            if not has_only_reset_or_is_virtual(moment):
                 raise TQECException(
                     "Breaking invariant: found a moment with at least one reset "
                     f"instruction and a non-reset instruction:\n{moment}"
@@ -67,7 +67,7 @@ class Fragment:
                 continue
             if not has_measurement(moment):
                 break
-            if not has_only_measurement(moment):
+            if not has_only_measurement_or_is_virtual(moment):
                 raise TQECException(
                     "Breaking invariant: found a moment with at least one measurement "
                     f"instruction and a non-measurement instruction:\n{moment}"
@@ -168,7 +168,7 @@ def _consume_measurements(
             measurements += moment
         # Else, if there is at least one measurement in the moment:
         elif has_measurement(moment):
-            if not has_only_measurement(moment):
+            if not has_only_measurement_or_is_virtual(moment):
                 # if the moment contains at least one measurement and one
                 # non-measurement, split measurements from non-measurements
                 # and return.
@@ -260,7 +260,7 @@ def split_stim_circuit_into_fragments(
             # If there is something else than measurements, just split the something else
             # out, add the measurements to the current Fragment, build it, and start a
             # new one with the something else.
-            if not has_only_measurement(moment):
+            if not has_only_measurement_or_is_virtual(moment):
                 measurements, left_over = split_moment_containing_measurements(moment)
                 current_fragment += measurements
                 fragments.append(Fragment(current_fragment.copy()))
@@ -290,7 +290,7 @@ def split_stim_circuit_into_fragments(
     # If current_fragment is not empty here, this means that the circuit did not finish
     # with a measurement. This is strange, so for the moment raise an exception.
     if current_fragment:
-        if has_only_reset(current_fragment):
+        if has_only_reset_or_is_virtual(current_fragment):
             warnings.warn(
                 "Found left-over reset gates when splitting a circuit. Make "
                 "sure that each reset (even resets from measurement/reset "
