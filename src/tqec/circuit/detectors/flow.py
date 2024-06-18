@@ -238,19 +238,17 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     creation_flows: list[BoundaryStabilizer] = []
     for reset_stabilizer in fragment.resets:
         final_stabilizer = reset_stabilizer.after(tableau, targets)
-        involved_measurements = [
-            m for m in fragment.measurements if final_stabilizer.overlaps(m)
-        ]
         involved_measurements_offsets = [
             get_relative_measurement_index(
                 sorted_qubit_involved_in_measurements, m.qubit
             )
-            for m in involved_measurements
+            for m in fragment.measurements
+            if final_stabilizer.overlaps(m)
         ]
 
         creation_flows.append(
             BoundaryStabilizer(
-                final_stabilizer, involved_measurements, involved_measurements_offsets
+                final_stabilizer, fragment.measurements, involved_measurements_offsets
             )
         )
 
@@ -266,13 +264,11 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
                 "This is not implemented (yet?)."
             )
         qubit = measurement.qubit
-
         initial_stabilizer = measurement.after(tableau_inv, targets)
-        touched_resets = [r for r in fragment.resets if initial_stabilizer.overlaps(r)]
         destruction_flows.append(
             BoundaryStabilizer(
                 initial_stabilizer,
-                touched_resets,
+                fragment.resets,
                 [
                     get_relative_measurement_index(
                         sorted_qubit_involved_in_measurements, qubit
