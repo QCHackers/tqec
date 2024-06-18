@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import stim
 from tqec.circuit.detectors.utils import iter_stim_circuit_by_moments
 
