@@ -132,7 +132,7 @@ class PauliString:
         return t % 2 == 1
 
     def collapse_by(self, collapse_operators: ty.Iterable[PauliString]):
-        """Collapse the provided pauli string by the provided operators.
+        """Collapse the provided Pauli string by the provided operators.
 
         Here, collapsing means that we are removing from the Pauli string represented
         by self all the commuting Pauli terms from all the provided operators.
@@ -154,7 +154,9 @@ class PauliString:
                 raise TQECException(
                     f"Cannot collapse {ret} by a non-commuting operator {op}."
                 )
-            ret *= op
+            for qubit in op.qubits:
+                if qubit in ret._pauli_by_qubit:
+                    del ret._pauli_by_qubit[qubit]
         return ret
 
     def after(self, tableau: stim.Tableau, targets: ty.Iterable[int]) -> PauliString:
