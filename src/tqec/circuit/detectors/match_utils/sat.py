@@ -211,4 +211,4 @@ def encode_pauli_string_commuting_cover_sat_problem_in_solver(
             # The X effect should be OFF, the Z effect should be ON.
             # Because the identity (0, 0) is also valid, Z can be either ON or OFF,
             # so we do not need to restrict Z effect.
-            solver.add_xor_clause(z_clause_literals, value=False)
+            solver.add_xor_clause(x_clause_literals, value=False)
