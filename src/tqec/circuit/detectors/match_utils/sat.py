@@ -149,6 +149,11 @@ def encode_pauli_string_commuting_cover_sat_problem_in_solver(
     of terms in each XOR clause can vary depending on the provided Pauli strings in
     `available_pauli_strings`.
 
+    Also note that the problem defined above includes a trivial solution: do not include
+    any Pauli string. This lead to an identity Pauli string, that will necessarilly commute
+    with the provided target. A specific clause is added to the SAT problem to avoid that
+    particular trivial solution.
+
     Args:
         solver: solver that will be modified in-place to encode the SAT problem.
         expected_pauli_string: target Pauli string that should be covered by strings from
@@ -159,6 +164,8 @@ def encode_pauli_string_commuting_cover_sat_problem_in_solver(
             `expected_pauli_string`. Qubits not listed in this input will simply be ignored
             and no restriction on the value of the resulting cover on those qubits is added.
     """
+    # Clause to exclude the trivial solution "include no Pauli string at all"
+    solver.add_clause([lit + 1 for lit in range(len(available_pauli_strings))])
 
     for qubit in qubits_to_consider:
         expected_effect = expected_pauli_string[qubit]
