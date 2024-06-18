@@ -453,7 +453,7 @@ def reorder_resets(
     finishing_resets_to_ignore: stim.Circuit | None = None,
 ) -> stim.Circuit:
     """Take a quantum circuit with combined measurement/reset gates and re-adapt
-    it to a more usable circuit with resets and measurements.
+    it to a more usable and equivalent circuit with resets and measurements.
 
     One of the main pre-condition of the :class:`Fragment` class is that it should
     represent a quantum circuit of the form (annotations and noisy gates that are
@@ -486,7 +486,7 @@ def reorder_resets(
     }
     M 0 2 4
     ```
-    is functionally equivalent to
+    is equivalent to
     ```
     R 0 1 2 3 4
     TICK
@@ -504,11 +504,9 @@ def reorder_resets(
         TICK
         M 1 3
     }
+    R 1 3
     M 0 2 4
     ```
-    with the exception that the first circuit include 2 resets (on qubits 1 and 3)
-    that are not followed by any quantum gate or measurements (i.e., reseting qubits
-    that are not used anymore).
 
     This function aims at transforming quantum circuits as shown in the first example
     into quantum circuits with no combined measurement/reset gates, such as shown
@@ -527,7 +525,7 @@ def reorder_resets(
             be raised in recursion.
 
     Returns:
-        a functionally equivalent circuit without combined measurement/reset operations.
+        an equivalent circuit without combined measurement/reset operations.
     """
     new_circuit = stim.Circuit()
     reset_instructions_pending = stim.Circuit()
@@ -542,6 +540,7 @@ def reorder_resets(
                     ),
                 )
             )
+            new_circuit += reset_instructions_pending
             reset_instructions_pending = stim.Circuit()
             continue
 
