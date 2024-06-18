@@ -17,7 +17,7 @@ and to [tqec-alternative-frontend](https://github.com/QCHackers/tqec-alternative
 
 From this folder, install by typing:
 ```bash
-npm start
+npm install
 ```
 
 Run the app in the development mode by typing:
