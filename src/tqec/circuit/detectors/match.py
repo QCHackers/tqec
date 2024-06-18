@@ -168,7 +168,7 @@ def _match_non_propagating_non_trivial_flows_inline(
     # Note that the call to sorted here is not really needed as
     # _find_non_propagating_non_trivial_flows guarantees that the returned indices
     # are sorted, so `non_propagating_flows_indices[::-1]` should be enough.
-    # We still call sorted here to avoid subtle bugs in case the above-mentionned
+    # We still call sorted here to avoid subtle bugs in case the above-mentioned
     # post-condition is changed one day, and because the number of indices
     # is not expected to be large here.
     for i in sorted(non_propagating_flows_indices, reverse=True):
@@ -353,9 +353,9 @@ def _match_commute_stabilizers(
             )
             left_flows_indices_to_remove.append(ilhs)
             right_flows_index_to_remove = irhs
-            # break here because the begin stabilizer `bs` is matched and
+            # break here because the creation stabilizer is matched and
             # will be removed, so there is no point trying to match it with
-            # other end stabilizers.
+            # other destruction stabilizers.
             break
         # Here, we finished the iteration on right_flows, so we can remove
         # the matched flows.

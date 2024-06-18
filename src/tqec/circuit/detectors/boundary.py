@@ -117,7 +117,7 @@ class BoundaryStabilizer:
         other_collapsing_operations = set(other.collapsing_operations)
         if self_collapsing_operations != other_collapsing_operations:
             raise TQECException(
-                "Breaking pre-condition: trying two merge two BoundaryStabilizer "
+                "Breaking pre-condition: trying to merge two BoundaryStabilizer "
                 "instances that are not defined on the same boundary.\n"
                 f"Collapsing operations for left-hand side: {self_collapsing_operations}.\n"
                 f"Collapsing operations for right-hand side: {other_collapsing_operations}.\n"
