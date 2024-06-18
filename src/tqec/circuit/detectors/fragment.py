@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing as ty
 import warnings
 from dataclasses import dataclass
 
@@ -15,6 +16,7 @@ from tqec.circuit.detectors.utils import (
     is_virtual_moment,
     iter_stim_circuit_by_moments,
     split_combined_measurement_reset_in_moment,
+    split_moment_containing_measurements,
 )
 from tqec.exceptions import TQECException
 
@@ -140,6 +142,65 @@ class FragmentLoop:
         return f"FragmentLoop(repetitions={self.repetitions}, fragments={self.fragments!r})"
 
 
+def _get_fragment_loop(repeat_block: stim.CircuitRepeatBlock) -> FragmentLoop:
+    try:
+        body_fragments = split_stim_circuit_into_fragments(repeat_block.body_copy())
+    except TQECException as e:
+        raise TQECException(
+            f"Error when splitting the following REPEAT block:\n{repeat_block.body_copy()}"
+        ) from e
+    return FragmentLoop(fragments=body_fragments, repetitions=repeat_block.repeat_count)
+
+
+def _consume_measurements(
+    moments_iterator: ty.Iterator[stim.Circuit | stim.CircuitRepeatBlock],
+) -> tuple[stim.Circuit, stim.Circuit | stim.CircuitRepeatBlock]:
+    measurements = stim.Circuit()
+
+    for moment in moments_iterator:
+        # If we find an instance of stim.CircuitRepeatBlock, the sequence
+        # of measurements is over, so simply return.
+        if isinstance(moment, stim.CircuitRepeatBlock):
+            return measurements, moment
+        # Else, if the moment only contains annotations and noisy-gates
+        # (measurements excluded), add it to the measurements.
+        elif is_virtual_moment(moment):
+            measurements += moment
+        # Else, if there is at least one measurement in the moment:
+        elif has_measurement(moment):
+            if not has_only_measurement(moment):
+                # if the moment contains at least one measurement and one
+                # non-measurement, split measurements from non-measurements
+                # and return.
+                final_measurements, left_over = split_moment_containing_measurements(
+                    moment
+                )
+                return measurements + final_measurements, left_over
+            # Else, if any reset is found, the moment contains at least one combined
+            # measurement/reset operation so split all combined operations, and
+            # directly return because the reset found ends the measurement
+            # sequence.
+            if has_reset(moment):
+                final_measurements, left_over = (
+                    split_combined_measurement_reset_in_moment(moment)
+                )
+                return measurements + final_measurements, left_over
+            # Else, there is no reset, so we have a moment filled with normal
+            # measurements. Just add them to the list of measurements, and
+            # continue.
+            measurements += moment
+        # The moment is not virtual (i.e., not filled with only annotations and
+        # noisy gates, so it contains a non-virtual gate) and does not have any
+        # measurement (so the non-virtual gate is not a measurement). This ends the
+        # measurement sequence, so return.
+        else:
+            return measurements, moment
+
+    # We exhausted the provided iterator, this is the circuit end,
+    # so return the measurements that have been seen.
+    return measurements, stim.Circuit()
+
+
 def split_stim_circuit_into_fragments(
     circuit: stim.Circuit,
 ) -> list[Fragment | FragmentLoop]:
@@ -182,7 +243,9 @@ def split_stim_circuit_into_fragments(
     fragments: list[Fragment | FragmentLoop] = []
 
     current_fragment = stim.Circuit()
-    for moment in iter_stim_circuit_by_moments(circuit):
+
+    moments_iterator = iter_stim_circuit_by_moments(circuit)
+    for moment in moments_iterator:
         # If we have a REPEAT block
         if isinstance(moment, stim.CircuitRepeatBlock):
             # Purge the current fragment
@@ -190,31 +253,40 @@ def split_stim_circuit_into_fragments(
                 fragments.append(Fragment(current_fragment.copy()))
                 current_fragment.clear()
             # Recurse to produce the Fragment instances for the loop body.
-            try:
-                body_fragments = split_stim_circuit_into_fragments(moment.body_copy())
-            except TQECException as e:
-                raise TQECException(
-                    f"Error when splitting the following REPEAT block:\n{moment.body_copy()}"
-                ) from e
-            fragments.append(
-                FragmentLoop(fragments=body_fragments, repetitions=moment.repeat_count)
-            )
-        # If this is a combined measurement/reset moment
-        elif has_only_measurement(moment) and has_reset(moment):
-            measurements, resets = split_combined_measurement_reset_in_moment(moment)
-            current_fragment += measurements
-            fragments.append(Fragment(current_fragment.copy()))
-            current_fragment.clear()
-            current_fragment += resets
+            fragments.append(_get_fragment_loop(moment))
+
         # If this is a measurement moment
-        elif has_only_measurement(moment):
+        elif has_measurement(moment):
+            # If there is something else than measurements, just split the something else
+            # out, add the measurements to the current Fragment, build it, and start a
+            # new one with the something else.
+            if not has_only_measurement(moment):
+                measurements, left_over = split_moment_containing_measurements(moment)
+                current_fragment += measurements
+                fragments.append(Fragment(current_fragment.copy()))
+                current_fragment.clear()
+                current_fragment += left_over
+                continue
+            # Else, we only have measurements in this moment, so we can:
+            # 1. add the full moment to the current fragment,
             current_fragment += moment
+            # 2. try to find more subsequent measurements in the following moments,
+            more_measurements, left_over = _consume_measurements(moments_iterator)
+            # 3. finish the current fragment with the found measurements
+            current_fragment += more_measurements
             fragments.append(Fragment(current_fragment.copy()))
             current_fragment.clear()
+            # 4. handle the left over instructions.
+            if isinstance(left_over, stim.CircuitRepeatBlock):
+                fragments.append(_get_fragment_loop(left_over))
+            else:
+                current_fragment += left_over
+
         # This is either a regular instruction or a reset moment. In any case,
         # just add it to the current fragment.
         else:
             current_fragment += moment
+
     # If current_fragment is not empty here, this means that the circuit did not finish
     # with a measurement. This is strange, so for the moment raise an exception.
     if current_fragment:

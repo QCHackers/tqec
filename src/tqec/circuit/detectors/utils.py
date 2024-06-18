@@ -571,3 +571,114 @@ def reorder_resets(
         )
 
     return new_circuit
+
+
+def split_moment_containing_measurements(
+    moment: stim.Circuit,
+) -> tuple[stim.Circuit, stim.Circuit]:
+    """Split a moment that contains measurements along with other operations.
+
+    The provided moment will be split into two moments: one containing all the
+    measurements appearing as the first non-annotation, non-noisy-gate
+    instruction on each qubit (along with ALL the annotation instructions found
+    in the moment and the noisy gates found before any measurement), and one
+    containing all the left-over gates.
+
+    Warning:
+        This function assumes that any annotation encountered in the provided
+        moment should appear just after all the measurements:
+        ```
+        measurements - TICK - left over instructions / resets.
+                     ^
+            All annotations are inserted here.
+        ```
+        This assumption seems reasonable for `DETECTOR` and `OBSERVABLE_INCLUDE`
+        annotations, which are expected to be the most commonly found in a
+        combined measurement/reset moment.
+        Nevertheless, be aware of that limitation when using that function.
+
+    Args:
+        moment: a valid moment (i.e., sub-circuit contained between two TICK
+            instructions) starting with measurement instructions and potentially
+            ending with non-measurement instructions.
+
+    Raises:
+        TQECException: if the provided moment contains a stim.CircuitRepeatBlock
+            instruction.
+        TQECException: if any non-annotation instruction is defined with at least
+            one target that is not a qubit target.
+        TQECException: if any instruction is defined on partially already-measured
+            targets.
+
+    Returns:
+        A first circuit instance, ending by a TICK instruction and containing all
+        the measurements instructions found in the first part of the provided moment
+        as well as all annotations contained in the provided moment and noisy gates
+        (excluding measurements) that appeared before the included measurements.
+        A second circuit instance containing all the left-over instructions present
+        in the provided moment and not included in the first circuit instance returned
+        by this function. This second circuit instance is ended by a TICK instruction
+        only if the provided moment contained a TICK instruction.
+    """
+    measured_qubits: set[int] = set()
+    measurements = stim.Circuit()
+    left_over_instructions = stim.Circuit()
+    tick_instruction_encountered: bool = False
+
+    for inst in moment:
+        if isinstance(inst, stim.CircuitRepeatBlock):
+            raise TQECException(
+                "Breaking invariant: stim.CircuitRepeatBlock instances are not "
+                "allowed in split_moment_containing_measurements. Did you provide "
+                "a moment obtained from calling iter_stim_circuit_by_moments?"
+            )
+        if inst.name == "TICK":
+            # In theory, we are in a moment here, so we should only find TICK instructions
+            # at the end of the circuit. To avoid adding too much TICK instructions, and
+            # because TICK instructions are appropriately added at the end of that function,
+            # we filter out any TICK instruction here.
+            tick_instruction_encountered = True
+            continue
+        if _is_annotation(inst):
+            # We expect annotations (DETECTOR, OBSERVABLE_INCLUDE, ...) to make sense
+            # after measurements rather than after resets. This might be a wrong
+            # assumption, so this might change in the future.
+            measurements.append(inst)
+            continue
+        if not all(t.is_qubit_target for t in inst.targets_copy()):
+            # The only instructions that might not have qubit targets are DETECTOR or
+            # OBSERVABLE_INCLUDE annotations, that have already been handled before and
+            # so should never reach this point.
+            raise TQECException(
+                "Cannot split moment containing gate that have non-qubit "
+                f"targets. Found {inst}."
+            )
+        # `qubit_value` have to returns a non-None value as all target are
+        # qubit_targets as checked above.
+        qubit_targets: set[int] = {t.qubit_value for t in inst.targets_copy()}  # type:ignore
+
+        # If the operation is defined on a partially measured set of qubits,
+        # raise an exception
+        if not (qubit_targets <= measured_qubits) and (qubit_targets & measured_qubits):
+            raise TQECException(
+                "Found an instruction applied on partially measured qubits.\n"
+                f"The instruction: {inst}\n"
+                f"Measured qubits: {measured_qubits}"
+            )
+        if _is_measurement(inst):
+            measurements.append(inst)
+            if qubit_targets & measured_qubits:
+                raise TQECException("Found measurement on already measured qubit.")
+            measured_qubits |= qubit_targets
+        else:
+            left_over_instructions.append(inst)
+
+    # Ensure that measurements ends with a TICK operation and that resets does
+    # only if a TICK instruction has been encountered when iterating on instructions.
+    # As TICK instructions are filtered out early when iterating on instructions,
+    # neither measurements nor resets should have a TICK instruction, so we can add
+    # the instruction without checking for its existence beforehand.
+    measurements.append(stim.CircuitInstruction("TICK", []))
+    if tick_instruction_encountered:
+        left_over_instructions.append(stim.CircuitInstruction("TICK", []))
+    return measurements, left_over_instructions
