@@ -191,11 +191,11 @@ def _find_non_propagating_non_trivial_flows(
         `boundary_stabilizers` list that are fully collapsed by the commuting
         operations.
     """
-    for i, bs in enumerate(boundary_stabilizers):
+    for i, stabilizer in enumerate(boundary_stabilizers):
         if (
-            not bs.is_trivial()
-            and not bs.has_anticommuting_operations
-            and bs.after_collapse.weight == 0
+            not stabilizer.is_trivial()
+            and not stabilizer.has_anticommuting_operations
+            and stabilizer.after_collapse.weight == 0
         ):
             yield i
 
@@ -443,18 +443,18 @@ def _match_by_disjoint_cover(
     # Build the correct stabilizer lists
     left_boundary_stabilizers: list[BoundaryStabilizer] = []
     left_boundary_indices_map: list[int] = []
-    for i, bs in enumerate(left_flows.creation):
-        if not bs.has_anticommuting_operations:
+    for i, stabilizer in enumerate(left_flows.creation):
+        if not stabilizer.has_anticommuting_operations:
             left_boundary_stabilizers.append(
-                bs.with_measurement_offset(-right_flows.total_number_of_measurements)
+                stabilizer.with_measurement_offset(-right_flows.total_number_of_measurements)
             )
             left_boundary_indices_map.append(i)
 
     right_boundary_stabilizers: list[BoundaryStabilizer] = []
     right_boundary_indices_map: list[int] = []
-    for i, bs in enumerate(right_flows.destruction):
-        if not bs.has_anticommuting_operations:
-            right_boundary_stabilizers.append(bs)
+    for i, stabilizer in enumerate(right_flows.destruction):
+        if not stabilizer.has_anticommuting_operations:
+            right_boundary_stabilizers.append(stabilizer)
             right_boundary_indices_map.append(i)
 
     # Check that there is at least a hope that a cover exist
