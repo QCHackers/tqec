@@ -37,16 +37,21 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
     """
     # Filtering out commuting operations as they cannot make anti-commuting
     # operations commuting.
-    anti_commuting_indices: list[int] = _anti_commuting_stabilizers_indices(flows)
-    anticommuting_stabilizers: list[PauliString] = []
-    collapsing_operations: list[set[PauliString]] = []
-    for fi in anti_commuting_indices:
-        anticommuting_stabilizers.append(flows[fi].before_collapse)
-        collapsing_operations.append(set(flows[fi].collapsing_operations))
-    # Checking a few invariants that are expected:
-    # 1. all the provided flows are defined on the same boundary. This is
-    #    checked by comparing the collapsing operations for each anti-commuting
-    #    stabilizer and asserting that they are all equal.
+    anti_commuting_index_to_flows_index: list[int] = (
+        _anti_commuting_stabilizers_indices(flows)
+    )
+
+    # Early exit if there are no anti-commuting collapsing operations
+    if not anti_commuting_index_to_flows_index:
+        return
+
+    collapsing_operations: list[set[PauliString]] = [
+        set(flows[fi].collapsing_operations)
+        for fi in anti_commuting_index_to_flows_index
+    ]
+    # Checking that all the provided flows are defined on the same boundary.
+    # This is checked by comparing the collapsing operations for each
+    # anti-commuting stabilizer and asserting that they are all equal.
     for i in range(1, len(collapsing_operations)):
         if collapsing_operations[0] != collapsing_operations[i]:
             raise TQECException(
@@ -58,30 +63,61 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
                 + "\n\t".join(f"- {c}" for c in collapsing_operations[i])
                 + "\n"
             )
+
+    # Start of the merging process
     collapsing_pauli = pauli_product(collapsing_operations[0])
+
     # Now, we want to find flows in anticommuting_stabilizers that, when taken
     # into account together, commute with collapsing_pauli.
-    indices_to_merge = find_commuting_cover_on_target_qubits_sat(
-        collapsing_pauli, anticommuting_stabilizers
+    anticommuting_stabilizers: list[PauliString] = [
+        flows[fi].before_collapse for fi in anti_commuting_index_to_flows_index
+    ]
+    indices_of_anti_commuting_stabilizers_to_merge = (
+        find_commuting_cover_on_target_qubits_sat(
+            collapsing_pauli, anticommuting_stabilizers
+        )
     )
-    while indices_to_merge is not None:
-        # While there are anti-commuting stabilizers that can be merged.
-        # 1. Remove them from the flows and indices map.
-        removed_stabilizers: list[BoundaryStabilizer] = []
-        for i in sorted(indices_to_merge, reverse=True):
-            anti_commuting_indices.pop(i)
-            removed_stabilizers.append(flows.pop(anti_commuting_indices[i]))
-        # 2. Compute the resulting commuting stabilizer.
-        new_commuting_stabilizer = removed_stabilizers[0]
-        for removed_stabilizer in removed_stabilizers[1:]:
+    # While there are anti-commuting stabilizers that can be merged.
+    while indices_of_anti_commuting_stabilizers_to_merge is not None:
+        print(
+            f"Found indices {indices_of_anti_commuting_stabilizers_to_merge} with "
+            f"{len(anticommuting_stabilizers)} anti-commuting stabilizers and "
+            f"{len(flows)} total flows left."
+        )
+        # Recover all the stabilizers that should be merged together.
+        flows_indices_of_stabilizers_to_merge = [
+            anti_commuting_index_to_flows_index[i]
+            for i in indices_of_anti_commuting_stabilizers_to_merge
+        ]
+        stabilizers_to_merge: list[BoundaryStabilizer] = [
+            flows[i] for i in flows_indices_of_stabilizers_to_merge
+        ]
+        # Update the flows by removing the entries related to stabilizers that
+        # will be merged and re-compute the anti-commuting stabilizers and map.
+        for i in sorted(flows_indices_of_stabilizers_to_merge, reverse=True):
+            flows.pop(i)
+        anti_commuting_index_to_flows_index: list[int] = (
+            _anti_commuting_stabilizers_indices(flows)
+        )
+        anticommuting_stabilizers: list[PauliString] = [
+            flows[fi].before_collapse for fi in anti_commuting_index_to_flows_index
+        ]
+        # Compute the resulting commuting stabilizer.
+        new_commuting_stabilizer = stabilizers_to_merge[0]
+        for removed_stabilizer in stabilizers_to_merge[1:]:
             new_commuting_stabilizer = new_commuting_stabilizer.merge(
                 removed_stabilizer
             )
+        print(f"Obtained {new_commuting_stabilizer.before_collapse} from:")
+        for stab in stabilizers_to_merge:
+            print(f"- {stab.before_collapse}")
         # 3. Add the resulting commuting stabilizer to the flows.
         flows.append(new_commuting_stabilizer)
         # Update for loop condition
-        indices_to_merge = find_commuting_cover_on_target_qubits_sat(
-            collapsing_pauli, anticommuting_stabilizers
+        indices_of_anti_commuting_stabilizers_to_merge = (
+            find_commuting_cover_on_target_qubits_sat(
+                collapsing_pauli, anticommuting_stabilizers
+            )
         )
 
 
