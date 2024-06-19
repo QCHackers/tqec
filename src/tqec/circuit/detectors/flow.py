@@ -64,7 +64,9 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
                 + "\n"
             )
 
-    # Start of the merging process
+    # Computation of the Pauli string representing all the collapsing operations.
+    # The goal of this method will be to find a cover from the provided flows such
+    # as the resulting propagated Pauli string commutes with this one.
     collapsing_pauli = pauli_product(collapsing_operations[0])
 
     # Now, we want to find flows in anticommuting_stabilizers that, when taken
