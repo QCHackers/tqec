@@ -143,6 +143,11 @@ class Fragment:
     def __repr__(self) -> str:
         return f"Fragment(circuit={self._circuit!r})"
 
+    def __eq__(self, other: Fragment) -> bool:
+        if not isinstance(other, Fragment):
+            return False
+        return self._circuit == other._circuit
+
 
 @dataclass(frozen=True)
 class FragmentLoop:
