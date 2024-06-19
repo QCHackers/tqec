@@ -1,6 +1,11 @@
 import pytest
 import stim
-from tqec.circuit.detectors.fragment import Fragment, FragmentLoop
+from tqec.circuit.detectors.fragment import (
+    Fragment,
+    FragmentLoop,
+    split_stim_circuit_into_fragments,
+)
+from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
 
 
@@ -59,6 +64,35 @@ def test_measurement_qubits():
     assert fragment.num_measurements == 3
 
 
+def test_fragment_measurements_and_resets():
+    fragment = Fragment(stim.Circuit("M 1 2 3"))
+    assert len(fragment.resets) == 0
+    assert set(fragment.measurements) == {PauliString({i: "Z"}) for i in [1, 2, 3]}
+
+    fragment = Fragment(stim.Circuit("R 1 2 3\nTICK\nM 1 2 3"))
+    assert set(fragment.measurements) == {PauliString({i: "Z"}) for i in [1, 2, 3]}
+    assert set(fragment.measurements) == {PauliString({i: "Z"}) for i in [1, 2, 3]}
+
+    fragment = Fragment(
+        stim.Circuit("""
+R 0 1 2 3 4
+TICK
+CX 0 1 2 3
+TICK
+CX 2 1 4 3
+TICK
+M 1 3
+DETECTOR(1, 0) rec[-2]
+DETECTOR(3, 0) rec[-1]
+M 0 2 4
+DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
+DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
+OBSERVABLE_INCLUDE(0) rec[-1]""")
+    )
+    assert set(fragment.resets) == {PauliString({i: "Z"}) for i in range(5)}
+    assert set(fragment.measurements) == {PauliString({i: "Z"}) for i in range(5)}
+
+
 def test_get_tableau():
     measurement_only = Fragment(stim.Circuit("""M 0 1 2 """))
     reset_measurement_only = Fragment(stim.Circuit("""R 0 1 2\nTICK\nM 0 1 2"""))
@@ -94,3 +128,137 @@ def test_fragment_loop_with_repetition():
         fragment_loop.with_repetitions(0)
     with pytest.raises(TQECException):
         fragment_loop.with_repetitions(-10)
+
+
+def test_split_stim_circuit_into_fragments_simple():
+    fragments = split_stim_circuit_into_fragments(stim.Circuit("M 0 1 2"))
+    assert len(fragments) == 1
+    assert fragments[0] == Fragment(stim.Circuit("M 0 1 2"))
+
+    fragments = split_stim_circuit_into_fragments(
+        stim.Circuit("R 1 2 3\nTICK\nM 1 2 3")
+    )
+    assert len(fragments) == 1
+    assert fragments[0] == Fragment(stim.Circuit("R 1 2 3\nTICK\nM 1 2 3"))
+
+    one_round_qec = stim.Circuit("""
+R 0 1 2 3 4
+TICK
+CX 0 1 2 3
+TICK
+CX 2 1 4 3
+TICK
+M 1 3
+DETECTOR(1, 0) rec[-2]
+DETECTOR(3, 0) rec[-1]
+M 0 2 4
+DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
+DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
+OBSERVABLE_INCLUDE(0) rec[-1]""")
+    fragments = split_stim_circuit_into_fragments(one_round_qec)
+
+    assert len(fragments) == 1
+    assert fragments[0] == Fragment(one_round_qec)
+
+
+def test_split_stim_circuit_into_fragments_qec_repetition_code():
+    circuit = stim.Circuit("""
+R 0 1 2 3 4
+TICK
+CX 0 1 2 3
+TICK
+CX 2 1 4 3
+TICK
+M 1 3
+DETECTOR(1, 0) rec[-2]
+DETECTOR(3, 0) rec[-1]
+TICK
+REPEAT 9 {
+    R 1 3
+    TICK
+    CX 0 1 2 3
+    TICK
+    CX 2 1 4 3
+    TICK
+    M 1 3
+    SHIFT_COORDS(0, 1)
+    DETECTOR(1, 0) rec[-2] rec[-4]
+    DETECTOR(3, 0) rec[-1] rec[-3]
+    TICK
+}
+R 1 3
+M 0 2 4
+DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
+DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
+OBSERVABLE_INCLUDE(0) rec[-1]""")
+    first_round = stim.Circuit("""
+R 0 1 2 3 4
+TICK
+CX 0 1 2 3
+TICK
+CX 2 1 4 3
+TICK
+M 1 3
+DETECTOR(1, 0) rec[-2]
+DETECTOR(3, 0) rec[-1]
+TICK""")
+    repeat_body = stim.Circuit("""
+R 1 3
+TICK
+CX 0 1 2 3
+TICK
+CX 2 1 4 3
+TICK
+M 1 3
+SHIFT_COORDS(0, 1)
+DETECTOR(1, 0) rec[-2] rec[-4]
+DETECTOR(3, 0) rec[-1] rec[-3]
+TICK""")
+    # No reset in end_round.
+    # The last TICK is an implementation detail, maybe try to remove it?
+    end_round = stim.Circuit("""
+M 0 2 4
+DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
+DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
+OBSERVABLE_INCLUDE(0) rec[-1]
+TICK""")
+    with pytest.warns(RuntimeWarning):
+        fragments = split_stim_circuit_into_fragments(circuit)
+
+    assert len(fragments) == 3
+    assert fragments[0] == Fragment(first_round)
+    assert fragments[1] == FragmentLoop([Fragment(repeat_body)], 9)
+    assert fragments[2] == Fragment(end_round)
+
+
+def test_split_stim_circuit_into_fragments_repeat_block():
+    circuit = stim.Circuit("""
+REPEAT 9 {
+    R 1 3
+    TICK
+    M 1 3
+}""")
+    fragments = split_stim_circuit_into_fragments(circuit)
+    assert len(fragments) == 1
+    assert fragments[0] == FragmentLoop(
+        [Fragment(stim.Circuit("R 1 3\nTICK\nM 1 3"))], 9
+    )
+
+    errorneous_circuit = stim.Circuit("REPEAT 9 {\nR 1 3\nTICK\nH 1 3\n}")
+    with pytest.raises(TQECException, match=r"^Error when splitting .* REPEAT block.*"):
+        split_stim_circuit_into_fragments(errorneous_circuit)
+
+
+def test_split_stim_circuit_into_fragments_error_before_repeat():
+    circuit = stim.Circuit("""
+R 1 3
+REPEAT 9 {
+    R 1 3
+    TICK
+    M 1 3
+}""")
+    with pytest.raises(
+        TQECException,
+        match=r"Trying to start a REPEAT block without a cleanly finished Fragment.*",
+    ):
+        split_stim_circuit_into_fragments(circuit)
