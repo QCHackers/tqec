@@ -36,7 +36,7 @@ class BoundaryStabilizer:
         self._involved_measurements = involved_measurements
         self._commuting_operations: list[PauliString] = []
         self._anticommuting_operations: list[PauliString] = []
-        for op in collapsing_operations:
+        for op in set(collapsing_operations):
             if stabilizer.commutes(op):
                 self._commuting_operations.append(op)
             else:
