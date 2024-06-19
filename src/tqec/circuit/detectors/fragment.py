@@ -23,14 +23,27 @@ from tqec.exceptions import TQECException
 
 class Fragment:
     def __init__(self, circuit: stim.Circuit):
-        """A sub-circuit guaranteed to start with a moment filled by reset instructions
-        and to end with a moment filled by measurement instructions.
+        """A sub-circuit guaranteed to end with a moment filled by measurement instructions.
 
-        A Fragment instance is guaranteed to start with resets and to end with
-        measurements.
-        Moreover, if there is a collapsing operation (reset or measurement) between two
-        `TICK` annotation then all the operations between these two `TICK` are of the
-        same type.
+        Fragment instances represent sub-circuits that contain:
+
+        1. zero or more moments exclusively composed of `reset`, annotation or
+            noisy-gate instructions,
+        2. zero or more moments composed of "computation" instructions (anything
+            that is not a measurement or a reset),
+        3. one or more moments exclusively composed of `measurement`, annotation
+            or noisy-gate instructions.
+
+        Raises:
+            TQECException: if the provided `stim.Circuit` instance contains a
+                stim.CircuitRepeatBlock instance.
+            TQECException: if any moment from the provided circuit contains
+                both a measurement (resp. reset) and a non-measurement (resp.
+                non-reset) operation. Note that annotations and noisy-gates
+                instructions (measurements excluded) are ignored, and so are
+                excluded from this condition.
+            TQECException: if the provided circuit does not end with at least
+                one measurement.
 
         Args:
             circuit: the circuit represented by the instance.
@@ -75,6 +88,13 @@ class Fragment:
             # Insert new measurement at the front to keep them correctly ordered.
             self._measurements = (
                 collapse_pauli_strings_at_moment(moment) + self._measurements
+            )
+
+        if not self._measurements:
+            raise TQECException(
+                "A Fragment should end with at least one measurement. "
+                "The provided circuit does not seem to check that condition.\n"
+                f"Provided circuit:\n{circuit}"
             )
 
     @property
