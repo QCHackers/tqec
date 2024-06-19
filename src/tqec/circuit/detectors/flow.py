@@ -79,11 +79,6 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
     )
     # While there are anti-commuting stabilizers that can be merged.
     while indices_of_anti_commuting_stabilizers_to_merge is not None:
-        print(
-            f"Found indices {indices_of_anti_commuting_stabilizers_to_merge} with "
-            f"{len(anticommuting_stabilizers)} anti-commuting stabilizers and "
-            f"{len(flows)} total flows left."
-        )
         # Recover all the stabilizers that should be merged together.
         flows_indices_of_stabilizers_to_merge = [
             anti_commuting_index_to_flows_index[i]
@@ -108,9 +103,6 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
             new_commuting_stabilizer = new_commuting_stabilizer.merge(
                 removed_stabilizer
             )
-        print(f"Obtained {new_commuting_stabilizer.before_collapse} from:")
-        for stab in stabilizers_to_merge:
-            print(f"- {stab.before_collapse}")
         # 3. Add the resulting commuting stabilizer to the flows.
         flows.append(new_commuting_stabilizer)
         # Update for loop condition
