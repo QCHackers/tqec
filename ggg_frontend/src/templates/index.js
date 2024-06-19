@@ -10,6 +10,9 @@ import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
 
+import config from '../components/download/config'
+import { postExample, getExample } from '../components/download/test-backend-interface'
+
 /////////////////////////////////////////////////////////////
 
 export default function TqecTemplates() {
@@ -61,11 +64,40 @@ export default function TqecTemplates() {
 
 /////////////////////////////////////////////////////////////
 
+	const testButton = button('test of API to interface with API', gridSize, 1*gridSize, 'orange', 'black');
+	workspace.addChild(testButton);
+
+	const getButton = button('GET button test', gridSize, 2*gridSize, 'white', 'black');
+	workspace.addChild(getButton);
+
+	const postButton = button('POST button test', gridSize, 3*gridSize, 'white', 'black');
+	workspace.addChild(postButton);
+
+//	importPlaquettesButton.on('click', (_e) => {
+//		let url = '/example'
+//
+//	    if (this.method === 'POST') {
+//	      const payload = { name: 'post_exmaple', value: '3.14' };
+//	      postExample(this.backendURL, payload);
+//	    } else {
+//	      getExample(this.backendURL);
+//	    }
+//
+//		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
+//	    this.backendURL = `${localTesting
+//	      ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
+//	      : config.prodBackendURL
+//	    }`;
+//	    this.backendURL += url;
+//	});
+
+/////////////////////////////////////////////////////////////
+
 	const infoButton = button('Library of plaquettes', libraryTopLeftCorners[0][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
     // Select the qubits that are part of a plaquette 
-	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 1*gridSize, 'white', 'black');
+	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 5*gridSize, 'white', 'black');
 	workspace.addChild(importPlaquettesButton);
 	let codePlaquettes = [];
 
@@ -76,24 +108,9 @@ export default function TqecTemplates() {
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
 		outline.lineStyle(2, 'lightcoral');
 		// Add workspace guidelines.
+		// TODO: take info from backend
 		let y0 = guideTopLeftCorner[1];
 		let message = '';
-		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
-			let x0 = guideTopLeftCorner[0];
-			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
-				const x1 = x0 + plaquetteDx;
-				const y1 = y0 + plaquetteDy;
-				outline.moveTo(x0*gridSize, y0*gridSize);
-				outline.lineTo(x1*gridSize, y0*gridSize);
-				outline.lineTo(x1*gridSize, y1*gridSize);
-				outline.lineTo(x0*gridSize, y1*gridSize);
-				outline.lineTo(x0*gridSize, y0*gridSize);
-				x0 += plaquetteDx;
-				message += '  .';
-			}
-			y0 += plaquetteDy;
-			message += '\n';
-		}
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
 			const x1 = x0 + plaquetteDx;
@@ -138,7 +155,7 @@ export default function TqecTemplates() {
 /////////////////////////////////////////////////////////////
 
     // Undo button, meaning that the last plaquette added is removed.
-	const undoButton = button('Remove last plaquette', gridSize, 2*gridSize, 'white', 'black');
+	const undoButton = button('Remove last plaquette', gridSize, 6*gridSize, 'white', 'black');
 	workspace.addChild(undoButton);
 
     undoButton.on('click', (_e) => {
