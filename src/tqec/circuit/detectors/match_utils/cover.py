@@ -153,9 +153,6 @@ def _find_cover_sat(
         exactly the provided `target` on all the qubits provided in
         `on_qubits`, or None if such a list could not be found.
     """
-    if not sources:
-        return None
-
     with pysat.solvers.CryptoMinisat() as solver:
         encode_pauli_string_exact_cover_sat_problem_in_solver(
             solver, target, sources, on_qubits
@@ -201,6 +198,13 @@ def find_exact_cover_sat(
         Either a list of indices over `sources` that, when combined, cover
         exactly the provided `target`, or None if such a list could not be found.
     """
+    # If target is the identity, we do not have to call a SAT solver to find
+    # a solution: pick no Pauli string.
+    # Note: we might want to disallow an empty return in the future.
+    if target.non_trivial_pauli_count == 0:
+        return []
+
+    # Else, if there are no sources, we cannot find a solution.
     if not sources:
         return None
 
