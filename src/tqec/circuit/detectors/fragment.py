@@ -278,10 +278,21 @@ def split_stim_circuit_into_fragments(
     for moment in moments_iterator:
         # If we have a REPEAT block
         if isinstance(moment, stim.CircuitRepeatBlock):
-            # Purge the current fragment
+            # Purge the current fragment.
+            # Note that the following lines should only be triggered on invalid
+            # inputs as once one measurement is found, all the following measurements
+            # are collected and a Fragment instance is created (see content of next
+            # elif branch). So if we are here and there is some partially collected
+            # fragment (i.e., current_fragment is not empty), it means that it is
+            # not terminated by measurements, which will raise an error when Fragment
+            # is constructed.
             if current_fragment:
-                fragments.append(Fragment(current_fragment.copy()))
-                current_fragment.clear()
+                raise TQECException(
+                    "Trying to start a REPEAT block without a cleanly finished Fragment. "
+                    "The following instructions were found preceding the REPEAT block:\n"
+                    + "\n\t".join(f"{m}" for m in current_fragment)
+                    + "\nbut these instructions do not form a valid Fragment."
+                )
             # Recurse to produce the Fragment instances for the loop body.
             fragments.append(_get_fragment_loop(moment))
 
