@@ -154,6 +154,11 @@ class FragmentLoop:
             raise TQECException(
                 "Cannot have a FragmentLoop with 0 or less repetitions."
             )
+        if not self.fragments:
+            raise TQECException(
+                "Cannot initialise a FragmentLoop instance without any "
+                "fragment for the loop body."
+            )
 
     def with_repetitions(self, repetitions: int) -> FragmentLoop:
         return FragmentLoop(fragments=self.fragments, repetitions=repetitions)
