@@ -206,6 +206,10 @@ def _consume_measurements(
                     moment
                 )
                 return measurements + final_measurements, left_over
+
+            # Here, we know for sure that the moment only contains mesurements or
+            # virtual gates.
+
             # Else, if any reset is found, the moment contains at least one combined
             # measurement/reset operation so split all combined operations, and
             # directly return because the reset found ends the measurement
