@@ -103,7 +103,7 @@ class Fragment:
     def measurements_qubits(self) -> list[int]:
         qubits = []
         for measurement in self.measurements:
-            (qubit,) = measurement.qubits
+            qubit = measurement.qubit
             qubits.append(qubit)
         return qubits
 
