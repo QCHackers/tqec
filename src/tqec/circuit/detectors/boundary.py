@@ -131,11 +131,11 @@ class BoundaryStabilizer:
         )
 
     def __repr__(self) -> str:
-        return (
-            f"BoundaryStabilizers(stabilizer={self._stabilizer!r}, "
-            f"collapsing_operations={list(self.collapsing_operations)!r}, "
-            f"involved_measurements={self._involved_measurements!r})"
-        )
+        ret = f"BoundaryStabilizers(stabilizer={self._stabilizer}, "
+        ret += "collapsing_operations=["
+        ret += ", ".join(str(p) for p in self.collapsing_operations)
+        ret += f"], involved_measurements={self._involved_measurements})"
+        return ret
 
     def coordinates(
         self, qubit_coordinates: dict[int, tuple[float, ...]]
