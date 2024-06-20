@@ -45,6 +45,9 @@ extensions = [
     # A Markdown parser for Sphinx
     # https://myst-parser.readthedocs.io/en/latest/index.html
     "myst_parser",
+    # An extension allowing the inclusion of Jupyter notebooks.
+    # https://nbsphinx.readthedocs.io/en/0.9.3/
+    "nbsphinx",
 ]
 
 templates_path = ["_templates"]

@@ -22,6 +22,8 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: |
+          apt-get update
+          apt-get install -y --no-install-recommends pandoc
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Generate the documentation
