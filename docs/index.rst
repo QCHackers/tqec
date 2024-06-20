@@ -16,7 +16,6 @@ TQEC
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Notebooks:
    
-   source/tqec
-   
+   Automatic detector computation <media/detectors/detector_computation_illustration>

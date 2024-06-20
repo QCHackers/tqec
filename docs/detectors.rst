@@ -4,6 +4,9 @@ Automatic detector computation
 The ``tqec`` package implements a method to automatically compute detectors from a 
 given quantum circuit representing a quantum error corrected computation.
 
+An accompanying notebook showcasing the different steps to find detectors is located 
+`here <media/detectors/detector_computation_illustration.ipynb>`_.
+
 Difference from the main ``tqec`` package 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
