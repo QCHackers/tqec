@@ -30,16 +30,7 @@ def _detectors_to_circuit(
     circuit = stim.Circuit()
 
     for detector in detectors:
-        circuit.append(
-            stim.CircuitInstruction(
-                "DETECTOR",
-                targets=[
-                    stim.target_rec(i)
-                    for i in sorted(m.offset for m in detector.measurements)
-                ],
-                gate_args=list(detector.coords) + additional_coordinates,
-            )
-        )
+        circuit.append(detector.to_instruction())
 
     return circuit
 
