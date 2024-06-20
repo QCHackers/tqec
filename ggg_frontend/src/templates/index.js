@@ -73,23 +73,30 @@ export default function TqecTemplates() {
 	const postButton = button('POST button test', gridSize, 3*gridSize, 'white', 'black');
 	workspace.addChild(postButton);
 
-//	importPlaquettesButton.on('click', (_e) => {
-//		let url = '/example'
-//
-//	    if (this.method === 'POST') {
-//	      const payload = { name: 'post_exmaple', value: '3.14' };
-//	      postExample(this.backendURL, payload);
-//	    } else {
-//	      getExample(this.backendURL);
-//	    }
-//
-//		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
-//	    this.backendURL = `${localTesting
-//	      ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
-//	      : config.prodBackendURL
-//	    }`;
-//	    this.backendURL += url;
-//	});
+	getButton.on('click', (_e) => {
+		let url = '/example'
+		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
+		let backendURL = `${localTesting
+		  ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
+		  : config.prodBackendURL
+		}`;
+		backendURL += url;
+
+		getExample(backendURL);
+	});
+
+	postButton.on('click', (_e) => {
+		let url = '/example'
+		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
+		let backendURL = `${localTesting
+		  ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
+		  : config.prodBackendURL
+		}`;
+		backendURL += url;
+
+		const payload = { name: 'post_example', value: '3.14' };
+		postExample(backendURL, payload);
+	});
 
 /////////////////////////////////////////////////////////////
 
