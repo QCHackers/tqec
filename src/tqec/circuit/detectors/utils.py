@@ -686,3 +686,27 @@ def split_moment_containing_measurements(
     if tick_instruction_encountered:
         left_over_instructions.append(stim.CircuitInstruction("TICK", []))
     return measurements, left_over_instructions
+
+
+def remove_annotations_except_ticks_from(circuit: stim.Circuit) -> stim.Circuit:
+    """Remove all the annotations from a given circuit, except TICK instructions.
+
+    Args:
+        circuit: the circuit to remove annotations from.
+
+    Returns:
+        a new quantum circuit that contains all the instructions from the provided
+        circuit except annotations that are not TICK instructions.`
+    """
+    new_circuit = stim.Circuit()
+    for inst in circuit:
+        if isinstance(inst, stim.CircuitRepeatBlock):
+            new_circuit.append(
+                stim.CircuitRepeatBlock(
+                    repeat_count=inst.repeat_count,
+                    body=remove_annotations_except_ticks_from(inst.body_copy()),
+                )
+            )
+        elif not _is_annotation(inst) or inst.name == "TICK":
+            new_circuit.append(inst)
+    return new_circuit
