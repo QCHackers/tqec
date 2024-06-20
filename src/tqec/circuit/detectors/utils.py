@@ -682,7 +682,12 @@ def split_moment_containing_measurements(
     return measurements, left_over_instructions
 
 
-def remove_annotations_except_ticks_from(circuit: stim.Circuit) -> stim.Circuit:
+def remove_annotations(
+    circuit: stim.Circuit,
+    annotations_to_remove: frozenset[str] = frozenset(
+        {"DETECTOR", "MPAD", "OBSERVABLE_INCLUDE", "SHIFT_COORDS"}
+    ),
+) -> stim.Circuit:
     """Remove all the annotations from a given circuit, except TICK instructions.
 
     Args:
@@ -698,9 +703,9 @@ def remove_annotations_except_ticks_from(circuit: stim.Circuit) -> stim.Circuit:
             new_circuit.append(
                 stim.CircuitRepeatBlock(
                     repeat_count=inst.repeat_count,
-                    body=remove_annotations_except_ticks_from(inst.body_copy()),
+                    body=remove_annotations(inst.body_copy(), annotations_to_remove),
                 )
             )
-        elif not _is_annotation(inst) or inst.name == "TICK":
+        elif not _is_annotation(inst) or inst.name not in annotations_to_remove:
             new_circuit.append(inst)
     return new_circuit
