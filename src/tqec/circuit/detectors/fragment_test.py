@@ -186,7 +186,6 @@ REPEAT 9 {
     DETECTOR(3, 0) rec[-1] rec[-3]
     TICK
 }
-R 1 3
 M 0 2 4
 DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
 DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
@@ -220,11 +219,8 @@ TICK""")
 M 0 2 4
 DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
 DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
-OBSERVABLE_INCLUDE(0) rec[-1]
-TICK""")
-    with pytest.warns(RuntimeWarning):
-        fragments = split_stim_circuit_into_fragments(circuit)
-
+OBSERVABLE_INCLUDE(0) rec[-1]""")
+    fragments = split_stim_circuit_into_fragments(circuit)
     assert len(fragments) == 3
     assert fragments[0] == Fragment(first_round)
     assert fragments[1] == FragmentLoop([Fragment(repeat_body)], 9)
