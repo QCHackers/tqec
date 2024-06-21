@@ -210,8 +210,8 @@ def split_combined_measurement_reset_in_moment(
 ) -> tuple[stim.Circuit, stim.Circuit]:
     """Split a moment that contains combined operations into two moments.
 
-    The moment should only contain annotations, noisy operations, or combined
-    measurement/reset operations.
+    The moment should only contain annotations, noisy operations, combined
+    measurement/reset operations, measurement operations or reset operations.
 
     Warning:
         This function assumes that any annotation encountered in the provided
