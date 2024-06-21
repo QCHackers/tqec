@@ -1,0 +1,21 @@
+tqec.sketchup package
+=====================
+
+Submodules
+----------
+
+tqec.sketchup.dae\_parse module
+-------------------------------
+
+.. automodule:: tqec.sketchup.dae_parse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.sketchup
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -10,6 +10,7 @@ Subpackages
    tqec.circuit
    tqec.noise_models
    tqec.plaquette
+   tqec.sketchup
    tqec.templates
 
 Submodules
