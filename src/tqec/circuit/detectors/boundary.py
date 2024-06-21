@@ -147,7 +147,8 @@ class BoundaryStabilizer:
         ret = f"BoundaryStabilizers(stabilizer={self._stabilizer}, "
         ret += "collapsing_operations=["
         ret += ", ".join(str(p) for p in self.collapsing_operations)
-        ret += f"], involved_measurements={self._involved_measurements})"
+        ret += f"], involved_measurements={self._involved_measurements}"
+        ret += f", source_qubits={set(self._source_qubits)})"
         return ret
 
     def coordinates(
