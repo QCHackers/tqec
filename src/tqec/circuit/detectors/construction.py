@@ -109,7 +109,7 @@ def compile_fragments_to_circuit_with_detectors(
                 + _tick_circuit()
             )
         else:  # isinstance(fragment, FragmentLoop):
-            shift_circuit = _shift_time_instruction(len(detectors[0].coords))
+            shift_circuit = _shift_time_instruction(len(detectors[0].coords) - 1)
             loop_body = compile_fragments_to_circuit_with_detectors(
                 fragment.fragments, qubit_coords_map
             )
