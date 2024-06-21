@@ -6,6 +6,8 @@ import pathlib
 
 import numpy as np
 
+from tqec.exceptions import TQECException
+
 
 # All library nodes defined in the template file
 LIBRARY_NODE_TYPES = {
@@ -43,7 +45,7 @@ class NodePosition:
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.z})"
-    
+
     def to_tuple(self):
         return (self.x, self.y, self.z)
 
@@ -51,12 +53,13 @@ class NodePosition:
 @dataclass(frozen=True)
 class Node:
     """A node in the SketchUp model with a specific type and position."""
+
     node_type: str
     position: NodePosition
 
     def __post_init__(self):
         if self.node_type not in LIBRARY_NODE_TYPES:
-            raise ValueError(f"Invalid node type: {self.node_type}.")
+            raise TQECException(f"Invalid node type: {self.node_type}.")
 
     def __str__(self) -> str:
         return f"{self.node_type} at {self.position}"
@@ -112,11 +115,11 @@ def _can_cast_to_int_safely(x: float) -> bool:
 def _get_position_from_matrix_text(matrix_text: str) -> NodePosition:
     matrix = np.fromstring(matrix_text, dtype=float, sep=" ")
     if matrix.size != 16:
-        raise ValueError("The transformation matrix must have exactly 16 elements.")
+        raise TQECException("The transformation matrix must have exactly 16 elements.")
     x, y, z = matrix[3], matrix[7], matrix[11]
     for value in (x, y, z):
         if not _can_cast_to_int_safely(value):
-            raise ValueError(
+            raise TQECException(
                 f"The translation component of the transformation matrix must be integers, but got {(x, y, z)}."
             )
     return NodePosition(int(round(x)), int(round(y)), int(round(z)))
@@ -137,7 +140,7 @@ def _construct_nodes(
                 if matrix_element is not None:
                     matrix_text = matrix_element.text
                     if matrix_text is None:
-                        raise ValueError(
+                        raise TQECException(
                             "Matrix text must be specified for a valid instance_node."
                         )
                     matrix_values = _get_position_from_matrix_text(matrix_text)
@@ -147,4 +150,3 @@ def _construct_nodes(
     for child in root:
         nodes.extend(_construct_nodes(child, root, existing_library_nodes))
     return nodes
-
