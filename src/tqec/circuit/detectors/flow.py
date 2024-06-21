@@ -243,6 +243,14 @@ def build_flows_from_fragments(
         )
     ```
 
+    Warning:
+        If you want to perform automatic detector computation then make sure that
+        the final round of measurements performed on data qubits is in its own
+        :class:`Fragment` instance at the end of the provided `fragments`.
+        This function will still output a valid result if that condition is not
+        fulfilled, but follow-up functions will expect a :class:`FragmentFlow`
+        instance at the end, representing the measurements performed on data-qubits.
+
     Args:
         fragments: the fragments composing the circuit to study and for which this
             function should compute flows.

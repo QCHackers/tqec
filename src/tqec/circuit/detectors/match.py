@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import typing as ty
+import warnings
 from copy import deepcopy
 from dataclasses import dataclass
 
@@ -11,7 +12,7 @@ from tqec.circuit.detectors.boundary import BoundaryStabilizer
 from tqec.circuit.detectors.flow import FragmentFlows, FragmentLoopFlows
 from tqec.circuit.detectors.match_utils.cover import find_exact_cover_sat
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 
 
 @dataclass(frozen=True)
@@ -89,6 +90,13 @@ def match_detectors_from_flows_shallow(
         considered as a single :class:`Fragment` instance, the detectors will be
         appropriately matched and returned.
 
+    Warning:
+        This function expects an instance of :class:`FragmentFlows` representing
+        a separate moment only containing final measurements performed on data
+        qubits as the last entry of the provided `flows`. Failing to provide such
+        a moment will not raise a warning, but might, in some specific edge cases,
+        lead to unwanted detectors.
+
     Args:
         flows: a list of fragment flow to search detectors in.
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate
@@ -102,6 +110,14 @@ def match_detectors_from_flows_shallow(
         :class:`FragmentLoopFlows` then the returned detectors should be inserted at
         the end of the loop body.
     """
+    if flows[-1].creation:
+        warnings.warn(
+            "Found creation flows in the last provided fragment flow, meaning "
+            "that it does not include only the last measurements on data qubits. "
+            "This is not necessarily an error, but might lead to unwanted detectors "
+            "in some edge cases. Read the function docstring for more information.",
+            TQECWarning,
+        )
     detectors: list[list[MatchedDetector]] = [
         match_detectors_within_fragment(flow, qubit_coordinates) for flow in flows
     ]

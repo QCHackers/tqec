@@ -18,7 +18,7 @@ from tqec.circuit.detectors.utils import (
     split_combined_measurement_reset_in_moment,
     split_moment_containing_measurements,
 )
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 
 
 class Fragment:
@@ -253,7 +253,7 @@ def split_stim_circuit_into_fragments(
       - starts with zero or more moments containing exclusively reset operations,
       - continuing with zero or more moments containing any non-collapsing operation
         (i.e., anything except reset and measurement operations).
-      - ends with one or more moments containing exclusively measurement operations.
+      - ends with one moment containing exclusively measurement operations.
 
       For this reason, be careful with reset/measurement combined operations (e.g.,
       the `stim` instruction `MR` that performs in one instruction a measurement and
@@ -261,6 +261,16 @@ def split_stim_circuit_into_fragments(
       equivalent (e.g., the `MR` operation is replaced by a `M` operation, followed
       by a `R` operation), and the resulting circuit should check the above
       pre-condition.
+
+    Warning:
+        If you plan to use the library to find detectors (and are not using this
+        function in isolation), you want the final measurements performed on data
+        qubits to be in their own moment, as this is required in the next steps
+        of detector computation.
+        So be sure to check that the measurements performed on data qubits are
+        either directly following a REPEAT block or a TICK instruction.
+        This method will not emit any warning or exception if the above condition
+        is not fulfilled because it is not required **for this function**.
 
     Args:
         circuit (stim.Circuit): the circuit to split into Fragment instances.
@@ -302,30 +312,17 @@ def split_stim_circuit_into_fragments(
 
         # If this is a measurement moment
         elif has_measurement(moment):
-            # If there is something else than measurements, just split the something else
-            # out, add the measurements to the current Fragment, build it, and start a
-            # new one with the something else.
+            # If there is something else than measurements, raise because this is
+            # not a valid input.
             if not has_only_measurement_or_is_virtual(moment):
-                measurements, left_over = split_moment_containing_measurements(moment)
-                current_fragment += measurements
-                fragments.append(Fragment(current_fragment.copy()))
-                current_fragment.clear()
-                current_fragment += left_over
-                continue
-            # Else, we only have measurements in this moment, so we can:
-            # 1. add the full moment to the current fragment,
+                raise TQECException(
+                    "A moment with measurement can only contained measurements."
+                )
+            # Else, we only have measurements in this moment, so we can
+            # add the full moment to the current fragment and start a new one.
             current_fragment += moment
-            # 2. try to find more subsequent measurements in the following moments,
-            more_measurements, left_over = _consume_measurements(moments_iterator)
-            # 3. finish the current fragment with the found measurements
-            current_fragment += more_measurements
             fragments.append(Fragment(current_fragment.copy()))
             current_fragment.clear()
-            # 4. handle the left over instructions.
-            if isinstance(left_over, stim.CircuitRepeatBlock):
-                fragments.append(_get_fragment_loop(left_over))
-            else:
-                current_fragment += left_over
 
         # This is either a regular instruction or a reset moment. In any case,
         # just add it to the current fragment.
@@ -341,7 +338,7 @@ def split_stim_circuit_into_fragments(
                 "sure that each reset (even resets from measurement/reset "
                 "combined instruction) is eventually followed by a measurement. "
                 f"Unprocessed fragment:\n{current_fragment}",
-                RuntimeWarning,
+                TQECWarning,
             )
         else:
             raise TQECException(
