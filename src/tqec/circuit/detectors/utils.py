@@ -297,7 +297,17 @@ def split_combined_measurement_reset_in_moment(
                 measurements.append(stim.CircuitInstruction(meas_name, targets))
                 resets.append(stim.CircuitInstruction(inst.name[1:], targets))
             measured_qubits |= qubit_targets
-        elif _is_noisy_gate(inst):
+        elif _is_measurement(inst):
+            measurements.append(inst)
+            measured_qubits |= qubit_targets
+        elif _is_reset(inst):
+            resets.append(inst)
+            if not qubit_targets.issubset(measured_qubits):
+                raise TQECException(
+                    "Found a reset on a non-measured qubit. Should that be allowed?\n"
+                    f"Moment:\n{moment}"
+                )
+        else:  # _is_noisy_gate(inst)
             # If none of the qubits the instruction is applied on has already been
             # measured, this means that we can insert the instruction in measurements.
             if not qubit_targets & measured_qubits:
@@ -314,11 +324,6 @@ def split_combined_measurement_reset_in_moment(
                     f"The instruction: {inst}\n"
                     f"Measured qubits: {measured_qubits}"
                 )
-        else:
-            # A single measurement or reset, not supported per the docstring.
-            raise TQECException(
-                "Breaking pre-condition: found a non-combined measurement or reset gate."
-            )
 
     # Ensure that measurements ends with a TICK operation and that resets does
     # only if a TICK instruction has been encountered when iterating on instructions.

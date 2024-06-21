@@ -150,16 +150,6 @@ def test_split_combined_measurement_reset_in_moment_raising():
     ):
         split_combined_measurement_reset_in_moment(moment)
 
-    moment = stim.Circuit("""
-        R 0 2 4
-        MR 1 3
-        M 0 2 4""")  # 4 has not been measured.
-    with pytest.raises(
-        TQECException,
-        match=r"^Breaking pre-condition: found a non-combined measurement or reset gate\.$",
-    ):
-        split_combined_measurement_reset_in_moment(moment)
-
 
 def test_split_combined_measurement_reset_in_moment_with_noisy_gates():
     moment = stim.Circuit("""
