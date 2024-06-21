@@ -714,3 +714,31 @@ def remove_annotations(
         elif not _is_annotation(inst) or inst.name not in annotations_to_remove:
             new_circuit.append(inst)
     return new_circuit
+
+
+def remove_final_resets(circuit: stim.Circuit) -> stim.Circuit:
+    instruction_index: int = len(circuit) - 1
+    touched_qubits: set[int] = set()
+    reset_indices: list[int] = []
+    for i in range(instruction_index, -1, -1):
+        instruction = circuit[i]
+        if isinstance(instruction, stim.CircuitRepeatBlock):
+            break
+        elif _is_annotation(instruction) or _is_noisy_gate(instruction):
+            continue
+        else:
+            qubits = {t.qubit_value for t in instruction.targets_copy()}
+            if any(q is None for q in qubits):
+                raise TQECException(
+                    f"Found an instruction with non-qubit targets: {instruction}"
+                )
+            if touched_qubits & qubits:
+                break
+            touched_qubits |= qubits  # type:ignore
+            if _is_reset(instruction):
+                reset_indices.append(i)
+
+    result_circuit = stim.Circuit()
+    for i in filter(lambda item: item not in reset_indices, range(len(circuit))):
+        result_circuit.append(circuit[i])
+    return result_circuit
