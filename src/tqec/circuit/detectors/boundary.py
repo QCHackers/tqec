@@ -166,8 +166,7 @@ class BoundaryStabilizer:
             the boundary stabilizer coordinates.
         """
         measurement_coordinates = [
-            qubit_coordinates[measurement.qubit_index]
-            for measurement in self.involved_measurements
+            qubit_coordinates[source] for source in self._source_qubits
         ]
         return tuple(numpy.mean(measurement_coordinates, axis=0))
 
