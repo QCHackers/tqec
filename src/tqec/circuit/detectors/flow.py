@@ -278,7 +278,10 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
 
         creation_flows.append(
             BoundaryStabilizer(
-                final_stabilizer, fragment.measurements, involved_measurements_offsets
+                final_stabilizer,
+                fragment.measurements,
+                involved_measurements_offsets,
+                frozenset([reset_stabilizer.qubit]),
             )
         )
 
@@ -304,6 +307,7 @@ def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
                         sorted_qubit_involved_in_measurements, qubit
                     )
                 ],
+                frozenset([measurement.qubit]),
             ),
         )
 

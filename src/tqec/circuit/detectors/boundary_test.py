@@ -11,9 +11,11 @@ def test_boundary_stabilizer_construction():
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
 
-    BoundaryStabilizer(X0Z1, [Z0, Z1], [])
-    BoundaryStabilizer(X0Z1, [], [RelativeMeasurementLocation(-1, 0)])
-    BoundaryStabilizer(X0Z1, [Z0, Z0], [])
+    BoundaryStabilizer(X0Z1, [Z0, Z1], [], frozenset([0]))
+    BoundaryStabilizer(X0Z1, [], [RelativeMeasurementLocation(-1, 0)], frozenset([0]))
+    BoundaryStabilizer(X0Z1, [Z0, Z0], [], frozenset([1, 4, 6]))
+    with pytest.raises(TQECException):
+        BoundaryStabilizer(X0Z1, [Z0, Z0], [], frozenset([]))
 
 
 def test_has_anti_commuting_operations():
@@ -22,13 +24,13 @@ def test_has_anti_commuting_operations():
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
 
-    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [], frozenset([0]))
     assert not stab.has_anticommuting_operations
 
-    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [], frozenset([0]))
     assert stab.has_anticommuting_operations
 
-    stab = BoundaryStabilizer(X0Z1, [], [])
+    stab = BoundaryStabilizer(X0Z1, [], [], frozenset([0]))
     assert not stab.has_anticommuting_operations
 
 
@@ -38,13 +40,13 @@ def test_boundary_stabilizer_collapsing_operations():
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
 
-    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [], frozenset([0]))
     assert set(stab.collapsing_operations) == {X0, Z1}
 
-    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [], frozenset([0]))
     assert set(stab.collapsing_operations) == {Z0, Z1}
 
-    stab = BoundaryStabilizer(X0Z1, [], [])
+    stab = BoundaryStabilizer(X0Z1, [], [], frozenset([0]))
     assert not list(stab.collapsing_operations)
 
 
@@ -54,16 +56,16 @@ def test_after_and_before_collapse():
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
 
-    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [X0, Z1], [], frozenset([0]))
     assert stab.before_collapse == X0Z1
     assert stab.after_collapse == PauliString({})
 
-    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [])
+    stab = BoundaryStabilizer(X0Z1, [Z0, Z1], [], frozenset([0]))
     assert stab.before_collapse == X0Z1
     with pytest.raises(TQECException):
         stab.after_collapse
 
-    stab = BoundaryStabilizer(X0Z1, [], [])
+    stab = BoundaryStabilizer(X0Z1, [], [], frozenset([0]))
     assert stab.before_collapse == X0Z1
     assert stab.after_collapse == X0Z1
 
@@ -80,13 +82,12 @@ def test_merge():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
+        frozenset([1, 4, 0]),
     )
     b = BoundaryStabilizer(
-        Z0X1,
-        [X0, Z1],
-        [RelativeMeasurementLocation(-20, 11)],
+        Z0X1, [X0, Z1], [RelativeMeasurementLocation(-20, 11)], frozenset([2])
     )
-    c = BoundaryStabilizer(Z0X1, [Z0, Z1], [])
+    c = BoundaryStabilizer(Z0X1, [Z0, Z1], [], frozenset([0]))
 
     ab = a.merge(b)
     assert ab.before_collapse == Y0Y1
@@ -94,6 +95,7 @@ def test_merge():
     assert set(ab.involved_measurements) == set(a.involved_measurements) | set(
         b.involved_measurements
     )
+    assert set(ab._source_qubits) == {0, 1, 2, 4}
 
     with pytest.raises(TQECException):
         a.merge(c)
@@ -108,6 +110,7 @@ def test_with_measurement_offset():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
+        frozenset([0]),
     )
 
     assert set(a.with_measurement_offset(9).involved_measurements) == {
@@ -134,6 +137,7 @@ def test_coordinates():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
+        frozenset([0]),
     )
     qubit_coordinates = (1.0, 2.0)
     numpy.testing.assert_allclose(
@@ -152,11 +156,13 @@ def test_manhattan_distance():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
+        frozenset([0]),
     )
     b = BoundaryStabilizer(
         Z0X1,
         [X0, Z1],
         [RelativeMeasurementLocation(-20, 6)],
+        frozenset([0]),
     )
     numpy.testing.assert_allclose(a.coordinates(qubits_coordinates), (6.0, 1.5))
     numpy.testing.assert_allclose(b.coordinates(qubits_coordinates), (12.0, 3.0))

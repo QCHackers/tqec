@@ -14,6 +14,7 @@ class BoundaryStabilizer:
         stabilizer: PauliString,
         collapsing_operations: ty.Iterable[PauliString],
         involved_measurements: list[RelativeMeasurementLocation],
+        source_qubits: frozenset[int],
     ):
         """Represents a stabilizer that has been propagated and is now at the boundary
         of a Fragment.
@@ -21,6 +22,9 @@ class BoundaryStabilizer:
         Internally, this class separates the provided collapsing operations into
         commuting and anti-commuting collapsing operations. If there is any
         anti-commuting operation, some methods/properties will raise an exception.
+
+        Raises:
+            TQECException: if `source_qubits` is empty.
 
         Args:
             stabilizer: The propagated stabilizer **before** any collapsing operation
@@ -31,6 +35,9 @@ class BoundaryStabilizer:
                 fragment (even if the created BoundaryStabilizer instance represents a
                 stabilizer on the beginning boundary) of measurements that are involved
                 in this stabilizer.
+            source_qubit: index of the qubit on which the collapsing operation that started
+                the propagation of this boundary stabilizer was applied on.
+                Should contain at least one index.
         """
         self._stabilizer = stabilizer
         self._involved_measurements = involved_measurements
@@ -42,6 +49,11 @@ class BoundaryStabilizer:
             else:
                 self._anticommuting_operations.append(op)
         self._after_collapse_cache: PauliString | None = None
+        if not source_qubits:
+            raise TQECException(
+                "Cannot define a BoundaryStabilizer without at least one source qubit."
+            )
+        self._source_qubits: frozenset[int] = source_qubits
 
     @property
     def has_anticommuting_operations(self) -> bool:
@@ -126,8 +138,9 @@ class BoundaryStabilizer:
         involved_measurements = list(
             set(self._involved_measurements) | set(other._involved_measurements)
         )
+        source_qubits = self._source_qubits | other._source_qubits
         return BoundaryStabilizer(
-            stabilizer, self_collapsing_operations, involved_measurements
+            stabilizer, self_collapsing_operations, involved_measurements, source_qubits
         )
 
     def __repr__(self) -> str:
@@ -162,6 +175,7 @@ class BoundaryStabilizer:
             self._stabilizer,
             self.collapsing_operations,
             [m.offset_by(offset) for m in self.involved_measurements],
+            self._source_qubits,
         )
 
     def is_trivial(self) -> bool:
