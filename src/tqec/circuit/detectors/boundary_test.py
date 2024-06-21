@@ -137,7 +137,7 @@ def test_coordinates():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
-        frozenset([0]),
+        frozenset([3]),
     )
     qubit_coordinates = (1.0, 2.0)
     numpy.testing.assert_allclose(
@@ -156,13 +156,13 @@ def test_manhattan_distance():
         X0Z1,
         [X0, Z1],
         [RelativeMeasurementLocation(-28, 3), RelativeMeasurementLocation(-10, 3)],
-        frozenset([0]),
+        frozenset([3]),
     )
     b = BoundaryStabilizer(
         Z0X1,
         [X0, Z1],
         [RelativeMeasurementLocation(-20, 6)],
-        frozenset([0]),
+        frozenset([6]),
     )
     numpy.testing.assert_allclose(a.coordinates(qubits_coordinates), (6.0, 1.5))
     numpy.testing.assert_allclose(b.coordinates(qubits_coordinates), (12.0, 3.0))
