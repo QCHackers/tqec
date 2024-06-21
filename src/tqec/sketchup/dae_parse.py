@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 import pathlib
