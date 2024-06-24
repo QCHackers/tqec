@@ -1,4 +1,5 @@
 import typing as ty
+from copy import deepcopy
 
 import networkx as nx
 import numpy
@@ -157,7 +158,11 @@ class ComposedTemplate(Template):
             )
         template_id: int = len(self._templates)
         indices = template_to_insert.indices
-        self._templates.append(template_to_insert.template)
+        # Make sure the template is at the correct scale
+        template = deepcopy(template_to_insert.template)
+        template.scale_to(self.k)
+        # Update the data-structure
+        self._templates.append(template)
         self._relative_position_graph.add_node(template_id, plaquette_indices=indices)
         self._maximum_plaquette_mapping_index = max(
             [self._maximum_plaquette_mapping_index] + indices
