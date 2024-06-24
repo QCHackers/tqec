@@ -13,7 +13,7 @@ from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import Template, TemplateWithIndices
 
 
-def get_corner_position(
+def _get_corner_position(
     position: Position,
     position_corner: CornerPositionEnum,
     shape: Shape2D,
@@ -297,14 +297,14 @@ class ComposedTemplate(Template):
             dest_corner: CornerPositionEnum
             src_corner, dest_corner = relative_position
             # Compute the anchor corner
-            anchor_position: Position = get_corner_position(
+            anchor_position: Position = _get_corner_position(
                 src_ul_position,
                 CornerPositionEnum.UPPER_LEFT,
                 src_shape,
                 src_corner,
             )
             # Compute the upper-left position of the destination
-            ul_positions[dest] = get_corner_position(
+            ul_positions[dest] = _get_corner_position(
                 anchor_position,
                 dest_corner,
                 dest_shape,
