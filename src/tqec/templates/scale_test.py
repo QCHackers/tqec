@@ -1,7 +1,7 @@
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
+from tqec.templates.scale import LinearFunction
 
 
 @pytest.mark.parametrize(
@@ -38,39 +38,3 @@ def test_linear_function_non_exact_invert():
     a = LinearFunction(2, 0)
     with pytest.raises(TQECException):
         a.invert(5)
-
-
-def test_dimension_init():
-    dim = Dimension(5, LinearFunction())
-    assert dim.value == 5
-
-
-def test_dimension_default_scaling():
-    dim = Dimension(2, scaling_function=LinearFunction(2))
-    dim.scale_to(3)
-    assert dim.value == 2 * 3
-
-
-def test_dimension_scaling():
-    scaling_func = LinearFunction(3, 4)
-
-    dim = Dimension(2, scaling_func)
-    dim.scale_to(4)
-    assert dim.value == scaling_func(4)
-    assert dim.scale_to(19).value == scaling_func(19)
-
-
-def test_fixed_dimension():
-    dim = FixedDimension(3)
-    assert dim.value == 3
-    assert dim.scale_to(10).value == 3
-    assert dim.scale_to(421).value == 3
-
-
-def test_dimension_operators():
-    sfa, sfb = LinearFunction(2, 5), LinearFunction(3, 1)
-    da, db = Dimension(2, sfa), Dimension(2, sfb)
-    assert (da + db).scale_to(10).value == sfa(10) + sfb(10)
-    assert (da - db).scale_to(3).value == sfa(3) - sfb(3)
-    assert (3 * da).scale_to(54).value == 3 * sfa(54)
-    assert (da * 3).scale_to(54).value == 3 * sfa(54)

@@ -6,11 +6,11 @@ from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, FixedDimension
+from tqec.templates.scale import LinearFunction
 
 
 class QubitSquareTemplate(ComposedTemplate):
-    def __init__(self, dim: Dimension) -> None:
+    def __init__(self, dim: LinearFunction, k: int = 2) -> None:
         """An error-corrected qubit.
 
         The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
@@ -24,9 +24,10 @@ class QubitSquareTemplate(ComposedTemplate):
 
         Args:
             dim: dimension of the error-corrected qubit.
+            k: initial value for the scaling parameter.
         """
         # nsone: non-scalable one
-        nsone = FixedDimension(1)
+        nsone = LinearFunction(0, 1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
@@ -46,7 +47,7 @@ class QubitSquareTemplate(ComposedTemplate):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        super().__init__(_templates)
+        super().__init__(_templates, k=k)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
@@ -68,8 +69,9 @@ class QubitSquareTemplate(ComposedTemplate):
 class QubitRectangleTemplate(ComposedTemplate):
     def __init__(
         self,
-        width: Dimension,
-        height: Dimension,
+        width: LinearFunction,
+        height: LinearFunction,
+        k: int = 2,
     ) -> None:
         """A scalable rectangle error-corrected qubit.
 
@@ -86,9 +88,10 @@ class QubitRectangleTemplate(ComposedTemplate):
         Args:
             width: width of the rectangle logical qubit.
             height: height of the rectangle logical qubit.
+            k: initial value for the scaling parameter.
         """
         # nsone: non-scalable one
-        nsone = FixedDimension(1)
+        nsone = LinearFunction(0, 1)
 
         _templates = [
             # Central square, containing plaquettes of types 3 and 4
@@ -108,7 +111,7 @@ class QubitRectangleTemplate(ComposedTemplate):
             (3, RIGHT_OF, 0),
             (4, BELOW_OF, 0),
         ]
-        super().__init__(_templates)
+        super().__init__(_templates, k=k)
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 

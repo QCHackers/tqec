@@ -57,7 +57,13 @@ def _get_corner_position(
 
 
 class ComposedTemplate(Template):
-    def __init__(self, templates: list[TemplateWithIndices]) -> None:
+    def __init__(
+        self,
+        templates: list[TemplateWithIndices],
+        k: int = 2,
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """Manages templates positioned relatively to each other.
 
         This class manages a list of user-provided templates and user-provided relative
@@ -99,11 +105,17 @@ class ComposedTemplate(Template):
         Args:
             templates: a list of templates forwarded to the ``add_templates`` method
                 at the end of instance initialisation.
+            k: initial value for the scaling parameter.
+            default_x_increment: default increment in the x direction between
+                two plaquettes.
+            default_y_increment: default increment in the y direction between
+                two plaquettes.
 
         Raises:
             ValueError: if the templates provided have different default
                 increments.
         """
+        super().__init__(k, default_x_increment, default_y_increment)
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
@@ -437,22 +449,18 @@ class ComposedTemplate(Template):
         """
         return self._default_increments
 
-    def scale_to(self, k: int) -> "ComposedTemplate":
+    def scale_to(self, k: int) -> None:
         """Scales all the scalable component templates to the given scale ``k``.
 
-        Note that this function scales the template instance INLINE. Rephrasing, the
-        instance on which this method is called is modified in-place AND returned.
+        Note that this function scales the template instance INLINE.
 
         Args:
             k: the new scale of the component templates. Forwarded to all the
-            ``Template`` instances added to this ``ComposedTemplate`` instance.
-
-        Returns:
-            ``self``, once scaled.
+                :class:`Template` instances added to this
+                :class:`ComposedTemplate` instance.
         """
         for t in self._templates:
             t.scale_to(k)
-        return self
 
     @property
     def shape(self) -> Shape2D:

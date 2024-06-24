@@ -3,12 +3,12 @@ import pytest
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
-from tqec.templates.scale import Dimension, LinearFunction
+from tqec.templates.scale import LinearFunction
 
 
 @pytest.fixture
 def square_template():
-    return AlternatingSquareTemplate(Dimension(2, LinearFunction(2)))
+    return AlternatingSquareTemplate(LinearFunction(2))
 
 
 def test_template_with_indices_creation(square_template):
