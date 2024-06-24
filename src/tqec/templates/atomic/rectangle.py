@@ -199,9 +199,6 @@ class RawRectangleTemplate(Template):
                 "when calling this method."
             ) from ex
 
-    def scale_to(self, _: int) -> "RawRectangleTemplate":
-        return self
-
     @property
     def shape(self) -> Shape2D:
         return Shape2D(len(self._indices[0]), len(self._indices))
