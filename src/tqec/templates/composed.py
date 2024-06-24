@@ -5,8 +5,8 @@ import numpy
 
 from tqec.enums import (
     CornerPositionEnum,
-    TemplateRelativePositionEnum,
     TemplateOrientation,
+    TemplateRelativePositionEnum,
 )
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position, Shape2D
@@ -140,7 +140,7 @@ class ComposedTemplate(Template):
             self._default_increments = template_to_insert.template.get_increments()
         elif self._default_increments != template_to_insert.template.get_increments():
             raise ValueError(
-                f"Template {template_to_insert.template.to_dict()}"
+                f"Template {template_to_insert.template}"
                 + " has different default increments than the other templates."
             )
         template_id: int = len(self._templates)
@@ -279,9 +279,9 @@ class ComposedTemplate(Template):
         # Compute the upper-left (ul) position of all the templates
         for src, dest in nx.bfs_edges(self._relative_position_graph, 0):
             relative_position: tuple[CornerPositionEnum, CornerPositionEnum] | None = (
-                self._relative_position_graph.get_edge_data(src, dest).get(
-                    "relative_position"
-                )
+                self._relative_position_graph.get_edge_data(
+                    src, dest
+                ).get("relative_position")
             )
             assert (
                 relative_position is not None
@@ -457,31 +457,6 @@ class ComposedTemplate(Template):
     @property
     def shape(self) -> Shape2D:
         return self._get_shape_from_ul_positions(self._compute_ul_absolute_position())
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return {
-            # self.__class__ is "ComposedTemplate" here, whatever the type of self is. This is different
-            # from what is done in the Template base class. This is done to avoid users subclassing this
-            # class and having a subclass name we do not control in the "type" entry.
-            "type": self.__class__.__name__,
-            "kwargs": {
-                "templates": [t.to_dict() for t in self._templates],
-            },
-            "connections": [
-                {
-                    "source_idx": source,
-                    "target_idx": target,
-                    "source_corner": source_corner,
-                    "target_corner": target_corner,
-                }
-                for source, target, (
-                    source_corner,
-                    target_corner,
-                ) in self._relative_position_graph.edges.data(
-                    "relative_position"  # type: ignore
-                )
-            ],
-        }
 
     @property
     def expected_plaquettes_number(self) -> int:

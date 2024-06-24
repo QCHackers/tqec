@@ -44,14 +44,6 @@ class ShiftedTemplate(Template):
         tshape = self._shifted_template.shape
         return Shape2D(self._offset.x.value + tshape.x, self._offset.y.value + tshape.y)
 
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "shifted": {
-                "template": self._shifted_template.to_dict(),
-                "offset": self._offset.to_dict(),
-            }
-        }
-
     @property
     def expected_plaquettes_number(self) -> int:
         return self._shifted_template.expected_plaquettes_number
