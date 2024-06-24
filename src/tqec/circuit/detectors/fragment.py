@@ -15,8 +15,6 @@ from tqec.circuit.detectors.utils import (
     has_reset,
     is_virtual_moment,
     iter_stim_circuit_by_moments,
-    split_combined_measurement_reset_in_moment,
-    split_moment_containing_measurements,
 )
 from tqec.exceptions import TQECException, TQECWarning
 
@@ -180,59 +178,6 @@ def _get_fragment_loop(repeat_block: stim.CircuitRepeatBlock) -> FragmentLoop:
             f"Error when splitting the following REPEAT block:\n{repeat_block.body_copy()}"
         ) from e
     return FragmentLoop(fragments=body_fragments, repetitions=repeat_block.repeat_count)
-
-
-def _consume_measurements(
-    moments_iterator: ty.Iterator[stim.Circuit | stim.CircuitRepeatBlock],
-) -> tuple[stim.Circuit, stim.Circuit | stim.CircuitRepeatBlock]:
-    measurements = stim.Circuit()
-
-    for moment in moments_iterator:
-        # If we find an instance of stim.CircuitRepeatBlock, the sequence
-        # of measurements is over, so simply return.
-        if isinstance(moment, stim.CircuitRepeatBlock):
-            return measurements, moment
-        # Else, if the moment only contains annotations and noisy-gates
-        # (measurements excluded), add it to the measurements.
-        elif is_virtual_moment(moment):
-            measurements += moment
-        # Else, if there is at least one measurement in the moment:
-        elif has_measurement(moment):
-            if not has_only_measurement_or_is_virtual(moment):
-                # if the moment contains at least one measurement and one
-                # non-measurement, split measurements from non-measurements
-                # and return.
-                final_measurements, left_over = split_moment_containing_measurements(
-                    moment
-                )
-                return measurements + final_measurements, left_over
-
-            # Here, we know for sure that the moment only contains mesurements or
-            # virtual gates.
-
-            # Else, if any reset is found, the moment contains at least one combined
-            # measurement/reset operation so split all combined operations, and
-            # directly return because the reset found ends the measurement
-            # sequence.
-            if has_reset(moment):
-                final_measurements, left_over = (
-                    split_combined_measurement_reset_in_moment(moment)
-                )
-                return measurements + final_measurements, left_over
-            # Else, there is no reset, so we have a moment filled with normal
-            # measurements. Just add them to the list of measurements, and
-            # continue.
-            measurements += moment
-        # The moment is not virtual (i.e., not filled with only annotations and
-        # noisy gates, so it contains a non-virtual gate) and does not have any
-        # measurement (so the non-virtual gate is not a measurement). This ends the
-        # measurement sequence, so return.
-        else:
-            return measurements, moment
-
-    # We exhausted the provided iterator, this is the circuit end,
-    # so return the measurements that have been seen.
-    return measurements, stim.Circuit()
 
 
 def split_stim_circuit_into_fragments(
