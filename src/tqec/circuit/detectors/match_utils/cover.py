@@ -136,6 +136,23 @@ def find_cover(
     return None
 
 
+def _smallest_solution_shortcircuit(
+    solutions: ty.Iterator[list[int]], lower_length_bound: int = 0
+) -> list[int] | None:
+    smallest_solution = next(solutions, None)
+    if smallest_solution is None:
+        return None
+    if len(smallest_solution) == lower_length_bound:
+        return smallest_solution
+
+    for solution in solutions:
+        if len(solution) == lower_length_bound:
+            return solution
+        smallest_solution = min((smallest_solution, solution), key=len)
+
+    return smallest_solution
+
+
 def _find_cover_sat(
     target: PauliString, sources: list[PauliString], on_qubits: frozenset[int]
 ) -> list[int] | None:
@@ -161,9 +178,8 @@ def _find_cover_sat(
         encode_pauli_string_exact_cover_sat_problem_in_solver(
             solver, target, sources, on_qubits
         )
-        solutions = list(solver.enum_models())
-        if solutions:
-            satisfying_proof: list[int] = min(solutions, key=len)
+        satisfying_proof = _smallest_solution_shortcircuit(solver.enum_models(), 2)
+        if satisfying_proof:
             return [i - 1 for i in satisfying_proof if i > 0]
         else:
             return None
@@ -262,9 +278,8 @@ def find_commuting_cover_on_target_qubits_sat(
         encode_pauli_string_commuting_cover_sat_problem_in_solver(
             solver, target, sources, frozenset(target.qubits)
         )
-        solutions = list(solver.enum_models())
-        if solutions:
-            satisfying_proof: list[int] = min(solutions, key=len)
+        satisfying_proof = _smallest_solution_shortcircuit(solver.enum_models(), 2)
+        if satisfying_proof:
             return [i - 1 for i in satisfying_proof if i > 0]
         else:
             return None
