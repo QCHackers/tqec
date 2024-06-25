@@ -9,6 +9,7 @@ import numpy
 from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.scale import Scalable2D
 
 
 class Template(ABC):
@@ -97,13 +98,15 @@ class Template(ABC):
         return self._k
 
     @property
-    @abstractmethod
     def shape(self) -> Shape2D:
-        """Returns the current template shape.
+        """Returns the current template shape."""
+        sshape = self.scalable_shape
+        return Shape2D(sshape.x(self._k), sshape.y(self._k))
 
-        Returns:
-            the shape of the template.
-        """
+    @property
+    @abstractmethod
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
         pass
 
     @abstractmethod

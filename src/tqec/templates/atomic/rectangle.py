@@ -6,7 +6,7 @@ from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import LinearFunction
+from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 
 class AlternatingRectangleTemplate(Template):
@@ -76,10 +76,6 @@ class AlternatingRectangleTemplate(Template):
         return ret
 
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(self._width(self.k), self._height(self.k))
-
-    @property
     def expected_plaquettes_number(self) -> int:
         return 2
 
@@ -99,6 +95,14 @@ class AlternatingRectangleTemplate(Template):
         if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
+
+    @property
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(self._width),
+            PiecewiseLinearFunction.from_linear_function(self._height),
+        )
 
 
 @ty.final
@@ -200,8 +204,13 @@ class RawRectangleTemplate(Template):
             ) from ex
 
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(len(self._indices[0]), len(self._indices))
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        x, y = len(self._indices[0]), len(self._indices)
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, x)),
+            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, y)),
+        )
 
     @property
     def expected_plaquettes_number(self) -> int:

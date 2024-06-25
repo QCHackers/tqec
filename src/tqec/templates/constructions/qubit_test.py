@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pytest
 
 from tqec.enums import TemplateOrientation
@@ -12,7 +14,7 @@ from tqec.templates.scale import LinearFunction
 def test_qubit_square_midline():
     scalable_dimension = LinearFunction(2)
     constant_dimension = LinearFunction(0, 3)
-    template = QubitSquareTemplate(scalable_dimension)
+    template = QubitSquareTemplate(scalable_dimension, k=2)
     midline = template.get_midline_plaquettes()
     assert midline == [(2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5)]
     midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)

@@ -7,7 +7,7 @@ from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
-from tqec.templates.scale import LinearFunction
+from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
@@ -172,8 +172,12 @@ class AlternatingCornerSquareTemplate(Template):
         return 5
 
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(self._dimension(self.k), self._dimension(self.k))
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(self._dimension),
+            PiecewiseLinearFunction.from_linear_function(self._dimension),
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
