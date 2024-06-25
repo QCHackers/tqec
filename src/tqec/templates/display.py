@@ -64,11 +64,12 @@ def display_templates_ascii(
             f"WARNING: corner mark '{corner_mark}' is unacceptable. Changed to default '+'"
         )
         corner_mark = "+"
+    k = templates.k
     # Numpy array including all templates.
     arr = templates.instantiate(plaquette_indices)
     # Upper-left and bottom-right corners of every template, expressed as (row, column) of the array returned.
-    ul_pos = {}
-    br_pos = {}
+    ul_pos: dict[int, tuple[int, int]] = {}
+    br_pos: dict[int, tuple[int, int]] = {}
     ul_positions = templates._compute_ul_absolute_position()
     bbul, _ = templates._get_bounding_box_from_ul_positions(ul_positions)
     for tid, tul in ul_positions.items():
@@ -79,15 +80,14 @@ def display_templates_ascii(
         y = tul.y - bbul.y
         # Recall that numpy indexing is (y, x) in our coordinate system convention.
         tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
-        ul_pos[tid] = (y, x)
-        br_pos[tid] = (y + tshapey, x + tshapex)
+        ul_pos[tid] = (y(k), x(k))
+        br_pos[tid] = (y(k) + tshapey, x(k) + tshapex)
     # Format of the ASCII art.
     x_size = numpy.shape(arr)[1]
     empty_line = " " * x_size * h_space
     # Instead of printing to screen, we create a multi-line buffer string.
     # When completed, we print the buffer.
-    buffer_lines = []
-    buffer_lines.append(empty_line)
+    buffer_lines: list[str] = [empty_line]
     empty_lines_number_before = (v_space - 1) // 2
     empty_lines_number_after = v_space - 1 - empty_lines_number_before
     for line in arr:
@@ -155,8 +155,9 @@ def display_templates_svg(
     template_list = templates._templates
     ul_positions = templates._compute_ul_absolute_position()
     box = templates._get_bounding_box_from_ul_positions(ul_positions)
-    box_width: float = box[1].x - box[0].x
-    box_height: float = box[1].y - box[0].y
+    fbox = (box[0].to_shape_2d(templates.k), box[1].to_shape_2d(templates.k))
+    box_width: float = fbox[1].x - fbox[0].x
+    box_height: float = fbox[1].y - fbox[0].y
     pad = max(box_width, box_height) * 0.1
     box_width += pad
     box_height += pad
@@ -166,8 +167,8 @@ def display_templates_svg(
     def rect(
         x: int, y: int, width: int, height: int, label: int = 0, outmost: bool = False
     ) -> list[str]:
-        x_scaled = (x - box[0].x + pad / 2) * scale_factor
-        y_scaled = (y - box[0].y + pad / 2) * scale_factor
+        x_scaled = (x - fbox[0].x + pad / 2) * scale_factor
+        y_scaled = (y - fbox[0].y + pad / 2) * scale_factor
         width_scaled = width * scale_factor
         height_scaled = height * scale_factor
         lines: list[str] = []
@@ -209,14 +210,20 @@ def display_templates_svg(
         ]
         arr = template.instantiate(indices)
         outer_rects.extend(
-            rect(ul_position.x, ul_position.y, len(arr[0]), len(arr), outmost=True)
+            rect(
+                ul_position.x(templates.k),
+                ul_position.y(templates.k),
+                len(arr[0]),
+                len(arr),
+                outmost=True,
+            )
         )
         for shape_y, line in enumerate(arr):
             for shape_x, element in enumerate(line):
                 if element == 0:
                     continue
-                x = ul_position.x + shape_x
-                y = ul_position.y + shape_y
+                x = ul_position.x(templates.k) + shape_x
+                y = ul_position.y(templates.k) + shape_y
                 inner_rects.extend(rect(x, y, 1, 1, element))
 
     svg_lines.extend(inner_rects)

@@ -350,8 +350,11 @@ class Scalable2D:
     x: PiecewiseLinearFunction
     y: PiecewiseLinearFunction
 
+    def to_shape_2d(self, k: int) -> Shape2D:
+        return Shape2D(self.x(k), self.y(k))
+
     def to_numpy_shape(self, k: int) -> tuple[int, int]:
-        return Shape2D(self.x(k), self.y(k)).to_numpy_shape()
+        return self.to_shape_2d(k).to_numpy_shape()
 
     def simplify(self) -> Scalable2D:
         return Scalable2D(self.x.simplify(), self.y.simplify())
