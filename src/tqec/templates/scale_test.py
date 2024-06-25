@@ -145,3 +145,27 @@ def test_piecewise_max():
         a.intersection(b),
     ]
     assert maxabcd.functions == [c, d, a, b]
+
+
+def test_piecewise_max_constant():
+    a, b = LinearFunction(0, 0), LinearFunction(0, 1)
+    a_pwl, b_pwl = (
+        PiecewiseLinearFunction.from_linear_function(a),
+        PiecewiseLinearFunction.from_linear_function(b),
+    )
+
+    maxab = PiecewiseLinearFunction.max(a_pwl, b_pwl)
+    assert maxab.separators == []
+    assert maxab.functions == [b]
+
+
+if __name__ == "__main__":
+    a, b = LinearFunction(0, 0), LinearFunction(0, 1)
+    a_pwl, b_pwl = (
+        PiecewiseLinearFunction.from_linear_function(a),
+        PiecewiseLinearFunction.from_linear_function(b),
+    )
+
+    maxab = PiecewiseLinearFunction.max(a_pwl, b_pwl)
+    assert maxab.separators == []
+    assert maxab.functions == [b]

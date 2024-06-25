@@ -49,7 +49,10 @@ def _linear_function_minmax(
 ) -> tuple[list[float], list[LinearFunction]]:
     intersection = lhs.intersection(rhs)
     if intersection is None:
-        return [], [lhs]
+        if lhs(0) < rhs(0):
+            return [], [lhs if is_min else rhs]
+        else:
+            return [], [rhs if is_min else rhs]
 
     before_intersection = floor(intersection) - 1
     if lhs(before_intersection) < rhs(before_intersection):
