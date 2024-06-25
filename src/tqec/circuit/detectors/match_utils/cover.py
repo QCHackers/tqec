@@ -142,6 +142,10 @@ def _find_cover_sat(
     """Try to find a set of boundary stabilizers from `sources` that
     generate target on qubits `on_qubits`.
 
+    If multiple valid covers exist, the covers involving the lowest number of
+    :class:`PauliString` instances from `sources` are listed, and a random
+    cover is picked from that list.
+
     Args:
         target: the stabilizers to cover with stabilizers from `sources`.
         sources: stabilizers that can be used to cover `target`.
@@ -157,14 +161,9 @@ def _find_cover_sat(
         encode_pauli_string_exact_cover_sat_problem_in_solver(
             solver, target, sources, on_qubits
         )
-        if solver.solve():
-            # We can ignore type errors in the line below because we know for sure
-            # that solver.solve() returned True, so solver.get_model() should return
-            # a list of integers representing a solution to the SAT problem.
-            # A negative integer `-x` tells that the Pauli string represented by `x`
-            # should not be included, whereas a positive integer `x` tells that
-            # the Pauli string should be included.
-            satisfying_proof: list[int] = solver.get_model()  # type: ignore
+        solutions = list(solver.enum_models())
+        if solutions:
+            satisfying_proof: list[int] = min(solutions, key=len)
             return [i - 1 for i in satisfying_proof if i > 0]
         else:
             return None
@@ -179,6 +178,10 @@ def find_exact_cover_sat(
     The Pauli strings returned (via indices over the provided `sources`), once
     multiplied together, should be exactly equal to `target`. In particular, the
     following post-condition should hold:
+
+    If multiple valid covers exist, the covers involving the lowest number of
+    :class:`PauliString` instances from `sources` are listed, and a random
+    cover is picked from that list.
 
     ```python
     target = None     # to replace
@@ -230,6 +233,10 @@ def find_commuting_cover_on_target_qubits_sat(
     the product of each of the returned Pauli strings should commute with
     `target`).
 
+    If multiple valid covers exist, the covers involving the lowest number of
+    :class:`PauliString` instances from `sources` are listed, and a random
+    cover is picked from that list.
+
     The differences with :func:`find_cover_sat` are:
     1. this function does not restrict the output of the product of each of
        the returned Pauli string on qubits where `target` acts trivially (i.e.
@@ -255,14 +262,9 @@ def find_commuting_cover_on_target_qubits_sat(
         encode_pauli_string_commuting_cover_sat_problem_in_solver(
             solver, target, sources, frozenset(target.qubits)
         )
-        if solver.solve():
-            # We can ignore type errors in the line below because we know for sure
-            # that solver.solve() returned True, so solver.get_model() should return
-            # a list of integers representing a solution to the SAT problem.
-            # A negative integer `-x` tells that the Pauli string represented by `x`
-            # should not be included, whereas a positive integer `x` tells that
-            # the Pauli string should be included.
-            satisfying_proof: list[int] = solver.get_model()  # type: ignore
+        solutions = list(solver.enum_models())
+        if solutions:
+            satisfying_proof: list[int] = min(solutions, key=len)
             return [i - 1 for i in satisfying_proof if i > 0]
         else:
             return None
