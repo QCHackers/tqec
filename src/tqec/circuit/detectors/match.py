@@ -21,6 +21,7 @@ class MatchedDetector:
 
     coords: tuple[float, ...]
     measurements: frozenset[RelativeMeasurementLocation]
+    resets: tuple[frozenset[int], frozenset[int]]
 
     def __hash__(self) -> int:
         return hash(self.measurements)
@@ -42,7 +43,9 @@ class MatchedDetector:
         return stim.CircuitInstruction("DETECTOR", targets, list(self.coords))
 
     def with_time_coordinate(self, time_coordinate: float) -> MatchedDetector:
-        return MatchedDetector(self.coords + (time_coordinate,), self.measurements)
+        return MatchedDetector(
+            self.coords + (time_coordinate,), self.measurements, self.resets
+        )
 
 
 def _get_detectors_with_time_coordinate(
@@ -143,12 +146,12 @@ def match_detectors_within_fragment(
 
     matched_detectors.extend(
         _match_non_propagating_non_trivial_flows_inline(
-            flows.creation, qubit_coordinates
+            flows.creation, qubit_coordinates, True
         )
     )
     matched_detectors.extend(
         _match_non_propagating_non_trivial_flows_inline(
-            flows.destruction, qubit_coordinates
+            flows.destruction, qubit_coordinates, False
         )
     )
     return matched_detectors
@@ -157,6 +160,7 @@ def match_detectors_within_fragment(
 def _match_non_propagating_non_trivial_flows_inline(
     boundary_stabilizers: list[BoundaryStabilizer],
     qubit_coordinates: dict[int, tuple[float, ...]],
+    is_creation: bool,
 ) -> list[MatchedDetector]:
     """Match all the detectors that can be trivially resolved and remove the
     matched boundary stabilizers from the provided list.
@@ -193,6 +197,8 @@ def _match_non_propagating_non_trivial_flows_inline(
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate
             the matched detectors with the coordinates from the qubits involved in the
             measurement forming the detector.
+        is_creation: `True` if the provided `boundary_stabilizers` are creation stabilizers
+            else `False`.
 
     Returns:
         all matched detectors.
@@ -210,10 +216,19 @@ def _match_non_propagating_non_trivial_flows_inline(
     # is not expected to be large here.
     for i in sorted(non_propagating_flows_indices, reverse=True):
         flow = boundary_stabilizers.pop(i)
+        resets: tuple[frozenset[int], frozenset[int]]
+        if is_creation:
+            resets = (flow.source_qubits, frozenset())
+        else:
+            resets = (
+                frozenset(),
+                frozenset(flow.commuting_collapsing_operations_qubits),
+            )
         matched_detectors.append(
             MatchedDetector(
                 coords=flow.coordinates(qubit_coordinates),
                 measurements=frozenset(flow.involved_measurements),
+                resets=resets,
             )
         )
 
@@ -384,14 +399,19 @@ def _match_commute_stabilizers(
             if creation_flow.after_collapse != destruction_flow.after_collapse:
                 continue
             # Else, it is a match!
+            measurements = frozenset(
+                m.offset_by(-right_flows.total_number_of_measurements)
+                for m in creation_flow.involved_measurements
+            ) | frozenset(destruction_flow.involved_measurements)
+            resets = (
+                creation_flow.source_qubits,
+                frozenset(destruction_flow.commuting_collapsing_operations_qubits),
+            )
             detectors.append(
                 MatchedDetector(
                     coords=destruction_flow.coordinates(qubit_coordinates),
-                    measurements=frozenset(
-                        m.offset_by(-right_flows.total_number_of_measurements)
-                        for m in creation_flow.involved_measurements
-                    )
-                    | frozenset(destruction_flow.involved_measurements),
+                    measurements=measurements,
+                    resets=resets,
                 )
             )
             left_flows_indices_to_remove.append(ilhs)
@@ -415,6 +435,7 @@ def _match_boundary_stabilizers_by_disjoint_cover(
     target_stabilizers: list[BoundaryStabilizer],
     covering_stabilizers: list[BoundaryStabilizer],
     qubit_coordinates: dict[int, tuple[float, ...]],
+    target_is_creation: bool,
 ) -> tuple[list[MatchedDetector], list[int]]:
     """Try to match stabilizers by finding a cover.
 
@@ -431,7 +452,8 @@ def _match_boundary_stabilizers_by_disjoint_cover(
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to
             annotate the matched detectors with the coordinates from the qubits
             involved in the measurement forming the detector.
-
+        target_is_creation: `True` if the provided `target_stabilizers` are
+            creation stabilizers, else `False`.
     Returns:
         the list of all the detectors found as well as the indices of stabilizers
         from `target_stabilizers` that have been used and should be removed from
@@ -455,11 +477,33 @@ def _match_boundary_stabilizers_by_disjoint_cover(
                 covering_stabilizers[i].involved_measurements for i in cover_indices
             )
         )
+        resets = (
+            (
+                target.source_qubits,
+                frozenset(
+                    itertools.chain.from_iterable(
+                        covering_stabilizers[i].commuting_collapsing_operations_qubits
+                        for i in cover_indices
+                    )
+                ),
+            )
+            if target_is_creation
+            else (
+                frozenset(
+                    itertools.chain.from_iterable(
+                        covering_stabilizers[i].source_qubits for i in cover_indices
+                    )
+                ),
+                frozenset(target.commuting_collapsing_operations_qubits),
+            )
+        )
+
         detectors.append(
             MatchedDetector(
                 coords=target.coordinates(qubit_coordinates),
                 measurements=frozenset(target.involved_measurements)
                 | measurements_involved_in_cover,
+                resets=resets,
             )
         )
         targets_to_remove.append(i)
@@ -512,7 +556,10 @@ def _match_by_disjoint_cover(
     # cancel the stabilizer propagated from one reset in the left flows.
     forward_detectors, left_reduced_indices_to_remove = (
         _match_boundary_stabilizers_by_disjoint_cover(
-            left_boundary_stabilizers, right_boundary_stabilizers, qubit_coordinates
+            left_boundary_stabilizers,
+            right_boundary_stabilizers,
+            qubit_coordinates,
+            target_is_creation=True,
         )
     )
     # Remove all the left flows that have been matched with a cover. Both the actual flow
@@ -525,13 +572,14 @@ def _match_by_disjoint_cover(
     # stabilizer propagated backward from one measurement in the right flows.
     backward_detectors, right_reduced_indices_to_remove = (
         _match_boundary_stabilizers_by_disjoint_cover(
-            right_boundary_stabilizers, left_boundary_stabilizers, qubit_coordinates
+            right_boundary_stabilizers,
+            left_boundary_stabilizers,
+            qubit_coordinates,
+            target_is_creation=False,
         )
     )
     # Remove all the right flows that have been matched with a cover. Both the actual flow
     # and the temporary list created above should be updated.
-    # TODO: Bug, the removed indices here correspond to right_boundary_stabilizers and
-    #       NOT to left_flows.destruction...
     for i in sorted(right_reduced_indices_to_remove, reverse=True):
         right_boundary_stabilizers.pop(i)
         right_flows.remove_destruction(right_reduced_indices_to_remove[i])
