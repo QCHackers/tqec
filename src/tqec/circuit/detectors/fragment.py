@@ -29,7 +29,7 @@ class Fragment:
             noisy-gate instructions,
         2. zero or more moments composed of "computation" instructions (anything
             that is not a measurement or a reset),
-        3. one or more moments exclusively composed of `measurement`, annotation
+        3. one moment exclusively composed of `measurement`, annotation
             or noisy-gate instructions.
 
         Raises:
@@ -206,16 +206,6 @@ def split_stim_circuit_into_fragments(
       equivalent (e.g., the `MR` operation is replaced by a `M` operation, followed
       by a `R` operation), and the resulting circuit should check the above
       pre-condition.
-
-    Warning:
-        If you plan to use the library to find detectors (and are not using this
-        function in isolation), you want the final measurements performed on data
-        qubits to be in their own moment, as this is required in the next steps
-        of detector computation.
-        So be sure to check that the measurements performed on data qubits are
-        either directly following a REPEAT block or a TICK instruction.
-        This method will not emit any warning or exception if the above condition
-        is not fulfilled because it is not required **for this function**.
 
     Args:
         circuit (stim.Circuit): the circuit to split into Fragment instances.
