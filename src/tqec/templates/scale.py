@@ -17,10 +17,14 @@ class LinearFunction:
     def __call__(self, x: int) -> int:
         return self.slope * x + self.offset
 
-    def __add__(self, other: LinearFunction) -> LinearFunction:
+    def __add__(self, other: LinearFunction | int) -> LinearFunction:
+        if isinstance(other, int):
+            other = LinearFunction(0, other)
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
-    def __sub__(self, other: LinearFunction) -> LinearFunction:
+    def __sub__(self, other: LinearFunction | int) -> LinearFunction:
+        if isinstance(other, int):
+            other = LinearFunction(0, other)
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
     def __mul__(self, other: int) -> LinearFunction:
@@ -213,11 +217,19 @@ class PiecewiseLinearFunction:
         functions.append((self.functions[-1], other.functions[-1]))
         return separators, functions
 
-    def __add__(self, other: PiecewiseLinearFunction) -> PiecewiseLinearFunction:
+    def __add__(self, other: PiecewiseLinearFunction | int) -> PiecewiseLinearFunction:
+        if isinstance(other, int):
+            return PiecewiseLinearFunction(
+                self.separators, [f + other for f in self.functions]
+            )
         separators, functions = self._functions_in_common(other)
         return PiecewiseLinearFunction(separators, [f1 + f2 for (f1, f2) in functions])
 
-    def __sub__(self, other: PiecewiseLinearFunction) -> PiecewiseLinearFunction:
+    def __sub__(self, other: PiecewiseLinearFunction | int) -> PiecewiseLinearFunction:
+        if isinstance(other, int):
+            return PiecewiseLinearFunction(
+                self.separators, [f + other for f in self.functions]
+            )
         separators, functions = self._functions_in_common(other)
         return PiecewiseLinearFunction(separators, [f1 - f2 for (f1, f2) in functions])
 
