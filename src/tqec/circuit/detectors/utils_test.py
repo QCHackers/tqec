@@ -1,14 +1,11 @@
-import itertools
 import typing
 
-import pytest
 import stim
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.circuit.detectors.utils import (
     collapse_pauli_strings_at_moment,
     iter_stim_circuit_by_moments,
 )
-from tqec.exceptions import TQECException
 
 
 def test_iter_by_moment_empty():
