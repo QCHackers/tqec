@@ -52,7 +52,7 @@ def _linear_function_minmax(
         if lhs(0) < rhs(0):
             return [], [lhs if is_min else rhs]
         else:
-            return [], [rhs if is_min else rhs]
+            return [], [rhs if is_min else lhs]
 
     before_intersection = floor(intersection) - 1
     if lhs(before_intersection) < rhs(before_intersection):
@@ -248,6 +248,13 @@ class PiecewiseLinearFunction:
 
         return PiecewiseLinearFunction(separators, functions)
 
+    def _restrict_on_positive_inputs(self) -> PiecewiseLinearFunction:
+        index = bisect.bisect_right(self.separators, 0)
+        return PiecewiseLinearFunction(self.separators[index:], self.functions[index:])
+
+    def simplify_positive(self) -> PiecewiseLinearFunction:
+        return self._restrict_on_positive_inputs().simplify()
+
     @staticmethod
     def _minmax(
         lhs: PiecewiseLinearFunction, rhs: PiecewiseLinearFunction, is_min: bool
@@ -333,3 +340,9 @@ class Scalable2D:
 
     def to_numpy_shape(self, k: int) -> tuple[int, int]:
         return Shape2D(self.x(k), self.y(k)).to_numpy_shape()
+
+    def simplify(self) -> Scalable2D:
+        return Scalable2D(self.x.simplify(), self.y.simplify())
+
+    def simplify_positive(self) -> Scalable2D:
+        return Scalable2D(self.x.simplify_positive(), self.y.simplify_positive())
