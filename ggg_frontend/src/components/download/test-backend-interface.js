@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from './config';
+//import config from './config';
 
 export function postExample(url, data) {
   console.log(url);
@@ -17,7 +17,7 @@ export function postExample(url, data) {
 }
 
 export function getExample(url) {
-  axios({
+  return axios({
     method: 'GET',
     url,
     headers: {
@@ -29,6 +29,7 @@ export function getExample(url) {
     .then((response) => {
       console.log(response.status);
       console.log(response.data.value);
+      return response.data; // Return the received data
     })
     .catch((err) => { console.log(err); });
 }

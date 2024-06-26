@@ -1,4 +1,5 @@
 import { useApp } from '@pixi/react'
+import { useState, useEffect } from 'react'
 import { makeGrid } from '../library/grid'
 import { Container, Graphics } from 'pixi.js'
 import Position from '../library/position'
@@ -8,7 +9,7 @@ import PlaquetteType from '../code/plaquette-type'
 import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
-import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
+import { GRID_SIZE_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
 
 import config from '../components/download/config'
 import { postExample, getExample } from '../components/download/test-backend-interface'
@@ -45,6 +46,8 @@ export default function TqecTemplates() {
 	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE;
 	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]];
 	const outline = new Graphics();
+	outline.clear()
+	outline.lineStyle(2, 'lightcoral');
 	workspace.addChild(outline);
 
 /////////////////////////////////////////////////////////////
@@ -54,7 +57,7 @@ export default function TqecTemplates() {
 		for (let y = 0; y <= app.screen.height/gridSize; y += 1) {
 			// Skip every other qubit
             if ( (x+y) % 2 === 1 )
-                continue;
+	            continue;
 			// Create a qubit
 			const pos = new Position(x*gridSize, y*gridSize, qubitRadius-2);
 			workspace.addChild(pos);
@@ -70,8 +73,57 @@ export default function TqecTemplates() {
 	const getButton = button('GET button test', gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(getButton);
 
-	const postButton = button('POST button test', gridSize, 3*gridSize, 'white', 'black');
-	workspace.addChild(postButton);
+    // Custom Hook to handle response data
+    function useResponseData(responseData) {
+        useEffect(() => {
+            if (responseData) {
+                console.log('Using response data:', responseData);
+                // Perform other actions with responseData
+				// Add workspace guidelines according to the dimensions in the received json data.
+				let y0 = guideTopLeftCorner[1];
+				while (y0 + plaquetteDy <= guideTopLeftCorner[1] + 2*responseData.height) {
+					let x0 = guideTopLeftCorner[0];
+					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
+						console.log('draw outline with topleft at:', x0, '  ', y0)
+						const x1 = x0 + plaquetteDx;
+						const y1 = y0 + plaquetteDy;
+						outline.moveTo(x0*gridSize, y0*gridSize);
+						outline.lineTo(x1*gridSize, y0*gridSize);
+						outline.lineTo(x1*gridSize, y1*gridSize);
+						outline.lineTo(x0*gridSize, y1*gridSize);
+						outline.lineTo(x0*gridSize, y0*gridSize);
+						x0 += plaquetteDx;
+					}
+					y0 += plaquetteDy;
+				}
+            } else {
+                console.log('No data received yet.');
+            }
+        }, [responseData]); // Trigger effect when responseData changes
+    }
+
+    // State to hold response data
+    const [responseData, setResponseData] = useState(null);
+
+//    // Function to handle response data from backend
+//    function handleResponseData(data) {	
+//		responseData = data; // Assign the response data to the global variable.
+//		console.log('Received data:', responseData);
+//		// Example: Display received data in an HTML element
+//		const resultDiv = document.getElementById('result');
+//		resultDiv.textContent = JSON.stringify(responseData, null, 2);
+//		// Perform actions with response data.
+//		useResponseData();
+//	}
+
+//    // Function to use the json data received from backend.
+//    function useResponseData() {
+//        if (responseData) {
+//            console.log('Using response data:', responseData);
+//        } else {
+//            console.log('No data received yet.');
+//        }
+//    }
 
 	getButton.on('click', (_e) => {
 		let url = '/example'
@@ -82,8 +134,28 @@ export default function TqecTemplates() {
 		}`;
 		backendURL += url;
 
-		getExample(backendURL);
+		// Using the promise approach:
+		// getExample returns the data (in json format) which are handled using promises
+		// like `.then()` and `.catch()` in the calling de.
+		getExample(backendURL)
+			.then(data => {
+                setResponseData(data); // Update state with response data
+				// Example: Display received data in an HTML element
+				const resultDiv = document.getElementById('result');
+				resultDiv.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
 	});
+
+	// Use custom Hook to handle response data
+    useResponseData(responseData);
+
+/////////////////////////////////////////////////////////////
+
+	const postButton = button('POST button test', gridSize, 3*gridSize, 'white', 'black');
+	workspace.addChild(postButton);
 
 	postButton.on('click', (_e) => {
 		let url = '/example'
@@ -109,14 +181,11 @@ export default function TqecTemplates() {
 	let codePlaquettes = [];
 
     importPlaquettesButton.on('click', (_e) => {
-		outline.clear()
 		plaquetteDx = parseInt(document.getElementById('dxCell').value);
 		plaquetteDy = parseInt(document.getElementById('dyCell').value);
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
-		outline.lineStyle(2, 'lightcoral');
 		// Add workspace guidelines.
 		// TODO: take info from backend
-		let y0 = guideTopLeftCorner[1];
 		let message = '';
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {

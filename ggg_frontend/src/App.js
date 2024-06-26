@@ -108,6 +108,8 @@ function App() {
           <Stage width={1400} height={1100} options={{backgroundColor: 'rgb(157, 191, 145)', antialias: true}}>
             <TqecTemplates />
           </Stage>
+
+          <pre id="result"></pre>
         </div>
 
         {/*-- Add more content areas as needed -- */}
