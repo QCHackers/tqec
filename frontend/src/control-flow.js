@@ -13,6 +13,7 @@ import QubitLattice from './qubits/QubitLattice';
 import Button from './components/Button';
 import store from './store';
 import QubitLabels from './qubits/QubitLabels';
+import SimpleButton from './components/download/SimpleButton';
 
 /**
  * Defines how the app behaves (button and feature placement) upon initialization
@@ -232,6 +233,27 @@ export default function InitializeControlFlow() {
     });
   });
 
+  workspace.getButtonPosition = new Point(125, 100);
+  const getButton = new SimpleButton(
+    'Get Example',
+    125,
+    100,
+    'black',
+    'white',
+    '/example',
+    'GET'
+  );
+  workspace.addChild(getButton);
+  const postButton = new SimpleButton(
+    'POST Example',
+    125,
+    150,
+    'black',
+    'white',
+    '/example',
+    'POST'
+  );
+  workspace.addChild(postButton);
   // Final workspace setup
   workspace.visible = true;
   app.stage.addChild(workspace);
