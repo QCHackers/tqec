@@ -7,12 +7,12 @@ from tqec.templates.atomic.rectangle import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
+from tqec.templates.scale import LinearFunction
 
 _DIMENSIONS = [
-    Dimension(2, LinearFunction(2, 0)),
-    Dimension(2, LinearFunction(4, 0)),
-    FixedDimension(1),
+    LinearFunction(2, 0),
+    LinearFunction(4, 0),
+    LinearFunction(0, 1),
 ]
 _TEMPLATES_AND_INDICES = [
     (AlternatingSquareTemplate(_DIMENSIONS[0]), [1, 2]),

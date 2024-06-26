@@ -9,11 +9,11 @@ from tqec.templates.atomic.square import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
-from tqec.templates.scale import Dimension, FixedDimension
+from tqec.templates.scale import LinearFunction
 
 
 class ScalableCorner(ComposedTemplate):
-    def __init__(self, dim: Dimension) -> None:
+    def __init__(self, dim: LinearFunction, k: int = 2) -> None:
         """A scalable corner template.
 
         This corner template can be used to move an error-corrected qubit to another
@@ -37,11 +37,12 @@ class ScalableCorner(ComposedTemplate):
 
         Args:
             dim: dimension of the initial error-corrected qubit.
+            k: initial value for the scaling parameter.
         """
         # nsone: non-scalable one
         # nstwo: non-scalable two
-        nsone = FixedDimension(1)
-        nstwo = FixedDimension(2)
+        nsone = LinearFunction(0, 1)
+        nstwo = LinearFunction(0, 2)
 
         _templates = [
             # 0
@@ -94,7 +95,7 @@ class ScalableCorner(ComposedTemplate):
             ((4, CornerPositionEnum.UPPER_RIGHT), (2, CornerPositionEnum.LOWER_LEFT)),
             ((14, CornerPositionEnum.UPPER_RIGHT), (11, CornerPositionEnum.LOWER_LEFT)),
         ]
-        ComposedTemplate.__init__(self, _templates)
+        ComposedTemplate.__init__(self, _templates, k=k)
         for source, relpos, target in relative_positions:
             self.add_relation(source, relpos, target)
         for (start, start_corner), (end, end_corner) in pinned_corners:
