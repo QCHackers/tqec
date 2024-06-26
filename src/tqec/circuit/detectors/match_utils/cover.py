@@ -140,17 +140,22 @@ def _smallest_solution_shortcircuit(
     solutions: ty.Iterator[list[int]], lower_length_bound: int = 0
 ) -> list[int] | None:
     smallest_solution = next(solutions, None)
-    if smallest_solution is None:
-        return None
-    if len(smallest_solution) == lower_length_bound:
-        return smallest_solution
-
-    for solution in solutions:
-        if len(solution) == lower_length_bound:
-            return solution
-        smallest_solution = min((smallest_solution, solution), key=len)
-
     return smallest_solution
+
+    # TODO: In theory, we would like the smallest solution. In practice, this
+    #       is an issue on some inputs as it requires to iterate over a large
+    #       number of valid solutions, so for the moment just keep the first
+    #       solution.
+    # if smallest_solution is None:
+    #     return None
+    # if len(smallest_solution) == lower_length_bound:
+    #     return smallest_solution
+
+    # for solution in solutions:
+    #     if len(solution) == lower_length_bound:
+    #         return solution
+    #     smallest_solution = min((smallest_solution, solution), key=len)
+    # return smallest_solution
 
 
 def _find_cover_sat(
