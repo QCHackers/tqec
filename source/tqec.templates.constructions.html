@@ -213,7 +213,7 @@ two plaquettes.</p></li>
 <span id="tqec-templates-constructions-qubit-module"></span><h2>tqec.templates.constructions.qubit module<a class="headerlink" href="#module-tqec.templates.constructions.qubit" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.qubit.DenseQubitSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dimension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>An error-corrected qubit.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">dimension</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
@@ -227,7 +227,10 @@ two plaquettes.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dim</strong> – dimension of the error-corrected qubit.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> – dimension of the error-corrected qubit.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">

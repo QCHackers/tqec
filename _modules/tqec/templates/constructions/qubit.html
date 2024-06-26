@@ -88,7 +88,7 @@
 <div class="viewcode-block" id="DenseQubitSquareTemplate">
 <a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">DenseQubitSquareTemplate</span><span class="p">(</span><span class="n">ComposedTemplate</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">Dimension</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit.</span>
 
 <span class="sd">        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::</span>
@@ -102,9 +102,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            dim: dimension of the error-corrected qubit.</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># nsone: non-scalable one</span>
-        <span class="n">nsone</span> <span class="o">=</span> <span class="n">FixedDimension</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">nsone</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># 0  4  4  4  4  1</span>
         <span class="c1"># 5  6  6  6  6  7</span>
