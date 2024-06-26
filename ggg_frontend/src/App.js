@@ -105,7 +105,7 @@ function App() {
 
         <div id="content4" className="Tab-content">
           {/*-- Content for Tab 4 -- */}
-          <Stage width={1400} height={1100} options={{backgroundColor: 'rgb(157, 191, 145)', antialias: true}}>
+          <Stage width={1400} height={900} options={{backgroundColor: 'rgb(225, 193, 110)', antialias: true}}>
             <TqecTemplates />
           </Stage>
 

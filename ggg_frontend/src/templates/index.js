@@ -9,7 +9,7 @@ import PlaquetteType from '../code/plaquette-type'
 import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
-import { GRID_SIZE_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
+import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants'
 
 import config from '../components/download/config'
 import { postExample, getExample } from '../components/download/test-backend-interface'
@@ -22,7 +22,7 @@ export default function TqecTemplates() {
 
 	// Remove all children from the stage to avoid rendering issues
 	app.stage.removeChildren();
-	const gridSize = GRID_SIZE_CODE_WORKSPACE;
+	const gridSize = GRID_SIZE_TEMPLATE_WORKSPACE;
 	const qubitRadius = 7;
 	document.getElementById('dxCell').value = 2;
 	document.getElementById('dyCell').value = 2;
@@ -43,7 +43,7 @@ export default function TqecTemplates() {
 	// Add guide for the eyes for the plaquette boundaries.
 	// They are located via the position of the top, left corner.
 	// The first guide is where the plaquette is built, the other guides are for the library.
-	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE;
+	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE;
 	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]];
 	const outline = new Graphics();
 	outline.clear()
@@ -245,7 +245,7 @@ export default function TqecTemplates() {
 /////////////////////////////////////////////////////////////
 
 	// Create a button to de-select all qubits 
-	const downloadCodeButton = button('Download QEC code', gridSize, 21*gridSize, 'white', 'black');
+	const downloadCodeButton = button('Download QEC code', gridSize, 17*gridSize, 'white', 'black');
 	workspace.addChild(downloadCodeButton);
 
 	downloadCodeButton.on('click', (_e) => {
