@@ -21,7 +21,7 @@ class MatchedDetector:
 
     coords: tuple[float, ...]
     measurements: frozenset[RelativeMeasurementLocation]
-    resets: tuple[frozenset[int], frozenset[int]]
+    resets: tuple[frozenset[int], ...]
 
     def __hash__(self) -> int:
         return hash(self.measurements)
@@ -216,19 +216,11 @@ def _match_non_propagating_non_trivial_flows_inline(
     # is not expected to be large here.
     for i in sorted(non_propagating_flows_indices, reverse=True):
         flow = boundary_stabilizers.pop(i)
-        resets: tuple[frozenset[int], frozenset[int]]
-        if is_creation:
-            resets = (flow.source_qubits, frozenset())
-        else:
-            resets = (
-                frozenset(),
-                frozenset(flow.commuting_collapsing_operations_qubits),
-            )
         matched_detectors.append(
             MatchedDetector(
                 coords=flow.coordinates(qubit_coordinates),
-                measurements=frozenset(flow.involved_measurements),
-                resets=resets,
+                measurements=frozenset(flow.measurements),
+                resets=(flow.resets_qubits,),
             )
         )
 
@@ -401,12 +393,9 @@ def _match_commute_stabilizers(
             # Else, it is a match!
             measurements = frozenset(
                 m.offset_by(-right_flows.total_number_of_measurements)
-                for m in creation_flow.involved_measurements
-            ) | frozenset(destruction_flow.involved_measurements)
-            resets = (
-                creation_flow.source_qubits,
-                frozenset(destruction_flow.commuting_collapsing_operations_qubits),
-            )
+                for m in creation_flow.measurements
+            ) | frozenset(destruction_flow.measurements)
+            resets = (creation_flow.resets_qubits, destruction_flow.resets_qubits)
             detectors.append(
                 MatchedDetector(
                     coords=destruction_flow.coordinates(qubit_coordinates),
@@ -472,37 +461,29 @@ def _match_boundary_stabilizers_by_disjoint_cover(
         if cover_indices is None:
             continue
 
-        measurements_involved_in_cover = frozenset(
-            itertools.chain.from_iterable(
-                covering_stabilizers[i].involved_measurements for i in cover_indices
-            )
+        measurements_involved_in_cover: frozenset[RelativeMeasurementLocation] = (
+            frozenset()
         )
-        resets = (
-            (
-                target.source_qubits,
-                frozenset(
-                    itertools.chain.from_iterable(
-                        covering_stabilizers[i].commuting_collapsing_operations_qubits
-                        for i in cover_indices
-                    )
-                ),
-            )
-            if target_is_creation
-            else (
-                frozenset(
-                    itertools.chain.from_iterable(
-                        covering_stabilizers[i].source_qubits for i in cover_indices
-                    )
-                ),
-                frozenset(target.commuting_collapsing_operations_qubits),
-            )
-        )
+        resets_qubits_involved_in_cover: frozenset[int] = frozenset()
+        for j in cover_indices:
+            # We know for sure that each boundary stabilizer commutes with the collapsing
+            # operations on the boundary. That means that if a measurement is appearing
+            # an even number of times, the associated flow would simply cancel out, not
+            # touching the measurement. The symmetric difference operator is used for that
+            # purpose here.
+            measurements_involved_in_cover ^= set(covering_stabilizers[j].measurements)
+            resets_qubits_involved_in_cover ^= covering_stabilizers[j].resets_qubits
 
+        measurements = frozenset(target.measurements) | measurements_involved_in_cover
+        resets = (
+            (target.resets_qubits, resets_qubits_involved_in_cover)
+            if target_is_creation
+            else (resets_qubits_involved_in_cover, target.resets_qubits)
+        )
         detectors.append(
             MatchedDetector(
                 coords=target.coordinates(qubit_coordinates),
-                measurements=frozenset(target.involved_measurements)
-                | measurements_involved_in_cover,
+                measurements=measurements,
                 resets=resets,
             )
         )

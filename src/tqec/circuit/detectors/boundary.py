@@ -13,15 +13,12 @@ class BoundaryStabilizer:
         self,
         stabilizer: PauliString,
         collapsing_operations: ty.Iterable[PauliString],
-        involved_measurements: list[RelativeMeasurementLocation],
-        source_qubits: frozenset[int],
+        measurements: list[RelativeMeasurementLocation],
+        reset_qubits: frozenset[int],
+        forward: bool,
     ):
         """Represents a stabilizer that has been propagated and is now at the boundary
         of a Fragment.
-
-        Internally, this class separates the provided collapsing operations into
-        commuting and anti-commuting collapsing operations. If there is any
-        anti-commuting operation, some methods/properties will raise an exception.
 
         Raises:
             TQECException: if `source_qubits` is empty.
@@ -40,20 +37,13 @@ class BoundaryStabilizer:
                 Should contain at least one index.
         """
         self._stabilizer = stabilizer
-        self._involved_measurements = involved_measurements
-        self._commuting_operations: list[PauliString] = []
-        self._anticommuting_operations: list[PauliString] = []
-        for op in set(collapsing_operations):
-            if stabilizer.commutes(op):
-                self._commuting_operations.append(op)
-            else:
-                self._anticommuting_operations.append(op)
-        self._after_collapse_cache: PauliString | None = None
-        if not source_qubits:
-            raise TQECException(
-                "Cannot define a BoundaryStabilizer without at least one source qubit."
-            )
-        self._source_qubits: frozenset[int] = source_qubits
+        self._measurements = measurements
+        self._collapsing_operations = collapsing_operations
+        self._has_anticommuting_collapsing_operations = any(
+            co.anticommutes(stabilizer) for co in collapsing_operations
+        )
+        self._reset_qubits: frozenset[int] = reset_qubits
+        self._is_forward = forward
 
     @property
     def has_anticommuting_operations(self) -> bool:
@@ -64,7 +54,7 @@ class BoundaryStabilizer:
             `True` if at least one collapsing operation anti-commutes with the stabilizer,
             else `False`.
         """
-        return bool(self._anticommuting_operations)
+        return self._has_anticommuting_collapsing_operations
 
     @property
     def after_collapse(self) -> PauliString:
@@ -82,11 +72,7 @@ class BoundaryStabilizer:
                 "Cannot collapse a BoundaryStabilizer if it has "
                 "anticommuting operations."
             )
-        if self._after_collapse_cache is None:
-            self._after_collapse_cache = self._stabilizer.collapse_by(
-                self._commuting_operations
-            )
-        return self._after_collapse_cache
+        return self._stabilizer.collapse_by(self._collapsing_operations)
 
     @property
     def before_collapse(self) -> PauliString:
@@ -99,16 +85,19 @@ class BoundaryStabilizer:
         return self._stabilizer
 
     @property
-    def collapsing_operations(self) -> ty.Iterator[PauliString]:
-        """Iterate on all the collapsing operations defining the boundary this
+    def collapsing_operations(self) -> ty.Iterable[PauliString]:
+        """Iterator on all the collapsing operations defining the boundary this
         stabilizer is applied to.
         """
-        yield from self._commuting_operations
-        yield from self._anticommuting_operations
+        return self._collapsing_operations
 
     @property
-    def involved_measurements(self) -> list[RelativeMeasurementLocation]:
-        return self._involved_measurements
+    def measurements(self) -> list[RelativeMeasurementLocation]:
+        return self._measurements
+
+    @property
+    def resets_qubits(self) -> frozenset[int]:
+        return self._reset_qubits
 
     def merge(self, other: BoundaryStabilizer) -> BoundaryStabilizer:
         """Merge two boundary stabilizers together.
@@ -119,6 +108,10 @@ class BoundaryStabilizer:
         Args:
             other: the other BoundaryStabilizer to merge with self. Should have
                 exactly the same set of collapsing operations.
+
+        Raises:
+            TQECException: if `self` and `other` are not defined on exactly the same
+                collapsing operations.
 
         Returns:
             the merged boudary stabilizer, defined on the same set of collapsing
@@ -134,21 +127,61 @@ class BoundaryStabilizer:
                 f"Collapsing operations for left-hand side: {self_collapsing_operations}.\n"
                 f"Collapsing operations for right-hand side: {other_collapsing_operations}.\n"
             )
+        if self._is_forward != other._is_forward:
+            raise TQECException(
+                "Cannot merge a forward boundary stabilizer with a backward one."
+            )
+        is_forward_merge = self._is_forward
         stabilizer = self._stabilizer * other._stabilizer
-        involved_measurements = list(
-            set(self._involved_measurements) | set(other._involved_measurements)
-        )
-        source_qubits = self._source_qubits | other._source_qubits
+        non_trivial_stabilizer_qubits = frozenset(stabilizer.qubits)
+        # When merging 2 boundary stabilizers, particular care should be taken to merge
+        # the measurements and resets.
+        # The merged stabilizers might cancel out on some of the involved collapsing
+        # operations, leading to collapsing operations that are in `self` and `other`
+        # but that should not be in the merged result.
+        # This does not happen everytime a collapsing operation is found in both
+        # `self` and `other` as:
+        # - merging anti-commuting stabilizer (which is the primary purpose of this
+        #   method) might lead to a commuting stabilizer, still involving the collapsing
+        #   operation they were previously anti-commuting with.
+        # - sources (i.e., resets in forward boundary stabilizers and measurements in
+        #   backward boundary operations) do not cancel each other out.
+        # In the end, the end collapsing operations (resets for backward propagation,
+        # measurements for forward propagation) need to be re-computed from the
+        # merged stabilizer.
+        reset_qubits: frozenset[int]
+        measurements: list[RelativeMeasurementLocation]
+        if is_forward_merge:
+            reset_qubits = self.resets_qubits | other.resets_qubits
+            candidate_measurements = set(self.measurements) | set(other.measurements)
+            measurements = [
+                m
+                for m in candidate_measurements
+                if m.qubit_index in non_trivial_stabilizer_qubits
+            ]
+
+        else:
+            measurements = list(
+                frozenset(self.measurements) | frozenset(other.measurements)
+            )
+            candidate_resets = self.resets_qubits | other.resets_qubits
+            reset_qubits = frozenset(
+                r for r in candidate_resets if r in non_trivial_stabilizer_qubits
+            )
         return BoundaryStabilizer(
-            stabilizer, self_collapsing_operations, involved_measurements, source_qubits
+            stabilizer,
+            self_collapsing_operations,
+            measurements,
+            reset_qubits,
+            is_forward_merge,
         )
 
     def __repr__(self) -> str:
         ret = f"BoundaryStabilizers(stabilizer={self._stabilizer}, "
         ret += "collapsing_operations=["
         ret += ", ".join(str(p) for p in self.collapsing_operations)
-        ret += f"], involved_measurements={self._involved_measurements}"
-        ret += f", source_qubits={set(self._source_qubits)})"
+        ret += f"], measurements={self._measurements}"
+        ret += f", resets={set(self._reset_qubits)}, is_forward={self._is_forward})"
         return ret
 
     def coordinates(
@@ -166,7 +199,7 @@ class BoundaryStabilizer:
             the boundary stabilizer coordinates.
         """
         measurement_coordinates = [
-            qubit_coordinates[source] for source in self._source_qubits
+            qubit_coordinates[source] for source in self.source_qubits
         ]
         return tuple(numpy.mean(measurement_coordinates, axis=0))
 
@@ -174,8 +207,9 @@ class BoundaryStabilizer:
         return BoundaryStabilizer(
             self._stabilizer,
             self.collapsing_operations,
-            [m.offset_by(offset) for m in self.involved_measurements],
-            self._source_qubits,
+            [m.offset_by(offset) for m in self.measurements],
+            self._reset_qubits,
+            self._is_forward,
         )
 
     def is_trivial(self) -> bool:
@@ -183,6 +217,14 @@ class BoundaryStabilizer:
             not self.has_anticommuting_operations
             and self.after_collapse.non_trivial_pauli_count == 0
             and len(self._stabilizer) == 1
+        )
+
+    @property
+    def source_qubits(self) -> frozenset[int]:
+        return (
+            self._reset_qubits
+            if self._is_forward
+            else frozenset(m.qubit_index for m in self.measurements)
         )
 
 
