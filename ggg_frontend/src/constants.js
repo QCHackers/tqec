@@ -24,6 +24,6 @@ export const GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE = [20, 20];
 /////////////////////////////////////////////////////////////
 
 export const GRID_SIZE_TEMPLATE_WORKSPACE = 50;
-export const GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE = [7, 9];
+export const GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE = [7, 7];
 
 /////////////////////////////////////////////////////////////

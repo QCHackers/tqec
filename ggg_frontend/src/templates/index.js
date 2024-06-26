@@ -6,13 +6,16 @@ import Position from '../library/position'
 import { button } from '../library/button'
 import Plaquette from '../library/plaquette'
 import PlaquetteType from '../code/plaquette-type'
-import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
 import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants'
 
 import config from '../components/download/config'
 import { postExample, getExample } from '../components/download/test-backend-interface'
+
+/////////////////////////////////////////////////////////////
+
+let topLeftCornersOfPlaquettesInTemplate = [];
 
 /////////////////////////////////////////////////////////////
 
@@ -50,6 +53,10 @@ export default function TqecTemplates() {
 	outline.lineStyle(2, 'lightcoral');
 	workspace.addChild(outline);
 
+	// Message that will be communicated to the backend.
+	// It is expected to be a filled template.
+	let message = '';
+
 /////////////////////////////////////////////////////////////
 
 	// Add qubit positions to the workspace
@@ -70,7 +77,7 @@ export default function TqecTemplates() {
 	const testButton = button('test of API to interface with API', gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(testButton);
 
-	const getButton = button('GET button test', gridSize, 2*gridSize, 'white', 'black');
+	const getButton = button('GET template from backend', gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(getButton);
 
     // Custom Hook to handle response data
@@ -85,6 +92,7 @@ export default function TqecTemplates() {
 					let x0 = guideTopLeftCorner[0];
 					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
 						console.log('draw outline with topleft at:', x0, '  ', y0)
+						topLeftCornersOfPlaquettesInTemplate.push({x: x0, y: y0});
 						const x1 = x0 + plaquetteDx;
 						const y1 = y0 + plaquetteDy;
 						outline.moveTo(x0*gridSize, y0*gridSize);
@@ -104,26 +112,6 @@ export default function TqecTemplates() {
 
     // State to hold response data
     const [responseData, setResponseData] = useState(null);
-
-//    // Function to handle response data from backend
-//    function handleResponseData(data) {	
-//		responseData = data; // Assign the response data to the global variable.
-//		console.log('Received data:', responseData);
-//		// Example: Display received data in an HTML element
-//		const resultDiv = document.getElementById('result');
-//		resultDiv.textContent = JSON.stringify(responseData, null, 2);
-//		// Perform actions with response data.
-//		useResponseData();
-//	}
-
-//    // Function to use the json data received from backend.
-//    function useResponseData() {
-//        if (responseData) {
-//            console.log('Using response data:', responseData);
-//        } else {
-//            console.log('No data received yet.');
-//        }
-//    }
 
 	getButton.on('click', (_e) => {
 		let url = '/example'
@@ -154,39 +142,17 @@ export default function TqecTemplates() {
 
 /////////////////////////////////////////////////////////////
 
-	const postButton = button('POST button test', gridSize, 3*gridSize, 'white', 'black');
-	workspace.addChild(postButton);
-
-	postButton.on('click', (_e) => {
-		let url = '/example'
-		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
-		let backendURL = `${localTesting
-		  ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
-		  : config.prodBackendURL
-		}`;
-		backendURL += url;
-
-		const payload = { name: 'post_example', value: '3.14' };
-		postExample(backendURL, payload);
-	});
-
-/////////////////////////////////////////////////////////////
-
 	const infoButton = button('Library of plaquettes', libraryTopLeftCorners[0][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
     // Select the qubits that are part of a plaquette 
-	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 5*gridSize, 'white', 'black');
+	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(importPlaquettesButton);
-	let codePlaquettes = [];
 
     importPlaquettesButton.on('click', (_e) => {
 		plaquetteDx = parseInt(document.getElementById('dxCell').value);
 		plaquetteDy = parseInt(document.getElementById('dyCell').value);
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
-		// Add workspace guidelines.
-		// TODO: take info from backend
-		let message = '';
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
 			const x1 = x0 + plaquetteDx;
@@ -197,9 +163,6 @@ export default function TqecTemplates() {
 			outline.lineTo(x0*gridSize, y1*gridSize);
 			outline.lineTo(x0*gridSize, y0*gridSize);
 		}
-        // Create the compact representation of the (empty) QEC code
-        const codesummary = document.getElementById('codeSummary');
-        codesummary.value = message;
 		// Add library plaquettes.
 		//const library_workspace = document.getElementsByName('workspace-library');
 		let plaquetteTypes = [];
@@ -244,43 +207,42 @@ export default function TqecTemplates() {
 
 /////////////////////////////////////////////////////////////
 
+    // Confirm and fully populate the template.
+	const fillButton = button('Fill the template', gridSize, 15*gridSize, 'white', 'black');
+	workspace.addChild(fillButton);
+
+    fillButton.on('click', (_e) => {
+		// Search among the children the Plaquettes.
+	    for (let i = 0; i < workspace.children.length; i++) {
+	        const child = workspace.children[i];
+	        if (child instanceof Plaquette
+				&& !(child instanceof PlaquetteType) ) {
+				// Print to console the (x,y) coordinate of the plaquette.
+				console.log('INFO:', child.name, '  coords:', child.x, child.y )
+				message += child.name + ' with color ' + child.color + '\n'
+	        }
+	    }
+		// For comparison, let's look at the top corners of the plaquettes forming the template.
+		console.log(topLeftCornersOfPlaquettesInTemplate);
+	});
+
+/////////////////////////////////////////////////////////////
+
 	// Create a button to de-select all qubits 
-	const downloadCodeButton = button('Download QEC code', gridSize, 17*gridSize, 'white', 'black');
-	workspace.addChild(downloadCodeButton);
+	const postButton = button('POST the filled template to backend', gridSize, 17*gridSize, 'white', 'black');
+	workspace.addChild(postButton);
 
-	downloadCodeButton.on('click', (_e) => {
-		if (codePlaquettes.length === 0) return;
-	
-		let message = '';
-		// Add info on cell size
-		message += 'This is the complete QEC code.\n'
-		let counter = 0;
-		codePlaquettes.forEach((plaq) => {
-			if (plaq.name !== 'WIP plaquette') {
-				message += '###############\n'
-				message += `# plaquette ${counter} #\n`
-				message += '###############\n\n'
-				plaq.children.forEach((child) => {
-					if (child instanceof Circuit) {
-						console.log('circuit to add');
-						message += child.art.text;
-						message += '\n\n\n';
-						console.log(message);
-					}
-				});
-				counter += 1;
-			}
-		});
-		const blob = new Blob([message], { type: 'text/plain' });
-		const url = URL.createObjectURL(blob);
+	postButton.on('click', (_e) => {
+		let url = '/example'
+		const localTesting = !window.location.href.includes('https://'); // FIXME: this is a hack
+		let backendURL = `${localTesting
+		  ? `http://${config.devBackendURL.ip}:${config.devBackendURL.port}`
+		  : config.prodBackendURL
+		}`;
+		backendURL += url;
 
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = 'qec_code.txt';
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-		URL.revokeObjectURL(url);
+		const payload = { name: 'post_example', value: '3.14', message: message};
+		postExample(backendURL, payload);
 	});
 
 /////////////////////////////////////////////////////////////

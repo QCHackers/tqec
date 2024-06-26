@@ -78,9 +78,9 @@ export default function TqecCode() {
 		// Add workspace guidelines.
 		let y0 = guideTopLeftCorner[1];
 		let message = '';
-		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
+		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
 			let x0 = guideTopLeftCorner[0];
-			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
+			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
 				const x1 = x0 + plaquetteDx;
 				const y1 = y0 + plaquetteDy;
 				outline.moveTo(x0*gridSize, y0*gridSize);
