@@ -1,9 +1,9 @@
 import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
-import TqecLibrary from './library'
-import TqecCode from './code'
-import TqecTemplates from './templates'
+import TqecLibrary from './tab_library'
+import TqecCode from './tab_code'
+import TqecTemplates from './tab_template'
 import formattedInfoTabContent from './formattedInfoTab';
 
 /* The logo has been created as the SVG rendering of the ASCII:

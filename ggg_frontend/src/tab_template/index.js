@@ -1,16 +1,23 @@
 import { useApp } from '@pixi/react'
 import { useState, useEffect } from 'react'
-import { makeGrid } from '../library/grid'
 import { Container, Graphics } from 'pixi.js'
-import Position from '../library/position'
-import { button } from '../library/button'
-import Plaquette from '../library/plaquette'
-import PlaquetteType from '../code/plaquette-type'
-import { savedPlaquettes, libraryColors } from '../library'
-import { Qubit } from '../library/qubit'
+
+// From the implementation of the tab 'library'
+import { makeGrid } from '../tab_library/grid'
+import Position from '../tab_library/position'
+import { button } from '../tab_library/button'
+import { Qubit } from '../tab_library/qubit'
+import Plaquette from '../tab_library/plaquette'
+import { savedPlaquettes, libraryColors } from '../tab_library'
+
+// From the implementation of the tab 'code'
+import PlaquetteType from '../tab_code/plaquette-type'
+
+// From the main src folder
 import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants'
 import { drawSquareFromTopLeft } from '../utils'
 
+// From the implementation of the components
 import config from '../components/download/config'
 import { postExample, getExample } from '../components/download/test-backend-interface'
 

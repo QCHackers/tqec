@@ -1,13 +1,19 @@
 import { useApp } from '@pixi/react'
-import { makeGrid } from '../library/grid'
 import { Container, Graphics } from 'pixi.js'
-import Position from '../library/position'
-import { button } from '../library/button'
-import Plaquette from '../library/plaquette'
+
+// From the implementation of the tab 'library'
+import { makeGrid } from '../tab_library/grid'
+import Position from '../tab_library/position'
+import { button } from '../tab_library/button'
+import Plaquette from '../tab_library/plaquette'
+import Circuit from '../tab_library/circuit'
+import { savedPlaquettes, libraryColors } from '../tab_library'
+import { Qubit } from '../tab_library/qubit'
+
+// From the implementation of the tab 'code'
 import PlaquetteType from './plaquette-type'
-import Circuit from '../library/circuit'
-import { savedPlaquettes, libraryColors } from '../library'
-import { Qubit } from '../library/qubit'
+
+// From the main src folder
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
 import { drawSquareFromTopLeft } from '../utils'
 

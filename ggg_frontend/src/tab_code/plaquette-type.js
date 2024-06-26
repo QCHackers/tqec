@@ -1,9 +1,13 @@
 // Define class Plaquette and its methods
 
-import { Qubit } from '../library/qubit';
-import Position from '../library/position';
-import Plaquette from '../library/plaquette';
 import { Container } from 'pixi.js'
+
+// From the implementation of the tab 'library'
+import { Qubit } from '../tab_library/qubit';
+import Position from '../tab_library/position';
+import Plaquette from '../tab_library/plaquette';
+
+// From the main src folder
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants';
 
 /////////////////////////////////////////////////////////////
