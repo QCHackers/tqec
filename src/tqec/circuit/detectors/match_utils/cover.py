@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as ty
+from time import time
 
 import pysat.solvers
 from tqec.circuit.detectors.boundary import BoundaryStabilizer, manhattan_distance
@@ -137,25 +138,41 @@ def find_cover(
 
 
 def _smallest_solution_shortcircuit(
-    solutions: ty.Iterator[list[int]], lower_length_bound: int = 0
+    solutions: ty.Iterator[list[int]], lower_length_bound: int = 0, timeout: float = 0.1
 ) -> list[int] | None:
+    """Iterate over the provided `solutions` iterator to find the smallest possible
+    solution within the provided `timeout`.
+
+    Args:
+        solutions: iterator yielding lists of integers representing the indices of
+            Pauli strings that should be used to cover a specific target.
+        lower_length_bound: The minimum expected length. This parameter is used to
+            quit early if a solution with this length is found. Default to exploring
+            all the solutions to find the best one.
+        timeout: maximum time in seconds that can be spent finding the smallest
+            solution. The provided `solutions` iterator might yield millions of
+            inputs, so this parameter is here to stop the search and return the best
+            found solution when more than `timeout` seconds have been spent within
+            this function.
+
+    Returns:
+        the smallest solution found, or `None` if no solution was found.
+    """
+    start_time: float = time()
     smallest_solution = next(solutions, None)
+
+    if smallest_solution is None:
+        return None
+    if len(smallest_solution) == lower_length_bound:
+        return smallest_solution
+
+    for solution in solutions:
+        if len(solution) == lower_length_bound:
+            return solution
+        smallest_solution = min((smallest_solution, solution), key=len)
+        if time() - start_time > timeout:
+            return smallest_solution
     return smallest_solution
-
-    # TODO: In theory, we would like the smallest solution. In practice, this
-    #       is an issue on some inputs as it requires to iterate over a large
-    #       number of valid solutions, so for the moment just keep the first
-    #       solution.
-    # if smallest_solution is None:
-    #     return None
-    # if len(smallest_solution) == lower_length_bound:
-    #     return smallest_solution
-
-    # for solution in solutions:
-    #     if len(solution) == lower_length_bound:
-    #         return solution
-    #     smallest_solution = min((smallest_solution, solution), key=len)
-    # return smallest_solution
 
 
 def _find_cover_sat(
