@@ -13,7 +13,7 @@ from tqec.templates.scale import LinearFunction
 
 
 class DenseQubitSquareTemplate(ComposedTemplate):
-    def __init__(self, dim: Dimension) -> None:
+    def __init__(self, dim: LinearFunction, k: int = 2) -> None:
         """An error-corrected qubit.
 
         The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
@@ -27,9 +27,10 @@ class DenseQubitSquareTemplate(ComposedTemplate):
 
         Args:
             dim: dimension of the error-corrected qubit.
+            k: initial value for the scaling parameter.
         """
         # nsone: non-scalable one
-        nsone = FixedDimension(1)
+        nsone = LinearFunction(0, 1)
 
         # 0  4  4  4  4  1
         # 5  6  6  6  6  7
