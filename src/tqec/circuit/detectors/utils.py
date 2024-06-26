@@ -318,3 +318,46 @@ def remove_annotations(
         elif not _is_annotation(inst) or inst.name not in annotations_to_remove:
             new_circuit.append(inst)
     return new_circuit
+
+
+def _offset_detectors(
+    detectors: list[stim.CircuitInstruction], offset: int
+) -> list[stim.CircuitInstruction]:
+    offset_detectors: list[stim.CircuitInstruction] = []
+    for detector in detectors:
+        targets: list[object] = [
+            stim.target_rec(t.value - offset) for t in detector.targets_copy()
+        ]
+        offset_detectors.append(
+            stim.CircuitInstruction("DETECTOR", targets, detector.gate_args_copy())
+        )
+    return offset_detectors
+
+
+def detector_to_targets_tuple(instruction: stim.CircuitInstruction) -> tuple[int, ...]:
+    return tuple(t.value for t in instruction.targets_copy())
+
+
+def push_all_detectors_to_the_end(circuit: stim.Circuit) -> stim.Circuit:
+    new_circuit = stim.Circuit()
+    detectors: list[stim.CircuitInstruction] = []
+    for instruction in circuit:
+        if isinstance(instruction, stim.CircuitRepeatBlock):
+            new_circuit.append(
+                stim.CircuitRepeatBlock(
+                    instruction.repeat_count,
+                    push_all_detectors_to_the_end(instruction.body_copy()),
+                )
+            )
+        elif _is_measurement(instruction):
+            num_targets = len(instruction.targets_copy())
+            detectors = _offset_detectors(detectors, num_targets)
+            new_circuit.append(instruction)
+        elif instruction.name == "DETECTOR":
+            detectors.append(instruction)
+        else:
+            new_circuit.append(instruction)
+
+    for detector in sorted(detectors, key=detector_to_targets_tuple, reverse=True):
+        new_circuit.append(detector)
+    return new_circuit
