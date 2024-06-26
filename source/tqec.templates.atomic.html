@@ -59,8 +59,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.composed">tqec.templates.composed module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.display">tqec.templates.display module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.scale">tqec.templates.scale module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.shifted">tqec.templates.shifted module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.stack">tqec.templates.stack module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates">Module contents</a></li>
 </ul>
 </li>
@@ -110,7 +108,7 @@
 <span id="tqec-templates-atomic-rectangle-module"></span><h2>tqec.templates.atomic.rectangle module<a class="headerlink" href="#module-tqec.templates.atomic.rectangle" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingRectangleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingRectangleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a></p>
 <p>Implements an atomic rectangular template with alternating plaquettes.</p>
 <dl class="field-list simple">
@@ -118,6 +116,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>width</strong> – rectangle width.</p></li>
 <li><p><strong>height</strong> – rectangle height.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
 <li><p><strong>default_x_increment</strong> – default increment in the x direction between two plaquettes.</p></li>
 <li><p><strong>default_y_increment</strong> – default increment in the y direction between two plaquettes.</p></li>
 </ul>
@@ -127,11 +126,11 @@
 <p>The following code:
 .. code-block:: python</p>
 <blockquote>
-<div><p>from tqec.templates.scale import Dimension
+<div><p>from tqec.templates.scale import LinearFunction
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.display import display_template</p>
-<p>width = Dimension(2, scaling_function=lambda k: 2*k)
-height = Dimension(3, scaling_function=lambda k: 3*k)
+<p>width = LinearFunction(2, 0)
+height = LinearFunction(3, 0)
 template = AlternatingRectangleTemplate(width, height)</p>
 <p>print(“Non-scaled template:”)
 display_template(template)
@@ -200,46 +199,10 @@ the underlying shape of the template.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scale_to">
-<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate" title="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate"><span class="pre">AlternatingRectangleTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scale_to" title="Link to this definition"></a></dt>
-<dd><p>Scales self to the given scale k.</p>
-<p>Note that this function scales the template instance INLINE. Rephrasing, the
-instance on which this method is called is modified in-place AND returned.</p>
-<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
-forwarded to</p>
-<ol class="arabic simple">
-<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
-<li><p>other <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instances in the case of templates modifying
-existing instances,</p></li>
-<li><p>anything else that the subclass might implement.</p></li>
-</ol>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>self, once scaled.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.shape" title="Link to this definition"></a></dt>
-<dd><p>Returns the current template shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the shape of the template.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#AlternatingRectangleTemplate.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Returns a dict-like representation of the instance.</p>
-<p>Used to implement to_json.</p>
+<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scalable_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scalable_shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate.scalable_shape" title="Link to this definition"></a></dt>
+<dd><p>Returns a scalable version of the template shape.</p>
 </dd></dl>
 
 </dd></dl>
@@ -340,46 +303,10 @@ the underlying shape of the template.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.RawRectangleTemplate.scale_to">
-<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate" title="tqec.templates.atomic.rectangle.RawRectangleTemplate"><span class="pre">RawRectangleTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#RawRectangleTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate.scale_to" title="Link to this definition"></a></dt>
-<dd><p>Scales self to the given scale k.</p>
-<p>Note that this function scales the template instance INLINE. Rephrasing, the
-instance on which this method is called is modified in-place AND returned.</p>
-<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
-forwarded to</p>
-<ol class="arabic simple">
-<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
-<li><p>other <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instances in the case of templates modifying
-existing instances,</p></li>
-<li><p>anything else that the subclass might implement.</p></li>
-</ol>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>self, once scaled.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.RawRectangleTemplate.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate.shape" title="Link to this definition"></a></dt>
-<dd><p>Returns the current template shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the shape of the template.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.RawRectangleTemplate.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/rectangle.html#RawRectangleTemplate.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Returns a dict-like representation of the instance.</p>
-<p>Used to implement to_json.</p>
+<dt class="sig sig-object py" id="tqec.templates.atomic.rectangle.RawRectangleTemplate.scalable_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scalable_shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.rectangle.RawRectangleTemplate.scalable_shape" title="Link to this definition"></a></dt>
+<dd><p>Returns a scalable version of the template shape.</p>
 </dd></dl>
 
 </dd></dl>
@@ -389,7 +316,7 @@ existing instances,</p></li>
 <span id="tqec-templates-atomic-square-module"></span><h2>tqec.templates.atomic.square module<a class="headerlink" href="#module-tqec.templates.atomic.square" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingCornerSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingCornerSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingCornerSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingCornerSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingCornerSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a></p>
 <p>Implements an atomic square corner template with alternating plaquettes.</p>
 <p>A corner template is a square, just like the logical qubit, but:
@@ -403,6 +330,7 @@ existing instances,</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dimension</strong> – width and height of the square template.</p></li>
 <li><p><strong>corner_position</strong> – position of the special corner.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
 <li><p><strong>default_x_increment</strong> – default increment in the x direction between
 two plaquettes.</p></li>
 <li><p><strong>default_y_increment</strong> – default increment in the y direction between
@@ -414,12 +342,12 @@ two plaquettes.</p></li>
 <p>The following code:
 .. code-block:: python</p>
 <blockquote>
-<div><p>from tqec.templates.scale import Dimension, LinearFunction
+<div><p>from tqec.templates.scale import LinearFunction
 from tqec.templates.atomic.square import AlternatingCornerSquareTemplate
 from tqec.display import display_template
 from tqec.enums import CornerPositionEnum</p>
-<p>dim = Dimension(2, LinearFunction(2, 0))
-template = AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT)</p>
+<p>dim = LinearFunction(2, 0)
+template = AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT, k=2)</p>
 <p>print(“Non-scaled template:”)
 display_template(template)
 print(“Scaled template:”)
@@ -484,52 +412,24 @@ the underlying shape of the template.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scale_to">
-<span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate" title="tqec.templates.atomic.square.AlternatingCornerSquareTemplate"><span class="pre">AlternatingCornerSquareTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingCornerSquareTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scale_to" title="Link to this definition"></a></dt>
-<dd><p>Scales self to the given scale k.</p>
-<p>Note that this function scales the template instance INLINE. Rephrasing, the
-instance on which this method is called is modified in-place AND returned.</p>
-<p>The input parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> corresponds to an abstract scale that may be
-forwarded to</p>
-<ol class="arabic simple">
-<li><p>various <code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code> instances,</p></li>
-<li><p>other <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instances in the case of templates modifying
-existing instances,</p></li>
-<li><p>anything else that the subclass might implement.</p></li>
-</ol>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> – the new scale of the template.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>self, once scaled.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
-<dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingCornerSquareTemplate.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><span class="pre">Shape2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.shape" title="Link to this definition"></a></dt>
-<dd><p>Returns the current template shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the shape of the template.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scalable_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scalable_shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></em><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingCornerSquareTemplate.scalable_shape" title="Link to this definition"></a></dt>
+<dd><p>Returns a scalable version of the template shape.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.atomic.square.AlternatingSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlternatingSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/atomic/square.html#AlternatingSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.atomic.square.AlternatingSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tqec.templates.atomic.rectangle.AlternatingRectangleTemplate" title="tqec.templates.atomic.rectangle.AlternatingRectangleTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlternatingRectangleTemplate</span></code></a></p>
 <p>Implements an atomic square template with alternating plaquettes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dimension</strong> – width and height of the square template.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
 <li><p><strong>default_x_increment</strong> – default increment in the x direction between two plaquettes.</p></li>
 <li><p><strong>default_y_increment</strong> – default increment in the y direction between two plaquettes.</p></li>
 </ul>
@@ -539,11 +439,11 @@ existing instances,</p></li>
 <p>The following code:
 .. code-block:: python</p>
 <blockquote>
-<div><p>from tqec.templates.scale import Dimension, LinearFunction
+<div><p>from tqec.templates.scale import LinearFunction
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.display import display_template</p>
-<p>dim = Dimension(2, LinearFunction(2, 0))
-template = AlternatingSquareTemplate(dim)</p>
+<p>dim = LinearFunction(2, 0)
+template = AlternatingSquareTemplate(dim, k=2)</p>
 <p>print(“Non-scaled template:”)
 display_template(template)
 print(“Scaled template:”)

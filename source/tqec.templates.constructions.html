@@ -58,8 +58,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.composed">tqec.templates.composed module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.display">tqec.templates.display module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.scale">tqec.templates.scale module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.shifted">tqec.templates.shifted module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.stack">tqec.templates.stack module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#module-tqec.templates">Module contents</a></li>
 </ul>
 </li>
@@ -109,7 +107,7 @@
 <span id="tqec-templates-constructions-corner-module"></span><h2>tqec.templates.constructions.corner module<a class="headerlink" href="#module-tqec.templates.constructions.corner" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.corner.ScalableCorner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScalableCorner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/corner.html#ScalableCorner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.corner.ScalableCorner" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScalableCorner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/corner.html#ScalableCorner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.corner.ScalableCorner" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>A scalable corner template.</p>
 <p>This corner template can be used to move an error-corrected qubit to another
@@ -132,7 +130,10 @@ computations.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dim</strong> – dimension of the initial error-corrected qubit.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> – dimension of the initial error-corrected qubit.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -190,8 +191,15 @@ s |</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>templates</strong> – a list of templates forwarded to the <code class="docutils literal notranslate"><span class="pre">add_templates</span></code> method
-at the end of instance initialisation.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>templates</strong> – a list of templates forwarded to the <code class="docutils literal notranslate"><span class="pre">add_templates</span></code> method
+at the end of instance initialisation.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
+<li><p><strong>default_x_increment</strong> – default increment in the x direction between
+two plaquettes.</p></li>
+<li><p><strong>default_y_increment</strong> – default increment in the y direction between
+two plaquettes.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – if the templates provided have different default
@@ -205,7 +213,7 @@ at the end of instance initialisation.</p>
 <span id="tqec-templates-constructions-qubit-module"></span><h2>tqec.templates.constructions.qubit module<a class="headerlink" href="#module-tqec.templates.constructions.qubit" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.qubit.DenseQubitSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dimension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>An error-corrected qubit.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">dimension</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
@@ -247,7 +255,7 @@ and to the left of the midline for the vertical case.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitRectangleTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitRectangleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitRectangleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitRectangleTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitRectangleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitRectangleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitRectangleTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>A scalable rectangle error-corrected qubit.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">width</span> <span class="pre">=</span> <span class="pre">FixedDimension(6)</span></code>
@@ -265,6 +273,7 @@ and <code class="docutils literal notranslate"><span class="pre">height</span> <
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>width</strong> – width of the rectangle logical qubit.</p></li>
 <li><p><strong>height</strong> – height of the rectangle logical qubit.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
 </ul>
 </dd>
 </dl>
@@ -293,7 +302,7 @@ and to the left of the midline for the vertical case.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.Dimension" title="tqec.templates.scale.Dimension"><span class="pre">Dimension</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>An error-corrected qubit.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">dimension</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
@@ -307,7 +316,10 @@ and to the left of the midline for the vertical case.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dim</strong> – dimension of the error-corrected qubit.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> – dimension of the error-corrected qubit.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">

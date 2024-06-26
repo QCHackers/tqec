@@ -82,13 +82,13 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">TemplateWithIndices</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.composed</span> <span class="kn">import</span> <span class="n">ComposedTemplate</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">Dimension</span><span class="p">,</span> <span class="n">FixedDimension</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 
 
 <div class="viewcode-block" id="ScalableCorner">
 <a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.corner.ScalableCorner">[docs]</a>
 <span class="k">class</span> <span class="nc">ScalableCorner</span><span class="p">(</span><span class="n">ComposedTemplate</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">Dimension</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A scalable corner template.</span>
 
 <span class="sd">        This corner template can be used to move an error-corrected qubit to another</span>
@@ -112,11 +112,12 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            dim: dimension of the initial error-corrected qubit.</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># nsone: non-scalable one</span>
         <span class="c1"># nstwo: non-scalable two</span>
-        <span class="n">nsone</span> <span class="o">=</span> <span class="n">FixedDimension</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">nstwo</span> <span class="o">=</span> <span class="n">FixedDimension</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">nsone</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">nstwo</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="n">_templates</span> <span class="o">=</span> <span class="p">[</span>
             <span class="c1"># 0</span>
@@ -169,7 +170,7 @@
             <span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_RIGHT</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_LEFT</span><span class="p">)),</span>
             <span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_RIGHT</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">LOWER_LEFT</span><span class="p">)),</span>
         <span class="p">]</span>
-        <span class="n">ComposedTemplate</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_templates</span><span class="p">)</span>
+        <span class="n">ComposedTemplate</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_templates</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">relative_positions</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">start_corner</span><span class="p">),</span> <span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">end_corner</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pinned_corners</span><span class="p">:</span>

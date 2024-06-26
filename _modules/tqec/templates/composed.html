@@ -72,44 +72,32 @@
              
   <h1>Source code for tqec.templates.composed</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CornerPositionEnum</span><span class="p">,</span>
-    <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
     <span class="n">TemplateOrientation</span><span class="p">,</span>
+    <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">Shape2D</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span><span class="p">,</span> <span class="n">TemplateWithIndices</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">Scalable2D</span>
 
 
-<div class="viewcode-block" id="get_corner_position">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.get_corner_position">[docs]</a>
-<span class="k">def</span> <span class="nf">get_corner_position</span><span class="p">(</span>
-    <span class="n">position</span><span class="p">:</span> <span class="n">Position</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_get_corner_position</span><span class="p">(</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">,</span>
     <span class="n">position_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">,</span>
     <span class="n">expected_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the position of a template corner.</span>
 
 <span class="sd">    This function helps in computing the position of any corner of a given</span>
 <span class="sd">    template as long as we have the position of one of its corners.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)</span>
-<span class="sd">        Position(x=0, y=0)</span>
-<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_LEFT)</span>
-<span class="sd">        Position(x=0, y=2)</span>
-<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.UPPER_RIGHT)</span>
-<span class="sd">        Position(x=2, y=0)</span>
-<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.UPPER_LEFT, Shape2D(2, 2), CornerPositionEnum.LOWER_RIGHT)</span>
-<span class="sd">        Position(x=2, y=2)</span>
-<span class="sd">        &gt;&gt;&gt; get_corner_position(Position(0, 0), CornerPositionEnum.LOWER_RIGHT, Shape2D(2, 2), CornerPositionEnum.UPPER_LEFT)</span>
-<span class="sd">        Position(x=-2, y=-2)</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        position: position of the &quot;anchor&quot; corner.</span>
@@ -125,17 +113,22 @@
         <span class="n">expected_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">position_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
         <span class="n">expected_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">position_corner</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">Position</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span>
         <span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">transformation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
         <span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">transformation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">shape</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="ComposedTemplate">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">ComposedTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateWithIndices</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateWithIndices</span><span class="p">],</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_x_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_y_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Manages templates positioned relatively to each other.</span>
 
 <span class="sd">        This class manages a list of user-provided templates and user-provided relative</span>
@@ -177,11 +170,17 @@
 <span class="sd">        Args:</span>
 <span class="sd">            templates: a list of templates forwarded to the ``add_templates`` method</span>
 <span class="sd">                at the end of instance initialisation.</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
+<span class="sd">            default_x_increment: default increment in the x direction between</span>
+<span class="sd">                two plaquettes.</span>
+<span class="sd">            default_y_increment: default increment in the y direction between</span>
+<span class="sd">                two plaquettes.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if the templates provided have different default</span>
 <span class="sd">                increments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">default_x_increment</span><span class="p">,</span> <span class="n">default_y_increment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Template</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -220,12 +219,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">!=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Template </span><span class="si">{</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Template </span><span class="si">{</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="o">+</span> <span class="s2">&quot; has different default increments than the other templates.&quot;</span>
             <span class="p">)</span>
         <span class="n">template_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">)</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">template_to_insert</span><span class="o">.</span><span class="n">indices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+        <span class="c1"># Make sure the template is at the correct scale</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">template_to_insert</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+        <span class="n">template</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+        <span class="c1"># Update the data-structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">template_id</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum_plaquette_mapping_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">indices</span>
@@ -344,7 +347,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_compute_ul_absolute_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_compute_ul_absolute_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the absolute position of each template upper-left corner.</span>
 
 <span class="sd">        This is the main method of the ``ComposedTemplate`` class. It explores templates</span>
@@ -363,15 +366,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
-        <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}</span>
+
+        <span class="n">_constant_zero</span> <span class="o">=</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">from_linear_function</span><span class="p">(</span>
+            <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">_constant_zero</span><span class="p">,</span> <span class="n">_constant_zero</span><span class="p">)</span>
+        <span class="p">}</span>
         <span class="n">src</span><span class="p">:</span> <span class="nb">int</span>
         <span class="n">dest</span><span class="p">:</span> <span class="nb">int</span>
         <span class="c1"># Compute the upper-left (ul) position of all the templates</span>
         <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">bfs_edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
             <span class="n">relative_position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CornerPositionEnum</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s2">&quot;relative_position&quot;</span>
-                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span>
+                    <span class="n">src</span><span class="p">,</span> <span class="n">dest</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relative_position&quot;</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">relative_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -380,32 +389,32 @@
             <span class="c1"># for dest.</span>
             <span class="c1"># ul_positions[src] is guaranteed to exist due to the BFS exploration order.</span>
             <span class="n">src_ul_position</span> <span class="o">=</span> <span class="n">ul_positions</span><span class="p">[</span><span class="n">src</span><span class="p">]</span>
-            <span class="n">src_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">dest_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">src_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">scalable_shape</span>
+            <span class="n">dest_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span><span class="o">.</span><span class="n">scalable_shape</span>
 
             <span class="n">src_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
             <span class="n">dest_corner</span><span class="p">:</span> <span class="n">CornerPositionEnum</span>
             <span class="n">src_corner</span><span class="p">,</span> <span class="n">dest_corner</span> <span class="o">=</span> <span class="n">relative_position</span>
             <span class="c1"># Compute the anchor corner</span>
-            <span class="n">anchor_position</span><span class="p">:</span> <span class="n">Position</span> <span class="o">=</span> <span class="n">get_corner_position</span><span class="p">(</span>
+            <span class="n">anchor_position</span> <span class="o">=</span> <span class="n">_get_corner_position</span><span class="p">(</span>
                 <span class="n">src_ul_position</span><span class="p">,</span>
                 <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
                 <span class="n">src_shape</span><span class="p">,</span>
                 <span class="n">src_corner</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="c1"># Compute the upper-left position of the destination</span>
-            <span class="n">ul_positions</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_corner_position</span><span class="p">(</span>
+            <span class="n">ul_positions</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_corner_position</span><span class="p">(</span>
                 <span class="n">anchor_position</span><span class="p">,</span>
                 <span class="n">dest_corner</span><span class="p">,</span>
                 <span class="n">dest_shape</span><span class="p">,</span>
                 <span class="n">CornerPositionEnum</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">ul_positions</span>
 
     <span class="k">def</span> <span class="nf">_get_bounding_box_from_ul_positions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Position</span><span class="p">,</span> <span class="n">Position</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Scalable2D</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box containing all the templates from their</span>
 <span class="sd">        upper-left corner position.</span>
 
@@ -418,19 +427,31 @@
 <span class="sd">            the bounding box. Coordinates in each positions are not guaranteed</span>
 <span class="sd">            to be positive.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_constant_zero</span> <span class="o">=</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">from_linear_function</span><span class="p">(</span>
+            <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="c1"># ul: upper-left</span>
         <span class="c1"># br: bottom-right</span>
-        <span class="n">ul</span><span class="p">,</span> <span class="n">br</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">ul</span> <span class="o">=</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">_constant_zero</span><span class="p">,</span> <span class="n">_constant_zero</span><span class="p">)</span>
+        <span class="n">br</span> <span class="o">=</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">_constant_zero</span><span class="p">,</span> <span class="n">_constant_zero</span><span class="p">)</span>
         <span class="c1"># tid: template id</span>
         <span class="c1"># tulx: template upper-left</span>
         <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tul</span> <span class="ow">in</span> <span class="n">ul_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># tshape: template shape</span>
-            <span class="n">tshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">ul</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-            <span class="n">br</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+            <span class="n">tshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">scalable_shape</span>
+            <span class="n">ul</span> <span class="o">=</span> <span class="n">Scalable2D</span><span class="p">(</span>
+                <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+                <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">()</span>
+            <span class="n">br</span> <span class="o">=</span> <span class="n">Scalable2D</span><span class="p">(</span>
+                <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+                <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tshape</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ul</span><span class="p">,</span> <span class="n">br</span>
 
-    <span class="k">def</span> <span class="nf">_get_shape_from_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ul</span><span class="p">:</span> <span class="n">Position</span><span class="p">,</span> <span class="n">br</span><span class="p">:</span> <span class="n">Position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_shape_from_bounding_box</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">br</span><span class="p">:</span> <span class="n">Scalable2D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the bounding box.</span>
 
 <span class="sd">        Args:</span>
@@ -439,18 +460,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># ul: upper-left</span>
         <span class="c1"># br: bottom-right</span>
-        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">br</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">br</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">br</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_shape_from_ul_positions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the upper-left corner positions of each template.&quot;&quot;&quot;</span>
         <span class="c1"># ul: upper-left</span>
         <span class="c1"># br: bottom-right</span>
         <span class="n">ul</span><span class="p">,</span> <span class="n">br</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_box_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_bounding_box</span><span class="p">(</span><span class="n">ul</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_bounding_box</span><span class="p">(</span><span class="n">ul</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_build_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices_map</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
         <span class="c1"># ul: upper-left</span>
         <span class="n">ul_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ul_absolute_position</span><span class="p">()</span>
         <span class="c1"># bbul: bounding-box upper-left</span>
@@ -458,7 +480,7 @@
         <span class="n">bbul</span><span class="p">,</span> <span class="n">bbbr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_box_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_bounding_box</span><span class="p">(</span><span class="n">bbul</span><span class="p">,</span> <span class="n">bbbr</span><span class="p">)</span>
 
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="c1"># tid: template id</span>
         <span class="c1"># tul: template upper-left</span>
         <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tul</span> <span class="ow">in</span> <span class="n">ul_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -472,8 +494,8 @@
             <span class="p">]</span>
             <span class="c1"># Subtracting bbul (upper-left bounding box position) from each coordinate to stick</span>
             <span class="c1"># the represented code to the axes and avoid having negative indices.</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">x</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
             <span class="c1"># Numpy indexing is (y, x) in our coordinate system convention.</span>
             <span class="n">ret</span><span class="p">[</span><span class="n">y</span> <span class="p">:</span> <span class="n">y</span> <span class="o">+</span> <span class="n">tshapey</span><span class="p">,</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">tshapex</span><span class="p">]</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>
                 <span class="n">plaquette_indices</span>
@@ -532,55 +554,24 @@
 
 <div class="viewcode-block" id="ComposedTemplate.scale_to">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.scale_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales all the scalable component templates to the given scale ``k``.</span>
 
-<span class="sd">        Note that this function scales the template instance INLINE. Rephrasing, the</span>
-<span class="sd">        instance on which this method is called is modified in-place AND returned.</span>
+<span class="sd">        Note that this function scales the template instance INLINE.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k: the new scale of the component templates. Forwarded to all the</span>
-<span class="sd">            ``Template`` instances added to this ``ComposedTemplate`` instance.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            ``self``, once scaled.</span>
+<span class="sd">                :class:`Template` instances added to this</span>
+<span class="sd">                :class:`ComposedTemplate` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+            <span class="n">t</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape_from_ul_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_ul_absolute_position</span><span class="p">())</span>
-
-<div class="viewcode-block" id="ComposedTemplate.to_dict">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.to_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="c1"># self.__class__ is &quot;ComposedTemplate&quot; here, whatever the type of self is. This is different</span>
-            <span class="c1"># from what is done in the Template base class. This is done to avoid users subclassing this</span>
-            <span class="c1"># class and having a subclass name we do not control in the &quot;type&quot; entry.</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;templates&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;connections&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;source_idx&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
-                    <span class="s2">&quot;target_idx&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
-                    <span class="s2">&quot;source_corner&quot;</span><span class="p">:</span> <span class="n">source_corner</span><span class="p">,</span>
-                    <span class="s2">&quot;target_corner&quot;</span><span class="p">:</span> <span class="n">target_corner</span><span class="p">,</span>
-                <span class="p">}</span>
-                <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="p">(</span>
-                    <span class="n">source_corner</span><span class="p">,</span>
-                    <span class="n">target_corner</span><span class="p">,</span>
-                <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relative_position_graph</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
-                    <span class="s2">&quot;relative_position&quot;</span>  <span class="c1"># type: ignore</span>
-                <span class="p">)</span>
-            <span class="p">],</span>
-        <span class="p">}</span></div>
-
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>

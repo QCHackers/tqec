@@ -73,84 +73,24 @@
   <h1>Source code for tqec.templates.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CornerPositionEnum</span><span class="p">,</span>
-    <span class="n">TemplateOrientation</span><span class="p">,</span>
-    <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
-
-
-<span class="k">def</span> <span class="nf">_json_encoding_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define additional defaults to transform instances to JSON.</span>
-
-<span class="sd">    This function is given as parameter to json.dumps to provide a</span>
-<span class="sd">    way to translate the enumerations used by some templates to JSON</span>
-<span class="sd">    data.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        TypeError: if an instance of a unimplemented type is provided as</span>
-<span class="sd">            parameter.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">TemplateRelativePositionEnum</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not encodable in JSON&quot;</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="JSONEncodable">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable">[docs]</a>
-<span class="k">class</span> <span class="nc">JSONEncodable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="JSONEncodable.to_dict">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable.to_dict">[docs]</a>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict-like representation of the instance.</span>
-
-<span class="sd">        Used to implement to_json.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="JSONEncodable.to_json">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.JSONEncodable.to_json">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the instance.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            **kwargs: keyword arguments forwarded to the json.dumps function.</span>
-<span class="sd">                The &quot;default&quot; keyword argument should NOT be present.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the JSON representation of the instance.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the &quot;default&quot; key is present in kwargs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;default&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The &#39;default&#39; key has been found with value &#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; in the provided kwargs.&quot;</span>
-                <span class="s2">&quot; &#39;default&#39; key is prohibited in the public API as it is changed internally.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="n">_json_encoding_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-</div>
-
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">Scalable2D</span>
 
 
 <div class="viewcode-block" id="Template">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template">[docs]</a>
-<span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="n">JSONEncodable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">default_x_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">default_y_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -160,12 +100,14 @@
 <span class="sd">        that all templates should implement to be usable by the library.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
 <span class="sd">            default_x_increment: default increment in the x direction between</span>
 <span class="sd">                two plaquettes.</span>
 <span class="sd">            default_y_increment: default increment in the y direction between</span>
 <span class="sd">                two plaquettes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
             <span class="n">default_x_increment</span><span class="p">,</span> <span class="n">default_y_increment</span>
         <span class="p">)</span>
@@ -221,38 +163,31 @@
 
 <div class="viewcode-block" id="Template.scale_to">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.scale_to">[docs]</a>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Template&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales self to the given scale k.</span>
 
-<span class="sd">        Note that this function scales the template instance INLINE. Rephrasing, the</span>
-<span class="sd">        instance on which this method is called is modified in-place AND returned.</span>
-
-<span class="sd">        The input parameter ``k`` corresponds to an abstract scale that may be</span>
-<span class="sd">        forwarded to</span>
-
-<span class="sd">        1. various :class:`Dimension` instances,</span>
-<span class="sd">        2. other :class:`Template` instances in the case of templates modifying</span>
-<span class="sd">           existing instances,</span>
-<span class="sd">        3. anything else that the subclass might implement.</span>
+<span class="sd">        Note that this function scales the template instance INLINE.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k: the new scale of the template.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            self, once scaled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current template shape.</span>
+    <span class="k">def</span> <span class="nf">k</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            the shape of the template.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current template shape.&quot;&quot;&quot;</span>
+        <span class="n">sshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalable_shape</span>
+        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">sshape</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">),</span> <span class="n">sshape</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Template.get_midline_plaquettes">
@@ -277,26 +212,6 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            TQECException: If the midline is not uniquely defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="Template.to_dict">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.to_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ty</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict-like representation of the instance.</span>
-
-<span class="sd">        Used to implement to_json.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># self.__class__ is the type of the instance this method is called on, taking into</span>
-        <span class="c1"># account inheritance. So this is not always &quot;Template&quot; here, as a subclass of</span>
-        <span class="c1"># Template could use this method and self.__class__ would be this subclass type.</span>
-        <span class="c1"># This is intentional.</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="s2">&quot;default_increments&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">}</span></div>
 
 
     <span class="nd">@property</span>

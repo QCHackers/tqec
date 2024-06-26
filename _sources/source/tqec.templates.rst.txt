@@ -45,22 +45,6 @@ tqec.templates.scale module
    :undoc-members:
    :show-inheritance:
 
-tqec.templates.shifted module
------------------------------
-
-.. automodule:: tqec.templates.shifted
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.templates.stack module
----------------------------
-
-.. automodule:: tqec.templates.stack
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
