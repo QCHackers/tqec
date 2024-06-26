@@ -11,26 +11,26 @@ from tqec.position import Shape2D
 
 @dataclass(frozen=True)
 class LinearFunction:
-    slope: int = 1
-    offset: int = 0
+    slope: float = 1.0
+    offset: float = 0.0
 
-    def __call__(self, x: int) -> int:
+    def __call__(self, x: float) -> float:
         return self.slope * x + self.offset
 
-    def __add__(self, other: LinearFunction | int) -> LinearFunction:
-        if isinstance(other, int):
+    def __add__(self, other: LinearFunction | int | float) -> LinearFunction:
+        if isinstance(other, int | float):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
-    def __sub__(self, other: LinearFunction | int) -> LinearFunction:
-        if isinstance(other, int):
+    def __sub__(self, other: LinearFunction | int | float) -> LinearFunction:
+        if isinstance(other, int | float):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
-    def __mul__(self, other: int) -> LinearFunction:
+    def __mul__(self, other: int | float) -> LinearFunction:
         return self.__rmul__(other)
 
-    def __rmul__(self, other: int) -> LinearFunction:
+    def __rmul__(self, other: int | float) -> LinearFunction:
         return LinearFunction(other * self.slope, other * self.offset)
 
     def intersection(self, other: LinearFunction) -> float | None:
@@ -124,7 +124,7 @@ class PiecewiseLinearFunction:
         assert len(self.separators) + 1 == len(self.functions)
         assert sorted(self.separators) == self.separators
 
-    def __call__(self, x: int) -> int:
+    def __call__(self, x: int | float) -> int | float:
         """Compute the value of the piecewise linear function at point `x`.
 
         Args:
@@ -344,13 +344,20 @@ class PiecewiseLinearFunction:
         return PiecewiseLinearFunction([], [function])
 
 
+def round_or_fail(f: float) -> int:
+    rounded_value = int(f)
+    if abs(f - rounded_value) > 1e-8:
+        raise TQECException(f"Rounding from {f} to integer failed.")
+    return rounded_value
+
+
 @dataclass
 class Scalable2D:
     x: PiecewiseLinearFunction
     y: PiecewiseLinearFunction
 
     def to_shape_2d(self, k: int) -> Shape2D:
-        return Shape2D(self.x(k), self.y(k))
+        return Shape2D(round_or_fail(self.x(k)), round_or_fail(self.y(k)))
 
     def to_numpy_shape(self, k: int) -> tuple[int, int]:
         return self.to_shape_2d(k).to_numpy_shape()
