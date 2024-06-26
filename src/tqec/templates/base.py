@@ -1,72 +1,21 @@
 from __future__ import annotations
 
-import json
 import typing as ty
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import numpy
 
-from tqec.enums import (
-    CornerPositionEnum,
-    TemplateOrientation,
-    TemplateRelativePositionEnum,
-)
+from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.scale import Scalable2D
 
 
-def _json_encoding_default(obj) -> str | dict | None:
-    """Define additional defaults to transform instances to JSON.
-
-    This function is given as parameter to json.dumps to provide a
-    way to translate the enumerations used by some templates to JSON
-    data.
-
-    Raises:
-        TypeError: if an instance of a unimplemented type is provided as
-            parameter.
-    """
-    if isinstance(obj, CornerPositionEnum):
-        return f"{obj.name}"
-    elif isinstance(obj, TemplateRelativePositionEnum):
-        return f"{obj.name}"
-    raise TypeError(f"Type {type(obj).__name__} is not encodable in JSON")
-
-
-class JSONEncodable(ABC):
-    @abstractmethod
-    def to_dict(self) -> dict[str, ty.Any]:
-        """Returns a dict-like representation of the instance.
-
-        Used to implement to_json.
-        """
-        pass
-
-    def to_json(self, **kwargs) -> str:
-        """Returns a JSON representation of the instance.
-
-        Args:
-            **kwargs: keyword arguments forwarded to the json.dumps function.
-                The "default" keyword argument should NOT be present.
-
-        Returns:
-            the JSON representation of the instance.
-
-        Raises:
-            TQECException: if the "default" key is present in kwargs.
-        """
-        if "default" in kwargs:
-            raise TQECException(
-                f"The 'default' key has been found with value '{kwargs.get('default')}' in the provided kwargs."
-                " 'default' key is prohibited in the public API as it is changed internally."
-            )
-        return json.dumps(self.to_dict(), default=_json_encoding_default, **kwargs)
-
-
-class Template(JSONEncodable):
+class Template(ABC):
     def __init__(
         self,
+        k: int,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -76,12 +25,14 @@ class Template(JSONEncodable):
         that all templates should implement to be usable by the library.
 
         Args:
+            k: initial value for the scaling parameter.
             default_x_increment: default increment in the x direction between
                 two plaquettes.
             default_y_increment: default increment in the y direction between
                 two plaquettes.
         """
         super().__init__()
+        self._k = k
         self._default_increments = Displacement(
             default_x_increment, default_y_increment
         )
@@ -132,37 +83,30 @@ class Template(JSONEncodable):
         """
         pass
 
-    @abstractmethod
-    def scale_to(self, k: int) -> "Template":
+    def scale_to(self, k: int) -> None:
         """Scales self to the given scale k.
 
-        Note that this function scales the template instance INLINE. Rephrasing, the
-        instance on which this method is called is modified in-place AND returned.
-
-        The input parameter ``k`` corresponds to an abstract scale that may be
-        forwarded to
-
-        1. various :class:`Dimension` instances,
-        2. other :class:`Template` instances in the case of templates modifying
-           existing instances,
-        3. anything else that the subclass might implement.
+        Note that this function scales the template instance INLINE.
 
         Args:
             k: the new scale of the template.
-
-        Returns:
-            self, once scaled.
         """
-        pass
+        self._k = k
+
+    @property
+    def k(self) -> int:
+        return self._k
+
+    @property
+    def shape(self) -> Shape2D:
+        """Returns the current template shape."""
+        sshape = self.scalable_shape
+        return Shape2D(sshape.x(self._k), sshape.y(self._k))
 
     @property
     @abstractmethod
-    def shape(self) -> Shape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
-        """
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
         pass
 
     @abstractmethod
@@ -185,23 +129,6 @@ class Template(JSONEncodable):
         Raises:
             TQECException: If the midline is not uniquely defined.
         """
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        """Returns a dict-like representation of the instance.
-
-        Used to implement to_json.
-        """
-        # self.__class__ is the type of the instance this method is called on, taking into
-        # account inheritance. So this is not always "Template" here, as a subclass of
-        # Template could use this method and self.__class__ would be this subclass type.
-        # This is intentional.
-        return {
-            "type": self.__class__.__name__,
-            "default_increments": {
-                "x": self._default_increments.x,
-                "y": self._default_increments.y,
-            },
-        }
 
     @property
     @abstractmethod

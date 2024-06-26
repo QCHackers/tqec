@@ -44,8 +44,6 @@ from .templates import (
     AlternatingRectangleTemplate,
     AlternatingSquareTemplate,
     ComposedTemplate,
-    Dimension,
-    FixedDimension,
     LinearFunction,
     QubitRectangleTemplate,
     QubitSquareTemplate,
