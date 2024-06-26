@@ -9,6 +9,7 @@ import PlaquetteType from '../code/plaquette-type'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
 import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants'
+import { drawSquareFromTopLeft } from '../utils'
 
 import config from '../components/download/config'
 import { postExample, getExample } from '../components/download/test-backend-interface'
@@ -91,15 +92,8 @@ export default function TqecTemplates() {
 				while (y0 + plaquetteDy <= guideTopLeftCorner[1] + 2*responseData.height) {
 					let x0 = guideTopLeftCorner[0];
 					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
-						console.log('draw outline with topleft at:', x0, '  ', y0)
 						topLeftCornersOfPlaquettesInTemplate.push({x: x0, y: y0});
-						const x1 = x0 + plaquetteDx;
-						const y1 = y0 + plaquetteDy;
-						outline.moveTo(x0*gridSize, y0*gridSize);
-						outline.lineTo(x1*gridSize, y0*gridSize);
-						outline.lineTo(x1*gridSize, y1*gridSize);
-						outline.lineTo(x0*gridSize, y1*gridSize);
-						outline.lineTo(x0*gridSize, y0*gridSize);
+						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 						x0 += plaquetteDx;
 					}
 					y0 += plaquetteDy;
@@ -155,13 +149,7 @@ export default function TqecTemplates() {
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
-			const x1 = x0 + plaquetteDx;
-			const y1 = y0 + plaquetteDy;
-			outline.moveTo(x0*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y0*gridSize);
+			drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 		}
 		// Add library plaquettes.
 		//const library_workspace = document.getElementsByName('workspace-library');

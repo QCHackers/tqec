@@ -9,6 +9,7 @@ import Circuit from '../library/circuit'
 import { savedPlaquettes, libraryColors } from '../library'
 import { Qubit } from '../library/qubit'
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
+import { drawSquareFromTopLeft } from '../utils'
 
 /////////////////////////////////////////////////////////////
 
@@ -81,13 +82,7 @@ export default function TqecCode() {
 		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
 			let x0 = guideTopLeftCorner[0];
 			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
-				const x1 = x0 + plaquetteDx;
-				const y1 = y0 + plaquetteDy;
-				outline.moveTo(x0*gridSize, y0*gridSize);
-				outline.lineTo(x1*gridSize, y0*gridSize);
-				outline.lineTo(x1*gridSize, y1*gridSize);
-				outline.lineTo(x0*gridSize, y1*gridSize);
-				outline.lineTo(x0*gridSize, y0*gridSize);
+				drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 				x0 += plaquetteDx;
 				message += '  .';
 			}
@@ -96,13 +91,7 @@ export default function TqecCode() {
 		}
 		// Add library guidelines.
 		for (const [x0, y0] of libraryTopLeftCorners) {
-			const x1 = x0 + plaquetteDx;
-			const y1 = y0 + plaquetteDy;
-			outline.moveTo(x0*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y0*gridSize);
+			drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 		}
         // Create the compact representation of the (empty) QEC code
         const codesummary = document.getElementById('codeSummary');

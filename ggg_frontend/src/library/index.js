@@ -7,6 +7,7 @@ import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 import { GRID_SIZE_LIBRARY_WORKSPACE, GUIDE_TOP_LEFT_CORNER_LIBRARY_WORKSPACE } from '../constants'
+import { drawSquareFromTopLeft } from '../utils'
 
 /////////////////////////////////////////////////////////////
 
@@ -47,13 +48,7 @@ export default function TqecLibrary() {
 	const outline = new Graphics();
 	outline.lineStyle(2, 'lightcoral');
 	for (const [x0, y0] of [...libraryTopLeftCorners, guideTopLeftCorner]) {
-		const x1 = x0 + plaquetteDx;
-		const y1 = y0 + plaquetteDy;
-		outline.moveTo(x0*gridSize, y0*gridSize);
-		outline.lineTo(x1*gridSize, y0*gridSize);
-		outline.lineTo(x1*gridSize, y1*gridSize);
-		outline.lineTo(x0*gridSize, y1*gridSize);
-		outline.lineTo(x0*gridSize, y0*gridSize);
+		drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 	}
     workspace.addChild(outline);
 
@@ -252,17 +247,7 @@ export default function TqecLibrary() {
 		plaquetteDy = parseInt(document.getElementById('dyCell').value);
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
 		for (const [x0, y0] of [...libraryTopLeftCorners, guideTopLeftCorner]) {
-			console.log(plaquetteDx);
-			console.log(plaquetteDy);
-			const x1 = x0 + plaquetteDx;
-			const y1 = y0 + plaquetteDy;
-			console.log(x1);
-			console.log(y1);
-			outline.moveTo(x0*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y0*gridSize);
-			outline.lineTo(x1*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y1*gridSize);
-			outline.lineTo(x0*gridSize, y0*gridSize);
+			drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 		}
 	});
 
