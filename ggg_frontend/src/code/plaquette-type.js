@@ -3,6 +3,7 @@
 import { Qubit } from '../library/qubit';
 import Position from '../library/position';
 import Plaquette from '../library/plaquette';
+import { Container } from 'pixi.js'
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants';
 
 /////////////////////////////////////////////////////////////
@@ -96,6 +97,12 @@ export default class PlaquetteType extends Plaquette {
             this.y = 0;
             return;
         }
+
+        // Check that the parent is a workspace, either code or template.A
+        if (!(this.parent instanceof Container)) {
+            console.log('ERROR: The parent of a PlaquetteType should be a Container');
+            return;
+        }
         // Create a copy of the plaquette at the current position.
         let qubits_of_copy = []
 		this.qubits.forEach((q) => {
@@ -113,6 +120,11 @@ export default class PlaquetteType extends Plaquette {
         this.x = 0;
         this.y = 0;
 
+        // If the PlaquetteType was dragged in the code tab, update the compact
+        // representation of the QEC code. Otherwise return.
+        if (this.parent.name !== 'workspace-code') {
+            return;
+        }
         // Update the compact representation of teh QEC code
         const codesummary = document.getElementById('codeSummary');
         let message = codesummary.value.split('\n');

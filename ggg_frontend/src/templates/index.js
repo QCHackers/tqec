@@ -31,7 +31,7 @@ export default function TqecTemplates() {
 
 	// Create the workspace
 	const workspace = new Container();
-	workspace.name = 'workspace-code';
+	workspace.name = 'workspace-template';
 
 	// Create the grid container
 	const grid = makeGrid(app, gridSize);
