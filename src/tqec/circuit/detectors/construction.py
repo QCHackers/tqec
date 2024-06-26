@@ -61,7 +61,7 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
         A new `stim.Circuit` instance with automatically computed detectors.
     """
     fragments = split_stim_circuit_into_fragments(circuit)
-    qubit_coords_map = {
+    qubit_coords_map: dict[int, tuple[float, ...]] = {
         q: tuple(coords) for q, coords in circuit.get_final_qubit_coordinates().items()
     }
     return compile_fragments_to_circuit_with_detectors(fragments, qubit_coords_map)
@@ -102,7 +102,6 @@ def compile_fragments_to_circuit_with_detectors(
     detectors_from_flows = match_detectors_from_flows_shallow(flows, qubit_coords_map)
 
     circuit = stim.Circuit()
-
     for fragment, detectors in zip(fragments, detectors_from_flows):
         detectors_circuit = _detectors_to_circuit(detectors, [0.0])
         if isinstance(fragment, Fragment):
