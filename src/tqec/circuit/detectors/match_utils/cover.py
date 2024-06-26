@@ -178,11 +178,13 @@ def _find_cover_sat(
         encode_pauli_string_exact_cover_sat_problem_in_solver(
             solver, target, sources, on_qubits
         )
-        satisfying_proof = _smallest_solution_shortcircuit(solver.enum_models(), 2)
-        if satisfying_proof:
-            return [i - 1 for i in satisfying_proof if i > 0]
-        else:
-            return None
+        return _smallest_solution_shortcircuit(
+            (
+                [i - 1 for i in satisfying_proof if i > 0]
+                for satisfying_proof in solver.enum_models()
+            ),
+            2,
+        )
 
 
 def find_exact_cover_sat(
@@ -278,8 +280,10 @@ def find_commuting_cover_on_target_qubits_sat(
         encode_pauli_string_commuting_cover_sat_problem_in_solver(
             solver, target, sources, frozenset(target.qubits)
         )
-        satisfying_proof = _smallest_solution_shortcircuit(solver.enum_models(), 2)
-        if satisfying_proof:
-            return [i - 1 for i in satisfying_proof if i > 0]
-        else:
-            return None
+        return _smallest_solution_shortcircuit(
+            (
+                [i - 1 for i in satisfying_proof if i > 0]
+                for satisfying_proof in solver.enum_models()
+            ),
+            2,
+        )
