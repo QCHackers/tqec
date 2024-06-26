@@ -12,6 +12,14 @@ tqec.templates.constructions.corner module
    :undoc-members:
    :show-inheritance:
 
+tqec.templates.constructions.grid module
+----------------------------------------
+
+.. automodule:: tqec.templates.constructions.grid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.templates.constructions.qubit module
 -----------------------------------------
 
