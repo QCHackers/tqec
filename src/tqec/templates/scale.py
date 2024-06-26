@@ -38,9 +38,8 @@ class LinearFunction:
         Args:
             other: the `LinearFunction` instance to intersect with `self`.
         Returns:
-            an instance of `IntersectionResults` containing the necessary
-            data to know when the two `LinearFunction` instances intersect
-            and which one is above/below before/after the intersection.
+            If they intersect, return x such that `self(x) = other(x)`.
+            Otherwise, return None.
         """
         if self.slope == other.slope:
             return None
@@ -228,7 +227,7 @@ class PiecewiseLinearFunction:
     def __sub__(self, other: PiecewiseLinearFunction | int) -> PiecewiseLinearFunction:
         if isinstance(other, int):
             return PiecewiseLinearFunction(
-                self.separators, [f + other for f in self.functions]
+                self.separators, [f - other for f in self.functions]
             )
         separators, functions = self._functions_in_common(other)
         return PiecewiseLinearFunction(separators, [f1 - f2 for (f1, f2) in functions])
