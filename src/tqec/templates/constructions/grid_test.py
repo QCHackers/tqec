@@ -3,7 +3,7 @@ import numpy
 from tqec.templates.atomic.rectangle import RawRectangleTemplate
 from tqec.templates.constructions.grid import TemplateGrid
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
-from tqec.templates.scale import FixedDimension
+from tqec.templates.scale import LinearFunction
 
 
 def test_grid_simple():
@@ -21,7 +21,7 @@ def test_grid_simple():
 
 
 def test_grid_qubits():
-    template = DenseQubitSquareTemplate(FixedDimension(2))
+    template = DenseQubitSquareTemplate(LinearFunction(0, 2), k=2)
     assert template.expected_plaquettes_number == 14
     template_arr = template.instantiate(list(range(1, 15)))
 
