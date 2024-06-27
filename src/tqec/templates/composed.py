@@ -1,3 +1,4 @@
+import itertools
 import typing as ty
 from copy import deepcopy
 
@@ -12,7 +13,13 @@ from tqec.enums import (
 from tqec.exceptions import TQECException
 from tqec.position import Displacement
 from tqec.templates.base import Template, TemplateWithIndices
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.interval import Intervals, Rplus_interval
+from tqec.templates.scale import (
+    LinearFunction,
+    PiecewiseLinearFunction,
+    Scalable2D,
+    ScalableBoundingBox,
+)
 
 
 def _get_corner_position(
@@ -362,6 +369,31 @@ class ComposedTemplate(Template):
             ).simplify_positive()
         return ul, br
 
+    def _get_bounding_boxes_from_ul_positions(
+        self, ul_positions: dict[int, Scalable2D]
+    ) -> dict[int, ScalableBoundingBox]:
+        """Get the bounding box of each individual tempalte contained in the instance
+        from their computed upper-left corner position.
+
+        Args:
+            ul_positions: a mapping between templates indices and their upper-left
+                corner absolute position.
+
+        Returns:
+            a dictionary indexed by template indices and whose values represent each
+            template bounding box.
+        """
+        bounding_boxes: dict[int, ScalableBoundingBox] = {}
+        # tid: template id
+        # tulx: template upper-left
+        for tid, tul in ul_positions.items():
+            # tshape: template shape
+            tshape = self._templates[tid].scalable_shape
+            bounding_boxes[tid] = ScalableBoundingBox(
+                tul, (tul + tshape).simplify_positive(), Rplus_interval
+            )
+        return bounding_boxes
+
     def _get_shape_from_bounding_box(
         self, ul: Scalable2D, br: Scalable2D
     ) -> Scalable2D:
@@ -492,3 +524,41 @@ class ComposedTemplate(Template):
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         raise NotImplementedError
+
+    def collapsing_templates(self) -> ty.Iterator[tuple[tuple[int, int], Intervals]]:
+        ul_positions = self._compute_ul_absolute_position()
+        bounding_boxes = self._get_bounding_boxes_from_ul_positions(ul_positions)
+
+        for i1, i2 in itertools.combinations(bounding_boxes.keys(), 2):
+            x_intersections, y_intersections = bounding_boxes[i1].intersect(
+                bounding_boxes[i2]
+            )
+            # The bounding boxes intersect iff both their x and y intersections are non-empty.
+            # Also, the parameter for both x_intersections and y_intersections is the
+            # same: self.k. That means that, in order to find if there is a value of
+            # `self.k` such that the two bounding boxes intersect, it is sufficient to check
+            # if the intersection is empty.
+            # Also `self.k` can only be positive, so we can restrict the above intersection
+            # to R+.
+            interval_of_intersecting_k = x_intersections.intersection(y_intersections)
+            if not interval_of_intersecting_k.is_empty():
+                non_empty_interval = interval_of_intersecting_k.intersection(
+                    Rplus_interval
+                )
+                if not non_empty_interval.is_empty():
+                    yield ((i1, i2), non_empty_interval)
+
+    def is_valid(self) -> bool:
+        return next(self.collapsing_templates(), None) is None
+
+    def assert_is_valid(self):
+        collapsing_templates = list(self.collapsing_templates())
+        if collapsing_templates:
+            raise TQECException(
+                "Invalid ComposedTemplate instance. The following templates "
+                "overlap on the shown intervals:\n  "
+                + "\n  ".join(
+                    f"On {intervals}, templates {i} and {j} overlap"
+                    for (i, j), intervals in collapsing_templates
+                )
+            )
