@@ -9,6 +9,8 @@ from tqec.templates.atomic.rectangle import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
+from tqec.templates.constructions.grid import TemplateGrid
+from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
 from tqec.templates.scale import LinearFunction
 
 _DIMENSIONS = [
@@ -81,3 +83,6 @@ def test_validation_collapsing_composed_template():
   On \[1.25, inf\), templates 0 and 8 overlap$"""
     with pytest.raises(TQECException, match=expected_error_message):
         template.assert_is_valid()
+
+    template = TemplateGrid(3, 2, DenseQubitSquareTemplate(LinearFunction(2)))
+    template.assert_is_valid()
