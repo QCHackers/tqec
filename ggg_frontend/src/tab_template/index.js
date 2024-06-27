@@ -1,6 +1,6 @@
 import { useApp } from '@pixi/react'
 import { useState, useEffect } from 'react'
-import { Container, Graphics } from 'pixi.js'
+import { Container, Graphics, Text, TextStyle } from 'pixi.js'
 
 // From the implementation of the tab 'library'
 import { makeGrid } from '../tab_library/grid'
@@ -57,7 +57,7 @@ export default function TqecTemplates() {
 	const guideTopLeftCorner = GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE;
 	let libraryTopLeftCorners = [[21, 3], [21, 7], [21, 11], [21, 15]];
 	const outline = new Graphics();
-	outline.clear()
+	outline.clear();
 	outline.lineStyle(2, 'lightcoral');
 	workspace.addChild(outline);
 
@@ -96,11 +96,29 @@ export default function TqecTemplates() {
                 // Perform other actions with responseData
 				// Add workspace guidelines according to the dimensions in the received json data.
 				let y0 = guideTopLeftCorner[1];
+				topLeftCornersOfPlaquettesInTemplate = [];
 				while (y0 + plaquetteDy <= guideTopLeftCorner[1] + 2*responseData.height) {
 					let x0 = guideTopLeftCorner[0];
 					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
 						topLeftCornersOfPlaquettesInTemplate.push({x: x0, y: y0});
 						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
+						// Label square with 1 or 2.
+						const style = new TextStyle({fontSize: 36, fill: 'red'});
+						const digit_1 = new Text('1', style);
+						digit_1.x = x0*gridSize;
+						digit_1.y = y0*gridSize;
+						const target = {x: (x0 - guideTopLeftCorner[0])/plaquetteDx, y: (y0 - guideTopLeftCorner[1])/plaquetteDy}
+						const isType1 = responseData.tl_corners_1.some(item => item.x === target.x && item.y === target.y);
+						if (isType1) {
+							outline.addChild(digit_1);
+						}
+						const digit_2 = new Text('2', style);
+						digit_2.x = x0*gridSize;
+						digit_2.y = y0*gridSize;
+						const isType2 = responseData.tl_corners_2.some(item => item.x === target.x && item.y === target.y);
+						if (isType2) {
+							outline.addChild(digit_2);
+						}
 						x0 += plaquetteDx;
 					}
 					y0 += plaquetteDy;
@@ -214,7 +232,7 @@ export default function TqecTemplates() {
 				&& !(child instanceof PlaquetteType) ) {
 				// Print to console the (x,y) coordinate of the plaquette.
 				console.log('INFO:', child.name, '  coords:', child.topLeftCorner.x, child.topLeftCorner.y )
-				message += child.name + ' with color ' + child.color + ' at ' + child.tepLeftCorner + '\n'
+				message += child.name + ' with color ' + child.color + ' at {x: ' + child.topLeftCorner.x + ', y: ' + child.topLeftCorner.y + '}\n';
 	        }
 	    }
 		// For comparison, let's look at the top corners of the plaquettes forming the template.
