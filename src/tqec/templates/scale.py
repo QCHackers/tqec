@@ -96,6 +96,17 @@ def _get_minmax_on_interval(
     return _filter_on_interval(seps, funcs, start_inclusive, end_exclusive)
 
 
+def intervals_from_separators(separators: list[float]) -> ty.Iterator[Interval]:
+    if not separators:
+        yield Interval(float("-inf"), float("+inf"))
+        return
+
+    yield Interval(float("-inf"), separators[0])
+    for i in range(1, len(separators)):
+        yield Interval(separators[i - 1], separators[i])
+    yield Interval(separators[-1], float("inf"))
+
+
 @dataclass(frozen=True)
 class PiecewiseLinearFunction:
     """A piecewise linear function.
@@ -136,23 +147,6 @@ class PiecewiseLinearFunction:
         """
         index = bisect.bisect_left(self.separators, x)
         return self.functions[index](x)
-
-    @property
-    def intervals(self) -> ty.Iterable[tuple[int | float, int | float]]:
-        """Returns the intervals on which each linear function is defined.
-
-        Yields:
-            an iterator over the interval of definition for each `LinearFunction`
-            instance stored in `self`.
-        """
-        if not self.separators:
-            yield float("-inf"), float("+inf")
-            return
-
-        yield float("-inf"), self.separators[0]
-        for i in range(1, len(self.separators)):
-            yield self.separators[i - 1], self.separators[i]
-        yield self.separators[-1], float("inf")
 
     def _functions_in_common(
         self, other: PiecewiseLinearFunction

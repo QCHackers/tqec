@@ -1,7 +1,11 @@
 import pytest
 
-from tqec.exceptions import TQECException
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction
+from tqec.templates.interval import Interval, Intervals
+from tqec.templates.scale import (
+    LinearFunction,
+    PiecewiseLinearFunction,
+    intervals_from_separators,
+)
 
 
 @pytest.mark.parametrize(
@@ -74,18 +78,18 @@ def test_piecewise_intervals():
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     pwl = PiecewiseLinearFunction([4, 10], [a, b, a])
 
-    intervals = list(pwl.intervals)
+    intervals = list(intervals_from_separators(pwl.separators))
     assert len(intervals) == 3
-    assert intervals[0][0] == float("-inf")
-    assert intervals[0][1] == intervals[1][0] == 4.0
-    assert intervals[1][1] == intervals[2][0] == 10.0
-    assert intervals[2][1] == float("inf")
+    assert intervals[0].start == float("-inf")
+    assert intervals[0].end == intervals[1].start == 4.0
+    assert intervals[1].end == intervals[2].start == 10.0
+    assert intervals[2].end == float("inf")
 
     pwl = PiecewiseLinearFunction.from_linear_function(a)
-    intervals = list(pwl.intervals)
+    intervals = list(intervals_from_separators(pwl.separators))
     assert len(intervals) == 1
-    assert intervals[0][0] == float("-inf")
-    assert intervals[0][1] == float("inf")
+    assert intervals[0].start == float("-inf")
+    assert intervals[0].end == float("inf")
 
 
 def test_simplifiable_piecewise():
