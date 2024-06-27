@@ -28,11 +28,6 @@ class Interval:
     def is_disjoint(self, other: Interval) -> bool:
         return other.end <= self.start or self.end <= other.start
 
-    def _merge(self, other: Interval) -> Interval:
-        if self.is_disjoint(other):
-            raise TQECException("Cannot merge disjoint intervals.")
-        return Interval(min(self.start, other.start), max(self.end, other.end))
-
     def is_empty(self) -> bool:
         return self.start == self.end
 
@@ -41,10 +36,13 @@ class Interval:
             return Interval(0, 0)
         return Interval(max(self.start, other.start), min(self.end, other.end))
 
+    def union_overlapping(self, other: Interval) -> Interval:
+        return Interval(min(self.start, other.start), max(self.end, other.end))
+
     def union(self, other: Interval) -> Intervals:
         if self.is_disjoint(other):
             return Intervals([self, other])
-        return Intervals([self._merge(other)])
+        return Intervals([self.union_overlapping(other)])
 
     def complement(self) -> Intervals:
         return Intervals(
@@ -99,16 +97,6 @@ class Intervals:
     def contains(self, value: float) -> bool:
         return any(interval.contains(value) for interval in self.intervals)
 
-    def _merge(self, other: Intervals) -> Intervals:
-        all_intervals = sorted(self.intervals + other.intervals, key=lambda a: a.start)
-        merged_intervals: list[Interval] = [all_intervals[0]]
-        for interval in all_intervals[1:]:
-            if merged_intervals[-1].overlaps_with(interval):
-                merged_intervals[-1] = merged_intervals[-1]._merge(interval)
-            else:
-                merged_intervals.append(interval)
-        return Intervals(merged_intervals)
-
     def is_empty(self) -> bool:
         return len(self.intervals) == 0
 
@@ -126,7 +114,14 @@ class Intervals:
     def union(self, other: Interval | Intervals) -> Intervals:
         if isinstance(other, Interval):
             other = Intervals([other])
-        return self._merge(other)
+        all_intervals = sorted(self.intervals + other.intervals, key=lambda a: a.start)
+        merged_intervals: list[Interval] = [all_intervals[0]]
+        for interval in all_intervals[1:]:
+            if merged_intervals[-1].overlaps_with(interval):
+                merged_intervals[-1] = merged_intervals[-1].union_overlapping(interval)
+            else:
+                merged_intervals.append(interval)
+        return Intervals(merged_intervals)
 
     def complement(self) -> Intervals:
         if self.is_empty():
