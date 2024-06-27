@@ -1,36 +1,39 @@
 from __future__ import annotations
 
 import bisect
+import operator
 import typing as ty
 from dataclasses import dataclass
 from math import floor
 
+from tqec.enums import Axis
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
+from tqec.templates.interval import Interval, Intervals, R_interval
 
 
 @dataclass(frozen=True)
 class LinearFunction:
-    slope: int = 1
-    offset: int = 0
+    slope: float = 1.0
+    offset: float = 0.0
 
-    def __call__(self, x: int) -> int:
+    def __call__(self, x: float) -> float:
         return self.slope * x + self.offset
 
-    def __add__(self, other: LinearFunction | int) -> LinearFunction:
-        if isinstance(other, int):
+    def __add__(self, other: LinearFunction | int | float) -> LinearFunction:
+        if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
-    def __sub__(self, other: LinearFunction | int) -> LinearFunction:
-        if isinstance(other, int):
+    def __sub__(self, other: LinearFunction | int | float) -> LinearFunction:
+        if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
-    def __mul__(self, other: int) -> LinearFunction:
+    def __mul__(self, other: int | float) -> LinearFunction:
         return self.__rmul__(other)
 
-    def __rmul__(self, other: int) -> LinearFunction:
+    def __rmul__(self, other: int | float) -> LinearFunction:
         return LinearFunction(other * self.slope, other * self.offset)
 
     def intersection(self, other: LinearFunction) -> float | None:
@@ -45,6 +48,41 @@ class LinearFunction:
             return None
 
         return -(other.offset - self.offset) / (other.slope - self.slope)
+
+    def __lt__(self, other: LinearFunction | float) -> Interval:
+        other = LinearFunction._from(other)
+        intersection = self.intersection(other)
+        if intersection is None:
+            if self(0) < other(0):
+                return Interval(float("-inf"), float("inf"))
+            else:
+                return Interval(0, 0)
+
+        before_intersection = int(floor(intersection)) - 1
+        if self(before_intersection) < other(before_intersection):
+            return Interval(float("-inf"), intersection)
+        else:
+            return Interval(intersection, float("inf"))
+
+    def __le__(self, other: LinearFunction | float) -> Interval:
+        other = LinearFunction._from(other)
+        if self == other:
+            return Interval(float("-inf"), float("inf"))
+        return self < other
+
+    @staticmethod
+    def _from(obj: LinearFunction | float) -> LinearFunction:
+        if isinstance(obj, (float, int)):
+            return LinearFunction(0, obj)
+        else:
+            return obj
+
+    def __repr__(self) -> str:
+        if abs(self.slope) < 1e-8:
+            return str(self.offset)
+        if abs(self.offset) < 1e-8:
+            return f"{self.slope}*x"
+        return f"{self.slope}*x + {self.offset}"
 
 
 def _linear_function_minmax(
@@ -96,6 +134,17 @@ def _get_minmax_on_interval(
     return _filter_on_interval(seps, funcs, start_inclusive, end_exclusive)
 
 
+def intervals_from_separators(separators: list[float]) -> ty.Iterator[Interval]:
+    if not separators:
+        yield Interval(float("-inf"), float("+inf"))
+        return
+
+    yield Interval(float("-inf"), separators[0])
+    for i in range(1, len(separators)):
+        yield Interval(separators[i - 1], separators[i])
+    yield Interval(separators[-1], float("inf"))
+
+
 @dataclass(frozen=True)
 class PiecewiseLinearFunction:
     """A piecewise linear function.
@@ -124,7 +173,7 @@ class PiecewiseLinearFunction:
         assert len(self.separators) + 1 == len(self.functions)
         assert sorted(self.separators) == self.separators
 
-    def __call__(self, x: int) -> int:
+    def __call__(self, x: int | float) -> int | float:
         """Compute the value of the piecewise linear function at point `x`.
 
         Args:
@@ -136,23 +185,6 @@ class PiecewiseLinearFunction:
         """
         index = bisect.bisect_left(self.separators, x)
         return self.functions[index](x)
-
-    @property
-    def intervals(self) -> ty.Iterable[tuple[int | float, int | float]]:
-        """Returns the intervals on which each linear function is defined.
-
-        Yields:
-            an iterator over the interval of definition for each `LinearFunction`
-            instance stored in `self`.
-        """
-        if not self.separators:
-            yield float("-inf"), float("+inf")
-            return
-
-        yield float("-inf"), self.separators[0]
-        for i in range(1, len(self.separators)):
-            yield self.separators[i - 1], self.separators[i]
-        yield self.separators[-1], float("inf")
 
     def _functions_in_common(
         self, other: PiecewiseLinearFunction
@@ -343,6 +375,62 @@ class PiecewiseLinearFunction:
     def from_linear_function(function: LinearFunction) -> PiecewiseLinearFunction:
         return PiecewiseLinearFunction([], [function])
 
+    @staticmethod
+    def _from(
+        obj: PiecewiseLinearFunction | LinearFunction | float,
+    ) -> PiecewiseLinearFunction:
+        if isinstance(obj, (float, int)):
+            return PiecewiseLinearFunction.from_linear_function(LinearFunction(0, obj))
+        elif isinstance(obj, LinearFunction):
+            return PiecewiseLinearFunction.from_linear_function(obj)
+        else:
+            return obj
+
+    @staticmethod
+    def _comparison(
+        lhs: PiecewiseLinearFunction | LinearFunction | float,
+        rhs: PiecewiseLinearFunction | LinearFunction | float,
+        operator: ty.Callable[[LinearFunction, LinearFunction], Interval],
+    ) -> Intervals:
+        lhs = PiecewiseLinearFunction._from(lhs)
+        rhs = PiecewiseLinearFunction._from(rhs)
+
+        result_intervals: list[Interval] = []
+        common_separators, common_functions = lhs._functions_in_common(rhs)
+        intervals = intervals_from_separators(common_separators)
+        for interval, (lhs_f, rhs_f) in zip(intervals, common_functions):
+            result_intervals.append(interval.intersection(operator(lhs_f, rhs_f)))
+        return Intervals(result_intervals)
+
+    def __lt__(
+        self, other: PiecewiseLinearFunction | LinearFunction | float
+    ) -> Intervals:
+        return PiecewiseLinearFunction._comparison(self, other, operator.lt)
+
+    def __le__(
+        self, other: PiecewiseLinearFunction | LinearFunction | float
+    ) -> Intervals:
+        return PiecewiseLinearFunction._comparison(self, other, operator.le)
+
+    def __repr__(self) -> str:
+        piecewise_representations: list[str] = []
+        for interval, function in zip(
+            intervals_from_separators(self.separators), self.functions
+        ):
+            piecewise_representations.append(
+                f"[{interval.start}  {function}  {interval.end})"
+            )
+        return (
+            self.__class__.__name__ + "(" + ", ".join(piecewise_representations) + ")"
+        )
+
+
+def round_or_fail(f: float) -> int:
+    rounded_value = int(f)
+    if abs(f - rounded_value) > 1e-8:
+        raise TQECException(f"Rounding from {f} to integer failed.")
+    return rounded_value
+
 
 @dataclass
 class Scalable2D:
@@ -350,7 +438,7 @@ class Scalable2D:
     y: PiecewiseLinearFunction
 
     def to_shape_2d(self, k: int) -> Shape2D:
-        return Shape2D(self.x(k), self.y(k))
+        return Shape2D(round_or_fail(self.x(k)), round_or_fail(self.y(k)))
 
     def to_numpy_shape(self, k: int) -> tuple[int, int]:
         return self.to_shape_2d(k).to_numpy_shape()
@@ -360,3 +448,105 @@ class Scalable2D:
 
     def simplify_positive(self) -> Scalable2D:
         return Scalable2D(self.x.simplify_positive(), self.y.simplify_positive())
+
+    def __add__(self, other: Scalable2D) -> Scalable2D:
+        if not isinstance(other, Scalable2D):
+            raise TQECException(
+                f"Addition between Scalable2D and {type(other).__name__} is "
+                "not implemented."
+            )
+        return Scalable2D(self.x + other.x, self.y + other.y)
+
+
+@dataclass(frozen=True)
+class ScalableInterval:
+    start: PiecewiseLinearFunction
+    end: PiecewiseLinearFunction
+
+    @property
+    def width(self) -> PiecewiseLinearFunction:
+        return self.end - self.start
+
+    def is_empty(self) -> bool:
+        return not (self.width < 0).is_empty()
+
+    def intersection(self, other: ScalableInterval) -> ScalableInterval:
+        return ScalableInterval(
+            PiecewiseLinearFunction.max(self.start, other.start),
+            PiecewiseLinearFunction.min(self.end, other.end),
+        )
+
+    def non_empty_on(self) -> Intervals:
+        return (self.width <= 0).complement()
+
+
+@dataclass(frozen=True)
+class ScalableBoundingBox:
+    ul: Scalable2D
+    br: Scalable2D
+    possible_inputs: Intervals = R_interval
+
+    def __post_init__(self):
+        negative_width_inputs = (self.width <= 0).intersection(self.possible_inputs)
+        if not negative_width_inputs.is_empty():
+            raise TQECException(
+                "Cannot create a bounding box that would have a negative width on "
+                f"a valid input. Valid inputs are {self.possible_inputs} and the "
+                f"computed width ({self.width}) is negative on {negative_width_inputs}."
+            )
+        negative_height_inputs = (self.height <= 0).intersection(self.possible_inputs)
+        if not negative_height_inputs.is_empty():
+            raise TQECException(
+                "Cannot create a bounding box that would have a negative height on "
+                f"a valid input. Valid inputs are {self.possible_inputs} and the "
+                f"computed height ({self.height}) is negative on {negative_height_inputs}."
+            )
+
+    @property
+    def width(self) -> PiecewiseLinearFunction:
+        return self.br.x - self.ul.x
+
+    @property
+    def height(self) -> PiecewiseLinearFunction:
+        return self.br.y - self.ul.y
+
+    @property
+    def corners(self) -> tuple[Scalable2D, Scalable2D, Scalable2D, Scalable2D]:
+        return (
+            self.ul,
+            Scalable2D(self.br.x, self.ul.y),
+            self.br,
+            Scalable2D(self.ul.x, self.br.y),
+        )
+
+    def inside(self, point: Scalable2D) -> tuple[Intervals, Intervals]:
+        """Returns intervals in which the X and Y coordinates should both be for the
+        provided point to be in the bounding box.
+
+        Args:
+            point: a scalable point.
+
+        Returns:
+            a tuple of intervals `(X, Y)`. The provided `point` is within `self` if
+            and only if BOTH the x and y pre-images are in the return ranges.
+        """
+        x_condition = (self.ul.x <= point.x).intersection(point.x <= self.br.x)
+        y_condition = (self.ul.y <= point.y).intersection(point.y <= self.br.y)
+        return x_condition, y_condition
+
+    def _on_axis(self, axis: Axis) -> ScalableInterval:
+        if axis == Axis.X:
+            return ScalableInterval(self.ul.x, self.br.x)
+        elif axis == Axis.Y:
+            return ScalableInterval(self.ul.y, self.br.y)
+        else:
+            raise TQECException(f"Axis {axis} not implemented.")
+
+    def intersect(self, other: ScalableBoundingBox) -> tuple[Intervals, Intervals]:
+        x_axis_projection_intersection = (
+            self._on_axis(Axis.X).intersection(other._on_axis(Axis.X)).non_empty_on()
+        )
+        y_axis_projection_intersection = (
+            self._on_axis(Axis.Y).intersection(other._on_axis(Axis.Y)).non_empty_on()
+        )
+        return x_axis_projection_intersection, y_axis_projection_intersection
