@@ -55,7 +55,7 @@ class Interval:
         return f"[{self.start}, {self.end})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Intervals:
     """A collection of :class:`Interval` instances.
 
@@ -69,9 +69,18 @@ class Intervals:
     intervals: list[Interval]
 
     def __post_init__(self):
-        self.intervals = sorted(
-            [interval for interval in self.intervals if not interval.is_empty()],
-            key=lambda i: i.start,
+        # Use object.__setattr__ to change self.intervals, just like __init__ is
+        # doing (see https://docs.python.org/3/library/dataclasses.html#frozen-instances).
+        # This is only OK because we are in __post_init__ here, this would break the
+        # purpose of the frozen=True argument given to the dataclass decorator anywhere
+        # else.
+        object.__setattr__(
+            self,
+            "intervals",
+            sorted(
+                [interval for interval in self.intervals if not interval.is_empty()],
+                key=lambda i: i.start,
+            ),
         )
         i = 1
         while i < len(self.intervals):
