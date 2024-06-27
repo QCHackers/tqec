@@ -8,7 +8,7 @@ from math import floor
 from tqec.enums import Axis
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
-from tqec.templates.interval import Interval, Intervals
+from tqec.templates.interval import Interval, Intervals, R_interval
 
 
 @dataclass(frozen=True)
@@ -472,21 +472,26 @@ class ScalableInterval:
         return (self.width <= 0).complement()
 
 
-@dataclass
+@dataclass(frozen=True)
 class ScalableBoundingBox:
     ul: Scalable2D
     br: Scalable2D
+    possible_inputs: Intervals = R_interval
 
     def __post_init__(self):
-        if not (self.width <= 0).is_empty():
+        negative_width_inputs = (self.width <= 0).intersection(self.possible_inputs)
+        if not negative_width_inputs.is_empty():
             raise TQECException(
-                "Cannot create a bounding box that would have a negative width. "
-                f"The computed width ({self.width}) is negative on {self.width <= 0}."
+                "Cannot create a bounding box that would have a negative width on "
+                f"a valid input. Valid inputs are {self.possible_inputs} and the "
+                f"computed width ({self.width}) is negative on {negative_width_inputs}."
             )
-        if not (self.height <= 0).is_empty():
+        negative_height_inputs = (self.height <= 0).intersection(self.possible_inputs)
+        if not negative_height_inputs.is_empty():
             raise TQECException(
-                "Cannot create a bounding box that would have a negative height. "
-                f"The computed height ({self.height}) is negative on {self.height <= 0}."
+                "Cannot create a bounding box that would have a negative height on "
+                f"a valid input. Valid inputs are {self.possible_inputs} and the "
+                f"computed height ({self.height}) is negative on {negative_height_inputs}."
             )
 
     @property
@@ -529,13 +534,11 @@ class ScalableBoundingBox:
         else:
             raise TQECException(f"Axis {axis} not implemented.")
 
-    def intersect(
-        self, other: ScalableBoundingBox
-    ) -> tuple[ScalableInterval, ScalableInterval]:
-        x_axis_projection_intersection = self._on_axis(Axis.X).intersection(
-            other._on_axis(Axis.X)
+    def intersect(self, other: ScalableBoundingBox) -> tuple[Intervals, Intervals]:
+        x_axis_projection_intersection = (
+            self._on_axis(Axis.X).intersection(other._on_axis(Axis.X)).non_empty_on()
         )
-        y_axis_projection_intersection = self._on_axis(Axis.Y).intersection(
-            other._on_axis(Axis.Y)
+        y_axis_projection_intersection = (
+            self._on_axis(Axis.Y).intersection(other._on_axis(Axis.Y)).non_empty_on()
         )
         return x_axis_projection_intersection, y_axis_projection_intersection
