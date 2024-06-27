@@ -18,9 +18,11 @@ def test_interval_creation():
     with pytest.raises(TQECException, match=error_message):
         Interval(1, 0)
     with pytest.raises(TQECException, match=error_message):
-        Interval(0, float("nan"))
-    with pytest.raises(TQECException, match=error_message):
         Interval(0, float("-inf"))
+    with pytest.raises(
+        TQECException, match=r"Cannot create an Interval with a NaN bound\."
+    ):
+        Interval(0, float("nan"))
 
 
 def _float(a: float = -sys.float_info.max, b: float = sys.float_info.max) -> float:

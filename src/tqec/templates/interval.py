@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 
 
-@dataclass
+@dataclass(frozen=True)
 class Interval:
     start: float
     end: float
 
     def __post_init__(self):
+        if math.isnan(self.start) or math.isnan(self.end):
+            raise TQECException("Cannot create an Interval with a NaN bound.")
         if not self.start <= self.end:
             raise TQECException(
                 f"Cannot create an interval with {self.start} <= {self.end}."
