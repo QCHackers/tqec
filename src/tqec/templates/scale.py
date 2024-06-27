@@ -5,6 +5,7 @@ import typing as ty
 from dataclasses import dataclass
 from math import floor
 
+from tqec.enums import Axis
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.interval import Interval, Intervals
@@ -388,7 +389,9 @@ class PiecewiseLinearFunction:
             result_intervals.append(interval.intersection(self_f < other_f))
         return Intervals(result_intervals)
 
-    def __le__(self, other: PiecewiseLinearFunction) -> Intervals:
+    def __le__(
+        self, other: PiecewiseLinearFunction | LinearFunction | float
+    ) -> Intervals:
         other = PiecewiseLinearFunction._from(other)
         if self == other:
             return Intervals([Interval(float("-inf"), float("inf"))])
@@ -418,3 +421,91 @@ class Scalable2D:
 
     def simplify_positive(self) -> Scalable2D:
         return Scalable2D(self.x.simplify_positive(), self.y.simplify_positive())
+
+
+@dataclass(frozen=True)
+class ScalableInterval:
+    start: PiecewiseLinearFunction
+    end: PiecewiseLinearFunction
+
+    @property
+    def width(self) -> PiecewiseLinearFunction:
+        return self.end - self.start
+
+    def is_empty(self) -> bool:
+        return not (self.width < 0).is_empty()
+
+    def intersection(self, other: ScalableInterval) -> ScalableInterval:
+        return ScalableInterval(
+            PiecewiseLinearFunction.max(self.start, other.start),
+            PiecewiseLinearFunction.min(self.end, other.end),
+        )
+
+
+@dataclass
+class ScalableBoundingBox:
+    ul: Scalable2D
+    br: Scalable2D
+
+    def __post_init__(self):
+        if not (self.width <= 0).is_empty():
+            raise TQECException(
+                "Cannot create a bounding box that would have a negative width. "
+                f"The computed width ({self.width}) is negative on {self.width <= 0}."
+            )
+        if not (self.height <= 0).is_empty():
+            raise TQECException(
+                "Cannot create a bounding box that would have a negative height. "
+                f"The computed height ({self.height}) is negative on {self.height <= 0}."
+            )
+
+    @property
+    def width(self) -> PiecewiseLinearFunction:
+        return self.br.x - self.ul.x
+
+    @property
+    def height(self) -> PiecewiseLinearFunction:
+        return self.br.y - self.ul.y
+
+    @property
+    def corners(self) -> tuple[Scalable2D, Scalable2D, Scalable2D, Scalable2D]:
+        return (
+            self.ul,
+            Scalable2D(self.br.x, self.ul.y),
+            self.br,
+            Scalable2D(self.ul.x, self.br.y),
+        )
+
+    def inside(self, point: Scalable2D) -> tuple[Intervals, Intervals]:
+        """Returns intervals in which the X and Y coordinates should both be for the
+        provided point to be in the bounding box.
+
+        Args:
+            point: a scalable point.
+
+        Returns:
+            a tuple of intervals `(X, Y)`. The provided `point` is within `self` if
+            and only if BOTH the x and y pre-images are in the return ranges.
+        """
+        x_condition = (self.ul.x <= point.x).intersection(point.x <= self.br.x)
+        y_condition = (self.ul.y <= point.y).intersection(point.y <= self.br.y)
+        return x_condition, y_condition
+
+    def _on_axis(self, axis: Axis) -> ScalableInterval:
+        if axis == Axis.X:
+            return ScalableInterval(self.ul.x, self.br.x)
+        elif axis == Axis.Y:
+            return ScalableInterval(self.ul.y, self.br.y)
+        else:
+            raise TQECException(f"Axis {axis} not implemented.")
+
+    def intersect(
+        self, other: ScalableBoundingBox
+    ) -> tuple[ScalableInterval, ScalableInterval]:
+        x_axis_projection_intersection = self._on_axis(Axis.X).intersection(
+            other._on_axis(Axis.X)
+        )
+        y_axis_projection_intersection = self._on_axis(Axis.Y).intersection(
+            other._on_axis(Axis.Y)
+        )
+        return x_axis_projection_intersection, y_axis_projection_intersection

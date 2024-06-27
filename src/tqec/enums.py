@@ -61,7 +61,14 @@ class PlaquetteSide(Enum):
     DOWN = auto()
     UP = auto()
 
+
 class TemplateOrientation(Enum):
     """Indicates the orientation of the midline."""
+
     HORIZONTAL = auto()
     VERTICAL = auto()
+
+
+class Axis(Enum):
+    X = auto()
+    Y = auto()
