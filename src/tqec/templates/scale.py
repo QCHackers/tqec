@@ -468,6 +468,9 @@ class ScalableInterval:
             PiecewiseLinearFunction.min(self.end, other.end),
         )
 
+    def non_empty_on(self) -> Intervals:
+        return (self.width <= 0).complement()
+
 
 @dataclass
 class ScalableBoundingBox:
