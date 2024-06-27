@@ -103,11 +103,11 @@ class Intervals:
             return Intervals(
                 [interval.intersection(other) for interval in self.intervals]
             )
-        else:
-            intervals = self
-            for interval in other.intervals:
-                intervals = intervals.intersection(interval)
-            return intervals
+        # Because intersection distributes over unions, we can simply do
+        # it the brute-force way:
+        return Intervals(
+            [si.intersection(oi) for si in self.intervals for oi in other.intervals]
+        )
 
     def union(self, other: Interval | Intervals) -> Intervals:
         if isinstance(other, Interval):
