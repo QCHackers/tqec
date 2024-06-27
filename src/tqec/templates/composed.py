@@ -534,20 +534,25 @@ class ComposedTemplate(Template):
             x_intersections, y_intersections = bounding_boxes[i1].intersect(
                 bounding_boxes[i2]
             )
-            # The bounding boxes intersect iff both their x and y intersections are non-empty.
-            # Also, the parameter for both x_intersections and y_intersections is the
-            # same: self.k. That means that, in order to find if there is a value of
-            # `self.k` such that the two bounding boxes intersect, it is sufficient to check
-            # if the intersection is empty.
-            # Also `self.k` can only be positive, so we can restrict the above intersection
-            # to R+.
-            interval_of_intersecting_k = x_intersections.intersection(y_intersections)
+            # The bounding boxes intersect iff their projections on the X and Y axes
+            # both intersect. The previous equivalence is verified thanks to the fact
+            # that the bounding boxes are rectangles with sides that are parallel to
+            # the axes.
+            # The obtained x_intersections (resp. y_intersections) represent the values
+            # of `k` (the scaling parameter) for which the bounding boxes intersect on
+            # the X (resp. Y) axis.
+            # Because there is only one value of `k` used to scale both dimensions of
+            # the template, it is sufficient to intersect x_intersections and
+            # y_intersections to know the values of `k` for which both projections
+            # intersect, i.e., for which the bounding boxes collapse.
+            # Also, because we know that `k` cannot be negative, we filter out
+            # negative values by intersecting with R+.
+            interval_of_intersecting_k = x_intersections.intersection(
+                y_intersections
+            ).intersection(Rplus_interval)
+            # If there is any value for which the bounding boxes intersect, yield it.
             if not interval_of_intersecting_k.is_empty():
-                non_empty_interval = interval_of_intersecting_k.intersection(
-                    Rplus_interval
-                )
-                if not non_empty_interval.is_empty():
-                    yield ((i1, i2), non_empty_interval)
+                yield ((i1, i2), interval_of_intersecting_k)
 
     def is_valid(self) -> bool:
         return next(self.collapsing_templates(), None) is None
