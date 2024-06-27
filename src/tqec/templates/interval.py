@@ -46,6 +46,9 @@ class Interval:
             return Intervals([self, other])
         return Intervals([self._merge(other)])
 
+    def __repr__(self) -> str:
+        return f"[{self.start}, {self.end})"
+
 
 @dataclass
 class Intervals:
@@ -110,3 +113,7 @@ class Intervals:
         if isinstance(other, Interval):
             other = Intervals([other])
         return self._merge(other)
+    def __repr__(self) -> str:
+        return " U ".join(map(str, self.intervals))
+
+
