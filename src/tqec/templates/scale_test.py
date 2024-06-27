@@ -1,9 +1,10 @@
 import pytest
 
-from tqec.templates.interval import Interval, Intervals
+from tqec.templates.interval import Interval, Intervals, R_interval, Rplus_interval
 from tqec.templates.scale import (
     LinearFunction,
     PiecewiseLinearFunction,
+    ScalableInterval,
     intervals_from_separators,
 )
 
@@ -196,3 +197,32 @@ def test_piecewiselinear_function_comparison():
     assert (cd_pwl < ab_pwl) == Intervals(
         [Interval(float("-inf"), -2), Interval(2, float("inf"))]
     )
+
+
+def test_scalable_interval_creation():
+    ScalableInterval(
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
+    )
+
+
+def test_scalable_interval_non_empty_on_colinear():
+    sint = ScalableInterval(
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
+    )
+    assert sint.non_empty_on() == R_interval
+
+    sint = ScalableInterval(
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
+    )
+    assert sint.non_empty_on() == Intervals([])
+
+
+def test_scalable_interval_non_empty_on():
+    sint = ScalableInterval(
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
+        PiecewiseLinearFunction.from_linear_function(LinearFunction(3)),
+    )
+    assert sint.non_empty_on() == Rplus_interval
