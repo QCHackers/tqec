@@ -141,3 +141,5 @@ class Intervals:
         return " U ".join(map(str, self.intervals))
 
 
+R_interval = Intervals([Interval(float("-inf"), float("inf"))])
+Rplus_interval = Intervals([Interval(0, float("inf"))])
