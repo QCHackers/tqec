@@ -24,14 +24,12 @@ def receiveExample() -> Response:
     print(f"Received: {_json}")
     return Response(status=200)
 
+
 @app.route("/example", methods=['GET'])
-def sendExample() -> Response:
-    _json = {
-        "name": "example",
-        "value": 42,
-        "length": 4,
-        "height": 2
-    }
+def sendExample(template_name: str = '2x2k') -> Response:
+    file_path = './web/template_' + template_name + '.json'
+    with open(file_path, 'r') as file:
+        _json = json.load(file)
     print(f"Sending: {_json}")
     return Response(json.dumps(_json), status=200)
 

@@ -1,0 +1,12 @@
+{
+	"name": "1x1",
+	"k": null,
+	"length": 1,
+	"height": 1,
+	"tl_corners": [
+		{
+			"x": 0,
+			"y": 0
+		}
+	]
+}
