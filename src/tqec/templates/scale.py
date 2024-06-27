@@ -47,7 +47,8 @@ class LinearFunction:
 
         return -(other.offset - self.offset) / (other.slope - self.slope)
 
-    def __lt__(self, other: LinearFunction) -> Interval:
+    def __lt__(self, other: LinearFunction | float) -> Interval:
+        other = LinearFunction._from(other)
         intersection = self.intersection(other)
         if intersection is None:
             if self(0) < other(0):
@@ -61,10 +62,18 @@ class LinearFunction:
         else:
             return Interval(intersection, float("inf"))
 
-    def __le__(self, other: LinearFunction) -> Interval:
+    def __le__(self, other: LinearFunction | float) -> Interval:
+        other = LinearFunction._from(other)
         if self == other:
             return Interval(float("-inf"), float("inf"))
         return self < other
+
+    @staticmethod
+    def _from(obj: LinearFunction | float) -> LinearFunction:
+        if isinstance(obj, (float, int)):
+            return LinearFunction(0, obj)
+        else:
+            return obj
 
 
 def _linear_function_minmax(
@@ -357,7 +366,21 @@ class PiecewiseLinearFunction:
     def from_linear_function(function: LinearFunction) -> PiecewiseLinearFunction:
         return PiecewiseLinearFunction([], [function])
 
-    def __lt__(self, other: PiecewiseLinearFunction) -> Intervals:
+    @staticmethod
+    def _from(
+        obj: PiecewiseLinearFunction | LinearFunction | float,
+    ) -> PiecewiseLinearFunction:
+        if isinstance(obj, (float, int)):
+            return PiecewiseLinearFunction.from_linear_function(LinearFunction(0, obj))
+        elif isinstance(obj, LinearFunction):
+            return PiecewiseLinearFunction.from_linear_function(obj)
+        else:
+            return obj
+
+    def __lt__(
+        self, other: PiecewiseLinearFunction | LinearFunction | float
+    ) -> Intervals:
+        other = PiecewiseLinearFunction._from(other)
         result_intervals: list[Interval] = []
         common_separators, common_functions = self._functions_in_common(other)
         intervals = intervals_from_separators(common_separators)
@@ -366,6 +389,7 @@ class PiecewiseLinearFunction:
         return Intervals(result_intervals)
 
     def __le__(self, other: PiecewiseLinearFunction) -> Intervals:
+        other = PiecewiseLinearFunction._from(other)
         if self == other:
             return Intervals([Interval(float("-inf"), float("inf"))])
         return self < other
