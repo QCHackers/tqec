@@ -46,6 +46,11 @@ class Interval:
             return Intervals([self, other])
         return Intervals([self._merge(other)])
 
+    def complement(self) -> Intervals:
+        return Intervals(
+            [Interval(float("-inf"), self.start), Interval(self.end, float("inf"))]
+        )
+
     def __repr__(self) -> str:
         return f"[{self.start}, {self.end})"
 
@@ -113,6 +118,16 @@ class Intervals:
         if isinstance(other, Interval):
             other = Intervals([other])
         return self._merge(other)
+
+    def complement(self) -> Intervals:
+        if self.is_empty():
+            return Intervals([Interval(float("-inf"), float("inf"))])
+        intervals: list[Interval] = [Interval(float("-inf"), self.intervals[0].start)]
+        for i1, i2 in zip(self.intervals[:-1], self.intervals[1:]):
+            intervals.append(Interval(i1.end, i2.start))
+        intervals.append(Interval(self.intervals[-1].end, float("inf")))
+        return Intervals(intervals)
+
     def __repr__(self) -> str:
         return " U ".join(map(str, self.intervals))
 
