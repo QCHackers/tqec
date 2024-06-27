@@ -76,6 +76,13 @@ class LinearFunction:
         else:
             return obj
 
+    def __repr__(self) -> str:
+        if abs(self.slope) < 1e-8:
+            return str(self.offset)
+        if abs(self.offset) < 1e-8:
+            return f"{self.slope}*x"
+        return f"{self.slope}*x + {self.offset}"
+
 
 def _linear_function_minmax(
     lhs: LinearFunction, rhs: LinearFunction, is_min: bool
