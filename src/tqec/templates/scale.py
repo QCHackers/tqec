@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import bisect
+import operator
 import typing as ty
 from dataclasses import dataclass
 from math import floor
@@ -385,24 +386,31 @@ class PiecewiseLinearFunction:
         else:
             return obj
 
+    @staticmethod
+    def _comparison(
+        lhs: PiecewiseLinearFunction | LinearFunction | float,
+        rhs: PiecewiseLinearFunction | LinearFunction | float,
+        operator: ty.Callable[[LinearFunction, LinearFunction], Interval],
+    ) -> Intervals:
+        lhs = PiecewiseLinearFunction._from(lhs)
+        rhs = PiecewiseLinearFunction._from(rhs)
+
+        result_intervals: list[Interval] = []
+        common_separators, common_functions = lhs._functions_in_common(rhs)
+        intervals = intervals_from_separators(common_separators)
+        for interval, (lhs_f, rhs_f) in zip(intervals, common_functions):
+            result_intervals.append(interval.intersection(operator(lhs_f, rhs_f)))
+        return Intervals(result_intervals)
+
     def __lt__(
         self, other: PiecewiseLinearFunction | LinearFunction | float
     ) -> Intervals:
-        other = PiecewiseLinearFunction._from(other)
-        result_intervals: list[Interval] = []
-        common_separators, common_functions = self._functions_in_common(other)
-        intervals = intervals_from_separators(common_separators)
-        for interval, (self_f, other_f) in zip(intervals, common_functions):
-            result_intervals.append(interval.intersection(self_f < other_f))
-        return Intervals(result_intervals)
+        return PiecewiseLinearFunction._comparison(self, other, operator.lt)
 
     def __le__(
         self, other: PiecewiseLinearFunction | LinearFunction | float
     ) -> Intervals:
-        other = PiecewiseLinearFunction._from(other)
-        if self == other:
-            return Intervals([Interval(float("-inf"), float("inf"))])
-        return self < other
+        return PiecewiseLinearFunction._comparison(self, other, operator.le)
 
     def __repr__(self) -> str:
         piecewise_representations: list[str] = []
