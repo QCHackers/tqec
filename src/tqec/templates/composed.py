@@ -19,6 +19,7 @@ from tqec.templates.scale import (
     PiecewiseLinearFunction,
     Scalable2D,
     ScalableBoundingBox,
+    round_or_fail,
 )
 
 
@@ -439,8 +440,8 @@ class ComposedTemplate(Template):
             ]
             # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
             # the represented code to the axes and avoid having negative indices.
-            x = tul.x(k) - bbul.x(k)
-            y = tul.y(k) - bbul.y(k)
+            x = round_or_fail(tul.x(k) - bbul.x(k))
+            y = round_or_fail(tul.y(k) - bbul.y(k))
             # Numpy indexing is (y, x) in our coordinate system convention.
             ret[y : y + tshapey, x : x + tshapex] = template.instantiate(
                 plaquette_indices
