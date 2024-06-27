@@ -441,6 +441,14 @@ class Scalable2D:
     def simplify_positive(self) -> Scalable2D:
         return Scalable2D(self.x.simplify_positive(), self.y.simplify_positive())
 
+    def __add__(self, other: Scalable2D) -> Scalable2D:
+        if not isinstance(other, Scalable2D):
+            raise TQECException(
+                f"Addition between Scalable2D and {type(other).__name__} is "
+                "not implemented."
+            )
+        return Scalable2D(self.x + other.x, self.y + other.y)
+
 
 @dataclass(frozen=True)
 class ScalableInterval:
