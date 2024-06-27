@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import itertools
 import typing as ty
-import warnings
 from copy import deepcopy
 from dataclasses import dataclass
 
@@ -146,12 +144,12 @@ def match_detectors_within_fragment(
 
     matched_detectors.extend(
         _match_non_propagating_non_trivial_flows_inline(
-            flows.creation, qubit_coordinates, True
+            flows.creation, qubit_coordinates
         )
     )
     matched_detectors.extend(
         _match_non_propagating_non_trivial_flows_inline(
-            flows.destruction, qubit_coordinates, False
+            flows.destruction, qubit_coordinates
         )
     )
     return matched_detectors
@@ -160,7 +158,6 @@ def match_detectors_within_fragment(
 def _match_non_propagating_non_trivial_flows_inline(
     boundary_stabilizers: list[BoundaryStabilizer],
     qubit_coordinates: dict[int, tuple[float, ...]],
-    is_creation: bool,
 ) -> list[MatchedDetector]:
     """Match all the detectors that can be trivially resolved and remove the
     matched boundary stabilizers from the provided list.
