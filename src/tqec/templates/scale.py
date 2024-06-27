@@ -21,12 +21,12 @@ class LinearFunction:
         return self.slope * x + self.offset
 
     def __add__(self, other: LinearFunction | int | float) -> LinearFunction:
-        if isinstance(other, int | float):
+        if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
     def __sub__(self, other: LinearFunction | int | float) -> LinearFunction:
-        if isinstance(other, int | float):
+        if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
