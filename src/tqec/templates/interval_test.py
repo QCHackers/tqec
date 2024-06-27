@@ -98,3 +98,55 @@ def test_interval_included():
     assert not b.is_disjoint(a)
     assert a.intersection(b) == b
     assert a.union(b) == Intervals([a])
+
+
+def test_intervals_creation():
+    Intervals([])
+    Intervals([Interval(float("-inf"), float("inf"))])
+    Intervals([Interval(0, float("inf"))])
+    Intervals([Interval(0, 1)])
+    Intervals([Interval(i, i + 1) for i in range(10)])
+
+    with pytest.raises(
+        TQECException,
+        match=r"Cannot build an Intervals instance with overlapping intervals\.",
+    ):
+        Intervals([Interval(0, 3), Interval(2, 4)])
+    with pytest.raises(
+        TQECException,
+        match=r"Cannot build an Intervals instance with overlapping intervals\.",
+    ):
+        Intervals([Interval(0, 3), Interval(-2, 4)])
+
+
+def test_intervals_contains():
+    intervals = Intervals([Interval(3, 5), Interval(0, 2)])
+    for value, should_contain in [
+        (0, True),
+        (1, True),
+        (2, False),
+        (2.5, False),
+        (3, True),
+        (4, True),
+        (5, False),
+        (38924, False),
+        (float("inf"), False),
+        (float("nan"), False),
+    ]:
+        assert intervals.contains(value) == should_contain
+
+
+def test_intervals_is_empty():
+    assert Intervals([]).is_empty()
+    assert Intervals([Interval(0, 0)]).is_empty()
+    assert Intervals([Interval(i, i) for i in [-1, 0, float("inf"), float("-inf")]])
+
+
+def test_intervals_intersection():
+    a = Intervals([Interval(0, 1), Interval(2, 3), Interval(4, 5)])
+    b = Intervals([Interval(0, 1), Interval(2.5, 3.5)])
+    ab = Intervals([Interval(0, 1), Interval(2.5, 3)])
+
+    assert a.intersection(a) == a
+    assert a.intersection(b) == ab
+    assert b.intersection(a) == ab
