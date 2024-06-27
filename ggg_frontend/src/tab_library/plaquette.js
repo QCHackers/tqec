@@ -15,7 +15,7 @@ import Circuit from './circuit'
  * @param {Color} color - Color filling of the plaquette
  */
 export default class Plaquette extends Graphics {
-    constructor(qubits, color = 'purple') {
+    constructor(qubits, color = 'purple', topLeftCorner = null) {
         super();
         this.color = color;
         this.qubits = qubits
@@ -25,6 +25,7 @@ export default class Plaquette extends Graphics {
         //this.isDragging = false;
         //this.plaquetteMade = false;
         this.name = 'WIP plaquette';
+        this.topLeftCorner = topLeftCorner;
         // Draw the plaquette
         // TODO: Only rectangular plaquettes, at the moment
         //this._createRectangle();

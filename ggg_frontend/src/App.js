@@ -1,10 +1,12 @@
 import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
+import formattedInfoTabContent from './formattedInfoTab';
+
+// Implementation of the workspace of the various tabs.
 import TqecLibrary from './tab_library'
 import TqecCode from './tab_code'
 import TqecTemplates from './tab_template'
-import formattedInfoTabContent from './formattedInfoTab';
 
 /* The logo has been created as the SVG rendering of the ASCII:
  *

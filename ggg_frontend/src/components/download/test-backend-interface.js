@@ -1,4 +1,8 @@
+// Functions to communicate with the Python backend
+
 import axios from 'axios';
+
+/////////////////////////////////////////////////////////////
 
 export function postExample(url, data) {
   console.log(url);

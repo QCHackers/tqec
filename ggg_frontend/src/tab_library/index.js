@@ -209,11 +209,14 @@ export default function TqecLibrary() {
 		// Remove list of qubits
 		workspace.removeChild(qubitsButton);
 		workspace.removeChild(circuitArt)
+		// Move plaquette to library on the right.
 		const numPlaquettes = savedPlaquettes.length
-		const dx = libraryTopLeftCorners[numPlaquettes-1][0]-guideTopLeftCorner[0];
-		const dy = libraryTopLeftCorners[numPlaquettes-1][1]-guideTopLeftCorner[1];
+		const dx = libraryTopLeftCorners[numPlaquettes-1][0] - guideTopLeftCorner[0];
+		const dy = libraryTopLeftCorners[numPlaquettes-1][1] - guideTopLeftCorner[1];
 		savedPlaquettes[numPlaquettes-1].name = `plaquette ${numPlaquettes}`;
 		savedPlaquettes[numPlaquettes-1].translatePlaquette(dx*gridSize, dy*gridSize);
+		// Update position of its top-left corner.
+		savedPlaquettes[numPlaquettes-1].topLeftCorner = {x: libraryTopLeftCorners[numPlaquettes-1][0], y: libraryTopLeftCorners[numPlaquettes-1][1]};
 		// Make circuit disappear
 		savedPlaquettes[numPlaquettes-1].showCircuit()
 		// Reset the message in the circuit-edit area

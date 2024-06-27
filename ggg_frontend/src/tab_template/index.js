@@ -176,7 +176,7 @@ export default function TqecTemplates() {
 				const plaquette_id = parseInt(plaq.name.match(/\d+/)[0]);
 				const base_translate_vector = {x: guideTopLeftCorner[0] - libraryTopLeftCorners[plaquette_id-1][0],
 				                               y: guideTopLeftCorner[1] - libraryTopLeftCorners[plaquette_id-1][1]};
-				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children, base_translate_vector)
+				const p_type = new PlaquetteType(qubits, libraryColors[index], plaq.topLeftCorner, num_background_children, base_translate_vector)
 				p_type.name = plaq.name;
 				plaquetteTypes.push(p_type);
 				workspace.addChildAt(p_type, num_background_children);
@@ -213,8 +213,8 @@ export default function TqecTemplates() {
 	        if (child instanceof Plaquette
 				&& !(child instanceof PlaquetteType) ) {
 				// Print to console the (x,y) coordinate of the plaquette.
-				console.log('INFO:', child.name, '  coords:', child.x, child.y )
-				message += child.name + ' with color ' + child.color + '\n'
+				console.log('INFO:', child.name, '  coords:', child.topLeftCorner.x, child.topLeftCorner.y )
+				message += child.name + ' with color ' + child.color + ' at ' + child.tepLeftCorner + '\n'
 	        }
 	    }
 		// For comparison, let's look at the top corners of the plaquettes forming the template.
