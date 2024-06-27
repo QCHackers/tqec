@@ -404,6 +404,18 @@ class PiecewiseLinearFunction:
             return Intervals([Interval(float("-inf"), float("inf"))])
         return self < other
 
+    def __repr__(self) -> str:
+        piecewise_representations: list[str] = []
+        for interval, function in zip(
+            intervals_from_separators(self.separators), self.functions
+        ):
+            piecewise_representations.append(
+                f"[{interval.start}  {function}  {interval.end})"
+            )
+        return (
+            self.__class__.__name__ + "(" + ", ".join(piecewise_representations) + ")"
+        )
+
 
 def round_or_fail(f: float) -> int:
     rounded_value = int(f)
