@@ -7,6 +7,7 @@ from math import floor
 
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
+from tqec.templates.interval import Interval, Intervals
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,25 @@ class LinearFunction:
             return None
 
         return -(other.offset - self.offset) / (other.slope - self.slope)
+
+    def __lt__(self, other: LinearFunction) -> Interval:
+        intersection = self.intersection(other)
+        if intersection is None:
+            if self(0) < other(0):
+                return Interval(float("-inf"), float("inf"))
+            else:
+                return Interval(0, 0)
+
+        before_intersection = int(floor(intersection)) - 1
+        if self(before_intersection) < other(before_intersection):
+            return Interval(float("-inf"), intersection)
+        else:
+            return Interval(intersection, float("inf"))
+
+    def __le__(self, other: LinearFunction) -> Interval:
+        if self == other:
+            return Interval(float("-inf"), float("inf"))
+        return self < other
 
 
 def _linear_function_minmax(
@@ -336,6 +356,19 @@ class PiecewiseLinearFunction:
     @staticmethod
     def from_linear_function(function: LinearFunction) -> PiecewiseLinearFunction:
         return PiecewiseLinearFunction([], [function])
+
+    def __lt__(self, other: PiecewiseLinearFunction) -> Intervals:
+        result_intervals: list[Interval] = []
+        common_separators, common_functions = self._functions_in_common(other)
+        intervals = intervals_from_separators(common_separators)
+        for interval, (self_f, other_f) in zip(intervals, common_functions):
+            result_intervals.append(interval.intersection(self_f < other_f))
+        return Intervals(result_intervals)
+
+    def __le__(self, other: PiecewiseLinearFunction) -> Intervals:
+        if self == other:
+            return Intervals([Interval(float("-inf"), float("inf"))])
+        return self < other
 
 
 def round_or_fail(f: float) -> int:

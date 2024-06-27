@@ -37,6 +37,15 @@ def test_intersection():
     assert intersection is None
 
 
+def test_linear_function_comparison():
+    a, b = LinearFunction(2, 5), LinearFunction(3, 1)
+
+    assert (a < b) == Interval(4.0, float("inf"))
+    assert (a < a).is_empty()
+    assert (a <= b) == Interval(4.0, float("inf"))
+    assert (a <= a) == Interval(float("-inf"), float("inf"))
+
+
 def test_from_linear_function():
     linear_func = LinearFunction(2, 5)
     pwl_func = PiecewiseLinearFunction.from_linear_function(linear_func)
@@ -163,13 +172,27 @@ def test_piecewise_max_constant():
     assert maxab.functions == [b]
 
 
-if __name__ == "__main__":
-    a, b = LinearFunction(0, 0), LinearFunction(0, 1)
+def test_piecewiselinear_function_comparison():
+    a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
         PiecewiseLinearFunction.from_linear_function(b),
     )
 
-    maxab = PiecewiseLinearFunction.max(a_pwl, b_pwl)
-    assert maxab.separators == []
-    assert maxab.functions == [b]
+    assert (a_pwl < b_pwl) == Intervals([Interval(4.0, float("inf"))])
+    assert (a_pwl < a_pwl).is_empty()
+    assert (a_pwl <= b_pwl) == Intervals([Interval(4.0, float("inf"))])
+    assert (a_pwl <= a_pwl) == Intervals([Interval(float("-inf"), float("inf"))])
+
+    a = LinearFunction(-1, -2)
+    b = LinearFunction(1, -2)
+    c = LinearFunction(1, 2)
+    d = LinearFunction(-1, 2)
+
+    ab_pwl = PiecewiseLinearFunction([0], [a, b])
+    cd_pwl = PiecewiseLinearFunction([0], [c, d])
+
+    assert (ab_pwl < cd_pwl) == Intervals([Interval(-2, 2)])
+    assert (cd_pwl < ab_pwl) == Intervals(
+        [Interval(float("-inf"), -2), Interval(2, float("inf"))]
+    )
