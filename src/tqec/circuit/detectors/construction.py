@@ -108,6 +108,7 @@ def compile_fragments_to_circuit_with_detectors(
     detectors_from_flows = match_detectors_from_flows_shallow(flows, qubit_coords_map)
 
     circuit = stim.Circuit()
+    number_of_spatial_coordinates = len(next(iter(qubit_coords_map.values()), []))
     for fragment, detectors in zip(fragments, detectors_from_flows):
         detectors_circuit = _detectors_to_circuit(detectors, [0.0])
         if isinstance(fragment, Fragment):
@@ -115,7 +116,7 @@ def compile_fragments_to_circuit_with_detectors(
                 fragment.circuit, detectors_circuit
             )
         else:  # isinstance(fragment, FragmentLoop):
-            shift_circuit = _shift_time_instruction(len(detectors[0].coords) - 1)
+            shift_circuit = _shift_time_instruction(number_of_spatial_coordinates)
             loop_body = compile_fragments_to_circuit_with_detectors(
                 fragment.fragments, qubit_coords_map
             )
