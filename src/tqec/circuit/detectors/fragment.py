@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import typing as ty
 import warnings
 from dataclasses import dataclass
 
 import stim
 from tqec.circuit.detectors.pauli import PauliString
+from tqec.circuit.detectors.predicates import is_valid_input_circuit
 from tqec.circuit.detectors.utils import (
     collapse_pauli_strings_at_moment,
     has_circuit_repeat_block,
@@ -219,8 +219,11 @@ def split_stim_circuit_into_fragments(
     Returns:
         the resulting fragments.
     """
-    fragments: list[Fragment | FragmentLoop] = []
+    potential_error_reason = is_valid_input_circuit(circuit)
+    if potential_error_reason is not None:
+        raise TQECException(potential_error_reason)
 
+    fragments: list[Fragment | FragmentLoop] = []
     current_fragment = stim.Circuit()
 
     moments_iterator = iter_stim_circuit_by_moments(circuit)
@@ -251,7 +254,8 @@ def split_stim_circuit_into_fragments(
             # not a valid input.
             if not has_only_measurement_or_is_virtual(moment):
                 raise TQECException(
-                    "A moment with measurement can only contained measurements."
+                    "A moment with at least one measurement instruction can "
+                    "only contain measurements."
                 )
             # Else, we only have measurements in this moment, so we can
             # add the full moment to the current fragment and start a new one.
