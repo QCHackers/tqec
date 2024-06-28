@@ -205,6 +205,15 @@ def is_virtual_moment(moment: stim.Circuit) -> bool:
     return all(is_virtual_instruction(inst) for inst in moment)  # type:ignore
 
 
+def has_computation_instruction(moment: stim.Circuit) -> bool:
+    return any(
+        not is_virtual_instruction(inst)  # type: ignore
+        and not is_reset(inst)  # type: ignore
+        and not is_measurement(inst)  # type: ignore
+        for inst in moment
+    )
+
+
 def pauli_string_mean_coords(
     pauli_string: PauliString, qubit_coords_map: dict[int, list[float]]
 ) -> tuple[float, ...]:
