@@ -1,84 +1,69 @@
 import numpy
 import pytest
+
 from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
 )
-from tqec.templates.scale import Dimension, FixedDimension, LinearFunction
+from tqec.templates.scale import LinearFunction
 
 
-@pytest.fixture
-def dim2x2():
-    return Dimension(2, LinearFunction(2))
+def test_rectangle_template_init():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(3, 0)
+    AlternatingRectangleTemplate(width, height)
 
 
-@pytest.fixture
-def dim3x2():
-    return Dimension(3, LinearFunction(2))
+def test_rectangle_expected_plaquette_number():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(3, 0)
+    template = AlternatingRectangleTemplate(width, height)
+    assert template.expected_plaquettes_number == 2
 
 
-@pytest.fixture
-def dim2x40p3():
-    return Dimension(2, LinearFunction(40, 3))
-
-
-@pytest.fixture
-def dim2():
-    return FixedDimension(2)
-
-
-@pytest.fixture
-def dim2x3():
-    return Dimension(2, LinearFunction(3))
-
-
-def test_rectangle_template_init(dim2x2, dim3x2):
-    AlternatingRectangleTemplate(dim2x2, dim3x2)
-
-
-def test_rectangle_expected_plaquette_number(dim2x2, dim3x2):
-    rect = AlternatingRectangleTemplate(dim2x2, dim3x2)
-    assert rect.expected_plaquettes_number == 2
-
-
-def test_rectangle_template_same_scaling(dim2x2, dim3x2):
-    template = AlternatingRectangleTemplate(dim2x2, dim3x2)
+def test_rectangle_template_same_scaling():
+    width = height = LinearFunction(2, 0)
+    template = AlternatingRectangleTemplate(width, height)
     template.scale_to(30)
     shape = template.shape
     assert shape.x == 2 * 30
     assert shape.y == 2 * 30
 
 
-def test_rectangle_template_different_scaling(dim2x2, dim2x40p3):
-    template = AlternatingRectangleTemplate(dim2x2, dim2x40p3)
+def test_rectangle_template_different_scaling():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(40, 3)
+    template = AlternatingRectangleTemplate(width, height)
     template.scale_to(30)
     shape = template.shape
     assert shape.x == 2 * 30
     assert shape.y == 40 * 30 + 3
 
 
-def test_rectangle_template_one_fixed_scaling(dim2x2, dim2):
-    template = AlternatingRectangleTemplate(dim2x2, dim2)
+def test_rectangle_template_one_fixed_scaling():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(0, 2)
+    template = AlternatingRectangleTemplate(width, height)
     template.scale_to(30)
     shape = template.shape
     assert shape.x == 2 * 30
     assert shape.y == 2
 
 
-def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes(
-    dim2x2, dim2
-):
-    template = AlternatingRectangleTemplate(dim2x2, dim2)
+def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(0, 2)
+    template = AlternatingRectangleTemplate(width, height)
     arr = template.instantiate([1, 2])
     numpy.testing.assert_equal(arr, [[1, 2, 1, 2], [2, 1, 2, 1]])
 
 
-def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes(
-    dim2x2, dim2
-):
-    template = AlternatingRectangleTemplate(dim2x2, dim2)
+def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(0, 2)
+    template = AlternatingRectangleTemplate(width, height)
     arr = template.instantiate([78, 195])
     numpy.testing.assert_equal(arr, [[78, 195, 78, 195], [195, 78, 195, 78]])
 
@@ -211,8 +196,10 @@ def test_raw_rectangle_midline():
         template.get_midline_plaquettes()
 
 
-def test_rectangle_midline(dim2x2, dim2x3):
-    template = AlternatingRectangleTemplate(dim2x2, dim2x3)
+def test_rectangle_midline():
+    width = LinearFunction(2, 0)
+    height = LinearFunction(3, 0)
+    template = AlternatingRectangleTemplate(width, height)
     midline = template.get_midline_plaquettes()
     assert midline == [(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5)]
     midline = template.get_midline_plaquettes(TemplateOrientation.VERTICAL)
