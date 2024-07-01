@@ -6,15 +6,16 @@ TQEC
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
 
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
    
-   source/tqec
-   
-Indices and tables
-==================
+   Introduction <self>
+   Automatic detector computation <detectors>
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 2
+   :caption: Notebooks:
+   
+   Automatic detector computation <media/detectors/detector_computation_illustration>

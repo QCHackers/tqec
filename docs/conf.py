@@ -45,6 +45,9 @@ extensions = [
     # A Markdown parser for Sphinx
     # https://myst-parser.readthedocs.io/en/latest/index.html
     "myst_parser",
+    # An extension allowing the inclusion of Jupyter notebooks.
+    # https://nbsphinx.readthedocs.io/en/0.9.3/
+    "nbsphinx",
 ]
 
 templates_path = ["_templates"]
@@ -119,3 +122,19 @@ def setup(app):
 
 
 autoclass_content = "init"
+
+# Automatically execute and import some notebooks in the documentation.
+
+# In order for Crumble IFrames to be included correctly, 1200px seems
+# like a good value. 800px (the default value) was fine, but took too
+# much vertical space.
+# See https://nbsphinx.readthedocs.io/en/0.9.4/index.html
+nbsphinx_prolog = """
+.. raw:: html
+
+    <style>
+        .wy-nav-content {
+            max-width: 1200px !important;
+        }
+    </style>
+"""
