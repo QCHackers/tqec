@@ -135,19 +135,24 @@ class PauliString:
         Here, collapsing means that we are removing from the Pauli string represented
         by self all the commuting Pauli terms from all the provided operators.
 
+        Collapsing is performed sequentially, in the order provided by
+        `collapse_operators`. If, during this sequential collapsing, the current
+        partially-collapsed result does not commute with the current collapsing
+        operator, an exception is raised.
+
         Args:
             collapse_operators: a collection of operators that should all commute
                 with self and will collapse with self.
 
         Raises:
-            TQECException: if one of the provided operators does not commute with self
-                or if two of the provided operators are overlapping.
+            TQECException: if one of the provided operators does not commute with self.
 
         Returns:
             a copy of self, collapsed by the provided operators.
         """
         ret = PauliString(self._pauli_by_qubit.copy())
         for op in collapse_operators:
+            print(f"Collapsing {op} over {ret}")
             if not ret.commutes(op):
                 raise TQECException(
                     f"Cannot collapse {ret} by a non-commuting operator {op}."

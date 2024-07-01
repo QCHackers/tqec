@@ -200,12 +200,11 @@ def split_stim_circuit_into_fragments(
         (i.e., anything except reset and measurement operations).
       - ends with one moment containing exclusively measurement operations.
 
-      For this reason, be careful with reset/measurement combined operations (e.g.,
-      the `stim` instruction `MR` that performs in one instruction a measurement and
-      a reset in the Z basis). These instructions are replaced by their non-combined
-      equivalent (e.g., the `MR` operation is replaced by a `M` operation, followed
-      by a `R` operation), and the resulting circuit should check the above
-      pre-condition.
+      For the above reasons, be careful with reset/measurement combined operations
+      (e.g., the `stim` instruction `MR` that performs in one instruction a
+      measurement and a reset in the Z basis). These instructions are not supported
+      by the `tqec` library and it is up to the user to check that the input circuit
+      does not contain combined measurements/resets instructions.
 
     Args:
         circuit (stim.Circuit): the circuit to split into Fragment instances.
@@ -215,6 +214,9 @@ def split_stim_circuit_into_fragments(
             instructions between two TICK annotations) that are composed of at least
             one measurement (resp. one reset) and at least one non-annotation,
             non-measurement (resp. non-reset) instruction.
+        TQECException: If the circuit contains combined measurement/reset instructions.
+        TQECException: If the provided circuit could not be split into fragments due
+            to an invalid structure.
 
     Returns:
         the resulting fragments.

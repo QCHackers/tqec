@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import time
 import typing as ty
-from time import time
 
 import pysat.solvers
 from tqec.circuit.detectors.boundary import BoundaryStabilizer, manhattan_distance
@@ -158,7 +158,7 @@ def _smallest_solution_shortcircuit(
     Returns:
         the smallest solution found, or `None` if no solution was found.
     """
-    start_time: float = time()
+    start_time: float = time.monotonic()
     smallest_solution = next(solutions, None)
 
     if smallest_solution is None:
@@ -170,7 +170,7 @@ def _smallest_solution_shortcircuit(
         if len(solution) == lower_length_bound:
             return solution
         smallest_solution = min((smallest_solution, solution), key=len)
-        if time() - start_time > timeout:
+        if time.monotonic() - start_time > timeout:
             return smallest_solution
     return smallest_solution
 

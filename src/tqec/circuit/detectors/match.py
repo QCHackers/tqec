@@ -194,8 +194,6 @@ def _match_non_propagating_non_trivial_flows_inline(
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate
             the matched detectors with the coordinates from the qubits involved in the
             measurement forming the detector.
-        is_creation: `True` if the provided `boundary_stabilizers` are creation stabilizers
-            else `False`.
 
     Returns:
         all matched detectors.

@@ -28,17 +28,21 @@ class BoundaryStabilizer:
                 has been applied.
             collapsing_operations: The collapsing operations the stabilizer will have to
                 go through to exit the Fragment.
-            involved_measurements: measurement offsets relative to the **end** of the
+            measurements: measurement offsets relative to the **end** of the
                 fragment (even if the created BoundaryStabilizer instance represents a
                 stabilizer on the beginning boundary) of measurements that are involved
                 in this stabilizer.
-            source_qubit: index of the qubit on which the collapsing operation that started
-                the propagation of this boundary stabilizer was applied on.
-                Should contain at least one index.
+            reset_qubits: index of the qubit on which reset operations touching the
+                flow are applied. Depending on the value of `forward`, these indices can
+                either be sources of the stabilizer (if `forward` is True) or sinks that
+                may or may not commute with the resulting stabilizer.
+            forward:
+                True if the stabilizer propagated forward (i.e., ends on measurements),
+                else False.
         """
         self._stabilizer = stabilizer
         self._measurements = measurements
-        self._collapsing_operations = collapsing_operations
+        self._collapsing_operations = frozenset(collapsing_operations)
         self._has_anticommuting_collapsing_operations = any(
             co.anticommutes(stabilizer) for co in collapsing_operations
         )
