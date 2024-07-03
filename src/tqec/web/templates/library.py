@@ -4,11 +4,7 @@ from tqec.templates.atomic.rectangle import (
 )
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import Template
-from tqec.templates.scale import (
-    Dimension,
-    FixedDimension,
-    LinearFunction,
-)
+from tqec.templates.scale import LinearFunction
 from tqec.templates.schemas import (
     InstantiableTemplateDescriptionModel,
     TemplateLibraryModel,
@@ -41,16 +37,16 @@ PREDEFINED_TEMPLATES_LIBRARY = TemplateLibrary()
 PREDEFINED_TEMPLATES_LIBRARY.add_template("1x1", RawRectangleTemplate([[0]]))
 PREDEFINED_TEMPLATES_LIBRARY.add_template(
     "2kx1",
-    AlternatingRectangleTemplate(FixedDimension(1), Dimension(1, LinearFunction(2, 0))),
+    AlternatingRectangleTemplate(LinearFunction(0, 1), LinearFunction(2, 0)),
 )
 PREDEFINED_TEMPLATES_LIBRARY.add_template(
     "1x2k",
     AlternatingRectangleTemplate(
-        Dimension(1, LinearFunction(2, 0)),
-        FixedDimension(1),
+        LinearFunction(2, 0),
+        LinearFunction(0, 1),
     ),
 )
 PREDEFINED_TEMPLATES_LIBRARY.add_template(
     "2kx2k",
-    AlternatingSquareTemplate(Dimension(1, LinearFunction(2, 0))),
+    AlternatingSquareTemplate(LinearFunction(2, 0)),
 )

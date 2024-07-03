@@ -7,11 +7,12 @@ from pydantic import BaseModel, Field
 
 from tqec.enums import CornerPositionEnum
 from tqec.position import Displacement
-from tqec.templates.scale import Dimension, ScalableOffset, ScalableShape2D
+from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 
 class TemplateModel(BaseModel):
     default_increments: Displacement
+    k: int
 
 
 class TemplateWithIndicesModel(BaseModel):
@@ -21,8 +22,8 @@ class TemplateWithIndicesModel(BaseModel):
 
 class AlternatingRectangleTemplateModel(TemplateModel):
     tag: Literal["AlternatingRectangle"]
-    width: Dimension
-    height: Dimension
+    width: LinearFunction
+    height: LinearFunction
 
 
 class RawRectangleTemplateModel(TemplateModel):
@@ -32,12 +33,12 @@ class RawRectangleTemplateModel(TemplateModel):
 
 class AlternatingSquareTemplateModel(TemplateModel):
     tag: Literal["AlternatingSquare"]
-    dimension: Dimension
+    dimension: LinearFunction
 
 
 class AlternatingCornerSquareTemplateModel(TemplateModel):
     tag: Literal["AlternatingCornerSquare"]
-    dimension: Dimension
+    dimension: LinearFunction
     corner_position: CornerPositionEnum
 
 
@@ -87,16 +88,6 @@ class ComposedTemplateModel(TemplateModel):
     relative_positions: RelativePositionsModel
 
 
-class ShiftedTemplateModel(TemplateModel):
-    tag: Literal["Shifted"]
-    shifted_template: InstantiableTemplateModel
-    offset: ScalableOffset
-
-
-class StackedTemplateModel(TemplateModel):
-    tag: Literal["Stacked"]
-    stack: list[InstantiableTemplateModel]
-
 
 InstanciableTemplateModelsUnion = Union[
     AlternatingRectangleTemplateModel,
@@ -104,8 +95,6 @@ InstanciableTemplateModelsUnion = Union[
     RawRectangleTemplateModel,
     # AlternatingCornerSquareTemplateModel,
     ComposedTemplateModel,
-    ShiftedTemplateModel,
-    StackedTemplateModel,
 ]
 InstantiableTemplateModel = Annotated[
     InstanciableTemplateModelsUnion, Field(discriminator="tag")
@@ -114,7 +103,7 @@ InstantiableTemplateModel = Annotated[
 
 class InstantiableTemplateDescriptionModel(BaseModel):
     name: str
-    shape: ScalableShape2D
+    shape: Scalable2D
     instantiation: list[list[int]]
 
 

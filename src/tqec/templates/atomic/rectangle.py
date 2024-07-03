@@ -8,6 +8,10 @@ from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.base import Template
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.schemas import (
+    AlternatingRectangleTemplateModel,
+    RawRectangleTemplateModel,
+)
 
 
 class AlternatingRectangleTemplate(Template):
@@ -82,6 +86,7 @@ class AlternatingRectangleTemplate(Template):
 
     def to_model(self) -> AlternatingRectangleTemplateModel:
         return AlternatingRectangleTemplateModel(
+            k=self.k,
             default_increments=self._default_increments,
             width=self._width,
             height=self._height,
@@ -227,6 +232,7 @@ class RawRectangleTemplate(Template):
 
     def to_model(self) -> RawRectangleTemplateModel:
         return RawRectangleTemplateModel(
+            k=self.k,
             default_increments=self._default_increments,
             indices=self._indices,
             tag="RawRectangle",

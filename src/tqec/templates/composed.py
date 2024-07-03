@@ -13,6 +13,7 @@ from tqec.exceptions import TQECException
 from tqec.position import Displacement
 from tqec.templates.base import Template, TemplateWithIndices
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.schemas import ComposedTemplateModel, RelativePositionsModel
 
 
 def _get_corner_position(
@@ -489,6 +490,7 @@ class ComposedTemplate(Template):
 
     def to_model(self) -> ComposedTemplateModel:
         return ComposedTemplateModel(
+            k=self.k,
             default_increments=self._default_increments,
             templates=[t.to_model() for t in self._templates],
             relative_positions=RelativePositionsModel.from_networkx(
