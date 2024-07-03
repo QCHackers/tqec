@@ -17,6 +17,7 @@
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -41,9 +42,13 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/tqec.html">tqec package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
 </ul>
 
         </div>
@@ -402,6 +407,8 @@
     module
 
       <ul>
+        <li><a href="source/tqec.html#module-tqec">tqec</a>
+</li>
         <li><a href="source/tqec.circuit.html#module-tqec.circuit">tqec.circuit</a>
 </li>
         <li><a href="source/tqec.circuit.html#module-tqec.circuit.circuit">tqec.circuit.circuit</a>
@@ -464,6 +471,10 @@
 </li>
         <li><a href="source/tqec.html#module-tqec.position">tqec.position</a>
 </li>
+        <li><a href="source/tqec.sketchup.html#module-tqec.sketchup">tqec.sketchup</a>
+</li>
+        <li><a href="source/tqec.sketchup.html#module-tqec.sketchup.dae_parse">tqec.sketchup.dae_parse</a>
+</li>
         <li><a href="source/tqec.templates.html#module-tqec.templates">tqec.templates</a>
 </li>
         <li><a href="source/tqec.templates.atomic.html#module-tqec.templates.atomic">tqec.templates.atomic</a>
@@ -501,6 +512,12 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.Node">Node (class in tqec.sketchup.dae_parse)</a>
+</li>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.Node.node_type">node_type (Node attribute)</a>
+</li>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.NodePosition">NodePosition (class in tqec.sketchup.dae_parse)</a>
+</li>
       <li><a href="source/tqec.noise_models.html#tqec.noise_models.after_clifford_depolarization.AfterCliffordDepolarizingNoise.noisy_moment">noisy_moment() (AfterCliffordDepolarizingNoise method)</a>
 
       <ul>
@@ -575,6 +592,8 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.parse_dae_file_to_nodes">parse_dae_file_to_nodes() (in module tqec.sketchup.dae_parse)</a>
+</li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.pauli_memory_plaquette">pauli_memory_plaquette() (in module tqec.plaquette.library.pauli)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.permute_data_qubits">permute_data_qubits() (PlaquetteQubits method)</a>
@@ -595,8 +614,12 @@
 </li>
       <li><a href="source/tqec.html#tqec.position.Position">Position (class in tqec.position)</a>
 </li>
-      <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubit.position">position (PlaquetteQubit attribute)</a>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.Node.position">position (Node attribute)</a>
+
+      <ul>
+        <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubit.position">(PlaquetteQubit attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/tqec.noise_models.html#tqec.noise_models.base.BaseNoiseModel.prob">prob (BaseNoiseModel property)</a>
 </li>
   </ul></td>
@@ -767,6 +790,15 @@
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_shape_2d">to_shape_2d() (Scalable2D method)</a>
 </li>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.NodePosition.to_tuple">to_tuple() (NodePosition method)</a>
+</li>
+      <li>
+    tqec
+
+      <ul>
+        <li><a href="source/tqec.html#module-tqec">module</a>
+</li>
+      </ul></li>
       <li>
     tqec.circuit
 
@@ -987,6 +1019,20 @@
 </li>
       </ul></li>
       <li>
+    tqec.sketchup
+
+      <ul>
+        <li><a href="source/tqec.sketchup.html#module-tqec.sketchup">module</a>
+</li>
+      </ul></li>
+      <li>
+    tqec.sketchup.dae_parse
+
+      <ul>
+        <li><a href="source/tqec.sketchup.html#module-tqec.sketchup.dae_parse">module</a>
+</li>
+      </ul></li>
+      <li>
     tqec.templates
 
       <ul>
@@ -1072,6 +1118,8 @@
       </ul></li>
       <li><a href="source/tqec.html#tqec.exceptions.TQECException">TQECException</a>
 </li>
+      <li><a href="source/tqec.html#tqec.exceptions.TQECWarning">TQECWarning</a>
+</li>
       <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.transformer.transform_to_stimcirq_compatible">transform_to_stimcirq_compatible() (in module tqec.circuit.operations.transformer)</a>
 </li>
   </ul></td>
@@ -1125,6 +1173,8 @@
       <li><a href="source/tqec.html#tqec.position.Displacement.x">x (Displacement attribute)</a>
 
       <ul>
+        <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.NodePosition.x">(NodePosition attribute)</a>
+</li>
         <li><a href="source/tqec.html#tqec.position.Position.x">(Position attribute)</a>
 </li>
         <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.x">(Scalable2D attribute)</a>
@@ -1153,6 +1203,8 @@
       <li><a href="source/tqec.html#tqec.position.Displacement.y">y (Displacement attribute)</a>
 
       <ul>
+        <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.NodePosition.y">(NodePosition attribute)</a>
+</li>
         <li><a href="source/tqec.html#tqec.position.Position.y">(Position attribute)</a>
 </li>
         <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.y">(Scalable2D attribute)</a>
@@ -1166,6 +1218,8 @@
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.dae_parse.NodePosition.z">z (NodePosition attribute)</a>
+</li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.initialisation.z_initialisation_plaquette">z_initialisation_plaquette() (in module tqec.plaquette.library.initialisation)</a>
 </li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.initialisation.z_initialisation_rounded_plaquette">z_initialisation_rounded_plaquette() (in module tqec.plaquette.library.initialisation)</a>
