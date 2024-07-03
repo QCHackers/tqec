@@ -15,7 +15,7 @@ import PlaquetteType from './plaquette-type'
 
 // From the main src folder
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants'
-import { drawSquareFromTopLeft } from '../utils'
+import { drawSquareFromTopLeft } from '../utils/graphics-utils'
 
 /////////////////////////////////////////////////////////////
 

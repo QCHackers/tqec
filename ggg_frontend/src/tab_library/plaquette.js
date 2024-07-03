@@ -2,7 +2,7 @@
 
 import { Graphics } from 'pixi.js';
 import { convexHull } from './utils'
-import { Qubit } from './qubit.js'
+import { Qubit } from './qubit'
 import Circuit from './circuit'
 
 /////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ export default class Plaquette extends Graphics {
             points.push({x: qubit.globalX, y: qubit.globalY});
         });
         const hull = convexHull(points)
-        console.log(`first point of the convex hull: (${hull[0].x}, ${hull[0].y})`)
+        //console.log(`first point of the convex hull: (${hull[0].x}, ${hull[0].y})`)
 
         // Draw convex hull
 		this.beginFill(this.color);

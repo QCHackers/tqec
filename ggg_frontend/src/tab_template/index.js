@@ -15,7 +15,8 @@ import PlaquetteType from '../tab_code/plaquette-type'
 
 // From the main src folder
 import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants'
-import { drawSquareFromTopLeft } from '../utils'
+import { drawSquareFromTopLeft } from '../utils/graphics-utils'
+import { copyPlaquette } from '../utils/plaquette-manipulation'
 
 // From the implementation of the components
 import config from '../components/download/config'
@@ -23,7 +24,8 @@ import { postExample, getExample } from '../components/download/test-backend-int
 
 /////////////////////////////////////////////////////////////
 
-let topLeftCornersOfPlaquettesInTemplate = [];
+let topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
+let topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
 
 /////////////////////////////////////////////////////////////
 
@@ -96,11 +98,11 @@ export default function TqecTemplates() {
                 // Perform other actions with responseData
 				// Add workspace guidelines according to the dimensions in the received json data.
 				let y0 = guideTopLeftCorner[1];
-				topLeftCornersOfPlaquettesInTemplate = [];
+				topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
+				topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
 				while (y0 + plaquetteDy <= guideTopLeftCorner[1] + 2*responseData.height) {
 					let x0 = guideTopLeftCorner[0];
 					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
-						topLeftCornersOfPlaquettesInTemplate.push({x: x0, y: y0});
 						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 						// Label square with 1 or 2.
 						const style = new TextStyle({fontSize: 36, fill: 'red'});
@@ -111,6 +113,7 @@ export default function TqecTemplates() {
 						const isType1 = responseData.tl_corners_1.some(item => item.x === target.x && item.y === target.y);
 						if (isType1) {
 							outline.addChild(digit_1);
+							topLeftCornersOfPlaquettesInTemplateWithLabel1.push({x: x0 - guideTopLeftCorner[0], y: y0 - guideTopLeftCorner[1]});
 						}
 						const digit_2 = new Text('2', style);
 						digit_2.x = x0*gridSize;
@@ -118,6 +121,7 @@ export default function TqecTemplates() {
 						const isType2 = responseData.tl_corners_2.some(item => item.x === target.x && item.y === target.y);
 						if (isType2) {
 							outline.addChild(digit_2);
+							topLeftCornersOfPlaquettesInTemplateWithLabel2.push({x: x0 - guideTopLeftCorner[0], y: y0 - guideTopLeftCorner[1]});
 						}
 						x0 += plaquetteDx;
 					}
@@ -226,17 +230,67 @@ export default function TqecTemplates() {
 
     fillButton.on('click', (_e) => {
 		// Search among the children the Plaquettes.
+		// Identify the plaquette occupy the cell with label 1 and 2.
+		let childAssignedToLabel1 = -1;
+		let childAssignedToLabel2 = -1;
 	    for (let i = 0; i < workspace.children.length; i++) {
 	        const child = workspace.children[i];
 	        if (child instanceof Plaquette
 				&& !(child instanceof PlaquetteType) ) {
-				// Print to console the (x,y) coordinate of the plaquette.
-				console.log('INFO:', child.name, '  coords:', child.topLeftCorner.x, child.topLeftCorner.y )
-				message += child.name + ' with color ' + child.color + ' at {x: ' + child.topLeftCorner.x + ', y: ' + child.topLeftCorner.y + '}\n';
+				const pos = child.topLeftCorner
+				console.log('INFO:', child.name, '  coords:', pos.x, pos.y )
+				const isType1 = topLeftCornersOfPlaquettesInTemplateWithLabel1.some(item => item.x === pos.x && item.y === pos.y);
+				if (isType1) {
+					if (childAssignedToLabel1 < 0) {
+						childAssignedToLabel1 = i;
+						console.log('INFO: type 1 associated with child ', i)
+					} else {
+						console.error('Only one plaquette should be associated with label 1 in the template');
+					}
+				}
+				const isType2 = topLeftCornersOfPlaquettesInTemplateWithLabel2.some(item => item.x === pos.x && item.y === pos.y);
+				if (isType2) {
+					if (childAssignedToLabel2 < 0) {
+						childAssignedToLabel2 = i;
+						console.log('INFO: type 2 associated with child ', i)
+					} else {
+						console.error('Only one plaquette should be associated with label 2 in the template');
+					}
+				}
 	        }
 	    }
-		// For comparison, let's look at the top corners of the plaquettes forming the template.
-		console.log(topLeftCornersOfPlaquettesInTemplate);
+		// Fill all cells of template.
+		console.log(topLeftCornersOfPlaquettesInTemplateWithLabel1);
+		if (childAssignedToLabel1 >= 0) {
+			const model = workspace.children[childAssignedToLabel1]
+			topLeftCornersOfPlaquettesInTemplateWithLabel1.forEach(tl => {
+    			// If no child of type plaquette exist at that location, add plaquette.
+				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
+				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
+				if (!existPlaquette) {
+					// Add plaquette.
+					let translate = {x: tl.x - model.topLeftCorner.x, y: tl.y - model.topLeftCorner.y}; // in GRID_SIZE
+					const copy = copyPlaquette(model, translate, GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE)
+            		workspace.addChild(copy);
+				}
+			});
+		}
+		console.log(topLeftCornersOfPlaquettesInTemplateWithLabel2);
+		if (childAssignedToLabel2 >= 0) {
+			const model = workspace.children[childAssignedToLabel2]
+			topLeftCornersOfPlaquettesInTemplateWithLabel2.forEach(tl => {
+    			// If no child of type plaquette exist at that location, add plaquette.
+				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
+				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
+				if (!existPlaquette) {
+					// Add plaquette
+					let translate = {x: tl.x - model.topLeftCorner.x, y: tl.y - model.topLeftCorner.y};
+					console.log('INFO: translate = ', translate)
+					const copy = copyPlaquette(model, translate, GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE)
+            		workspace.addChild(copy);
+				}
+			});
+		}
 	});
 
 /////////////////////////////////////////////////////////////

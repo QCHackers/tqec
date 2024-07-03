@@ -7,7 +7,7 @@ import { button } from './button'
 import Plaquette from './plaquette'
 import Circuit from './circuit'
 import { GRID_SIZE_LIBRARY_WORKSPACE, GUIDE_TOP_LEFT_CORNER_LIBRARY_WORKSPACE } from '../constants'
-import { drawSquareFromTopLeft } from '../utils'
+import { drawSquareFromTopLeft } from '../utils/graphics-utils'
 
 /////////////////////////////////////////////////////////////
 
