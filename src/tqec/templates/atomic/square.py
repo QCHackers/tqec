@@ -7,17 +7,14 @@ from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension, ScalableShape2D
-from tqec.templates.schemas import (
-    AlternatingCornerSquareTemplateModel,
-    AlternatingSquareTemplateModel,
-)
+from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
     def __init__(
         self,
-        dimension: Dimension,
+        dimension: LinearFunction,
+        k: int = 2,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -25,6 +22,7 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
 
         Args:
             dimension: width and height of the square template.
+            k: initial value for the scaling parameter.
             default_x_increment: default increment in the x direction between two plaquettes.
             default_y_increment: default increment in the y direction between two plaquettes.
 
@@ -32,12 +30,12 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
             The following code:
             .. code-block:: python
 
-                from tqec.templates.scale import Dimension, LinearFunction
+                from tqec.templates.scale import LinearFunction
                 from tqec.templates.atomic.square import AlternatingSquareTemplate
                 from tqec.display import display_template
 
-                dim = Dimension(2, LinearFunction(2, 0))
-                template = AlternatingSquareTemplate(dim)
+                dim = LinearFunction(2, 0)
+                template = AlternatingSquareTemplate(dim, k=2)
 
                 print("Non-scaled template:")
                 display_template(template)
@@ -58,6 +56,7 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
         super().__init__(
             dimension,
             dimension,
+            k,
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
         )
@@ -93,8 +92,9 @@ class AlternatingCornerSquareTemplate(Template):
 
     def __init__(
         self,
-        dimension: Dimension,
+        dimension: LinearFunction,
         corner_position: CornerPositionEnum,
+        k: int = 2,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -108,6 +108,7 @@ class AlternatingCornerSquareTemplate(Template):
         Args:
             dimension: width and height of the square template.
             corner_position: position of the special corner.
+            k: initial value for the scaling parameter.
             default_x_increment: default increment in the x direction between
                 two plaquettes.
             default_y_increment: default increment in the y direction between
@@ -117,13 +118,13 @@ class AlternatingCornerSquareTemplate(Template):
             The following code:
             .. code-block:: python
 
-                from tqec.templates.scale import Dimension, LinearFunction
+                from tqec.templates.scale import LinearFunction
                 from tqec.templates.atomic.square import AlternatingCornerSquareTemplate
                 from tqec.display import display_template
                 from tqec.enums import CornerPositionEnum
 
-                dim = Dimension(2, LinearFunction(2, 0))
-                template = AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT)
+                dim = LinearFunction(2, 0)
+                template = AlternatingCornerSquareTemplate(dim, CornerPositionEnum.LOWER_LEFT, k=2)
 
                 print("Non-scaled template:")
                 display_template(template)
@@ -142,6 +143,7 @@ class AlternatingCornerSquareTemplate(Template):
                 5  4
         """
         super().__init__(
+            k=k,
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
         )
@@ -154,7 +156,7 @@ class AlternatingCornerSquareTemplate(Template):
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette
-        dimension = self._dimension.value
+        dimension = self._dimension(self._k)
         for i in range(dimension):
             for j in range(dimension):
                 if i == j == 0:
@@ -176,13 +178,13 @@ class AlternatingCornerSquareTemplate(Template):
     def expected_plaquettes_number(self) -> int:
         return 5
 
-    def scale_to(self, k: int) -> "AlternatingCornerSquareTemplate":
-        self._dimension.scale_to(k)
-        return self
-
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(self._dimension.value, self._dimension.value)
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(self._dimension),
+            PiecewiseLinearFunction.from_linear_function(self._dimension),
+        )
 
     def to_model(self) -> AlternatingCornerSquareTemplateModel:
         return AlternatingCornerSquareTemplateModel(

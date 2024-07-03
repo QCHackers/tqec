@@ -16,4 +16,4 @@ from .display import (
     display_templates_ascii,
     display_templates_svg,
 )
-from .scale import Dimension, FixedDimension, LinearFunction
+from .scale import LinearFunction

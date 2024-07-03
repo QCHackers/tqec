@@ -9,12 +9,14 @@ import numpy
 from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.scale import Scalable2D
 from tqec.templates.schemas import InstantiableTemplateModel
 
 
 class Template:
     def __init__(
         self,
+        k: int,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -24,12 +26,14 @@ class Template:
         that all templates should implement to be usable by the library.
 
         Args:
+            k: initial value for the scaling parameter.
             default_x_increment: default increment in the x direction between
                 two plaquettes.
             default_y_increment: default increment in the y direction between
                 two plaquettes.
         """
         super().__init__()
+        self._k = k
         self._default_increments = Displacement(
             default_x_increment, default_y_increment
         )
@@ -80,37 +84,30 @@ class Template:
         """
         pass
 
-    @abstractmethod
-    def scale_to(self, k: int) -> "Template":
+    def scale_to(self, k: int) -> None:
         """Scales self to the given scale k.
 
-        Note that this function scales the template instance INLINE. Rephrasing, the
-        instance on which this method is called is modified in-place AND returned.
-
-        The input parameter ``k`` corresponds to an abstract scale that may be
-        forwarded to
-
-        1. various :class:`Dimension` instances,
-        2. other :class:`Template` instances in the case of templates modifying
-           existing instances,
-        3. anything else that the subclass might implement.
+        Note that this function scales the template instance INLINE.
 
         Args:
             k: the new scale of the template.
-
-        Returns:
-            self, once scaled.
         """
-        pass
+        self._k = k
+
+    @property
+    def k(self) -> int:
+        return self._k
+
+    @property
+    def shape(self) -> Shape2D:
+        """Returns the current template shape."""
+        sshape = self.scalable_shape
+        return Shape2D(sshape.x(self._k), sshape.y(self._k))
 
     @property
     @abstractmethod
-    def shape(self) -> Shape2D:
-        """Returns the current template shape.
-
-        Returns:
-            the shape of the template.
-        """
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
         pass
 
     @abstractmethod
