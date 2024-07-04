@@ -9,3 +9,4 @@ Flask==3.0.0
 flask_cors==3.0.10
 pydantic
 fastapi
+python-sat[cryptosat]
