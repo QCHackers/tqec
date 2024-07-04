@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import cirq
 
-from tqec.enums import PlaquetteOrientation, PlaquetteSide
+from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.position import Position
 from tqec.templates.enums import TemplateOrientation
 

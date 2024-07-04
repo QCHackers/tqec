@@ -11,9 +11,6 @@ from .circuit import (
     generate_circuit,
     merge_scheduled_circuits,
 )
-from .enums import (
-    PlaquetteOrientation,
-)
 from .exceptions import TQECException
 from .noise_models import (
     AfterCliffordDepolarizingNoise,
@@ -30,6 +27,9 @@ from .plaquette import (
     PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
+)
+from .plaquette.enums import (
+    PlaquetteOrientation,
 )
 from .position import (
     Displacement,

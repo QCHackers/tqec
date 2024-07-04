@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tqec.enums import PlaquetteOrientation
+from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import RoundedPlaquetteQubits
