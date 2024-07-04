@@ -6,9 +6,9 @@ from dataclasses import dataclass
 
 import numpy
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import Scalable2D
 
 
