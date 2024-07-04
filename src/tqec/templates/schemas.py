@@ -88,7 +88,6 @@ class ComposedTemplateModel(TemplateModel):
     relative_positions: RelativePositionsModel
 
 
-
 InstanciableTemplateModelsUnion = Union[
     AlternatingRectangleTemplateModel,
     AlternatingSquareTemplateModel,
@@ -105,6 +104,7 @@ class InstantiableTemplateDescriptionModel(BaseModel):
     name: str
     shape: Scalable2D
     instantiation: list[list[int]]
+    expected_plaquettes_number: int
 
 
 class TemplateLibraryModel(BaseModel):

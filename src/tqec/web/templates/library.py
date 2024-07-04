@@ -27,6 +27,7 @@ class TemplateLibrary:
                     instantiation=template.instantiate(
                         list(range(1, template.expected_plaquettes_number + 1))
                     ).tolist(),
+                    expected_plaquettes_number=template.expected_plaquettes_number,
                 )
                 for name, template in self._templates.items()
             ]
