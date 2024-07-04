@@ -48,9 +48,7 @@ class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
 class ScheduledCircuit:
     VIRTUAL_MOMENT_SCHEDULE: int = -1000
 
-    def __init__(
-        self, circuit: cirq.Circuit, schedule: list[int] | None = None
-    ) -> None:
+    def __init__(self, circuit: cirq.Circuit, schedule: list[int] | int = 0) -> None:
         """Represent a quantum circuit with scheduled moments.
 
         This class aims at representing a Circuit instance that has all its moments
@@ -66,10 +64,12 @@ class ScheduledCircuit:
 
         Args:
             circuit: the instance of Circuit that is scheduled.
-            schedule: a sorted list of time slices indices. The list should
-                contain as many indices as there are non-virtual moments in the
-                provided Circuit instance. If the list is None, it default to
-                `list(range(number_of_non_virtual_moments))`.
+            schedule: a sorted list of time slices indices or an integer. If a list
+                is given, it should contain as many indices as there are non-virtual
+                moments in the provided Circuit instance. If an integer is provided,
+                each non-virtual moment of the provided Circuit is scheduled
+                sequentially, starting by the provided schedule:
+                `list(range(schedule, schedule + self._number_of_non_virtual_moments))`.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -79,8 +79,10 @@ class ScheduledCircuit:
             for moment in circuit.moments
         ]
         self._number_of_non_virtual_moments: int = sum(self._is_non_virtual_moment_list)
-        if schedule is None:
-            schedule = list(range(self._number_of_non_virtual_moments))
+        if isinstance(schedule, int):
+            schedule = list(
+                range(schedule, schedule + self._number_of_non_virtual_moments)
+            )
         else:
             ScheduledCircuit._check_input_validity(circuit, schedule)
 
