@@ -86,7 +86,7 @@ class ScheduledCircuit:
 
         self._raw_circuit: cirq.Circuit = circuit
         self._schedule: list[int]
-        self.schedule = schedule
+        self._set_schedule(schedule)
 
     @staticmethod
     def _check_input_validity(circuit: cirq.Circuit, schedule: list[int]) -> None:
@@ -222,10 +222,13 @@ class ScheduledCircuit:
     def schedule(self) -> list[int]:
         return self._schedule
 
-    @schedule.setter
-    def schedule(self, new_schedule: list[int]) -> None:
+    def _set_schedule(self, new_schedule: list[int]) -> None:
         ScheduledCircuit._check_input_validity(self.raw_circuit, new_schedule)
         self._schedule = new_schedule
+
+    @schedule.setter
+    def schedule(self, new_schedule: list[int]) -> None:
+        self._set_schedule(new_schedule)
 
     @property
     def raw_circuit(self) -> cirq.Circuit:
