@@ -15,14 +15,14 @@ export function copyPlaquette(plaquette, translate, gridSize, guideTopLeftCorner
     let qubits_of_copy = []
     plaquette.qubits.forEach((q) => {
         const qubit = new Qubit(q.globalX + translate.x * gridSize, q.globalY + translate.y * gridSize, q.radius);
-        qubit.name = `Q(${String(qubit.globalX/gridSize - guideTopLeftCorner[0]).padStart(2, ' ')},${String(qubit.globalY/gridSize - guideTopLeftCorner[1]).padStart(2, ' ')})`;
+        qubit.name = `Q(${String(qubit.globalX/gridSize - guideTopLeftCorner.x).padStart(2, ' ')},${String(qubit.globalY/gridSize - guideTopLeftCorner.y).padStart(2, ' ')})`;
         qubits_of_copy.push(qubit);
     });
     const copy = new Plaquette(qubits_of_copy, plaquette.color);
     copy.x += translate.x
     copy.y += translate.y
     copy._createConvexHull(0);
-    copy.topLeftCorner = {x: translate.x + plaquette.topLeftCorner.x - guideTopLeftCorner[0],
-                          y: translate.y + plaquette.topLeftCorner.y - guideTopLeftCorner[1]}
+    copy.topLeftCorner = {x: translate.x + plaquette.topLeftCorner.x - guideTopLeftCorner.x,
+                          y: translate.y + plaquette.topLeftCorner.y - guideTopLeftCorner.y}
     return copy;
 }

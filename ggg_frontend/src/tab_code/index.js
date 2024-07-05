@@ -83,11 +83,11 @@ export default function TqecCode() {
 		libraryTopLeftCorners = [[21, 3], [21, 3+plaquetteDy+2], [21, 3+(plaquetteDy+2)*2], [21, 3+(plaquetteDy*2)*3]]
 		outline.lineStyle(2, 'lightcoral');
 		// Add workspace guidelines.
-		let y0 = guideTopLeftCorner[1];
+		let y0 = guideTopLeftCorner.y;
 		let message = '';
-		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[1]) {
-			let x0 = guideTopLeftCorner[0];
-			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0]) {
+		while (y0 + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE.y) {
+			let x0 = guideTopLeftCorner.x;
+			while (x0 + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE.x) {
 				drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 				x0 += plaquetteDx;
 				message += '  .';
@@ -118,9 +118,9 @@ export default function TqecCode() {
 				});
 				// Recall that plaquette names are like "plaquette 12", starting from "plaquette 1"
 				const plaquette_id = parseInt(plaq.name.match(/\d+/)[0]);
-				const base_translate_vector = {x: guideTopLeftCorner[0] - libraryTopLeftCorners[plaquette_id-1][0],
-				                               y: guideTopLeftCorner[1] - libraryTopLeftCorners[plaquette_id-1][1]};
-				const p_type = new PlaquetteType(qubits, libraryColors[index], num_background_children, base_translate_vector)
+				const base_translate_vector = {x: guideTopLeftCorner.x - libraryTopLeftCorners[plaquette_id-1][0],
+				                               y: guideTopLeftCorner.y - libraryTopLeftCorners[plaquette_id-1][1]};
+				const p_type = new PlaquetteType(qubits, libraryColors[index], plaq.topLeftCorner, num_background_children, base_translate_vector)
 				p_type.name = plaq.name;
 				plaquetteTypes.push(p_type);
 				workspace.addChildAt(p_type, num_background_children);

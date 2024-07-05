@@ -97,23 +97,23 @@ export default function TqecTemplates() {
                 console.log('Using response data:', responseData);
                 // Perform other actions with responseData
 				// Add workspace guidelines according to the dimensions in the received json data.
-				let y0 = guideTopLeftCorner[1];
+				let y0 = guideTopLeftCorner.y;
 				topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
 				topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
-				while (y0 + plaquetteDy <= guideTopLeftCorner[1] + 2*responseData.height) {
-					let x0 = guideTopLeftCorner[0];
-					while (x0 + plaquetteDx <= guideTopLeftCorner[0] + 2*responseData.length) {
+				while (y0 + plaquetteDy <= guideTopLeftCorner.y + 2*responseData.height) {
+					let x0 = guideTopLeftCorner.x;
+					while (x0 + plaquetteDx <= guideTopLeftCorner.x + 2*responseData.length) {
 						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 						// Label square with 1 or 2.
 						const style = new TextStyle({fontSize: 36, fill: 'red'});
 						const digit_1 = new Text('1', style);
 						digit_1.x = x0*gridSize;
 						digit_1.y = y0*gridSize;
-						const target = {x: (x0 - guideTopLeftCorner[0])/plaquetteDx, y: (y0 - guideTopLeftCorner[1])/plaquetteDy}
+						const target = {x: (x0 - guideTopLeftCorner.x)/plaquetteDx, y: (y0 - guideTopLeftCorner.y)/plaquetteDy}
 						const isType1 = responseData.tl_corners_1.some(item => item.x === target.x && item.y === target.y);
 						if (isType1) {
 							outline.addChild(digit_1);
-							topLeftCornersOfPlaquettesInTemplateWithLabel1.push({x: x0 - guideTopLeftCorner[0], y: y0 - guideTopLeftCorner[1]});
+							topLeftCornersOfPlaquettesInTemplateWithLabel1.push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
 						}
 						const digit_2 = new Text('2', style);
 						digit_2.x = x0*gridSize;
@@ -121,7 +121,7 @@ export default function TqecTemplates() {
 						const isType2 = responseData.tl_corners_2.some(item => item.x === target.x && item.y === target.y);
 						if (isType2) {
 							outline.addChild(digit_2);
-							topLeftCornersOfPlaquettesInTemplateWithLabel2.push({x: x0 - guideTopLeftCorner[0], y: y0 - guideTopLeftCorner[1]});
+							topLeftCornersOfPlaquettesInTemplateWithLabel2.push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
 						}
 						x0 += plaquetteDx;
 					}
@@ -196,8 +196,8 @@ export default function TqecTemplates() {
 				});
 				// Recall that plaquette names are like "plaquette 12", starting from "plaquette 1"
 				const plaquette_id = parseInt(plaq.name.match(/\d+/)[0]);
-				const base_translate_vector = {x: guideTopLeftCorner[0] - libraryTopLeftCorners[plaquette_id-1][0],
-				                               y: guideTopLeftCorner[1] - libraryTopLeftCorners[plaquette_id-1][1]};
+				const base_translate_vector = {x: guideTopLeftCorner.x - libraryTopLeftCorners[plaquette_id-1][0],
+				                               y: guideTopLeftCorner.y - libraryTopLeftCorners[plaquette_id-1][1]};
 				const p_type = new PlaquetteType(qubits, libraryColors[index], plaq.topLeftCorner, num_background_children, base_translate_vector)
 				p_type.name = plaq.name;
 				plaquetteTypes.push(p_type);

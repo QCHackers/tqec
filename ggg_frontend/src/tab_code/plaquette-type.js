@@ -92,16 +92,15 @@ export default class PlaquetteType extends Plaquette {
         // If the translator vector does not lead to a cell, log an error and return.
 		const plaquetteDx = parseInt(document.getElementById('dxCell').value);
 		const plaquetteDy = parseInt(document.getElementById('dyCell').value);
-        console.log('this.base_translate_vector = ', this.base_translate_vector[0])
         // Horizontally aligned with a cell.
         let is_valid_translation = (translate_x/GRID_SIZE - this.base_translate_vector.x) % plaquetteDx === 0;
         // Vertically aligned with a cell.
         is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE - this.base_translate_vector.y) % plaquetteDy === 0; 
         // Horizontally within the cells in the guide.
-        is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE - this.base_translate_vector.x) + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER[0] - GUIDE_TOP_LEFT_CORNER[0];
+        is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE - this.base_translate_vector.x) + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER.x - GUIDE_TOP_LEFT_CORNER.x;
         is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE - this.base_translate_vector.x) >= 0;
         // Vertically within the cells in the guide.
-        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE - this.base_translate_vector.y) + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER[1] - GUIDE_TOP_LEFT_CORNER[1];
+        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE - this.base_translate_vector.y) + plaquetteDy <= GUIDE_MAX_BOTTOM_RIGHT_CORNER.y - GUIDE_TOP_LEFT_CORNER.y;
         is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE - this.base_translate_vector.y) >= 0;
 		// FIXME: Check that the cell is still "free".
         if ( is_valid_translation === false ) {
@@ -121,13 +120,13 @@ export default class PlaquetteType extends Plaquette {
         let qubits_of_copy = []
 		this.qubits.forEach((q) => {
             const qubit = new Qubit(q.globalX + translate_x, q.globalY + translate_y, q.radius);
-			qubit.name = `Q(${String(qubit.globalX/GRID_SIZE - GUIDE_TOP_LEFT_CORNER[0]).padStart(2, ' ')},${String(qubit.globalY/GRID_SIZE - GUIDE_TOP_LEFT_CORNER[1]).padStart(2, ' ')})`;
+			qubit.name = `Q(${String(qubit.globalX/GRID_SIZE - GUIDE_TOP_LEFT_CORNER.x).padStart(2, ' ')},${String(qubit.globalY/GRID_SIZE - GUIDE_TOP_LEFT_CORNER.y).padStart(2, ' ')})`;
             qubits_of_copy.push(qubit);
         });
         const copy = new Plaquette(qubits_of_copy, this.color);
 	    copy._createConvexHull(0);
-        copy.topLeftCorner = {x: translate_x/GRID_SIZE + this.topLeftCorner.x - GUIDE_TOP_LEFT_CORNER[0],
-                              y: translate_y/GRID_SIZE + this.topLeftCorner.y - GUIDE_TOP_LEFT_CORNER[1]}
+        copy.topLeftCorner = {x: translate_x/GRID_SIZE + this.topLeftCorner.x - GUIDE_TOP_LEFT_CORNER.x,
+                              y: translate_y/GRID_SIZE + this.topLeftCorner.y - GUIDE_TOP_LEFT_CORNER.y}
         // Add to the parent workspace.
         if (this.add_at >= 0) {
             this.parent.addChildAt(copy, this.add_at);
