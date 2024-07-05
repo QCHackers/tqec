@@ -33,7 +33,7 @@ class Interval:
 
     def intersection(self, other: Interval) -> Interval:
         if self.is_disjoint(other):
-            return Interval(0, 0)
+            return EMPTY_INTERVAL
         return Interval(max(self.start, other.start), min(self.end, other.end))
 
     def union_overlapping(self, other: Interval) -> Interval:
@@ -51,6 +51,9 @@ class Interval:
 
     def __repr__(self) -> str:
         return f"[{self.start}, {self.end})"
+
+
+EMPTY_INTERVAL = Interval(0, 0)
 
 
 @dataclass(frozen=True)

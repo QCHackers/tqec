@@ -9,7 +9,7 @@ from math import floor
 from tqec.enums import Axis
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
-from tqec.templates.interval import Interval, Intervals, R_interval
+from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
 
 
 @dataclass(frozen=True)
@@ -56,7 +56,7 @@ class LinearFunction:
             if self(0) < other(0):
                 return Interval(float("-inf"), float("inf"))
             else:
-                return Interval(0, 0)
+                return EMPTY_INTERVAL
 
         before_intersection = int(floor(intersection)) - 1
         if self(before_intersection) < other(before_intersection):
