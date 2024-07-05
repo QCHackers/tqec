@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
@@ -9,6 +8,13 @@ from tqec.templates.atomic.rectangle import (
 from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
+from tqec.templates.enums import (
+    ABOVE_OF,
+    BELOW_OF,
+    LEFT_OF,
+    RIGHT_OF,
+    TemplateOrientation,
+)
 from tqec.templates.scale import LinearFunction
 
 

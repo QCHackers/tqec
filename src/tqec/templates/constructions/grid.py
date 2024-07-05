@@ -1,6 +1,6 @@
-from tqec.enums import BELOW_OF, RIGHT_OF
 from tqec.templates.base import Template, TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
+from tqec.templates.enums import BELOW_OF, RIGHT_OF
 
 
 class TemplateGrid(ComposedTemplate):
