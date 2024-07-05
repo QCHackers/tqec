@@ -78,7 +78,6 @@
   <h1>Source code for tqec.templates.constructions.qubit</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">tqec.enums</span> <span class="kn">import</span> <span class="n">ABOVE_OF</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="n">LEFT_OF</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="n">TemplateOrientation</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.atomic.rectangle</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AlternatingRectangleTemplate</span><span class="p">,</span>
@@ -87,6 +86,13 @@
 <span class="kn">from</span> <span class="nn">tqec.templates.atomic.square</span> <span class="kn">import</span> <span class="n">AlternatingSquareTemplate</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">TemplateWithIndices</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.composed</span> <span class="kn">import</span> <span class="n">ComposedTemplate</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ABOVE_OF</span><span class="p">,</span>
+    <span class="n">BELOW_OF</span><span class="p">,</span>
+    <span class="n">LEFT_OF</span><span class="p">,</span>
+    <span class="n">RIGHT_OF</span><span class="p">,</span>
+    <span class="n">TemplateOrientation</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 
 

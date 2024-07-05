@@ -193,7 +193,7 @@ two plaquettes.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.base.Template.get_midline_plaquettes">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.enums.TemplateOrientation" title="tqec.templates.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/base.html#Template.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.Template.get_midline_plaquettes" title="Link to this definition"></a></dt>
 <dd><p>Returns the default observable qubits for the template.</p>
 <p>If the template has a simple shape, this returns the plaquettes on the <a href="#id1"><span class="problematic" id="id2">``</span></a>midline’’
 of the template.
@@ -347,7 +347,7 @@ two plaquettes.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_corner_relation">
-<span class="sig-name descname"><span class="pre">add_corner_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.enums.CornerPositionEnum" title="tqec.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_corner_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_corner_relation" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_corner_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.enums.CornerPositionEnum" title="tqec.templates.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id_corner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.enums.CornerPositionEnum" title="tqec.templates.enums.CornerPositionEnum"><span class="pre">CornerPositionEnum</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_corner_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_corner_relation" title="Link to this definition"></a></dt>
 <dd><p>Add a relative positioning between two templates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -369,7 +369,7 @@ considered.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.add_relation">
-<span class="sig-name descname"><span class="pre">add_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateRelativePositionEnum" title="tqec.enums.TemplateRelativePositionEnum"><span class="pre">TemplateRelativePositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_relation" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_relation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_id_to_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.enums.TemplateRelativePositionEnum" title="tqec.templates.enums.TemplateRelativePositionEnum"><span class="pre">TemplateRelativePositionEnum</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><span class="pre">ComposedTemplate</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.add_relation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.add_relation" title="Link to this definition"></a></dt>
 <dd><p>Add a relative positioning between two templates.</p>
 <p>This method has the same effect as <code class="docutils literal notranslate"><span class="pre">add_corner_relation</span></code> (it
 internally calls it), but provide another interface to add a
@@ -447,7 +447,7 @@ between plaquettes of the template.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.get_midline_plaquettes">
-<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.enums.TemplateOrientation" title="tqec.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.enums.TemplateOrientation" title="tqec.templates.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
 <dd><p>Returns the default observable qubits for the template.</p>
 <p>If the template has a simple shape, this returns the plaquettes on the <a href="#id3"><span class="problematic" id="id4">``</span></a>midline’’
 of the template.
@@ -580,6 +580,87 @@ to <cite>template.instantiate</cite> to get the actual template representation.<
 <dd class="field-even"><p>the SVG string.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-tqec.templates.enums">
+<span id="tqec-templates-enums-module"></span><h2>tqec.templates.enums module<a class="headerlink" href="#module-tqec.templates.enums" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CornerPositionEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#CornerPositionEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Represents a corner.</p>
+<p>Corner positions are stored as coordinates in the coordinate system with:
+- the origin on the upper-left corner
+- the X-axis that goes from the origin to the upper-right corner
+- the Y-axis that goes from the origin to the lower-left corner</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum.LOWER_LEFT">
+<span class="sig-name descname"><span class="pre">LOWER_LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=0,</span> <span class="pre">y=1)</span></em><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum.LOWER_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum.LOWER_RIGHT">
+<span class="sig-name descname"><span class="pre">LOWER_RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=1,</span> <span class="pre">y=1)</span></em><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum.LOWER_RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum.UPPER_LEFT">
+<span class="sig-name descname"><span class="pre">UPPER_LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=0,</span> <span class="pre">y=0)</span></em><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum.UPPER_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum.UPPER_RIGHT">
+<span class="sig-name descname"><span class="pre">UPPER_RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=1,</span> <span class="pre">y=0)</span></em><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum.UPPER_RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateOrientation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateOrientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#TemplateOrientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.TemplateOrientation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Indicates the orientation of the midline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateOrientation.HORIZONTAL">
+<span class="sig-name descname"><span class="pre">HORIZONTAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateOrientation.HORIZONTAL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateOrientation.VERTICAL">
+<span class="sig-name descname"><span class="pre">VERTICAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateOrientation.VERTICAL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateRelativePositionEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#TemplateRelativePositionEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Represent a relative position between two Template instances.</p>
+<p>Template relative positions are stored as the relative displacement needed to
+encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
+on the left is one unit backwards on the X-axis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.ABOVE_OF">
+<span class="sig-name descname"><span class="pre">ABOVE_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=0,</span> <span class="pre">y=-1)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.ABOVE_OF" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.BELOW_OF">
+<span class="sig-name descname"><span class="pre">BELOW_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=0,</span> <span class="pre">y=1)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.BELOW_OF" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.LEFT_OF">
+<span class="sig-name descname"><span class="pre">LEFT_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=-1,</span> <span class="pre">y=0)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.LEFT_OF" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.RIGHT_OF">
+<span class="sig-name descname"><span class="pre">RIGHT_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=1,</span> <span class="pre">y=0)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.RIGHT_OF" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>

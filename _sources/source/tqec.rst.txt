@@ -16,14 +16,6 @@ Subpackages
 Submodules
 ----------
 
-tqec.enums module
------------------
-
-.. automodule:: tqec.enums
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tqec.exceptions module
 ----------------------
 

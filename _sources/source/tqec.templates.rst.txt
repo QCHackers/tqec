@@ -37,6 +37,14 @@ tqec.templates.display module
    :undoc-members:
    :show-inheritance:
 
+tqec.templates.enums module
+---------------------------
+
+.. automodule:: tqec.templates.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.templates.scale module
 ---------------------------
 

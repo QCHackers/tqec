@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+tqec.plaquette.enums module
+---------------------------
+
+.. automodule:: tqec.plaquette.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.plaquette.plaquette module
 -------------------------------
 
