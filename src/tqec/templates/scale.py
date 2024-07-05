@@ -421,7 +421,7 @@ class PiecewiseLinearFunction:
 
 
 def round_or_fail(f: float) -> int:
-    rounded_value = int(f)
+    rounded_value = int(round(f))
     if abs(f - rounded_value) > 1e-8:
         raise TQECException(f"Rounding from {f} to integer failed.")
     return rounded_value
