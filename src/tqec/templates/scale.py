@@ -6,9 +6,9 @@ import typing as ty
 from dataclasses import dataclass
 from math import floor
 
-from tqec.enums import Axis
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
+from tqec.templates.enums import Axis
 from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
 
 

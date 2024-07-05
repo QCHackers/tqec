@@ -1,6 +1,5 @@
 import pytest
 
-from tqec.enums import CornerPositionEnum
 from tqec.exceptions import TQECException
 from tqec.templates.atomic import AlternatingSquareTemplate
 from tqec.templates.atomic.rectangle import (
@@ -11,6 +10,7 @@ from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
 from tqec.templates.constructions.grid import TemplateGrid
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
+from tqec.templates.enums import CornerPositionEnum
 from tqec.templates.scale import LinearFunction
 
 _DIMENSIONS = [

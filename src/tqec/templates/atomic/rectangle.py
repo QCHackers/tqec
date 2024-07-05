@@ -2,10 +2,10 @@ import typing as ty
 
 import numpy
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.base import Template
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 

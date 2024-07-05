@@ -11,12 +11,6 @@ from .circuit import (
     generate_circuit,
     merge_scheduled_circuits,
 )
-from .enums import (
-    CornerPositionEnum,
-    PlaquetteOrientation,
-    TemplateOrientation,
-    TemplateRelativePositionEnum,
-)
 from .exceptions import TQECException
 from .noise_models import (
     AfterCliffordDepolarizingNoise,
@@ -33,6 +27,9 @@ from .plaquette import (
     PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
+)
+from .plaquette.enums import (
+    PlaquetteOrientation,
 )
 from .position import (
     Displacement,
@@ -53,4 +50,9 @@ from .templates import (
     TemplateWithIndices,
     display_template,
     display_templates_svg,
+)
+from .templates.enums import (
+    CornerPositionEnum,
+    TemplateOrientation,
+    TemplateRelativePositionEnum,
 )

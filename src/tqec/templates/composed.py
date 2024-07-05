@@ -5,14 +5,14 @@ from copy import deepcopy
 import networkx as nx
 import numpy
 
-from tqec.enums import (
+from tqec.exceptions import TQECException
+from tqec.position import Displacement
+from tqec.templates.base import Template, TemplateWithIndices
+from tqec.templates.enums import (
     CornerPositionEnum,
     TemplateOrientation,
     TemplateRelativePositionEnum,
 )
-from tqec.exceptions import TQECException
-from tqec.position import Displacement
-from tqec.templates.base import Template, TemplateWithIndices
 from tqec.templates.interval import Intervals, Rplus_interval
 from tqec.templates.scale import (
     LinearFunction,
