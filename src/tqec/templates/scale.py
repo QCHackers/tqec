@@ -135,14 +135,9 @@ def _get_minmax_on_interval(
 
 
 def intervals_from_separators(separators: list[float]) -> ty.Iterator[Interval]:
-    if not separators:
-        yield Interval(float("-inf"), float("+inf"))
-        return
-
-    yield Interval(float("-inf"), separators[0])
-    for i in range(1, len(separators)):
-        yield Interval(separators[i - 1], separators[i])
-    yield Interval(separators[-1], float("inf"))
+    separators_with_inf = [float("-inf"), *separators, float("+inf")]
+    for i in range(len(separators_with_inf) - 1):
+        yield Interval(separators_with_inf[i], separators_with_inf[i + 1])
 
 
 @dataclass(frozen=True)
