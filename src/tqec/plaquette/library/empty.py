@@ -1,7 +1,7 @@
 import cirq
 
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.enums import PlaquetteOrientation
+from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import (
     PlaquetteQubits,

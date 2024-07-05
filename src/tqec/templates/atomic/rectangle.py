@@ -4,9 +4,9 @@ import typing as ty
 
 import numpy
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.base import Template
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 from tqec.templates.schemas import (
     AlternatingRectangleTemplateModel,

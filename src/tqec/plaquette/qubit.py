@@ -5,8 +5,9 @@ import typing as ty
 import cirq
 from pydantic.dataclasses import dataclass
 
-from tqec.enums import PlaquetteOrientation, PlaquetteSide, TemplateOrientation
+from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.position import Position
+from tqec.templates.enums import TemplateOrientation
 
 
 @dataclass(frozen=True)

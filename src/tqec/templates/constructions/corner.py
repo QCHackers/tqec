@@ -1,4 +1,3 @@
-from tqec.enums import ABOVE_OF, BELOW_OF, LEFT_OF, RIGHT_OF, CornerPositionEnum
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
@@ -9,6 +8,13 @@ from tqec.templates.atomic.square import (
 )
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
+from tqec.templates.enums import (
+    ABOVE_OF,
+    BELOW_OF,
+    LEFT_OF,
+    RIGHT_OF,
+    CornerPositionEnum,
+)
 from tqec.templates.scale import LinearFunction
 
 

@@ -1,12 +1,12 @@
 import numpy
 import pytest
 
-from tqec.enums import CornerPositionEnum, TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.square import (
     AlternatingCornerSquareTemplate,
     AlternatingSquareTemplate,
 )
+from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
