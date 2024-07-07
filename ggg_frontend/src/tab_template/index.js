@@ -24,8 +24,7 @@ import { postExample, getExample } from '../components/download/test-backend-int
 
 /////////////////////////////////////////////////////////////
 
-let topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
-let topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
+let topLeftCornersOfPlaquettesInTemplateByLabel = {};
 
 /////////////////////////////////////////////////////////////
 
@@ -105,47 +104,31 @@ export default function TqecTemplates({ selectedTemplate }) {
 				//const templateData = responseData.templates.find(item => item.name === selectedTemplate);
 				//const instantiation = templateData.instantiation;
 				const instantiation = responseData.instantiation;
-				const guideHeight = instantiation.length;
-				// Initialize variable to store max inner array length, then
-				// iterate through the inner arrays to find the maximum length.
-				let guideLength = 0;
-				for (let i = 0; i < guideHeight; i++) {
-					const innerLength = instantiation[i].length;
-					if (innerLength > guideLength) {
-						guideLength = innerLength;
-					}
-				}
-                // Perform other actions with responseData
-				// Add workspace guidelines according to the dimensions in the received json data.
-				let y0 = guideTopLeftCorner.y;
-				topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
-				topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
-				while (y0 + plaquetteDy <= guideTopLeftCorner.y + 2*guideHeight) {
-					let x0 = guideTopLeftCorner.x;
-					while (x0 + plaquetteDx <= guideTopLeftCorner.x + 2*guideLength) {
+
+				topLeftCornersOfPlaquettesInTemplateByLabel = {};
+				// Iterate through the outer array
+				const style = new TextStyle({fontSize: 36, fill: 'red'});
+				for (let i = 0; i < instantiation.length; i++) {
+					// Get the current inner array
+					const innerArray = instantiation[i];
+				
+					// Iterate through the inner array
+					for (let j = 0; j < innerArray.length; j++) {
+						// Add workspace guidelines according to the dimensions in the received json data.
+						const y0 = guideTopLeftCorner.y + i * plaquetteDy;
+						const x0 = guideTopLeftCorner.x + j * plaquetteDx;
 						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
-						// Label square with 1 or 2.
-						const style = new TextStyle({fontSize: 36, fill: 'red'});
-						const digit_1 = new Text('1', style);
-						digit_1.x = x0*gridSize;
-						digit_1.y = y0*gridSize;
-						const target = {x: (x0 - guideTopLeftCorner.x)/plaquetteDx, y: (y0 - guideTopLeftCorner.y)/plaquetteDy}
-						const isType1 = responseData.tl_corners_1.some(item => item.x === target.x && item.y === target.y);
-						if (isType1) {
-							outline.addChild(digit_1);
-							topLeftCornersOfPlaquettesInTemplateWithLabel1.push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
-						}
-						const digit_2 = new Text('2', style);
-						digit_2.x = x0*gridSize;
-						digit_2.y = y0*gridSize;
-						const isType2 = responseData.tl_corners_2.some(item => item.x === target.x && item.y === target.y);
-						if (isType2) {
-							outline.addChild(digit_2);
-							topLeftCornersOfPlaquettesInTemplateWithLabel2.push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
-						}
-						x0 += plaquetteDx;
+						// Check if the value is 1 or 2
+						const label = innerArray[j];
+						let digit = new Text(label.toString(), style);
+						digit.x = x0*gridSize;
+						digit.y = y0*gridSize;
+						if (!topLeftCornersOfPlaquettesInTemplateByLabel.hasOwnProperty(label)) {
+						    topLeftCornersOfPlaquettesInTemplateByLabel[label] = []; // Initialize with an empty array
+						} 
+						topLeftCornersOfPlaquettesInTemplateByLabel[label].push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
+						outline.addChild(digit);
 					}
-					y0 += plaquetteDy;
 				}
             } else {
                 console.log('No data received yet.');
@@ -260,7 +243,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 				&& !(child instanceof PlaquetteType) ) {
 				const pos = child.topLeftCorner
 				console.log('INFO:', child.name, '  coords:', pos.x, pos.y )
-				const isType1 = topLeftCornersOfPlaquettesInTemplateWithLabel1.some(item => item.x === pos.x && item.y === pos.y);
+				const isType1 = topLeftCornersOfPlaquettesInTemplateByLabel[1].some(item => item.x === pos.x && item.y === pos.y);
 				if (isType1) {
 					if (childAssignedToLabel1 < 0) {
 						childAssignedToLabel1 = i;
@@ -269,7 +252,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 						console.error('Only one plaquette should be associated with label 1 in the template');
 					}
 				}
-				const isType2 = topLeftCornersOfPlaquettesInTemplateWithLabel2.some(item => item.x === pos.x && item.y === pos.y);
+				const isType2 = topLeftCornersOfPlaquettesInTemplateByLabel[2].some(item => item.x === pos.x && item.y === pos.y);
 				if (isType2) {
 					if (childAssignedToLabel2 < 0) {
 						childAssignedToLabel2 = i;
@@ -281,10 +264,10 @@ export default function TqecTemplates({ selectedTemplate }) {
 	        }
 	    }
 		// Fill all cells of template.
-		console.log(topLeftCornersOfPlaquettesInTemplateWithLabel1);
+		console.log(topLeftCornersOfPlaquettesInTemplateByLabel[1]);
 		if (childAssignedToLabel1 >= 0) {
 			const model = workspace.children[childAssignedToLabel1]
-			topLeftCornersOfPlaquettesInTemplateWithLabel1.forEach(tl => {
+			topLeftCornersOfPlaquettesInTemplateByLabel[1].forEach(tl => {
     			// If no child of type plaquette exist at that location, add plaquette.
 				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
 				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
@@ -296,10 +279,10 @@ export default function TqecTemplates({ selectedTemplate }) {
 				}
 			});
 		}
-		console.log(topLeftCornersOfPlaquettesInTemplateWithLabel2);
+		console.log(topLeftCornersOfPlaquettesInTemplateByLabel[2]);
 		if (childAssignedToLabel2 >= 0) {
 			const model = workspace.children[childAssignedToLabel2]
-			topLeftCornersOfPlaquettesInTemplateWithLabel2.forEach(tl => {
+			topLeftCornersOfPlaquettesInTemplateByLabel[2].forEach(tl => {
     			// If no child of type plaquette exist at that location, add plaquette.
 				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
 				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
