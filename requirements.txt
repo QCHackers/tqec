@@ -4,5 +4,7 @@ networkx
 cirq-core
 stim
 stimcirq
+pycollada
 Flask==3.0.0
 flask_cors==3.0.10
+python-sat[cryptosat]

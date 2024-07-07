@@ -1,18 +1,20 @@
 import typing as ty
 
 import numpy
+
 from tqec.exceptions import TQECException
-from tqec.enums import TemplateOrientation
 from tqec.position import Shape2D
 from tqec.templates.base import Template
-from tqec.templates.scale import Dimension
+from tqec.templates.enums import TemplateOrientation
+from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
 
 
 class AlternatingRectangleTemplate(Template):
     def __init__(
         self,
-        width: Dimension,
-        height: Dimension,
+        width: LinearFunction,
+        height: LinearFunction,
+        k: int = 2,
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
@@ -21,6 +23,7 @@ class AlternatingRectangleTemplate(Template):
         Args:
             width: rectangle width.
             height: rectangle height.
+            k: initial value for the scaling parameter.
             default_x_increment: default increment in the x direction between two plaquettes.
             default_y_increment: default increment in the y direction between two plaquettes.
 
@@ -28,12 +31,12 @@ class AlternatingRectangleTemplate(Template):
             The following code:
             .. code-block:: python
 
-                from tqec.templates.scale import Dimension
+                from tqec.templates.scale import LinearFunction
                 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
                 from tqec.display import display_template
 
-                width = Dimension(2, scaling_function=lambda k: 2*k)
-                height = Dimension(3, scaling_function=lambda k: 3*k)
+                width = LinearFunction(2, 0)
+                height = LinearFunction(3, 0)
                 template = AlternatingRectangleTemplate(width, height)
 
                 print("Non-scaled template:")
@@ -56,7 +59,7 @@ class AlternatingRectangleTemplate(Template):
                 1  2
         """
 
-        super().__init__(default_x_increment, default_y_increment)
+        super().__init__(k, default_x_increment, default_y_increment)
         self._width = width
         self._height = height
 
@@ -71,21 +74,6 @@ class AlternatingRectangleTemplate(Template):
         ret[even, odd] = p2
         ret[odd, even] = p2
         return ret
-
-    def scale_to(self, k: int) -> "AlternatingRectangleTemplate":
-        self._width.scale_to(k)
-        self._height.scale_to(k)
-        return self
-
-    @property
-    def shape(self) -> Shape2D:
-        return Shape2D(self._width.value, self._height.value)
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {
-            "width": self._width.to_dict(),
-            "height": self._height.to_dict(),
-        }
 
     @property
     def expected_plaquettes_number(self) -> int:
@@ -107,6 +95,14 @@ class AlternatingRectangleTemplate(Template):
         if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
+
+    @property
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(self._width),
+            PiecewiseLinearFunction.from_linear_function(self._height),
+        )
 
 
 @ty.final
@@ -163,7 +159,7 @@ class RawRectangleTemplate(Template):
                 2  2
                 1  4
         """
-        super().__init__(default_x_increment, default_y_increment)
+        super().__init__(0, default_x_increment, default_y_increment)
         if not indices or not indices[0]:
             raise TQECException(
                 f"You should provide at least one index to {self.__class__.__name__}."
@@ -207,15 +203,14 @@ class RawRectangleTemplate(Template):
                 "when calling this method."
             ) from ex
 
-    def scale_to(self, _: int) -> "RawRectangleTemplate":
-        return self
-
     @property
-    def shape(self) -> Shape2D:
-        return Shape2D(len(self._indices[0]), len(self._indices))
-
-    def to_dict(self) -> dict[str, ty.Any]:
-        return super().to_dict() | {"indices": self._indices}
+    def scalable_shape(self) -> Scalable2D:
+        """Returns a scalable version of the template shape."""
+        x, y = len(self._indices[0]), len(self._indices)
+        return Scalable2D(
+            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, x)),
+            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, y)),
+        )
 
     @property
     def expected_plaquettes_number(self) -> int:
