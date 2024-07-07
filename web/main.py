@@ -4,11 +4,26 @@ from flask import Flask, send_file, request, Response
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 @app.route("/")
 def root():
     return send_file("static/index.html")
+
+@app.route("/example", methods=['POST'])
+def receiveExample() -> Response:
+    _json = request.get_json()
+    print(f"Received: {_json}")
+    return Response(status=200)
+
+@app.route("/example", methods=['GET'])
+def sendExample() -> Response:
+    _json = {
+        "name": "example",
+        "value": 42
+    }
+    print(f"Sending: {_json}")
+    return Response(json.dumps(_json), status=200)
 
 
 if __name__ == "__main__":
@@ -29,3 +44,5 @@ def jsonToStim() -> Response:
     with open(filename, "w") as f:
         json.dump(_json, f)
     return send_file(filename)
+
+
