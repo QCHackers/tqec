@@ -29,7 +29,13 @@ let topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
 
 /////////////////////////////////////////////////////////////
 
-export default function TqecTemplates() {
+export default function TqecTemplates({ selectedTemplate }) {
+	useEffect(() => {
+		// Handle the change of the selected template here
+		console.log(`Selected template in TqecTemplates: ${selectedTemplate}`);
+		// Add your logic to handle the selected option change in TqecTemplates
+	}, [selectedTemplate]);
+
 	// Initialize the app
 	let app = useApp();
 
@@ -148,7 +154,8 @@ export default function TqecTemplates() {
 		// Using the promise approach:
 		// getExample returns the data (in json format) which are handled using promises
 		// like `.then()` and `.catch()` in the calling de.
-		getExample(backendURL)
+		const templateName = selectedTemplate;
+		getExample(backendURL, templateName)
 			.then(data => {
                 setResponseData(data); // Update state with response data
 				// Example: Display received data in an HTML element

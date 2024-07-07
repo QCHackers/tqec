@@ -19,7 +19,7 @@ export function postExample(url, data) {
     .catch((err) => { console.log(err); });
 }
 
-export function getExample(url) {
+export function getExample(url, templateName = '2x2k') {
   return axios({
     method: 'GET',
     url,
@@ -28,6 +28,9 @@ export function getExample(url) {
       'Data-Type': 'json',
     },
     responseType: 'json',
+    params: {
+      template_name: templateName
+    }
   })
     .then((response) => {
       console.log(response.status);

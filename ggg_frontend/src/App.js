@@ -2,6 +2,8 @@ import logo from './tqec_logo.svg';
 import './App.css';
 import {Stage} from '@pixi/react'
 import formattedInfoTabContent from './formattedInfoTab';
+import React, { useState } from 'react';
+import DropdownMenu from './dropdown';
 
 // Implementation of the workspace of the various tabs.
 import TqecLibrary from './tab_library'
@@ -35,6 +37,14 @@ const handleTabClick = (tabId) => {
 };
 
 function App() {
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleSelect = (value) => {
+    setSelectedOption(value);
+    console.log('Selected option:', value);
+    // You can also add other logic here based on the selected option
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -107,8 +117,14 @@ function App() {
 
         <div id="content4" className="Tab-content">
           {/*-- Content for Tab 4 -- */}
+          {/* Dropdown Menu Component */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <p className="Comment-paragraph">Select the template:</p>
+            <DropdownMenu onSelect={handleSelect} />
+          </div>
           <Stage width={1400} height={900} options={{backgroundColor: 'rgb(225, 193, 110)', antialias: true}}>
-            <TqecTemplates />
+            {/* Pass the selectedOption to TqecApp */}
+            <TqecTemplates selectedTemplate={selectedOption}/>
           </Stage>
 
           <pre id="result"></pre>

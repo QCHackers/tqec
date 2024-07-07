@@ -27,6 +27,7 @@ def receiveExample() -> Response:
 
 @app.route("/example", methods=['GET'])
 def sendExample(template_name: str = '2x2k') -> Response:
+    template_name = request.args.get('template_name', template_name)
     file_path = './web/template_' + template_name + '.json'
     with open(file_path, 'r') as file:
         _json = json.load(file)

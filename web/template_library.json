@@ -1,0 +1,32 @@
+{
+    "templates": [
+        {
+            "id": 0,
+            "name": null
+        },
+        {
+            "id": 1,
+            "name": "1x1",
+            "instantiation": [[1]],
+            "expected_plaquettes_number": 1
+        },
+        {
+            "id": 2,
+            "name": "2kx1",
+            "instantiation": [[1],[2],[1],[2]],
+            "expected_plaquettes_number": 2
+        },
+        {
+            "id": 3,
+            "name": "1x2k",
+            "instantiation": [[1,2,1,2]],
+            "expected_plaquettes_number": 2
+        },
+        {
+            "id": 4,
+            "name": "2kx2k",
+            "instantiation": [[1,2,1,2],[2,1,2,1],[1,2,1,2],[2,1,2,1]],
+            "expected_plaquettes_number": 2
+        }
+    ]
+}
