@@ -101,14 +101,28 @@ export default function TqecTemplates({ selectedTemplate }) {
         useEffect(() => {
             if (responseData) {
                 console.log('Using response data:', responseData);
+				// Select the template to fill.
+				//const templateData = responseData.templates.find(item => item.name === selectedTemplate);
+				//const instantiation = templateData.instantiation;
+				const instantiation = responseData.instantiation;
+				const guideHeight = instantiation.length;
+				// Initialize variable to store max inner array length, then
+				// iterate through the inner arrays to find the maximum length.
+				let guideLength = 0;
+				for (let i = 0; i < guideHeight; i++) {
+					const innerLength = instantiation[i].length;
+					if (innerLength > guideLength) {
+						guideLength = innerLength;
+					}
+				}
                 // Perform other actions with responseData
 				// Add workspace guidelines according to the dimensions in the received json data.
 				let y0 = guideTopLeftCorner.y;
 				topLeftCornersOfPlaquettesInTemplateWithLabel1 = [];
 				topLeftCornersOfPlaquettesInTemplateWithLabel2 = [];
-				while (y0 + plaquetteDy <= guideTopLeftCorner.y + 2*responseData.height) {
+				while (y0 + plaquetteDy <= guideTopLeftCorner.y + 2*guideHeight) {
 					let x0 = guideTopLeftCorner.x;
-					while (x0 + plaquetteDx <= guideTopLeftCorner.x + 2*responseData.length) {
+					while (x0 + plaquetteDx <= guideTopLeftCorner.x + 2*guideLength) {
 						drawSquareFromTopLeft(outline, {x: x0*gridSize, y: y0*gridSize}, plaquetteDx*gridSize, plaquetteDy*gridSize)
 						// Label square with 1 or 2.
 						const style = new TextStyle({fontSize: 36, fill: 'red'});
