@@ -101,9 +101,8 @@ export default function TqecTemplates({ selectedTemplate }) {
             if (responseData) {
                 console.log('Using response data:', responseData);
 				// Select the template to fill.
-				//const templateData = responseData.templates.find(item => item.name === selectedTemplate);
-				//const instantiation = templateData.instantiation;
-				const instantiation = responseData.instantiation;
+				const templateData = responseData.templates.find(item => item.name === selectedTemplate);
+				const instantiation = templateData.instantiation;
 
 				topLeftCornersOfPlaquettesInTemplateByLabel = {};
 				// Iterate through the outer array
@@ -151,7 +150,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 		// Using the promise approach:
 		// getExample returns the data (in json format) which are handled using promises
 		// like `.then()` and `.catch()` in the calling de.
-		const templateName = selectedTemplate;
+		const templateName = 'library';
 		getExample(backendURL, templateName)
 			.then(data => {
                 setResponseData(data); // Update state with response data
