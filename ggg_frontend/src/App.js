@@ -37,12 +37,15 @@ const handleTabClick = (tabId) => {
 };
 
 function App() {
+  // Variable and method to react to a change of state.
+  // In this case to the dropdown menu in tab 4, selecting
+  // which template the user wants to fill.
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // Expected behavior when the template is selected in tab 4.
   const handleSelect = (value) => {
     setSelectedOption(value);
-    console.log('Selected option:', value);
-    // You can also add other logic here based on the selected option
+    console.log('INFO: from App.js, selected option:', value);
   };
 
   return (
@@ -55,7 +58,7 @@ function App() {
         <button className="Tab-button" id="tab1" onClick={() => handleTabClick(1)}>Info</button>
         <button className="Tab-button" id="tab2" onClick={() => handleTabClick(2)}>Compose library</button>
         <button className="Tab-button" id="tab3" onClick={() => handleTabClick(3)}>Create code</button>
-        <button className="Tab-button" id="tab4" onClick={() => handleTabClick(4)}>Populate templates</button>
+        <button className="Tab-button" id="tab4" onClick={() => handleTabClick(4)}>Populate template</button>
         {/* -- Add more tabs as needed -- */}
       </div>
 
