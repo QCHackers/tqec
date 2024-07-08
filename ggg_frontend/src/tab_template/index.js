@@ -68,10 +68,6 @@ export default function TqecTemplates({ selectedTemplate }) {
 	outline.lineStyle(2, 'lightcoral');
 	workspace.addChild(outline);
 
-	// Message that will be communicated to the backend.
-	// It is expected to be a filled template.
-	let message = '';
-
 /////////////////////////////////////////////////////////////
 
 	// Add qubit positions to the workspace
@@ -130,7 +126,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 					}
 				}
             } else {
-                console.log('No data received yet.');
+                console.warn('WARNING: No data received yet.');
             }
         }, [responseData]); // Trigger effect when responseData changes
     }
@@ -159,7 +155,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 				resultDiv.textContent = JSON.stringify(data, null, 2);
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
+                console.error('ERROR while fetching data:', error);
             });
 	});
 
@@ -189,6 +185,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 		//const numPlaquettes = savedPlaquettes.length;
 		savedPlaquettes.forEach((plaq, index) => {
 			if (plaq.name !== 'WIP plaquette') {
+				console.log('INFO: plaquette name:', plaq.name)
 				let qubits = [];
 				plaq.qubits.forEach((q) => {
 					const qubit = new Qubit(q.globalX, q.globalY, q.Radius);
@@ -229,11 +226,12 @@ export default function TqecTemplates({ selectedTemplate }) {
     // Confirm and fully populate the template.
 	const fillButton = button('Fill the template', gridSize, 15*gridSize, 'white', 'black');
 	workspace.addChild(fillButton);
+	let childAssignedByLabel = {};
 
     fillButton.on('click', (_e) => {
 		// Search among the children the Plaquettes.
 		// Identify the plaquette occupy the cell with label 1 and 2.
-		let childAssignedByLabel = {};
+		let childAssignedByLabel_ = {};
 	    for (let i = 0; i < workspace.children.length; i++) {
 	        const child = workspace.children[i];
 	        if (child instanceof Plaquette
@@ -243,15 +241,16 @@ export default function TqecTemplates({ selectedTemplate }) {
 				Object.entries(topLeftCornersOfPlaquettesInTemplateByLabel).forEach(([label, array]) => {
 					const doesLabelMatch = array.some(item => item.x === pos.x && item.y === pos.y);
     				if (doesLabelMatch) {
-						if (!childAssignedByLabel.hasOwnProperty(label)) {
-							childAssignedByLabel[label] = i;
+						if (!childAssignedByLabel_.hasOwnProperty(label)) {
+							childAssignedByLabel_[label] = i;
 						} else {
-							console.error('Only one plaquette should be associated with label', label, 'in the template');
+							console.error('ERROR: Only one plaquette should be associated with label', label, 'in the template');
 						}
 					}
 				});
 	        }
 	    }
+		childAssignedByLabel = childAssignedByLabel_;
 		// Fill all cells of template.
 		Object.entries(childAssignedByLabel).forEach(([label, child_id]) => {
 			const model = workspace.children[child_id]
@@ -283,7 +282,10 @@ export default function TqecTemplates({ selectedTemplate }) {
 		}`;
 		backendURL += url;
 
-		const payload = { name: 'post_example', value: '3.14', message: message};
+		const payload = { name: 'filled_' + selectedTemplate, plaquettes: []};
+		Object.entries(childAssignedByLabel).forEach(([label, child_id]) => {
+		    payload.plaquettes.push({ label: parseInt(label), pname: workspace.children[child_id].name });
+		});
 		postExample(backendURL, payload);
 	});
 

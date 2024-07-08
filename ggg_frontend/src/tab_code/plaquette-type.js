@@ -3,13 +3,13 @@
 import { Container } from 'pixi.js'
 
 // From the implementation of the tab 'library'
-import { Qubit } from '../tab_library/qubit';
 import Position from '../tab_library/position';
 import Plaquette from '../tab_library/plaquette';
 
 // From the main src folder
 import { GRID_SIZE_CODE_WORKSPACE, GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE } from '../constants';
 import { GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE } from '../constants';
+import { copyPlaquette } from '../utils/plaquette-manipulation';
 
 /////////////////////////////////////////////////////////////
 
@@ -104,7 +104,7 @@ export default class PlaquetteType extends Plaquette {
         is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE - this.base_translate_vector.y) >= 0;
 		// FIXME: Check that the cell is still "free".
         if ( is_valid_translation === false ) {
-            console.log('WARNING: Wrong translation for plaquette -> rejected')
+            console.warn('WARNING: Wrong translation for plaquette -> rejected')
             // Reset the position of the original plaquette
             this.x = 0;
             this.y = 0;
@@ -113,20 +113,11 @@ export default class PlaquetteType extends Plaquette {
 
         // Check that the parent is a workspace, either code or template.
         if (!(this.parent instanceof Container)) {
-            console.log('ERROR: The parent of a PlaquetteType should be a Container');
+            console.error('ERROR: The parent of a PlaquetteType should be a Container');
             return;
         }
         // Create a copy of the plaquette at the current position.
-        let qubits_of_copy = []
-		this.qubits.forEach((q) => {
-            const qubit = new Qubit(q.globalX + translate_x, q.globalY + translate_y, q.radius);
-			qubit.name = `Q(${String(qubit.globalX/GRID_SIZE - GUIDE_TOP_LEFT_CORNER.x).padStart(2, ' ')},${String(qubit.globalY/GRID_SIZE - GUIDE_TOP_LEFT_CORNER.y).padStart(2, ' ')})`;
-            qubits_of_copy.push(qubit);
-        });
-        const copy = new Plaquette(qubits_of_copy, this.color);
-	    copy._createConvexHull(0);
-        copy.topLeftCorner = {x: translate_x/GRID_SIZE + this.topLeftCorner.x - GUIDE_TOP_LEFT_CORNER.x,
-                              y: translate_y/GRID_SIZE + this.topLeftCorner.y - GUIDE_TOP_LEFT_CORNER.y}
+        const copy = copyPlaquette(this, {x: translate_x/GRID_SIZE, y: translate_y/GRID_SIZE}, GRID_SIZE, GUIDE_TOP_LEFT_CORNER);
         // Add to the parent workspace.
         if (this.add_at >= 0) {
             this.parent.addChildAt(copy, this.add_at);
@@ -141,17 +132,16 @@ export default class PlaquetteType extends Plaquette {
         if (this.parent.name !== 'workspace-code') {
             return;
         }
-        // Update the compact representation of teh QEC code
+        // Update the compact representation of the QEC code.
         const codesummary = document.getElementById('codeSummary');
         let message = codesummary.value.split('\n');
         let lines = message;
-        console.log(lines)
 		// Recall that plaquette names are like "plaquette 12", starting from "plaquette 1"
 		const plaquette_id = parseInt(this.name.match(/\d+/)[0]);
         const col = (translate_x/GRID_SIZE - this.base_translate_vector.x) / plaquetteDx;
         const row = (translate_y/GRID_SIZE - this.base_translate_vector.y) / plaquetteDy;
         // TODO: Here we assume that there is a single space before every plaquette id is left padded with spaces
-        console.log(row, col)
+        console.log('INFO from plaquette-type:', row, col)
         let modifiedLine = lines[row].substring(0, 3*col) + `${String(plaquette_id).padStart(3, ' ')}` + lines[row].substring(3*col+3);
         lines[row] = modifiedLine;
         codesummary.value = lines.join('\n');
