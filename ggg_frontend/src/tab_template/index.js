@@ -221,7 +221,6 @@ export default function TqecTemplates({ selectedTemplate }) {
 		if (workspace.children[num_background_children] instanceof Plaquette
 			&& !(workspace.children[num_background_children] instanceof PlaquetteType) ) {
 			workspace.removeChildAt(num_background_children);
-			// FIXME: correct the compact representation of the code!
 		}
 	});
 
@@ -234,66 +233,39 @@ export default function TqecTemplates({ selectedTemplate }) {
     fillButton.on('click', (_e) => {
 		// Search among the children the Plaquettes.
 		// Identify the plaquette occupy the cell with label 1 and 2.
-		let childAssignedToLabel1 = -1;
-		let childAssignedToLabel2 = -1;
+		let childAssignedByLabel = {};
 	    for (let i = 0; i < workspace.children.length; i++) {
 	        const child = workspace.children[i];
 	        if (child instanceof Plaquette
 				&& !(child instanceof PlaquetteType) ) {
 				const pos = child.topLeftCorner
 				console.log('INFO:', child.name, '  coords:', pos.x, pos.y )
-				const isType1 = topLeftCornersOfPlaquettesInTemplateByLabel[1].some(item => item.x === pos.x && item.y === pos.y);
-				if (isType1) {
-					if (childAssignedToLabel1 < 0) {
-						childAssignedToLabel1 = i;
-						console.log('INFO: type 1 associated with child ', i)
-					} else {
-						console.error('Only one plaquette should be associated with label 1 in the template');
+				Object.entries(topLeftCornersOfPlaquettesInTemplateByLabel).forEach(([label, array]) => {
+					const doesLabelMatch = array.some(item => item.x === pos.x && item.y === pos.y);
+    				if (doesLabelMatch) {
+						if (!childAssignedByLabel.hasOwnProperty(label)) {
+							childAssignedByLabel[label] = i;
+						} else {
+							console.error('Only one plaquette should be associated with label', label, 'in the template');
+						}
 					}
-				}
-				const isType2 = topLeftCornersOfPlaquettesInTemplateByLabel[2].some(item => item.x === pos.x && item.y === pos.y);
-				if (isType2) {
-					if (childAssignedToLabel2 < 0) {
-						childAssignedToLabel2 = i;
-						console.log('INFO: type 2 associated with child ', i)
-					} else {
-						console.error('Only one plaquette should be associated with label 2 in the template');
-					}
-				}
+				});
 	        }
 	    }
 		// Fill all cells of template.
-		console.log(topLeftCornersOfPlaquettesInTemplateByLabel[1]);
-		if (childAssignedToLabel1 >= 0) {
-			const model = workspace.children[childAssignedToLabel1]
-			topLeftCornersOfPlaquettesInTemplateByLabel[1].forEach(tl => {
+		Object.entries(childAssignedByLabel).forEach(([label, child_id]) => {
+			const model = workspace.children[child_id]
+			topLeftCornersOfPlaquettesInTemplateByLabel[label].forEach(tl => {
     			// If no child of type plaquette exist at that location, add plaquette.
 				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
 				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
 				if (!existPlaquette) {
-					// Add plaquette.
 					let translate = {x: tl.x - model.topLeftCorner.x, y: tl.y - model.topLeftCorner.y}; // in GRID_SIZE
 					const copy = copyPlaquette(model, translate, GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE)
             		workspace.addChild(copy);
 				}
 			});
-		}
-		console.log(topLeftCornersOfPlaquettesInTemplateByLabel[2]);
-		if (childAssignedToLabel2 >= 0) {
-			const model = workspace.children[childAssignedToLabel2]
-			topLeftCornersOfPlaquettesInTemplateByLabel[2].forEach(tl => {
-    			// If no child of type plaquette exist at that location, add plaquette.
-				const existPlaquette = workspace.children.some(child => child instanceof Plaquette && child.topLeftCorner.x === tl.x && child.topLeftCorner.y === tl.y);
-				console.log('INFO: top-left ', tl, ' --> exist plaquette?', existPlaquette);
-				if (!existPlaquette) {
-					// Add plaquette
-					let translate = {x: tl.x - model.topLeftCorner.x, y: tl.y - model.topLeftCorner.y};
-					console.log('INFO: translate = ', translate)
-					const copy = copyPlaquette(model, translate, GRID_SIZE_TEMPLATE_WORKSPACE, GUIDE_TOP_LEFT_CORNER_TEMPLATE_WORKSPACE)
-            		workspace.addChild(copy);
-				}
-			});
-		}
+		});
 	});
 
 /////////////////////////////////////////////////////////////
