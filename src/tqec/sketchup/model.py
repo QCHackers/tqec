@@ -45,6 +45,9 @@ class InstancePosition:
             abs(i - j) < 1e-12 for i, j in zip(self.to_tuple(), other.to_tuple())
         )
 
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y}, {self.z})"
+
 
 @dataclass(frozen=True)
 class BlockInstance:
@@ -251,12 +254,12 @@ class SketchUpModel:
                 block_type = BlockType.from_string(library_block.name)
                 # Get instance transformation
                 transformation = Transformation.from_4d_affine_matrix(node.matrix)
-                # NOTE: Currently rotation is not allowed
-                # However, there is template block with non-indentity rotation
-                # in the template file, so we just ignore the rotation check
-                # if not np.allclose(transformation.rotation, np.eye(3), atol=1e-9):
-                #     raise TQECException("Rotation of library blocks is not allowed.")
                 position = InstancePosition(*transformation.translation)
+                # NOTE: Currently rotation is not allowed
+                if not np.allclose(transformation.rotation, np.eye(3), atol=1e-9):
+                    raise TQECException(
+                        f"There is a non-identity rotation for {block_type.value} block at position {position}."
+                    )
                 if block_type.is_connector:
                     scale_index = block_type.value.index("o")
                     scale = transformation.scale[scale_index]
