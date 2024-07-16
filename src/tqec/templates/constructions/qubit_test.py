@@ -2,12 +2,12 @@ from pprint import pprint
 
 import pytest
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.constructions.qubit import (
     QubitRectangleTemplate,
     QubitSquareTemplate,
 )
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
