@@ -10,6 +10,19 @@ from tqec.exceptions import TQECException
 
 @dataclass(frozen=True)
 class Interval:
+    """A subset of the mathematical space representing real numbers: R.
+
+    This class represents the mathematical object called interval. It stores
+    two floating-point numbers representing the bounds of the interval as
+    well as two booleans (one for each bound) to know if the corresponding
+    bound is included in the interval or excluded from it.
+
+    Raises:
+        TQECException: if any bound is NaN.
+        TQECException: if the provided `start` value is strictly larger than
+            the provided `end` value.
+    """
+
     start: float
     end: float
     start_excluded: bool = False
@@ -24,18 +37,48 @@ class Interval:
             )
 
     def _is_over_start(self, value: float) -> bool:
+        """Compare the provided value to `self.start`, taking into account
+        `self.start_excluded`.
+
+        This method checks if the provided value is contained in the interval that
+        has the same `start` boundary as self but with +inf as end boundary.
+
+        Args:
+            value: the value to compare to start.
+
+        Returns:
+            True if `Interval(self.start, float("inf"), self.start_excluded,
+            True).contains(value)`.
+        """
         return self.start < value if self.start_excluded else self.start <= value
 
     def _is_below_end(self, value: float) -> bool:
+        """Compare the provided value to `self.end`, taking into account
+        `self.end_excluded`.
+
+        This method checks if the provided value is contained in the interval that
+        has the same `end` boundary as self but with -inf as start boundary.
+
+        Args:
+            value: the value to compare to end.
+
+        Returns:
+            True if `Interval(float("-inf"), self.end, True,
+            self.end_excluded).contains(value)`.
+        """
         return value < self.end if self.end_excluded else value <= self.end
 
     def contains(self, value: float) -> bool:
+        """Returns `True` if `self` contains the provided value, else `False`."""
         return self._is_over_start(value) and self._is_below_end(value)
 
     def overlaps_with(self, other: Interval) -> bool:
+        """Returns `True` if `self` overlaps with the provided interval, else `False`."""
         return not self.is_disjoint(other)
 
     def is_disjoint(self, other: Interval) -> bool:
+        """Returns `True` if `self` does not overlap with the provided interval,
+        else `False`."""
         other_end_lt_self_start = other.end < self.start or (
             other.end == self.start and (other.end_excluded or self.start_excluded)
         )
@@ -45,9 +88,11 @@ class Interval:
         return other_end_lt_self_start or self_end_lt_other_start
 
     def is_empty(self) -> bool:
+        """Returns `True` if `self` is the empty interval, else `False`."""
         return self.start == self.end and (self.start_excluded or self.end_excluded)
 
     def intersection(self, other: Interval) -> Interval:
+        """Compute and return the intersection of `self` and `other`."""
         if self.is_disjoint(other):
             return EMPTY_INTERVAL
 
@@ -68,9 +113,11 @@ class Interval:
         )
 
     def _union_overlapping(self, other: Interval) -> Interval:
+        """Compute and return the union of `self` and `other` when they overlap."""
         return Interval(min(self.start, other.start), max(self.end, other.end))
 
     def union(self, other: Interval) -> Intervals:
+        """Compute and return the union of `self` and `other`."""
         if self.is_disjoint(other):
             return Intervals([self, other])
 
@@ -95,6 +142,7 @@ class Interval:
         )
 
     def complement(self) -> Intervals:
+        """Get the complement of the interval, defined as R \\ `self`."""
         return Intervals(
             [
                 Interval(
@@ -165,12 +213,15 @@ class Intervals:
                 i += 1
 
     def contains(self, value: float) -> bool:
+        """Returns `True` if `self` contains the provided value, else `False`."""
         return any(interval.contains(value) for interval in self.intervals)
 
     def is_empty(self) -> bool:
+        """Returns `True` if `self` is the empty interval, else `False`."""
         return len(self.intervals) == 0
 
     def intersection(self, other: Interval | Intervals) -> Intervals:
+        """Compute and return the intersection of `self` and `other`."""
         if isinstance(other, Interval):
             return Intervals(
                 [interval.intersection(other) for interval in self.intervals]
@@ -182,6 +233,7 @@ class Intervals:
         )
 
     def union(self, other: Interval | Intervals) -> Intervals:
+        """Compute and return the union of `self` and `other`."""
         if isinstance(other, Interval):
             other = Intervals([other])
         all_intervals = sorted(self.intervals + other.intervals, key=lambda a: a.start)
@@ -194,6 +246,7 @@ class Intervals:
         return Intervals(merged_intervals)
 
     def complement(self) -> Intervals:
+        """Get the complement of the interval, defined as R \\ `self`."""
         if self.is_empty():
             return R_intervals
         intervals: list[Interval] = [
