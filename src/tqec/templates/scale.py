@@ -220,17 +220,11 @@ def _get_minmax_on_interval(
 
 def intervals_from_separators(separators: list[float]) -> ty.Iterator[Interval]:
     separators_with_inf = [float("-inf"), *separators, float("+inf")]
-    yield Interval(
-        separators_with_inf[0],
-        separators_with_inf[1],
-        start_excluded=True,
-        end_excluded=True,
-    )
-    for i in range(1, len(separators_with_inf) - 1):
+    for i in range(len(separators_with_inf) - 1):
         yield Interval(
             separators_with_inf[i],
             separators_with_inf[i + 1],
-            start_excluded=False,
+            start_excluded=(i == 0),  # Exclude the first start that is float("-inf")
             end_excluded=True,
         )
 
@@ -582,7 +576,7 @@ class ScalableBoundingBox:
                 f"a valid input. Valid inputs are {self.possible_inputs} and the "
                 f"computed width ({self.width}) is negative on {negative_width_inputs}."
             )
-        negative_height_inputs = (self.height <= 0).intersection(self.possible_inputs)
+        negative_height_inputs = (self.height < 0).intersection(self.possible_inputs)
         if not negative_height_inputs.is_empty():
             raise TQECException(
                 "Cannot create a bounding box that would have a negative height on "
