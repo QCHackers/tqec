@@ -9,37 +9,94 @@ from math import floor
 from tqec.exceptions import TQECException
 from tqec.position import Shape2D
 from tqec.templates.enums import Axis
-from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
+from tqec.templates.interval import (
+    EMPTY_INTERVAL,
+    Interval,
+    Intervals,
+    R_interval,
+    R_intervals,
+)
 
 
 @dataclass(frozen=True)
 class LinearFunction:
+    """Represents a linear function.
+
+    A linear function is fully described with a slope and an offset.
+    """
+
     slope: float = 1.0
     offset: float = 0.0
 
     def __call__(self, x: float) -> float:
+        """Evaluate the linear function on a given input.
+
+        Args:
+            x: the input to evaluate the linear function on.
+
+        Returns:
+            the image of x.
+        """
         return self.slope * x + self.offset
 
     def __add__(self, other: LinearFunction | int | float) -> LinearFunction:
+        """Add two linear functions and returns the result.
+
+        This method does not modify self in-place.
+
+        Args:
+            other: the right-hand side to add to self.
+
+        Returns:
+            a new linear function instance representing `self + other`.
+        """
         if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope + other.slope, self.offset + other.offset)
 
     def __sub__(self, other: LinearFunction | int | float) -> LinearFunction:
+        """Subtract two linear functions and returns the result.
+
+        This method does not modify self in-place.
+
+        Args:
+            other: the right-hand side to subtract to self.
+
+        Returns:
+            a new linear function instance representing `self - other`.
+        """
         if isinstance(other, (int, float)):
             other = LinearFunction(0, other)
         return LinearFunction(self.slope - other.slope, self.offset - other.offset)
 
     def __mul__(self, other: int | float) -> LinearFunction:
+        """Multiply a linear function by a scalar.
+
+        Args:
+            other: the scalar that should multiply self.
+
+        Returns:
+            a copy of `self`, scaled by the provided `other`.
+        """
         return self.__rmul__(other)
 
     def __rmul__(self, other: int | float) -> LinearFunction:
+        """Multiply a linear function by a scalar.
+
+        Args:
+            other: the scalar that should multiply self.
+
+        Returns:
+            a copy of `self`, scaled by the provided `other`.
+        """
         return LinearFunction(other * self.slope, other * self.offset)
 
     def intersection(self, other: LinearFunction) -> float | None:
         """Compute the intersection between two linear functions.
+
         Args:
             other: the `LinearFunction` instance to intersect with `self`.
+
         Returns:
             If they intersect, return x such that `self(x) = other(x)`.
             Otherwise, return None.
@@ -50,25 +107,52 @@ class LinearFunction:
         return -(other.offset - self.offset) / (other.slope - self.slope)
 
     def __lt__(self, other: LinearFunction | float) -> Interval:
+        """Compute the interval on which `self < other`.
+
+        Args:
+            other: the `LinearFunction` instance to compare to `self`.
+
+        Returns:
+            the interval on which `self < other` is verified.
+        """
         other = LinearFunction._from(other)
         intersection = self.intersection(other)
         if intersection is None:
-            if self(0) < other(0):
-                return Interval(float("-inf"), float("inf"))
-            else:
-                return EMPTY_INTERVAL
+            return R_interval if self(0) < other(0) else EMPTY_INTERVAL
 
         before_intersection = int(floor(intersection)) - 1
         if self(before_intersection) < other(before_intersection):
-            return Interval(float("-inf"), intersection)
+            return Interval(
+                float("-inf"), intersection, start_excluded=True, end_excluded=True
+            )
         else:
-            return Interval(intersection, float("inf"))
+            return Interval(
+                intersection, float("inf"), start_excluded=True, end_excluded=True
+            )
 
     def __le__(self, other: LinearFunction | float) -> Interval:
+        """Compute the interval on which `self <= other`.
+
+        Args:
+            other: the `LinearFunction` instance to compare to `self`.
+
+        Returns:
+            the interval on which `self <= other` is verified.
+        """
         other = LinearFunction._from(other)
-        if self == other:
-            return Interval(float("-inf"), float("inf"))
-        return self < other
+        intersection = self.intersection(other)
+        if intersection is None:
+            return R_interval if self(0) <= other(0) else EMPTY_INTERVAL
+
+        before_intersection = int(floor(intersection)) - 1
+        if self(before_intersection) <= other(before_intersection):
+            return Interval(
+                float("-inf"), intersection, start_excluded=True, end_excluded=False
+            )
+        else:
+            return Interval(
+                intersection, float("inf"), start_excluded=False, end_excluded=True
+            )
 
     @staticmethod
     def _from(obj: LinearFunction | float) -> LinearFunction:
@@ -136,8 +220,19 @@ def _get_minmax_on_interval(
 
 def intervals_from_separators(separators: list[float]) -> ty.Iterator[Interval]:
     separators_with_inf = [float("-inf"), *separators, float("+inf")]
-    for i in range(len(separators_with_inf) - 1):
-        yield Interval(separators_with_inf[i], separators_with_inf[i + 1])
+    yield Interval(
+        separators_with_inf[0],
+        separators_with_inf[1],
+        start_excluded=True,
+        end_excluded=True,
+    )
+    for i in range(1, len(separators_with_inf) - 1):
+        yield Interval(
+            separators_with_inf[i],
+            separators_with_inf[i + 1],
+            start_excluded=False,
+            end_excluded=True,
+        )
 
 
 @dataclass(frozen=True)
@@ -412,9 +507,7 @@ class PiecewiseLinearFunction:
         for interval, function in zip(
             intervals_from_separators(self.separators), self.functions
         ):
-            piecewise_representations.append(
-                f"[{interval.start}  {function}  {interval.end})"
-            )
+            piecewise_representations.append(f"{function} on {interval}")
         return (
             self.__class__.__name__ + "(" + ", ".join(piecewise_representations) + ")"
         )
@@ -479,10 +572,10 @@ class ScalableInterval:
 class ScalableBoundingBox:
     ul: Scalable2D
     br: Scalable2D
-    possible_inputs: Intervals = R_interval
+    possible_inputs: Intervals = R_intervals
 
     def __post_init__(self):
-        negative_width_inputs = (self.width <= 0).intersection(self.possible_inputs)
+        negative_width_inputs = (self.width < 0).intersection(self.possible_inputs)
         if not negative_width_inputs.is_empty():
             raise TQECException(
                 "Cannot create a bounding box that would have a negative width on "

@@ -13,7 +13,7 @@ from tqec.templates.enums import (
     TemplateOrientation,
     TemplateRelativePositionEnum,
 )
-from tqec.templates.interval import Intervals, Rplus_interval
+from tqec.templates.interval import Intervals, Rplus_interval, Rplus_intervals
 from tqec.templates.scale import (
     LinearFunction,
     PiecewiseLinearFunction,
@@ -391,7 +391,7 @@ class ComposedTemplate(Template):
             # tshape: template shape
             tshape = self._templates[tid].scalable_shape
             bounding_boxes[tid] = ScalableBoundingBox(
-                tul, (tul + tshape).simplify_positive(), Rplus_interval
+                tul, (tul + tshape).simplify_positive(), Rplus_intervals
             )
         return bounding_boxes
 

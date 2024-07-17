@@ -1,10 +1,11 @@
+import itertools
 import random
 import sys
 
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.templates.interval import Interval, Intervals
+from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals
 
 
 def test_interval_creation():
@@ -14,7 +15,7 @@ def test_interval_creation():
     Interval(0, float("inf"))
     Interval(0, 10**100)
 
-    error_message = r"^Cannot create an interval with [^ ]+ <= [^\.]+.$"
+    error_message = r"^Cannot create an interval with start=[^ ]+ > end=[^\.]+.$"
     with pytest.raises(TQECException, match=error_message):
         Interval(1, 0)
     with pytest.raises(TQECException, match=error_message):
@@ -40,14 +41,19 @@ def test_interval_is_empty():
     assert Interval(0, 0).is_empty()
     assert Interval(float("-inf"), float("-inf")).is_empty()
     assert not Interval(float("-inf"), float("inf")).is_empty()
+    assert EMPTY_INTERVAL.is_empty()
+    assert not Interval(0, 0, start_excluded=False, end_excluded=False).is_empty()
 
 
 def test_random_interval_is_empty():
     for f in (_float() for _ in range(100)):
-        assert Interval(f, f).is_empty()
+        assert Interval(f, f, start_excluded=True, end_excluded=True).is_empty()
+        assert Interval(f, f, start_excluded=False, end_excluded=True).is_empty()
+        assert Interval(f, f, start_excluded=True, end_excluded=False).is_empty()
+        assert not Interval(f, f, start_excluded=False, end_excluded=False).is_empty()
 
 
-def test_interval_emty_contains():
+def test_interval_empty_contains():
     interval = Interval(0, 0)
     assert not interval.contains(0)
     assert not interval.contains(-0)
@@ -77,6 +83,16 @@ def test_interval_overlaps():
     assert not b.is_disjoint(a)
     assert a.intersection(b) == b.intersection(a) == Interval(1, 2)
     assert a.union(b) == b.union(a) == Intervals([Interval(0, 3)])
+
+    for start_excluded, end_excluded in itertools.product((True, False), (True, False)):
+        a = Interval(0, 1, start_excluded=False, end_excluded=end_excluded)
+        b = Interval(1, 2, start_excluded=start_excluded, end_excluded=True)
+        are_disjoint = end_excluded or start_excluded
+
+        assert a.is_disjoint(b) == are_disjoint
+        assert b.is_disjoint(a) == are_disjoint
+        assert a.overlaps_with(b) == (not are_disjoint)
+        assert b.overlaps_with(a) == (not are_disjoint)
 
 
 def test_interval_not_overlapping():
@@ -117,6 +133,21 @@ def test_intervals_creation():
         match=r"Cannot build an Intervals instance with overlapping intervals\.",
     ):
         Intervals([Interval(0, 3), Interval(-2, 4)])
+
+    # (False, False) results in overlapping intervals, which does not satisfy the
+    # Intervals pre-conditions.
+    for start_excluded, end_excluded in [(True, True), (True, False), (False, True)]:
+        intervals = Intervals(
+            [
+                Interval(
+                    i, i + 1, start_excluded=start_excluded, end_excluded=end_excluded
+                )
+                for i in range(10)
+            ]
+        )
+        can_be_merged = not (start_excluded and end_excluded)
+        expected_intervals = 1 if can_be_merged else 10
+        assert len(intervals.intervals) == expected_intervals
 
 
 def test_intervals_contains():

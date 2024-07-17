@@ -1,6 +1,13 @@
 import pytest
 
-from tqec.templates.interval import Interval, Intervals, R_interval, Rplus_interval
+from tqec.templates.interval import (
+    Interval,
+    Intervals,
+    R_interval,
+    R_intervals,
+    Rplus_interval,
+    Rplus_intervals,
+)
 from tqec.templates.scale import (
     LinearFunction,
     PiecewiseLinearFunction,
@@ -41,10 +48,16 @@ def test_intersection():
 def test_linear_function_comparison():
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
 
-    assert (a < b) == Interval(4.0, float("inf"))
+    assert (a < b) == Interval(
+        4.0, float("inf"), start_excluded=True, end_excluded=True
+    )
     assert (a < a).is_empty()
-    assert (a <= b) == Interval(4.0, float("inf"))
-    assert (a <= a) == Interval(float("-inf"), float("inf"))
+    assert (a <= b) == Interval(
+        4.0, float("inf"), start_excluded=False, end_excluded=True
+    )
+    assert (a <= a) == Interval(
+        float("-inf"), float("inf"), start_excluded=True, end_excluded=True
+    )
 
 
 def test_from_linear_function():
@@ -180,10 +193,16 @@ def test_piecewiselinear_function_comparison():
         PiecewiseLinearFunction.from_linear_function(b),
     )
 
-    assert (a_pwl < b_pwl) == Intervals([Interval(4.0, float("inf"))])
+    assert (a_pwl < b_pwl) == Intervals(
+        [Interval(4.0, float("inf"), start_excluded=True, end_excluded=True)]
+    )
     assert (a_pwl < a_pwl).is_empty()
-    assert (a_pwl <= b_pwl) == Intervals([Interval(4.0, float("inf"))])
-    assert (a_pwl <= a_pwl) == Intervals([Interval(float("-inf"), float("inf"))])
+    assert (a_pwl <= b_pwl) == Intervals(
+        [Interval(4.0, float("inf"), start_excluded=False, end_excluded=True)]
+    )
+    assert (a_pwl <= a_pwl) == Intervals(
+        [Interval(float("-inf"), float("inf"), start_excluded=True, end_excluded=True)]
+    )
 
     a = LinearFunction(-1, -2)
     b = LinearFunction(1, -2)
@@ -193,9 +212,14 @@ def test_piecewiselinear_function_comparison():
     ab_pwl = PiecewiseLinearFunction([0], [a, b])
     cd_pwl = PiecewiseLinearFunction([0], [c, d])
 
-    assert (ab_pwl < cd_pwl) == Intervals([Interval(-2, 2)])
+    assert (ab_pwl < cd_pwl) == Intervals(
+        [Interval(-2, 2, start_excluded=True, end_excluded=True)]
+    )
     assert (cd_pwl < ab_pwl) == Intervals(
-        [Interval(float("-inf"), -2), Interval(2, float("inf"))]
+        [
+            Interval(float("-inf"), -2, start_excluded=True, end_excluded=True),
+            Interval(2, float("inf"), start_excluded=True, end_excluded=True),
+        ]
     )
 
 
@@ -211,7 +235,7 @@ def test_scalable_interval_non_empty_on_colinear():
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
     )
-    assert sint.non_empty_on() == R_interval
+    assert sint.non_empty_on() == R_intervals
 
     sint = ScalableInterval(
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
@@ -225,4 +249,6 @@ def test_scalable_interval_non_empty_on():
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
         PiecewiseLinearFunction.from_linear_function(LinearFunction(3)),
     )
-    assert sint.non_empty_on() == Rplus_interval
+    assert sint.non_empty_on() == Intervals(
+        [Interval(0, float("inf"), start_excluded=True, end_excluded=True)]
+    )

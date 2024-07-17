@@ -80,7 +80,7 @@ def test_validation_collapsing_composed_template():
 
     assert not template.is_valid()
     expected_error_message = r"""^Invalid ComposedTemplate instance\. The following templates overlap on the shown intervals:
-  On \[1.25, inf\), templates 0 and 8 overlap$"""
+  On \(1.25, inf\), templates 0 and 8 overlap$"""
     with pytest.raises(TQECException, match=expected_error_message):
         template.assert_is_valid()
 
