@@ -29,21 +29,6 @@ class Interval:
     def _is_below_end(self, value: float) -> bool:
         return value < self.end if self.end_excluded else value <= self.end
 
-    @staticmethod
-    def _compare_bounds(
-        lhs: float,
-        lhs_excluded: bool,
-        rhs: float,
-        rhs_excluded: bool,
-        func: ty.Callable[[tuple[float, bool], tuple[float, bool]], tuple[float, bool]],
-    ) -> tuple[float, bool]:
-        res, res_excluded = func((lhs, lhs_excluded), (rhs, rhs_excluded))
-        # Make sure that the correct exclusion boolean is picked if both intervals
-        # have the same start.
-        if lhs == rhs:
-            res_excluded = lhs_excluded or rhs_excluded
-        return res, res_excluded
-
     def contains(self, value: float) -> bool:
         return self._is_over_start(value) and self._is_below_end(value)
 
@@ -66,12 +51,18 @@ class Interval:
         if self.is_disjoint(other):
             return EMPTY_INTERVAL
 
-        start, start_excluded = Interval._compare_bounds(
-            self.start, self.start_excluded, other.start, other.start_excluded, max
+        start, start_excluded = max(
+            (self.start, self.start_excluded), (other.start, other.start_excluded)
         )
-        end, end_excluded = Interval._compare_bounds(
-            self.end, self.end_excluded, other.end, other.end_excluded, min
+        if self.start == other.start:
+            start_excluded = self.start_excluded or other.start_excluded
+
+        end, end_excluded = min(
+            (self.end, self.end_excluded), (other.end, other.end_excluded)
         )
+        if self.end == other.end:
+            end_excluded = self.end_excluded or other.end_excluded
+
         return Interval(
             start, end, start_excluded=start_excluded, end_excluded=end_excluded
         )
@@ -83,12 +74,18 @@ class Interval:
         if self.is_disjoint(other):
             return Intervals([self, other])
 
-        start, start_excluded = Interval._compare_bounds(
-            self.start, self.start_excluded, other.start, other.start_excluded, min
+        start, start_excluded = min(
+            (self.start, self.start_excluded), (other.start, other.start_excluded)
         )
-        end, end_excluded = Interval._compare_bounds(
-            self.end, self.end_excluded, other.end, other.end_excluded, max
+        if self.start == other.start:
+            start_excluded = self.start_excluded and other.start_excluded
+
+        end, end_excluded = max(
+            (self.end, self.end_excluded), (other.end, other.end_excluded)
         )
+        if self.end == other.end:
+            end_excluded = self.end_excluded and other.end_excluded
+
         return Intervals(
             [
                 Interval(
