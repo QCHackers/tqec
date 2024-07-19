@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 import typing as ty
 
 import numpy
 
 from tqec.exceptions import TQECException
-from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.schemas import (
+    AlternatingRectangleTemplateModel,
+    RawRectangleTemplateModel,
+)
 
 
 class AlternatingRectangleTemplate(Template):
@@ -78,6 +83,15 @@ class AlternatingRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return 2
+
+    def to_model(self) -> AlternatingRectangleTemplateModel:
+        return AlternatingRectangleTemplateModel(
+            k=self.k,
+            default_increments=self._default_increments,
+            width=self._width,
+            height=self._height,
+            tag="AlternatingRectangle",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
@@ -215,6 +229,14 @@ class RawRectangleTemplate(Template):
     @property
     def expected_plaquettes_number(self) -> int:
         return max(max(line) for line in self._indices) + 1
+
+    def to_model(self) -> RawRectangleTemplateModel:
+        return RawRectangleTemplateModel(
+            k=self.k,
+            default_increments=self._default_increments,
+            indices=self._indices,
+            tag="RawRectangle",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL

@@ -13,6 +13,7 @@ from tqec.templates.enums import (
     TemplateRelativePositionEnum,
 )
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.schemas import ComposedTemplateModel, RelativePositionsModel
 
 
 def _get_corner_position(
@@ -109,7 +110,6 @@ class ComposedTemplate(Template):
         self._templates: list[Template] = []
         self._relative_position_graph = nx.DiGraph()
         self._maximum_plaquette_mapping_index: int = 0
-        self._default_increments = Displacement(2, 2)
         self.add_templates(templates)
 
     def _check_template_id(self, template_id: int) -> None:
@@ -487,6 +487,17 @@ class ComposedTemplate(Template):
     @property
     def is_empty(self) -> bool:
         return len(self._templates) == 0
+
+    def to_model(self) -> ComposedTemplateModel:
+        return ComposedTemplateModel(
+            k=self.k,
+            default_increments=self._default_increments,
+            templates=[t.to_model() for t in self._templates],
+            relative_positions=RelativePositionsModel.from_networkx(
+                self._relative_position_graph
+            ),
+            tag="Composed",
+        )
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL

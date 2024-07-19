@@ -7,6 +7,7 @@ from copy import deepcopy
 import cirq
 
 from tqec.circuit.operations.operation import Detector, make_detector
+from tqec.circuit.schemas import ScheduledCircuitModel, SupportedCircuitTypeEnum
 from tqec.exceptions import TQECException
 
 
@@ -352,6 +353,17 @@ class ScheduledCircuit:
                 not ScheduledCircuit._is_virtual_moment(moment)
                 for moment in circuit.moments
             ]
+        )
+
+    @staticmethod
+    def from_model(model: ScheduledCircuitModel) -> ScheduledCircuit:
+        circuit = model.circuit_type.parse(model.circuit_repr)
+        return ScheduledCircuit(circuit, model.schedule)
+
+    def to_model(self, encoding: SupportedCircuitTypeEnum) -> ScheduledCircuitModel:
+        circuit_repr = encoding.export(self.raw_circuit)
+        return ScheduledCircuitModel(
+            circuit_type=encoding, circuit_repr=circuit_repr, schedule=self.schedule
         )
 
 

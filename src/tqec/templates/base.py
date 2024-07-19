@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing as ty
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 
 import numpy
@@ -10,9 +10,10 @@ from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import Scalable2D
+from tqec.templates.schemas import InstantiableTemplateModel
 
 
-class Template(ABC):
+class Template:
     def __init__(
         self,
         k: int,
@@ -147,6 +148,10 @@ class Template(ABC):
             a displacement of the default increments in the x and y directions.
         """
         return self._default_increments
+
+    @abstractmethod
+    def to_model(self) -> InstantiableTemplateModel:
+        pass
 
 
 @dataclass

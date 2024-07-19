@@ -8,6 +8,10 @@ from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
 from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.schemas import (
+    AlternatingCornerSquareTemplateModel,
+    AlternatingSquareTemplateModel,
+)
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
@@ -59,6 +63,14 @@ class AlternatingSquareTemplate(AlternatingRectangleTemplate):
             k,
             default_x_increment=default_x_increment,
             default_y_increment=default_y_increment,
+        )
+
+    def to_model(self) -> AlternatingSquareTemplateModel:
+        return AlternatingSquareTemplateModel(
+            k=self.k,
+            default_increments=self._default_increments,
+            dimension=self._width,
+            tag="AlternatingSquare",
         )
 
 
@@ -177,6 +189,15 @@ class AlternatingCornerSquareTemplate(Template):
         return Scalable2D(
             PiecewiseLinearFunction.from_linear_function(self._dimension),
             PiecewiseLinearFunction.from_linear_function(self._dimension),
+        )
+
+    def to_model(self) -> AlternatingCornerSquareTemplateModel:
+        return AlternatingCornerSquareTemplateModel(
+            k=self.k,
+            default_increments=self._default_increments,
+            dimension=self._dimension,
+            corner_position=self._corner_position,
+            tag="AlternatingCornerSquare",
         )
 
     def get_midline_plaquettes(
