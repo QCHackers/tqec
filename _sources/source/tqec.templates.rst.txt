@@ -45,6 +45,14 @@ tqec.templates.enums module
    :undoc-members:
    :show-inheritance:
 
+tqec.templates.interval module
+------------------------------
+
+.. automodule:: tqec.templates.interval
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.templates.scale module
 ---------------------------
 

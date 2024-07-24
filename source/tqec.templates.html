@@ -422,6 +422,16 @@ to the <code class="docutils literal notranslate"><span class="pre">instantiate<
 <dd><p>Add the provided templates to the data structure.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.assert_is_valid">
+<span class="sig-name descname"><span class="pre">assert_is_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.assert_is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.assert_is_valid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.collapsing_templates">
+<span class="sig-name descname"><span class="pre">collapsing_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.collapsing_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.collapsing_templates" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.default_increments">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_increments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="tqec.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.default_increments" title="Link to this definition"></a></dt>
@@ -498,6 +508,11 @@ its parent Template class.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.is_empty">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.is_empty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.is_valid" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -586,6 +601,23 @@ to <cite>template.instantiate</cite> to get the actual template representation.<
 <section id="module-tqec.templates.enums">
 <span id="tqec-templates-enums-module"></span><h2>tqec.templates.enums module<a class="headerlink" href="#module-tqec.templates.enums" title="Link to this heading"></a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.enums.Axis">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#Axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.Axis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.Axis.X">
+<span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tqec.templates.enums.Axis.X" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.Axis.Y">
+<span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#tqec.templates.enums.Axis.Y" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.enums.CornerPositionEnum">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CornerPositionEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#CornerPositionEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.CornerPositionEnum" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
@@ -664,20 +696,259 @@ on the left is one unit backwards on the X-axis.</p>
 </dd></dl>
 
 </section>
+<section id="module-tqec.templates.interval">
+<span id="tqec-templates-interval-module"></span><h2>tqec.templates.interval module<a class="headerlink" href="#module-tqec.templates.interval" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A subset of the mathematical space representing real numbers: R.</p>
+<p>This class represents the mathematical object called interval. It stores
+two floating-point numbers representing the bounds of the interval as
+well as two booleans (one for each bound) to know if the corresponding
+bound is included in the interval or excluded from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any bound is NaN.</p></li>
+<li><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>start</cite> value is strictly larger than
+    the provided <cite>end</cite> value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.complement">
+<span class="sig-name descname"><span class="pre">complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.complement" title="Link to this definition"></a></dt>
+<dd><p>Get the complement of the interval, defined as R <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.contains" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.end">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.templates.interval.Interval.end" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.end_excluded">
+<span class="sig-name descname"><span class="pre">end_excluded</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#tqec.templates.interval.Interval.end_excluded" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.intersection" title="Link to this definition"></a></dt>
+<dd><p>Compute and return the intersection of <cite>self</cite> and <cite>other</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.is_disjoint">
+<span class="sig-name descname"><span class="pre">is_disjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.is_disjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.is_disjoint" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> does not overlap with the provided interval,
+else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> is the empty interval, else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.overlaps_with">
+<span class="sig-name descname"><span class="pre">overlaps_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.overlaps_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.overlaps_with" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> overlaps with the provided interval, else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.templates.interval.Interval.start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.start_excluded">
+<span class="sig-name descname"><span class="pre">start_excluded</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#tqec.templates.interval.Interval.start_excluded" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Interval.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.union" title="Link to this definition"></a></dt>
+<dd><p>Compute and return the union of <cite>self</cite> and <cite>other</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of <a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code></a> instances.</p>
+<p>This class stores a sorted list of mutually disjoint intervals and allow to
+manipulate them using union / intersection operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – at construction, if any of the provided intervals overlap.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.complement">
+<span class="sig-name descname"><span class="pre">complement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.complement" title="Link to this definition"></a></dt>
+<dd><p>Get the complement of the interval, defined as R <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.contains" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.intersection" title="Link to this definition"></a></dt>
+<dd><p>Compute and return the intersection of <cite>self</cite> and <cite>other</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.intervals">
+<span class="sig-name descname"><span class="pre">intervals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.interval.Intervals.intervals" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> is the empty interval, else <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.interval.Intervals.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.union" title="Link to this definition"></a></dt>
+<dd><p>Compute and return the union of <cite>self</cite> and <cite>other</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-tqec.templates.scale">
 <span id="tqec-templates-scale-module"></span><h2>tqec.templates.scale module<a class="headerlink" href="#module-tqec.templates.scale" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'int'</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'int'</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a linear function.</p>
+<p>A linear function is fully described with a slope and an offset.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__add__">
+<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__add__" title="Link to this definition"></a></dt>
+<dd><p>Add two linear functions and returns the result.</p>
+<p>This method does not modify self in-place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the right-hand side to add to self.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a new linear function instance representing <cite>self + other</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__call__" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the linear function on a given input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> – the input to evaluate the linear function on.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the image of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__le__">
+<span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__le__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__le__" title="Link to this definition"></a></dt>
+<dd><p>Compute the interval on which <cite>self &lt;= other</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the <cite>LinearFunction</cite> instance to compare to <cite>self</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the interval on which <cite>self &lt;= other</cite> is verified.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__lt__">
+<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__lt__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__lt__" title="Link to this definition"></a></dt>
+<dd><p>Compute the interval on which <cite>self &lt; other</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the <cite>LinearFunction</cite> instance to compare to <cite>self</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the interval on which <cite>self &lt; other</cite> is verified.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__mul__">
+<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__mul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__mul__" title="Link to this definition"></a></dt>
+<dd><p>Multiply a linear function by a scalar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the scalar that should multiply self.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a copy of <cite>self</cite>, scaled by the provided <cite>other</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__rmul__">
+<span class="sig-name descname"><span class="pre">__rmul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__rmul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__rmul__" title="Link to this definition"></a></dt>
+<dd><p>Multiply a linear function by a scalar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the scalar that should multiply self.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a copy of <cite>self</cite>, scaled by the provided <cite>other</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.__sub__">
+<span class="sig-name descname"><span class="pre">__sub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.__sub__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.__sub__" title="Link to this definition"></a></dt>
+<dd><p>Subtract two linear functions and returns the result.</p>
+<p>This method does not modify self in-place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the right-hand side to subtract to self.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a new linear function instance representing <cite>self - other</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.intersection">
 <span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#LinearFunction.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.LinearFunction.intersection" title="Link to this definition"></a></dt>
-<dd><p>Compute the intersection between two linear functions.
-:param other: the <cite>LinearFunction</cite> instance to intersect with <cite>self</cite>.</p>
+<dd><p>Compute the intersection between two linear functions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If they intersect, return x such that <cite>self(x) = other(x)</cite>.
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – the <cite>LinearFunction</cite> instance to intersect with <cite>self</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If they intersect, return x such that <cite>self(x) = other(x)</cite>.
 Otherwise, return None.</p>
 </dd>
 </dl>
@@ -685,12 +956,12 @@ Otherwise, return None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.offset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.offset" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.scale.LinearFunction.slope">
-<span class="sig-name descname"><span class="pre">slope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.slope" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">slope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#tqec.templates.scale.LinearFunction.slope" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -711,7 +982,7 @@ functions on each of the <cite>n+1</cite> intervals represented by the <cite>n</
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#PiecewiseLinearFunction.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#PiecewiseLinearFunction.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.__call__" title="Link to this definition"></a></dt>
 <dd><p>Compute the value of the piecewise linear function at point <cite>x</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -742,18 +1013,6 @@ Secondly, separators should be sorted in increasing order.</p>
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.functions">
 <span class="sig-name descname"><span class="pre">functions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.functions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.intervals">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intervals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ty.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.intervals" title="Link to this definition"></a></dt>
-<dd><p>Returns the intervals on which each linear function is defined.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p>an iterator over the interval of definition for each <cite>LinearFunction</cite>
-instance stored in <cite>self</cite>.</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.max">
@@ -824,6 +1083,109 @@ the number of separators in <cite>self</cite>.</p>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScalableBoundingBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Scalable2D'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">br</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Scalable2D'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">possible_inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Intervals'</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(-inf,</span> <span class="pre">inf)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableBoundingBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.br">
+<span class="sig-name descname"><span class="pre">br</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.br" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.corners">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">corners</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.corners" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.height">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.height" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.inside">
+<span class="sig-name descname"><span class="pre">inside</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableBoundingBox.inside"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.inside" title="Link to this definition"></a></dt>
+<dd><p>Returns intervals in which the X and Y coordinates should both be for the
+provided point to be in the bounding box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> – a scalable point.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a tuple of intervals <cite>(X, Y)</cite>. The provided <cite>point</cite> is within <cite>self</cite> if
+and only if BOTH the x and y pre-images are in the return ranges.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.intersect">
+<span class="sig-name descname"><span class="pre">intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.ScalableBoundingBox" title="tqec.templates.scale.ScalableBoundingBox"><span class="pre">ScalableBoundingBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableBoundingBox.intersect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.intersect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.possible_inputs">
+<span class="sig-name descname"><span class="pre">possible_inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-inf,</span> <span class="pre">inf)</span></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.possible_inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.ul">
+<span class="sig-name descname"><span class="pre">ul</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.ul" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScalableInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'PiecewiseLinearFunction'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'PiecewiseLinearFunction'</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableInterval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableInterval" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.end">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.end" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.ScalableInterval" title="tqec.templates.scale.ScalableInterval"><span class="pre">ScalableInterval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.ScalableInterval" title="tqec.templates.scale.ScalableInterval"><span class="pre">ScalableInterval</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableInterval.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.intersection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableInterval.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.is_empty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.non_empty_on">
+<span class="sig-name descname"><span class="pre">non_empty_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableInterval.non_empty_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.non_empty_on" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.templates.scale.ScalableInterval.width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></em><a class="headerlink" href="#tqec.templates.scale.ScalableInterval.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.templates.scale.intervals_from_separators">
+<span class="sig-name descname"><span class="pre">intervals_from_separators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#intervals_from_separators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.intervals_from_separators" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tqec.templates.scale.round_or_fail">
+<span class="sig-name descname"><span class="pre">round_or_fail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#round_or_fail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.round_or_fail" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-tqec.templates">

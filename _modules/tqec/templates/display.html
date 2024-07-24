@@ -86,6 +86,7 @@
 
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.composed</span> <span class="kn">import</span> <span class="n">ComposedTemplate</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
 
 
 <div class="viewcode-block" id="display_template">
@@ -163,8 +164,8 @@
         <span class="n">y</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span>
         <span class="c1"># Recall that numpy indexing is (y, x) in our coordinate system convention.</span>
         <span class="n">tshapey</span><span class="p">,</span> <span class="n">tshapex</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span>
-        <span class="n">ul_pos</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-        <span class="n">br_pos</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">tshapey</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">tshapex</span><span class="p">)</span>
+        <span class="n">ul_pos</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
+        <span class="n">br_pos</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">tshapey</span><span class="p">),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">tshapex</span><span class="p">))</span>
     <span class="c1"># Format of the ASCII art.</span>
     <span class="n">x_size</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">arr</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">empty_line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">x_size</span> <span class="o">*</span> <span class="n">h_space</span>
@@ -297,8 +298,8 @@
         <span class="n">arr</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
         <span class="n">outer_rects</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="n">rect</span><span class="p">(</span>
-                <span class="n">ul_position</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">),</span>
-                <span class="n">ul_position</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">),</span>
+                <span class="n">round_or_fail</span><span class="p">(</span><span class="n">ul_position</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">)),</span>
+                <span class="n">round_or_fail</span><span class="p">(</span><span class="n">ul_position</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">)),</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span>
                 <span class="n">outmost</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -310,7 +311,9 @@
                     <span class="k">continue</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">ul_position</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">shape_x</span>
                 <span class="n">y</span> <span class="o">=</span> <span class="n">ul_position</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">shape_y</span>
-                <span class="n">inner_rects</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="p">))</span>
+                <span class="n">inner_rects</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">rect</span><span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+                <span class="p">)</span>
 
     <span class="n">svg_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">inner_rects</span><span class="p">)</span>
     <span class="n">svg_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">outer_rects</span><span class="p">)</span>

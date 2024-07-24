@@ -76,7 +76,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.templates.composed</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
@@ -90,7 +91,14 @@
     <span class="n">TemplateOrientation</span><span class="p">,</span>
     <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">Scalable2D</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.interval</span> <span class="kn">import</span> <span class="n">Intervals</span><span class="p">,</span> <span class="n">Rplus_interval</span><span class="p">,</span> <span class="n">Rplus_intervals</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LinearFunction</span><span class="p">,</span>
+    <span class="n">PiecewiseLinearFunction</span><span class="p">,</span>
+    <span class="n">Scalable2D</span><span class="p">,</span>
+    <span class="n">ScalableBoundingBox</span><span class="p">,</span>
+    <span class="n">round_or_fail</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_get_corner_position</span><span class="p">(</span>
@@ -454,6 +462,31 @@
             <span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ul</span><span class="p">,</span> <span class="n">br</span>
 
+    <span class="k">def</span> <span class="nf">_get_bounding_boxes_from_ul_positions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ScalableBoundingBox</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box of each individual tempalte contained in the instance</span>
+<span class="sd">        from their computed upper-left corner position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ul_positions: a mapping between templates indices and their upper-left</span>
+<span class="sd">                corner absolute position.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a dictionary indexed by template indices and whose values represent each</span>
+<span class="sd">            template bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounding_boxes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ScalableBoundingBox</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># tid: template id</span>
+        <span class="c1"># tulx: template upper-left</span>
+        <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tul</span> <span class="ow">in</span> <span class="n">ul_positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># tshape: template shape</span>
+            <span class="n">tshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_templates</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">scalable_shape</span>
+            <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="n">ScalableBoundingBox</span><span class="p">(</span>
+                <span class="n">tul</span><span class="p">,</span> <span class="p">(</span><span class="n">tul</span> <span class="o">+</span> <span class="n">tshape</span><span class="p">)</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">(),</span> <span class="n">Rplus_intervals</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">bounding_boxes</span>
+
     <span class="k">def</span> <span class="nf">_get_shape_from_bounding_box</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ul</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">br</span><span class="p">:</span> <span class="n">Scalable2D</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
@@ -499,8 +532,8 @@
             <span class="p">]</span>
             <span class="c1"># Subtracting bbul (upper-left bounding box position) from each coordinate to stick</span>
             <span class="c1"># the represented code to the axes and avoid having negative indices.</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">tul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">tul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbul</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
             <span class="c1"># Numpy indexing is (y, x) in our coordinate system convention.</span>
             <span class="n">ret</span><span class="p">[</span><span class="n">y</span> <span class="p">:</span> <span class="n">y</span> <span class="o">+</span> <span class="n">tshapey</span><span class="p">,</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">tshapex</span><span class="p">]</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>
                 <span class="n">plaquette_indices</span>
@@ -592,6 +625,58 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.collapsing_templates">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.collapsing_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">collapsing_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Intervals</span><span class="p">]]:</span>
+        <span class="n">ul_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ul_absolute_position</span><span class="p">()</span>
+        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_boxes_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">x_intersections</span><span class="p">,</span> <span class="n">y_intersections</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span>
+                <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># The bounding boxes intersect iff their projections on the X and Y axes</span>
+            <span class="c1"># both intersect. The previous equivalence is verified thanks to the fact</span>
+            <span class="c1"># that the bounding boxes are rectangles with sides that are parallel to</span>
+            <span class="c1"># the axes.</span>
+            <span class="c1"># The obtained x_intersections (resp. y_intersections) represent the values</span>
+            <span class="c1"># of `k` (the scaling parameter) for which the bounding boxes intersect on</span>
+            <span class="c1"># the X (resp. Y) axis.</span>
+            <span class="c1"># Because there is only one value of `k` used to scale both dimensions of</span>
+            <span class="c1"># the template, it is sufficient to intersect x_intersections and</span>
+            <span class="c1"># y_intersections to know the values of `k` for which both projections</span>
+            <span class="c1"># intersect, i.e., for which the bounding boxes collapse.</span>
+            <span class="c1"># Also, because we know that `k` cannot be negative, we filter out</span>
+            <span class="c1"># negative values by intersecting with R+.</span>
+            <span class="n">interval_of_intersecting_k</span> <span class="o">=</span> <span class="n">x_intersections</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                <span class="n">y_intersections</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">Rplus_interval</span><span class="p">)</span>
+            <span class="c1"># If there is any value for which the bounding boxes intersect, yield it.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">interval_of_intersecting_k</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="p">((</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">),</span> <span class="n">interval_of_intersecting_k</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.is_valid">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.is_valid">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collapsing_templates</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ComposedTemplate.assert_is_valid">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.assert_is_valid">[docs]</a>
+    <span class="k">def</span> <span class="nf">assert_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">collapsing_templates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collapsing_templates</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">collapsing_templates</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid ComposedTemplate instance. The following templates &quot;</span>
+                <span class="s2">&quot;overlap on the shown intervals:</span><span class="se">\n</span><span class="s2">  &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;On </span><span class="si">{</span><span class="n">intervals</span><span class="si">}</span><span class="s2">, templates </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2"> overlap&quot;</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">intervals</span> <span class="ow">in</span> <span class="n">collapsing_templates</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
 </div>
 
 </pre></div>
