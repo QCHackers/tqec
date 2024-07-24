@@ -9,11 +9,10 @@ from tqec.templates.atomic.square import AlternatingSquareTemplate
 from tqec.templates.base import TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
 from tqec.templates.enums import (
-    ABOVE_OF,
     BELOW_OF,
-    LEFT_OF,
     RIGHT_OF,
     TemplateOrientation,
+    TemplateSide,
 )
 from tqec.templates.scale import LinearFunction
 
@@ -66,6 +65,16 @@ class DenseQubitSquareTemplate(ComposedTemplate):
             # Bottom rectangle, containing plaquettes of type 13 and 14
             TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [13, 14]),
         ]
+        self._side_indices: dict[TemplateSide, list[int]] = {
+            TemplateSide.BOTTOM: _templates[8].indices,
+            TemplateSide.BOTTOM_LEFT: _templates[2].indices,
+            TemplateSide.BOTTOM_RIGHT: _templates[3].indices,
+            TemplateSide.LEFT: _templates[5].indices,
+            TemplateSide.RIGHT: _templates[7].indices,
+            TemplateSide.TOP: _templates[4].indices,
+            TemplateSide.TOP_LEFT: _templates[0].indices,
+            TemplateSide.TOP_RIGHT: _templates[1].indices,
+        }
         _relations = [
             (5, BELOW_OF, 0),
             (2, BELOW_OF, 5),
@@ -98,3 +107,6 @@ class DenseQubitSquareTemplate(ComposedTemplate):
         if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
+
+    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
+        return sorted(sum((self._side_indices[side] for side in sides), start=[]))
