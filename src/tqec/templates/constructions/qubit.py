@@ -19,7 +19,13 @@ from tqec.templates.scale import LinearFunction
 
 
 class DenseQubitSquareTemplate(ComposedTemplate):
-    def __init__(self, dim: LinearFunction, k: int = 2) -> None:
+    def __init__(
+        self,
+        dim: LinearFunction,
+        k: int = 2,
+        default_x_increment: int = 2,
+        default_y_increment: int = 2,
+    ) -> None:
         """An error-corrected qubit.
 
         The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
@@ -70,7 +76,12 @@ class DenseQubitSquareTemplate(ComposedTemplate):
             (8, BELOW_OF, 6),
             (3, RIGHT_OF, 8),
         ]
-        super().__init__(_templates)
+        super().__init__(
+            _templates,
+            k=k,
+            default_x_increment=default_x_increment,
+            default_y_increment=default_y_increment,
+        )
         for source, relpos, target in _relations:
             self.add_relation(source, relpos, target)
 
@@ -78,130 +89,6 @@ class DenseQubitSquareTemplate(ComposedTemplate):
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if midline_shape % 2 == 1:
-            raise TQECException(
-                "Midline is not defined for odd "
-                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
-            )
-        midline = midline_shape // 2 - 1
-        if orientation == TemplateOrientation.VERTICAL:
-            return [(row, midline) for row in range(iteration_shape)]
-        return [(midline, column) for column in range(iteration_shape)]
-
-
-class QubitSquareTemplate(ComposedTemplate):
-    def __init__(self, dim: LinearFunction, k: int = 2) -> None:
-        """An error-corrected qubit.
-
-        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::
-
-            .  .  1  .  1  .
-            2  3  4  3  4  .
-            .  4  3  4  3  5
-            2  3  4  3  4  .
-            .  4  3  4  3  5
-            .  6  .  6  .  .
-
-        Args:
-            dim: dimension of the error-corrected qubit.
-            k: initial value for the scaling parameter.
-        """
-        # nsone: non-scalable one
-        nsone = LinearFunction(0, 1)
-
-        _templates = [
-            # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(AlternatingSquareTemplate(dim), [3, 4]),
-            # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [0, 1]),
-            # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [2, 0]),
-            # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, dim), [0, 5]),
-            # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(AlternatingRectangleTemplate(dim, nsone), [6, 0]),
-        ]
-        _relations = [
-            (1, ABOVE_OF, 0),
-            (2, LEFT_OF, 0),
-            (3, RIGHT_OF, 0),
-            (4, BELOW_OF, 0),
-        ]
-        super().__init__(_templates, k=k)
-        for source, relpos, target in _relations:
-            self.add_relation(source, relpos, target)
-
-    def get_midline_plaquettes(
-        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
-    ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if midline_shape % 2 == 1:
-            raise TQECException(
-                "Midline is not defined for odd "
-                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
-            )
-        midline = midline_shape // 2 - 1
-        if orientation == TemplateOrientation.VERTICAL:
-            return [(row, midline) for row in range(iteration_shape)]
-        return [(midline, column) for column in range(iteration_shape)]
-
-
-class QubitRectangleTemplate(ComposedTemplate):
-    def __init__(
-        self,
-        width: LinearFunction,
-        height: LinearFunction,
-        k: int = 2,
-    ) -> None:
-        """A scalable rectangle error-corrected qubit.
-
-        The below text represents this template for an input ``width = FixedDimension(6)``
-        and ``height = FixedDimension(4)`` ::
-
-            .  .  1  .  1  .  1  .
-            2  3  4  3  4  3  4  .
-            .  4  3  4  3  4  3  5
-            2  3  4  3  4  3  4  .
-            .  4  3  4  3  4  3  5
-            .  6  .  6  .  6  .  .
-
-        Args:
-            width: width of the rectangle logical qubit.
-            height: height of the rectangle logical qubit.
-            k: initial value for the scaling parameter.
-        """
-        # nsone: non-scalable one
-        nsone = LinearFunction(0, 1)
-
-        _templates = [
-            # Central square, containing plaquettes of types 3 and 4
-            TemplateWithIndices(AlternatingRectangleTemplate(width, height), [3, 4]),
-            # Top rectangle, containing plaquettes of type 1 only
-            TemplateWithIndices(AlternatingRectangleTemplate(width, nsone), [0, 1]),
-            # Left rectangle, containing plaquettes of type 2 only
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, height), [2, 0]),
-            # Right rectangle, containing plaquettes of type 5 only
-            TemplateWithIndices(AlternatingRectangleTemplate(nsone, height), [0, 5]),
-            # Bottom rectangle, containing plaquettes of type 6 only
-            TemplateWithIndices(AlternatingRectangleTemplate(width, nsone), [6, 0]),
-        ]
-        _relations = [
-            (1, ABOVE_OF, 0),
-            (2, LEFT_OF, 0),
-            (3, RIGHT_OF, 0),
-            (4, BELOW_OF, 0),
-        ]
-        super().__init__(_templates, k=k)
-        for source, relpos, target in _relations:
-            self.add_relation(source, relpos, target)
-
-    def get_midline_plaquettes(
-        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
-    ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if orientation == TemplateOrientation.VERTICAL:
-            midline_shape, iteration_shape = iteration_shape, midline_shape
-
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
