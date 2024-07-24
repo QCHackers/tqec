@@ -3,11 +3,15 @@ import typing as ty
 import numpy
 
 from tqec.exceptions import TQECException
-from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
 from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.scale import (
+    LinearFunction,
+    PiecewiseLinearFunction,
+    Scalable2D,
+    round_or_fail,
+)
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
@@ -149,7 +153,7 @@ class AlternatingCornerSquareTemplate(Template):
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette
-        dimension = self._dimension(self._k)
+        dimension = round_or_fail(self._dimension(self._k))
         for i in range(dimension):
             for j in range(dimension):
                 if i == j == 0:
