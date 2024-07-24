@@ -38,30 +38,13 @@ ABOVE_OF = TemplateRelativePositionEnum.ABOVE_OF
 BELOW_OF = TemplateRelativePositionEnum.BELOW_OF
 
 
-class PlaquetteOrientation(Enum):
-    RIGHT = auto()
-    LEFT = auto()
-    DOWN = auto()
-    UP = auto()
-
-    def to_plaquette_side(self) -> "PlaquetteSide":
-        if self == PlaquetteOrientation.RIGHT:
-            return PlaquetteSide.LEFT
-        elif self == PlaquetteOrientation.LEFT:
-            return PlaquetteSide.RIGHT
-        elif self == PlaquetteOrientation.DOWN:
-            return PlaquetteSide.UP
-        else:  # if self == PlaquetteOrientation.UP:
-            return PlaquetteSide.DOWN
-
-
-class PlaquetteSide(Enum):
-    RIGHT = auto()
-    LEFT = auto()
-    DOWN = auto()
-    UP = auto()
-
 class TemplateOrientation(Enum):
     """Indicates the orientation of the midline."""
+
     HORIZONTAL = auto()
     VERTICAL = auto()
+
+
+class Axis(Enum):
+    X = auto()
+    Y = auto()

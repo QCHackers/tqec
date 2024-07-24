@@ -6,10 +6,10 @@ from dataclasses import dataclass
 
 import numpy
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
-from tqec.templates.scale import Scalable2D
+from tqec.templates.enums import TemplateOrientation
+from tqec.templates.scale import Scalable2D, round_or_fail
 
 
 class Template(ABC):
@@ -101,7 +101,9 @@ class Template(ABC):
     def shape(self) -> Shape2D:
         """Returns the current template shape."""
         sshape = self.scalable_shape
-        return Shape2D(sshape.x(self._k), sshape.y(self._k))
+        return Shape2D(
+            round_or_fail(sshape.x(self._k)), round_or_fail(sshape.y(self._k))
+        )
 
     @property
     @abstractmethod

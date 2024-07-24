@@ -1,12 +1,12 @@
 import numpy
 import pytest
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
 )
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
