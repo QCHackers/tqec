@@ -95,27 +95,19 @@ def pauli_memory_plaquette(
             f"pauli terms and {len(data_qubits)} data qubits."
         )
 
-    circuit = cirq.Circuit()
-
-    if include_initial_data_resets:
-        circuit.append(
-            cirq.Moment(
-                [
-                    cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
-                    for q in qubits.get_data_qubits_cirq()
-                ]
-            )
-        )
-    circuit += _make_pauli_syndrome_measurement_circuit(
+    circuit = _make_pauli_syndrome_measurement_circuit(
         syndrome_qubit, data_qubits, pauli_string
     )
+
+    if include_initial_data_resets:
+        circuit[0] += [
+            cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
+            for q in qubits.get_data_qubits_cirq()
+        ]
     if include_final_data_measurements:
-        circuit.append(
-            cirq.Moment(
-                [
-                    cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
-                    for q in qubits.get_data_qubits_cirq()
-                ]
-            )
-        )
+        circuit[-1] += [
+            cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
+            for q in qubits.get_data_qubits_cirq()
+        ]
+
     return Plaquette(qubits, ScheduledCircuit(circuit, schedule))
