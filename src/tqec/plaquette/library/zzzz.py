@@ -7,13 +7,11 @@ from tqec.plaquette.qubit import SquarePlaquetteQubits
 
 def zzzz_memory_plaquette(
     schedule: list[int],
-    include_detector: bool = True,
-    is_first_round: bool = False,
+    include_initial_resets: bool = False,
 ) -> Plaquette:
     return pauli_memory_plaquette(
         SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
         "ZZZZ",
         schedule,
-        include_detector,
-        is_first_round,
+        include_initial_resets,
     )
