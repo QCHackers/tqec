@@ -35,12 +35,17 @@ class ScheduleEntryTooLowException(ScheduleException):
 
 
 class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
-    def __init__(self, schedule: list[int], number_of_non_virtual_moments: int) -> None:
+    def __init__(
+        self,
+        circuit: cirq.Circuit,
+        schedule: list[int],
+        number_of_non_virtual_moments: int,
+    ) -> None:
         super().__init__(
             (
                 f"The provided schedule contains {len(schedule)} entries, but "
                 f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
-                "provided circuit."
+                f"provided circuit:\n{circuit}"
             )
         )
 
@@ -156,7 +161,7 @@ class ScheduledCircuit:
         )
         if len(schedule) != non_virtual_moments_number:
             raise ScheduleCannotBeAppliedToCircuitException(
-                schedule, non_virtual_moments_number
+                circuit, schedule, non_virtual_moments_number
             )
 
     @staticmethod
