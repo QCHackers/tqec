@@ -57,7 +57,7 @@ def _number_of_moments_needed(plaquettes: list[Plaquette]) -> int:
         the number of `cirq.Moment` needed to execute the provided plaquettes
         in parallel.
     """
-    return max(max(p.circuit.schedule) for p in plaquettes)
+    return max(max(p.circuit.schedule, default=0) for p in plaquettes)
 
 
 @dataclass
