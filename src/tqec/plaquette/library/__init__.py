@@ -4,19 +4,20 @@ from .empty import (
     empty_square_plaquette,
 )
 from .initialisation import (
-    x_initialisation_plaquette,
-    x_initialisation_rounded_plaquette,
-    x_initialisation_square_plaquette,
-    z_initialisation_plaquette,
-    z_initialisation_rounded_plaquette,
-    z_initialisation_square_plaquette,
+    xx_initialisation_plaquette,
+    xxxx_initialisation_plaquette,
+    zz_initialisation_plaquette,
+    zzzz_initialisation_plaquette,
 )
 from .measurement import (
-    measurement_plaquette,
-    measurement_rounded_plaquette,
-    measurement_square_plaquette,
+    xx_measurement_plaquette,
+    xxxx_measurement_plaquette,
+    zz_measurement_plaquette,
+    zzzz_measurement_plaquette,
 )
-from .xx import xx_memory_plaquette
-from .xxxx import xxxx_memory_plaquette
-from .zz import zz_memory_plaquette
-from .zzzz import zzzz_memory_plaquette
+from .memory import (
+    xx_memory_plaquette,
+    xxxx_memory_plaquette,
+    zz_memory_plaquette,
+    zzzz_memory_plaquette,
+)
