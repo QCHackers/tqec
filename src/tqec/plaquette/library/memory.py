@@ -10,6 +10,7 @@ def xx_memory_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int],
 ) -> Plaquette:
+    """R - H - CX - CX - H - M"""
     return pauli_memory_plaquette(
         RoundedPlaquetteQubits(orientation),
         "XX",
@@ -20,6 +21,7 @@ def xx_memory_plaquette(
 def xxxx_memory_plaquette(
     schedule: list[int],
 ) -> Plaquette:
+    """R - H - CX - CX - CX - CX - H - M"""
     return pauli_memory_plaquette(
         SquarePlaquetteQubits(),
         "XXXX",
@@ -31,6 +33,7 @@ def zz_memory_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int],
 ) -> Plaquette:
+    """R - CX - CX - M"""
     return pauli_memory_plaquette(
         RoundedPlaquetteQubits(orientation),
         "ZZ",
@@ -41,6 +44,7 @@ def zz_memory_plaquette(
 def zzzz_memory_plaquette(
     schedule: list[int],
 ) -> Plaquette:
+    """R - CX - CX - CX - CX - M"""
     return pauli_memory_plaquette(
         SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
         "ZZZZ",
