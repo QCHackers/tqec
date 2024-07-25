@@ -7,33 +7,11 @@ from tqec.plaquette.qubit import (
 )
 
 
-def zz_measurement_plaquette(
-    orientation: PlaquetteOrientation,
-    schedule: list[int],
-) -> Plaquette:
-    return pauli_memory_plaquette(
-        RoundedPlaquetteQubits(orientation),
-        "ZZ",
-        schedule,
-        include_final_data_measurements=True,
-    )
-
-
-def zzzz_measurement_plaquette(
-    schedule: list[int],
-) -> Plaquette:
-    return pauli_memory_plaquette(
-        SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
-        "ZZZZ",
-        schedule,
-        include_final_data_measurements=True,
-    )
-
-
 def xx_measurement_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int],
 ) -> Plaquette:
+    """R - H - CX - CX - H - M"""
     return pauli_memory_plaquette(
         RoundedPlaquetteQubits(orientation),
         "XX",
@@ -45,9 +23,35 @@ def xx_measurement_plaquette(
 def xxxx_measurement_plaquette(
     schedule: list[int],
 ) -> Plaquette:
+    """R - H - CX - CX - CX - CX - H - M"""
     return pauli_memory_plaquette(
         SquarePlaquetteQubits(),
         "XXXX",
+        schedule,
+        include_final_data_measurements=True,
+    )
+
+
+def zz_measurement_plaquette(
+    orientation: PlaquetteOrientation,
+    schedule: list[int],
+) -> Plaquette:
+    """R - CX - CX - M"""
+    return pauli_memory_plaquette(
+        RoundedPlaquetteQubits(orientation),
+        "ZZ",
+        schedule,
+        include_final_data_measurements=True,
+    )
+
+
+def zzzz_measurement_plaquette(
+    schedule: list[int],
+) -> Plaquette:
+    """R - CX - CX - CX - CX - M"""
+    return pauli_memory_plaquette(
+        SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
+        "ZZZZ",
         schedule,
         include_final_data_measurements=True,
     )
