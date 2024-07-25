@@ -1,11 +1,7 @@
-import cirq
-
-from tqec.circuit.schedule import ScheduledCircuit
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import (
-    PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
