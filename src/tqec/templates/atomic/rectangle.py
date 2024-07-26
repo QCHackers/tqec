@@ -1,9 +1,9 @@
 import typing as ty
 
 import numpy
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
-from tqec.position import Shape2D
 from tqec.templates.base import Template
 from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
@@ -63,7 +63,9 @@ class AlternatingRectangleTemplate(Template):
         self._width = width
         self._height = height
 
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         self._check_plaquette_number(plaquette_indices, 2)
         p1, p2 = plaquette_indices[:2]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
@@ -184,7 +186,9 @@ class RawRectangleTemplate(Template):
             )
         self._indices = indices
 
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         # Warning: self.expected_plaquettes_number is only guaranteed to be correct
         #          here because RawRectangleTemplate is annotated as final.
         self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)

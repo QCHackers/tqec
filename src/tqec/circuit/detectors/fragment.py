@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 import warnings
 from dataclasses import dataclass
 
@@ -55,7 +56,10 @@ class Fragment:
         # The line below has no type issue as the circuit does not contain
         # any stim.CircuitRepeatBlock instance, and so iter_stim_circuit_by_moments
         # can only return stim.Circuit instances.
-        moments = [moment.copy() for moment in iter_stim_circuit_by_moments(circuit)]  # type: ignore
+        moments = [
+            typing.cast(stim.Circuit, moment).copy()
+            for moment in iter_stim_circuit_by_moments(circuit)
+        ]
 
         self._circuit = circuit
         self._resets: list[PauliString] = []

@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import numpy
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
@@ -70,7 +71,9 @@ class Template(ABC):
             )
 
     @abstractmethod
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         """Generate the numpy array representing the template.
 
         Args:
