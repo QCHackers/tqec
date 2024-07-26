@@ -82,6 +82,8 @@ class Face:
 
 
 class BlockType(Enum):
+    """Valid block types in the library."""
+
     # Cubes
     ZXX = "zxx"
     XZX = "xzx"
@@ -110,10 +112,12 @@ class BlockType(Enum):
 
     @property
     def is_connector(self) -> bool:
+        """Check if the block type is a connector."""
         return "o" in self.value
 
     @property
     def has_hadamard(self) -> bool:
+        """Check if the block type has a hadamard transition."""
         return "h" in self.value
 
 

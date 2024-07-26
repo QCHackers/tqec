@@ -27,17 +27,22 @@ MATERIAL_SYMBOL = "MaterialSymbol"
 
 @dataclass(frozen=True)
 class InstancePosition:
+    """The position of an instance block in the 3D space."""
+
     x: float
     y: float
     z: float
 
     def offset_by(self, dx: float, dy: float, dz: float) -> InstancePosition:
+        """Offset the position by (dx, dy, dz)."""
         return InstancePosition(self.x + dx, self.y + dy, self.z + dz)
 
     def to_tuple(self) -> tuple[float, float, float]:
+        """Convert the position to a tuple."""
         return self.x, self.y, self.z
 
     def norm2(self) -> float:
+        """Return the squared norm of the position."""
         return self.x**2 + self.y**2 + self.z**2
 
     def __eq__(self, other: InstancePosition) -> bool:
@@ -51,6 +56,16 @@ class InstancePosition:
 
 @dataclass(frozen=True)
 class BlockInstance:
+    """An instance of a block in the 3D space.
+
+    Attributes:
+        id: The unique id of the instance.
+        block_type: The type of the block.
+        position: The position of the block.
+        scale: The scale of the block. The scale is only valid for connector blocks
+            and should be non-negative. The length of the connector will be 2 * scale.
+    """
+
     id: int
     block_type: BlockType
     position: InstancePosition
@@ -59,6 +74,13 @@ class BlockInstance:
 
 class SketchUpModel:
     def __init__(self) -> None:
+        """The class to represent a SketchUp model.
+
+        Currently, we only support a single connected component of the model and
+        the model is represented as a directed graph. The nodes of the graph are
+        the cube instances and the edges are the connector instances. The position
+        of the instances can be inferred from the connectivity of the graph.
+        """
         self._instance_graph = nx.DiGraph()
         # A monotonic increasing id for instances
         self._instance_id = 0
@@ -67,21 +89,36 @@ class SketchUpModel:
 
     @property
     def num_cubes(self) -> int:
+        """Return the number of cube instances."""
         return self._instance_graph.number_of_nodes()
 
     @property
     def num_connectors(self) -> int:
+        """Return the number of connector instances."""
         return self._instance_graph.number_of_edges()
 
     @property
     def num_instances(self) -> int:
+        """Return the total number of instances."""
         return self.num_cubes + self.num_connectors
 
     @property
     def cube_ids(self) -> list[int]:
+        """Return the ids of the cube instances."""
         return sorted(self._instance_graph.nodes)
 
     def add_cube(self, block_type: BlockType, is_root: bool = False) -> int:
+        """Add a cube instance to the model.
+
+        Args:
+            block_type: The type of the cube.
+            is_root: Whether the cube is the root of the model. The root is the
+                reference point of the model and the position of the root will be
+                set to (0, 0, 0) when instantiating the model.
+
+        Returns:
+            The id of the cube instance
+        """
         if block_type.is_connector:
             raise TQECException(
                 f"The block type {block_type} is a connector while requiring a cube."
@@ -96,11 +133,28 @@ class SketchUpModel:
         return instance_id
 
     def get_cube(self, cube_id: int) -> BlockType:
+        """Return the type of the cube.
+
+        Args:
+            cube_id: The id of the cube instance.
+        """
         return self._instance_graph.nodes[cube_id]["block_type"]
 
     def add_connector(
         self, block_type: BlockType, src: int, dst: int, scale: float = 1.0
     ) -> int:
+        """Add a connector instance to the model.
+
+        Args:
+            block_type: The type of the connector.
+            src: The id of the source cube.
+            dst: The id of the destination cube.
+            scale: The scale of the connector. The scale should be non-negative.
+                The length of the connector will be 2 * scale.
+
+        Returns:
+            The id of the connector instance.
+        """
         if not block_type.is_connector:
             raise TQECException(
                 f"The block type {block_type} is a cube while requiring a connector."
@@ -124,23 +178,45 @@ class SketchUpModel:
         return instance_id
 
     def get_connector(self, connector_id: int) -> tuple[BlockType, float]:
+        """Return the type and scale of the connector.
+
+        Args:
+            connector_id: The id of the connector instance.
+
+        Returns:
+            A tuple of the type and scale of the connector.
+        """
         src, dst = self._connector_to_endpoints[connector_id]
         edge = self._instance_graph.edges[src][dst]
         return edge["block_type"], edge["scale"]
 
     def set_connector_scale(self, connector_id: int, scale: float) -> None:
+        """Set the scale of the connector.
+
+        Args:
+            connector_id: The id of the connector instance.
+            scale: The scale of the connector. The scale should be non-negative.
+                The length of the connector will be 2 * scale.
+        """
         if scale < 0:
             raise TQECException("The scale must be non-negative.")
         src, dst = self._connector_to_endpoints[connector_id]
         self._instance_graph[src][dst]["scale"] = scale
 
     def set_scale_for_all_connectors(self, scale: float) -> None:
+        """Set the same scale for all the connectors.
+
+        Args:
+            scale: The scale of the connectors. The scale should be non-negative.
+                The length of the connector will be 2 * scale.
+        """
         if scale < 0:
             raise TQECException("The scale must be non-negative.")
         for edge in self._instance_graph.edges:
             self._instance_graph.edges[edge]["scale"] = scale
 
     def _instantiate_instances(self) -> dict[int, BlockInstance]:
+        """Instantiate the instances and infer the positions of the instances."""
         # Currently we assume that the graph is a single connected component
         if not nx.is_connected(self._instance_graph.to_undirected(as_view=True)):
             raise TQECException("The graph is not a single connected component.")
@@ -194,6 +270,11 @@ class SketchUpModel:
         return instances
 
     def write(self, filepath: str | pathlib.Path) -> None:
+        """Write the model to a DAE file.
+
+        Args:
+            filepath: The path to the DAE file.
+        """
         base_model = _create_base_model()
         instances = sorted(self._instantiate_instances().values(), key=lambda i: i.id)
         for instance in instances:
@@ -324,6 +405,8 @@ class _BaseSketchUpModel:
         root_node: collada.scene.Node,
         library_node_handles: dict[BlockType, collada.scene.Node],
     ) -> None:
+        """The base model template including the definition of all the library nodes and
+        the necessary material, geometry definitions."""
         self.mesh = mesh
         self.root_node = root_node
         self.library_node_handles = library_node_handles
