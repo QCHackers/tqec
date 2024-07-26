@@ -1,13 +1,14 @@
 from __future__ import annotations
+
 from typing import Mapping, Sequence
 
 import cirq
 
-from tqec.enums import TemplateOrientation
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit
 from tqec.templates.base import Template
+from tqec.templates.enums import TemplateOrientation
 
 
 def observable_qubits_from_template(
