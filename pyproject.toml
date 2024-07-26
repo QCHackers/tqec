@@ -61,3 +61,9 @@ tqec = ["py.typed"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements.txt" }
+
+
+# See https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
+[[tool.mypy.overrides]]
+module = ["stim", "pysat", "pysat.solvers", "collada", "networkx", "stimcirq"]
+ignore_missing_imports = true
