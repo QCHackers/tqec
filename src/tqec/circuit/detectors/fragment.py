@@ -154,7 +154,7 @@ class FragmentLoop:
     fragments: list[Fragment | FragmentLoop]
     repetitions: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.repetitions < 1:
             raise TQECException(
                 "Cannot have a FragmentLoop with 0 or less repetitions."

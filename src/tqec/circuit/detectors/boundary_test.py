@@ -6,7 +6,7 @@ from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
 
 
-def test_boundary_stabilizer_construction():
+def test_boundary_stabilizer_construction() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
@@ -20,7 +20,7 @@ def test_boundary_stabilizer_construction():
     BoundaryStabilizer(X0Z1, [Z0, Z0], [], frozenset([]), True)
 
 
-def test_has_anti_commuting_operations():
+def test_has_anti_commuting_operations() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     X0 = PauliString({0: "X"})
     Z0 = PauliString({0: "Z"})
@@ -36,7 +36,7 @@ def test_has_anti_commuting_operations():
     assert not stab.has_anticommuting_operations
 
 
-def test_boundary_stabilizer_collapsing_operations():
+def test_boundary_stabilizer_collapsing_operations() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     X0 = PauliString({0: "X"})
     Z0 = PauliString({0: "Z"})
@@ -52,7 +52,7 @@ def test_boundary_stabilizer_collapsing_operations():
     assert not list(stab.collapsing_operations)
 
 
-def test_after_and_before_collapse():
+def test_after_and_before_collapse() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     X0 = PauliString({0: "X"})
     Z0 = PauliString({0: "Z"})
@@ -72,7 +72,7 @@ def test_after_and_before_collapse():
     assert stab.after_collapse == X0Z1
 
 
-def test_merge():
+def test_merge() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     Z0Z1 = PauliString({0: "Z", 1: "Z"})
     Z0X1 = PauliString({0: "Z", 1: "X"})
@@ -107,7 +107,7 @@ def test_merge():
         a.merge(d)
 
 
-def test_with_measurement_offset():
+def test_with_measurement_offset() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     X0 = PauliString({0: "X"})
     Z1 = PauliString({1: "Z"})
@@ -135,7 +135,7 @@ def test_with_measurement_offset():
         a.with_measurement_offset(10)
 
 
-def test_coordinates():
+def test_coordinates() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     X0 = PauliString({0: "X"})
     Z1 = PauliString({1: "Z"})
@@ -153,7 +153,7 @@ def test_coordinates():
     )
 
 
-def test_manhattan_distance():
+def test_manhattan_distance() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     Z0X1 = PauliString({0: "Z", 1: "X"})
     X0 = PauliString({0: "X"})

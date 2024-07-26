@@ -19,7 +19,7 @@ from tqec.templates.scale import (
 @pytest.mark.parametrize(
     "slope,offset", [(0, 0), (2, 0), (1, 0), (0, 4), (-1, 5), (2, -1)]
 )
-def test_linear_function(slope: int, offset: int):
+def test_linear_function(slope: int, offset: int) -> None:
     f = LinearFunction(slope, offset)
     assert f(10) == slope * 10 + offset
     assert f(1) == slope + offset
@@ -27,7 +27,7 @@ def test_linear_function(slope: int, offset: int):
     assert f(-4) == slope * -4 + offset
 
 
-def test_linear_function_operators():
+def test_linear_function_operators() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     assert (a + b)(10) == a(10) + b(10)
     assert (a - b)(3) == a(3) - b(3)
@@ -35,7 +35,7 @@ def test_linear_function_operators():
     assert (a * 3)(54) == 3 * a(54)
 
 
-def test_intersection():
+def test_intersection() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     intersection = a.intersection(b)
     assert intersection is not None
@@ -45,7 +45,7 @@ def test_intersection():
     assert intersection is None
 
 
-def test_linear_function_comparison():
+def test_linear_function_comparison() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
 
     assert (a < b) == Interval(
@@ -60,7 +60,7 @@ def test_linear_function_comparison():
     )
 
 
-def test_from_linear_function():
+def test_from_linear_function() -> None:
     linear_func = LinearFunction(2, 5)
     pwl_func = PiecewiseLinearFunction.from_linear_function(linear_func)
 
@@ -68,7 +68,7 @@ def test_from_linear_function():
         assert linear_func(i) == pwl_func(i)
 
 
-def test_piecewise_operators():
+def test_piecewise_operators() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
@@ -80,7 +80,7 @@ def test_piecewise_operators():
     assert (a * 3)(54) == (a_pwl * 3)(54) == 3 * a_pwl(54)
 
 
-def test_piecewise_construction():
+def test_piecewise_construction() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     pwl = PiecewiseLinearFunction([4], [a, b])
 
@@ -97,7 +97,7 @@ def test_piecewise_construction():
         assert pwl_reversed(i) == a(i)
 
 
-def test_piecewise_intervals():
+def test_piecewise_intervals() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     pwl = PiecewiseLinearFunction([4, 10], [a, b, a])
 
@@ -115,7 +115,7 @@ def test_piecewise_intervals():
     assert intervals[0].end == float("inf")
 
 
-def test_simplifiable_piecewise():
+def test_simplifiable_piecewise() -> None:
     a = LinearFunction(2, 5)
     pwl = PiecewiseLinearFunction.from_linear_function(a)
     simplified_pwl = pwl.simplify()
@@ -125,7 +125,7 @@ def test_simplifiable_piecewise():
     assert simplified_pwl.functions[0] == a
 
 
-def test_piecewise_min():
+def test_piecewise_min() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
@@ -144,7 +144,7 @@ def test_piecewise_min():
     assert minabc.functions == [b, c]
 
 
-def test_piecewise_max():
+def test_piecewise_max() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
@@ -174,7 +174,7 @@ def test_piecewise_max():
     assert maxabcd.functions == [c, d, a, b]
 
 
-def test_piecewise_max_constant():
+def test_piecewise_max_constant() -> None:
     a, b = LinearFunction(0, 0), LinearFunction(0, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
@@ -186,7 +186,7 @@ def test_piecewise_max_constant():
     assert maxab.functions == [b]
 
 
-def test_piecewiselinear_function_comparison():
+def test_piecewiselinear_function_comparison() -> None:
     a, b = LinearFunction(2, 5), LinearFunction(3, 1)
     a_pwl, b_pwl = (
         PiecewiseLinearFunction.from_linear_function(a),
@@ -223,14 +223,14 @@ def test_piecewiselinear_function_comparison():
     )
 
 
-def test_scalable_interval_creation():
+def test_scalable_interval_creation() -> None:
     ScalableInterval(
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
     )
 
 
-def test_scalable_interval_non_empty_on_colinear():
+def test_scalable_interval_non_empty_on_colinear() -> None:
     sint = ScalableInterval(
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
@@ -244,7 +244,7 @@ def test_scalable_interval_non_empty_on_colinear():
     assert sint.non_empty_on() == Intervals([])
 
 
-def test_scalable_interval_non_empty_on():
+def test_scalable_interval_non_empty_on() -> None:
     sint = ScalableInterval(
         PiecewiseLinearFunction.from_linear_function(LinearFunction(2)),
         PiecewiseLinearFunction.from_linear_function(LinearFunction(3)),

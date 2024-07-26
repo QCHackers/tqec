@@ -86,10 +86,10 @@ disallow_subclassing_any = true
 disallow_untyped_decorators = true
 disallow_any_generics = true
 
-# # These next few are various gradations of forcing use of type annotations
-# disallow_untyped_calls = true
-# disallow_incomplete_defs = true
-# disallow_untyped_defs = true
+# These next few are various gradations of forcing use of type annotations
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
 
 # # This one isn't too hard to get passing, but return on investment is lower
 # no_implicit_reexport = true

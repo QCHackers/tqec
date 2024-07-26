@@ -10,20 +10,20 @@ from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
-def test_rectangle_template_init():
+def test_rectangle_template_init() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(3, 0)
     AlternatingRectangleTemplate(width, height)
 
 
-def test_rectangle_expected_plaquette_number():
+def test_rectangle_expected_plaquette_number() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(3, 0)
     template = AlternatingRectangleTemplate(width, height)
     assert template.expected_plaquettes_number == 2
 
 
-def test_rectangle_template_same_scaling():
+def test_rectangle_template_same_scaling() -> None:
     width = height = LinearFunction(2, 0)
     template = AlternatingRectangleTemplate(width, height)
     template.scale_to(30)
@@ -32,7 +32,7 @@ def test_rectangle_template_same_scaling():
     assert shape.y == 2 * 30
 
 
-def test_rectangle_template_different_scaling():
+def test_rectangle_template_different_scaling() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(40, 3)
     template = AlternatingRectangleTemplate(width, height)
@@ -42,7 +42,7 @@ def test_rectangle_template_different_scaling():
     assert shape.y == 40 * 30 + 3
 
 
-def test_rectangle_template_one_fixed_scaling():
+def test_rectangle_template_one_fixed_scaling() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(0, 2)
     template = AlternatingRectangleTemplate(width, height)
@@ -52,7 +52,7 @@ def test_rectangle_template_one_fixed_scaling():
     assert shape.y == 2
 
 
-def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes():
+def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(0, 2)
     template = AlternatingRectangleTemplate(width, height)
@@ -60,7 +60,7 @@ def test_rectangle_template_one_fixed_scaling_instantiate_default_plaquettes():
     numpy.testing.assert_equal(arr, [[1, 2, 1, 2], [2, 1, 2, 1]])
 
 
-def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes():
+def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(0, 2)
     template = AlternatingRectangleTemplate(width, height)
@@ -68,21 +68,21 @@ def test_rectangle_template_one_fixed_scaling_instantiate_random_plaquettes():
     numpy.testing.assert_equal(arr, [[78, 195, 78, 195], [195, 78, 195, 78]])
 
 
-def test_raw_rectangle_init():
+def test_raw_rectangle_init() -> None:
     RawRectangleTemplate([[0]])
 
 
-def test_raw_rectangle_empty_init():
+def test_raw_rectangle_empty_init() -> None:
     with pytest.raises(TQECException):
         RawRectangleTemplate([[]])
 
 
-def test_raw_rectangle_wrongly_sized_init():
+def test_raw_rectangle_wrongly_sized_init() -> None:
     with pytest.raises(TQECException):
         RawRectangleTemplate([[0, 1], [1]])
 
 
-def test_raw_rectangle_larger_init():
+def test_raw_rectangle_larger_init() -> None:
     RawRectangleTemplate(
         [
             [0, 0, 0, 0, 0],
@@ -94,13 +94,13 @@ def test_raw_rectangle_larger_init():
     )
 
 
-def test_raw_rectangle_shape():
+def test_raw_rectangle_shape() -> None:
     template = RawRectangleTemplate([[0]])
     assert template.shape.x == 1
     assert template.shape.y == 1
 
 
-def test_raw_rectangle_larger_shape():
+def test_raw_rectangle_larger_shape() -> None:
     template = RawRectangleTemplate(
         [
             [0, 0, 0, 0, 0],
@@ -114,66 +114,66 @@ def test_raw_rectangle_larger_shape():
     assert template.shape.y == 5
 
 
-def test_raw_rectangle_uneven_shape():
+def test_raw_rectangle_uneven_shape() -> None:
     template = RawRectangleTemplate([[0, 0, 0, 0, 0]])
     assert template.shape.x == 5
     assert template.shape.y == 1
 
 
-def test_raw_rectangle_invalid_indices():
+def test_raw_rectangle_invalid_indices() -> None:
     with pytest.raises(TQECException):
         RawRectangleTemplate([[0], [0, 0]])
 
 
-def test_raw_rectangle_scale_to_not_raising():
+def test_raw_rectangle_scale_to_not_raising() -> None:
     RawRectangleTemplate([[0], [0]]).scale_to(94)
 
 
-def test_raw_rectangle_simple_expected_plaquettes_number():
+def test_raw_rectangle_simple_expected_plaquettes_number() -> None:
     template = RawRectangleTemplate([[0], [0]])
     assert template.expected_plaquettes_number == 1
 
 
-def test_raw_rectangle_larger_expected_plaquettes_number():
+def test_raw_rectangle_larger_expected_plaquettes_number() -> None:
     template = RawRectangleTemplate([[0], [1], [2]])
     assert template.expected_plaquettes_number == 3
 
 
-def test_raw_rectangle_simple_instantiate():
+def test_raw_rectangle_simple_instantiate() -> None:
     template = RawRectangleTemplate([[0]])
     arr = template.instantiate([1])
     numpy.testing.assert_equal(arr, [[1]])
 
 
-def test_raw_rectangle_simple_instantiate_random_plaquette_index():
+def test_raw_rectangle_simple_instantiate_random_plaquette_index() -> None:
     template = RawRectangleTemplate([[0]])
     arr = template.instantiate([345897])
     numpy.testing.assert_equal(arr, [[345897]])
 
 
-def test_raw_rectangle_larger_instantiate():
+def test_raw_rectangle_larger_instantiate() -> None:
     template = RawRectangleTemplate([[0], [1], [2]])
     arr = template.instantiate([3, 2, 1])
     numpy.testing.assert_equal(arr, [[3], [2], [1]])
 
 
-def test_raw_rectangle_larger_instantiate_different_order():
+def test_raw_rectangle_larger_instantiate_different_order() -> None:
     template = RawRectangleTemplate([[0], [2], [1]])
     arr = template.instantiate([3, 2, 1])
     numpy.testing.assert_equal(arr, [[3], [1], [2]])
 
 
-def test_raw_rectangle_with_noncontiguous_indices():
+def test_raw_rectangle_with_noncontiguous_indices() -> None:
     with pytest.raises(TQECException, match="CONTIGUOUS indices"):
         RawRectangleTemplate([[0], [1], [24]])
 
 
-def test_raw_rectangle_with_negative_index():
+def test_raw_rectangle_with_negative_index() -> None:
     with pytest.raises(TQECException, match="starting at 0"):
         RawRectangleTemplate([[-1]])
 
 
-def test_raw_rectangle_midline():
+def test_raw_rectangle_midline() -> None:
     template = RawRectangleTemplate(
         [
             [0, 0, 0, 0],
@@ -196,7 +196,7 @@ def test_raw_rectangle_midline():
         template.get_midline_plaquettes()
 
 
-def test_rectangle_midline():
+def test_rectangle_midline() -> None:
     width = LinearFunction(2, 0)
     height = LinearFunction(3, 0)
     template = AlternatingRectangleTemplate(width, height)

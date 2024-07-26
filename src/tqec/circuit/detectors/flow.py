@@ -17,7 +17,7 @@ def _anti_commuting_stabilizers_indices(flows: list[BoundaryStabilizer]) -> list
     return [i for i in range(len(flows)) if flows[i].has_anticommuting_operations]
 
 
-def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
+def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]) -> None:
     """Merge as much anti-commuting flows as possible from the provided flows.
 
     This function try to merge together several :class:`BoundaryStabilizer`
@@ -139,17 +139,17 @@ class FragmentFlows:
         yield from self.creation
         yield from self.destruction
 
-    def remove_creation(self, index: int):
+    def remove_creation(self, index: int) -> None:
         self.creation.pop(index)
 
-    def remove_destruction(self, index: int):
+    def remove_destruction(self, index: int) -> None:
         self.destruction.pop(index)
 
-    def remove_creations(self, indices: ty.Iterable[int]):
+    def remove_creations(self, indices: ty.Iterable[int]) -> None:
         for i in sorted(indices, reverse=True):
             self.remove_creation(i)
 
-    def remove_destructions(self, indices: ty.Iterable[int]):
+    def remove_destructions(self, indices: ty.Iterable[int]) -> None:
         for i in sorted(indices, reverse=True):
             self.remove_destruction(i)
 
@@ -160,7 +160,7 @@ class FragmentFlows:
             total_number_of_measurements=self.total_number_of_measurements,
         )
 
-    def try_merge_anticommuting_flows(self):
+    def try_merge_anticommuting_flows(self) -> None:
         _try_merge_anticommuting_flows_inplace(self.creation)
         _try_merge_anticommuting_flows_inplace(self.destruction)
 
@@ -195,17 +195,17 @@ class FragmentLoopFlows:
     def total_number_of_measurements(self) -> int:
         return sum(flow.total_number_of_measurements for flow in self.fragment_flows)
 
-    def remove_creation(self, index: int):
+    def remove_creation(self, index: int) -> None:
         self.creation.pop(index)
 
-    def remove_destruction(self, index: int):
+    def remove_destruction(self, index: int) -> None:
         self.destruction.pop(index)
 
-    def remove_creations(self, indices: ty.Iterable[int]):
+    def remove_creations(self, indices: ty.Iterable[int]) -> None:
         for i in sorted(indices, reverse=True):
             self.remove_creation(i)
 
-    def remove_destructions(self, indices: ty.Iterable[int]):
+    def remove_destructions(self, indices: ty.Iterable[int]) -> None:
         for i in sorted(indices, reverse=True):
             self.remove_destruction(i)
 
@@ -217,7 +217,7 @@ class FragmentLoopFlows:
             repeat=self.repeat,
         )
 
-    def try_merge_anticommuting_flows(self):
+    def try_merge_anticommuting_flows(self) -> None:
         _try_merge_anticommuting_flows_inplace(self.creation)
         _try_merge_anticommuting_flows_inplace(self.destruction)
 

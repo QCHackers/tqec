@@ -560,7 +560,7 @@ class ComposedTemplate(Template):
     def is_valid(self) -> bool:
         return next(self.collapsing_templates(), None) is None
 
-    def assert_is_valid(self):
+    def assert_is_valid(self) -> None:
         collapsing_templates = list(self.collapsing_templates())
         if collapsing_templates:
             raise TQECException(

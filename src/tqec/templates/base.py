@@ -162,7 +162,7 @@ class TemplateWithIndices:
     template: Template
     indices: list[int]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.template.expected_plaquettes_number != len(self.indices):
             raise TQECException(
                 f"Creating a {self.__class__.__name__} instance with the template "

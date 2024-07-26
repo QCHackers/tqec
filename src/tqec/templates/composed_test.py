@@ -6,7 +6,7 @@ from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
     RawRectangleTemplate,
 )
-from tqec.templates.base import TemplateWithIndices
+from tqec.templates.base import Template, TemplateWithIndices
 from tqec.templates.composed import ComposedTemplate
 from tqec.templates.constructions.grid import TemplateGrid
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
@@ -18,7 +18,7 @@ _DIMENSIONS = [
     LinearFunction(4, 0),
     LinearFunction(0, 1),
 ]
-_TEMPLATES_AND_INDICES = [
+_TEMPLATES_AND_INDICES: list[tuple[Template, list[int]]] = [
     (AlternatingSquareTemplate(_DIMENSIONS[0]), [1, 2]),
     (AlternatingRectangleTemplate(_DIMENSIONS[0], _DIMENSIONS[1]), [198345, 21]),
     (AlternatingRectangleTemplate(_DIMENSIONS[0], _DIMENSIONS[2]), [0, 68]),
@@ -26,14 +26,14 @@ _TEMPLATES_AND_INDICES = [
 ]
 
 
-def test_empty():
+def test_empty() -> None:
     template = ComposedTemplate([])
     assert template.expected_plaquettes_number == 0
     assert template.shape.to_numpy_shape() == (0, 0)
 
 
 @pytest.mark.parametrize("atomic_template_and_indices", _TEMPLATES_AND_INDICES)
-def test_one_template(atomic_template_and_indices):
+def test_one_template(atomic_template_and_indices: tuple[Template, list[int]]) -> None:
     atomic_template, indices = atomic_template_and_indices
     template = ComposedTemplate([TemplateWithIndices(atomic_template, indices)])
     assert template.shape == atomic_template.shape
@@ -75,7 +75,7 @@ def get_collapsing_template() -> ComposedTemplate:
     return template
 
 
-def test_validation_collapsing_composed_template():
+def test_validation_collapsing_composed_template() -> None:
     template = get_collapsing_template()
 
     assert not template.is_valid()
