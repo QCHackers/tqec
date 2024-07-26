@@ -375,7 +375,7 @@ class SketchUpModel:
             src_pos, dst_pos = _get_endpoint_cube_positions(connector)
             src = _find_instance_with_position(cube_instances, src_pos)
             dst = _find_instance_with_position(cube_instances, dst_pos)
-            if src is None or dst_pos is None:
+            if src is None or dst is None:
                 raise TQECException(
                     f"There is an endpoint of connector {connector} not filled with a cube."
                 )
