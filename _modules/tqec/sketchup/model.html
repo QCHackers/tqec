@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.sketchup.model &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.sketchup.model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.sketchup.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="kn">import</span> <span class="nn">collada</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+
+<span class="kn">from</span> <span class="nn">tqec.sketchup.block</span> <span class="kn">import</span> <span class="n">Face</span><span class="p">,</span> <span class="n">FaceType</span><span class="p">,</span> <span class="n">load_library_blocks</span><span class="p">,</span> <span class="n">BlockType</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+<span class="n">LIGHT_RGBA</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">DARK_RGBA</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1176470588235294</span><span class="p">,</span> <span class="mf">0.1176470588235294</span><span class="p">,</span> <span class="mf">0.1176470588235294</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">YELLOW_RGBA</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.396078431372549</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ASSET_AUTHOR</span> <span class="o">=</span> <span class="s2">&quot;TQEC Community&quot;</span>
+<span class="n">ASSET_AUTHORING_TOOL_TQEC</span> <span class="o">=</span> <span class="s2">&quot;TQEC Python Package&quot;</span>
+<span class="n">ASSET_AUTHORING_TOOL_SKETCHUP</span> <span class="o">=</span> <span class="s2">&quot;SketchUp 8.0.15158&quot;</span>
+<span class="n">ASSET_UNIT_NAME</span> <span class="o">=</span> <span class="s2">&quot;inch&quot;</span>
+<span class="n">ASSET_UNIT_METER</span> <span class="o">=</span> <span class="mf">0.02539999969303608</span>
+
+<span class="n">MATERIAL_SYMBOL</span> <span class="o">=</span> <span class="s2">&quot;MaterialSymbol&quot;</span>
+
+
+<div class="viewcode-block" id="InstancePosition">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">InstancePosition</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The position of an instance block in the 3D space.&quot;&quot;&quot;</span>
+
+    <span class="n">x</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">y</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">z</span><span class="p">:</span> <span class="nb">float</span>
+
+<div class="viewcode-block" id="InstancePosition.offset_by">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.offset_by">[docs]</a>
+    <span class="k">def</span> <span class="nf">offset_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InstancePosition</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Offset the position by (dx, dy, dz).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">InstancePosition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+</span> <span class="n">dz</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InstancePosition.to_tuple">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.to_tuple">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the position to a tuple.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span></div>
+
+
+<div class="viewcode-block" id="InstancePosition.norm2">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.norm2">[docs]</a>
+    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the squared norm of the position.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">InstancePosition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">InstancePosition</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-12</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">())</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="BlockInstance">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.BlockInstance">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BlockInstance</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An instance of a block in the 3D space.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: The unique id of the instance.</span>
+<span class="sd">        block_type: The type of the block.</span>
+<span class="sd">        position: The position of the block.</span>
+<span class="sd">        scale: The scale of the block. The scale is only valid for connector blocks</span>
+<span class="sd">            and should be non-negative. The length of the connector will be 2 * scale.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">InstancePosition</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span></div>
+
+
+
+<div class="viewcode-block" id="SketchUpModel">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel">[docs]</a>
+<span class="k">class</span> <span class="nc">SketchUpModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The class to represent a SketchUp model.</span>
+
+<span class="sd">        Currently, we only support a single connected component of the model and</span>
+<span class="sd">        the model is represented as a directed graph. The nodes of the graph are</span>
+<span class="sd">        the cube instances and the edges are the connector instances. The position</span>
+<span class="sd">        of the instances can be inferred from the connectivity of the graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="c1"># A monotonic increasing id for instances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connector_to_endpoints</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_cubes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of cube instances.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of connector instances.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the total number of instances.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cubes</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_connectors</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cube_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ids of the cube instances.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SketchUpModel.add_cube">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.add_cube">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_cube</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">,</span> <span class="n">is_root</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a cube instance to the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            block_type: The type of the cube.</span>
+<span class="sd">            is_root: Whether the cube is the root of the model. The root is the</span>
+<span class="sd">                reference point of the model and the position of the root will be</span>
+<span class="sd">                set to (0, 0, 0) when instantiating the model.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The id of the cube instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">block_type</span><span class="o">.</span><span class="n">is_connector</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The block type </span><span class="si">{</span><span class="n">block_type</span><span class="si">}</span><span class="s2"> is a connector while requiring a cube.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">instance_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span>
+        <span class="k">if</span> <span class="n">is_root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The root is already set.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">instance_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">instance_id</span><span class="p">,</span> <span class="n">block_type</span><span class="o">=</span><span class="n">block_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">instance_id</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.get_cube">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.get_cube">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_cube</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cube_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of the cube.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cube_id: The id of the cube instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cube_id</span><span class="p">][</span><span class="s2">&quot;block_type&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.add_connector">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.add_connector">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_connector</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dst</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a connector instance to the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            block_type: The type of the connector.</span>
+<span class="sd">            src: The id of the source cube.</span>
+<span class="sd">            dst: The id of the destination cube.</span>
+<span class="sd">            scale: The scale of the connector. The scale should be non-negative.</span>
+<span class="sd">                The length of the connector will be 2 * scale.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The id of the connector instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">block_type</span><span class="o">.</span><span class="n">is_connector</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The block type </span><span class="si">{</span><span class="n">block_type</span><span class="si">}</span><span class="s2"> is a cube while requiring a connector.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The source </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> cube does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The destination </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2"> cube does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span>
+            <span class="n">dst</span><span class="p">,</span> <span class="n">src</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The connection between </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2"> already exists.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">instance_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">connector_id</span><span class="o">=</span><span class="n">instance_id</span><span class="p">,</span> <span class="n">block_type</span><span class="o">=</span><span class="n">block_type</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connector_to_endpoints</span><span class="p">[</span><span class="n">instance_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">instance_id</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.get_connector">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.get_connector">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connector_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type and scale of the connector.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            connector_id: The id of the connector instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple of the type and scale of the connector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector_to_endpoints</span><span class="p">[</span><span class="n">connector_id</span><span class="p">]</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">src</span><span class="p">][</span><span class="n">dst</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;block_type&quot;</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.set_connector_scale">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.set_connector_scale">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_connector_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connector_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the scale of the connector.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            connector_id: The id of the connector instance.</span>
+<span class="sd">            scale: The scale of the connector. The scale should be non-negative.</span>
+<span class="sd">                The length of the connector will be 2 * scale.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The scale must be non-negative.&quot;</span><span class="p">)</span>
+        <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connector_to_endpoints</span><span class="p">[</span><span class="n">connector_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="p">[</span><span class="n">src</span><span class="p">][</span><span class="n">dst</span><span class="p">][</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.set_scale_for_all_connectors">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.set_scale_for_all_connectors">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_scale_for_all_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the same scale for all the connectors.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scale: The scale of the connectors. The scale should be non-negative.</span>
+<span class="sd">                The length of the connector will be 2 * scale.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The scale must be non-negative.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_instantiate_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">BlockInstance</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate the instances and infer the positions of the instances.&quot;&quot;&quot;</span>
+        <span class="c1"># Currently we assume that the graph is a single connected component</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">(</span><span class="n">as_view</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The graph is not a single connected component.&quot;</span><span class="p">)</span>
+        <span class="n">instances</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">BlockInstance</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># if the root is not set, we use the first cube as the root</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">cube_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">instances</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="n">BlockInstance</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cube</span><span class="p">(</span><span class="n">root</span><span class="p">),</span> <span class="n">InstancePosition</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># traverse through the graph to infer the position of instances</span>
+        <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">edge_bfs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span>
+        <span class="p">):</span>
+            <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_graph</span><span class="p">[</span><span class="n">src</span><span class="p">][</span><span class="n">dst</span><span class="p">]</span>
+            <span class="n">connector_id</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;connector_id&quot;</span><span class="p">]</span>
+            <span class="n">connector_type</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;block_type&quot;</span><span class="p">]</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+                <span class="n">src_pos</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+                <span class="n">connector_pos</span> <span class="o">=</span> <span class="n">src_pos</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">_get_offset_by_connection</span><span class="p">(</span><span class="n">connector_type</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">dst_pos</span> <span class="o">=</span> <span class="n">src_pos</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">_get_offset_by_connection</span><span class="p">(</span><span class="n">connector_type</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">dst</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">instances</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">!=</span> <span class="n">dst_pos</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Cannot resolve the position of cube </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">instances</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span> <span class="o">=</span> <span class="n">BlockInstance</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cube</span><span class="p">(</span><span class="n">dst</span><span class="p">),</span> <span class="n">dst_pos</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dst_pos</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+                <span class="n">connector_pos</span> <span class="o">=</span> <span class="n">dst_pos</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">_get_offset_by_connection</span><span class="p">(</span><span class="n">connector_type</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">src_pos</span> <span class="o">=</span> <span class="n">dst_pos</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">_get_offset_by_connection</span><span class="p">(</span><span class="n">connector_type</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">instances</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">!=</span> <span class="n">src_pos</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Cannot resolve the position of cube </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">instances</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">=</span> <span class="n">BlockInstance</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cube</span><span class="p">(</span><span class="n">src</span><span class="p">),</span> <span class="n">src_pos</span><span class="p">)</span>
+            <span class="n">instances</span><span class="p">[</span><span class="n">connector_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">BlockInstance</span><span class="p">(</span>
+                <span class="n">connector_id</span><span class="p">,</span> <span class="n">connector_type</span><span class="p">,</span> <span class="n">connector_pos</span><span class="p">,</span> <span class="n">scale</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">instances</span>
+
+<div class="viewcode-block" id="SketchUpModel.write">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the model to a DAE file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filepath: The path to the DAE file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_model</span> <span class="o">=</span> <span class="n">_create_base_model</span><span class="p">()</span>
+        <span class="n">instances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instantiate_instances</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
+            <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">block_type</span><span class="o">.</span><span class="n">is_connector</span> <span class="ow">and</span> <span class="n">instance</span><span class="o">.</span><span class="n">scale</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">scales</span> <span class="o">=</span> <span class="n">_get_scale_tuple</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">block_type</span><span class="p">,</span> <span class="n">instance</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+                <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span>
+            <span class="n">child_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;ID</span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;instance_</span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MatrixTransform</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">flatten</span><span class="p">())],</span>
+            <span class="p">)</span>
+            <span class="n">point_to_node</span> <span class="o">=</span> <span class="n">base_model</span><span class="o">.</span><span class="n">library_node_handles</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">block_type</span><span class="p">]</span>
+            <span class="n">instance_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">(</span><span class="n">point_to_node</span><span class="p">)</span>
+            <span class="n">child_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_node</span><span class="p">)</span>
+            <span class="n">base_model</span><span class="o">.</span><span class="n">root_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+        <span class="n">base_model</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SketchUpModel.from_dae_file">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.from_dae_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_dae_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SketchUpModel&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a DAE file and return a :class:`SketchUpModel`.</span>
+
+<span class="sd">        This function assumes that the DAE file is exported from SketchUp or</span>
+<span class="sd">        constructed properly with :class:`SketchUpModel`. Currently we assume</span>
+<span class="sd">        that the all the connectors should be connected to cubes and the formed</span>
+<span class="sd">        graph should be a single connected component.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filepath: Path to the DAE file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A:class:`SketchUpModel` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+        <span class="c1"># Check some invariants about the DAE file</span>
+        <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">scene</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;No scene found in the DAE file.&quot;</span><span class="p">)</span>
+        <span class="n">scene</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Scene</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">scene</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scene</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">scene</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SketchUp&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The &lt;visual_scene&gt; node must have a single child node with the name &#39;SketchUp&#39;.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">sketchup_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cube_instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BlockInstance</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">connector_instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BlockInstance</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ni</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sketchup_node</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">instance_block</span> <span class="o">=</span> <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># Get block type</span>
+                <span class="n">library_block</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span> <span class="o">=</span> <span class="n">instance_block</span><span class="o">.</span><span class="n">node</span>
+                <span class="n">block_type</span> <span class="o">=</span> <span class="n">BlockType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">library_block</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="c1"># Get instance transformation</span>
+                <span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_4d_affine_matrix</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">InstancePosition</span><span class="p">(</span><span class="o">*</span><span class="n">transformation</span><span class="o">.</span><span class="n">translation</span><span class="p">)</span>
+                <span class="c1"># NOTE: Currently rotation is not allowed</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">transformation</span><span class="o">.</span><span class="n">rotation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;There is a non-identity rotation for </span><span class="si">{</span><span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> block at position </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">block_type</span><span class="o">.</span><span class="n">is_connector</span><span class="p">:</span>
+                    <span class="n">scale_index</span> <span class="o">=</span> <span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+                    <span class="n">scale</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">scale</span><span class="p">[</span><span class="n">scale_index</span><span class="p">]</span>
+                    <span class="n">expected_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="n">expected_scale</span><span class="p">[</span><span class="n">scale_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">transformation</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">expected_scale</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                            <span class="s2">&quot;Only the dimension along the connector can be scaled.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">connector_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">BlockInstance</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">block_type</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">transformation</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Scaling of cubes is not allowed.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cube_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BlockInstance</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">block_type</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="s2">&quot;All the children of the &#39;SketchUp&#39; node must have attributes like the following example:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;&lt;node id=&#39;ID2&#39; name=&#39;instance_0&#39;&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;    &lt;matrix&gt;1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1&lt;/matrix&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;    &lt;instance_node url=&#39;#ID3&#39; /&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;&lt;/node&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="c1"># Check the connectivity of the instances</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SketchUpModel</span><span class="p">()</span>
+        <span class="c1"># select the root node as the one with the smallest norm</span>
+        <span class="n">root_pos</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cube_instances</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">norm2</span><span class="p">())</span>
+        <span class="c1"># instance ids will be shuffled when creating the model graph</span>
+        <span class="n">id_old_to_new</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">connector</span> <span class="ow">in</span> <span class="n">connector_instances</span><span class="p">:</span>
+            <span class="n">src_pos</span><span class="p">,</span> <span class="n">dst_pos</span> <span class="o">=</span> <span class="n">_get_endpoint_cube_positions</span><span class="p">(</span><span class="n">connector</span><span class="p">)</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="n">_find_instance_with_position</span><span class="p">(</span><span class="n">cube_instances</span><span class="p">,</span> <span class="n">src_pos</span><span class="p">)</span>
+            <span class="n">dst</span> <span class="o">=</span> <span class="n">_find_instance_with_position</span><span class="p">(</span><span class="n">cube_instances</span><span class="p">,</span> <span class="n">dst_pos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">src</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dst_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;There is an endpoint of connector </span><span class="si">{</span><span class="n">connector</span><span class="si">}</span><span class="s2"> not filled with a cube.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">cube</span> <span class="ow">in</span> <span class="p">[</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">id_old_to_new</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">new_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">add_cube</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">block_type</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">root_pos</span><span class="p">)</span>
+                <span class="n">id_old_to_new</span><span class="p">[</span><span class="n">cube</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_id</span>
+            <span class="n">connector_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">add_connector</span><span class="p">(</span>
+                <span class="n">connector</span><span class="o">.</span><span class="n">block_type</span><span class="p">,</span>
+                <span class="n">id_old_to_new</span><span class="p">[</span><span class="n">src</span><span class="o">.</span><span class="n">id</span><span class="p">],</span>
+                <span class="n">id_old_to_new</span><span class="p">[</span><span class="n">dst</span><span class="o">.</span><span class="n">id</span><span class="p">],</span>
+                <span class="n">connector</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">id_old_to_new</span><span class="p">[</span><span class="n">connector</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">connector_id</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_old_to_new</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cube_instances</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">connector_instances</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The graph from the DAE file is not a single connected component.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+</div>
+
+
+
+<span class="k">class</span> <span class="nc">_BaseSketchUpModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">,</span>
+        <span class="n">root_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span>
+        <span class="n">library_node_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library nodes and</span>
+<span class="sd">        the necessary material, geometry definitions.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="n">root_node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">library_node_handles</span> <span class="o">=</span> <span class="n">library_node_handles</span>
+
+
+<span class="k">def</span> <span class="nf">_create_lambert_effect</span><span class="p">(</span>
+    <span class="n">id_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rgba</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">:</span>
+    <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span>
+        <span class="n">id_str</span><span class="p">,</span>
+        <span class="p">[],</span>
+        <span class="s2">&quot;lambert&quot;</span><span class="p">,</span>
+        <span class="n">diffuse</span><span class="o">=</span><span class="n">rgba</span><span class="p">,</span>
+        <span class="n">emission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">specular</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">shininess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">reflectivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">transparent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ambient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">reflective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">double_sided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">effect</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">effect</span>
+
+
+<span class="k">def</span> <span class="nf">_add_asset_info</span><span class="p">(</span><span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">contributors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">Contributor</span><span class="p">(</span>
+                <span class="n">author</span><span class="o">=</span><span class="n">ASSET_AUTHOR</span><span class="p">,</span> <span class="n">authoring_tool</span><span class="o">=</span><span class="n">ASSET_AUTHORING_TOOL_TQEC</span>
+            <span class="p">),</span>
+            <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">Contributor</span><span class="p">(</span><span class="n">authoring_tool</span><span class="o">=</span><span class="n">ASSET_AUTHORING_TOOL_SKETCHUP</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitmeter</span> <span class="o">=</span> <span class="n">ASSET_UNIT_METER</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitname</span> <span class="o">=</span> <span class="n">ASSET_UNIT_NAME</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">upaxis</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">UP_AXIS</span><span class="o">.</span><span class="n">Z_UP</span>
+
+
+<span class="k">def</span> <span class="nf">_add_face_geometry_node</span><span class="p">(</span>
+    <span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">,</span>
+    <span class="n">face</span><span class="p">:</span> <span class="n">Face</span><span class="p">,</span>
+    <span class="n">materials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">],</span>
+    <span class="n">geom_node_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Face</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Note: currently we completely ignore the normals.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">geom_node_dict</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Create geometry</span>
+    <span class="n">id_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FaceID</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geom_node_dict</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">vert_src</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
+        <span class="n">id_str</span> <span class="o">+</span> <span class="s2">&quot;_verts&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="p">[</span><span class="n">vert_src</span><span class="p">])</span>
+    <span class="n">input_list</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">InputList</span><span class="p">()</span>
+    <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;VERTEX&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">vert_src</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">triset</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">createTriangleSet</span><span class="p">(</span>
+        <span class="n">Face</span><span class="o">.</span><span class="n">get_triangle_indices</span><span class="p">(),</span> <span class="n">input_list</span><span class="p">,</span> <span class="n">MATERIAL_SYMBOL</span>
+    <span class="p">)</span>
+    <span class="n">geom</span><span class="o">.</span><span class="n">primitives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triset</span><span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+    <span class="c1"># Create geometry node</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;UVSET0&quot;</span><span class="p">,</span> <span class="s2">&quot;TEXCOORD&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)]</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="n">materials</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">face_type</span><span class="p">]</span>
+    <span class="n">geom_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">(</span>
+        <span class="n">geom</span><span class="p">,</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MaterialNode</span><span class="p">(</span><span class="n">MATERIAL_SYMBOL</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)]</span>
+    <span class="p">)</span>
+    <span class="n">geom_node_dict</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_node</span>
+
+
+<span class="k">def</span> <span class="nf">_create_base_model</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">_BaseSketchUpModel</span><span class="p">:</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">()</span>
+    <span class="c1"># Add asset info</span>
+    <span class="n">_add_asset_info</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="c1"># Add effects(light &lt;--&gt; Z, dark &lt;--&gt; X, yellow &lt;--&gt; H)</span>
+    <span class="n">light_effect</span> <span class="o">=</span> <span class="n">_create_lambert_effect</span><span class="p">(</span><span class="s2">&quot;light_effect&quot;</span><span class="p">,</span> <span class="n">LIGHT_RGBA</span><span class="p">)</span>
+    <span class="n">dark_effect</span> <span class="o">=</span> <span class="n">_create_lambert_effect</span><span class="p">(</span><span class="s2">&quot;dark_effect&quot;</span><span class="p">,</span> <span class="n">DARK_RGBA</span><span class="p">)</span>
+    <span class="n">yellow_effect</span> <span class="o">=</span> <span class="n">_create_lambert_effect</span><span class="p">(</span><span class="s2">&quot;yellow_effect&quot;</span><span class="p">,</span> <span class="n">YELLOW_RGBA</span><span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">light_effect</span><span class="p">,</span> <span class="n">dark_effect</span><span class="p">,</span> <span class="n">yellow_effect</span><span class="p">])</span>
+    <span class="c1"># Add materials</span>
+    <span class="n">light_material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
+        <span class="s2">&quot;light_material&quot;</span><span class="p">,</span> <span class="s2">&quot;light_material&quot;</span><span class="p">,</span> <span class="n">light_effect</span>
+    <span class="p">)</span>
+    <span class="n">dark_material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
+        <span class="s2">&quot;dark_material&quot;</span><span class="p">,</span> <span class="s2">&quot;dark_material&quot;</span><span class="p">,</span> <span class="n">dark_effect</span>
+    <span class="p">)</span>
+    <span class="n">yellow_material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
+        <span class="s2">&quot;yellow_material&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow_material&quot;</span><span class="p">,</span> <span class="n">yellow_effect</span>
+    <span class="p">)</span>
+    <span class="n">materials</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">FaceType</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">dark_material</span><span class="p">,</span>
+        <span class="n">FaceType</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="n">light_material</span><span class="p">,</span>
+        <span class="n">FaceType</span><span class="o">.</span><span class="n">H</span><span class="p">:</span> <span class="n">yellow_material</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">light_material</span><span class="p">,</span> <span class="n">dark_material</span><span class="p">,</span> <span class="n">yellow_material</span><span class="p">])</span>
+    <span class="c1"># Add geometries</span>
+    <span class="n">geom_node_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">library_blocks</span> <span class="o">=</span> <span class="n">load_library_blocks</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">library_blocks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">block</span><span class="o">.</span><span class="n">faces</span><span class="p">:</span>
+            <span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">materials</span><span class="p">,</span> <span class="n">geom_node_dict</span><span class="p">)</span>
+    <span class="c1"># Add library nodes</span>
+    <span class="n">node_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">library_blocks</span><span class="p">:</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">geom_node_dict</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">block</span><span class="o">.</span><span class="n">faces</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">block_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">node_handles</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">block_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+
+    <span class="c1"># Create scene</span>
+    <span class="n">root_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">)</span>
+    <span class="n">scene</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="s2">&quot;scene&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">root_node</span><span class="p">])</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
+    <span class="k">return</span> <span class="n">_BaseSketchUpModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">root_node</span><span class="p">,</span> <span class="n">node_handles</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_offset_by_connection</span><span class="p">(</span>
+    <span class="n">connector_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">,</span>
+    <span class="n">for_cube</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">offset_index</span> <span class="o">=</span> <span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">for_cube</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">forward</span><span class="p">:</span>
+            <span class="n">offset_val</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">offset_val</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">scale</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">forward</span><span class="p">:</span>
+            <span class="n">offset_val</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">offset_val</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">scale</span>
+    <span class="n">offset</span><span class="p">[</span><span class="n">offset_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset_val</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_scale_tuple</span><span class="p">(</span><span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">block_type</span><span class="o">.</span><span class="n">is_connector</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The block type must be a connector to be scalable.&quot;</span><span class="p">)</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">scale_index</span> <span class="o">=</span> <span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+    <span class="n">scales</span><span class="p">[</span><span class="n">scale_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Transformation">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.Transformation">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Transformation</span><span class="p">:</span>
+    <span class="n">translation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
+    <span class="n">rotation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
+    <span class="n">affine_matrix</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Transformation.from_4d_affine_matrix">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.model.Transformation.from_4d_affine_matrix">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Transformation&quot;</span><span class="p">:</span>
+        <span class="n">translation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">mat</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_get_endpoint_cube_positions</span><span class="p">(</span>
+    <span class="n">connector</span><span class="p">:</span> <span class="n">BlockInstance</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">InstancePosition</span><span class="p">,</span> <span class="n">InstancePosition</span><span class="p">]:</span>
+    <span class="n">src_offset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">dst_offset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">offset_index</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+    <span class="n">src_offset</span><span class="p">[</span><span class="n">offset_index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">dst_offset</span><span class="p">[</span><span class="n">offset_index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">connector</span><span class="o">.</span><span class="n">scale</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">connector</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span><span class="o">*</span><span class="n">src_offset</span><span class="p">),</span>
+        <span class="n">connector</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span><span class="o">*</span><span class="n">dst_offset</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_find_instance_with_position</span><span class="p">(</span>
+    <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BlockInstance</span><span class="p">],</span> <span class="n">position</span><span class="p">:</span> <span class="n">InstancePosition</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockInstance</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+        <span class="c1"># NOTE: we use the __eq__ method of InstancePosition</span>
+        <span class="c1"># to compare the float numbers</span>
+        <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">position</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">instance</span>
+    <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

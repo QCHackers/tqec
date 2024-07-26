@@ -4,10 +4,18 @@ tqec.sketchup package
 Submodules
 ----------
 
-tqec.sketchup.dae\_parse module
--------------------------------
+tqec.sketchup.block module
+--------------------------
 
-.. automodule:: tqec.sketchup.dae_parse
+.. automodule:: tqec.sketchup.block
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.sketchup.model module
+--------------------------
+
+.. automodule:: tqec.sketchup.model
    :members:
    :undoc-members:
    :show-inheritance:

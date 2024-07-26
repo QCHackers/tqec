@@ -81,67 +81,524 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="module-tqec.sketchup.dae_parse">
-<span id="tqec-sketchup-dae-parse-module"></span><h2>tqec.sketchup.dae_parse module<a class="headerlink" href="#module-tqec.sketchup.dae_parse" title="Link to this heading"></a></h2>
+<section id="module-tqec.sketchup.block">
+<span id="tqec-sketchup-block-module"></span><h2>tqec.sketchup.block module<a class="headerlink" href="#module-tqec.sketchup.block" title="Link to this heading"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.Node">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.dae_parse.NodePosition" title="tqec.sketchup.dae_parse.NodePosition"><span class="pre">NodePosition</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/dae_parse.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.dae_parse.Node" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Block">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'BlockType'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'list[Face]'</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#Block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.Block" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A node in the SketchUp model with a specific type and position.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.Node.node_type">
-<span class="sig-name descname"><span class="pre">node_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tqec.sketchup.dae_parse.Node.node_type" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Block.block_type">
+<span class="sig-name descname"><span class="pre">block_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></em><a class="headerlink" href="#tqec.sketchup.block.Block.block_type" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.Node.position">
-<span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.sketchup.dae_parse.NodePosition" title="tqec.sketchup.dae_parse.NodePosition"><span class="pre">NodePosition</span></a></em><a class="headerlink" href="#tqec.sketchup.dae_parse.Node.position" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Block.faces">
+<span class="sig-name descname"><span class="pre">faces</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.block.Face" title="tqec.sketchup.block.Face"><span class="pre">Face</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.block.Block.faces" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.NodePosition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NodePosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/dae_parse.html#NodePosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.dae_parse.NodePosition" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Position of a node in 3D space.</p>
-<p>The (x,y,z) axis correspond to the (R,G,B) axis in the SketchUp model.</p>
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BlockType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#BlockType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.BlockType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid block types in the library.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.OXZ">
+<span class="sig-name descname"><span class="pre">OXZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'oxz'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.OXZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.OXZH">
+<span class="sig-name descname"><span class="pre">OXZH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'oxzh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.OXZH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.OZX">
+<span class="sig-name descname"><span class="pre">OZX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ozx'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.OZX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.OZXH">
+<span class="sig-name descname"><span class="pre">OZXH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ozxh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.OZXH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XOZ">
+<span class="sig-name descname"><span class="pre">XOZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xoz'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XOZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XOZH">
+<span class="sig-name descname"><span class="pre">XOZH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xozh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XOZH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XXZ">
+<span class="sig-name descname"><span class="pre">XXZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xxz'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XXZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XZO">
+<span class="sig-name descname"><span class="pre">XZO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xzo'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XZO" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XZOH">
+<span class="sig-name descname"><span class="pre">XZOH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xzoh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XZOH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XZX">
+<span class="sig-name descname"><span class="pre">XZX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xzx'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XZX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.XZZ">
+<span class="sig-name descname"><span class="pre">XZZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'xzz'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.XZZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZOX">
+<span class="sig-name descname"><span class="pre">ZOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zox'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZOX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZOXH">
+<span class="sig-name descname"><span class="pre">ZOXH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zoxh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZOXH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZXO">
+<span class="sig-name descname"><span class="pre">ZXO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zxo'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZXO" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZXOH">
+<span class="sig-name descname"><span class="pre">ZXOH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zxoh'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZXOH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZXX">
+<span class="sig-name descname"><span class="pre">ZXX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zxx'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZXX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZXZ">
+<span class="sig-name descname"><span class="pre">ZXZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zxz'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZXZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.ZZX">
+<span class="sig-name descname"><span class="pre">ZZX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'zzx'</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.ZZX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.NodePosition.to_tuple">
-<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/dae_parse.html#NodePosition.to_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.dae_parse.NodePosition.to_tuple" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.from_string">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#BlockType.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.BlockType.from_string" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.has_hadamard">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_hadamard</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.has_hadamard" title="Link to this definition"></a></dt>
+<dd><p>Check if the block type has a hadamard transition.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.block.BlockType.is_connector">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tqec.sketchup.block.BlockType.is_connector" title="Link to this definition"></a></dt>
+<dd><p>Check if the block type is a connector.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.block.FaceType" title="tqec.sketchup.block.FaceType"><span class="pre">FaceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Y'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#Face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.Face" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A rectangle face in the 3d space.</p>
+<p>(axis_width, axis_height, axis_normal) is by the right-hand rule, which
+only has 3 possible values: (X, Y, Z) | (Y, Z, X) | (Z, X, Y).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.face_type">
+<span class="sig-name descname"><span class="pre">face_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.sketchup.block.FaceType" title="tqec.sketchup.block.FaceType"><span class="pre">FaceType</span></a></em><a class="headerlink" href="#tqec.sketchup.block.Face.face_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.get_triangle_indices">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_triangle_indices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#Face.get_triangle_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.Face.get_triangle_indices" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.get_vertices">
+<span class="sig-name descname"><span class="pre">get_vertices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#Face.get_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.Face.get_vertices" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.NodePosition.x">
-<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.dae_parse.NodePosition.x" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.sketchup.block.Face.height" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.NodePosition.y">
-<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.dae_parse.NodePosition.y" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.normal_direction">
+<span class="sig-name descname"><span class="pre">normal_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Y'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.block.Face.normal_direction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.translated_by">
+<span class="sig-name descname"><span class="pre">translated_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block.Face" title="tqec.sketchup.block.Face"><span class="pre">Face</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#Face.translated_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.Face.translated_by" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.NodePosition.z">
-<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.dae_parse.NodePosition.z" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.translation">
+<span class="sig-name descname"><span class="pre">translation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#tqec.sketchup.block.Face.translation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.Face.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.sketchup.block.Face.width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FaceType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#FaceType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.FaceType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType.H">
+<span class="sig-name descname"><span class="pre">H</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'H'</span></em><a class="headerlink" href="#tqec.sketchup.block.FaceType.H" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType.X">
+<span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'X'</span></em><a class="headerlink" href="#tqec.sketchup.block.FaceType.X" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType.Z">
+<span class="sig-name descname"><span class="pre">Z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Z'</span></em><a class="headerlink" href="#tqec.sketchup.block.FaceType.Z" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType.from_string">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block.FaceType" title="tqec.sketchup.block.FaceType"><span class="pre">FaceType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#FaceType.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.FaceType.from_string" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block.FaceType.opposite">
+<span class="sig-name descname"><span class="pre">opposite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block.FaceType" title="tqec.sketchup.block.FaceType"><span class="pre">FaceType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#FaceType.opposite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.FaceType.opposite" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="tqec.sketchup.dae_parse.parse_dae_file_to_nodes">
-<span class="sig-name descname"><span class="pre">parse_dae_file_to_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.dae_parse.Node" title="tqec.sketchup.dae_parse.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/dae_parse.html#parse_dae_file_to_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.dae_parse.parse_dae_file_to_nodes" title="Link to this definition"></a></dt>
-<dd><p>Parse a SketchUp exported DAE file and return a list of nodes.</p>
-<p>This function assumes that the DAE file is exported from SketchUp and
-the structure of the DAE file is consistent with the SketchUp export.</p>
+<dt class="sig sig-object py" id="tqec.sketchup.block.load_library_blocks">
+<span class="sig-name descname"><span class="pre">load_library_blocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.block.Block" title="tqec.sketchup.block.Block"><span class="pre">Block</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block.html#load_library_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block.load_library_blocks" title="Link to this definition"></a></dt>
+<dd><p>Load the 18 library blocks.</p>
+</dd></dl>
+
+</section>
+<section id="module-tqec.sketchup.model">
+<span id="tqec-sketchup-model-module"></span><h2>tqec.sketchup.model module<a class="headerlink" href="#module-tqec.sketchup.model" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.model.BlockInstance">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BlockInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.model.InstancePosition" title="tqec.sketchup.model.InstancePosition"><span class="pre">InstancePosition</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#BlockInstance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.BlockInstance" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An instance of a block in the 3D space.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.BlockInstance.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#tqec.sketchup.model.BlockInstance.id" title="Link to this definition"></a></dt>
+<dd><p>The unique id of the instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.BlockInstance.block_type">
+<span class="sig-name descname"><span class="pre">block_type</span></span><a class="headerlink" href="#tqec.sketchup.model.BlockInstance.block_type" title="Link to this definition"></a></dt>
+<dd><p>The type of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType">tqec.sketchup.block.BlockType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.BlockInstance.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#tqec.sketchup.model.BlockInstance.position" title="Link to this definition"></a></dt>
+<dd><p>The position of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tqec.sketchup.model.InstancePosition" title="tqec.sketchup.model.InstancePosition">tqec.sketchup.model.InstancePosition</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.BlockInstance.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#tqec.sketchup.model.BlockInstance.scale" title="Link to this definition"></a></dt>
+<dd><p>The scale of the block. The scale is only valid for connector blocks
+and should be non-negative. The length of the connector will be 2 * scale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">block_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tqec.sketchup.model.InstancePosition" title="tqec.sketchup.model.InstancePosition"><span class="pre">InstancePosition</span></a></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">scale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InstancePosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#InstancePosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.InstancePosition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The position of an instance block in the 3D space.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.norm2">
+<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#InstancePosition.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.norm2" title="Link to this definition"></a></dt>
+<dd><p>Return the squared norm of the position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.offset_by">
+<span class="sig-name descname"><span class="pre">offset_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.model.InstancePosition" title="tqec.sketchup.model.InstancePosition"><span class="pre">InstancePosition</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#InstancePosition.offset_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.offset_by" title="Link to this definition"></a></dt>
+<dd><p>Offset the position by (dx, dy, dz).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.to_tuple">
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#InstancePosition.to_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.to_tuple" title="Link to this definition"></a></dt>
+<dd><p>Convert the position to a tuple.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.x" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.y" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.InstancePosition.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#tqec.sketchup.model.InstancePosition.z" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SketchUpModel</span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The class to represent a SketchUp model.</p>
+<p>Currently, we only support a single connected component of the model and
+the model is represented as a directed graph. The nodes of the graph are
+the cube instances and the edges are the connector instances. The position
+of the instances can be inferred from the connectivity of the graph.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.add_connector">
+<span class="sig-name descname"><span class="pre">add_connector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.add_connector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.add_connector" title="Link to this definition"></a></dt>
+<dd><p>Add a connector instance to the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block_type</strong> – The type of the connector.</p></li>
+<li><p><strong>src</strong> – The id of the source cube.</p></li>
+<li><p><strong>dst</strong> – The id of the destination cube.</p></li>
+<li><p><strong>scale</strong> – The scale of the connector. The scale should be non-negative.
+The length of the connector will be 2 * scale.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The id of the connector instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.add_cube">
+<span class="sig-name descname"><span class="pre">add_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.add_cube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.add_cube" title="Link to this definition"></a></dt>
+<dd><p>Add a cube instance to the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block_type</strong> – The type of the cube.</p></li>
+<li><p><strong>is_root</strong> – Whether the cube is the root of the model. The root is the
+reference point of the model and the position of the root will be
+set to (0, 0, 0) when instantiating the model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The id of the cube instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.cube_ids">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cube_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.cube_ids" title="Link to this definition"></a></dt>
+<dd><p>Return the ids of the cube instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.from_dae_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dae_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.model.SketchUpModel" title="tqec.sketchup.model.SketchUpModel"><span class="pre">SketchUpModel</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.from_dae_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.from_dae_file" title="Link to this definition"></a></dt>
+<dd><p>Parse a DAE file and return a <a class="reference internal" href="#tqec.sketchup.model.SketchUpModel" title="tqec.sketchup.model.SketchUpModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">SketchUpModel</span></code></a>.</p>
+<p>This function assumes that the DAE file is exported from SketchUp or
+constructed properly with <a class="reference internal" href="#tqec.sketchup.model.SketchUpModel" title="tqec.sketchup.model.SketchUpModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">SketchUpModel</span></code></a>. Currently we assume
+that the all the connectors should be connected to cubes and the formed
+graph should be a single connected component.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filepath</strong> – Path to the DAE file.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of Node objects representing the nodes in the SketchUp model.</p>
+<dd class="field-even"><p>A:class:<cite>SketchUpModel</cite> object.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.get_connector">
+<span class="sig-name descname"><span class="pre">get_connector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connector_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.get_connector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.get_connector" title="Link to this definition"></a></dt>
+<dd><p>Return the type and scale of the connector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connector_id</strong> – The id of the connector instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of the type and scale of the connector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.get_cube">
+<span class="sig-name descname"><span class="pre">get_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block.BlockType" title="tqec.sketchup.block.BlockType"><span class="pre">BlockType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.get_cube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.get_cube" title="Link to this definition"></a></dt>
+<dd><p>Return the type of the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cube_id</strong> – The id of the cube instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.num_connectors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_connectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.num_connectors" title="Link to this definition"></a></dt>
+<dd><p>Return the number of connector instances.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.num_cubes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_cubes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.num_cubes" title="Link to this definition"></a></dt>
+<dd><p>Return the number of cube instances.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.num_instances">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_instances</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.num_instances" title="Link to this definition"></a></dt>
+<dd><p>Return the total number of instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.set_connector_scale">
+<span class="sig-name descname"><span class="pre">set_connector_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connector_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.set_connector_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.set_connector_scale" title="Link to this definition"></a></dt>
+<dd><p>Set the scale of the connector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connector_id</strong> – The id of the connector instance.</p></li>
+<li><p><strong>scale</strong> – The scale of the connector. The scale should be non-negative.
+The length of the connector will be 2 * scale.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.set_scale_for_all_connectors">
+<span class="sig-name descname"><span class="pre">set_scale_for_all_connectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.set_scale_for_all_connectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.set_scale_for_all_connectors" title="Link to this definition"></a></dt>
+<dd><p>Set the same scale for all the connectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale</strong> – The scale of the connectors. The scale should be non-negative.
+The length of the connector will be 2 * scale.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.SketchUpModel.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#SketchUpModel.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.SketchUpModel.write" title="Link to this definition"></a></dt>
+<dd><p>Write the model to a DAE file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – The path to the DAE file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'npt.NDArray[np.float_]'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'npt.NDArray[np.float_]'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'npt.NDArray[np.float_]'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">affine_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'npt.NDArray[np.float_]'</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#Transformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.Transformation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation.affine_matrix">
+<span class="sig-name descname"><span class="pre">affine_matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.model.Transformation.affine_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation.from_4d_affine_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_4d_affine_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.model.Transformation" title="tqec.sketchup.model.Transformation"><span class="pre">Transformation</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/model.html#Transformation.from_4d_affine_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.model.Transformation.from_4d_affine_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation.rotation">
+<span class="sig-name descname"><span class="pre">rotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.model.Transformation.rotation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.model.Transformation.scale" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.sketchup.model.Transformation.translation">
+<span class="sig-name descname"><span class="pre">translation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.model.Transformation.translation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
