@@ -65,5 +65,13 @@ dependencies = { file = "requirements.txt" }
 
 # See https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
 [[tool.mypy.overrides]]
-module = ["stim", "pysat", "pysat.solvers", "collada", "networkx", "stimcirq"]
+module = [
+    "stim",
+    "pysat",
+    "pysat.solvers",
+    "collada",
+    "collada.source",
+    "networkx",
+    "stimcirq",
+]
 ignore_missing_imports = true

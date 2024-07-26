@@ -5,6 +5,7 @@ import numpy
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
+from tqec.templates.display import display_template
 from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
 from tqec.templates.scale import (
     LinearFunction,
@@ -196,3 +197,10 @@ class AlternatingCornerSquareTemplate(Template):
         if orientation == TemplateOrientation.VERTICAL:
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
+
+
+if __name__ == "__main__":
+    template = AlternatingCornerSquareTemplate(
+        LinearFunction(2, 0), CornerPositionEnum.LOWER_RIGHT
+    )
+    display_template(template)

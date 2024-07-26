@@ -15,7 +15,8 @@ import typing as ty
 import stim
 from tqec.exceptions import TQECException
 
-_IXYZ: list[ty.Literal["I", "X", "Y", "Z"]] = ["I", "X", "Y", "Z"]
+PAULI_STRING_TYPE = ty.Literal["I", "X", "Y", "Z"]
+_IXYZ: list[PAULI_STRING_TYPE] = ["I", "X", "Y", "Z"]
 
 
 class PauliString:
@@ -27,15 +28,13 @@ class PauliString:
         As such, it is illegal to initialise this class with an identity term.
     """
 
-    def __init__(
-        self, pauli_by_qubit: dict[int, ty.Literal["I", "X", "Y", "Z"]]
-    ) -> None:
+    def __init__(self, pauli_by_qubit: dict[int, PAULI_STRING_TYPE]) -> None:
         for qubit, pauli in pauli_by_qubit.items():
             if pauli not in _IXYZ:
                 raise TQECException(
                     f"Invalid Pauli operator {pauli} for qubit {qubit}, expected I, X, Y, or Z."
                 )
-        self._pauli_by_qubit: dict[int, ty.Literal["I", "X", "Y", "Z"]] = {
+        self._pauli_by_qubit: dict[int, PAULI_STRING_TYPE] = {
             q: pauli for q, pauli in sorted(pauli_by_qubit.items()) if pauli != "I"
         }
         self._hash = hash(tuple(self._pauli_by_qubit.items()))
@@ -92,7 +91,7 @@ class PauliString:
         return bool(self._pauli_by_qubit)
 
     def __mul__(self, other: PauliString) -> PauliString:
-        result = {}
+        result: dict[int, PAULI_STRING_TYPE] = {}
         for q in self._pauli_by_qubit.keys() | other._pauli_by_qubit.keys():
             a = self._pauli_by_qubit.get(q, "I")
             b = other._pauli_by_qubit.get(q, "I")
@@ -102,7 +101,7 @@ class PauliString:
             bz = b in "YZ"
             cx = ax ^ bx
             cz = az ^ bz
-            c = "IXZY"[cx + cz * 2]
+            c = _IXYZ[cx + cz * 2]
             if c != "I":
                 result[q] = c
         return PauliString(result)
@@ -191,12 +190,12 @@ class PauliString:
     def __hash__(self) -> int:
         return self._hash
 
-    def __getitem__(self, index: int) -> ty.Literal["I", "X", "Y", "Z"]:
+    def __getitem__(self, index: int) -> PAULI_STRING_TYPE:
         return self._pauli_by_qubit.get(index, "I")
 
 
 def pauli_literal_to_bools(
-    literal: ty.Literal["I", "X", "Y", "Z"],
+    literal: PAULI_STRING_TYPE,
 ) -> tuple[bool, bool]:
     if literal == "I":
         return (False, False)

@@ -1,16 +1,17 @@
 from __future__ import annotations
 
+import pathlib
 import typing as ty
 from dataclasses import dataclass
-import pathlib
 
 import collada
+import collada.source
 import networkx as nx
 import numpy as np
 import numpy.typing as npt
 
-from tqec.sketchup.block import Face, FaceType, load_library_blocks, BlockType
 from tqec.exceptions import TQECException
+from tqec.sketchup.block import BlockType, Face, FaceType, load_library_blocks
 
 LIGHT_RGBA = (1, 1, 1, 1)
 DARK_RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1)
@@ -45,7 +46,7 @@ class InstancePosition:
         """Return the squared norm of the position."""
         return self.x**2 + self.y**2 + self.z**2
 
-    def __eq__(self, other: InstancePosition) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, InstancePosition) and all(
             abs(i - j) < 1e-12 for i, j in zip(self.to_tuple(), other.to_tuple())
         )
@@ -422,8 +423,8 @@ def _create_lambert_effect(
         diffuse=rgba,
         emission=None,
         specular=None,
-        shininess=None,
-        reflectivity=None,
+        shininess=0,
+        reflectivity=0,
         transparent=None,
         ambient=None,
         reflective=None,
@@ -434,6 +435,8 @@ def _create_lambert_effect(
 
 
 def _add_asset_info(mesh: collada.Collada) -> None:
+    if mesh.assetInfo is None:
+        return
     mesh.assetInfo.contributors.extend(
         [
             collada.asset.Contributor(
@@ -504,7 +507,7 @@ def _create_base_model() -> _BaseSketchUpModel:
     }
     mesh.materials.extend([light_material, dark_material, yellow_material])
     # Add geometries
-    geom_node_dict = {}
+    geom_node_dict: dict[Face, collada.scene.GeometryNode] = {}
     library_blocks = load_library_blocks()
     for block in library_blocks:
         for face in block.faces:
@@ -532,7 +535,7 @@ def _get_offset_by_connection(
     forward: bool,
     scale: float = 1.0,
 ) -> tuple[float, float, float]:
-    offset = [0, 0, 0]
+    offset: list[float] = [0, 0, 0]
     offset_index = connector_type.value.index("o")
     if for_cube:
         if forward:
@@ -545,16 +548,16 @@ def _get_offset_by_connection(
         else:
             offset_val = -2 * scale
     offset[offset_index] = offset_val
-    return tuple(offset)
+    return (offset[0], offset[1], offset[2])
 
 
 def _get_scale_tuple(block_type: BlockType, scale: float) -> tuple[float, float, float]:
     if not block_type.is_connector:
         raise TQECException("The block type must be a connector to be scalable.")
-    scales = [1, 1, 1]
+    scales: list[float] = [1, 1, 1]
     scale_index = block_type.value.index("o")
     scales[scale_index] = scale
-    return tuple(scales)
+    return (scales[0], scales[1], scales[2])
 
 
 @dataclass(frozen=True)
@@ -575,8 +578,8 @@ class Transformation:
 def _get_endpoint_cube_positions(
     connector: BlockInstance,
 ) -> tuple[InstancePosition, InstancePosition]:
-    src_offset = [0, 0, 0]
-    dst_offset = [0, 0, 0]
+    src_offset: list[float] = [0, 0, 0]
+    dst_offset: list[float] = [0, 0, 0]
     offset_index = connector.block_type.value.index("o")
     src_offset[offset_index] = -1
     dst_offset[offset_index] = 2 * connector.scale

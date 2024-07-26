@@ -93,10 +93,8 @@ def _try_merge_anticommuting_flows_inplace(flows: list[BoundaryStabilizer]):
         # will be merged and re-compute the anti-commuting stabilizers and map.
         for i in sorted(flows_indices_of_stabilizers_to_merge, reverse=True):
             flows.pop(i)
-        anti_commuting_index_to_flows_index: list[int] = (
-            _anti_commuting_stabilizers_indices(flows)
-        )
-        anticommuting_stabilizers: list[PauliString] = [
+        anti_commuting_index_to_flows_index = _anti_commuting_stabilizers_indices(flows)
+        anticommuting_stabilizers = [
             flows[fi].before_collapse for fi in anti_commuting_index_to_flows_index
         ]
         # Compute the resulting commuting stabilizer.

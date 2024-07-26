@@ -159,7 +159,9 @@ def test_manhattan_distance():
     X0 = PauliString({0: "X"})
     Z1 = PauliString({1: "Z"})
 
-    qubits_coordinates = {i: (2.0 * i, i / 2) for i in range(10)}
+    qubits_coordinates: dict[int, tuple[float, ...]] = {
+        i: (2.0 * i, i / 2) for i in range(10)
+    }
     a = BoundaryStabilizer(
         X0Z1,
         [X0, Z1],
