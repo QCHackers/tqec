@@ -91,12 +91,12 @@ class SketchUpModel:
     @property
     def num_cubes(self) -> int:
         """Return the number of cube instances."""
-        return self._instance_graph.number_of_nodes()
+        return ty.cast(int, self._instance_graph.number_of_nodes())
 
     @property
     def num_connectors(self) -> int:
         """Return the number of connector instances."""
-        return self._instance_graph.number_of_edges()
+        return ty.cast(int, self._instance_graph.number_of_edges())
 
     @property
     def num_instances(self) -> int:
@@ -139,7 +139,7 @@ class SketchUpModel:
         Args:
             cube_id: The id of the cube instance.
         """
-        return self._instance_graph.nodes[cube_id]["block_type"]
+        return ty.cast(BlockType, self._instance_graph.nodes[cube_id]["block_type"])
 
     def add_connector(
         self, block_type: BlockType, src: int, dst: int, scale: float = 1.0

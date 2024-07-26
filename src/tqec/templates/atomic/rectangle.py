@@ -194,8 +194,8 @@ class RawRectangleTemplate(Template):
         self._check_plaquette_number(plaquette_indices, self.expected_plaquettes_number)
         try:
             # Use numpy indexing to instantiate the raw values.
-            plaquette_indices_array = numpy.array(plaquette_indices, dtype=int)
-            indices = numpy.array(self._indices, dtype=int)
+            plaquette_indices_array = numpy.array(plaquette_indices, dtype=numpy.int_)
+            indices = numpy.array(self._indices, dtype=numpy.int_)
             return plaquette_indices_array[indices]
         except IndexError as ex:
             raise TQECException(
