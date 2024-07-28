@@ -225,13 +225,13 @@ class ScheduledCircuit:
             )
         return ScheduledCircuit(circuit, final_schedule)
 
-    @property
-    def schedule(self) -> list[int]:
-        return self._schedule
-
     def _set_schedule(self, new_schedule: list[int]) -> None:
         ScheduledCircuit._check_input_validity(self.raw_circuit, new_schedule)
         self._schedule = new_schedule
+
+    @property
+    def schedule(self) -> list[int]:
+        return self._schedule
 
     @schedule.setter
     def schedule(self, new_schedule: list[int]) -> None:

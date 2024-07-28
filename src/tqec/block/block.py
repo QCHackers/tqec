@@ -85,7 +85,7 @@ class StandardComputationBlock(ComputationBlock):
     final_plaquettes: list[Plaquette]
     repeating_plaquettes: tuple[list[Plaquette], LinearFunction] | None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
         if len(self.initial_plaquettes) != expected_plaquette_number:
             raise TQECException(
