@@ -6,11 +6,7 @@ from .atomic import (
 )
 from .base import Template, TemplateWithIndices
 from .composed import ComposedTemplate
-from .constructions import (
-    QubitRectangleTemplate,
-    QubitSquareTemplate,
-    ScalableCorner,
-)
+from .constructions import DenseQubitSquareTemplate
 from .display import (
     display_template,
     display_templates_ascii,
