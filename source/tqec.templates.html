@@ -128,14 +128,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.constructions.html#module-tqec.templates.constructions.qubit">tqec.templates.constructions.qubit module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate"><code class="docutils literal notranslate"><span class="pre">DenseQubitSquareTemplate</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">DenseQubitSquareTemplate.get_midline_plaquettes()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">QubitRectangleTemplate.get_midline_plaquettes()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes"><code class="docutils literal notranslate"><span class="pre">QubitSquareTemplate.get_midline_plaquettes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides"><code class="docutils literal notranslate"><span class="pre">DenseQubitSquareTemplate.get_plaquette_indices_on_sides()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -691,6 +684,53 @@ on the left is one unit backwards on the X-axis.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.RIGHT_OF">
 <span class="sig-name descname"><span class="pre">RIGHT_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=1,</span> <span class="pre">y=0)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.RIGHT_OF" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateSide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#TemplateSide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.TemplateSide" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.BOTTOM">
+<span class="sig-name descname"><span class="pre">BOTTOM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.BOTTOM" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.BOTTOM_LEFT">
+<span class="sig-name descname"><span class="pre">BOTTOM_LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.BOTTOM_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.BOTTOM_RIGHT">
+<span class="sig-name descname"><span class="pre">BOTTOM_RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.BOTTOM_RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.LEFT">
+<span class="sig-name descname"><span class="pre">LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.RIGHT">
+<span class="sig-name descname"><span class="pre">RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.TOP">
+<span class="sig-name descname"><span class="pre">TOP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.TOP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.TOP_LEFT">
+<span class="sig-name descname"><span class="pre">TOP_LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.TOP_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.templates.enums.TemplateSide.TOP_RIGHT">
+<span class="sig-name descname"><span class="pre">TOP_RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateSide.TOP_RIGHT" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

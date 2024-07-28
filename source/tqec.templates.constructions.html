@@ -191,7 +191,7 @@ two plaquettes.</p></li>
 <span id="tqec-templates-constructions-qubit-module"></span><h2>tqec.templates.constructions.qubit module<a class="headerlink" href="#module-tqec.templates.constructions.qubit" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.constructions.qubit.DenseQubitSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DenseQubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_x_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_y_increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
 <p>An error-corrected qubit.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">dimension</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
@@ -232,97 +232,10 @@ and to the left of the midline for the vertical case.</p>
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitRectangleTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitRectangleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitRectangleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitRectangleTemplate" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
-<p>A scalable rectangle error-corrected qubit.</p>
-<p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">width</span> <span class="pre">=</span> <span class="pre">FixedDimension(6)</span></code>
-and <code class="docutils literal notranslate"><span class="pre">height</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span>  <span class="o">.</span>  <span class="mi">1</span>  <span class="o">.</span>  <span class="mi">1</span>  <span class="o">.</span>  <span class="mi">1</span>  <span class="o">.</span>
-<span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="o">.</span>
-<span class="o">.</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">5</span>
-<span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="o">.</span>
-<span class="o">.</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">5</span>
-<span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="o">.</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>width</strong> – width of the rectangle logical qubit.</p></li>
-<li><p><strong>height</strong> – height of the rectangle logical qubit.</p></li>
-<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes">
-<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.enums.TemplateOrientation" title="tqec.templates.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitRectangleTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
-<dd><p>Returns the default observable qubits for the template.</p>
-<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id3"><span class="problematic" id="id4">``</span></a>midline’’
-of the template.
-By convention, it returns the plaquettes above the midline for the horizontal case
-and to the left of the midline for the vertical case.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The sequence of qubits and offsets.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitSquareTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitSquareTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.scale.LinearFunction" title="tqec.templates.scale.LinearFunction"><span class="pre">LinearFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitSquareTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitSquareTemplate" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="tqec.templates.html#tqec.templates.composed.ComposedTemplate" title="tqec.templates.composed.ComposedTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComposedTemplate</span></code></a></p>
-<p>An error-corrected qubit.</p>
-<p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">dimension</span> <span class="pre">=</span> <span class="pre">FixedDimension(4)</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span>  <span class="o">.</span>  <span class="mi">1</span>  <span class="o">.</span>  <span class="mi">1</span>  <span class="o">.</span>
-<span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="o">.</span>
-<span class="o">.</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">5</span>
-<span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="o">.</span>
-<span class="o">.</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">5</span>
-<span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="o">.</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dim</strong> – dimension of the error-corrected qubit.</p></li>
-<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes">
-<span class="sig-name descname"><span class="pre">get_midline_plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.html#tqec.templates.enums.TemplateOrientation" title="tqec.templates.enums.TemplateOrientation"><span class="pre">TemplateOrientation</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TemplateOrientation.HORIZONTAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#QubitSquareTemplate.get_midline_plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes" title="Link to this definition"></a></dt>
-<dd><p>Returns the default observable qubits for the template.</p>
-<p>If the template has a simple shape, this returns the plaquettes on the <a href="#id5"><span class="problematic" id="id6">``</span></a>midline’’
-of the template.
-By convention, it returns the plaquettes above the midline for the horizontal case
-and to the left of the midline for the vertical case.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>orientation</strong> – Horizontal or vertical qubits. Defaults to horizontal.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The sequence of qubits and offsets.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the midline is not uniquely defined.</p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides">
+<span class="sig-name descname"><span class="pre">get_plaquette_indices_on_sides</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sides</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.templates.html#tqec.templates.enums.TemplateSide" title="tqec.templates.enums.TemplateSide"><span class="pre">TemplateSide</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/constructions/qubit.html#DenseQubitSquareTemplate.get_plaquette_indices_on_sides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

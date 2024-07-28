@@ -185,17 +185,23 @@
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.Block">Block (class in tqec.sketchup.block)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.Block.block_type">block_type (Block attribute)</a>
 
       <ul>
         <li><a href="source/tqec.sketchup.html#id0">(BlockInstance attribute)</a>, <a href="source/tqec.sketchup.html#tqec.sketchup.model.BlockInstance.block_type">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.BlockInstance">BlockInstance (class in tqec.sketchup.model)</a>
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType">BlockType (class in tqec.sketchup.block)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.BOTTOM">BOTTOM (TemplateSide attribute)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.BOTTOM_LEFT">BOTTOM_LEFT (TemplateSide attribute)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.BOTTOM_RIGHT">BOTTOM_RIGHT (TemplateSide attribute)</a>
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.scale.ScalableBoundingBox.br">br (ScalableBoundingBox attribute)</a>
 </li>
@@ -374,10 +380,6 @@
 </li>
         <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_midline_plaquettes">(DenseQubitSquareTemplate method)</a>
 </li>
-        <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate.get_midline_plaquettes">(QubitRectangleTemplate method)</a>
-</li>
-        <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate.get_midline_plaquettes">(QubitSquareTemplate method)</a>
-</li>
         <li><a href="source/tqec.templates.atomic.html#tqec.templates.atomic.rectangle.RawRectangleTemplate.get_midline_plaquettes">(RawRectangleTemplate method)</a>
 </li>
         <li><a href="source/tqec.templates.html#tqec.templates.base.Template.get_midline_plaquettes">(Template method)</a>
@@ -385,6 +387,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides">get_plaquette_indices_on_sides() (DenseQubitSquareTemplate method)</a>
+</li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits">get_syndrome_qubits() (PlaquetteQubits method)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits_cirq">get_syndrome_qubits_cirq() (PlaquetteQubits method)</a>
@@ -503,6 +507,8 @@
 
       <ul>
         <li><a href="source/tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.LEFT">(PlaquetteSide attribute)</a>
+</li>
+        <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.LEFT">(TemplateSide attribute)</a>
 </li>
       </ul></li>
       <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateRelativePositionEnum.LEFT_OF">LEFT_OF (TemplateRelativePositionEnum attribute)</a>
@@ -782,8 +788,6 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitRectangleTemplate">QubitRectangleTemplate (class in tqec.templates.constructions.qubit)</a>
-</li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.plaquette.Plaquette.qubits">qubits (Plaquette property)</a>
 
       <ul>
@@ -794,10 +798,6 @@
         <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords.qubits">(ShiftCoords property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitSquareTemplate">QubitSquareTemplate (class in tqec.templates.constructions.qubit)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -818,16 +818,18 @@
 </li>
       <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData">RelativeMeasurementData (class in tqec.circuit.operations.operation)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord">RelativeMeasurementsRecord (class in tqec.circuit.operations.operation)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.remove_duplicate_operations">remove_duplicate_operations() (in module tqec.circuit.schedule)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.enums.PlaquetteOrientation.RIGHT">RIGHT (PlaquetteOrientation attribute)</a>
 
       <ul>
         <li><a href="source/tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.RIGHT">(PlaquetteSide attribute)</a>
+</li>
+        <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.RIGHT">(TemplateSide attribute)</a>
 </li>
       </ul></li>
       <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateRelativePositionEnum.RIGHT_OF">RIGHT_OF (TemplateRelativePositionEnum attribute)</a>
@@ -952,6 +954,8 @@
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateRelativePositionEnum">TemplateRelativePositionEnum (class in tqec.templates.enums)</a>
 </li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide">TemplateSide (class in tqec.templates.enums)</a>
+</li>
       <li><a href="source/tqec.templates.html#tqec.templates.base.TemplateWithIndices">TemplateWithIndices (class in tqec.templates.base)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubit.to_grid_qubit">to_grid_qubit() (PlaquetteQubit method)</a>
@@ -973,6 +977,12 @@
       <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_shape_2d">to_shape_2d() (Scalable2D method)</a>
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.to_tuple">to_tuple() (InstancePosition method)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.TOP">TOP (TemplateSide attribute)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.TOP_LEFT">TOP_LEFT (TemplateSide attribute)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.enums.TemplateSide.TOP_RIGHT">TOP_RIGHT (TemplateSide attribute)</a>
 </li>
       <li>
     tqec
@@ -1114,6 +1124,8 @@
         <li><a href="source/tqec.plaquette.html#module-tqec.plaquette.enums">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tqec.plaquette.library
 
@@ -1121,8 +1133,6 @@
         <li><a href="source/tqec.plaquette.library.html#module-tqec.plaquette.library">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tqec.plaquette.library.empty
 
