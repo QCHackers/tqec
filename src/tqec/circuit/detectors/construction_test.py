@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
@@ -61,7 +62,7 @@ def get_detectors_tuples_shallow(circuit: stim.Circuit) -> list[tuple[int, ...]]
 
 
 @pytest.mark.parametrize("name,circuit", valid_test_circuits())
-def test_valid_circuits(name: str, circuit: stim.Circuit):
+def test_valid_circuits(name: str, circuit: stim.Circuit) -> None:
     circuit_without_detectors = remove_annotations(
         circuit, frozenset(["DETECTOR", "SHIFT_COORDS"])
     )
@@ -77,7 +78,7 @@ def test_valid_circuits(name: str, circuit: stim.Circuit):
 
 
 @pytest.mark.parametrize("name,circuit,error_message", invalid_test_circuits())
-def test_invalid_circuits(name: str, circuit: stim.Circuit, error_message: str):
+def test_invalid_circuits(name: str, circuit: stim.Circuit, error_message: str) -> None:
     circuit_without_detectors = remove_annotations(
         circuit, frozenset(["DETECTOR", "SHIFT_COORDS"])
     )

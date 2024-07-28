@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Literal
+
 import cirq
 import pytest
 
@@ -6,12 +10,12 @@ from tqec.exceptions import TQECException
 
 
 @pytest.fixture
-def empty_circuit():
+def empty_circuit() -> cirq.Circuit:
     return cirq.Circuit()
 
 
 @pytest.fixture
-def flat_circuit():
+def flat_circuit() -> cirq.Circuit:
     qubits = cirq.GridQubit.rect(10, 10)
     return cirq.Circuit(
         [cirq.H(q) for q in qubits],
@@ -21,7 +25,7 @@ def flat_circuit():
 
 
 @pytest.fixture
-def circuit_with_depth1_circuit_operation():
+def circuit_with_depth1_circuit_operation() -> cirq.Circuit:
     qubits = cirq.GridQubit.rect(10, 10)
     return cirq.Circuit(
         [cirq.H(q) for q in qubits],
@@ -35,7 +39,7 @@ def circuit_with_depth1_circuit_operation():
 
 
 @pytest.fixture
-def circuit_with_depth2_circuit_operation():
+def circuit_with_depth2_circuit_operation() -> cirq.Circuit:
     qubits = cirq.GridQubit.rect(10, 10)
     return cirq.Circuit(
         cirq.CircuitOperation(
@@ -53,7 +57,7 @@ def circuit_with_depth2_circuit_operation():
 
 
 @pytest.fixture
-def circuit_with_depth1_repeated_circuit_operation():
+def circuit_with_depth1_repeated_circuit_operation() -> cirq.Circuit:
     qubits = cirq.GridQubit.rect(10, 10)
     return cirq.Circuit(
         [cirq.H(q) for q in qubits],
@@ -67,36 +71,40 @@ def circuit_with_depth1_repeated_circuit_operation():
 
 
 @pytest.fixture
-def circuit_with_repeated_measurements():
+def circuit_with_repeated_measurements() -> cirq.Circuit:
     qubits = cirq.GridQubit.rect(10, 10)
     return cirq.Circuit(
         *[cirq.Moment([cirq.M(q) for q in qubits]) for _ in range(10)],
     )
 
 
-def test_flatten_empty_circuit(empty_circuit):
+def test_flatten_empty_circuit(empty_circuit: cirq.Circuit) -> None:
     flattened_circuit = flatten(empty_circuit)
     assert flattened_circuit == empty_circuit
 
 
-def test_flatten_flat_circuit(flat_circuit):
+def test_flatten_flat_circuit(flat_circuit: cirq.Circuit) -> None:
     flattened_circuit = flatten(flat_circuit)
     assert flattened_circuit == flat_circuit
 
 
-def test_flatten_depth1_circuit(circuit_with_depth1_circuit_operation, flat_circuit):
+def test_flatten_depth1_circuit(
+    circuit_with_depth1_circuit_operation: cirq.Circuit, flat_circuit: cirq.Circuit
+) -> None:
     flattened_circuit = flatten(circuit_with_depth1_circuit_operation)
     assert flattened_circuit == flat_circuit
 
 
-def test_flatten_depth2_circuit(circuit_with_depth2_circuit_operation, flat_circuit):
+def test_flatten_depth2_circuit(
+    circuit_with_depth2_circuit_operation: cirq.Circuit, flat_circuit: cirq.Circuit
+) -> None:
     flattened_circuit = flatten(circuit_with_depth2_circuit_operation)
     assert flattened_circuit == flat_circuit
 
 
 def test_flatten_depth1_repeated_circuit(
-    circuit_with_depth1_repeated_circuit_operation,
-):
+    circuit_with_depth1_repeated_circuit_operation: cirq.Circuit,
+) -> None:
     flattened_circuit = flatten(circuit_with_depth1_repeated_circuit_operation)
     assert all(
         not isinstance(op, cirq.CircuitOperation)
@@ -108,37 +116,41 @@ def test_flatten_depth1_repeated_circuit(
     )
 
 
-def test_measurement_map_empty_initialisation(empty_circuit):
+def test_measurement_map_empty_initialisation(empty_circuit: cirq.Circuit) -> None:
     CircuitMeasurementMap(empty_circuit)
 
 
-def test_measurement_map_flat_initialisation(flat_circuit):
+def test_measurement_map_flat_initialisation(flat_circuit: cirq.Circuit) -> None:
     CircuitMeasurementMap(flat_circuit)
 
 
-def test_measurement_map_depth1_initialisation(circuit_with_depth1_circuit_operation):
+def test_measurement_map_depth1_initialisation(
+    circuit_with_depth1_circuit_operation: cirq.Circuit,
+) -> None:
     CircuitMeasurementMap(circuit_with_depth1_circuit_operation)
 
 
-def test_measurement_map_depth2_initialisation(circuit_with_depth2_circuit_operation):
+def test_measurement_map_depth2_initialisation(
+    circuit_with_depth2_circuit_operation: cirq.Circuit,
+) -> None:
     CircuitMeasurementMap(circuit_with_depth2_circuit_operation)
 
 
 def test_measurement_map_depth1_repeated_initialisation(
-    circuit_with_depth1_repeated_circuit_operation,
-):
+    circuit_with_depth1_repeated_circuit_operation: cirq.Circuit,
+) -> None:
     CircuitMeasurementMap(circuit_with_depth1_repeated_circuit_operation)
 
 
 def test_measurement_map_lot_of_measurements_initialisation(
-    circuit_with_repeated_measurements,
-):
+    circuit_with_repeated_measurements: cirq.Circuit,
+) -> None:
     CircuitMeasurementMap(circuit_with_repeated_measurements)
 
 
 def test_measurement_map_get_measurement_relative_offset_raises_on_positive_offset(
-    empty_circuit,
-):
+    empty_circuit: cirq.Circuit,
+) -> None:
     mmap = CircuitMeasurementMap(empty_circuit)
     qubit = cirq.GridQubit(0, 0)
     with pytest.raises(TQECException):
@@ -148,8 +160,8 @@ def test_measurement_map_get_measurement_relative_offset_raises_on_positive_offs
 
 
 def test_measurement_map_get_measurement_relative_offset_raises_on_invalid_moment(
-    flat_circuit,
-):
+    flat_circuit: cirq.Circuit,
+) -> None:
     mmap = CircuitMeasurementMap(flat_circuit)
     qubit = cirq.GridQubit(0, 0)
     with pytest.raises(TQECException):
@@ -170,7 +182,12 @@ def test_measurement_map_get_measurement_relative_offset_raises_on_invalid_momen
         "circuit_with_depth2_circuit_operation",
     ],
 )
-def test_measurement_map_get_measurement_relative_offset(circuit_fixture, request):
+def test_measurement_map_get_measurement_relative_offset(
+    circuit_fixture: Literal["flat_circuit"]
+    | Literal["circuit_with_depth1_circuit_operation"]
+    | Literal["circuit_with_depth2_circuit_operation"],
+    request: pytest.FixtureRequest,
+) -> None:
     circuit = request.getfixturevalue(circuit_fixture)
     mmap = CircuitMeasurementMap(circuit)
     qubit = cirq.GridQubit(0, 0)
@@ -182,8 +199,8 @@ def test_measurement_map_get_measurement_relative_offset(circuit_fixture, reques
 
 
 def test_measurement_map_get_measurement_relative_offset_repeat(
-    circuit_with_depth1_repeated_circuit_operation,
-):
+    circuit_with_depth1_repeated_circuit_operation: cirq.Circuit,
+) -> None:
     mmap = CircuitMeasurementMap(circuit_with_depth1_repeated_circuit_operation)
     qubit = cirq.GridQubit(0, 0)
     # The only measurement on qubit (0, 0) is at moment 11
@@ -194,8 +211,8 @@ def test_measurement_map_get_measurement_relative_offset_repeat(
 
 
 def test_measurement_map_get_measurement_relative_offset_lot_of_measurements(
-    circuit_with_repeated_measurements,
-):
+    circuit_with_repeated_measurements: cirq.Circuit,
+) -> None:
     mmap = CircuitMeasurementMap(circuit_with_repeated_measurements)
     qubit = cirq.GridQubit(0, 0)
     # There are measurements from moment 0 to 9 included

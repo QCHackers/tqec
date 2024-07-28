@@ -15,7 +15,7 @@ def plaquettes() -> list[Plaquette]:
     ]
 
 
-def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]):
+def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]) -> None:
     template = RawRectangleTemplate(
         [
             [0, 1, 0, 1],

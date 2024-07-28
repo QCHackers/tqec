@@ -7,7 +7,6 @@ import cirq
 
 from tqec.exceptions import TQECException
 
-
 STIM_TAG = "STIM_OPERATION"
 
 
@@ -92,7 +91,7 @@ class RelativeMeasurementData:
     relative_qubit_positioning: cirq.GridQubit
     relative_measurement_offset: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.relative_measurement_offset >= 0:
             raise TQECException(
                 "The relative_measurement_offset should be a negative integer, "
@@ -147,7 +146,7 @@ class RelativeMeasurementsRecord(cirq.Operation):
         return self._local_coordinate_system_origin
 
     @origin.setter
-    def origin(self, new_origin: cirq.GridQubit):
+    def origin(self, new_origin: cirq.GridQubit) -> None:
         """The origin of the local coordinate system."""
         self._local_coordinate_system_origin = new_origin
 
@@ -253,7 +252,7 @@ class Observable(RelativeMeasurementsRecord):
         super().__init__(local_coordinate_system_origin, relative_measurement_data)
         self._observable_index = observable_index
 
-    def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs):
+    def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs) -> str:
         return f"Observable({self._observable_index})"
 
     @property

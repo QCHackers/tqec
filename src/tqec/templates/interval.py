@@ -28,7 +28,7 @@ class Interval:
     start_excluded: bool = False
     end_excluded: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if math.isnan(self.start) or math.isnan(self.end):
             raise TQECException("Cannot create an Interval with a NaN bound.")
         if not self.start <= self.end:
@@ -180,7 +180,7 @@ class Intervals:
 
     intervals: list[Interval]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Use object.__setattr__ to change self.intervals, just like __init__ is
         # doing (see https://docs.python.org/3/library/dataclasses.html#frozen-instances).
         # This is only OK because we are in __post_init__ here, this would break the

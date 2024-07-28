@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import itertools
 import typing as ty
 from copy import deepcopy
 
 import networkx as nx
 import numpy
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement
@@ -417,7 +420,7 @@ class ComposedTemplate(Template):
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
         return self._get_shape_from_bounding_box(ul, br).simplify_positive()
 
-    def _build_array(self, indices_map: tuple[int, ...]) -> numpy.ndarray:
+    def _build_array(self, indices_map: tuple[int, ...]) -> npt.NDArray[numpy.int_]:
         k: int = self.k
         # ul: upper-left
         ul_positions = self._compute_ul_absolute_position()
@@ -449,7 +452,9 @@ class ComposedTemplate(Template):
 
         return ret
 
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         """Generate the numpy array representing the template.
 
         Args:
@@ -557,7 +562,7 @@ class ComposedTemplate(Template):
     def is_valid(self) -> bool:
         return next(self.collapsing_templates(), None) is None
 
-    def assert_is_valid(self):
+    def assert_is_valid(self) -> None:
         collapsing_templates = list(self.collapsing_templates())
         if collapsing_templates:
             raise TQECException(

@@ -22,7 +22,7 @@ class RelativeMeasurementLocation:
     offset: int
     qubit_index: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.offset >= 0:
             raise TQECException(
                 "Relative measurement offsets should be strictly negative."
