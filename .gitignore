@@ -180,3 +180,8 @@ pyvenv.cfg
 # Sphinx
 docs/_build
 docs/source
+
+# Rye
+.python-version
+requirements.lock
+requirements-dev.lock
