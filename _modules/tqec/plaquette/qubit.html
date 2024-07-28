@@ -143,7 +143,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">to_grid_qubit</span><span class="p">()</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_syndrome_qubits</span><span class="p">()]</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">]:</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span>
 
@@ -198,7 +198,7 @@
 <div class="viewcode-block" id="SquarePlaquetteQubits">
 <a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.qubit.SquarePlaquetteQubits">[docs]</a>
 <span class="k">class</span> <span class="nc">SquarePlaquetteQubits</span><span class="p">(</span><span class="n">PlaquetteQubits</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>

@@ -85,7 +85,6 @@
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
-
 <span class="n">STIM_TAG</span> <span class="o">=</span> <span class="s2">&quot;STIM_OPERATION&quot;</span>
 
 
@@ -178,7 +177,7 @@
     <span class="n">relative_qubit_positioning</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span>
     <span class="n">relative_measurement_offset</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;The relative_measurement_offset should be a negative integer, &quot;</span>
@@ -239,7 +238,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span>
 
     <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The origin of the local coordinate system.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span> <span class="o">=</span> <span class="n">new_origin</span>
 
@@ -351,7 +350,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurement_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span> <span class="o">=</span> <span class="n">observable_index</span>
 
-    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitDiagramInfoArgs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitDiagramInfoArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Observable(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
