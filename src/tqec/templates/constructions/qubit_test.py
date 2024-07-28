@@ -11,7 +11,7 @@ from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
-def test_qubit_square_midline():
+def test_qubit_square_midline() -> None:
     scalable_dimension = LinearFunction(2)
     constant_dimension = LinearFunction(0, 3)
     template = QubitSquareTemplate(scalable_dimension, k=2)
@@ -38,7 +38,7 @@ def test_qubit_square_midline():
         template.get_midline_plaquettes()
 
 
-def test_qubit_rectangle_midline():
+def test_qubit_rectangle_midline() -> None:
     width = LinearFunction(2)
     height = LinearFunction(3)
     template = QubitRectangleTemplate(width, height, k=2)

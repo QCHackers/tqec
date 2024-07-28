@@ -37,6 +37,10 @@ jobs:
         run: |
           pip install pytest pytest-cov
           pytest --cov=src/tqec $(git ls-files '*_test.py')
+      - name: Mypy type checking
+        run: |
+          pip install mypy
+          mypy src/tqec/
   build-and-test-nodejs:
     runs-on: ubuntu-latest
     defaults:

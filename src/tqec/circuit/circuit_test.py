@@ -20,7 +20,7 @@ def one_by_one_template() -> Template:
 
 
 def test_generate_initialisation_circuit_list(
-    initialisation_plaquette: Plaquette, one_by_one_template
+    initialisation_plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(one_by_one_template, [initialisation_plaquette])
     assert circuit == cirq.Circuit(
@@ -29,8 +29,8 @@ def test_generate_initialisation_circuit_list(
 
 
 def test_generate_initialisation_circuit_dict(
-    initialisation_plaquette: Plaquette, one_by_one_template
-):
+    initialisation_plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     circuit = generate_circuit(one_by_one_template, {1: initialisation_plaquette})
     assert circuit == cirq.Circuit(
         cirq.R(q.to_grid_qubit()) for q in initialisation_plaquette.qubits
@@ -38,15 +38,15 @@ def test_generate_initialisation_circuit_dict(
 
 
 def test_generate_initialisation_circuit_dict_0_indexed(
-    initialisation_plaquette: Plaquette, one_by_one_template
-):
+    initialisation_plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     with pytest.raises(TQECException):
         generate_circuit(one_by_one_template, {0: initialisation_plaquette})
 
 
 def test_generate_circuit_wrong_number_of_plaquettes(
-    initialisation_plaquette: Plaquette, one_by_one_template
-):
+    initialisation_plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     with pytest.raises(TQECException):
         generate_circuit(
             one_by_one_template, [initialisation_plaquette, initialisation_plaquette]

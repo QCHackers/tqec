@@ -247,7 +247,7 @@ class PiecewiseLinearFunction:
     separators: list[float]
     functions: list[LinearFunction]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Check the invariants that should be met by any instance of this class.
 
         First, there should be one more `LinearFunction` instance than there are
@@ -568,7 +568,7 @@ class ScalableBoundingBox:
     br: Scalable2D
     possible_inputs: Intervals = R_intervals
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         negative_width_inputs = (self.width < 0).intersection(self.possible_inputs)
         if not negative_width_inputs.is_empty():
             raise TQECException(

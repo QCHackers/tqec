@@ -1,10 +1,12 @@
 import typing as ty
 
 import numpy
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
+from tqec.templates.display import display_template
 from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
 from tqec.templates.scale import (
     LinearFunction,
@@ -72,7 +74,8 @@ class AlternatingCornerSquareTemplate(Template):
     one in the resulting array."""
 
     _TRANSFORMATIONS: dict[
-        CornerPositionEnum, ty.Callable[[numpy.ndarray], numpy.ndarray]
+        CornerPositionEnum,
+        ty.Callable[[npt.NDArray[numpy.int_]], npt.NDArray[numpy.int_]],
     ] = {
         # By arbitrary convention, this class works as if the corner was on
         # the upper-left part of the corner and corrects the generated array
@@ -147,7 +150,9 @@ class AlternatingCornerSquareTemplate(Template):
         self._dimension = dimension
         self._corner_position = corner_position
 
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         self._check_plaquette_number(plaquette_indices, 5)
         p1, p2, p1_flipped, p2_flipped, corner_plaquette = plaquette_indices[:5]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)

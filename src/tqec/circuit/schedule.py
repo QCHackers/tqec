@@ -117,7 +117,7 @@ class ScheduledCircuit:
 
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
-            if not isinstance(entry, numbers.Integral):
+            if not isinstance(entry, int):
                 raise ScheduleWithNonIntegerEntriesException(schedule, type(entry))
 
         # Check that the schedule is sorted.
@@ -240,7 +240,7 @@ class ScheduledCircuit:
     def detectors(self) -> list[Detector]:
         """Return the list of all the detectors in the circuit."""
         return [
-            typing.cast(Detector, op.untagged)
+            op.untagged
             for op in self.raw_circuit.all_operations()
             if isinstance(op.untagged, Detector)
         ]
@@ -302,7 +302,7 @@ class ScheduledCircuit:
             self._schedule,
         )
 
-    def __deepcopy__(self, memo: dict) -> "ScheduledCircuit":
+    def __deepcopy__(self, memo: dict[typing.Any, typing.Any]) -> "ScheduledCircuit":
         return ScheduledCircuit(
             deepcopy(self._raw_circuit, memo=memo),
             deepcopy(self._schedule, memo=memo),

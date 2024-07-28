@@ -45,7 +45,7 @@ class PlaquetteQubits:
     def get_syndrome_qubits_cirq(self) -> list[cirq.GridQubit]:
         return [q.to_grid_qubit() for q in self.get_syndrome_qubits()]
 
-    def __iter__(self):
+    def __iter__(self) -> ty.Iterator[PlaquetteQubit]:
         yield from self.data_qubits
         yield from self.syndrome_qubits
 
@@ -88,7 +88,7 @@ class PlaquetteQubits:
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             [
                 PlaquetteQubit(Position(-1, -1)),
