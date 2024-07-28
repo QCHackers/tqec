@@ -28,42 +28,18 @@ tqec.plaquette.library.measurement module
    :undoc-members:
    :show-inheritance:
 
+tqec.plaquette.library.memory module
+------------------------------------
+
+.. automodule:: tqec.plaquette.library.memory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.plaquette.library.pauli module
 -----------------------------------
 
 .. automodule:: tqec.plaquette.library.pauli
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.plaquette.library.xx module
---------------------------------
-
-.. automodule:: tqec.plaquette.library.xx
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.plaquette.library.xxxx module
-----------------------------------
-
-.. automodule:: tqec.plaquette.library.xxxx
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.plaquette.library.zz module
---------------------------------
-
-.. automodule:: tqec.plaquette.library.zz
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.plaquette.library.zzzz module
-----------------------------------
-
-.. automodule:: tqec.plaquette.library.zzzz
    :members:
    :undoc-members:
    :show-inheritance:
