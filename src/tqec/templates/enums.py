@@ -48,3 +48,14 @@ class TemplateOrientation(Enum):
 class Axis(Enum):
     X = auto()
     Y = auto()
+
+
+class TemplateSide(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+    TOP = auto()
+    BOTTOM = auto()
+    TOP_LEFT = auto()
+    TOP_RIGHT = auto()
+    BOTTOM_LEFT = auto()
+    BOTTOM_RIGHT = auto()
