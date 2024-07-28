@@ -8,7 +8,7 @@ from tqec.templates.enums import TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
-def test_qubit_square_midline():
+def test_qubit_square_midline() -> None:
     scalable_dimension = LinearFunction(2)
     constant_dimension = LinearFunction(0, 3)
     template = DenseQubitSquareTemplate(scalable_dimension, k=2)

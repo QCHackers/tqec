@@ -1,43 +1,59 @@
 from __future__ import annotations
 
-import cirq
-
-from tqec.circuit.schedule import ScheduledCircuit
 from tqec.plaquette.enums import PlaquetteOrientation
+from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import (
-    PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
 
 
-def z_initialisation_plaquette(qubits: PlaquetteQubits) -> Plaquette:
-    circuit = cirq.Circuit(
-        cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG) for q in qubits.to_grid_qubit()
+def xx_initialisation_plaquette(
+    orientation: PlaquetteOrientation,
+    schedule: list[int],
+) -> Plaquette:
+    """R - H - CX - CX - H - M"""
+    return pauli_memory_plaquette(
+        RoundedPlaquetteQubits(orientation),
+        "XX",
+        schedule,
+        include_initial_data_resets=True,
     )
-    return Plaquette(qubits, ScheduledCircuit(circuit))
 
 
-def z_initialisation_square_plaquette() -> Plaquette:
-    return z_initialisation_plaquette(SquarePlaquetteQubits())
-
-
-def z_initialisation_rounded_plaquette(orientation: PlaquetteOrientation) -> Plaquette:
-    return z_initialisation_plaquette(RoundedPlaquetteQubits(orientation))
-
-
-def x_initialisation_plaquette(qubits: PlaquetteQubits) -> Plaquette:
-    circuit = cirq.Circuit(
-        (cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG), cirq.H(q))
-        for q in qubits.to_grid_qubit()
+def xxxx_initialisation_plaquette(
+    schedule: list[int],
+) -> Plaquette:
+    """R - H - CX - CX - CX - CX - H - M"""
+    return pauli_memory_plaquette(
+        SquarePlaquetteQubits(),
+        "XXXX",
+        schedule,
+        include_initial_data_resets=True,
     )
-    return Plaquette(qubits, ScheduledCircuit(circuit))
 
 
-def x_initialisation_square_plaquette() -> Plaquette:
-    return x_initialisation_plaquette(SquarePlaquetteQubits())
+def zz_initialisation_plaquette(
+    orientation: PlaquetteOrientation,
+    schedule: list[int],
+) -> Plaquette:
+    """R - CX - CX - M"""
+    return pauli_memory_plaquette(
+        RoundedPlaquetteQubits(orientation),
+        "ZZ",
+        schedule,
+        include_initial_data_resets=True,
+    )
 
 
-def x_initialisation_rounded_plaquette(orientation: PlaquetteOrientation) -> Plaquette:
-    return x_initialisation_plaquette(RoundedPlaquetteQubits(orientation))
+def zzzz_initialisation_plaquette(
+    schedule: list[int],
+) -> Plaquette:
+    """R - CX - CX - CX - CX - M"""
+    return pauli_memory_plaquette(
+        SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
+        "ZZZZ",
+        schedule,
+        include_initial_data_resets=True,
+    )

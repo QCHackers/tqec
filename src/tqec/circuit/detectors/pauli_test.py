@@ -8,7 +8,7 @@ from tqec.circuit.detectors.pauli import (
 from tqec.exceptions import TQECException
 
 
-def test_pauli_string_construction():
+def test_pauli_string_construction() -> None:
     ps1 = PauliString({0: "X", 1: "Y", 2: "Z"})
     ps2 = PauliString({0: "X", 2: "Z", 1: "Y"})
     empty = PauliString({})
@@ -23,7 +23,7 @@ def test_pauli_string_construction():
         PauliString({0: "W"})  # type: ignore
 
 
-def test_pauli_string_interop_with_stim():
+def test_pauli_string_interop_with_stim() -> None:
     stim_pauli_string = stim.PauliString.random(num_qubits=23)
     pauli_string = PauliString.from_stim_pauli_string(stim_pauli_string)
     assert (
@@ -45,14 +45,14 @@ def test_pauli_string_interop_with_stim():
         pauli_string.to_stim_pauli_string(2)
 
 
-def test_pauli_string_mul():
+def test_pauli_string_mul() -> None:
     a = PauliString({q: p for q, p in enumerate("IIIIXXXXYYYYZZZZ")})  # type:ignore
     b = PauliString({q: p for q, p in enumerate("IXYZ" * 4)})  # type:ignore
     c = PauliString({q: p for q, p in enumerate("IXYZXIZYYZIXZYXI")})  # type:ignore
     assert a * b == c
 
 
-def test_pauli_string_commutation():
+def test_pauli_string_commutation() -> None:
     a = PauliString({0: "X", 1: "Y"})
     b = PauliString({0: "Y", 1: "Z"})
     c = PauliString({0: "Z", 1: "Y"})
@@ -64,7 +64,7 @@ def test_pauli_string_commutation():
     assert c.commutes(b)
 
 
-def test_pauli_string_collapse_by():
+def test_pauli_string_collapse_by() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     Z0 = PauliString({0: "Z"})
     Z1 = PauliString({1: "Z"})
@@ -75,7 +75,7 @@ def test_pauli_string_collapse_by():
         X0Z1.collapse_by([Z0])
 
 
-def test_pauli_string_weight():
+def test_pauli_string_weight() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z", 2: "I"})
     Z0 = PauliString({0: "Z"})
     I0to20 = PauliString({i: "I" for i in range(20)})
@@ -84,7 +84,7 @@ def test_pauli_string_weight():
     assert I0to20.non_trivial_pauli_count == 0
 
 
-def test_pauli_string_qubit():
+def test_pauli_string_qubit() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z", 2: "I"})
     Z0 = PauliString({0: "Z"})
     I0to20 = PauliString({i: "I" for i in range(20)})
@@ -95,7 +95,7 @@ def test_pauli_string_qubit():
         I0to20.qubit
 
 
-def test_pauli_string_indexing():
+def test_pauli_string_indexing() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z", 2: "I"})
     assert X0Z1[0] == "X"
     assert X0Z1[1] == "Z"
@@ -103,14 +103,14 @@ def test_pauli_string_indexing():
     assert X0Z1[3] == "I"
 
 
-def test_pauli_literals_to_bool():
+def test_pauli_literals_to_bool() -> None:
     assert pauli_literal_to_bools("I") == (False, False)
     assert pauli_literal_to_bools("X") == (True, False)
     assert pauli_literal_to_bools("Y") == (True, True)
     assert pauli_literal_to_bools("Z") == (False, True)
 
 
-def test_pauli_product():
+def test_pauli_product() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z", 2: "I"})
     Z0 = PauliString({0: "Z"})
     I0to20 = PauliString({i: "I" for i in range(20)})

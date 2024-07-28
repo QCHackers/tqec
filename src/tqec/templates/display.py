@@ -73,12 +73,12 @@ def display_templates_ascii(
     br_pos: dict[int, tuple[int, int]] = {}
     ul_positions = templates._compute_ul_absolute_position()
     bbul, _ = templates._get_bounding_box_from_ul_positions(ul_positions)
-    for tid, tul in ul_positions.items():
+    for tid, scalable_tul in ul_positions.items():
         # We follow the same procedure as in Template.instantiate():
         # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
         # the represented code to the axes and avoid having negative indices.
-        x = tul.x - bbul.x
-        y = tul.y - bbul.y
+        x = scalable_tul.x - bbul.x
+        y = scalable_tul.y - bbul.y
         # Recall that numpy indexing is (y, x) in our coordinate system convention.
         tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
         ul_pos[tid] = (round_or_fail(y(k)), round_or_fail(x(k)))

@@ -9,7 +9,7 @@ def encode_pauli_string_exact_cover_sat_problem_in_solver(
     expected_pauli_string: PauliString,
     available_pauli_strings: list[PauliString],
     qubits_to_consider: frozenset[int],
-):
+) -> None:
     """Build the SAT problem that should be solved to find an exact cover.
 
     This function encodes the SAT problem of interest into the provided `solver`.
@@ -102,7 +102,7 @@ def encode_pauli_string_commuting_cover_sat_problem_in_solver(
     expected_pauli_string: PauliString,
     available_pauli_strings: list[PauliString],
     qubits_to_consider: frozenset[int],
-):
+) -> None:
     """Build the SAT problem that should be solved to find a commuting cover.
 
     This function encodes the SAT problem of interest into the provided `solver`.

@@ -8,12 +8,12 @@ from tqec.circuit.detectors.utils import (
 )
 
 
-def test_iter_by_moment_empty():
+def test_iter_by_moment_empty() -> None:
     circuit = stim.Circuit()
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 0
 
 
-def test_iter_by_moment_single_tick():
+def test_iter_by_moment_single_tick() -> None:
     circuit = stim.Circuit("TICK")
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 1
     first_moment = next(iter_stim_circuit_by_moments(circuit))
@@ -22,7 +22,7 @@ def test_iter_by_moment_single_tick():
     assert first_moment == circuit
 
 
-def test_iter_by_moment_single_qec_round():
+def test_iter_by_moment_single_qec_round() -> None:
     circuit = stim.Circuit("""
         R 0 1 2 3 4
         TICK
@@ -63,7 +63,7 @@ def test_iter_by_moment_single_qec_round():
         OBSERVABLE_INCLUDE(0) rec[-1]""")
 
 
-def test_iter_by_moment_repeat_block():
+def test_iter_by_moment_repeat_block() -> None:
     circuit = stim.Circuit("""
         REPEAT 9 {
             TICK
@@ -103,7 +103,7 @@ def test_iter_by_moment_repeat_block():
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 5
 
 
-def test_collapse_pauli_strings_at_moment_all_basis():
+def test_collapse_pauli_strings_at_moment_all_basis() -> None:
     qubits = list(range(5))
     qubits_str = " ".join(map(str, qubits))
     for basis in ["", "X", "Y", "Z"]:
@@ -113,7 +113,7 @@ def test_collapse_pauli_strings_at_moment_all_basis():
         assert set(collapsing_operations) == {PauliString({q: pauli}) for q in qubits}
 
 
-def test_collapse_pauli_strings_at_moment_virtual_instruction():
+def test_collapse_pauli_strings_at_moment_virtual_instruction() -> None:
     circuit = stim.Circuit("R 0 1 2\nX_ERROR(0.01) 0 1 2")
     collapsing_operations = collapse_pauli_strings_at_moment(circuit)
     assert set(collapsing_operations) == {PauliString({q: "Z"}) for q in [0, 1, 2]}
