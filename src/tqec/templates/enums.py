@@ -43,3 +43,8 @@ class TemplateOrientation(Enum):
 
     HORIZONTAL = auto()
     VERTICAL = auto()
+
+
+class Axis(Enum):
+    X = auto()
+    Y = auto()

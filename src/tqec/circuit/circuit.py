@@ -100,7 +100,7 @@ def _create_mapping(
     qubit_map = {
         # GridQubit are indexed as (row, col), so (y, x)
         # Qubits are given relative to an origin, so we need to add the offset
-        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)  # type: ignore
+        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)
         for qubit in scheduled_circuit.mappable_qubits
     }
     return qubit_map

@@ -1,13 +1,12 @@
+from __future__ import annotations
+
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.qubit import (
-    RoundedPlaquetteQubits,
-    SquarePlaquetteQubits,
-)
+from tqec.plaquette.qubit import RoundedPlaquetteQubits, SquarePlaquetteQubits
 
 
-def xx_measurement_plaquette(
+def xx_memory_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int],
 ) -> Plaquette:
@@ -16,11 +15,10 @@ def xx_measurement_plaquette(
         RoundedPlaquetteQubits(orientation),
         "XX",
         schedule,
-        include_final_data_measurements=True,
     )
 
 
-def xxxx_measurement_plaquette(
+def xxxx_memory_plaquette(
     schedule: list[int],
 ) -> Plaquette:
     """R - H - CX - CX - CX - CX - H - M"""
@@ -28,11 +26,10 @@ def xxxx_measurement_plaquette(
         SquarePlaquetteQubits(),
         "XXXX",
         schedule,
-        include_final_data_measurements=True,
     )
 
 
-def zz_measurement_plaquette(
+def zz_memory_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int],
 ) -> Plaquette:
@@ -41,11 +38,10 @@ def zz_measurement_plaquette(
         RoundedPlaquetteQubits(orientation),
         "ZZ",
         schedule,
-        include_final_data_measurements=True,
     )
 
 
-def zzzz_measurement_plaquette(
+def zzzz_memory_plaquette(
     schedule: list[int],
 ) -> Plaquette:
     """R - CX - CX - CX - CX - M"""
@@ -53,5 +49,4 @@ def zzzz_measurement_plaquette(
         SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
         "ZZZZ",
         schedule,
-        include_final_data_measurements=True,
     )

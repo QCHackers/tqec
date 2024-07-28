@@ -1,13 +1,19 @@
 import typing as ty
 
 import numpy
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
-from tqec.position import Shape2D
 from tqec.templates.atomic.rectangle import AlternatingRectangleTemplate
 from tqec.templates.base import Template
+from tqec.templates.display import display_template
 from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.scale import (
+    LinearFunction,
+    PiecewiseLinearFunction,
+    Scalable2D,
+    round_or_fail,
+)
 
 
 class AlternatingSquareTemplate(AlternatingRectangleTemplate):
@@ -68,7 +74,8 @@ class AlternatingCornerSquareTemplate(Template):
     one in the resulting array."""
 
     _TRANSFORMATIONS: dict[
-        CornerPositionEnum, ty.Callable[[numpy.ndarray], numpy.ndarray]
+        CornerPositionEnum,
+        ty.Callable[[npt.NDArray[numpy.int_]], npt.NDArray[numpy.int_]],
     ] = {
         # By arbitrary convention, this class works as if the corner was on
         # the upper-left part of the corner and corrects the generated array
@@ -143,13 +150,15 @@ class AlternatingCornerSquareTemplate(Template):
         self._dimension = dimension
         self._corner_position = corner_position
 
-    def instantiate(self, plaquette_indices: ty.Sequence[int]) -> numpy.ndarray:
+    def instantiate(
+        self, plaquette_indices: ty.Sequence[int]
+    ) -> npt.NDArray[numpy.int_]:
         self._check_plaquette_number(plaquette_indices, 5)
         p1, p2, p1_flipped, p2_flipped, corner_plaquette = plaquette_indices[:5]
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=int)
         # Fill ret as if it was in the upper-left corner and then correct
         ret[0, 0] = corner_plaquette
-        dimension = self._dimension(self._k)
+        dimension = round_or_fail(self._dimension(self._k))
         for i in range(dimension):
             for j in range(dimension):
                 if i == j == 0:

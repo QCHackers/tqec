@@ -8,6 +8,7 @@ import numpy
 
 from tqec.templates.base import Template
 from tqec.templates.composed import ComposedTemplate
+from tqec.templates.scale import round_or_fail
 
 
 def display_template(
@@ -72,16 +73,16 @@ def display_templates_ascii(
     br_pos: dict[int, tuple[int, int]] = {}
     ul_positions = templates._compute_ul_absolute_position()
     bbul, _ = templates._get_bounding_box_from_ul_positions(ul_positions)
-    for tid, tul in ul_positions.items():
+    for tid, scalable_tul in ul_positions.items():
         # We follow the same procedure as in Template.instantiate():
         # Subtracting bbul (upper-left bounding box position) from each coordinate to stick
         # the represented code to the axes and avoid having negative indices.
-        x = tul.x - bbul.x
-        y = tul.y - bbul.y
+        x = scalable_tul.x - bbul.x
+        y = scalable_tul.y - bbul.y
         # Recall that numpy indexing is (y, x) in our coordinate system convention.
         tshapey, tshapex = templates._templates[tid].shape.to_numpy_shape()
-        ul_pos[tid] = (y(k), x(k))
-        br_pos[tid] = (y(k) + tshapey, x(k) + tshapex)
+        ul_pos[tid] = (round_or_fail(y(k)), round_or_fail(x(k)))
+        br_pos[tid] = (round_or_fail(y(k) + tshapey), round_or_fail(x(k) + tshapex))
     # Format of the ASCII art.
     x_size = numpy.shape(arr)[1]
     empty_line = " " * x_size * h_space
@@ -211,8 +212,8 @@ def display_templates_svg(
         arr = template.instantiate(indices)
         outer_rects.extend(
             rect(
-                ul_position.x(templates.k),
-                ul_position.y(templates.k),
+                round_or_fail(ul_position.x(templates.k)),
+                round_or_fail(ul_position.y(templates.k)),
                 len(arr[0]),
                 len(arr),
                 outmost=True,
@@ -224,7 +225,9 @@ def display_templates_svg(
                     continue
                 x = ul_position.x(templates.k) + shape_x
                 y = ul_position.y(templates.k) + shape_y
-                inner_rects.extend(rect(x, y, 1, 1, element))
+                inner_rects.extend(
+                    rect(round_or_fail(x), round_or_fail(y), 1, 1, element)
+                )
 
     svg_lines.extend(inner_rects)
     svg_lines.extend(outer_rects)

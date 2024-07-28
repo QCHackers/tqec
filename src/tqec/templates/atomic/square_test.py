@@ -10,18 +10,18 @@ from tqec.templates.enums import CornerPositionEnum, TemplateOrientation
 from tqec.templates.scale import LinearFunction
 
 
-def test_square_template_init():
+def test_square_template_init() -> None:
     dimension = LinearFunction(2)
     AlternatingSquareTemplate(dimension, k=2)
 
 
-def test_square_expected_plaquette_number():
+def test_square_expected_plaquette_number() -> None:
     dimension = LinearFunction(2)
     template = AlternatingSquareTemplate(dimension, k=2)
     assert template.expected_plaquettes_number == 2
 
 
-def test_square_template_scaling():
+def test_square_template_scaling() -> None:
     dimension = LinearFunction(2)
     template = AlternatingSquareTemplate(dimension)
     template.scale_to(30)
@@ -30,7 +30,7 @@ def test_square_template_scaling():
     assert shape.y == 2 * 30
 
 
-def test_square_template_one_fixed_scaling():
+def test_square_template_one_fixed_scaling() -> None:
     dimension = LinearFunction(0, 2)
     template = AlternatingSquareTemplate(dimension)
     template.scale_to(30)
@@ -39,7 +39,7 @@ def test_square_template_one_fixed_scaling():
     assert shape.y == 2
 
 
-def test_square_template_instantiate_default_plaquettes():
+def test_square_template_instantiate_default_plaquettes() -> None:
     dimension = LinearFunction(2)
     template = AlternatingSquareTemplate(dimension)
     arr = template.instantiate([1, 2])
@@ -48,7 +48,7 @@ def test_square_template_instantiate_default_plaquettes():
     )
 
 
-def test_square_template_one_fixed_scaling_instantiate_random_plaquettes():
+def test_square_template_one_fixed_scaling_instantiate_random_plaquettes() -> None:
     dimension = LinearFunction(2)
     template = AlternatingSquareTemplate(dimension)
     arr = template.instantiate([78, 195])
@@ -63,18 +63,18 @@ def test_square_template_one_fixed_scaling_instantiate_random_plaquettes():
     )
 
 
-def test_corner_square_template_init():
+def test_corner_square_template_init() -> None:
     dimension = LinearFunction(2)
     AlternatingCornerSquareTemplate(dimension, CornerPositionEnum.LOWER_LEFT, k=2)
 
 
-def test_corner_square_expected_plaquette_number():
+def test_corner_square_expected_plaquette_number() -> None:
     dimension = LinearFunction(2)
     rect = AlternatingCornerSquareTemplate(dimension, CornerPositionEnum.LOWER_LEFT)
     assert rect.expected_plaquettes_number == 5
 
 
-def test_corner_square_template_scaling():
+def test_corner_square_template_scaling() -> None:
     dimension = LinearFunction(2)
     template = AlternatingCornerSquareTemplate(dimension, CornerPositionEnum.LOWER_LEFT)
     template.scale_to(30)
@@ -83,7 +83,7 @@ def test_corner_square_template_scaling():
     assert shape.y == 2 * 30
 
 
-def test_corner_square_template_one_fixed_scaling():
+def test_corner_square_template_one_fixed_scaling() -> None:
     dimension = LinearFunction(0, 2)
     template = AlternatingCornerSquareTemplate(dimension, CornerPositionEnum.LOWER_LEFT)
     template.scale_to(30)
@@ -92,7 +92,7 @@ def test_corner_square_template_one_fixed_scaling():
     assert shape.y == 2
 
 
-def test_corner_square_template_midline():
+def test_corner_square_template_midline() -> None:
     dimension = LinearFunction(2)
     template = AlternatingCornerSquareTemplate(dimension, CornerPositionEnum.LOWER_LEFT)
     midline = template.get_midline_plaquettes()
