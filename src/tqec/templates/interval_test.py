@@ -8,7 +8,7 @@ from tqec.exceptions import TQECException
 from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals
 
 
-def test_interval_creation():
+def test_interval_creation() -> None:
     Interval(0, 1)
     Interval(0, 0)
     Interval(float("-inf"), float("inf"))
@@ -37,7 +37,7 @@ def get_random_intervals(n: int) -> list[Interval]:
     ]
 
 
-def test_interval_is_empty():
+def test_interval_is_empty() -> None:
     assert Interval(0, 0).is_empty()
     assert Interval(float("-inf"), float("-inf")).is_empty()
     assert not Interval(float("-inf"), float("inf")).is_empty()
@@ -45,7 +45,7 @@ def test_interval_is_empty():
     assert not Interval(0, 0, start_excluded=False, end_excluded=False).is_empty()
 
 
-def test_random_interval_is_empty():
+def test_random_interval_is_empty() -> None:
     for f in (_float() for _ in range(100)):
         assert Interval(f, f, start_excluded=True, end_excluded=True).is_empty()
         assert Interval(f, f, start_excluded=False, end_excluded=True).is_empty()
@@ -53,19 +53,19 @@ def test_random_interval_is_empty():
         assert not Interval(f, f, start_excluded=False, end_excluded=False).is_empty()
 
 
-def test_interval_empty_contains():
+def test_interval_empty_contains() -> None:
     interval = Interval(0, 0)
     assert not interval.contains(0)
     assert not interval.contains(-0)
 
 
-def test_random_interval_contains():
+def test_random_interval_contains() -> None:
     interval = Interval(_float(b=-10), _float(a=10))
     for f in (_float(-10, 10) for _ in range(100)):
         assert interval.contains(f)
 
 
-def test_internal_overlaps_with_itself():
+def test_internal_overlaps_with_itself() -> None:
     a = Interval(0, 2)
     assert a.overlaps_with(a)
     assert not a.is_disjoint(a)
@@ -75,7 +75,7 @@ def test_internal_overlaps_with_itself():
     assert not a.is_disjoint(a)
 
 
-def test_interval_overlaps():
+def test_interval_overlaps() -> None:
     a, b = Interval(0, 2), Interval(1, 3)
     assert a.overlaps_with(b)
     assert b.overlaps_with(a)
@@ -95,7 +95,7 @@ def test_interval_overlaps():
         assert b.overlaps_with(a) == (not are_disjoint)
 
 
-def test_interval_not_overlapping():
+def test_interval_not_overlapping() -> None:
     a, b = Interval(0, 2), Interval(2, 3)
     assert not a.overlaps_with(b)
     assert not b.overlaps_with(a)
@@ -106,7 +106,7 @@ def test_interval_not_overlapping():
     assert a.union(b) == b.union(a) == Intervals([Interval(0, 3)])
 
 
-def test_interval_included():
+def test_interval_included() -> None:
     a, b = Interval(float("-inf"), float("inf")), Interval(2, 3)
     assert a.overlaps_with(b)
     assert b.overlaps_with(a)
@@ -116,7 +116,7 @@ def test_interval_included():
     assert a.union(b) == Intervals([a])
 
 
-def test_intervals_creation():
+def test_intervals_creation() -> None:
     Intervals([])
     Intervals([Interval(float("-inf"), float("inf"))])
     Intervals([Interval(0, float("inf"))])
@@ -150,7 +150,7 @@ def test_intervals_creation():
         assert len(intervals.intervals) == expected_intervals
 
 
-def test_intervals_contains():
+def test_intervals_contains() -> None:
     intervals = Intervals([Interval(3, 5), Interval(0, 2)])
     for value, should_contain in [
         (0, True),
@@ -167,13 +167,13 @@ def test_intervals_contains():
         assert intervals.contains(value) == should_contain
 
 
-def test_intervals_is_empty():
+def test_intervals_is_empty() -> None:
     assert Intervals([]).is_empty()
     assert Intervals([Interval(0, 0)]).is_empty()
     assert Intervals([Interval(i, i) for i in [-1, 0, float("inf"), float("-inf")]])
 
 
-def test_intervals_intersection():
+def test_intervals_intersection() -> None:
     a = Intervals([Interval(0, 1), Interval(2, 3), Interval(4, 5)])
     b = Intervals([Interval(0, 1), Interval(2.5, 3.5)])
     ab = Intervals([Interval(0, 1), Interval(2.5, 3)])

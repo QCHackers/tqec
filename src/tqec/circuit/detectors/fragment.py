@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 import warnings
 from dataclasses import dataclass
 
@@ -55,7 +56,10 @@ class Fragment:
         # The line below has no type issue as the circuit does not contain
         # any stim.CircuitRepeatBlock instance, and so iter_stim_circuit_by_moments
         # can only return stim.Circuit instances.
-        moments = [moment.copy() for moment in iter_stim_circuit_by_moments(circuit)]  # type: ignore
+        moments = [
+            typing.cast(stim.Circuit, moment).copy()
+            for moment in iter_stim_circuit_by_moments(circuit)
+        ]
 
         self._circuit = circuit
         self._resets: list[PauliString] = []
@@ -141,10 +145,8 @@ class Fragment:
     def __repr__(self) -> str:
         return f"Fragment(circuit={self._circuit!r})"
 
-    def __eq__(self, other: Fragment) -> bool:
-        if not isinstance(other, Fragment):
-            return False
-        return self._circuit == other._circuit
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Fragment) and self._circuit == other._circuit
 
 
 @dataclass(frozen=True)
@@ -152,7 +154,7 @@ class FragmentLoop:
     fragments: list[Fragment | FragmentLoop]
     repetitions: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.repetitions < 1:
             raise TQECException(
                 "Cannot have a FragmentLoop with 0 or less repetitions."

@@ -26,7 +26,7 @@ def _all_pauli_string_combination_results_alternative_implementation(
     )
 
 
-def test_all_pauli_string_combination_results_randomized():
+def test_all_pauli_string_combination_results_randomized() -> None:
     paulis = [
         PauliString.from_stim_pauli_string(stim.PauliString.random(10))
         for _ in range(5)
@@ -41,7 +41,7 @@ def test_all_pauli_string_combination_results_randomized():
     assert from_function == from_alternative_implementation
 
 
-def test_all_pauli_string_combination_results():
+def test_all_pauli_string_combination_results() -> None:
     paulis = [PauliString({i: "Z"}) for i in range(3)]
     all_combinations = list(
         pauli for _, pauli in _all_pauli_string_combination_results(paulis)
@@ -115,7 +115,7 @@ def test_all_pauli_string_combination_results():
 )
 def test_exact_match(
     target: PauliString, sources: list[PauliString], expected_result: list[int] | None
-):
+) -> None:
     obtained_result = find_exact_cover_sat(target, sources)
     # We expect the results to either both be None, or both be a list.
     assert (obtained_result is None) == (expected_result is None)
@@ -152,7 +152,7 @@ def test_exact_match(
 )
 def test_commuting_match(
     target: PauliString, sources: list[PauliString], expected_result: list[int] | None
-):
+) -> None:
     obtained_result = find_commuting_cover_on_target_qubits_sat(target, sources)
     # We expect the results to either both be None, or both be a list.
     assert (obtained_result is None) == (expected_result is None)

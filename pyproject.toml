@@ -61,3 +61,55 @@ tqec = ["py.typed"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements.txt" }
+
+
+[tool.mypy]
+# See https://numpy.org/devdocs/reference/typing.html
+plugins = "numpy.typing.mypy_plugin"
+# Start off with these
+warn_unused_configs = true
+warn_redundant_casts = true
+# Explicitly disable that for the moment, will eventually be turned on again.
+warn_unused_ignores = false
+warn_unreachable = true
+
+# Getting these passing should be easy
+strict_equality = true
+extra_checks = true
+
+# Strongly recommend enabling this one as soon as you can
+check_untyped_defs = true
+
+# These shouldn't be too much additional work, but may be tricky to
+# get passing if you use a lot of untyped libraries
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+
+# These next few are various gradations of forcing use of type annotations
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+
+# This one isn't too hard to get passing, but return on investment is lower
+# Disabled due to issues with cirq not reexporting explicitly.
+no_implicit_reexport = false
+
+# This one can be tricky to get passing if you use a lot of untyped libraries
+warn_return_any = true
+
+
+# See https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
+[[tool.mypy.overrides]]
+module = [
+    "stim",
+    "pysat",
+    "pysat.solvers",
+    "collada",
+    "collada.source",
+    "networkx",
+    "stimcirq",
+    # Added due to missing stubs for last version (1.13.1)
+    "sympy",
+]
+ignore_missing_imports = true

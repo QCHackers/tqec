@@ -7,6 +7,8 @@ from enum import Enum
 import numpy as np
 import numpy.typing as npt
 
+_XYZ: list[ty.Literal["X", "Y", "Z"]] = ["X", "Y", "Z"]
+
 
 class FaceType(Enum):
     X = "X"
@@ -134,7 +136,7 @@ def _create_cube_blocks() -> list[Block]:
     for name in ["zxx", "xzx", "xxz", "xzz", "zxz", "zzx"]:
         faces = []
         for i, face_type in enumerate(name):
-            normal_direction = "XYZ"[i]
+            normal_direction = _XYZ[i]
             face = Face(
                 FaceType.from_string(face_type), width, height, normal_direction
             )
@@ -159,7 +161,7 @@ def _create_connector_blocks_without_h() -> list[Block]:
                 width, height = 2, 1
             else:
                 width, height = 1, 2
-            normal_direction = "XYZ"[i]
+            normal_direction = _XYZ[i]
             face = Face(
                 FaceType.from_string(face_type), width, height, normal_direction
             )
@@ -171,36 +173,43 @@ def _create_connector_blocks_without_h() -> list[Block]:
     return connector_blocks
 
 
+def _get_3d_translation(
+    connector_direction_index: int, value: float
+) -> tuple[float, float, float]:
+    assert 0 <= connector_direction_index <= 2
+    tmp: list[float] = [0, 0, 0]
+    tmp[connector_direction_index] = value
+    return (tmp[0], tmp[1], tmp[2])
+
+
 def _create_connector_blocks_with_h() -> list[Block]:
     """Create ozxh, oxzh, zoxh, xozh, zxoh, xzoh connector blocks."""
     connector_blocks = []
     for name in ["ozxh", "oxzh", "zoxh", "xozh", "zxoh", "xzoh"]:
-        faces = []
+        faces: list[Face] = []
         connector_direction_index = name.index("o")
         for i, face_type in enumerate(name[:-1]):
             if face_type == "o":
                 continue
             if i == (connector_direction_index - 1) % 3:
-                w1, h1 = 0.9, 1
-                w2, h2 = 0.2, 1
-                w3, h3 = 0.9, 1
+                w1, h1 = 0.9, 1.0
+                w2, h2 = 0.2, 1.0
+                w3, h3 = 0.9, 1.0
             else:
-                w1, h1 = 1, 0.9
-                w2, h2 = 1, 0.2
-                w3, h3 = 1, 0.9
-            normal_direction = "XYZ"[i]
+                w1, h1 = 1.0, 0.9
+                w2, h2 = 1.0, 0.2
+                w3, h3 = 1.0, 0.9
+            normal_direction = _XYZ[i]
             face1 = Face(FaceType.from_string(face_type), w1, h1, normal_direction)
-            face2_translation = [0, 0, 0]
-            face2_translation[connector_direction_index] = 0.9
-            face2 = Face(FaceType.H, w2, h2, normal_direction, tuple(face2_translation))
-            face3_translation = [0, 0, 0]
-            face3_translation[connector_direction_index] = 1.1
+            face2_translation = _get_3d_translation(connector_direction_index, 0.9)
+            face2 = Face(FaceType.H, w2, h2, normal_direction, face2_translation)
+            face3_translation = _get_3d_translation(connector_direction_index, 1.1)
             face3 = Face(
                 FaceType.from_string(face_type).opposite(),
                 w3,
                 h3,
                 normal_direction,
-                tuple(face3_translation),
+                face3_translation,
             )
             faces.extend([face1, face2, face3])
             translation = [0, 0, 0]

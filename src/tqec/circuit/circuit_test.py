@@ -31,24 +31,30 @@ def _expected_circuit(qubits: PlaquetteQubits) -> cirq.Circuit:
     )
 
 
-def test_generate_circuit_list(plaquette: Plaquette, one_by_one_template) -> None:
+def test_generate_circuit_list(
+    plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     circuit = generate_circuit(one_by_one_template, [plaquette])
     assert circuit == _expected_circuit(plaquette.qubits)
 
 
-def test_generate_circuit_dict(plaquette: Plaquette, one_by_one_template):
+def test_generate_circuit_dict(
+    plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     circuit = generate_circuit(one_by_one_template, {1: plaquette})
     assert circuit == _expected_circuit(plaquette.qubits)
 
 
-def test_generate_circuit_dict_0_indexed(plaquette: Plaquette, one_by_one_template):
+def test_generate_circuit_dict_0_indexed(
+    plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     with pytest.raises(TQECException):
         generate_circuit(one_by_one_template, {0: plaquette})
 
 
 def test_generate_circuit_wrong_number_of_plaquettes(
-    plaquette: Plaquette, one_by_one_template
-):
+    plaquette: Plaquette, one_by_one_template: Template
+) -> None:
     with pytest.raises(TQECException):
         generate_circuit(one_by_one_template, [plaquette, plaquette])
     with pytest.raises(TQECException):
