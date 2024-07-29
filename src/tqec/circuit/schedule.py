@@ -364,6 +364,16 @@ class ScheduledCircuit:
             ]
         )
 
+    def add_to_schedule_index(self, schedule_index: int, moment: cirq.Moment) -> None:
+        try:
+            internal_circuit_moment_index = self._schedule.index(schedule_index)
+            self._raw_circuit[internal_circuit_moment_index] += moment
+        except ValueError:
+            self._schedule = sorted(self._schedule + [schedule_index])
+            internal_circuit_moment_index = self._schedule.index(schedule_index)
+            self._raw_circuit.insert(internal_circuit_moment_index - 1, moment)
+            self._number_of_non_virtual_moments += self._is_virtual_moment(moment)
+
 
 class ScheduledCircuits:
     def __init__(self, circuits: list[ScheduledCircuit]) -> None:
