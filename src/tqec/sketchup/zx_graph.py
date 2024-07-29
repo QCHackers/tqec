@@ -1,12 +1,16 @@
 """ZX graph representation of a 3D spacetime defect diagram."""
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 from enum import Enum, auto
 from dataclasses import dataclass, astuple
 
 import networkx as nx
 
 from tqec.exceptions import TQECException
+
+if TYPE_CHECKING:
+    from tqec.sketchup.block_graph import BlockGraph
 
 
 class NodeType(Enum):
@@ -141,3 +145,20 @@ class ZXGraph:
         if not self._graph.has_edge(u, v):
             return None
         return self._graph.edges[u, v][_EDGE_DATA_KEY]
+
+    def to_block_graph(self, name: str = "", check_validity: bool = True) -> "BlockGraph":
+        """Construct a block graph from a ZX graph.
+
+        The ZX graph includes the minimal information required to construct the block graph,
+        but not guaranteed to admit a valid block structure. The block structure will be inferred
+        from the ZX graph and validated.
+
+        Args:
+            name: The name of the new block graph.
+            check_validity: Whether to check the validity of the block graph after construction. Default is True.
+
+        Returns:
+            The constructed block graph.
+        """
+        from tqec.sketchup.block_graph import BlockGraph
+        return BlockGraph.from_zx_graph(self, name=name, check_validity=check_validity)

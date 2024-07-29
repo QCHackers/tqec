@@ -11,7 +11,7 @@ import numpy as np
 import numpy.typing as npt
 
 from tqec.exceptions import TQECException
-from tqec.sketchup.block import BlockType, Face, FaceType, load_library_blocks
+from tqec.sketchup.geometry import BlockType, Face, FaceType, load_library_block_geometries
 
 LIGHT_RGBA = (1, 1, 1, 1)
 DARK_RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1)
@@ -508,18 +508,18 @@ def _create_base_model() -> _BaseSketchUpModel:
     mesh.materials.extend([light_material, dark_material, yellow_material])
     # Add geometries
     geom_node_dict: dict[Face, collada.scene.GeometryNode] = {}
-    library_blocks = load_library_blocks()
-    for block in library_blocks:
-        for face in block.faces:
+    library_geometry = load_library_block_geometries()
+    for block_type, faces in library_geometry.items():
+        for face in faces:
             _add_face_geometry_node(mesh, face, materials, geom_node_dict)
     # Add library nodes
     node_handles: dict[BlockType, collada.scene.Node] = {}
-    for block in library_blocks:
-        children = [geom_node_dict[face] for face in block.faces]
-        name = block.block_type.value
+    for block_type, faces in library_geometry.items():
+        children = [geom_node_dict[face] for face in faces]
+        name = block_type.value
         node = collada.scene.Node(name, children, name=name)
         mesh.nodes.append(node)
-        node_handles[block.block_type] = node
+        node_handles[block_type] = node
 
     # Create scene
     root_node = collada.scene.Node("SketchUp", name="SketchUp")
@@ -552,7 +552,7 @@ def _get_offset_by_connection(
 
 
 def _get_scale_tuple(block_type: BlockType, scale: float) -> tuple[float, float, float]:
-    if not block_type.is_connector:
+    if not block_type.is_pipe:
         raise TQECException("The block type must be a connector to be scalable.")
     scales: list[float] = [1, 1, 1]
     scale_index = block_type.value.index("o")

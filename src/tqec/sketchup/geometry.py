@@ -7,6 +7,8 @@ from enum import Enum
 import numpy as np
 import numpy.typing as npt
 
+from tqec.sketchup.block_graph import BlockType, parse_block_type_from_str
+
 _XYZ: list[ty.Literal["X", "Y", "Z"]] = ["X", "Y", "Z"]
 
 
@@ -83,55 +85,12 @@ class Face:
         )
 
 
-class BlockType(Enum):
-    """Valid block types in the library."""
-
-    # Cubes
-    ZXX = "zxx"
-    XZX = "xzx"
-    XXZ = "xxz"
-    XZZ = "xzz"
-    ZXZ = "zxz"
-    ZZX = "zzx"
-    # Connectors without H
-    OZX = "ozx"
-    OXZ = "oxz"
-    XOZ = "xoz"
-    ZOX = "zox"
-    XZO = "xzo"
-    ZXO = "zxo"
-    # Connectors with H
-    OZXH = "ozxh"
-    OXZH = "oxzh"
-    ZOXH = "zoxh"
-    XOZH = "xozh"
-    ZXOH = "zxoh"
-    XZOH = "xzoh"
-
-    @staticmethod
-    def from_string(block_type: str) -> "BlockType":
-        return BlockType(block_type.lower())
-
-    @property
-    def is_connector(self) -> bool:
-        """Check if the block type is a connector."""
-        return "o" in self.value
-
-    @property
-    def has_hadamard(self) -> bool:
-        """Check if the block type has a hadamard transition."""
-        return "h" in self.value
+Geometry = dict[BlockType, list[Face]]
 
 
-@dataclass(frozen=True)
-class Block:
-    block_type: BlockType
-    faces: list[Face]
-
-
-def _create_cube_blocks() -> list[Block]:
-    """Create zxx, xzx, xxz, xzz, zxz, zzx cube blocks."""
-    cube_blocks = []
+def _create_cube_geometries() -> Geometry:
+    """Create zxx, xzx, xxz, xzz, zxz, zzx cube geometries."""
+    cube_geomeyries = {}
     width, height = 1, 1
     for name in ["zxx", "xzx", "xxz", "xzz", "zxz", "zzx"]:
         faces = []
@@ -144,20 +103,20 @@ def _create_cube_blocks() -> list[Block]:
             translation = [0, 0, 0]
             translation[i] = 1
             faces.append(face.translated_by(*translation))
-        cube_blocks.append(Block(BlockType.from_string(name), faces))
-    return cube_blocks
+        cube_geomeyries[parse_block_type_from_str(name)] = faces
+    return cube_geomeyries
 
 
-def _create_connector_blocks_without_h() -> list[Block]:
-    """Create ozx, oxz, xoz, zox, xzo, zxo connector blocks."""
-    connector_blocks = []
+def _create_no_h_pipe_geometries() -> Geometry:
+    """Create ozx, oxz, xoz, zox, xzo, zxo pipe geometries."""
+    pipe_geometries = {}
     for name in ["ozx", "oxz", "xoz", "zox", "xzo", "zxo"]:
         faces = []
-        connector_direction_index = name.index("o")
+        pipe_direction_index = name.index("o")
         for i, face_type in enumerate(name):
             if face_type == "o":
                 continue
-            if i == (connector_direction_index - 1) % 3:
+            if i == (pipe_direction_index - 1) % 3:
                 width, height = 2, 1
             else:
                 width, height = 1, 2
@@ -169,29 +128,29 @@ def _create_connector_blocks_without_h() -> list[Block]:
             translation = [0, 0, 0]
             translation[i] = 1
             faces.append(face.translated_by(*translation))
-        connector_blocks.append(Block(BlockType.from_string(name), faces))
-    return connector_blocks
+        pipe_geometries[parse_block_type_from_str(name)] = faces
+    return pipe_geometries
 
 
 def _get_3d_translation(
-    connector_direction_index: int, value: float
+    pipe_direction_index: int, value: float
 ) -> tuple[float, float, float]:
-    assert 0 <= connector_direction_index <= 2
+    assert 0 <= pipe_direction_index <= 2
     tmp: list[float] = [0, 0, 0]
-    tmp[connector_direction_index] = value
+    tmp[pipe_direction_index] = value
     return (tmp[0], tmp[1], tmp[2])
 
 
-def _create_connector_blocks_with_h() -> list[Block]:
-    """Create ozxh, oxzh, zoxh, xozh, zxoh, xzoh connector blocks."""
-    connector_blocks = []
+def _create_h_pipe_geometries() -> Geometry:
+    """Create ozxh, oxzh, zoxh, xozh, zxoh, xzoh pipe geometries."""
+    pipe_geometries = {}
     for name in ["ozxh", "oxzh", "zoxh", "xozh", "zxoh", "xzoh"]:
         faces: list[Face] = []
-        connector_direction_index = name.index("o")
+        pipe_direction_index = name.index("o")
         for i, face_type in enumerate(name[:-1]):
             if face_type == "o":
                 continue
-            if i == (connector_direction_index - 1) % 3:
+            if i == (pipe_direction_index - 1) % 3:
                 w1, h1 = 0.9, 1.0
                 w2, h2 = 0.2, 1.0
                 w3, h3 = 0.9, 1.0
@@ -201,9 +160,9 @@ def _create_connector_blocks_with_h() -> list[Block]:
                 w3, h3 = 1.0, 0.9
             normal_direction = _XYZ[i]
             face1 = Face(FaceType.from_string(face_type), w1, h1, normal_direction)
-            face2_translation = _get_3d_translation(connector_direction_index, 0.9)
+            face2_translation = _get_3d_translation(pipe_direction_index, 0.9)
             face2 = Face(FaceType.H, w2, h2, normal_direction, face2_translation)
-            face3_translation = _get_3d_translation(connector_direction_index, 1.1)
+            face3_translation = _get_3d_translation(pipe_direction_index, 1.1)
             face3 = Face(
                 FaceType.from_string(face_type).opposite(),
                 w3,
@@ -217,16 +176,17 @@ def _create_connector_blocks_with_h() -> list[Block]:
             faces.extend(
                 face.translated_by(*translation) for face in [face1, face2, face3]
             )
-        connector_blocks.append(Block(BlockType.from_string(name), faces))
-    return connector_blocks
+        pipe_geometries[parse_block_type_from_str(name)] = faces
+    return pipe_geometries
 
 
-def load_library_blocks() -> list[Block]:
-    """Load the 18 library blocks."""
+def load_library_block_geometries() -> Geometry:
+    """Load the geometries of all the library blocks."""
+    geometry = {}
     # 6 cube blocks
-    cube_blocks = _create_cube_blocks()
-    # 6 connector blocks without H
-    connector_blocks_without_h = _create_connector_blocks_without_h()
-    # 6 connector blocks with H
-    connector_blocks_with_h = _create_connector_blocks_with_h()
-    return cube_blocks + connector_blocks_without_h + connector_blocks_with_h
+    geometry.update(_create_cube_geometries())
+    # 6 pipe blocks without H
+    geometry.update(_create_no_h_pipe_geometries())
+    # 6 pipe blocks with H
+    geometry.update(_create_h_pipe_geometries())
+    return geometry
