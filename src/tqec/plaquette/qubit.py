@@ -86,6 +86,20 @@ class PlaquetteQubits:
             if (_get_relevant_value(qubit) == max_index)
         ]
 
+    def get_qubits_on_side(self, side: PlaquetteSide) -> list[PlaquetteQubit]:
+        if side == PlaquetteSide.LEFT:
+            min_x = min(q.position.x for q in self)
+            return [q for q in self if q.position.x == min_x]
+        elif side == PlaquetteSide.RIGHT:
+            max_x = max(q.position.x for q in self)
+            return [q for q in self if q.position.x == max_x]
+        elif side == PlaquetteSide.UP:
+            min_y = min(q.position.y for q in self)
+            return [q for q in self if q.position.y == min_y]
+        else:  # if orientation == PlaquetteSide.DOWN:
+            max_y = max(q.position.y for q in self)
+            return [q for q in self if q.position.y == max_y]
+
 
 class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
