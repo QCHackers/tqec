@@ -42,7 +42,9 @@ class ComputationBlock(ABC):
         pass
 
 
-def _number_of_moments_needed(plaquettes: list[Plaquette]) -> int:
+def _number_of_moments_needed(
+    plaquettes: list[Plaquette] | dict[int, Plaquette],
+) -> int:
     """Return the number of `cirq.Moment` needed to execute all the provided
     plaquettes in parallel.
 
@@ -56,7 +58,10 @@ def _number_of_moments_needed(plaquettes: list[Plaquette]) -> int:
         the number of `cirq.Moment` needed to execute the provided plaquettes
         in parallel.
     """
-    return max(max(p.circuit.schedule, default=0) for p in plaquettes)
+    return max(
+        max(p.circuit.schedule, default=0)
+        for p in (plaquettes if isinstance(plaquettes, list) else plaquettes.values())
+    )
 
 
 @dataclass
@@ -81,9 +86,11 @@ class StandardComputationBlock(ComputationBlock):
     """
 
     template: Template
-    initial_plaquettes: list[Plaquette]
-    final_plaquettes: list[Plaquette]
-    repeating_plaquettes: tuple[list[Plaquette], LinearFunction] | None
+    initial_plaquettes: list[Plaquette] | dict[int, Plaquette]
+    final_plaquettes: list[Plaquette] | dict[int, Plaquette]
+    repeating_plaquettes: (
+        tuple[list[Plaquette] | dict[int, Plaquette], LinearFunction] | None
+    )
 
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
