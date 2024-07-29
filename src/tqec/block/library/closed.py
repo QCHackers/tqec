@@ -1,4 +1,4 @@
-import typing
+from collections import defaultdict
 
 from tqec.block.block import StandardComputationBlock
 from tqec.exceptions import TQECException
@@ -22,116 +22,77 @@ from tqec.plaquette.library.memory import (
     zz_memory_plaquette,
     zzzz_memory_plaquette,
 )
-from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
 from tqec.templates.scale import LinearFunction
-
-
-def _zx_plaquette_list(
-    empty_plaquette: typing.Callable[[], Plaquette],
-    xx_plaquette: typing.Callable[[PlaquetteOrientation, list[int]], Plaquette],
-    xxxx_plaquette: typing.Callable[[list[int]], Plaquette],
-    zz_plaquette: typing.Callable[[PlaquetteOrientation, list[int]], Plaquette],
-    zzzz_plaquette: typing.Callable[[list[int]], Plaquette],
-) -> list[Plaquette]:
-    # Distribution of plaquettes:
-    # 1  5  6  5  6  2
-    # 7  9 10  9 10 11
-    # 8 10  9 10  9 12
-    # 7  9 10  9 10 11
-    # 8 10  9 10  9 12
-    # 3 13 14 13 14  4
-    plaquette_dict = {
-        6: xx_plaquette(PlaquetteOrientation.UP, [1, 2, 5, 6, 7, 8]),
-        7: zz_plaquette(PlaquetteOrientation.LEFT, [1, 5, 6, 8]),
-        9: xxxx_plaquette([1, 2, 3, 4, 5, 6, 7, 8]),
-        10: zzzz_plaquette([1, 3, 4, 5, 6, 8]),
-        12: zz_plaquette(PlaquetteOrientation.RIGHT, [1, 3, 4, 8]),
-        13: xx_plaquette(PlaquetteOrientation.DOWN, [1, 2, 3, 4, 7, 8]),
-    }
-    return [plaquette_dict.get(i, empty_plaquette()) for i in range(1, 15)]
 
 
 def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
     return StandardComputationBlock(
         DenseQubitSquareTemplate(dim=dimension),
-        initial_plaquettes=_zx_plaquette_list(
-            empty_square_plaquette,
-            xx_initialisation_plaquette,
-            xxxx_initialisation_plaquette,
-            zz_initialisation_plaquette,
-            zzzz_initialisation_plaquette,
-        ),
-        final_plaquettes=_zx_plaquette_list(
-            empty_square_plaquette,
-            xx_measurement_plaquette,
-            xxxx_measurement_plaquette,
-            zz_measurement_plaquette,
-            zzzz_measurement_plaquette,
-        ),
+        initial_plaquettes=defaultdict(empty_square_plaquette)
+        | {
+            6: xx_initialisation_plaquette(PlaquetteOrientation.UP),
+            7: zz_initialisation_plaquette(PlaquetteOrientation.LEFT),
+            9: xxxx_initialisation_plaquette(),
+            10: zzzz_initialisation_plaquette(),
+            12: zz_initialisation_plaquette(PlaquetteOrientation.RIGHT),
+            13: xx_initialisation_plaquette(PlaquetteOrientation.DOWN),
+        },
+        final_plaquettes=defaultdict(empty_square_plaquette)
+        | {
+            6: xx_measurement_plaquette(PlaquetteOrientation.UP),
+            7: zz_measurement_plaquette(PlaquetteOrientation.LEFT),
+            9: xxxx_measurement_plaquette(),
+            10: zzzz_measurement_plaquette(),
+            12: zz_measurement_plaquette(PlaquetteOrientation.RIGHT),
+            13: xx_measurement_plaquette(PlaquetteOrientation.DOWN),
+        },
         repeating_plaquettes=(
-            _zx_plaquette_list(
-                empty_square_plaquette,
-                xx_memory_plaquette,
-                xxxx_memory_plaquette,
-                zz_memory_plaquette,
-                zzzz_memory_plaquette,
-            ),
+            defaultdict(empty_square_plaquette)
+            | {
+                6: xx_memory_plaquette(PlaquetteOrientation.UP),
+                7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
+                9: xxxx_memory_plaquette(),
+                10: zzzz_memory_plaquette(),
+                12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
+                13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+            },
             dimension,
         ),
     )
 
 
-def _xz_plaquette_list(
-    empty_plaquette: typing.Callable[[], Plaquette],
-    xx_plaquette: typing.Callable[[PlaquetteOrientation, list[int]], Plaquette],
-    xxxx_plaquette: typing.Callable[[list[int]], Plaquette],
-    zz_plaquette: typing.Callable[[PlaquetteOrientation, list[int]], Plaquette],
-    zzzz_plaquette: typing.Callable[[list[int]], Plaquette],
-) -> list[Plaquette]:
-    # Distribution of plaquettes:
-    # 1  5  6  5  6  2
-    # 7  9 10  9 10 11
-    # 8 10  9 10  9 12
-    # 7  9 10  9 10 11
-    # 8 10  9 10  9 12
-    # 3 13 14 13 14  4
-    plaquette_dict = {
-        6: zz_plaquette(PlaquetteOrientation.UP, [1, 4, 5, 8]),
-        7: xx_plaquette(PlaquetteOrientation.LEFT, [1, 2, 4, 6, 7, 8]),
-        9: zzzz_plaquette([1, 3, 4, 5, 6, 8]),
-        10: xxxx_plaquette([1, 2, 3, 4, 5, 6, 7, 8]),
-        12: xx_plaquette(PlaquetteOrientation.RIGHT, [1, 2, 4, 6, 7, 8]),
-        13: zz_plaquette(PlaquetteOrientation.DOWN, [1, 3, 5, 8]),
-    }
-    return [plaquette_dict.get(i, empty_plaquette()) for i in range(1, 15)]
-
-
 def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
     return StandardComputationBlock(
         DenseQubitSquareTemplate(dim=dimension),
-        initial_plaquettes=_xz_plaquette_list(
-            empty_square_plaquette,
-            xx_initialisation_plaquette,
-            xxxx_initialisation_plaquette,
-            zz_initialisation_plaquette,
-            zzzz_initialisation_plaquette,
-        ),
-        final_plaquettes=_xz_plaquette_list(
-            empty_square_plaquette,
-            xx_measurement_plaquette,
-            xxxx_measurement_plaquette,
-            zz_measurement_plaquette,
-            zzzz_measurement_plaquette,
-        ),
+        initial_plaquettes=defaultdict(empty_square_plaquette)
+        | {
+            6: zz_initialisation_plaquette(PlaquetteOrientation.UP),
+            7: xx_initialisation_plaquette(PlaquetteOrientation.LEFT),
+            9: zzzz_initialisation_plaquette(),
+            10: xxxx_initialisation_plaquette(),
+            12: xx_initialisation_plaquette(PlaquetteOrientation.RIGHT),
+            13: zz_initialisation_plaquette(PlaquetteOrientation.DOWN),
+        },
+        final_plaquettes=defaultdict(empty_square_plaquette)
+        | {
+            6: zz_measurement_plaquette(PlaquetteOrientation.UP),
+            7: xx_measurement_plaquette(PlaquetteOrientation.LEFT),
+            9: zzzz_measurement_plaquette(),
+            10: xxxx_measurement_plaquette(),
+            12: xx_measurement_plaquette(PlaquetteOrientation.RIGHT),
+            13: zz_measurement_plaquette(PlaquetteOrientation.DOWN),
+        },
         repeating_plaquettes=(
-            _xz_plaquette_list(
-                empty_square_plaquette,
-                xx_memory_plaquette,
-                xxxx_memory_plaquette,
-                zz_memory_plaquette,
-                zzzz_memory_plaquette,
-            ),
+            defaultdict(empty_square_plaquette)
+            | {
+                6: zz_memory_plaquette(PlaquetteOrientation.UP),
+                7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
+                9: zzzz_memory_plaquette(),
+                10: xxxx_memory_plaquette(),
+                12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
+                13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
+            },
             dimension,
         ),
     )
