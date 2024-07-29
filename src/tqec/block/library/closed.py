@@ -1,6 +1,7 @@
 import typing
 
 from tqec.block.block import StandardComputationBlock
+from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.library.initialisation import (
@@ -134,3 +135,19 @@ def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
             dimension,
         ),
     )
+
+
+def zxx_block(dimension: LinearFunction) -> StandardComputationBlock:
+    raise TQECException("'zxx' block is not implemented yet.")
+
+
+def xzx_block(dimension: LinearFunction) -> StandardComputationBlock:
+    raise TQECException("'xzx' block is not implemented yet.")
+
+
+def zzx_block(dimension: LinearFunction) -> StandardComputationBlock:
+    raise TQECException("'zzx' block is not implemented yet.")
+
+
+def xxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+    raise TQECException("'xxz' block is not implemented yet.")
