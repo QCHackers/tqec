@@ -18,9 +18,22 @@ class ResetBasis(Enum):
         if self == ResetBasis.X:
             raise TQECException("X-basis resets are not implemented yet.")
         elif self == ResetBasis.Z:
-            return cirq.R(q)
+            return cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
         else:
             raise TQECException("Unknown reset basis: {self}")
+
+
+class MeasurementBasis(Enum):
+    X = auto()
+    Z = auto()
+
+    def __call__(self, q: cirq.Qid) -> cirq.Operation:
+        if self == ResetBasis.X:
+            raise TQECException("X-basis measurements are not implemented yet.")
+        elif self == ResetBasis.Z:
+            return cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
+        else:
+            raise TQECException("Unknown measurement basis: {self}")
 
 
 def _make_pauli_syndrome_measurement_circuit(
@@ -98,6 +111,7 @@ def pauli_memory_plaquette(
     pauli_string: str,
     schedule: list[int],
     reset_basis: ResetBasis = ResetBasis.Z,
+    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
     include_initial_data_resets: bool = False,
     include_final_data_measurements: bool = False,
 ) -> Plaquette:
@@ -116,14 +130,8 @@ def pauli_memory_plaquette(
     )
 
     if include_initial_data_resets:
-        circuit[0] += [
-            reset_basis(q).with_tags(Plaquette._MERGEABLE_TAG)
-            for q in qubits.get_data_qubits_cirq()
-        ]
+        circuit[0] += [reset_basis(q) for q in qubits.get_data_qubits_cirq()]
     if include_final_data_measurements:
-        circuit[-1] += [
-            cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
-            for q in qubits.get_data_qubits_cirq()
-        ]
+        circuit[-1] += [measurement_basis(q) for q in qubits.get_data_qubits_cirq()]
 
     return Plaquette(qubits, ScheduledCircuit(circuit, schedule))
