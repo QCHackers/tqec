@@ -23,6 +23,14 @@ class Position3D:
     y: int
     z: int
 
+    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Position3D:
+        """Shift the position by the given offset."""
+        return Position3D(self.x + dx, self.y + dy, self.z + dz)
+
+    def is_nearby(self, other: Position3D) -> bool:
+        """Check if the other position is near to this position, i.e. Manhattan distance is 1."""
+        return abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
+
     def __post_init__(self):
         if any(not isinstance(i, int) for i in astuple(self)):
             raise TQECException("Position must be an integer.")
@@ -116,6 +124,8 @@ class ZXGraph:
         """
         if u not in self._graph or v not in self._graph:
             raise TQECException("Both nodes must exist in the graph.")
+        if not u.is_nearby(v):
+            raise TQECException("The two nodes must be nearby in the 3D space to be connected.")
         u_node = self._graph.nodes[u][_NODE_DATA_KEY]
         v_node = self._graph.nodes[v][_NODE_DATA_KEY]
         self._graph.add_edge(u, v, _EDGE_DATA_KEY=(u_node, v_node, has_hadamard))
