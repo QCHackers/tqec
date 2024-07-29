@@ -1,5 +1,3 @@
-import cirq
-
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
