@@ -9,7 +9,7 @@ from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
-from tqec.templates.base import Template
+from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
 from typing_extensions import override
 
@@ -85,7 +85,7 @@ class StandardComputationBlock(ComputationBlock):
             of plaquette of the provided template.
     """
 
-    template: Template
+    template: ComposedTemplateWithSides
     initial_plaquettes: list[Plaquette] | dict[int, Plaquette]
     final_plaquettes: list[Plaquette] | dict[int, Plaquette]
     repeating_plaquettes: (
