@@ -28,9 +28,9 @@ class MeasurementBasis(Enum):
     Z = auto()
 
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
-        if self == ResetBasis.X:
+        if self == MeasurementBasis.X:
             raise TQECException("X-basis measurements are not implemented yet.")
-        elif self == ResetBasis.Z:
+        elif self == MeasurementBasis.Z:
             return cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
         else:
             raise TQECException("Unknown measurement basis: {self}")
