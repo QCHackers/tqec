@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.pauli import pauli_memory_plaquette
 from tqec.plaquette.library.utils.schedule import cnot_pauli_schedule
