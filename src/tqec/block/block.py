@@ -163,9 +163,15 @@ class StandardComputationBlock(ComputationBlock):
         if boundary == BlockDimension.T:
             return StandardComputationBlock(
                 self.template,
-                initial_plaquettes=self.initial_plaquettes,
-                final_plaquettes=self.final_plaquettes,
-                repeating_plaquettes=None,
+                initial_plaquettes=[
+                    empty_square_plaquette()
+                    for _ in range(self.template.expected_plaquettes_number)
+                ],
+                final_plaquettes=[
+                    empty_square_plaquette()
+                    for _ in range(self.template.expected_plaquettes_number)
+                ],
+                repeating_plaquettes=self.repeating_plaquettes,
             )
 
         # For the spatial dimensions, get the indices of the plaquettes that should be
