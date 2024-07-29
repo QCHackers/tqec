@@ -1,3 +1,5 @@
+from enum import Enum, auto
+
 import cirq
 
 from tqec.circuit.schedule import ScheduledCircuit
@@ -6,6 +8,19 @@ from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubit, PlaquetteQubits
 
 _SUPPORTED_PAULI: set[str] = set("xz")
+
+
+class ResetBasis(Enum):
+    X = auto()
+    Z = auto()
+
+    def __call__(self, q: cirq.Qid) -> cirq.Operation:
+        if self == ResetBasis.X:
+            raise TQECException("X-basis resets are not implemented yet.")
+        elif self == ResetBasis.Z:
+            return cirq.R(q)
+        else:
+            raise TQECException("Unknown reset basis: {self}")
 
 
 def _make_pauli_syndrome_measurement_circuit(
@@ -82,6 +97,7 @@ def pauli_memory_plaquette(
     qubits: PlaquetteQubits,
     pauli_string: str,
     schedule: list[int],
+    reset_basis: ResetBasis = ResetBasis.Z,
     include_initial_data_resets: bool = False,
     include_final_data_measurements: bool = False,
 ) -> Plaquette:
@@ -101,7 +117,7 @@ def pauli_memory_plaquette(
 
     if include_initial_data_resets:
         circuit[0] += [
-            cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
+            reset_basis(q).with_tags(Plaquette._MERGEABLE_TAG)
             for q in qubits.get_data_qubits_cirq()
         ]
     if include_final_data_measurements:
