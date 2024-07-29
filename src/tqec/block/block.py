@@ -5,9 +5,11 @@ from dataclasses import dataclass
 
 import cirq
 import cirq.circuits
+from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
+from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
@@ -38,7 +40,13 @@ class ComputationBlock(ABC):
 
     @abstractmethod
     def instantiate(self) -> cirq.Circuit:
-        """Return the circuit representation of the computational block."""
+        """Return the full circuit representation of the computational block."""
+        pass
+
+    @abstractmethod
+    def instantiate_without_boundary(self, dimension: BlockDimension) -> cirq.Circuit:
+        """Return the circuit representation of the computational block without the
+        specified boundary."""
         pass
 
 
@@ -62,6 +70,14 @@ def _number_of_moments_needed(
         max(p.circuit.schedule, default=0)
         for p in (plaquettes if isinstance(plaquettes, list) else plaquettes.values())
     )
+
+
+def _plaquette_dict(
+    plaquettes: list[Plaquette] | dict[int, Plaquette],
+) -> dict[int, Plaquette]:
+    if isinstance(plaquettes, dict):
+        return plaquettes
+    return {i: p for i, p in enumerate(plaquettes)}
 
 
 @dataclass
@@ -132,6 +148,51 @@ class StandardComputationBlock(ComputationBlock):
         time += _number_of_moments_needed(self.final_plaquettes)
         return time
 
+    def replace_boundary_with_empty_plaquettes(
+        self, boundary: BlockDimension
+    ) -> StandardComputationBlock:
+        # Handle the time dimension as an edge case.
+        if boundary == BlockDimension.T:
+            return StandardComputationBlock(
+                self.template,
+                initial_plaquettes=self.initial_plaquettes,
+                final_plaquettes=self.final_plaquettes,
+                repeating_plaquettes=None,
+            )
+
+        # For the spatial dimensions, get the indices of the plaquettes that should be
+        # replaced by an empty plaquette.
+        sides_to_replace = boundary.to_template_sides()
+        plaquette_indices_to_replace = self.template.get_plaquette_indices_on_sides(
+            sides_to_replace
+        )
+        plaquettes_to_replace = {
+            i: empty_square_plaquette() for i in plaquette_indices_to_replace
+        }
+        # Replace the plaquettes.
+        initial_plaquettes = (
+            _plaquette_dict(self.initial_plaquettes) | plaquettes_to_replace
+        )
+        final_plaquettes = (
+            _plaquette_dict(self.final_plaquettes) | plaquettes_to_replace
+        )
+        repeating_plaquettes: (
+            tuple[list[Plaquette] | dict[int, Plaquette], LinearFunction] | None
+        ) = None
+        if self.repeating_plaquettes is not None:
+            plaquettes, dimension = self.repeating_plaquettes
+            repeating_plaquettes = (
+                _plaquette_dict(plaquettes) | plaquettes_to_replace,
+                dimension,
+            )
+        # Return the resulting block.
+        return StandardComputationBlock(
+            self.template,
+            initial_plaquettes=initial_plaquettes,
+            final_plaquettes=final_plaquettes,
+            repeating_plaquettes=repeating_plaquettes,
+        )
+
     @override
     def instantiate(self) -> cirq.Circuit:
         circuit = generate_circuit(self.template, self.initial_plaquettes)
@@ -142,6 +203,10 @@ class StandardComputationBlock(ComputationBlock):
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
         circuit += generate_circuit(self.template, self.final_plaquettes)
         return circuit
+
+    @override
+    def instantiate_without_boundary(self, dimension: BlockDimension) -> cirq.Circuit:
+        return self.replace_boundary_with_empty_plaquettes(dimension).instantiate()
 
 
 @dataclass
