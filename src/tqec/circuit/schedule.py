@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import numbers
+import bisect
 import typing
 from copy import deepcopy
 
@@ -364,15 +364,38 @@ class ScheduledCircuit:
             ]
         )
 
-    def add_to_schedule_index(self, schedule_index: int, moment: cirq.Moment) -> None:
-        try:
-            internal_circuit_moment_index = self._schedule.index(schedule_index)
-            self._raw_circuit[internal_circuit_moment_index] += moment
-        except ValueError:
-            self._schedule = sorted(self._schedule + [schedule_index])
-            internal_circuit_moment_index = self._schedule.index(schedule_index)
-            self._raw_circuit.insert(internal_circuit_moment_index - 1, moment)
-            self._number_of_non_virtual_moments += self._is_virtual_moment(moment)
+    def add_to_schedule_index(self, schedule: int, moment: cirq.Moment) -> None:
+        """Add the operations contained in the provided moment at the provided
+        schedule.
+
+        Args:
+            schedule: schedule at which operations in `moment` should be added.
+            moment: operations that should be added.
+        """
+        # Performing a self.schedule.index, but handling the ValueError is tedious.
+        schedule_index = next(
+            (i for i, sched in enumerate(self._schedule) if sched == schedule), None
+        )
+        if schedule_index is None:
+            # We have to insert a new schedule and a new Moment.
+            insertion_index = bisect.bisect_left(self._schedule, schedule)
+            self._schedule.insert(insertion_index, schedule)
+            self._raw_circuit.insert(insertion_index, moment)
+        else:
+            # Else, the schedule already exists, in which case we just need to add the
+            # operations to an existing moment. Note that this might fail if two
+            # operations overlap.
+            try:
+                self._raw_circuit[schedule_index] += moment
+                self._number_of_non_virtual_moments += (
+                    ScheduledCircuit._is_virtual_moment(moment)
+                )
+            except ValueError as e:
+                raise TQECException(
+                    "Trying to merge two Moment instances that overlap.\n"
+                    f"Existing:\n{self._raw_circuit[schedule_index]}\n"
+                    f"Trying to add:\n{moment}."
+                ) from e
 
 
 class ScheduledCircuits:
