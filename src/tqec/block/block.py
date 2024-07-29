@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from dataclasses import dataclass
 
 import cirq
@@ -110,13 +111,19 @@ class StandardComputationBlock(ComputationBlock):
 
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
-        if len(self.initial_plaquettes) != expected_plaquette_number:
+        if (
+            not isinstance(self.initial_plaquettes, defaultdict)
+            and len(self.initial_plaquettes) != expected_plaquette_number
+        ):
             raise TQECException(
                 f"Could not instantiate a ComputationBlock with {len(self.initial_plaquettes)} "
                 f"initial plaquettes and a template that requires {expected_plaquette_number} "
                 "plaquettes."
             )
-        if len(self.final_plaquettes) != expected_plaquette_number:
+        if (
+            not isinstance(self.final_plaquettes, defaultdict)
+            and len(self.final_plaquettes) != expected_plaquette_number
+        ):
             raise TQECException(
                 f"Could not instantiate a ComputationBlock with {len(self.final_plaquettes)} "
                 f"final plaquettes and a template that requires {expected_plaquette_number} "
@@ -124,6 +131,7 @@ class StandardComputationBlock(ComputationBlock):
             )
         if (
             self.repeating_plaquettes is not None
+            and not isinstance(self.repeating_plaquettes[0], defaultdict)
             and len(self.repeating_plaquettes[0]) != expected_plaquette_number
         ):
             raise TQECException(

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as ty
+from collections import defaultdict
 from copy import deepcopy
 
 import cirq
@@ -14,7 +15,7 @@ from tqec.templates.base import Template
 
 def generate_circuit(
     template: Template,
-    plaquettes: list[Plaquette] | dict[int, Plaquette],
+    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes
 
@@ -47,7 +48,10 @@ def generate_circuit(
             if plaquettes is provided as a dicitonary and ``0 in plaquettes``.
     """
     # Check that the user gave enough plaquettes.
-    if len(plaquettes) != template.expected_plaquettes_number:
+    if (
+        not isinstance(plaquettes, defaultdict)
+        and len(plaquettes) != template.expected_plaquettes_number
+    ):
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
             f"{template.expected_plaquettes_number} were expected."
@@ -64,13 +68,13 @@ def generate_circuit(
 
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
-    _indices = list(range(1, len(plaquettes) + 1))
+    _indices = list(range(1, template.expected_plaquettes_number + 1))
     template_plaquettes = template.instantiate(_indices)
     increments = template.get_increments()
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
     plaquette_circuits = {0: ScheduledCircuit(cirq.Circuit())} | {
-        i: p.circuit for i, p in plaquettes.items()
+        i: plaquettes[i].circuit for i in _indices
     }
 
     # Generate the ScheduledCircuit instances for each plaquette instanciation
