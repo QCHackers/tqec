@@ -250,6 +250,16 @@ class ZXGraph:
                 for edge in self.edges
             ]
         )
+        hadamard_edges = np.array(
+            [
+                edge_positions[i]
+                for i, edge in enumerate(self.edges)
+                if edge.has_hadamard
+            ],
+        )
+        has_hadamard = hadamard_edges.size > 0
+        if has_hadamard:
+            hadamard_position = np.mean(hadamard_edges, axis=1).T
 
         ax.scatter(
             *node_positions,
@@ -265,6 +275,17 @@ class ZXGraph:
 
         for edge in edge_positions:
             ax.plot(*edge.T, color="tab:gray")
+
+        if has_hadamard:
+            # use yellow square to indicate Hadamard transition
+            ax.scatter(
+                *hadamard_position,
+                s=200,
+                c="yellow",
+                alpha=1.0,
+                edgecolors="black",
+                marker="s",
+            )
 
         ax.grid(False)
         for dim in (ax.xaxis, ax.yaxis, ax.zaxis):
