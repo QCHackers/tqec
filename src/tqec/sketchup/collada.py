@@ -9,10 +9,18 @@ from dataclasses import dataclass
 import collada
 import collada.source
 import numpy as np
+import numpy.testing as npt
 
 from tqec.exceptions import TQECException
 from tqec.sketchup.geometry import Face, FaceType, load_library_block_geometries
-from tqec.sketchup.block_graph import CubeType, PipeType, BlockType, BlockGraph
+from tqec.sketchup.block_graph import (
+    Position3D,
+    CubeType,
+    PipeType,
+    BlockType,
+    BlockGraph,
+    parse_block_type_from_str,
+)
 
 LIGHT_RGBA = (1.0, 1.0, 1.0, 1.0)
 DARK_RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1.0)
@@ -27,24 +35,127 @@ ASSET_UNIT_METER = 0.02539999969303608
 MATERIAL_SYMBOL = "MaterialSymbol"
 
 
+_FloatPosition = tuple[float, float, float]
+
+
+def read_block_graph_from_dae_file(
+    filepath: str | pathlib.Path,
+    graph_name: str = "",
+) -> BlockGraph:
+    """Read and construct the block graph from a Collada DAE file.
+
+    Args:
+        filepath: The input dae file path.
+
+    Returns:
+        The constructed block graph.
+    """
+    mesh = collada.Collada(str(filepath))
+    # Check some invariants about the DAE file
+    if mesh.scene is None:
+        raise TQECException("No scene found in the DAE file.")
+    scene: collada.scene.Scene = mesh.scene
+    if not (len(scene.nodes) == 1 and scene.nodes[0].name == "SketchUp"):
+        raise TQECException(
+            "The <visual_scene> node must have a single child node with the name 'SketchUp'."
+        )
+    sketchup_node: collada.scene.Node = scene.nodes[0]
+    uniform_pipe_scale: float | None = None
+    parsed_cubes: list[tuple[_FloatPosition, CubeType]] = []
+    parsed_pipes: list[tuple[_FloatPosition, CubeType]] = []
+    for node in sketchup_node.children:
+        if (
+            isinstance(node, collada.scene.Node)
+            and node.matrix is not None
+            and node.children is not None
+            and len(node.children) == 1
+            and isinstance(node.children[0], collada.scene.NodeNode)
+        ):
+            instance_block = ty.cast(collada.scene.NodeNode, node.children[0])
+            # Get block type
+            library_block: collada.scene.Node = instance_block.node
+            block_type = parse_block_type_from_str(library_block.name)
+            # Get instance transformation
+            transformation = Transformation.from_4d_affine_matrix(node.matrix)
+            translation: _FloatPosition = tuple(transformation.translation)
+            # NOTE: Currently rotation is not allowed
+            if not np.allclose(transformation.rotation, np.eye(3), atol=1e-9):
+                raise TQECException(
+                    f"There is a non-identity rotation for {block_type.value} block at position {translation}."
+                )
+            if isinstance(block_type, PipeType):
+                scale_index = block_type.direction.axis_index
+                scale = transformation.scale[block_type.direction.axis_index]
+                if uniform_pipe_scale is None:
+                    uniform_pipe_scale = scale * 2.0
+                elif not np.isclose(uniform_pipe_scale, scale * 2.0, atol=1e-9):
+                    raise TQECException("All the pipes must have the same scaling.")
+                expected_scale = np.ones(3)
+                expected_scale[scale_index] = scale
+                if not np.allclose(transformation.scale, expected_scale, atol=1e-9):
+                    raise TQECException(
+                        "Only the dimension along the connector can be scaled."
+                    )
+                parsed_pipes.append((translation, block_type))
+            elif not np.allclose(transformation.scale, np.ones(3), atol=1e-9):
+                raise TQECException("Scaling of cubes is not allowed.")
+            else:
+                parsed_cubes.append((translation, block_type))
+        else:
+            raise TQECException(
+                "All the children of the 'SketchUp' node must have attributes like the following example:\n"
+                "<node id='ID2' name='instance_0'>\n"
+                "    <matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>\n"
+                "    <instance_node url='#ID3' />\n"
+                "</node>\n"
+            )
+
+    def int_position_before_scale(pos: _FloatPosition) -> Position3D:
+        int_pos_before_scale = []
+        for p in pos:
+            p_before_scale = p / (1 + uniform_pipe_scale)
+            if not np.isclose(p_before_scale, round(p_before_scale), atol=1e-9):
+                raise TQECException("The position must be integers before scaling.")
+            int_pos_before_scale.append(int(round(p_before_scale)))
+        return Position3D(*int_pos_before_scale)
+
+    # Construct the block graph
+    graph = BlockGraph(graph_name)
+    for pos, cube_type in parsed_cubes:
+        graph.add_cube(int_position_before_scale(pos), cube_type)
+    for pos, pipe_type in parsed_pipes:
+        pipe_direction_idx = pipe_type.direction.axis_index
+        scaled_src_pos_list = list(pos)
+        scaled_src_pos_list[pipe_direction_idx] -= 1
+        src_pos = int_position_before_scale(tuple(scaled_src_pos_list))
+        dst_pos_list = list(src_pos.as_tuple())
+        dst_pos_list[pipe_direction_idx] += 1
+        dst_pos = Position3D(*dst_pos_list)
+        if src_pos not in graph:
+            graph.add_cube(src_pos, CubeType.VIRTUAL)
+        if dst_pos not in graph:
+            graph.add_cube(dst_pos, CubeType.VIRTUAL)
+        graph.add_pipe(src_pos, dst_pos, pipe_type)
+    return graph
+
+
 def write_block_graph_to_dae_file(
     block_graph: BlockGraph,
     filepath: str | pathlib.Path,
-    pipe_scaling: float = 2.0,
+    pipe_length: float = 2.0,
 ) -> None:
     """Write the block graph to a Collada DAE file.
 
     Args:
         block_graph: The block graph to write.
         filepath: The output file path.
-        pipe_scaling: The length scaling for the pipe blocks. The length equals to the
-            cube's edge length times the scaling factor.
+        pipe_length: The length of the pipe blocks. Default is 2.0.
     """
     base = _load_base_collada_data()
     instance_id = 0
 
     def scale_position(pos: tuple[int, int, int]) -> tuple[float, float, float]:
-        return tuple(p * (1 + pipe_scaling) for p in pos)
+        return tuple(p * (1 + pipe_length) for p in pos)
 
     for cube in block_graph.cubes:
         if cube.is_virtual:
@@ -59,9 +170,10 @@ def write_block_graph_to_dae_file(
         pipe_pos = list(src_pos)
         pipe_pos[pipe.direction.axis_index] += 1.0
         matrix = np.eye(4, dtype=np.float_)
-        matrix[:3, 3] = scaled_position
+        matrix[:3, 3] = pipe_pos
         scales = [1.0, 1.0, 1.0]
-        scales[pipe.direction.axis_index] = pipe_scaling
+        # We divide the scaling by 2.0 because the pipe's default length is 2.0.
+        scales[pipe.direction.axis_index] = pipe_length / 2.0
         matrix[:3, :3] = np.diag(scales)
         base.add_instance_node(instance_id, matrix, pipe.pipe_type)
         instance_id += 1
@@ -208,3 +320,18 @@ def _load_base_collada_data() -> _BaseColladaData:
     mesh.scenes.append(scene)
     mesh.scene = scene
     return _BaseColladaData(mesh, root_node, node_handles)
+
+
+@dataclass(frozen=True)
+class Transformation:
+    translation: npt.NDArray[np.float_]
+    scale: npt.NDArray[np.float_]
+    rotation: npt.NDArray[np.float_]
+    affine_matrix: npt.NDArray[np.float_]
+
+    @staticmethod
+    def from_4d_affine_matrix(mat: npt.NDArray[np.float_]) -> "Transformation":
+        translation = mat[:3, 3]
+        scale = np.linalg.norm(mat[:3, :3], axis=1)
+        rotation = mat[:3, :3] / scale[:, None]
+        return Transformation(translation, scale, rotation, mat)

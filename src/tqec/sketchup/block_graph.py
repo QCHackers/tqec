@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import typing as ty
+import pathlib
 from dataclasses import dataclass, astuple
 from enum import Enum
 
@@ -385,6 +386,10 @@ class BlockGraph:
                     f"Cube at {cube.position} has unmatched color at turn."
                 )
 
+    def __contains__(self, position: Position3D) -> bool:
+        """Check if there is a cube at the position."""
+        return position in self._graph
+
     def to_zx_graph(self, name: str = "") -> ZXGraph:
         """Convert the block graph to a ZX graph."""
         zx_graph = ZXGraph(name if name else self.name + "_zx")
@@ -510,3 +515,20 @@ class BlockGraph:
 
         block_graph.check_validity(allow_virtual_node=True)
         return block_graph
+
+    def to_dae_file(
+        self, filename: str | pathlib.Path, pipe_length: float = 2.0
+    ) -> None:
+        """Export the block graph to a DAE file."""
+        from tqec.sketchup.collada import write_block_graph_to_dae_file
+
+        write_block_graph_to_dae_file(self, filename, pipe_length)
+
+    @staticmethod
+    def from_dae_file(
+        filename: str | pathlib.Path, graph_name: str = ""
+    ) -> "BlockGraph":
+        """Construct a block graph from a DAE file."""
+        from tqec.sketchup.collada import read_block_graph_from_dae_file
+
+        return read_block_graph_from_dae_file(filename, graph_name)
