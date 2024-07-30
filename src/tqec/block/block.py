@@ -47,7 +47,7 @@ class ComputationBlock(ABC):
         pass
 
     @abstractmethod
-    def instantiate_without_boundary(self, dimension: BlockDimension) -> cirq.Circuit:
+    def instantiate_without_boundary(self, boundary: BlockDimension) -> cirq.Circuit:
         """Return the circuit representation of the computational block without the
         specified boundary."""
         pass
@@ -271,8 +271,8 @@ class StandardComputationBlock(ComputationBlock):
         return circuit
 
     @override
-    def instantiate_without_boundary(self, dimension: BlockDimension) -> cirq.Circuit:
-        return self.replace_boundary_with_empty_plaquettes(dimension).instantiate()
+    def instantiate_without_boundary(self, boundary: BlockDimension) -> cirq.Circuit:
+        return self.replace_boundary_with_empty_plaquettes(boundary).instantiate()
 
     @override
     def scale_to(self, k: int) -> None:
