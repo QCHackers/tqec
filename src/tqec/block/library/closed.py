@@ -1,6 +1,10 @@
 from collections import defaultdict
 
-from tqec.block.block import RepeatedPlaquettes, StandardComputationBlock
+from tqec.block.block import (
+    RepeatedPlaquettes,
+    StandardComputationBlock,
+    TemporalPlaquetteSequence,
+)
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.empty import empty_square_plaquette
@@ -27,73 +31,75 @@ from tqec.templates.scale import LinearFunction
 
 
 def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+    initial_plaquettes = defaultdict(empty_square_plaquette) | {
+        6: xx_initialisation_plaquette(PlaquetteOrientation.UP),
+        7: zz_initialisation_plaquette(PlaquetteOrientation.LEFT),
+        9: xxxx_initialisation_plaquette(),
+        10: zzzz_initialisation_plaquette(),
+        12: zz_initialisation_plaquette(PlaquetteOrientation.RIGHT),
+        13: xx_initialisation_plaquette(PlaquetteOrientation.DOWN),
+    }
+    repeating_plaquettes = RepeatedPlaquettes(
+        defaultdict(empty_square_plaquette)
+        | {
+            6: xx_memory_plaquette(PlaquetteOrientation.UP),
+            7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
+            9: xxxx_memory_plaquette(),
+            10: zzzz_memory_plaquette(),
+            12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
+            13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+        },
+        dimension,
+    )
+    final_plaquettes = defaultdict(empty_square_plaquette) | {
+        6: xx_measurement_plaquette(PlaquetteOrientation.UP),
+        7: zz_measurement_plaquette(PlaquetteOrientation.LEFT),
+        9: xxxx_measurement_plaquette(),
+        10: zzzz_measurement_plaquette(),
+        12: zz_measurement_plaquette(PlaquetteOrientation.RIGHT),
+        13: xx_measurement_plaquette(PlaquetteOrientation.DOWN),
+    }
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dim=dimension),
-        initial_plaquettes=defaultdict(empty_square_plaquette)
-        | {
-            6: xx_initialisation_plaquette(PlaquetteOrientation.UP),
-            7: zz_initialisation_plaquette(PlaquetteOrientation.LEFT),
-            9: xxxx_initialisation_plaquette(),
-            10: zzzz_initialisation_plaquette(),
-            12: zz_initialisation_plaquette(PlaquetteOrientation.RIGHT),
-            13: xx_initialisation_plaquette(PlaquetteOrientation.DOWN),
-        },
-        final_plaquettes=defaultdict(empty_square_plaquette)
-        | {
-            6: xx_measurement_plaquette(PlaquetteOrientation.UP),
-            7: zz_measurement_plaquette(PlaquetteOrientation.LEFT),
-            9: xxxx_measurement_plaquette(),
-            10: zzzz_measurement_plaquette(),
-            12: zz_measurement_plaquette(PlaquetteOrientation.RIGHT),
-            13: xx_measurement_plaquette(PlaquetteOrientation.DOWN),
-        },
-        repeating_plaquettes=RepeatedPlaquettes(
-            defaultdict(empty_square_plaquette)
-            | {
-                6: xx_memory_plaquette(PlaquetteOrientation.UP),
-                7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
-                9: xxxx_memory_plaquette(),
-                10: zzzz_memory_plaquette(),
-                12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
-                13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
-            },
-            dimension,
+        DenseQubitSquareTemplate(dimension),
+        TemporalPlaquetteSequence(
+            initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
 def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
+    initial_plaquettes = defaultdict(empty_square_plaquette) | {
+        6: zz_initialisation_plaquette(PlaquetteOrientation.UP),
+        7: xx_initialisation_plaquette(PlaquetteOrientation.LEFT),
+        9: zzzz_initialisation_plaquette(),
+        10: xxxx_initialisation_plaquette(),
+        12: xx_initialisation_plaquette(PlaquetteOrientation.RIGHT),
+        13: zz_initialisation_plaquette(PlaquetteOrientation.DOWN),
+    }
+    repeating_plaquettes = RepeatedPlaquettes(
+        defaultdict(empty_square_plaquette)
+        | {
+            6: zz_memory_plaquette(PlaquetteOrientation.UP),
+            7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
+            9: zzzz_memory_plaquette(),
+            10: xxxx_memory_plaquette(),
+            12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
+            13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
+        },
+        dimension,
+    )
+    final_plaquettes = defaultdict(empty_square_plaquette) | {
+        6: zz_measurement_plaquette(PlaquetteOrientation.UP),
+        7: xx_measurement_plaquette(PlaquetteOrientation.LEFT),
+        9: zzzz_measurement_plaquette(),
+        10: xxxx_measurement_plaquette(),
+        12: xx_measurement_plaquette(PlaquetteOrientation.RIGHT),
+        13: zz_measurement_plaquette(PlaquetteOrientation.DOWN),
+    }
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dim=dimension),
-        initial_plaquettes=defaultdict(empty_square_plaquette)
-        | {
-            6: zz_initialisation_plaquette(PlaquetteOrientation.UP),
-            7: xx_initialisation_plaquette(PlaquetteOrientation.LEFT),
-            9: zzzz_initialisation_plaquette(),
-            10: xxxx_initialisation_plaquette(),
-            12: xx_initialisation_plaquette(PlaquetteOrientation.RIGHT),
-            13: zz_initialisation_plaquette(PlaquetteOrientation.DOWN),
-        },
-        final_plaquettes=defaultdict(empty_square_plaquette)
-        | {
-            6: zz_measurement_plaquette(PlaquetteOrientation.UP),
-            7: xx_measurement_plaquette(PlaquetteOrientation.LEFT),
-            9: zzzz_measurement_plaquette(),
-            10: xxxx_measurement_plaquette(),
-            12: xx_measurement_plaquette(PlaquetteOrientation.RIGHT),
-            13: zz_measurement_plaquette(PlaquetteOrientation.DOWN),
-        },
-        repeating_plaquettes=RepeatedPlaquettes(
-            defaultdict(empty_square_plaquette)
-            | {
-                6: zz_memory_plaquette(PlaquetteOrientation.UP),
-                7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
-                9: zzzz_memory_plaquette(),
-                10: xxxx_memory_plaquette(),
-                12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
-                13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
-            },
-            dimension,
+        DenseQubitSquareTemplate(dimension),
+        TemporalPlaquetteSequence(
+            initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 

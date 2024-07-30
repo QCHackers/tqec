@@ -87,7 +87,7 @@ def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
     return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
 
 
-def _plaquette_map(
+def _plaquette_dict(
     plaquettes: Plaquettes,
 ) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
     if isinstance(plaquettes, (dict, defaultdict)):
@@ -97,11 +97,54 @@ def _plaquette_map(
 
 @dataclass
 class RepeatedPlaquettes:
+    """Represent plaquettes that should be repeated for several rounds."""
+
     plaquettes: Plaquettes
     repetitions: LinearFunction
 
     def __len__(self) -> int:
         return len(self.plaquettes)
+
+    def number_of_rounds(self, k: int) -> int:
+        return round_or_fail(self.repetitions(k))
+
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> RepeatedPlaquettes:
+        return RepeatedPlaquettes(
+            _plaquette_dict(self.plaquettes) | plaquettes_to_update, self.repetitions
+        )
+
+
+@dataclass
+class TemporalPlaquetteSequence:
+    """Represent a temporal sequence of plaquettes with well defined boundaries
+    in the time dimension."""
+
+    initial_plaquettes: Plaquettes
+    repeating_plaquettes: RepeatedPlaquettes | None
+    final_plaquettes: Plaquettes
+
+    def without_time_boundaries(self) -> TemporalPlaquetteSequence:
+        return TemporalPlaquetteSequence(
+            defaultdict(empty_square_plaquette),
+            deepcopy(self.repeating_plaquettes),
+            defaultdict(empty_square_plaquette),
+        )
+
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> TemporalPlaquetteSequence:
+        repeating_plaquettes = None
+        if self.repeating_plaquettes is not None:
+            repeating_plaquettes = self.repeating_plaquettes.with_updated_plaquettes(
+                plaquettes_to_update
+            )
+        return TemporalPlaquetteSequence(
+            _plaquette_dict(self.initial_plaquettes) | plaquettes_to_update,
+            repeating_plaquettes,
+            _plaquette_dict(self.final_plaquettes) | plaquettes_to_update,
+        )
 
 
 @dataclass
@@ -126,9 +169,7 @@ class StandardComputationBlock(ComputationBlock):
     """
 
     template: ComposedTemplateWithSides
-    initial_plaquettes: Plaquettes
-    final_plaquettes: Plaquettes
-    repeating_plaquettes: RepeatedPlaquettes | None
+    plaquettes: TemporalPlaquetteSequence
 
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
@@ -162,6 +203,22 @@ class StandardComputationBlock(ComputationBlock):
             )
 
     @property
+    def initial_plaquettes(self) -> Plaquettes:
+        return self.plaquettes.initial_plaquettes
+
+    @property
+    def repeating_plaquettes(self) -> RepeatedPlaquettes | None:
+        return self.plaquettes.repeating_plaquettes
+
+    @repeating_plaquettes.setter
+    def repeating_plaquettes(self, value: RepeatedPlaquettes | None) -> None:
+        self.plaquettes.repeating_plaquettes = value
+
+    @property
+    def final_plaquettes(self) -> Plaquettes:
+        return self.plaquettes.final_plaquettes
+
+    @property
     def is_connector(self) -> bool:
         """Check if the block is a connector or not."""
         return self.repeating_plaquettes is None
@@ -171,9 +228,7 @@ class StandardComputationBlock(ComputationBlock):
     def needed_time(self) -> int:
         time = _number_of_moments_needed(self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
-            repetitions = round_or_fail(
-                self.repeating_plaquettes.repetitions(self.template.k)
-            )
+            repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             time += repetitions * _number_of_moments_needed(
                 self.repeating_plaquettes.plaquettes
             )
@@ -186,16 +241,7 @@ class StandardComputationBlock(ComputationBlock):
         # Handle the time dimension as an edge case.
         if boundary == BlockDimension.T:
             return StandardComputationBlock(
-                self.template,
-                initial_plaquettes=[
-                    empty_square_plaquette()
-                    for _ in range(self.template.expected_plaquettes_number)
-                ],
-                final_plaquettes=[
-                    empty_square_plaquette()
-                    for _ in range(self.template.expected_plaquettes_number)
-                ],
-                repeating_plaquettes=self.repeating_plaquettes,
+                self.template, self.plaquettes.without_time_boundaries()
             )
 
         # For the spatial dimensions, get the indices of the plaquettes that should be
@@ -207,30 +253,17 @@ class StandardComputationBlock(ComputationBlock):
         plaquettes_to_replace = {
             i: empty_square_plaquette() for i in plaquette_indices_to_replace
         }
-        # Replace the plaquettes.
-        initial_plaquettes = (
-            _plaquette_map(self.initial_plaquettes) | plaquettes_to_replace
-        )
-        final_plaquettes = _plaquette_map(self.final_plaquettes) | plaquettes_to_replace
-        repeating_plaquettes = deepcopy(self.repeating_plaquettes)
-        if repeating_plaquettes is not None:
-            repeating_plaquettes.plaquettes = (
-                _plaquette_map(repeating_plaquettes.plaquettes) | plaquettes_to_replace
-            )
         # Return the resulting block.
         return StandardComputationBlock(
             self.template,
-            initial_plaquettes=initial_plaquettes,
-            final_plaquettes=final_plaquettes,
-            repeating_plaquettes=repeating_plaquettes,
+            self.plaquettes.with_updated_plaquettes(plaquettes_to_replace),
         )
 
     @override
     def instantiate(self) -> cirq.Circuit:
         circuit = generate_circuit(self.template, self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
-            r_func = self.repeating_plaquettes.repetitions
-            repetitions = round_or_fail(r_func(self.template.k))
+            repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             plaquettes = self.repeating_plaquettes.plaquettes
             inner_circuit = generate_circuit(self.template, plaquettes).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
