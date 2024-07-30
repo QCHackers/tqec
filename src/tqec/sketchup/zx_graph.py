@@ -1,4 +1,5 @@
 """ZX graph representation of a 3D spacetime defect diagram."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -6,6 +7,7 @@ from enum import Enum, auto
 from dataclasses import dataclass, astuple
 
 import networkx as nx
+import numpy as np
 
 from tqec.exceptions import TQECException
 
@@ -15,14 +17,21 @@ if TYPE_CHECKING:
 
 class NodeType(Enum):
     """Valid node types in a ZX graph."""
-    X = auto() # X-type node
-    Z = auto() # Z-type node
-    V = auto() # Virtual node that represents an open port
+
+    X = "x"  # X-type node
+    Z = "z"  # Z-type node
+    V = "virtual"  # Virtual node that represents an open port
+
+    @property
+    def is_virtual(self) -> bool:
+        """Check if the node type is virtual."""
+        return self == NodeType.V
 
 
 @dataclass(frozen=True, order=True)
 class Position3D:
     """A 3D integer position."""
+
     x: int
     y: int
     z: int
@@ -33,7 +42,9 @@ class Position3D:
 
     def is_nearby(self, other: Position3D) -> bool:
         """Check if the other position is near to this position, i.e. Manhattan distance is 1."""
-        return abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
+        return (
+            abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
+        )
 
     def __post_init__(self):
         if any(not isinstance(i, int) for i in astuple(self)):
@@ -41,6 +52,27 @@ class Position3D:
 
     def __str__(self) -> str:
         return f"({self.x},{self.y},{self.z})"
+
+
+class Direction3D(Enum):
+    """Axis directions in the 3D spacetime diagram."""
+
+    X = auto()
+    Y = auto()
+    Z = auto()
+
+    @staticmethod
+    def all() -> list[Direction3D]:
+        """Get all directions."""
+        return [Direction3D.X, Direction3D.Y, Direction3D.Z]
+
+    @staticmethod
+    def from_axis_index(i: int) -> Direction3D:
+        """Get the direction from the axis index."""
+        return Direction3D.all()[i]
+
+    def __str__(self) -> str:
+        return self.name
 
 
 @dataclass(frozen=True)
@@ -54,6 +86,25 @@ class ZXEdge:
     u: ZXNode
     v: ZXNode
     has_hadamard: bool = False
+
+    def __post_init__(self) -> None:
+        if not self.u.position.is_nearby(self.v.position):
+            raise TQECException("An edge must connect two nearby nodes.")
+        # Ensure position of u is less than v
+        u, v = self.u, self.v
+        if self.u.position > self.v.position:
+            object.__setattr__(self, "u", v)
+            object.__setattr__(self, "v", u)
+
+    @property
+    def direction(self) -> Direction3D:
+        """Get the direction of the edge."""
+        u, v = self.u.position, self.v.position
+        if u.x != v.x:
+            return Direction3D.X
+        if u.y != v.y:
+            return Direction3D.Y
+        return Direction3D.Z
 
 
 _NODE_DATA_KEY = "node_data"
@@ -83,6 +134,11 @@ class ZXGraph:
         return self._name
 
     @property
+    def nx_graph(self) -> nx.Graph:
+        """The internal networkx graph representation."""
+        return self._graph
+
+    @property
     def num_nodes(self) -> int:
         """The number of nodes in the graph."""
         return self._graph.number_of_nodes()
@@ -96,7 +152,6 @@ class ZXGraph:
     def nodes(self) -> list[ZXNode]:
         """Return a list of nodes in the graph."""
         return [data[_NODE_DATA_KEY] for _, data in self._graph.nodes(data=True)]
-
 
     @property
     def edges(self) -> list[ZXEdge]:
@@ -116,9 +171,11 @@ class ZXGraph:
         """
         if position in self._graph:
             raise TQECException(f"Node {position} already exists in the graph.")
-        self._graph.add_node(position, _NODE_DATA_KEY=ZXNode(position, node_type))
+        self._graph.add_node(position, **{_NODE_DATA_KEY: ZXNode(position, node_type)})
 
-    def add_edge(self, u: Position3D, v: Position3D, has_hadamard: bool = False) -> None:
+    def add_edge(
+        self, u: Position3D, v: Position3D, has_hadamard: bool = False
+    ) -> None:
         """Add an edge to the graph.
 
         Args:
@@ -128,11 +185,11 @@ class ZXGraph:
         """
         if u not in self._graph or v not in self._graph:
             raise TQECException("Both nodes must exist in the graph.")
-        if not u.is_nearby(v):
-            raise TQECException("The two nodes must be nearby in the 3D space to be connected.")
         u_node = self._graph.nodes[u][_NODE_DATA_KEY]
         v_node = self._graph.nodes[v][_NODE_DATA_KEY]
-        self._graph.add_edge(u, v, _EDGE_DATA_KEY=(u_node, v_node, has_hadamard))
+        self._graph.add_edge(
+            u, v, **{_EDGE_DATA_KEY: ZXEdge(u_node, v_node, has_hadamard)}
+        )
 
     def get_node(self, position: Position3D) -> ZXNode | None:
         """Get the node by position."""
@@ -146,7 +203,76 @@ class ZXGraph:
             return None
         return self._graph.edges[u, v][_EDGE_DATA_KEY]
 
-    def to_block_graph(self, name: str = "", check_validity: bool = True) -> "BlockGraph":
+    def edges_at(self, position: Position3D) -> list[ZXEdge]:
+        """Get the edges incident to a node."""
+        return [
+            data[_EDGE_DATA_KEY]
+            for _, _, data in self._graph.edges(position, data=True)
+        ]
+
+    def draw(self, show_title: bool = True) -> None:
+        """Draw the 3D graph using matplotlib."""
+        import matplotlib.pyplot as plt
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection="3d")
+
+        node_positions = np.array(
+            [
+                astuple(node.position)
+                for node in self.nodes
+                if not node.node_type.is_virtual
+            ]
+        ).T
+        edge_positions = np.array(
+            [
+                (astuple(edge.u.position), astuple(edge.v.position))
+                for edge in self.edges
+            ]
+        )
+
+        ax.scatter(
+            *node_positions,
+            s=400,
+            c=[
+                "black" if n.node_type == NodeType.X else "white"
+                for n in self.nodes
+                if not n.node_type.is_virtual
+            ],
+            alpha=1.0,
+            edgecolors="black",
+        )
+
+        for edge in edge_positions:
+            ax.plot(*edge.T, color="tab:gray")
+
+        ax.grid(False)
+        for dim in (ax.xaxis, ax.yaxis, ax.zaxis):
+            dim.set_ticks([])
+        x_limits, y_limits, z_limits = ax.get_xlim3d(), ax.get_ylim3d(), ax.get_zlim3d()
+
+        plot_radius = 0.5 * max(
+            abs(limits[1] - limits[0]) for limits in [x_limits, y_limits, z_limits]
+        )
+
+        ax.set_xlim3d(
+            [np.mean(x_limits) - plot_radius, np.mean(x_limits) + plot_radius]
+        )
+        ax.set_ylim3d(
+            [np.mean(y_limits) - plot_radius, np.mean(y_limits) + plot_radius]
+        )
+        ax.set_zlim3d(
+            [np.mean(z_limits) - plot_radius, np.mean(z_limits) + plot_radius]
+        )
+        if show_title:
+            ax.set_title(self.name)
+
+        fig.tight_layout()
+        plt.show()
+
+    def to_block_graph(
+        self, name: str = "", check_validity: bool = True
+    ) -> "BlockGraph":
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -161,4 +287,5 @@ class ZXGraph:
             The constructed block graph.
         """
         from tqec.sketchup.block_graph import BlockGraph
+
         return BlockGraph.from_zx_graph(self, name=name, check_validity=check_validity)
