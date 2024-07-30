@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import pathlib
 import typing as ty
 from dataclasses import dataclass
@@ -335,3 +336,86 @@ class Transformation:
         scale = np.linalg.norm(mat[:3, :3], axis=1)
         rotation = mat[:3, :3] / scale[:, None]
         return Transformation(translation, scale, rotation, mat)
+
+
+def display_collada_model(file_path: str) -> None:
+    """TODO: NOT WORKING CORRECTLY YET."""
+    from IPython.display import display, HTML
+
+    with open(file_path, "rb") as file:
+        collada_data = file.read()
+        collada_base64 = base64.b64encode(collada_data).decode("utf-8")
+    # HTML template for embedding three.js and rendering the COLLADA model
+    html_template = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>COLLADA Model Viewer</title>
+        <style>
+            body {{ margin: 0; }}
+
+            canvas {{ width: 100%; height: 100%; }}
+        </style>
+    </head>
+
+    <body>
+        <script type="importmap">
+            {{
+                "imports": {{
+                "three": "https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/"
+                }}
+            }}
+        </script>
+        <script type="module">
+            import * as THREE from 'three';
+            import {{ ColladaLoader }} from 'three/addons/loaders/ColladaLoader.js';
+            import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            var renderer = new THREE.WebGLRenderer({{ antialias: true }});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x808080);
+            document.body.appendChild(renderer.domElement);
+
+            // Add some lighting
+            var ambientLight = new THREE.AmbientLight(0x404040, 3); // soft white light
+            scene.add(ambientLight);
+
+            var directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+            directionalLight.position.set(5, 10, 7.5);
+            scene.add(directionalLight);
+            
+            var colladaDataURI = 'data:model/vnd.collada+xml;base64,{collada_base64}';
+            var loader = new ColladaLoader();
+            loader.load(colladaDataURI, function (collada) {{
+                var model = collada.scene;
+                model.scale.set(1.0, 1.0, 1.0); // Scale the model if necessary
+                scene.add(model);
+            }}, undefined, function (error) {{
+                console.error(error);
+            }});
+
+            camera.position.z = 20;
+
+            // Add OrbitControls
+            var controls = new OrbitControls(camera, renderer.domElement);
+            controls.update();
+
+            var animate = function () {{
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }};
+
+            animate();
+        </script>
+    </body>
+
+    </html>
+    """
+
+    return display(HTML(html_template))
