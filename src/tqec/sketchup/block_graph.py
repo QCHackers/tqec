@@ -9,11 +9,10 @@ from enum import Enum
 
 import networkx as nx
 
+from tqec.position import Position3D, Direction3D
 from tqec.sketchup.zx_graph import (
-    Position3D,
     ZXGraph,
     NodeType,
-    Direction3D,
     ZXNode,
     ZXEdge,
 )
@@ -235,7 +234,7 @@ class Pipe:
     pipe_type: PipeType
 
     def __post_init__(self) -> None:
-        if not self.u.position.is_nearby(self.v.position):
+        if not self.u.position.is_neighbour(self.v.position):
             raise TQECException("A pipe must connect two nearby cubes.")
         # Ensure position of u is less than v
         u, v = self.u, self.v

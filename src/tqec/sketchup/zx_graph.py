@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-from enum import Enum, auto
+from typing import TYPE_CHECKING, cast
+from enum import Enum
 from dataclasses import dataclass, astuple
 
 import networkx as nx
 import numpy as np
 
+from tqec.position import Position3D, Direction3D
 from tqec.exceptions import TQECException
 
 if TYPE_CHECKING:
@@ -21,62 +22,6 @@ class NodeType(Enum):
     X = "x"  # X-type node
     Z = "z"  # Z-type node
     V = "v"  # Virtual node that represents an open port
-
-
-@dataclass(frozen=True, order=True)
-class Position3D:
-    """A 3D integer position."""
-
-    x: int
-    y: int
-    z: int
-
-    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Position3D:
-        """Shift the position by the given offset."""
-        return Position3D(self.x + dx, self.y + dy, self.z + dz)
-
-    def is_nearby(self, other: Position3D) -> bool:
-        """Check if the other position is near to this position, i.e. Manhattan distance is 1."""
-        return (
-            abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
-        )
-
-    def as_tuple(self) -> tuple[int, int, int]:
-        """Return the position as a tuple."""
-        return astuple(self)
-
-    def __post_init__(self):
-        if any(not isinstance(i, int) for i in astuple(self)):
-            raise TQECException("Position must be an integer.")
-
-    def __str__(self) -> str:
-        return f"({self.x},{self.y},{self.z})"
-
-
-class Direction3D(Enum):
-    """Axis directions in the 3D spacetime diagram."""
-
-    X = auto()
-    Y = auto()
-    Z = auto()
-
-    @staticmethod
-    def all() -> list[Direction3D]:
-        """Get all directions."""
-        return [Direction3D.X, Direction3D.Y, Direction3D.Z]
-
-    @staticmethod
-    def from_axis_index(i: int) -> Direction3D:
-        """Get the direction from the axis index."""
-        return Direction3D.all()[i]
-
-    @property
-    def axis_index(self) -> int:
-        """Get the axis index."""
-        return Direction3D.all().index(self)
-
-    def __str__(self) -> str:
-        return self.name
 
 
 @dataclass(frozen=True)
@@ -97,7 +42,7 @@ class ZXEdge:
     has_hadamard: bool = False
 
     def __post_init__(self) -> None:
-        if not self.u.position.is_nearby(self.v.position):
+        if not self.u.position.is_neighbour(self.v.position):
             raise TQECException("An edge must connect two nearby nodes.")
         # Ensure position of u is less than v
         u, v = self.u, self.v
@@ -237,9 +182,11 @@ class ZXGraph:
     def draw(self, show_title: bool = True) -> None:
         """Draw the 3D graph using matplotlib."""
         import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d.axes3d import Axes3D
 
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
+        # See https://matplotlib.org/stable/users/explain/toolkits/mplot3d.html
+        ax = cast(Axes3D, fig.add_subplot(111, projection="3d"))
 
         node_positions = np.array(
             [astuple(node.position) for node in self.nodes if not node.is_virtual]

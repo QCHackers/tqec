@@ -1,4 +1,7 @@
-from dataclasses import dataclass
+from enum import Enum, auto
+from dataclasses import dataclass, astuple
+
+from tqec.exceptions import TQECException
 
 
 @dataclass(frozen=True)
@@ -60,3 +63,59 @@ class Displacement:
 
     x: int
     y: int
+
+
+@dataclass(frozen=True, order=True)
+class Position3D:
+    """A 3D integer position."""
+
+    x: int
+    y: int
+    z: int
+
+    def __post_init__(self) -> None:
+        if any(not isinstance(i, int) for i in astuple(self)):
+            raise TQECException("Position must be an integer.")
+
+    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> "Position3D":
+        """Shift the position by the given offset."""
+        return Position3D(self.x + dx, self.y + dy, self.z + dz)
+
+    def is_neighbour(self, other: "Position3D") -> bool:
+        """Check if the other position is near to this position, i.e. Manhattan distance is 1."""
+        return (
+            abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
+        )
+
+    def as_tuple(self) -> tuple[int, int, int]:
+        """Return the position as a tuple."""
+        return astuple(self)
+
+    def __str__(self) -> str:
+        return f"({self.x},{self.y},{self.z})"
+
+
+class Direction3D(Enum):
+    """Axis directions in the 3D spacetime diagram."""
+
+    X = auto()
+    Y = auto()
+    Z = auto()
+
+    @staticmethod
+    def all() -> list["Direction3D"]:
+        """Get all directions."""
+        return [Direction3D.X, Direction3D.Y, Direction3D.Z]
+
+    @staticmethod
+    def from_axis_index(i: int) -> "Direction3D":
+        """Get the direction from the axis index."""
+        return Direction3D.all()[i]
+
+    @property
+    def axis_index(self) -> int:
+        """Get the axis index."""
+        return Direction3D.all().index(self)
+
+    def __str__(self) -> str:
+        return self.name
