@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 import cirq
 
+from tqec.circuit.operations.operation import MX, RX
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
@@ -16,7 +17,7 @@ class ResetBasis(Enum):
 
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == ResetBasis.X:
-            raise TQECException("X-basis resets are not implemented yet.")
+            return RX(q).with_tags(Plaquette._MERGEABLE_TAG)
         elif self == ResetBasis.Z:
             return cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
         else:
@@ -29,7 +30,7 @@ class MeasurementBasis(Enum):
 
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == MeasurementBasis.X:
-            raise TQECException("X-basis measurements are not implemented yet.")
+            return MX(q).with_tags(Plaquette._MERGEABLE_TAG)
         elif self == MeasurementBasis.Z:
             return cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
         else:
