@@ -1,3 +1,4 @@
+import typing
 from collections import defaultdict
 
 from tqec.circuit.schedule import ScheduledCircuit
@@ -60,4 +61,6 @@ class Plaquette:
         return self._circuit
 
 
-Plaquettes = list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette]
+Plaquettes = typing.Union[
+    list[Plaquette], dict[int, Plaquette], defaultdict[int, Plaquette]
+]
