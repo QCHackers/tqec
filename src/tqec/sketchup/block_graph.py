@@ -197,7 +197,7 @@ class PipeType(Enum):
         return CubeType.from_color(color)
 
 
-BlockType = CubeType | PipeType
+BlockType = ty.Union[CubeType | PipeType]
 """Valid block types in the library."""
 
 
