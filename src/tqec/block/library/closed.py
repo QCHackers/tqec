@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from tqec.block.block import StandardComputationBlock
+from tqec.block.block import RepeatedPlaquettes, StandardComputationBlock
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.empty import empty_square_plaquette
@@ -47,7 +47,7 @@ def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
             12: zz_measurement_plaquette(PlaquetteOrientation.RIGHT),
             13: xx_measurement_plaquette(PlaquetteOrientation.DOWN),
         },
-        repeating_plaquettes=(
+        repeating_plaquettes=RepeatedPlaquettes(
             defaultdict(empty_square_plaquette)
             | {
                 6: xx_memory_plaquette(PlaquetteOrientation.UP),
@@ -83,7 +83,7 @@ def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
             12: xx_measurement_plaquette(PlaquetteOrientation.RIGHT),
             13: zz_measurement_plaquette(PlaquetteOrientation.DOWN),
         },
-        repeating_plaquettes=(
+        repeating_plaquettes=RepeatedPlaquettes(
             defaultdict(empty_square_plaquette)
             | {
                 6: zz_memory_plaquette(PlaquetteOrientation.UP),

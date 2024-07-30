@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import typing
 from abc import ABC, abstractmethod
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass
 
 import cirq
@@ -11,7 +13,7 @@ from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
-from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
 from typing_extensions import override
@@ -51,9 +53,7 @@ class ComputationBlock(ABC):
         pass
 
 
-def _number_of_moments_needed(
-    plaquettes: list[Plaquette] | dict[int, Plaquette],
-) -> int:
+def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
     """Return the number of `cirq.Moment` needed to execute all the provided
     plaquettes in parallel.
 
@@ -67,18 +67,36 @@ def _number_of_moments_needed(
         the number of `cirq.Moment` needed to execute the provided plaquettes
         in parallel.
     """
-    return max(
-        max(p.circuit.schedule, default=0)
-        for p in (plaquettes if isinstance(plaquettes, list) else plaquettes.values())
-    )
+    all_plaquettes: typing.Iterable[Plaquette]
+    if isinstance(plaquettes, list):
+        all_plaquettes = plaquettes
+    elif isinstance(plaquettes, typing.Mapping):
+        all_plaquettes = plaquettes.values()
+        if (
+            isinstance(plaquettes, defaultdict)
+            and plaquettes.default_factory is not None
+        ):
+            all_plaquettes = list(all_plaquettes) + [plaquettes.default_factory()]
+    else:
+        raise TQECException(f"Unexpected plaquettes type: {type(plaquettes)}")
+    return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
 
 
-def _plaquette_dict(
-    plaquettes: list[Plaquette] | dict[int, Plaquette],
-) -> dict[int, Plaquette]:
-    if isinstance(plaquettes, dict):
+def _plaquette_map(
+    plaquettes: Plaquettes,
+) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
+    if isinstance(plaquettes, (dict, defaultdict)):
         return plaquettes
     return {i: p for i, p in enumerate(plaquettes)}
+
+
+@dataclass
+class RepeatedPlaquettes:
+    plaquettes: Plaquettes
+    repetitions: LinearFunction
+
+    def __len__(self) -> int:
+        return len(self.plaquettes)
 
 
 @dataclass
@@ -103,11 +121,9 @@ class StandardComputationBlock(ComputationBlock):
     """
 
     template: ComposedTemplateWithSides
-    initial_plaquettes: list[Plaquette] | dict[int, Plaquette]
-    final_plaquettes: list[Plaquette] | dict[int, Plaquette]
-    repeating_plaquettes: (
-        tuple[list[Plaquette] | dict[int, Plaquette], LinearFunction] | None
-    )
+    initial_plaquettes: Plaquettes
+    final_plaquettes: Plaquettes
+    repeating_plaquettes: RepeatedPlaquettes | None
 
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
@@ -131,8 +147,8 @@ class StandardComputationBlock(ComputationBlock):
             )
         if (
             self.repeating_plaquettes is not None
-            and not isinstance(self.repeating_plaquettes[0], defaultdict)
-            and len(self.repeating_plaquettes[0]) != expected_plaquette_number
+            and not isinstance(self.repeating_plaquettes.plaquettes, defaultdict)
+            and len(self.repeating_plaquettes.plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
                 f"Could not instantiate a ComputationBlock with {len(self.repeating_plaquettes)} "
@@ -150,9 +166,12 @@ class StandardComputationBlock(ComputationBlock):
     def needed_time(self) -> int:
         time = _number_of_moments_needed(self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
-            plaquettes, f_repetitions = self.repeating_plaquettes
-            repetitions = round_or_fail(f_repetitions(self.template.k))
-            time += repetitions * _number_of_moments_needed(plaquettes)
+            repetitions = round_or_fail(
+                self.repeating_plaquettes.repetitions(self.template.k)
+            )
+            time += repetitions * _number_of_moments_needed(
+                self.repeating_plaquettes.plaquettes
+            )
         time += _number_of_moments_needed(self.final_plaquettes)
         return time
 
@@ -185,19 +204,13 @@ class StandardComputationBlock(ComputationBlock):
         }
         # Replace the plaquettes.
         initial_plaquettes = (
-            _plaquette_dict(self.initial_plaquettes) | plaquettes_to_replace
+            _plaquette_map(self.initial_plaquettes) | plaquettes_to_replace
         )
-        final_plaquettes = (
-            _plaquette_dict(self.final_plaquettes) | plaquettes_to_replace
-        )
-        repeating_plaquettes: (
-            tuple[list[Plaquette] | dict[int, Plaquette], LinearFunction] | None
-        ) = None
-        if self.repeating_plaquettes is not None:
-            plaquettes, dimension = self.repeating_plaquettes
-            repeating_plaquettes = (
-                _plaquette_dict(plaquettes) | plaquettes_to_replace,
-                dimension,
+        final_plaquettes = _plaquette_map(self.final_plaquettes) | plaquettes_to_replace
+        repeating_plaquettes = deepcopy(self.repeating_plaquettes)
+        if repeating_plaquettes is not None:
+            repeating_plaquettes.plaquettes = (
+                _plaquette_map(repeating_plaquettes.plaquettes) | plaquettes_to_replace
             )
         # Return the resulting block.
         return StandardComputationBlock(
@@ -211,8 +224,9 @@ class StandardComputationBlock(ComputationBlock):
     def instantiate(self) -> cirq.Circuit:
         circuit = generate_circuit(self.template, self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
-            plaquettes, f_repetitions = self.repeating_plaquettes
-            repetitions = round_or_fail(f_repetitions(self.template.k))
+            r_func = self.repeating_plaquettes.repetitions
+            repetitions = round_or_fail(r_func(self.template.k))
+            plaquettes = self.repeating_plaquettes.plaquettes
             inner_circuit = generate_circuit(self.template, plaquettes).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
         circuit += generate_circuit(self.template, self.final_plaquettes)

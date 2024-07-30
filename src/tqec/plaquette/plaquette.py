@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
@@ -56,3 +58,6 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+
+Plaquettes = list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette]

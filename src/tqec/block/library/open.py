@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 import cirq
-from tqec.block.block import StandardComputationBlock
+from tqec.block.block import RepeatedPlaquettes, StandardComputationBlock
 from tqec.block.library.closed import xzz_block, zxz_block
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
@@ -83,7 +83,7 @@ def oxz_block(dimension: LinearFunction) -> StandardComputationBlock:
             6: zzzz_memory_plaquette(),
             7: xxxx_memory_plaquette(),
         },
-        repeating_plaquettes=(
+        repeating_plaquettes=RepeatedPlaquettes(
             defaultdict(empty_square_plaquette)
             | {
                 2: xxxx_memory_plaquette(),
@@ -131,7 +131,7 @@ def xoz_block(dimension: LinearFunction) -> StandardComputationBlock:
             7: zzzz_memory_plaquette(),
             8: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
         },
-        repeating_plaquettes=(
+        repeating_plaquettes=RepeatedPlaquettes(
             defaultdict(empty_square_plaquette)
             | {
                 1: xx_memory_plaquette(PlaquetteOrientation.LEFT),

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import cirq
 import pytest
 
@@ -42,6 +44,13 @@ def test_generate_circuit_dict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(one_by_one_template, {1: plaquette})
+    assert circuit == _expected_circuit(plaquette.qubits)
+
+
+def test_generate_circuit_defaultdict(
+    plaquette: Plaquette, one_by_one_template: Template
+) -> None:
+    circuit = generate_circuit(one_by_one_template, defaultdict(lambda: plaquette))
     assert circuit == _expected_circuit(plaquette.qubits)
 
 
