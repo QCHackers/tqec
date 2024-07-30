@@ -20,12 +20,7 @@ class NodeType(Enum):
 
     X = "x"  # X-type node
     Z = "z"  # Z-type node
-    V = "virtual"  # Virtual node that represents an open port
-
-    @property
-    def is_virtual(self) -> bool:
-        """Check if the node type is virtual."""
-        return self == NodeType.V
+    V = "v"  # Virtual node that represents an open port
 
 
 @dataclass(frozen=True, order=True)
@@ -79,6 +74,11 @@ class Direction3D(Enum):
 class ZXNode:
     position: Position3D
     node_type: NodeType
+
+    @property
+    def is_virtual(self) -> bool:
+        """Check if the node is virtual."""
+        return self.node_type == NodeType.V
 
 
 @dataclass(frozen=True)
@@ -173,8 +173,23 @@ class ZXGraph:
             raise TQECException(f"Node {position} already exists in the graph.")
         self._graph.add_node(position, **{_NODE_DATA_KEY: ZXNode(position, node_type)})
 
+    def add_z_node(self, position: Position3D) -> None:
+        """Add a Z-type node to the graph."""
+        self.add_node(position, NodeType.Z)
+
+    def add_x_node(self, position: Position3D) -> None:
+        """Add an X-type node to the graph."""
+        self.add_node(position, NodeType.X)
+
+    def add_virtual_node(self, position: Position3D) -> None:
+        """Add a virtual node to the graph."""
+        self.add_node(position, NodeType.V)
+
     def add_edge(
-        self, u: Position3D, v: Position3D, has_hadamard: bool = False
+        self,
+        u: Position3D,
+        v: Position3D,
+        has_hadamard: bool = False,
     ) -> None:
         """Add an edge to the graph.
 
@@ -218,11 +233,7 @@ class ZXGraph:
         ax = fig.add_subplot(111, projection="3d")
 
         node_positions = np.array(
-            [
-                astuple(node.position)
-                for node in self.nodes
-                if not node.node_type.is_virtual
-            ]
+            [astuple(node.position) for node in self.nodes if not node.is_virtual]
         ).T
         edge_positions = np.array(
             [
@@ -237,7 +248,7 @@ class ZXGraph:
             c=[
                 "black" if n.node_type == NodeType.X else "white"
                 for n in self.nodes
-                if not n.node_type.is_virtual
+                if not n.is_virtual
             ],
             alpha=1.0,
             edgecolors="black",
@@ -270,9 +281,7 @@ class ZXGraph:
         fig.tight_layout()
         plt.show()
 
-    def to_block_graph(
-        self, name: str = "", check_validity: bool = True
-    ) -> "BlockGraph":
+    def to_block_graph(self, name: str = "") -> "BlockGraph":
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -281,11 +290,10 @@ class ZXGraph:
 
         Args:
             name: The name of the new block graph.
-            check_validity: Whether to check the validity of the block graph after construction. Default is True.
 
         Returns:
             The constructed block graph.
         """
         from tqec.sketchup.block_graph import BlockGraph
 
-        return BlockGraph.from_zx_graph(self, name=name, check_validity=check_validity)
+        return BlockGraph.from_zx_graph(self, name=name)

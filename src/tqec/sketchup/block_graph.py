@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import typing as ty
 from dataclasses import dataclass, astuple
-from enum import Enum, auto
+from enum import Enum
 
 import networkx as nx
 
@@ -39,16 +39,13 @@ class Color3D:
         )
 
     def pop_color_at_direction(self, direction: Direction3D) -> Color3D:
-        """Pop the color at the given direction."""
-        if direction == Direction3D.X:
-            return Color3D(None, self.y, self.z)
-        elif direction == Direction3D.Y:
-            return Color3D(self.x, None, self.z)
-        else:
-            return Color3D(self.x, self.y, None)
+        """Replace the color at the given direction with None."""
+        return self.push_color_at_direction(direction, None)
 
-    def push_color_at_direction(self, direction: Direction3D, color: str) -> Color3D:
-        """Push the color at the given direction."""
+    def push_color_at_direction(
+        self, direction: Direction3D, color: str | None
+    ) -> Color3D:
+        """Set the color at the given direction."""
         if direction == Direction3D.X:
             return Color3D(color, self.y, self.z)
         elif direction == Direction3D.Y:
@@ -88,16 +85,13 @@ class CubeType(Enum):
     # Virtual cube for open port
     VIRTUAL = "virtual"
 
-    @property
-    def is_virtual(self) -> bool:
-        """Check if the block type is a virtual block."""
-        return self == CubeType.VIRTUAL
-
     def to_zx_node_type(self) -> NodeType:
         """Convert the cube type to a ZX node type."""
-        if self.is_virtual:
+        if self == CubeType.VIRTUAL:
             return NodeType.V
-        return NodeType.Z if self.value.count("z") == 2 else NodeType.X
+        elif self.value.count("z") == 2:
+            return NodeType.Z
+        return NodeType.X
 
     def get_color(self) -> Color3D:
         """Get the color of the block."""
@@ -112,10 +106,14 @@ class CubeType(Enum):
             raise TQECException("All the color must be defined for a non-virtual cube.")
         return ty.cast(CubeType, parse_block_type_from_str("".join(astuple(color))))
 
-    def normal_direction_to_corner_plane(self) -> Direction3D | None:
-        """If the cube is at a corner, return the normal direction to the corner plane."""
-        if self.is_virtual:
-            return None
+    def normal_direction_to_corner_plane(self) -> Direction3D:
+        """If the cube is at a corner, return the normal direction to the corner plane.
+
+        Due to the color match rule at the corner turn, the cornel plane can be inferred
+        from the type of the cube.
+        """
+        if self == CubeType.VIRTUAL:
+            raise TQECException("Cannot infer the corner plane for a virtual cube.")
         if self.value.count("z") == 2:
             return Direction3D.from_axis_index(self.value.index("x"))
         return Direction3D.from_axis_index(self.value.index("z"))
@@ -125,10 +123,10 @@ class CubeType(Enum):
         direction: Direction3D,
         src_side: bool = True,
         has_hadamard: bool = False,
-    ) -> PipeType | None:
-        """Infer the pipe type connecting this cube at some direction with the color matching rule."""
-        if self.is_virtual:
-            return None
+    ) -> PipeType:
+        """Infer the pipe type connecting this cube at some direction with the color match rule."""
+        if self == CubeType.VIRTUAL:
+            raise TQECException("Cannot infer the pipe type for a virtual cube.")
         color = self.get_color().pop_color_at_direction(direction)
         return PipeType.from_color_at_side(color, src_side, has_hadamard)
 
@@ -217,6 +215,11 @@ class Cube:
     position: Position3D
     cube_type: CubeType
 
+    @property
+    def is_virtual(self) -> bool:
+        """Check if the cube is virtual, i.e. an open port."""
+        return self.cube_type == CubeType.VIRTUAL
+
 
 @dataclass(frozen=True)
 class Pipe:
@@ -238,6 +241,11 @@ class Pipe:
         if self.u.position > self.v.position:
             object.__setattr__(self, "u", v)
             object.__setattr__(self, "v", u)
+
+    @property
+    def direction(self) -> Direction3D:
+        """Get the direction of the pipe."""
+        return self.pipe_type.direction
 
 
 _CUBE_DATA_KEY = "cube_data"
@@ -341,9 +349,7 @@ class BlockGraph:
                 port of a pipe. It is not a physical cube but a placeholder for the pipe to connect to the
                 boundary of the graph. Default is True.
         """
-        if not allow_virtual_node and any(
-            cube.cube_type.is_virtual for cube in self.cubes
-        ):
+        if not allow_virtual_node and any(cube.is_virtual for cube in self.cubes):
             raise TQECException("The graph contains a virtual node.")
         for cube in self.cubes:
             self._check_validity_locally_at_cube(cube)
@@ -351,7 +357,7 @@ class BlockGraph:
     def _check_validity_locally_at_cube(self, cube: Cube) -> None:
         """Check the validity of the block structures locally at a cube."""
         # Skip the virtual cube
-        if cube.cube_type.is_virtual:
+        if cube.is_virtual:
             return
         pipes_by_direction: dict[Direction3D, list[Pipe]] = {}
         for pipe in self.pipes_at(cube.position):
@@ -374,10 +380,7 @@ class BlockGraph:
         if len(pipe_directions) == 2:
             # since we have checked the pass-throught match
             # we only have to check that the surrounding walls at the turn plane have the same color
-            normal_direction_to_corner_plane = ty.cast(
-                Direction3D, cube.cube_type.normal_direction_to_corner_plane()
-            )
-            if normal_direction_to_corner_plane in pipe_directions:
+            if cube.cube_type.normal_direction_to_corner_plane() in pipe_directions:
                 raise TQECException(
                     f"Cube at {cube.position} has unmatched color at turn."
                 )
@@ -394,9 +397,7 @@ class BlockGraph:
         return zx_graph
 
     @staticmethod
-    def from_zx_graph(
-        zx_graph: ZXGraph, name: str = "", check_validity: bool = True
-    ) -> "BlockGraph":
+    def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> "BlockGraph":
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -406,7 +407,6 @@ class BlockGraph:
         Args:
             zx_graph: The base ZX graph to construct the block graph.
             name: The name of the new block graph.
-            check_validity: Whether to check the validity of the block graph after construction. Default is True.
 
         Returns:
             The constructed block graph.
@@ -418,7 +418,7 @@ class BlockGraph:
 
         # Add the virtual nodes first
         for node in zx_graph.nodes:
-            if node.node_type.is_virtual:
+            if node.is_virtual:
                 block_graph.add_cube(node.position, CubeType.VIRTUAL)
                 nodes_to_handle.remove(node)
         # Check 3D corner
@@ -446,9 +446,7 @@ class BlockGraph:
                 + normal_direction_color
                 + cube_type_str[direction_index + 1 :]
             )
-            cube_type: CubeType = ty.cast(
-                CubeType, parse_block_type_from_str(cube_type_str)
-            )
+            cube_type = CubeType(cube_type_str)
             block_graph.add_cube(node.position, cube_type)
             nodes_to_handle.remove(node)
             corner_cubes[node.position] = Cube(node.position, cube_type)
@@ -478,12 +476,8 @@ class BlockGraph:
                     p1, p2 = p2, p1
                 src = ty.cast(ZXNode, zx_graph.get_node(p1))
                 dst = ty.cast(ZXNode, zx_graph.get_node(p2))
-                can_infer_from_src = (
-                    src not in nodes_to_handle and not src.node_type.is_virtual
-                )
-                can_infer_from_dst = (
-                    dst not in nodes_to_handle and not dst.node_type.is_virtual
-                )
+                can_infer_from_src = src not in nodes_to_handle and not src.is_virtual
+                can_infer_from_dst = dst not in nodes_to_handle and not dst.is_virtual
                 if not can_infer_from_src and not can_infer_from_dst:
                     raise TQECException(
                         f"Cannot infer the pipe structure from the ZX graph at edge {p1} -> {p2}."
@@ -495,7 +489,6 @@ class BlockGraph:
                 pipe_type = known_cube.cube_type.infer_pipe_type_at_direction(
                     edge.direction, can_infer_from_src, edge.has_hadamard
                 )
-                pipe_type = ty.cast(PipeType, pipe_type)
                 if src in nodes_to_handle or dst in nodes_to_handle:
                     other_node = dst if can_infer_from_src else src
                     other_cube_type = pipe_type.infer_cube_type_at_side(
