@@ -401,6 +401,11 @@ class BlockGraph:
             )
         return zx_graph
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BlockGraph):
+            return False
+        return nx.utils.graphs_equal(self._graph, other._graph)
+
     @staticmethod
     def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> "BlockGraph":
         """Construct a block graph from a ZX graph.

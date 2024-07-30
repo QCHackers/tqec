@@ -306,3 +306,8 @@ class ZXGraph:
         from tqec.sketchup.block_graph import BlockGraph
 
         return BlockGraph.from_zx_graph(self, name=name)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, ZXGraph):
+            return False
+        return nx.utils.graphs_equal(self._graph, other._graph)
