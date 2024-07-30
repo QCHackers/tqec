@@ -41,6 +41,10 @@ class Position3D:
             abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
         )
 
+    def as_tuple(self) -> tuple[int, int, int]:
+        """Return the position as a tuple."""
+        return astuple(self)
+
     def __post_init__(self):
         if any(not isinstance(i, int) for i in astuple(self)):
             raise TQECException("Position must be an integer.")
@@ -65,6 +69,11 @@ class Direction3D(Enum):
     def from_axis_index(i: int) -> Direction3D:
         """Get the direction from the axis index."""
         return Direction3D.all()[i]
+
+    @property
+    def axis_index(self) -> int:
+        """Get the axis index."""
+        return Direction3D.all().index(self)
 
     def __str__(self) -> str:
         return self.name
