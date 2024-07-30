@@ -52,6 +52,11 @@ class ComputationBlock(ABC):
         specified boundary."""
         pass
 
+    @abstractmethod
+    def scale_to(self, k: int) -> None:
+        """Scale the block to the provided scale factor."""
+        pass
+
 
 def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
     """Return the number of `cirq.Moment` needed to execute all the provided
@@ -235,6 +240,10 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def instantiate_without_boundary(self, dimension: BlockDimension) -> cirq.Circuit:
         return self.replace_boundary_with_empty_plaquettes(dimension).instantiate()
+
+    @override
+    def scale_to(self, k: int) -> None:
+        self.template.scale_to(k)
 
 
 @dataclass
