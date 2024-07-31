@@ -26,6 +26,7 @@ def test_zx_graph_construction() -> None:
     with pytest.raises(TQECException, match="already exists"):
         g.add_node(node1.position, node1.node_type)
 
+    g.add_x_node(Position3D(1, 0, 0))
     g.add_z_node(Position3D(0, 2, 0))
     assert len(g.nodes) == 3
     g.add_edge(Position3D(0, 0, 0), Position3D(1, 0, 0))
