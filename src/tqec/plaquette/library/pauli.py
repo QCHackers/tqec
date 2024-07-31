@@ -25,6 +25,9 @@ class ResetBasis(Enum):
         else:
             raise TQECException("Unknown reset basis: {self}")
 
+    def __str__(self) -> str:
+        return "R" + self.name.upper()
+
 
 class MeasurementBasis(Enum):
     X = auto()
@@ -37,6 +40,9 @@ class MeasurementBasis(Enum):
             return cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
         else:
             raise TQECException("Unknown measurement basis: {self}")
+
+    def __str__(self) -> str:
+        return "M" + self.name.upper()
 
 
 def _make_pauli_syndrome_measurement_circuit(
@@ -109,6 +115,30 @@ def _make_pauli_syndrome_measurement_circuit(
     return circuit
 
 
+def _default_name(
+    qubits: PlaquetteQubits,
+    pauli_string: str,
+    schedule: list[int],
+    reset_basis: ResetBasis = ResetBasis.Z,
+    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
+    include_initial_data_resets: bool = False,
+    include_final_data_measurements: bool = False,
+) -> str:
+    parts = [
+        "pauli",
+        pauli_string.lower(),
+        "-".join(q.to_concise_str() for q in qubits),
+        "-".join(map(str, schedule)),
+        str(reset_basis),
+        str(measurement_basis),
+    ]
+    if include_initial_data_resets:
+        parts.append("R(data)")
+    if include_final_data_measurements:
+        parts.append("M(data)")
+    return "_".join(parts)
+
+
 def pauli_memory_plaquette(
     qubits: PlaquetteQubits,
     pauli_string: str,
@@ -175,4 +205,4 @@ def pauli_memory_plaquette(
             data_qubit_measurement_basis(q) for q in qubits.get_data_qubits_cirq()
         ]
 
-    return Plaquette(qubits, ScheduledCircuit(circuit, schedule))
+    return Plaquette(name, qubits, ScheduledCircuit(circuit, schedule))

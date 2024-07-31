@@ -27,6 +27,9 @@ class PlaquetteQubit:
         # GridQubit are indexed as (row, col)
         return cirq.GridQubit(self.position.y, self.position.x)
 
+    def to_concise_str(self) -> str:
+        return f"({self.position.x},{self.position.y})"
+
 
 @dataclass(frozen=True)
 class PlaquetteQubits:

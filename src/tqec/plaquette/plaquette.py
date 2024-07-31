@@ -16,6 +16,7 @@ class Plaquette:
 
     def __init__(
         self,
+        name: str,
         qubits: PlaquetteQubits,
         circuit: ScheduledCircuit,
     ) -> None:
@@ -28,6 +29,8 @@ class Plaquette:
         to the right and a Y-axis pointing down.
 
         Args:
+            name: name of the plaquette instance. Used to identify the plaquette (equality,
+                hash, ...).
             qubits: qubits used by the plaquette circuit, given in the local
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
@@ -37,6 +40,7 @@ class Plaquette:
             TQECException: if the provided circuit uses qubits not in the list of
                 PlaquetteQubit.
         """
+        self._name = name
         plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
         circuit_qubits = set(circuit.raw_circuit.all_qubits())
         if not circuit_qubits.issubset(plaquette_qubits):
@@ -49,6 +53,10 @@ class Plaquette:
         self._circuit = circuit
 
     @property
+    def name(self) -> str:
+        return self._name
+
+    @property
     def origin(self) -> Position2D:
         return Position2D(0, 0)
 
@@ -59,6 +67,12 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, value: object) -> bool:
+        return isinstance(value, Plaquette) and self.name == value.name
 
 
 Plaquettes = typing.Union[
