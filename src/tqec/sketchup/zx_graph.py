@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 from enum import Enum
 from dataclasses import dataclass, astuple
 
@@ -95,12 +95,12 @@ class ZXGraph:
     @property
     def num_nodes(self) -> int:
         """The number of nodes in the graph."""
-        return self._graph.number_of_nodes()
+        return cast(int, self._graph.number_of_nodes())
 
     @property
     def num_edges(self) -> int:
         """The number of edges in the graph."""
-        return self._graph.number_of_edges()
+        return cast(int, self._graph.number_of_edges())
 
     @property
     def nodes(self) -> list[ZXNode]:
@@ -154,8 +154,8 @@ class ZXGraph:
         """
         if u not in self._graph or v not in self._graph:
             raise TQECException("Both nodes must exist in the graph.")
-        u_node = self._graph.nodes[u][_NODE_DATA_KEY]
-        v_node = self._graph.nodes[v][_NODE_DATA_KEY]
+        u_node: ZXNode = self._graph.nodes[u][_NODE_DATA_KEY]
+        v_node: ZXNode = self._graph.nodes[v][_NODE_DATA_KEY]
         self._graph.add_edge(
             u, v, **{_EDGE_DATA_KEY: ZXEdge(u_node, v_node, has_hadamard)}
         )
@@ -164,13 +164,13 @@ class ZXGraph:
         """Get the node by position."""
         if position not in self._graph:
             return None
-        return self._graph.nodes[position][_NODE_DATA_KEY]
+        return cast(ZXNode, self._graph.nodes[position][_NODE_DATA_KEY])
 
     def get_edge(self, u: Position3D, v: Position3D) -> ZXEdge | None:
         """Get the edge by its endpoint positions."""
         if not self._graph.has_edge(u, v):
             return None
-        return self._graph.edges[u, v][_EDGE_DATA_KEY]
+        return cast(ZXEdge, self._graph.edges[u, v][_EDGE_DATA_KEY])
 
     def edges_at(self, position: Position3D) -> list[ZXEdge]:
         """Get the edges incident to a node."""
@@ -278,4 +278,4 @@ class ZXGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ZXGraph):
             return False
-        return nx.utils.graphs_equal(self._graph, other._graph)
+        return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))

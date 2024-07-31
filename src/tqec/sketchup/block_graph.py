@@ -27,7 +27,7 @@ class Color3D:
     y: str | None
     z: str | None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if any(c not in "xz" for c in astuple(self) if c is not None):
             raise TQECException("Color must be 'x' or 'z'.")
 
@@ -196,7 +196,7 @@ class PipeType(Enum):
         return CubeType.from_color(color)
 
 
-BlockType = ty.Union[CubeType | PipeType]
+BlockType = ty.Union[CubeType, PipeType]
 """Valid block types in the library."""
 
 
@@ -267,12 +267,12 @@ class BlockGraph:
     @property
     def num_cubes(self) -> int:
         """The number of cubes in the graph."""
-        return self._graph.number_of_nodes()
+        return ty.cast(int, self._graph.number_of_nodes())
 
     @property
     def num_pipes(self) -> int:
         """The number of pipes in the graph."""
-        return self._graph.number_of_edges()
+        return ty.cast(int, self._graph.number_of_edges())
 
     @property
     def cubes(self) -> list[Cube]:
@@ -320,13 +320,13 @@ class BlockGraph:
         """Get the cube by position."""
         if position not in self._graph:
             return None
-        return self._graph.nodes[position][_CUBE_DATA_KEY]
+        return ty.cast(Cube, self._graph.nodes[position][_CUBE_DATA_KEY])
 
     def get_pipe(self, u: Position3D, v: Position3D) -> Pipe | None:
         """Get the pipe by its endpoint cube positions."""
         if not self._graph.has_edge(u, v):
             return None
-        return self._graph.edges[u, v][_CUBE_DATA_KEY]
+        return ty.cast(Pipe, self._graph.edges[u, v][_CUBE_DATA_KEY])
 
     def pipes_at(self, position: Position3D) -> list[Pipe]:
         """Get the pipes connected to a cube."""
@@ -403,7 +403,7 @@ class BlockGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BlockGraph):
             return False
-        return nx.utils.graphs_equal(self._graph, other._graph)
+        return ty.cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
 
     @staticmethod
     def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> "BlockGraph":

@@ -10,12 +10,12 @@ from dataclasses import dataclass
 import collada
 import collada.source
 import numpy as np
-import numpy.testing as npt
+import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 from tqec.sketchup.geometry import Face, FaceType, load_library_block_geometries
+from tqec.position import Position3D
 from tqec.sketchup.block_graph import (
-    Position3D,
     CubeType,
     PipeType,
     BlockType,
@@ -63,7 +63,7 @@ def read_block_graph_from_dae_file(
     sketchup_node: collada.scene.Node = scene.nodes[0]
     uniform_pipe_scale: float | None = None
     parsed_cubes: list[tuple[_FloatPosition, CubeType]] = []
-    parsed_pipes: list[tuple[_FloatPosition, CubeType]] = []
+    parsed_pipes: list[tuple[_FloatPosition, PipeType]] = []
     for node in sketchup_node.children:
         if (
             isinstance(node, collada.scene.Node)
@@ -111,6 +111,7 @@ def read_block_graph_from_dae_file(
                 "</node>\n"
             )
 
+    uniform_pipe_scale = ty.cast(float, uniform_pipe_scale)
     def int_position_before_scale(pos: _FloatPosition) -> Position3D:
         int_pos_before_scale = []
         for p in pos:
@@ -128,7 +129,7 @@ def read_block_graph_from_dae_file(
         pipe_direction_idx = pipe_type.direction.axis_index
         scaled_src_pos_list = list(pos)
         scaled_src_pos_list[pipe_direction_idx] -= 1
-        src_pos = int_position_before_scale(tuple(scaled_src_pos_list))
+        src_pos = int_position_before_scale(ty.cast(_FloatPosition, tuple(scaled_src_pos_list)))
         dst_pos_list = list(src_pos.as_tuple())
         dst_pos_list[pipe_direction_idx] += 1
         dst_pos = Position3D(*dst_pos_list)
@@ -155,8 +156,8 @@ def write_block_graph_to_dae_file(
     base = _load_base_collada_data()
     instance_id = 0
 
-    def scale_position(pos: tuple[int, int, int]) -> tuple[float, float, float]:
-        return tuple(p * (1 + pipe_length) for p in pos)
+    def scale_position(pos: tuple[int, int, int]) -> _FloatPosition:
+        return ty.cast(_FloatPosition, tuple(p * (1 + pipe_length) for p in pos))
 
     for cube in block_graph.cubes:
         if cube.is_virtual:
@@ -195,7 +196,7 @@ class _BaseColladaData:
         self.library_node_handles = library_node_handles
 
     def add_instance_node(
-        self, instance_id: int, transform_matrix: np.ndarray, block_type: BlockType
+        self, instance_id: int, transform_matrix: npt.NDArray[np.float_], block_type: BlockType
     ) -> None:
         """Add an instance node to the root node."""
         child_node = collada.scene.Node(
@@ -418,4 +419,4 @@ def display_collada_model(file_path: str) -> None:
     </html>
     """
 
-    return display(HTML(html_template))
+    display(HTML(html_template)) # type: ignore[no-untyped-call]
