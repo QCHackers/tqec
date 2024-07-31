@@ -29,7 +29,6 @@ YELLOW_RGBA = (1.0, 1.0, 0.396078431372549, 1.0)
 
 ASSET_AUTHOR = "TQEC Community"
 ASSET_AUTHORING_TOOL_TQEC = "TQEC Python Package"
-ASSET_AUTHORING_TOOL_SKETCHUP = "SketchUp 8.0.15158"
 ASSET_UNIT_NAME = "inch"
 ASSET_UNIT_METER = 0.02539999969303608
 
@@ -102,16 +101,9 @@ def read_block_graph_from_dae_file(
                 raise TQECException("Scaling of cubes is not allowed.")
             else:
                 parsed_cubes.append((translation, block_type))
-        else:
-            raise TQECException(
-                "All the children of the 'SketchUp' node must have attributes like the following example:\n"
-                "<node id='ID2' name='instance_0'>\n"
-                "    <matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>\n"
-                "    <instance_node url='#ID3' />\n"
-                "</node>\n"
-            )
 
     uniform_pipe_scale = ty.cast(float, uniform_pipe_scale)
+
     def int_position_before_scale(pos: _FloatPosition) -> Position3D:
         int_pos_before_scale = []
         for p in pos:
@@ -129,7 +121,9 @@ def read_block_graph_from_dae_file(
         pipe_direction_idx = pipe_type.direction.axis_index
         scaled_src_pos_list = list(pos)
         scaled_src_pos_list[pipe_direction_idx] -= 1
-        src_pos = int_position_before_scale(ty.cast(_FloatPosition, tuple(scaled_src_pos_list)))
+        src_pos = int_position_before_scale(
+            ty.cast(_FloatPosition, tuple(scaled_src_pos_list))
+        )
         dst_pos_list = list(src_pos.as_tuple())
         dst_pos_list[pipe_direction_idx] += 1
         dst_pos = Position3D(*dst_pos_list)
@@ -196,7 +190,10 @@ class _BaseColladaData:
         self.library_node_handles = library_node_handles
 
     def add_instance_node(
-        self, instance_id: int, transform_matrix: npt.NDArray[np.float_], block_type: BlockType
+        self,
+        instance_id: int,
+        transform_matrix: npt.NDArray[np.float_],
+        block_type: BlockType,
     ) -> None:
         """Add an instance node to the root node."""
         child_node = collada.scene.Node(
@@ -232,13 +229,10 @@ def _create_lambert_effect(
 def _add_asset_info(mesh: collada.Collada) -> None:
     if mesh.assetInfo is None:
         return
-    mesh.assetInfo.contributors.extend(
-        [
-            collada.asset.Contributor(
-                author=ASSET_AUTHOR, authoring_tool=ASSET_AUTHORING_TOOL_TQEC
-            ),
-            collada.asset.Contributor(authoring_tool=ASSET_AUTHORING_TOOL_SKETCHUP),
-        ]
+    mesh.assetInfo.contributors.append(
+        collada.asset.Contributor(
+            author=ASSET_AUTHOR, authoring_tool=ASSET_AUTHORING_TOOL_TQEC
+        ),
     )
     mesh.assetInfo.unitmeter = ASSET_UNIT_METER
     mesh.assetInfo.unitname = ASSET_UNIT_NAME
@@ -419,4 +413,4 @@ def display_collada_model(file_path: str) -> None:
     </html>
     """
 
-    display(HTML(html_template)) # type: ignore[no-untyped-call]
+    display(HTML(html_template))  # type: ignore[no-untyped-call]
