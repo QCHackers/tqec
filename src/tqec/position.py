@@ -60,3 +60,14 @@ class Displacement:
 
     x: int
     y: int
+
+
+@dataclass(frozen=True)
+class Position3D:
+    x: int
+    y: int
+    z: int
+
+    @property
+    def spatial_coordinates(self) -> Position2D:
+        return Position2D(self.x, self.y)

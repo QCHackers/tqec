@@ -14,16 +14,10 @@ from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
+from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
 from typing_extensions import override
-
-
-@dataclass
-class Position3D:
-    x: int
-    y: int
-    z: int
 
 
 @dataclass
