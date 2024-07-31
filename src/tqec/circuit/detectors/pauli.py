@@ -152,7 +152,6 @@ class PauliString:
         """
         ret = PauliString(self._pauli_by_qubit.copy())
         for op in collapse_operators:
-            print(f"Collapsing {op} over {ret}")
             if not ret.commutes(op):
                 raise TQECException(
                     f"Cannot collapse {ret} by a non-commuting operator {op}."
