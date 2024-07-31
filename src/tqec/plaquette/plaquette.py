@@ -1,6 +1,9 @@
 import typing
 from collections import defaultdict
 
+import cirq
+
+from tqec.circuit.operations.operation import MX
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
@@ -67,6 +70,27 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    @property
+    def measured_qubits(self) -> list[cirq.GridQubit]:
+        measurement_operations = self.circuit.raw_circuit.findall_operations(
+            lambda op: isinstance(op.gate, (cirq.MeasurementGate, MX))
+        )
+        if any(len(op.qubits) != 1 for _, op in measurement_operations):
+            raise TQECException(
+                "Measurement operations should be applied on exactly one qubit."
+            )
+        if any(
+            not isinstance(op.qubits[0], cirq.GridQubit)
+            for _, op in measurement_operations
+        ):
+            raise TQECException(
+                "Found a qubit that is not an isntance of cirq.GridQubit."
+            )
+        return [
+            typing.cast(cirq.GridQubit, op.qubits[0])
+            for _, op in measurement_operations
+        ]
 
     def __hash__(self) -> int:
         return hash(self.name)
