@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Position:
+class Position2D:
     """Simple wrapper around tuple[int, int].
 
     This class is here to explicitly name the type of variables as positions

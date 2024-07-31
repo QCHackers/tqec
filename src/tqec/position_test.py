@@ -1,8 +1,8 @@
-from tqec.position import Position, Shape2D
+from tqec.position import Position2D, Shape2D
 
 
 def test_position() -> None:
-    pos = Position(1, 3)
+    pos = Position2D(1, 3)
     assert pos.x == 1
     assert pos.y == 3
 

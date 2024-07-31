@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import cirq
 
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
-from tqec.position import Position
+from tqec.position import Position2D
 from tqec.templates.enums import TemplateOrientation
 
 
@@ -21,7 +21,7 @@ class PlaquetteQubit:
     instance.
     """
 
-    position: Position
+    position: Position2D
 
     def to_grid_qubit(self) -> cirq.GridQubit:
         # GridQubit are indexed as (row, col)
@@ -117,21 +117,21 @@ class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
         super().__init__(
             [
-                PlaquetteQubit(Position(-1, -1)),
-                PlaquetteQubit(Position(1, -1)),
-                PlaquetteQubit(Position(-1, 1)),
-                PlaquetteQubit(Position(1, 1)),
+                PlaquetteQubit(Position2D(-1, -1)),
+                PlaquetteQubit(Position2D(1, -1)),
+                PlaquetteQubit(Position2D(-1, 1)),
+                PlaquetteQubit(Position2D(1, 1)),
             ],
-            [PlaquetteQubit(Position(0, 0))],
+            [PlaquetteQubit(Position2D(0, 0))],
         )
 
 
 class RoundedPlaquetteQubits(PlaquetteQubits):
     _POTENTIAL_DATA_QUBITS: ty.Final[list[PlaquetteQubit]] = [
-        PlaquetteQubit(Position(-1, -1)),
-        PlaquetteQubit(Position(1, -1)),
-        PlaquetteQubit(Position(-1, 1)),
-        PlaquetteQubit(Position(1, 1)),
+        PlaquetteQubit(Position2D(-1, -1)),
+        PlaquetteQubit(Position2D(1, -1)),
+        PlaquetteQubit(Position2D(-1, 1)),
+        PlaquetteQubit(Position2D(1, 1)),
     ]
 
     @staticmethod
@@ -150,5 +150,5 @@ class RoundedPlaquetteQubits(PlaquetteQubits):
     def __init__(self, orientation: PlaquetteOrientation):
         super().__init__(
             RoundedPlaquetteQubits._get_qubits_on_side(orientation.to_plaquette_side()),
-            [PlaquetteQubit(Position(0, 0))],
+            [PlaquetteQubit(Position2D(0, 0))],
         )

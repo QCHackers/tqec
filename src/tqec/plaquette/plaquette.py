@@ -4,7 +4,7 @@ from collections import defaultdict
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
-from tqec.position import Position
+from tqec.position import Position2D
 
 
 class Plaquette:
@@ -49,8 +49,8 @@ class Plaquette:
         self._circuit = circuit
 
     @property
-    def origin(self) -> Position:
-        return Position(0, 0)
+    def origin(self) -> Position2D:
+        return Position2D(0, 0)
 
     @property
     def qubits(self) -> PlaquetteQubits:
