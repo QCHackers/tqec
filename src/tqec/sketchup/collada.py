@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import base64
 import pathlib
 import typing as ty
@@ -137,14 +138,14 @@ def read_block_graph_from_dae_file(
 
 def write_block_graph_to_dae_file(
     block_graph: BlockGraph,
-    filepath: str | pathlib.Path,
+    file: str | pathlib.Path | ty.BinaryIO,
     pipe_length: float = 2.0,
 ) -> None:
     """Write the block graph to a Collada DAE file.
 
     Args:
         block_graph: The block graph to write.
-        filepath: The output file path.
+        file: The output file path or file-like object that supports binary write.
         pipe_length: The length of the pipe blocks. Default is 2.0.
     """
     base = _load_base_collada_data()
@@ -173,7 +174,7 @@ def write_block_graph_to_dae_file(
         matrix[:3, :3] = np.diag(scales)
         base.add_instance_node(instance_id, matrix, pipe.pipe_type)
         instance_id += 1
-    base.mesh.write(filepath)
+    base.mesh.write(file)
 
 
 class _BaseColladaData:
@@ -333,84 +334,185 @@ class Transformation:
         return Transformation(translation, scale, rotation, mat)
 
 
-def display_collada_model(file_path: str) -> None:
-    """TODO: NOT WORKING CORRECTLY YET."""
+def display_collada_model(
+    filepath: str | pathlib.Path | None = None, collada_bytes: bytes | None = None
+) -> None:
+    """Display a 3D model from a Collada DAE file in IPython compatible environments.
+
+    This function references the the code snippet from the `stim.Circuit().diagram()` method.
+
+    Args:
+        filepath: The input dae file path. If None, collada_bytes must be provided.
+        collada_bytes: The input collada file bytes. If None, filepath must be provided.
+    """
     from IPython.display import display, HTML
 
-    with open(file_path, "rb") as file:
-        collada_data = file.read()
-        collada_base64 = base64.b64encode(collada_data).decode("utf-8")
-    # HTML template for embedding three.js and rendering the COLLADA model
-    html_template = f"""
-    <!DOCTYPE html>
-    <html lang="en">
+    if not (filepath is None) ^ (collada_bytes is None):
+        raise TQECException(
+            "Exactly one of filepath and collada_bytes must be provided."
+        )
 
-    <head>
-        <meta charset="UTF-8">
-        <title>COLLADA Model Viewer</title>
-        <style>
-            body {{ margin: 0; }}
+    html_template = r"""
+<!DOCTYPE html>
+<html>
 
-            canvas {{ width: 100%; height: 100%; }}
-        </style>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.138.0/build/three.module.js",
+        "three-orbitcontrols": "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js",
+        "three-collada-loader": "https://unpkg.com/three@0.138.0/examples/jsm/loaders/ColladaLoader.js"
+      }
+    }
+  </script>
+</head>
 
-    <body>
-        <script type="importmap">
-            {{
-                "imports": {{
-                "three": "https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/"
-                }}
-            }}
-        </script>
-        <script type="module">
-            import * as THREE from 'three';
-            import {{ ColladaLoader }} from 'three/addons/loaders/ColladaLoader.js';
-            import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';
+<body>
+    <a download="model.dae" id="tqec-3d-viewer-download-link"
+        href="data:text/plain;base64,{{MODEL_BASE64_PLACEHOLDER}}">Download 3D Model as .dae File</a>
+    <br>Mouse Wheel = Zoom. Left Drag = Orbit. Right Drag = Strafe.
+    <div id="tqec-3d-viewer-scene-container" style="width: calc(100vw - 32px); height: calc(100vh - 64px);">JavaScript Blocked?</div>
 
-            var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            var renderer = new THREE.WebGLRenderer({{ antialias: true }});
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x808080);
-            document.body.appendChild(renderer.domElement);
+    <script type="module">
+        let container = document.getElementById("tqec-3d-viewer-scene-container");
+        let downloadLink = document.getElementById("tqec-3d-viewer-download-link");
+        container.textContent = "Loading viewer...";
 
-            // Add some lighting
-            var ambientLight = new THREE.AmbientLight(0x404040, 3); // soft white light
-            scene.add(ambientLight);
+        /// BEGIN TERRIBLE HACK.
+        /// Change the ID to avoid cross-cell interactions.
+        /// This is a workaround for https://github.com/jupyter/notebook/issues/6598
+        container.id = undefined;
+        downloadLink.id = undefined;
 
-            var directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-            directionalLight.position.set(5, 10, 7.5);
-            scene.add(directionalLight);
-            
-            var colladaDataURI = 'data:model/vnd.collada+xml;base64,{collada_base64}';
-            var loader = new ColladaLoader();
-            loader.load(colladaDataURI, function (collada) {{
-                var model = collada.scene;
-                model.scale.set(1.0, 1.0, 1.0); // Scale the model if necessary
-                scene.add(model);
-            }}, undefined, function (error) {{
-                console.error(error);
-            }});
+        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3 } from "three";
+        import { OrbitControls } from "three-orbitcontrols";
+        import { ColladaLoader } from "three-collada-loader";
 
-            camera.position.z = 20;
+        try {
+            container.textContent = "Loading model...";
+            let modelDataUri = downloadLink.href;
+            let collada = await new ColladaLoader().loadAsync(modelDataUri);
+            container.textContent = "Loading scene...";
 
-            // Add OrbitControls
-            var controls = new OrbitControls(camera, renderer.domElement);
-            controls.update();
+            // Create the scene, adding lighting for the loaded objects.
+            let scene = new Scene();
+            scene.background = new Color("gray");
+            // Ambient light for general illumination
+            let ambientLight = new AmbientLight(0x404040, 2); // Soft white light
+            // Directional lights from different angles for comprehensive illumination
+            let directionalLight1 = new DirectionalLight(0xffffff, 3);
+            directionalLight1.position.set(1, 1, 1).normalize();
 
-            var animate = function () {{
-                requestAnimationFrame(animate);
+            let directionalLight2 = new DirectionalLight(0xffffff, 3);
+            directionalLight2.position.set(-1, -1, 1).normalize();
+
+            let directionalLight3 = new DirectionalLight(0xffffff, 3);
+            directionalLight3.position.set(1, -1, -1).normalize();
+
+            let directionalLight4 = new DirectionalLight(0xffffff, 3);
+            directionalLight4.position.set(-1, 1, -1).normalize();
+
+            scene.add(ambientLight, directionalLight1, directionalLight2, directionalLight3,directionalLight4);
+            scene.add(collada.scene);
+
+            // Point the camera at the center, far enough back to see everything.
+            let camera = new PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100000);
+            let controls = new OrbitControls(camera, container);
+            let bounds = new Box3().setFromObject(scene);
+            let mid = new Vector3(
+                (bounds.min.x + bounds.max.x) * 0.5,
+                (bounds.min.y + bounds.max.y) * 0.5,
+                (bounds.min.z + bounds.max.z) * 0.5,
+            );
+            let boxPoints = [];
+            for (let dx of [0, 0.5, 1]) {
+                for (let dy of [0, 0.5, 1]) {
+                    for (let dz of [0, 0.5, 1]) {
+                        boxPoints.push(new Vector3(
+                            bounds.min.x + (bounds.max.x - bounds.min.x) * dx,
+                            bounds.min.y + (bounds.max.y - bounds.min.y) * dy,
+                            bounds.min.z + (bounds.max.z - bounds.min.z) * dz,
+                        ));
+                    }
+                }
+            }
+            let isInView = p => {
+                p = new Vector3(p.x, p.y, p.z);
+                p.project(camera);
+                return Math.abs(p.x) < 1 && Math.abs(p.y) < 1 && p.z >= 0 && p.z < 1;
+            };
+            let unit = new Vector3(0.3, 0.4, -1.8);
+            unit.normalize();
+            let setCameraDistance = d => {
+                controls.target.copy(mid);
+                camera.position.copy(mid);
+                camera.position.addScaledVector(unit, d);
                 controls.update();
+                return boxPoints.every(isInView);
+            };
+
+            let maxDistance = 1;
+            for (let k = 0; k < 20; k++) {
+                if (setCameraDistance(maxDistance)) {
+                    break;
+                }
+                maxDistance *= 2;
+            }
+            let minDistance = maxDistance;
+            for (let k = 0; k < 20; k++) {
+                minDistance /= 2;
+                if (!setCameraDistance(minDistance)) {
+                    break;
+                }
+            }
+            for (let k = 0; k < 20; k++) {
+                let mid = (minDistance + maxDistance) / 2;
+                if (setCameraDistance(mid)) {
+                    maxDistance = mid;
+                } else {
+                    minDistance = mid;
+                }
+            }
+            setCameraDistance(maxDistance);
+
+            // Set up rendering.
+            let renderer = new WebGLRenderer({ antialias: true });
+            container.textContent = "";
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.physicallyCorrectLights = true;
+            container.appendChild(renderer.domElement);
+
+            // Render whenever any important changes have occurred.
+            requestAnimationFrame(() => renderer.render(scene, camera));
+            new ResizeObserver(() => {
+                let w = container.clientWidth;
+                let h = container.clientHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
                 renderer.render(scene, camera);
-            }};
+            }).observe(container);
+            controls.addEventListener("change", () => {
+                renderer.render(scene, camera);
+            })
+        } catch (ex) {
+            container.textContent = "Failed to show model. " + ex;
+            console.error(ex);
+        }
+    </script>
+</body>"""
 
-            animate();
-        </script>
-    </body>
+    if filepath is not None:
+        file_path = pathlib.Path(filepath)
+        with open(file_path, "rb") as file:
+            collada_bytes = file.read()
+    collada_base64 = base64.b64encode(ty.cast(bytes, collada_bytes)).decode("utf-8")
 
-    </html>
+    html_str = html_template.replace(r"{{MODEL_BASE64_PLACEHOLDER}}", collada_base64)
+    framed = f"""<iframe style="width: 100%; height: 300px; overflow: hidden; resize: both; border: 1px dashed gray;" frameBorder="0" srcdoc="{html.escape(html_str, quote=True)}"></iframe>
     """
 
-    display(HTML(html_template))  # type: ignore[no-untyped-call]
+    display(HTML(framed))  # type: ignore[no-untyped-call]

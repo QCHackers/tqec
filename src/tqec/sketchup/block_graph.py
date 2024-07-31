@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from io import BytesIO
 import typing as ty
 import pathlib
 from dataclasses import dataclass, astuple
@@ -536,3 +537,12 @@ class BlockGraph:
         from tqec.sketchup.collada import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)
+
+    def display(self) -> None:
+        """Display the block graph in 3D."""
+        from tqec.sketchup.collada import write_block_graph_to_dae_file
+        from tqec.sketchup.collada import display_collada_model
+
+        bytes_buffer = BytesIO()
+        write_block_graph_to_dae_file(self, bytes_buffer)
+        display_collada_model(collada_bytes=bytes_buffer.getvalue())
