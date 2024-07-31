@@ -249,14 +249,14 @@ def build_flows_from_fragments(
         the computed flows for each of the provided fragments.
     """
     return [
-        _build_flows_from_fragment(fragment)
+        build_flows_from_fragment(fragment)
         if isinstance(fragment, Fragment)
         else _build_flows_from_fragment_loop(fragment)
         for fragment in fragments
     ]
 
 
-def _build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
+def build_flows_from_fragment(fragment: Fragment) -> FragmentFlows:
     tableau = fragment.get_tableau()
     targets = list(range(len(tableau)))
     sorted_qubit_involved_in_measurements = fragment.measurements_qubits
