@@ -115,6 +115,9 @@ def generate_circuit_from_instantiation(
     """
     # Check that the user gave enough plaquettes.
     indices = numpy.unique(plaquette_array)
+    # Remove the first 0 entry in indices if present
+    if indices[0] == 0:
+        indices = indices[1:]
     expected_plaquettes_number = len(indices)
     if (
         not isinstance(plaquettes, defaultdict)
