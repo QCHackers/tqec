@@ -1,4 +1,5 @@
-from enum import Enum, auto
+import typing as ty
+from enum import Enum
 from dataclasses import dataclass, astuple
 
 from tqec.exceptions import TQECException
@@ -98,24 +99,24 @@ class Position3D:
 class Direction3D(Enum):
     """Axis directions in the 3D spacetime diagram."""
 
-    X = auto()
-    Y = auto()
-    Z = auto()
+    X = 0
+    Y = 1
+    Z = 2
 
     @staticmethod
     def all() -> list["Direction3D"]:
         """Get all directions."""
-        return [Direction3D.X, Direction3D.Y, Direction3D.Z]
+        return [e.value for e in Direction3D]
 
     @staticmethod
-    def from_axis_index(i: int) -> "Direction3D":
+    def from_axis_index(i: ty.Literal[0, 1, 2]) -> "Direction3D":
         """Get the direction from the axis index."""
         return Direction3D.all()[i]
 
     @property
     def axis_index(self) -> int:
         """Get the axis index."""
-        return Direction3D.all().index(self)
+        return self.value
 
     def __str__(self) -> str:
         return self.name

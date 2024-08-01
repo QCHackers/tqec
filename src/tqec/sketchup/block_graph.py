@@ -24,9 +24,9 @@ from tqec.exceptions import TQECException
 class Color3D:
     """Get face colors along the x, y, and z axes."""
 
-    x: str | None
-    y: str | None
-    z: str | None
+    x: ty.Literal["x", "z"] | None
+    y: ty.Literal["x", "z"] | None
+    z: ty.Literal["x", "z"] | None
 
     def __post_init__(self) -> None:
         if any(c not in "xz" for c in astuple(self) if c is not None):
@@ -47,12 +47,9 @@ class Color3D:
         self, direction: Direction3D, color: str | None
     ) -> Color3D:
         """Set the color at the given direction."""
-        if direction == Direction3D.X:
-            return Color3D(color, self.y, self.z)
-        elif direction == Direction3D.Y:
-            return Color3D(self.x, color, self.z)
-        else:
-            return Color3D(self.x, self.y, color)
+        colors = list(astuple(self))
+        colors[direction.axis_index] = color
+        return Color3D(*colors)
 
     @staticmethod
     def from_string(s: str, flip_xz: bool = False) -> "Color3D":
@@ -110,7 +107,7 @@ class CubeType(Enum):
     def normal_direction_to_corner_plane(self) -> Direction3D:
         """If the cube is at a corner, return the normal direction to the corner plane.
 
-        Due to the color match rule at the corner turn, the cornel plane can be inferred
+        Due to the color match rule at the corner turn, the corner plane can be inferred
         from the type of the cube.
         """
         if self == CubeType.VIRTUAL:
@@ -158,7 +155,7 @@ class PipeType(Enum):
     @property
     def direction(self) -> Direction3D:
         """Return the direction of the pipe."""
-        return [Direction3D.X, Direction3D.Y, Direction3D.Z][self.value.index("o")]
+        return Direction3D.all()[self.value.index("o")]
 
     def get_color_at_side(self, src_side: bool = True) -> Color3D:
         """Get the color of the pipe at the given side."""
@@ -185,7 +182,7 @@ class PipeType(Enum):
                 pipe_color.append(c)
         if has_hadamard:
             pipe_color.append("h")
-        return ty.cast(PipeType, parse_block_type_from_str("".join(pipe_color)))
+        return PipeType("".join(pipe_color).lower())
 
     def infer_cube_type_at_side(
         self, src_side: bool = True, is_z_cube: bool = True
