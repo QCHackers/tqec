@@ -24,9 +24,10 @@ from tqec.sketchup.block_graph import (
     parse_block_type_from_str,
 )
 
-LIGHT_RGBA = (1.0, 1.0, 1.0, 1.0)
-DARK_RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1.0)
-YELLOW_RGBA = (1.0, 1.0, 0.396078431372549, 1.0)
+_RGBA = tuple[float, float, float, float]
+LIGHT_RGBA: _RGBA = (1.0, 1.0, 1.0, 1.0)
+DARK_RGBA: _RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1.0)
+YELLOW_RGBA: _RGBA = (1.0, 1.0, 0.396078431372549, 1.0)
 
 ASSET_AUTHOR = "TQEC Community"
 ASSET_AUTHORING_TOOL_TQEC = "TQEC Python Package"
@@ -277,13 +278,18 @@ def _add_face_geometry_node(
 
 
 def _load_base_collada_data() -> _BaseColladaData:
+    face_colors = {
+        FaceType.X: DARK_RGBA,
+        FaceType.Z: LIGHT_RGBA,
+        FaceType.H: YELLOW_RGBA,
+    }
     mesh = collada.Collada()
     # Add asset info
     _add_asset_info(mesh)
     # Add effects(light <--> Z, dark <--> X, yellow <--> H)
-    light_effect = _create_lambert_effect("light_effect", LIGHT_RGBA)
-    dark_effect = _create_lambert_effect("dark_effect", DARK_RGBA)
-    yellow_effect = _create_lambert_effect("yellow_effect", YELLOW_RGBA)
+    light_effect = _create_lambert_effect("light_effect", face_colors[FaceType.Z])
+    dark_effect = _create_lambert_effect("dark_effect", face_colors[FaceType.X])
+    yellow_effect = _create_lambert_effect("yellow_effect", face_colors[FaceType.H])
     mesh.effects.extend([light_effect, dark_effect, yellow_effect])
     # Add materials
     light_material = collada.material.Material(
@@ -407,11 +413,10 @@ def display_collada_model(
             // Create the scene, adding lighting for the loaded objects.
             let scene = new Scene();
             scene.background = new Color("#CBDFC6");
-            let mainLight = new DirectionalLight(0xffffff, 5);
-            mainLight.position.set(1, 1, 0);
-            let backLight = new DirectionalLight(0xffffff, 4);
-            backLight.position.set(-1, -1, 0);
-            scene.add(mainLight, backLight);
+            // Ambient light
+            const ambientLight = new AmbientLight(0xffffff, 3); 
+
+            scene.add(ambientLight);
 
             // Traverse the model to set materials to double-sided
             collada.scene.traverse(function (node) {
