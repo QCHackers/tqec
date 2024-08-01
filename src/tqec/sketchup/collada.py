@@ -407,23 +407,12 @@ def display_collada_model(
             // Create the scene, adding lighting for the loaded objects.
             let scene = new Scene();
             scene.background = new Color("#CBDFC6");
-            // Ambient light for general illumination
-            let ambientLight = new AmbientLight(0x404040, 2); // Soft white light
-            // Directional lights from different angles for comprehensive illumination
-            let directionalLight1 = new DirectionalLight(0xffffff, 3);
-            directionalLight1.position.set(1, 1, 1).normalize();
+            let mainLight = new DirectionalLight(0xffffff, 5);
+            mainLight.position.set(1, 1, 0);
+            let backLight = new DirectionalLight(0xffffff, 4);
+            backLight.position.set(-1, -1, 0);
+            scene.add(mainLight, backLight);
 
-            let directionalLight2 = new DirectionalLight(0xffffff, 3);
-            directionalLight2.position.set(-1, -1, 1).normalize();
-
-            let directionalLight3 = new DirectionalLight(0xffffff, 3);
-            directionalLight3.position.set(1, -1, -1).normalize();
-
-            let directionalLight4 = new DirectionalLight(0xffffff, 3);
-            directionalLight4.position.set(-1, 1, -1).normalize();
-
-            scene.add(ambientLight, directionalLight1, directionalLight2, directionalLight3,directionalLight4);
-            
             // Traverse the model to set materials to double-sided
             collada.scene.traverse(function (node) {
                 if (node.isMesh) {
