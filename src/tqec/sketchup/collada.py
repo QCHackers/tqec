@@ -251,12 +251,17 @@ def _add_face_geometry_node(
         return
     # Create geometry
     id_str = f"FaceID{len(geom_node_dict)}"
-    vert_src = collada.source.FloatSource(
-        id_str + "_verts", face.get_vertices(), ("X", "Y", "Z")
+    positions = collada.source.FloatSource(
+        id_str + "_positions", face.get_vertices(), ("X", "Y", "Z")
     )
-    geom = collada.geometry.Geometry(mesh, id_str, id_str, [vert_src])
+    normals = collada.source.FloatSource(
+        id_str + "_normals", face.get_normal_vectors(), ("X", "Y", "Z")
+    )
+
+    geom = collada.geometry.Geometry(mesh, id_str, id_str, [positions, normals])
     input_list = collada.source.InputList()
-    input_list.addInput(0, "VERTEX", "#" + vert_src.id)
+    input_list.addInput(0, "VERTEX", "#" + positions.id)
+    input_list.addInput(1, "NORMAL", "#" + normals.id)
     triset = geom.createTriangleSet(
         Face.get_triangle_indices(), input_list, MATERIAL_SYMBOL
     )
@@ -386,7 +391,7 @@ def display_collada_model(
         container.id = undefined;
         downloadLink.id = undefined;
 
-        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3 } from "three";
+        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3, DoubleSide } from "three";
         import { OrbitControls } from "three-orbitcontrols";
         import { ColladaLoader } from "three-collada-loader";
 
@@ -415,6 +420,12 @@ def display_collada_model(
             directionalLight4.position.set(-1, 1, -1).normalize();
 
             scene.add(ambientLight, directionalLight1, directionalLight2, directionalLight3,directionalLight4);
+            // Traverse the model to set materials to double-sided
+            collada.scene.traverse(function (node) {
+                if (node.isMesh) {
+                    node.material.side = DoubleSide;
+                }
+            });
             scene.add(collada.scene);
 
             // Point the camera at the center, far enough back to see everything.
