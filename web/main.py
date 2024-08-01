@@ -4,11 +4,35 @@ from flask import Flask, send_file, request, Response
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 @app.route("/")
 def root():
     return send_file("static/index.html")
+
+# Whenever a request matches the given URL, the fucntion is triggered.
+# The method specifies the type of requests to which this route should respond (e.g. POST only).
+# Request types:
+#   GET is used to request data from a specified source.
+#   POST is used to send data to a server to create/update a resource.
+#   PUT is used to update a current resource with new data.
+#   DELETE is used to delete a specific resource.
+# In the case below, we are sending data from the frontend to the backend.
+@app.route("/example", methods=['POST'])
+def receiveExample() -> Response:
+    _json = request.get_json()
+    print(f"Received: {_json}")
+    return Response(status=200)
+
+
+@app.route("/example", methods=['GET'])
+def sendExample(template_name: str = '2x2k') -> Response:
+    template_name = request.args.get('template_name', template_name)
+    file_path = './web/template_' + template_name + '.json'
+    with open(file_path, 'r') as file:
+        _json = json.load(file)
+    print(f"Sending: {_json}")
+    return Response(json.dumps(_json), status=200)
 
 
 if __name__ == "__main__":
