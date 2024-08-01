@@ -197,6 +197,184 @@
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_side_indices</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="p">[]))</span></div>
 </div>
 
+
+
+<div class="viewcode-block" id="QubitVerticalBorders">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitVerticalBorders">[docs]</a>
+<span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">ComposedTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_x_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_y_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Two vertical borders of an error-corrected qubit glued together.</span>
+
+<span class="sd">        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::</span>
+
+<span class="sd">            1 5</span>
+<span class="sd">            2 6</span>
+<span class="sd">            3 7</span>
+<span class="sd">            2 6</span>
+<span class="sd">            3 7</span>
+<span class="sd">            4 8</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dim: dimension of the error-corrected qubit.</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># nsone: non-scalable one</span>
+        <span class="n">nsone</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 0  3</span>
+        <span class="c1"># 1  4</span>
+        <span class="c1"># 1  4</span>
+        <span class="c1"># 1  4</span>
+        <span class="c1"># 1  4</span>
+        <span class="c1"># 2  5</span>
+        <span class="n">_templates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">AlternatingRectangleTemplate</span><span class="p">(</span><span class="n">nsone</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">4</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">AlternatingRectangleTemplate</span><span class="p">(</span><span class="n">nsone</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">8</span><span class="p">]),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_side_indices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_relations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">_templates</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+            <span class="n">default_x_increment</span><span class="o">=</span><span class="n">default_x_increment</span><span class="p">,</span>
+            <span class="n">default_y_increment</span><span class="o">=</span><span class="n">default_y_increment</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">_relations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QubitVerticalBorders.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitVerticalBorders.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="QubitVerticalBorders.get_plaquette_indices_on_sides">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitVerticalBorders.get_plaquette_indices_on_sides">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_side_indices</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="p">[]))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="QubitHorizontalBorders">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitHorizontalBorders">[docs]</a>
+<span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">ComposedTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_x_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">default_y_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Two horizontal borders of an error-corrected qubit glued together.</span>
+
+<span class="sd">        The below text represents this template for an input ``dimension = FixedDimension(4)`` ::</span>
+
+<span class="sd">            1 2 3 2 3 4</span>
+<span class="sd">            5 6 7 6 7 8</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dim: dimension of the error-corrected qubit.</span>
+<span class="sd">            k: initial value for the scaling parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># nsone: non-scalable one</span>
+        <span class="n">nsone</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 0 1 1 1 1 2</span>
+        <span class="c1"># 3 4 4 4 4 5</span>
+        <span class="n">_templates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">AlternatingRectangleTemplate</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">nsone</span><span class="p">),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">4</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">AlternatingRectangleTemplate</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">nsone</span><span class="p">),</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]),</span>
+            <span class="n">TemplateWithIndices</span><span class="p">(</span><span class="n">RawRectangleTemplate</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="mi">8</span><span class="p">]),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_side_indices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span> <span class="n">_templates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_relations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">BELOW_OF</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">RIGHT_OF</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">_templates</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+            <span class="n">default_x_increment</span><span class="o">=</span><span class="n">default_x_increment</span><span class="p">,</span>
+            <span class="n">default_y_increment</span><span class="o">=</span><span class="n">default_y_increment</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">_relations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_relation</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">relpos</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QubitHorizontalBorders.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitHorizontalBorders.get_midline_plaquettes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="QubitHorizontalBorders.get_plaquette_indices_on_sides">
+<a class="viewcode-back" href="../../../../source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitHorizontalBorders.get_plaquette_indices_on_sides">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_side_indices</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="p">[]))</span></div>
+</div>
+
 </pre></div>
 
            </div>
