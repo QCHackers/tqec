@@ -109,8 +109,10 @@ class Direction3D(Enum):
         return [e for e in Direction3D]
 
     @staticmethod
-    def from_axis_index(i: ty.Literal[0, 1, 2]) -> "Direction3D":
+    def from_axis_index(i: int) -> "Direction3D":
         """Get the direction from the axis index."""
+        if i not in [d.value for d in Direction3D]:
+            raise TQECException(f"Invalid axis index: {i}")
         return Direction3D.all()[i]
 
     @property

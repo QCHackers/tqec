@@ -20,32 +20,47 @@ from tqec.sketchup.zx_graph import (
 from tqec.exceptions import TQECException
 
 
+class Colour(Enum):
+    X = "x"
+    Z = "z"
+    NULL = "o"
+
+    @property
+    def is_null(self) -> bool:
+        """Check if the color is null."""
+        return self == Colour.NULL
+
+
 @dataclass(frozen=True)
 class Color3D:
     """Get face colors along the x, y, and z axes."""
 
-    x: ty.Literal["x", "z"] | None
-    y: ty.Literal["x", "z"] | None
-    z: ty.Literal["x", "z"] | None
+    x: Colour
+    y: Colour
+    z: Colour
 
-    def __post_init__(self) -> None:
-        if any(c not in "xz" for c in astuple(self) if c is not None):
-            raise TQECException("Color must be 'x' or 'z'.")
+    @staticmethod
+    def null() -> "Color3D":
+        """Get the null color."""
+        return Color3D(Colour.NULL, Colour.NULL, Colour.NULL)
+
+    @property
+    def is_null(self) -> bool:
+        """Check if the color is null."""
+        return self == Color3D.null()
 
     def match(self, other: Color3D) -> bool:
         """Check whether the color matches the other color."""
         return all(
-            c1 is None or c2 is None or c1 == c2
+            c1.is_null or c2.is_null or c1 == c2
             for c1, c2 in zip(astuple(self), astuple(other))
         )
 
     def pop_color_at_direction(self, direction: Direction3D) -> Color3D:
         """Replace the color at the given direction with None."""
-        return self.push_color_at_direction(direction, None)
+        return self.push_color_at_direction(direction, Colour.NULL)
 
-    def push_color_at_direction(
-        self, direction: Direction3D, color: str | None
-    ) -> Color3D:
+    def push_color_at_direction(self, direction: Direction3D, color: Colour) -> Color3D:
         """Set the color at the given direction."""
         colors = list(astuple(self))
         colors[direction.axis_index] = color
@@ -55,19 +70,19 @@ class Color3D:
     def from_string(s: str, flip_xz: bool = False) -> "Color3D":
         s = s.lower()
         if s == "virtual":
-            return Color3D(None, None, None)
+            return Color3D.null()
         if len(s) != 3 or any(c not in "xzo" for c in s):
             raise TQECException(
                 "s must be a 3-character string containing only 'x', 'z', and 'o'."
             )
-        colors: list[str | None] = []
+        colors: list[Colour] = []
         for c in s:
             if c == "o":
-                colors.append(None)
+                colors.append(Colour.NULL)
             elif flip_xz:
-                colors.append("z" if c == "x" else "x")
+                colors.append(Colour.Z if c == "x" else Colour.X)
             else:
-                colors.append(c)
+                colors.append(Colour(c))
         return Color3D(*colors)
 
 
@@ -98,11 +113,14 @@ class CubeType(Enum):
     @staticmethod
     def from_color(color: Color3D) -> "CubeType":
         """Get the cube type from the color."""
-        if color == Color3D(None, None, None):
+        if color.is_null:
             return CubeType.VIRTUAL
-        if any(c is None for c in astuple(color)):
+        if any(c.is_null for c in astuple(color)):
             raise TQECException("All the color must be defined for a non-virtual cube.")
-        return ty.cast(CubeType, parse_block_type_from_str("".join(astuple(color))))
+        return ty.cast(
+            CubeType,
+            parse_block_type_from_str("".join(c.value for c in astuple(color))),
+        )
 
     def normal_direction_to_corner_plane(self) -> Direction3D:
         """If the cube is at a corner, return the normal direction to the corner plane.
@@ -168,18 +186,18 @@ class PipeType(Enum):
         color: Color3D, src_side: bool = True, has_hadamard: bool = False
     ) -> "PipeType":
         """Get the pipe type from the color at one side."""
-        if not sum(c is None for c in astuple(color)) == 1:
+        if not sum(c.is_null for c in astuple(color)) == 1:
             raise TQECException(
                 "Exactly one color must be undefined for a pipe along the pipe direction."
             )
         pipe_color = []
         for c in astuple(color):
-            if c is None:
+            if c.is_null:
                 pipe_color.append("o")
             elif has_hadamard and not src_side:
-                pipe_color.append("x" if c == "z" else "z")
+                pipe_color.append("x" if c == Colour.Z else "z")
             else:
-                pipe_color.append(c)
+                pipe_color.append(c.value)
         if has_hadamard:
             pipe_color.append("h")
         return PipeType("".join(pipe_color).lower())
@@ -189,7 +207,7 @@ class PipeType(Enum):
     ) -> CubeType:
         """Infer the cube type at the side of the pipe."""
         color = self.get_color_at_side(src_side).push_color_at_direction(
-            self.direction, "z" if is_z_cube else "x"
+            self.direction, Colour.Z if is_z_cube else Colour.X
         )
         return CubeType.from_color(color)
 
