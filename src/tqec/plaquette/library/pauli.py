@@ -42,8 +42,6 @@ def _make_pauli_syndrome_measurement_circuit(
     data_qubits: list[PlaquetteQubit],
     pauli_string: str,
     reset_syndrome_qubit: bool = True,
-    reset_basis: ResetBasis = ResetBasis.Z,
-    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
 ) -> cirq.Circuit:
     """Build and return a quantum circuit measuring the provided Pauli syndrome.
 
@@ -65,9 +63,6 @@ def _make_pauli_syndrome_measurement_circuit(
             there are qubits in `data_qubits`.
         reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the
             beginning of the circuit if True.
-        reset_basis: Pauli basis used to reset the syndrome qubit if
-            `reset_syndrome_qubit` is True.
-        measurement_basis: Pauli basis used to measure the syndrome qubits.
 
     Returns:
         a cirq.Circuit instance measuring the provided Pauli string on the
@@ -88,7 +83,7 @@ def _make_pauli_syndrome_measurement_circuit(
 
     circuit = cirq.Circuit()
     if reset_syndrome_qubit:
-        circuit.append(cirq.Moment(reset_basis(sq)))
+        circuit.append(cirq.Moment(cirq.R(sq).with_tags(Plaquette._MERGEABLE_TAG)))
 
     is_in_X_basis: bool = False
     for i, pauli in enumerate(pauli_string.lower()):
@@ -108,7 +103,7 @@ def _make_pauli_syndrome_measurement_circuit(
     if is_in_X_basis:
         circuit.append(cirq.Moment(cirq.H(sq)))
 
-    circuit.append(cirq.Moment(measurement_basis(sq)))
+    circuit.append(cirq.Moment(cirq.M(sq).with_tags(Plaquette._MERGEABLE_TAG)))
     return circuit
 
 
