@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from tqec.plaquette.enums import PlaquetteOrientation
-from tqec.plaquette.library.pauli import pauli_memory_plaquette
+from tqec.plaquette.library.pauli import ResetBasis, pauli_memory_plaquette
 from tqec.plaquette.library.utils.schedule import cnot_pauli_schedule
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import (
@@ -13,6 +13,7 @@ from tqec.plaquette.qubit import (
 def xx_initialisation_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int] | None = None,
+    data_qubit_reset_basis: ResetBasis = ResetBasis.Z,
 ) -> Plaquette:
     """R - H - CX - CX - H - M"""
     if schedule is None:
@@ -22,12 +23,13 @@ def xx_initialisation_plaquette(
         RoundedPlaquetteQubits(orientation),
         "XX",
         schedule,
-        include_initial_data_resets=True,
+        data_qubit_reset_basis=data_qubit_reset_basis,
     )
 
 
 def xxxx_initialisation_plaquette(
     schedule: list[int] | None = None,
+    data_qubit_reset_basis: ResetBasis = ResetBasis.Z,
 ) -> Plaquette:
     """R - H - CX - CX - CX - CX - H - M"""
     if schedule is None:
@@ -37,13 +39,14 @@ def xxxx_initialisation_plaquette(
         SquarePlaquetteQubits(),
         "XXXX",
         schedule,
-        include_initial_data_resets=True,
+        data_qubit_reset_basis=data_qubit_reset_basis,
     )
 
 
 def zz_initialisation_plaquette(
     orientation: PlaquetteOrientation,
     schedule: list[int] | None = None,
+    data_qubit_reset_basis: ResetBasis = ResetBasis.Z,
 ) -> Plaquette:
     """R - CX - CX - M"""
     if schedule is None:
@@ -53,12 +56,13 @@ def zz_initialisation_plaquette(
         RoundedPlaquetteQubits(orientation),
         "ZZ",
         schedule,
-        include_initial_data_resets=True,
+        data_qubit_reset_basis=data_qubit_reset_basis,
     )
 
 
 def zzzz_initialisation_plaquette(
     schedule: list[int] | None = None,
+    data_qubit_reset_basis: ResetBasis = ResetBasis.Z,
 ) -> Plaquette:
     """R - CX - CX - CX - CX - M"""
     if schedule is None:
@@ -68,5 +72,5 @@ def zzzz_initialisation_plaquette(
         SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3]),
         "ZZZZ",
         schedule,
-        include_initial_data_resets=True,
+        data_qubit_reset_basis=data_qubit_reset_basis,
     )

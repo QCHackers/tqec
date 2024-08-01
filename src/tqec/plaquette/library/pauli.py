@@ -48,21 +48,21 @@ def _make_pauli_syndrome_measurement_circuit(
     """Build and return a quantum circuit measuring the provided Pauli syndrome.
 
     This function builds a quantum circuit measuring the Pauli observable
-    provided in ``pauli_string`` on the provided ``data_qubits``, using
-    ``syndrome_qubit`` as an ancilla.
+    provided in `pauli_string` on the provided `data_qubits`, using
+    `syndrome_qubit` as an ancilla.
 
     Args:
-        syndrome_qubit: the ``PlaquetteQubit`` instance used to measure the
+        syndrome_qubit: the `PlaquetteQubit` instance used to measure the
             syndrome. Will be reset at the beginning of the returned circuit
-            if ``reset_syndrome_qubit`` is ``True``.
+            if `reset_syndrome_qubit` is `True`.
         data_qubits: the qubits we should measure the Pauli observable on.
-            There should be as many ``PlaquetteQubit`` instances in
-            ``data_qubits`` as there are Pauli characters in the provided
-            ``pauli_string``.
+            There should be as many `PlaquetteQubit` instances in
+            `data_qubits` as there are Pauli characters in the provided
+            `pauli_string`.
         pauli_string: a string of case-independent characters, each
             representing a Pauli matrix. Each charater should be present in
             _SUPPORTED_PAULI and the string should have as many characters as
-            there are qubits in ``data_qubits``.
+            there are qubits in `data_qubits`.
         reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the
             beginning of the circuit if True.
         reset_basis: Pauli basis used to reset the syndrome qubit if
@@ -74,8 +74,8 @@ def _make_pauli_syndrome_measurement_circuit(
         provided syndrome_qubit.
 
     Raises:
-        TQECException: if ``len(pauli_string) != len(data_qubits)`` or
-            if ``any(p not in _SUPPORTED_PAULI for p in pauli_string)``.
+        TQECException: if `len(pauli_string) != len(data_qubits)` or
+            if `any(p not in _SUPPORTED_PAULI for p in pauli_string)`.
     """
     if len(pauli_string) != len(data_qubits):
         raise TQECException(
@@ -116,11 +116,47 @@ def pauli_memory_plaquette(
     qubits: PlaquetteQubits,
     pauli_string: str,
     schedule: list[int],
-    reset_basis: ResetBasis = ResetBasis.Z,
-    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
-    include_initial_data_resets: bool = False,
-    include_final_data_measurements: bool = False,
+    data_qubit_reset_basis: ResetBasis | None = None,
+    data_qubit_measurement_basis: MeasurementBasis | None = None,
 ) -> Plaquette:
+    """Generic function to create a :class:`Plaquette` instance measuring a given
+    Pauli string.
+
+    Warning:
+        This function cannot change the order in which data qubits, Pauli "chars" (one
+        caracter of the provided Pauli string) and schedule are provided. That means
+        that it cannot group X and Z basis measurements.
+        In practice, an input Pauli string "XZXZXZ" will lead to 3 pairs of Hadamard
+        gates being included to measure the 3 X Pauli strings. The `schedule` provided
+        by the user **have to take that into account** and schedule gates accordingly.
+
+        For that reason, this function should be considered semi-public. You can use
+        it, but take extra care if you do so.
+
+        As a safeguard, this function will end up raising an error if the provided
+        schedule is clearly incorrect (not in ascending order, missing entries, ...).
+
+    Args:
+        qubits: qubits on which the provided Pauli string will be measured. Includes
+            the syndrome(s) qubit(s).
+        pauli_string: the Pauli string to measure on data qubit(s).
+        schedule: scheduling of each time slice of the resulting circuit.
+        data_qubit_reset_basis: if `None`, data qubits are not touched before measuring
+            the provided Pauli operator. Else, data qubits are reset in the provided basis
+            at the same time slice as the syndrome qubit (the first). Defaults to None.
+        data_qubit_measurement_basis: if `None`, data qubits are not touched after
+            measuring the provided Pauli operator. Else, data qubits are measured in the
+            provided basis at the same time slice as the syndrome qubit (the last).
+            Defaults to None.
+
+    Raises:
+        TQECException: if the number of data qubits and the length of the provided
+            Pauli string are not exactly equal.
+        TQECException: if the provided schedule is incorrect.
+
+    Returns:
+        a `Plaquette` instance measuring the provided Pauli string.
+    """
     (syndrome_qubit,) = qubits.get_syndrome_qubits()
     data_qubits = qubits.get_data_qubits()
 
@@ -135,9 +171,11 @@ def pauli_memory_plaquette(
         syndrome_qubit, data_qubits, pauli_string
     )
 
-    if include_initial_data_resets:
-        circuit[0] += [reset_basis(q) for q in qubits.get_data_qubits_cirq()]
-    if include_final_data_measurements:
-        circuit[-1] += [measurement_basis(q) for q in qubits.get_data_qubits_cirq()]
+    if data_qubit_reset_basis is not None:
+        circuit[0] += [data_qubit_reset_basis(q) for q in qubits.get_data_qubits_cirq()]
+    if data_qubit_measurement_basis is not None:
+        circuit[-1] += [
+            data_qubit_measurement_basis(q) for q in qubits.get_data_qubits_cirq()
+        ]
 
     return Plaquette(qubits, ScheduledCircuit(circuit, schedule))
