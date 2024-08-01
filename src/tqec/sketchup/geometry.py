@@ -187,6 +187,7 @@ def _create_h_pipe_geometries() -> Geometry:
                 w3,
                 h3,
                 normal_direction,
+                False,
                 face3_translation,
             )
             faces.extend([face1, face2, face3])

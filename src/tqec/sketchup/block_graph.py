@@ -538,11 +538,14 @@ class BlockGraph:
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
-    def display(self) -> None:
+    def display(self, wirte_html_filepath: str | pathlib.Path | None = None) -> None:
         """Display the block graph in 3D."""
         from tqec.sketchup.collada import write_block_graph_to_dae_file
         from tqec.sketchup.collada import display_collada_model
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(self, bytes_buffer)
-        display_collada_model(collada_bytes=bytes_buffer.getvalue())
+        display_collada_model(
+            collada_bytes=bytes_buffer.getvalue(),
+            write_html_filepath=wirte_html_filepath,
+        )

@@ -340,7 +340,9 @@ class Transformation:
 
 
 def display_collada_model(
-    filepath: str | pathlib.Path | None = None, collada_bytes: bytes | None = None
+    filepath: str | pathlib.Path | None = None,
+    collada_bytes: bytes | None = None,
+    write_html_filepath: str | pathlib.Path | None = None,
 ) -> None:
     """Display a 3D model from a Collada DAE file in IPython compatible environments.
 
@@ -349,6 +351,7 @@ def display_collada_model(
     Args:
         filepath: The input dae file path. If None, collada_bytes must be provided.
         collada_bytes: The input collada file bytes. If None, filepath must be provided.
+        write_html_filepath: The output html file path to write the generated html content.
     """
     from IPython.display import display, HTML
 
@@ -391,7 +394,7 @@ def display_collada_model(
         container.id = undefined;
         downloadLink.id = undefined;
 
-        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3, DoubleSide } from "three";
+        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3, DoubleSide, AxesHelper } from "three";
         import { OrbitControls } from "three-orbitcontrols";
         import { ColladaLoader } from "three-collada-loader";
 
@@ -420,6 +423,7 @@ def display_collada_model(
             directionalLight4.position.set(-1, 1, -1).normalize();
 
             scene.add(ambientLight, directionalLight1, directionalLight2, directionalLight3,directionalLight4);
+            
             // Traverse the model to set materials to double-sided
             collada.scene.traverse(function (node) {
                 if (node.isMesh) {
@@ -488,6 +492,11 @@ def display_collada_model(
             }
             setCameraDistance(maxDistance);
 
+            // Add axes helper to the scene
+            let axesHelper = new AxesHelper(2);
+            axesHelper.rotation.x = -Math.PI / 2; // Rotate the axes to align with the model's Z-up orientation
+            scene.add(axesHelper);
+
             // Set up rendering.
             let renderer = new WebGLRenderer({ antialias: true });
             container.textContent = "";
@@ -523,7 +532,10 @@ def display_collada_model(
     collada_base64 = base64.b64encode(ty.cast(bytes, collada_bytes)).decode("utf-8")
 
     html_str = html_template.replace(r"{{MODEL_BASE64_PLACEHOLDER}}", collada_base64)
+    if write_html_filepath is not None:
+        with open(write_html_filepath, "w") as file:
+            file.write(html_str)
+
     framed = f"""<iframe style="width: 100%; height: 300px; overflow: hidden; resize: both; border: 1px dashed gray;" frameBorder="0" srcdoc="{html.escape(html_str, quote=True)}"></iframe>
     """
-
     display(HTML(framed))  # type: ignore[no-untyped-call]
