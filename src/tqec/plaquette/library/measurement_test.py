@@ -15,7 +15,7 @@ def _untag(op: cirq.Operation) -> cirq.Operation:
     return op.untagged
 
 
-def test_xx_measurement_plaquette():
+def test_xx_measurement_plaquette() -> None:
     for measurement_basis in MeasurementBasis:
         plaquette = xx_measurement_plaquette(
             PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
@@ -35,7 +35,7 @@ def test_xx_measurement_plaquette():
         ).map_operations(_untag)
 
 
-def test_zz_measurement_plaquette():
+def test_zz_measurement_plaquette() -> None:
     for measurement_basis in MeasurementBasis:
         plaquette = zz_measurement_plaquette(
             PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
@@ -53,7 +53,7 @@ def test_zz_measurement_plaquette():
         ).map_operations(_untag)
 
 
-def test_xxxx_measurement_plaquette():
+def test_xxxx_measurement_plaquette() -> None:
     for measurement_basis in MeasurementBasis:
         plaquette = xxxx_measurement_plaquette(
             data_qubit_measurement_basis=measurement_basis
@@ -81,7 +81,7 @@ def test_xxxx_measurement_plaquette():
         ).map_operations(_untag)
 
 
-def test_zzzz_measurement_plaquette():
+def test_zzzz_measurement_plaquette() -> None:
     for measurement_basis in MeasurementBasis:
         plaquette = zzzz_measurement_plaquette(
             data_qubit_measurement_basis=measurement_basis

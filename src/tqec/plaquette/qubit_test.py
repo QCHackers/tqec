@@ -54,10 +54,15 @@ def test_square_plaquette_qubits() -> None:
 
     before_permutation = deepcopy(qubits.data_qubits)
     permutation = [0, 2, 1, 3]
-    qubits = qubits.permute_data_qubits([0, 2, 1, 3])
-    assert set(qubits.data_qubits) == {top_left, top_right, bot_left, bot_right}
-    assert qubits.data_qubits == [before_permutation[i] for i in permutation]
-    assert set(qubits.syndrome_qubits) == {center}
+    permuted_qubits = qubits.permute_data_qubits([0, 2, 1, 3])
+    assert set(permuted_qubits.data_qubits) == {
+        top_left,
+        top_right,
+        bot_left,
+        bot_right,
+    }
+    assert permuted_qubits.data_qubits == [before_permutation[i] for i in permutation]
+    assert set(permuted_qubits.syndrome_qubits) == {center}
 
     with pytest.raises(IndexError):
         qubits.permute_data_qubits([1, 2, 3, 4])

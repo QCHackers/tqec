@@ -15,7 +15,7 @@ def _untag(op: cirq.Operation) -> cirq.Operation:
     return op.untagged
 
 
-def test_xx_initialisation_plaquette():
+def test_xx_initialisation_plaquette() -> None:
     for reset_basis in ResetBasis:
         plaquette = xx_initialisation_plaquette(
             PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
@@ -35,7 +35,7 @@ def test_xx_initialisation_plaquette():
         ).map_operations(_untag)
 
 
-def test_zz_initialisation_plaquette():
+def test_zz_initialisation_plaquette() -> None:
     for reset_basis in ResetBasis:
         plaquette = zz_initialisation_plaquette(
             PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
@@ -53,7 +53,7 @@ def test_zz_initialisation_plaquette():
         ).map_operations(_untag)
 
 
-def test_xxxx_initialisation_plaquette():
+def test_xxxx_initialisation_plaquette() -> None:
     for reset_basis in ResetBasis:
         plaquette = xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis)
         assert plaquette.qubits == SquarePlaquetteQubits()
@@ -79,7 +79,7 @@ def test_xxxx_initialisation_plaquette():
         ).map_operations(_untag)
 
 
-def test_zzzz_initialisation_plaquette():
+def test_zzzz_initialisation_plaquette() -> None:
     for reset_basis in ResetBasis:
         plaquette = zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis)
         assert plaquette.qubits == SquarePlaquetteQubits().permute_data_qubits(

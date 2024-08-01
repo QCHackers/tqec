@@ -10,7 +10,7 @@ from tqec.plaquette.library.memory import (
 from tqec.plaquette.qubit import RoundedPlaquetteQubits, SquarePlaquetteQubits
 
 
-def test_xx_memory_plaquette():
+def test_xx_memory_plaquette() -> None:
     plaquette = xx_memory_plaquette(PlaquetteOrientation.UP)
     assert plaquette.qubits == RoundedPlaquetteQubits(PlaquetteOrientation.UP)
     (sq,) = plaquette.qubits.get_syndrome_qubits_cirq()
@@ -27,7 +27,7 @@ def test_xx_memory_plaquette():
     )
 
 
-def test_zz_memory_plaquette():
+def test_zz_memory_plaquette() -> None:
     plaquette = zz_memory_plaquette(PlaquetteOrientation.UP)
     assert plaquette.qubits == RoundedPlaquetteQubits(PlaquetteOrientation.UP)
     (sq,) = plaquette.qubits.get_syndrome_qubits_cirq()
@@ -42,7 +42,7 @@ def test_zz_memory_plaquette():
     )
 
 
-def test_xxxx_memory_plaquette():
+def test_xxxx_memory_plaquette() -> None:
     plaquette = xxxx_memory_plaquette()
     assert plaquette.qubits == SquarePlaquetteQubits()
     (sq,) = plaquette.qubits.get_syndrome_qubits_cirq()
@@ -61,7 +61,7 @@ def test_xxxx_memory_plaquette():
     )
 
 
-def test_zzzz_memory_plaquette():
+def test_zzzz_memory_plaquette() -> None:
     plaquette = zzzz_memory_plaquette()
     assert plaquette.qubits == SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3])
     (sq,) = plaquette.qubits.get_syndrome_qubits_cirq()

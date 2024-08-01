@@ -5,7 +5,7 @@ from tqec.plaquette.library.empty import empty_rounded_plaquette, empty_square_p
 from tqec.plaquette.qubit import RoundedPlaquetteQubits, SquarePlaquetteQubits
 
 
-def test_empty_plaquettes():
+def test_empty_plaquettes() -> None:
     empty_square = empty_square_plaquette()
     assert empty_square.qubits == SquarePlaquetteQubits()
     assert empty_square.circuit.schedule == []
