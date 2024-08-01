@@ -1,3 +1,4 @@
+import typing
 from collections import defaultdict
 
 from tqec.block.block import (
@@ -26,18 +27,32 @@ from tqec.plaquette.library.memory import (
     zz_memory_plaquette,
     zzzz_memory_plaquette,
 )
+from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
 from tqec.templates.scale import LinearFunction
 
 
-def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+def _zxB_block(
+    dimension: LinearFunction, basis: typing.Literal["X", "Z"]
+) -> StandardComputationBlock:
+    reset_basis: ResetBasis = getattr(ResetBasis, basis)
+    measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
+
     initial_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: xx_initialisation_plaquette(PlaquetteOrientation.UP),
-        7: zz_initialisation_plaquette(PlaquetteOrientation.LEFT),
-        9: xxxx_initialisation_plaquette(),
-        10: zzzz_initialisation_plaquette(),
-        12: zz_initialisation_plaquette(PlaquetteOrientation.RIGHT),
-        13: xx_initialisation_plaquette(PlaquetteOrientation.DOWN),
+        6: xx_initialisation_plaquette(
+            PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
+        ),
+        7: zz_initialisation_plaquette(
+            PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
+        ),
+        9: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+        10: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+        12: zz_initialisation_plaquette(
+            PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
+        ),
+        13: xx_initialisation_plaquette(
+            PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
+        ),
     }
     repeating_plaquettes = RepeatedPlaquettes(
         defaultdict(empty_square_plaquette)
@@ -52,12 +67,20 @@ def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
         dimension,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: xx_measurement_plaquette(PlaquetteOrientation.UP),
-        7: zz_measurement_plaquette(PlaquetteOrientation.LEFT),
-        9: xxxx_measurement_plaquette(),
-        10: zzzz_measurement_plaquette(),
-        12: zz_measurement_plaquette(PlaquetteOrientation.RIGHT),
-        13: xx_measurement_plaquette(PlaquetteOrientation.DOWN),
+        6: xx_measurement_plaquette(
+            PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
+        ),
+        7: zz_measurement_plaquette(
+            PlaquetteOrientation.LEFT, data_qubit_measurement_basis=measurement_basis
+        ),
+        9: xxxx_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
+        10: zzzz_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
+        12: zz_measurement_plaquette(
+            PlaquetteOrientation.RIGHT, data_qubit_measurement_basis=measurement_basis
+        ),
+        13: xx_measurement_plaquette(
+            PlaquetteOrientation.DOWN, data_qubit_measurement_basis=measurement_basis
+        ),
     }
     return StandardComputationBlock(
         DenseQubitSquareTemplate(dimension),
@@ -67,14 +90,27 @@ def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
     )
 
 
-def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
+def _xzB_block(
+    dimension: LinearFunction, basis: typing.Literal["X", "Z"]
+) -> StandardComputationBlock:
+    reset_basis: ResetBasis = getattr(ResetBasis, basis)
+    measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
+
     initial_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: zz_initialisation_plaquette(PlaquetteOrientation.UP),
-        7: xx_initialisation_plaquette(PlaquetteOrientation.LEFT),
-        9: zzzz_initialisation_plaquette(),
-        10: xxxx_initialisation_plaquette(),
-        12: xx_initialisation_plaquette(PlaquetteOrientation.RIGHT),
-        13: zz_initialisation_plaquette(PlaquetteOrientation.DOWN),
+        6: zz_initialisation_plaquette(
+            PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
+        ),
+        7: xx_initialisation_plaquette(
+            PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
+        ),
+        9: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+        10: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+        12: xx_initialisation_plaquette(
+            PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
+        ),
+        13: zz_initialisation_plaquette(
+            PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
+        ),
     }
     repeating_plaquettes = RepeatedPlaquettes(
         defaultdict(empty_square_plaquette)
@@ -89,12 +125,20 @@ def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
         dimension,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: zz_measurement_plaquette(PlaquetteOrientation.UP),
-        7: xx_measurement_plaquette(PlaquetteOrientation.LEFT),
-        9: zzzz_measurement_plaquette(),
-        10: xxxx_measurement_plaquette(),
-        12: xx_measurement_plaquette(PlaquetteOrientation.RIGHT),
-        13: zz_measurement_plaquette(PlaquetteOrientation.DOWN),
+        6: zz_measurement_plaquette(
+            PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
+        ),
+        7: xx_measurement_plaquette(
+            PlaquetteOrientation.LEFT, data_qubit_measurement_basis=measurement_basis
+        ),
+        9: zzzz_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
+        10: xxxx_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
+        12: xx_measurement_plaquette(
+            PlaquetteOrientation.RIGHT, data_qubit_measurement_basis=measurement_basis
+        ),
+        13: zz_measurement_plaquette(
+            PlaquetteOrientation.DOWN, data_qubit_measurement_basis=measurement_basis
+        ),
     }
     return StandardComputationBlock(
         DenseQubitSquareTemplate(dimension),
@@ -104,12 +148,20 @@ def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
     )
 
 
+def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+    return _zxB_block(dimension, "Z")
+
+
+def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
+    return _xzB_block(dimension, "Z")
+
+
 def zxx_block(dimension: LinearFunction) -> StandardComputationBlock:
-    raise TQECException("'zxx' block is not implemented yet.")
+    return _zxB_block(dimension, "X")
 
 
 def xzx_block(dimension: LinearFunction) -> StandardComputationBlock:
-    raise TQECException("'xzx' block is not implemented yet.")
+    return _xzB_block(dimension, "X")
 
 
 def zzx_block(dimension: LinearFunction) -> StandardComputationBlock:
