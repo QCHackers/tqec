@@ -106,7 +106,7 @@ class Direction3D(Enum):
     @staticmethod
     def all() -> list["Direction3D"]:
         """Get all directions."""
-        return [e.value for e in Direction3D]
+        return [e for e in Direction3D]
 
     @staticmethod
     def from_axis_index(i: ty.Literal[0, 1, 2]) -> "Direction3D":
