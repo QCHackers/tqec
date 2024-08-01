@@ -406,7 +406,7 @@ def display_collada_model(
 
             // Create the scene, adding lighting for the loaded objects.
             let scene = new Scene();
-            scene.background = new Color("gray");
+            scene.background = new Color("#CBDFC6");
             // Ambient light for general illumination
             let ambientLight = new AmbientLight(0x404040, 2); // Soft white light
             // Directional lights from different angles for comprehensive illumination
