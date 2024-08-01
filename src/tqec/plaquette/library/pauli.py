@@ -119,23 +119,19 @@ def _default_name(
     qubits: PlaquetteQubits,
     pauli_string: str,
     schedule: list[int],
-    reset_basis: ResetBasis = ResetBasis.Z,
-    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
-    include_initial_data_resets: bool = False,
-    include_final_data_measurements: bool = False,
+    data_qubit_reset_basis: ResetBasis | None = None,
+    data_qubit_measurement_basis: MeasurementBasis | None = None,
 ) -> str:
     parts = [
         "pauli",
         pauli_string.lower(),
         "-".join(q.to_concise_str() for q in qubits),
         "-".join(map(str, schedule)),
-        str(reset_basis),
-        str(measurement_basis),
+        str(data_qubit_reset_basis) if data_qubit_reset_basis is not None else "noR",
+        str(data_qubit_measurement_basis)
+        if data_qubit_measurement_basis is not None
+        else "noM",
     ]
-    if include_initial_data_resets:
-        parts.append("R(data)")
-    if include_final_data_measurements:
-        parts.append("M(data)")
     return "_".join(parts)
 
 
@@ -145,6 +141,7 @@ def pauli_memory_plaquette(
     schedule: list[int],
     data_qubit_reset_basis: ResetBasis | None = None,
     data_qubit_measurement_basis: MeasurementBasis | None = None,
+    name: str | None = None,
 ) -> Plaquette:
     """Generic function to create a :class:`Plaquette` instance measuring a given
     Pauli string.
@@ -184,6 +181,14 @@ def pauli_memory_plaquette(
     Returns:
         a `Plaquette` instance measuring the provided Pauli string.
     """
+    if name is None:
+        name = _default_name(
+            qubits,
+            pauli_string,
+            schedule,
+            data_qubit_reset_basis,
+            data_qubit_measurement_basis,
+        )
     (syndrome_qubit,) = qubits.get_syndrome_qubits()
     data_qubits = qubits.get_data_qubits()
 
