@@ -237,7 +237,7 @@ class StandardComputationBlock(ComputationBlock):
         self, boundary: BlockDimension
     ) -> StandardComputationBlock:
         # Handle the time dimension as an edge case.
-        if boundary == BlockDimension.T:
+        if boundary == BlockDimension.Z:
             return StandardComputationBlock(
                 self.template, self.plaquettes.without_time_boundaries()
             )
