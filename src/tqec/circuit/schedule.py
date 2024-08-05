@@ -381,14 +381,23 @@ class ScheduledCircuit:
             insertion_index = bisect.bisect_left(self._schedule, schedule)
             self._schedule.insert(insertion_index, schedule)
             self._raw_circuit.insert(insertion_index, moment)
+            self._number_of_non_virtual_moments += ScheduledCircuit._is_virtual_moment(
+                moment
+            )
         else:
             # Else, the schedule already exists, in which case we just need to add the
             # operations to an existing moment. Note that this might fail if two
             # operations overlap.
             try:
+                was_virtual_moment = ScheduledCircuit._is_virtual_moment(
+                    self._raw_circuit[schedule_index]
+                )
                 self._raw_circuit[schedule_index] += moment
+                is_virtual_moment = ScheduledCircuit._is_virtual_moment(
+                    self._raw_circuit[schedule_index]
+                )
                 self._number_of_non_virtual_moments += (
-                    ScheduledCircuit._is_virtual_moment(moment)
+                    not was_virtual_moment and is_virtual_moment
                 )
             except ValueError as e:
                 raise TQECException(
