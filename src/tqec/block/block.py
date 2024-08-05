@@ -157,8 +157,8 @@ class StandardComputationBlock(ComputationBlock):
     3. a final layer.
 
     If the repeated layer is absent (i.e., it is `None`), then the block is a
-    connector (the longer rectangular blocks in 3-dimensional SketchUp drawings).
-    If the repeated layer is defined, then the block is "regular" (e.g., doing
+    connector (a `Pipe`).
+    If the repeated layer is defined, then the block is a `Cube` (e.g., doing
     memory for n rounds).
 
     Raises:
