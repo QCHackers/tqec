@@ -37,7 +37,7 @@ class ComputationBlock(ABC):
 
     @property
     @abstractmethod
-    def needed_time(self) -> int:
+    def depth(self) -> int:
         """Return the number of timesteps (`cirq.Moment`) needed by the block."""
         pass
 
@@ -225,7 +225,7 @@ class StandardComputationBlock(ComputationBlock):
 
     @property
     @override
-    def needed_time(self) -> int:
+    def depth(self) -> int:
         time = _number_of_moments_needed(self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
             repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
