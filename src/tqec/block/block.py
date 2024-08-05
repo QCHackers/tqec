@@ -82,8 +82,6 @@ def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
             and plaquettes.default_factory is not None
         ):
             all_plaquettes = list(all_plaquettes) + [plaquettes.default_factory()]
-    else:
-        raise TQECException(f"Unexpected plaquettes type: {type(plaquettes)}")
     return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
 
 

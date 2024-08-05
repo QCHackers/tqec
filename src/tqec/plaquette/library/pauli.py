@@ -20,10 +20,8 @@ class ResetBasis(Enum):
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == ResetBasis.X:
             return RX(q).with_tags(Plaquette._MERGEABLE_TAG)
-        elif self == ResetBasis.Z:
+        else: # self == ResetBasis.Z:
             return cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
-        else:
-            raise TQECException("Unknown reset basis: {self}")
 
 
 class MeasurementBasis(Enum):
@@ -33,10 +31,8 @@ class MeasurementBasis(Enum):
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == MeasurementBasis.X:
             return MX(q).with_tags(Plaquette._MERGEABLE_TAG)
-        elif self == MeasurementBasis.Z:
+        else:  # self == MeasurementBasis.Z:
             return cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
-        else:
-            raise TQECException("Unknown measurement basis: {self}")
 
 
 def _make_pauli_syndrome_measurement_circuit(

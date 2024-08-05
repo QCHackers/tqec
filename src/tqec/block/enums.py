@@ -5,14 +5,12 @@ from tqec.templates.enums import TemplateSide
 
 
 class BlockDimension(Enum):
+    # TODO: merge with Direction3D from #285
     X = auto()
     Y = auto()
     Z = auto()
-    T = Z
 
     def to_template_sides(self) -> list[TemplateSide]:
-        if self == BlockDimension.Z or self == BlockDimension.T:
-            raise TQECException("Cannot get a TemplateSide from the time boundary.")
         if self == BlockDimension.X:
             return [
                 TemplateSide.TOP_LEFT,
@@ -31,5 +29,5 @@ class BlockDimension(Enum):
                 TemplateSide.BOTTOM,
                 TemplateSide.BOTTOM_RIGHT,
             ]
-        else:
-            raise TQECException(f"Unknown BlockDimension: {self}.")
+        else:  # if self == BlockDimension.Z:
+            raise TQECException("Cannot get a TemplateSide from the time boundary.")
