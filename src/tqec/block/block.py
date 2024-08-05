@@ -21,6 +21,7 @@ from typing_extensions import override
 
 @dataclass
 class Position3D:
+    # TODO: merge with data-structures in from #285
     x: int
     y: int
     z: int
