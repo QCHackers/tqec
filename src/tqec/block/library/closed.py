@@ -64,7 +64,7 @@ def _zxB_block(
             12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
             13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         6: xx_measurement_plaquette(
@@ -122,7 +122,7 @@ def _xzB_block(
             12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
             13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         6: zz_measurement_plaquette(

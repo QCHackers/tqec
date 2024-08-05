@@ -78,7 +78,7 @@ def ozx_block(dimension: LinearFunction) -> StandardComputationBlock:
             6: xxxx_memory_plaquette(),
             7: zzzz_memory_plaquette(),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         2: _with_measurements_on_data_qubits_on_side(
@@ -128,7 +128,7 @@ def oxz_block(dimension: LinearFunction) -> StandardComputationBlock:
             6: zzzz_memory_plaquette(),
             7: xxxx_memory_plaquette(),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         2: _with_measurements_on_data_qubits_on_side(
@@ -175,7 +175,7 @@ def xoz_block(dimension: LinearFunction) -> StandardComputationBlock:
             7: zzzz_memory_plaquette(),
             8: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         1: _with_measurements_on_data_qubits_on_side(
@@ -224,7 +224,7 @@ def zox_block(dimension: LinearFunction) -> StandardComputationBlock:
             7: xxxx_memory_plaquette(),
             8: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
         },
-        dimension,
+        dimension - 1,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         1: _with_measurements_on_data_qubits_on_side(
