@@ -139,7 +139,7 @@ def read_block_graph_from_dae_file(
 
 def write_block_graph_to_dae_file(
     block_graph: BlockGraph,
-    file: str | pathlib.Path | ty.BinaryIO,
+    file_like: str | pathlib.Path | ty.BinaryIO,
     pipe_length: float = 2.0,
 ) -> None:
     """Write the block graph to a Collada DAE file.
@@ -175,7 +175,7 @@ def write_block_graph_to_dae_file(
         matrix[:3, :3] = np.diag(scales)
         base.add_instance_node(instance_id, matrix, pipe.pipe_type)
         instance_id += 1
-    base.mesh.write(file)
+    base.mesh.write(file_like)
 
 
 class _BaseColladaData:
@@ -345,28 +345,10 @@ class Transformation:
         return Transformation(translation, scale, rotation, mat)
 
 
-def display_collada_model(
-    filepath: str | pathlib.Path | None = None,
-    collada_bytes: bytes | None = None,
-    write_html_filepath: str | pathlib.Path | None = None,
-) -> None:
-    """Display a 3D model from a Collada DAE file in IPython compatible environments.
+class ColladaDisplayHelper:
+    """Helper class to display a Collada DAE file in IPython compatible environments."""
 
-    This function references the the code snippet from the `stim.Circuit().diagram()` method.
-
-    Args:
-        filepath: The input dae file path. If None, collada_bytes must be provided.
-        collada_bytes: The input collada file bytes. If None, filepath must be provided.
-        write_html_filepath: The output html file path to write the generated html content.
-    """
-    from IPython.display import display, HTML
-
-    if not (filepath is None) ^ (collada_bytes is None):
-        raise TQECException(
-            "Exactly one of filepath and collada_bytes must be provided."
-        )
-
-    html_template = r"""
+    HTML_TEMPLATE = r"""
 <!DOCTYPE html>
 <html>
 
@@ -519,17 +501,48 @@ def display_collada_model(
     </script>
 </body>"""
 
-    if filepath is not None:
-        file_path = pathlib.Path(filepath)
-        with open(file_path, "rb") as file:
-            collada_bytes = file.read()
-    collada_base64 = base64.b64encode(ty.cast(bytes, collada_bytes)).decode("utf-8")
+    def __init__(self, filepath_or_bytes: str | pathlib.Path | bytes) -> None:
+        if isinstance(filepath_or_bytes, bytes):
+            collada_bytes = filepath_or_bytes
+        else:
+            with open(filepath_or_bytes, "rb") as file:
+                collada_bytes = file.read()
+        collada_base64 = base64.b64encode(collada_bytes).decode("utf-8")
+        self.html_str = self.HTML_TEMPLATE.replace(
+            r"{{MODEL_BASE64_PLACEHOLDER}}", collada_base64
+        )
 
-    html_str = html_template.replace(r"{{MODEL_BASE64_PLACEHOLDER}}", collada_base64)
+    def _repr_html_(self) -> str:
+        framed = f"""<iframe style="width: 100%; height: 300px; overflow: hidden; resize: both; border: 1px dashed gray;" frameBorder="0" srcdoc="{html.escape(self.html_str, quote=True)}"></iframe>"""
+        return framed
+
+    def __str__(self) -> str:
+        return self.html_str
+
+
+def display_collada_model(
+    filepath_or_bytes: str | pathlib.Path | bytes,
+    write_html_filepath: str | pathlib.Path | None = None,
+) -> ColladaDisplayHelper:
+    """Display a 3D model from a Collada DAE file in IPython compatible environments.
+
+    This function references the the code snippet from the `stim.Circuit().diagram()` method.
+
+    Args:
+        filepath_or_bytes: The input dae file path or bytes of the dae file.
+        write_html_filepath: The output html file path to write the generated html content.
+
+    Returns:
+        A helper class to display the 3D model, which implements the `_repr_html_` method and
+        can be directly displayed in IPython compatible environments.
+    """
+    if not isinstance(filepath_or_bytes, (str, pathlib.Path, bytes)):
+        raise TQECException("The input must be a file path or bytes.")
+
+    helper = ColladaDisplayHelper(filepath_or_bytes)
+
     if write_html_filepath is not None:
         with open(write_html_filepath, "w") as file:
-            file.write(html_str)
+            file.write(str(helper))
 
-    framed = f"""<iframe style="width: 100%; height: 300px; overflow: hidden; resize: both; border: 1px dashed gray;" frameBorder="0" srcdoc="{html.escape(html_str, quote=True)}"></iframe>
-    """
-    display(HTML(framed))  # type: ignore[no-untyped-call]
+    return helper
