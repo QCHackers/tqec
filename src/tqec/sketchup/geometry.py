@@ -8,7 +8,7 @@ import numpy as np
 import numpy.typing as npt
 
 from tqec.position import Direction3D
-from tqec.sketchup.block_graph import BlockType, parse_block_type_from_str
+from tqec.sketchup.block_graph import BlockType, CubeType, PipeType
 
 
 class FaceType(Enum):
@@ -34,6 +34,16 @@ class Face:
 
     (axis_width, axis_height, axis_normal) is by the right-hand rule, which
     only has 3 possible values: (X, Y, Z) | (Y, Z, X) | (Z, X, Y).
+
+    Attributes:
+        face_type: The type of the face.
+        width: The width of the face.
+        height: The height of the face.
+        normal_direction: The normal direction of the face, which is the direction
+            of the axis that the face is perpendicular to.
+        positive_facing: Whether the normal direction is towards the positive direction
+            of the axis.
+        translation: The position translation of the face from the origin.
     """
 
     face_type: FaceType
@@ -102,12 +112,20 @@ class Face:
         )
 
 
+def parse_block_type_from_str(block_type: str) -> BlockType:
+    """Parse a block type from a string."""
+    if "o" in block_type:
+        return PipeType(block_type.lower())
+    else:
+        return CubeType(block_type.lower())
+
+
 Geometry = dict[BlockType, list[Face]]
 
 
 def _create_cube_geometries() -> Geometry:
     """Create zxx, xzx, xxz, xzz, zxz, zzx cube geometries."""
-    cube_geomeyries = {}
+    cube_geometries = {}
     width, height = 1, 1
     for name in ["zxx", "xzx", "xxz", "xzz", "zxz", "zzx"]:
         faces = []
@@ -120,8 +138,8 @@ def _create_cube_geometries() -> Geometry:
             translation = [0, 0, 0]
             translation[i] = 1
             faces.append(face.translated_by(*translation).with_opposite_facing())
-        cube_geomeyries[parse_block_type_from_str(name)] = faces
-    return cube_geomeyries
+        cube_geometries[parse_block_type_from_str(name)] = faces
+    return cube_geometries
 
 
 def _create_no_h_pipe_geometries() -> Geometry:

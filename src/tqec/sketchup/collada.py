@@ -14,14 +14,18 @@ import numpy as np
 import numpy.typing as npt
 
 from tqec.exceptions import TQECException
-from tqec.sketchup.geometry import Face, FaceType, load_library_block_geometries
+from tqec.sketchup.geometry import (
+    Face,
+    FaceType,
+    load_library_block_geometries,
+    parse_block_type_from_str,
+)
 from tqec.position import Position3D
 from tqec.sketchup.block_graph import (
     CubeType,
     PipeType,
     BlockType,
     BlockGraph,
-    parse_block_type_from_str,
 )
 
 _RGBA = tuple[float, float, float, float]
@@ -99,12 +103,15 @@ def read_block_graph_from_dae_file(
                         "Only the dimension along the connector can be scaled."
                     )
                 parsed_pipes.append((translation, block_type))
-            elif not np.allclose(transformation.scale, np.ones(3), atol=1e-9):
-                raise TQECException("Scaling of cubes is not allowed.")
             else:
+                if not np.allclose(transformation.scale, np.ones(3), atol=1e-9):
+                    raise TQECException("Scaling of cubes is not allowed.")
                 parsed_cubes.append((translation, block_type))
 
-    uniform_pipe_scale = ty.cast(float, uniform_pipe_scale)
+    assert uniform_pipe_scale is not None, (
+        "Expected to be able to initialize a pipe scale, but did not succeed. "
+        "Is the provided .dae file representing a valid block graph?"
+    )
 
     def int_position_before_scale(pos: _FloatPosition) -> Position3D:
         int_pos_before_scale = []
@@ -332,6 +339,18 @@ def _load_base_collada_data() -> _BaseColladaData:
 
 @dataclass(frozen=True)
 class Transformation:
+    """Transformation data class to store the translation, scale, rotation, and the
+    composed affine matrix.
+
+    For the reference of the transformation matrix, see https://en.wikipedia.org/wiki/Transformation_matrix.
+
+    Attributes:
+        translation: The length-3 translation vector.
+        scale: The length-3 scaling vector, which is the scaling factor along each axis.
+        rotation: The 3x3 rotation matrix.
+        affine_matrix: The 4x4 affine matrix composed of the translation, scaling, and rotation.
+    """
+
     translation: npt.NDArray[np.float_]
     scale: npt.NDArray[np.float_]
     rotation: npt.NDArray[np.float_]

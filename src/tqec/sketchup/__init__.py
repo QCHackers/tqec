@@ -12,7 +12,6 @@ from tqec.sketchup.block_graph import (
     CubeType,
     PipeType,
     BlockType,
-    parse_block_type_from_str,
     Cube,
     Pipe,
     BlockGraph,

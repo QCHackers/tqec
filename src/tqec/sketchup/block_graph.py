@@ -23,7 +23,7 @@ if ty.TYPE_CHECKING:
     from tqec.sketchup.collada import ColladaDisplayHelper
 
 
-class Colour(Enum):
+class Color(Enum):
     X = "x"
     Z = "z"
     NULL = "o"
@@ -31,21 +31,21 @@ class Colour(Enum):
     @property
     def is_null(self) -> bool:
         """Check if the color is null."""
-        return self == Colour.NULL
+        return self == Color.NULL
 
 
 @dataclass(frozen=True)
 class Color3D:
     """Get face colors along the x, y, and z axes."""
 
-    x: Colour
-    y: Colour
-    z: Colour
+    x: Color
+    y: Color
+    z: Color
 
     @staticmethod
     def null() -> "Color3D":
         """Get the null color."""
-        return Color3D(Colour.NULL, Colour.NULL, Colour.NULL)
+        return Color3D(Color.NULL, Color.NULL, Color.NULL)
 
     @property
     def is_null(self) -> bool:
@@ -61,9 +61,9 @@ class Color3D:
 
     def pop_color_at_direction(self, direction: Direction3D) -> Color3D:
         """Replace the color at the given direction with None."""
-        return self.push_color_at_direction(direction, Colour.NULL)
+        return self.push_color_at_direction(direction, Color.NULL)
 
-    def push_color_at_direction(self, direction: Direction3D, color: Colour) -> Color3D:
+    def push_color_at_direction(self, direction: Direction3D, color: Color) -> Color3D:
         """Set the color at the given direction."""
         colors = list(astuple(self))
         colors[direction.axis_index] = color
@@ -78,14 +78,14 @@ class Color3D:
             raise TQECException(
                 "s must be a 3-character string containing only 'x', 'z', and 'o'."
             )
-        colors: list[Colour] = []
+        colors: list[Color] = []
         for c in s:
             if c == "o":
-                colors.append(Colour.NULL)
+                colors.append(Color.NULL)
             elif flip_xz:
-                colors.append(Colour.Z if c == "x" else Colour.X)
+                colors.append(Color.Z if c == "x" else Color.X)
             else:
-                colors.append(Colour(c))
+                colors.append(Color(c))
         return Color3D(*colors)
 
 
@@ -120,10 +120,7 @@ class CubeType(Enum):
             return CubeType.VIRTUAL
         if any(c.is_null for c in astuple(color)):
             raise TQECException("All the color must be defined for a non-virtual cube.")
-        return ty.cast(
-            CubeType,
-            parse_block_type_from_str("".join(c.value for c in astuple(color))),
-        )
+        return CubeType("".join(c.value for c in astuple(color)).lower())
 
     def normal_direction_to_corner_plane(self) -> Direction3D:
         """If the cube is at a corner, return the normal direction to the corner plane.
@@ -140,14 +137,14 @@ class CubeType(Enum):
     def infer_pipe_type_at_direction(
         self,
         direction: Direction3D,
-        src_side: bool = True,
+        src_side_if_h_pipe: bool = True,
         has_hadamard: bool = False,
     ) -> PipeType:
         """Infer the pipe type connecting this cube at some direction with the color match rule."""
         if self == CubeType.VIRTUAL:
             raise TQECException("Cannot infer the pipe type for a virtual cube.")
         color = self.get_color().pop_color_at_direction(direction)
-        return PipeType.from_color_at_side(color, src_side, has_hadamard)
+        return PipeType.from_color_at_side(color, src_side_if_h_pipe, has_hadamard)
 
 
 class PipeType(Enum):
@@ -178,15 +175,15 @@ class PipeType(Enum):
         """Return the direction of the pipe."""
         return Direction3D.all()[self.value.index("o")]
 
-    def get_color_at_side(self, src_side: bool = True) -> Color3D:
+    def get_color_at_side(self, src_side_if_h_pipe: bool = True) -> Color3D:
         """Get the color of the pipe at the given side."""
-        if not self.has_hadamard or src_side:
+        if not self.has_hadamard or src_side_if_h_pipe:
             return Color3D.from_string(self.value[:3])
         return Color3D.from_string(self.value[:3], flip_xz=True)
 
     @staticmethod
     def from_color_at_side(
-        color: Color3D, src_side: bool = True, has_hadamard: bool = False
+        color: Color3D, src_side_if_h_pipe: bool = True, has_hadamard: bool = False
     ) -> "PipeType":
         """Get the pipe type from the color at one side."""
         if not sum(c.is_null for c in astuple(color)) == 1:
@@ -197,8 +194,8 @@ class PipeType(Enum):
         for c in astuple(color):
             if c.is_null:
                 pipe_color.append("o")
-            elif has_hadamard and not src_side:
-                pipe_color.append("x" if c == Colour.Z else "z")
+            elif has_hadamard and not src_side_if_h_pipe:
+                pipe_color.append("x" if c == Color.Z else "z")
             else:
                 pipe_color.append(c.value)
         if has_hadamard:
@@ -206,25 +203,17 @@ class PipeType(Enum):
         return PipeType("".join(pipe_color).lower())
 
     def infer_cube_type_at_side(
-        self, src_side: bool = True, is_z_cube: bool = True
+        self, src_side_if_h_pipe: bool = True, is_z_cube: bool = True
     ) -> CubeType:
         """Infer the cube type at the side of the pipe."""
-        color = self.get_color_at_side(src_side).push_color_at_direction(
-            self.direction, Colour.Z if is_z_cube else Colour.X
+        color = self.get_color_at_side(src_side_if_h_pipe).push_color_at_direction(
+            self.direction, Color.Z if is_z_cube else Color.X
         )
         return CubeType.from_color(color)
 
 
 BlockType = ty.Union[CubeType, PipeType]
 """Valid block types in the library."""
-
-
-def parse_block_type_from_str(block_type: str) -> BlockType:
-    """Parse a block type from a string."""
-    if "o" in block_type:
-        return PipeType(block_type.lower())
-    else:
-        return CubeType(block_type.lower())
 
 
 @dataclass(frozen=True)
@@ -267,8 +256,8 @@ class Pipe:
         return self.pipe_type.direction
 
 
-_CUBE_DATA_KEY = "cube_data"
-_PIPE_DATA_KEY = "pipe_data"
+_CUBE_DATA_KEY = "tqec_block_cube_data"
+_PIPE_DATA_KEY = "tqec_block_pipe_data"
 
 
 class BlockGraph:
@@ -296,10 +285,7 @@ class BlockGraph:
     @property
     def cubes(self) -> list[Cube]:
         """Return a list of cubes in the graph."""
-        return sorted(
-            (data[_CUBE_DATA_KEY] for _, data in self._graph.nodes(data=True)),
-            key=lambda n: n.position,
-        )
+        return [data[_CUBE_DATA_KEY] for _, data in self._graph.nodes(data=True)]
 
     @property
     def pipes(self) -> list[Pipe]:
@@ -463,9 +449,9 @@ class BlockGraph:
             if len(edge_directions_at_node) != 2:
                 continue
             node_type = node.node_type
-            normal_direction = [
-                dir for dir in Direction3D.all() if dir not in edge_directions_at_node
-            ][0]
+            normal_direction = (
+                set(Direction3D.all()).difference(edge_directions_at_node).pop()
+            )
             direction_index = Direction3D.all().index(normal_direction)
             normal_direction_color = "x" if node_type == NodeType.Z else "z"
             cube_type_str = str(node_type.value) * 3
@@ -480,7 +466,7 @@ class BlockGraph:
             corner_cubes[node.position] = Cube(node.position, cube_type)
 
         # Infer the block structure from the corner cubes
-        # BFS travese each connected component from a corner node in that component
+        # BFS traverse each connected component from a corner node in that component
         bfs_sources: list[Cube] = []
         for component in nx.connected_components(zx_graph.nx_graph):
             # find one corner node in the component
@@ -497,11 +483,13 @@ class BlockGraph:
                 )
         for src_cube in bfs_sources:
             for p1, p2 in nx.bfs_edges(zx_graph.nx_graph, src_cube.position):
-                edge = ty.cast(ZXEdge, zx_graph.get_edge(p1, p2))
+                edge = zx_graph.get_edge(p1, p2)
+                assert (
+                    edge is not None
+                ), "Post-condition of `get_edge` broken, a supposedly existing edge returned None"
                 if edge not in edges_to_handle:
                     continue
-                if p1 > p2:
-                    p1, p2 = p2, p1
+                p1, p2 = sorted((p1, p2))
                 src = ty.cast(ZXNode, zx_graph.get_node(p1))
                 dst = ty.cast(ZXNode, zx_graph.get_node(p2))
                 can_infer_from_src = src not in nodes_to_handle and not src.is_virtual

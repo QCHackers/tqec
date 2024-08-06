@@ -61,8 +61,8 @@ class ZXEdge:
         return Direction3D.Z
 
 
-_NODE_DATA_KEY = "node_data"
-_EDGE_DATA_KEY = "edge_data"
+_NODE_DATA_KEY = "tqec_zx_node_data"
+_EDGE_DATA_KEY = "tqec_zx_edge_data"
 
 
 class ZXGraph:
