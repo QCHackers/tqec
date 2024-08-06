@@ -212,6 +212,36 @@ DETECTOR Stim structure as the last coordinate.</p></li>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.MX">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#MX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.MX" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code></p>
+<p>Create the X-measurement operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qubits</strong> – the qubits that should be measured by the operation.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.MX.qubits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Qid</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.MX.qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.MX.with_qubits">
+<span class="sig-name descname"><span class="pre">with_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">new_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.operations.operation.MX" title="tqec.circuit.operations.operation.MX"><span class="pre">MX</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#MX.with_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.MX.with_qubits" title="Link to this definition"></a></dt>
+<dd><p>Returns the same operation, but applied to different qubits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*new_qubits</strong> – The new qubits to apply the operation to. The order must
+exactly match the order of qubits returned from the operation’s
+<cite>qubits</cite> property.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinate_system_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GridQubit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementData" title="tqec.circuit.operations.operation.RelativeMeasurementData"><span class="pre">RelativeMeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#Observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.Observable" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tqec.circuit.operations.operation.RelativeMeasurementsRecord" title="tqec.circuit.operations.operation.RelativeMeasurementsRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord</span></code></a></p>
@@ -248,6 +278,36 @@ relative measurements’ operation.</p></li>
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable.index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.circuit.operations.operation.Observable.index" title="Link to this definition"></a></dt>
 <dd><p>Return the index of the observable.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RX">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#RX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.RX" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code></p>
+<p>Create the X-reset operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qubits</strong> – the qubits that should be reset by the operation.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RX.qubits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qubits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Qid</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.circuit.operations.operation.RX.qubits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.operations.operation.RX.with_qubits">
+<span class="sig-name descname"><span class="pre">with_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">new_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.operations.operation.RX" title="tqec.circuit.operations.operation.RX"><span class="pre">RX</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#RX.with_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.RX.with_qubits" title="Link to this definition"></a></dt>
+<dd><p>Returns the same operation, but applied to different qubits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*new_qubits</strong> – The new qubits to apply the operation to. The order must
+exactly match the order of qubits returned from the operation’s
+<cite>qubits</cite> property.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

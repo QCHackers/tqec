@@ -151,6 +151,8 @@
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.add_templates">add_templates() (ComposedTemplate method)</a>
 </li>
+      <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.add_to_schedule_index">add_to_schedule_index() (ScheduledCircuit method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.Transformation.affine_matrix">affine_matrix (Transformation attribute)</a>
@@ -229,6 +231,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.ComposedTemplateWithSides">ComposedTemplateWithSides (class in tqec.templates.constructions.qubit)</a>
+</li>
       <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets">compute_global_measurements_lookback_offsets() (in module tqec.circuit.operations.measurement_map)</a>
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.interval.Interval.contains">contains() (Interval method)</a>
@@ -391,14 +395,18 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides">get_plaquette_indices_on_sides() (DenseQubitSquareTemplate method)</a>
+      <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.ComposedTemplateWithSides.get_plaquette_indices_on_sides">get_plaquette_indices_on_sides() (ComposedTemplateWithSides method)</a>
 
       <ul>
+        <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.DenseQubitSquareTemplate.get_plaquette_indices_on_sides">(DenseQubitSquareTemplate method)</a>
+</li>
         <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitHorizontalBorders.get_plaquette_indices_on_sides">(QubitHorizontalBorders method)</a>
 </li>
         <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitVerticalBorders.get_plaquette_indices_on_sides">(QubitVerticalBorders method)</a>
 </li>
       </ul></li>
+      <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_qubits_on_side">get_qubits_on_side() (PlaquetteQubits method)</a>
+</li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits">get_syndrome_qubits() (PlaquetteQubits method)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_syndrome_qubits_cirq">get_syndrome_qubits_cirq() (PlaquetteQubits method)</a>
@@ -551,6 +559,8 @@
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.max">max() (PiecewiseLinearFunction static method)</a>
 </li>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis">MeasurementBasis (class in tqec.plaquette.library.pauli)</a>
+</li>
       <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.merge_scheduled_circuits">merge_scheduled_circuits() (in module tqec.circuit.schedule)</a>
 </li>
       <li><a href="source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.min">min() (PiecewiseLinearFunction static method)</a>
@@ -657,6 +667,8 @@
       <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.moments">moments (ScheduledCircuit property)</a>
 </li>
       <li><a href="source/tqec.noise_models.html#tqec.noise_models.multi_qubit_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate">MultiQubitDepolarizingNoiseAfterMultiQubitGate (class in tqec.noise_models.multi_qubit_gates)</a>
+</li>
+      <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX">MX (class in tqec.circuit.operations.operation)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -800,10 +812,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.templates.constructions.html#tqec.templates.constructions.qubit.QubitHorizontalBorders">QubitHorizontalBorders (class in tqec.templates.constructions.qubit)</a>
 </li>
-      <li><a href="source/tqec.plaquette.html#tqec.plaquette.plaquette.Plaquette.qubits">qubits (Plaquette property)</a>
+      <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX.qubits">qubits (MX property)</a>
 
       <ul>
+        <li><a href="source/tqec.plaquette.html#tqec.plaquette.plaquette.Plaquette.qubits">(Plaquette property)</a>
+</li>
         <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.qubits">(RelativeMeasurementsRecord property)</a>
+</li>
+        <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.qubits">(RX property)</a>
 </li>
         <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.qubits">(ScheduledCircuit property)</a>
 </li>
@@ -836,9 +852,11 @@
 </li>
       <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord">RelativeMeasurementsRecord (class in tqec.circuit.operations.operation)</a>
 </li>
+      <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.remove_duplicate_operations">remove_duplicate_operations() (in module tqec.circuit.schedule)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/tqec.circuit.html#tqec.circuit.schedule.remove_duplicate_operations">remove_duplicate_operations() (in module tqec.circuit.schedule)</a>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis">ResetBasis (class in tqec.plaquette.library.pauli)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.enums.PlaquetteOrientation.RIGHT">RIGHT (PlaquetteOrientation attribute)</a>
 
@@ -855,6 +873,8 @@
       <li><a href="source/tqec.templates.html#tqec.templates.scale.round_or_fail">round_or_fail() (in module tqec.templates.scale)</a>
 </li>
       <li><a href="source/tqec.plaquette.html#tqec.plaquette.qubit.RoundedPlaquetteQubits">RoundedPlaquetteQubits (class in tqec.plaquette.qubit)</a>
+</li>
+      <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX">RX (class in tqec.circuit.operations.operation)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1392,14 +1412,18 @@
         <li><a href="source/tqec.templates.html#tqec.templates.scale.ScalableInterval.width">(ScalableInterval property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">with_qubits() (RelativeMeasurementsRecord method)</a>
+      <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX.with_qubits">with_qubits() (MX method)</a>
 
       <ul>
+        <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">(RelativeMeasurementsRecord method)</a>
+</li>
+        <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.with_qubits">(RX method)</a>
+</li>
         <li><a href="source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords.with_qubits">(ShiftCoords method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.SketchUpModel.write">write() (SketchUpModel method)</a>
 </li>
   </ul></td>
@@ -1415,12 +1439,16 @@
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.FaceType.X">X (FaceType attribute)</a>
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.x">x (InstancePosition attribute)</a>
+</li>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis.X">X (MeasurementBasis attribute)</a>
+</li>
+      <li><a href="source/tqec.html#tqec.position.Position.x">x (Position attribute)</a>
+</li>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis.X">X (ResetBasis attribute)</a>
+</li>
+      <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.x">x (Scalable2D attribute)</a>
 
       <ul>
-        <li><a href="source/tqec.html#tqec.position.Position.x">(Position attribute)</a>
-</li>
-        <li><a href="source/tqec.templates.html#tqec.templates.scale.Scalable2D.x">(Scalable2D attribute)</a>
-</li>
         <li><a href="source/tqec.html#tqec.position.Shape2D.x">(Shape2D attribute)</a>
 </li>
       </ul></li>
@@ -1428,10 +1456,10 @@
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.XOZH">XOZH (BlockType attribute)</a>
 </li>
-      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.initialisation.xx_initialisation_plaquette">xx_initialisation_plaquette() (in module tqec.plaquette.library.initialisation)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.initialisation.xx_initialisation_plaquette">xx_initialisation_plaquette() (in module tqec.plaquette.library.initialisation)</a>
+</li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.measurement.xx_measurement_plaquette">xx_measurement_plaquette() (in module tqec.plaquette.library.measurement)</a>
 </li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.memory.xx_memory_plaquette">xx_memory_plaquette() (in module tqec.plaquette.library.memory)</a>
@@ -1482,6 +1510,12 @@
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.model.InstancePosition.z">z (InstancePosition attribute)</a>
 </li>
+      <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis.Z">Z (MeasurementBasis attribute)</a>
+
+      <ul>
+        <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis.Z">(ResetBasis attribute)</a>
+</li>
+      </ul></li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZOX">ZOX (BlockType attribute)</a>
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZOXH">ZOXH (BlockType attribute)</a>
@@ -1490,10 +1524,10 @@
 </li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZXOH">ZXOH (BlockType attribute)</a>
 </li>
-      <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZXX">ZXX (BlockType attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZXX">ZXX (BlockType attribute)</a>
+</li>
       <li><a href="source/tqec.sketchup.html#tqec.sketchup.block.BlockType.ZXZ">ZXZ (BlockType attribute)</a>
 </li>
       <li><a href="source/tqec.plaquette.library.html#tqec.plaquette.library.initialisation.zz_initialisation_plaquette">zz_initialisation_plaquette() (in module tqec.plaquette.library.initialisation)</a>

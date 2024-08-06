@@ -173,7 +173,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            orientation (TemplateOrientation, optional): Wheter to use horizontal or</span>
-<span class="sd">                vertical orientation. Defaults to horizontal.</span>
+<span class="sd">                vertical orientation as the axis. Defaults to horizontal.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            list[PlaquetteQubit]: The qubits on the edge of the plaquette.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -191,6 +191,35 @@
             <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">_get_relevant_value</span><span class="p">(</span><span class="n">qubit</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_index</span><span class="p">)</span>
         <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PlaquetteQubits.get_qubits_on_side">
+<a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubits.get_qubits_on_side">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_qubits_on_side</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">PlaquetteSide</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the qubits one the provided side of the instance.</span>
+
+<span class="sd">        A qubit is on the left-side if there is no other qubit in the instance</span>
+<span class="sd">        with a strictly lower x-coordinate value. Similarly, a qubit is on the</span>
+<span class="sd">        right-side if there is no other qubit in the instance with a strictly</span>
+<span class="sd">        greater x-coordinate value. Up and down are about the y-coordinate.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            side: the side to find qubits on.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list[PlaquetteQubit]: The qubits on the edge of the plaquette.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+            <span class="n">min_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">min_x</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+            <span class="n">max_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">max_x</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span><span class="p">:</span>
+            <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">min_y</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if orientation == PlaquetteSide.DOWN:</span>
+            <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">max_y</span><span class="p">]</span></div>
 </div>
 
 

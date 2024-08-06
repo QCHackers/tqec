@@ -112,6 +112,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library.pauli">tqec.plaquette.library.pauli module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis"><code class="docutils literal notranslate"><span class="pre">MeasurementBasis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis.X"><code class="docutils literal notranslate"><span class="pre">MeasurementBasis.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.MeasurementBasis.Z"><code class="docutils literal notranslate"><span class="pre">MeasurementBasis.Z</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis"><code class="docutils literal notranslate"><span class="pre">ResetBasis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis.X"><code class="docutils literal notranslate"><span class="pre">ResetBasis.X</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.ResetBasis.Z"><code class="docutils literal notranslate"><span class="pre">ResetBasis.Z</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html#tqec.plaquette.library.pauli.pauli_memory_plaquette"><code class="docutils literal notranslate"><span class="pre">pauli_memory_plaquette()</span></code></a></li>
 </ul>
 </li>
@@ -285,7 +295,28 @@ By convention, the edge is the one with the highest index in the relevant axis.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>orientation</strong> (<a class="reference internal" href="tqec.templates.html#tqec.templates.enums.TemplateOrientation" title="tqec.templates.enums.TemplateOrientation"><em>TemplateOrientation</em></a><em>, </em><em>optional</em>) – Wheter to use horizontal or
-vertical orientation. Defaults to horizontal.</p>
+vertical orientation as the axis. Defaults to horizontal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The qubits on the edge of the plaquette.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit">PlaquetteQubit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.qubit.PlaquetteQubits.get_qubits_on_side">
+<span class="sig-name descname"><span class="pre">get_qubits_on_side</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.plaquette.enums.PlaquetteSide" title="tqec.plaquette.enums.PlaquetteSide"><span class="pre">PlaquetteSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.plaquette.qubit.PlaquetteQubit" title="tqec.plaquette.qubit.PlaquetteQubit"><span class="pre">PlaquetteQubit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/qubit.html#PlaquetteQubits.get_qubits_on_side"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.qubit.PlaquetteQubits.get_qubits_on_side" title="Link to this definition"></a></dt>
+<dd><p>Return the qubits one the provided side of the instance.</p>
+<p>A qubit is on the left-side if there is no other qubit in the instance
+with a strictly lower x-coordinate value. Similarly, a qubit is on the
+right-side if there is no other qubit in the instance with a strictly
+greater x-coordinate value. Up and down are about the y-coordinate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>side</strong> – the side to find qubits on.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The qubits on the edge of the plaquette.</p>

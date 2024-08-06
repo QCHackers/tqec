@@ -251,27 +251,27 @@ Fragment(circuit=stim.Circuit(&#39;&#39;&#39;
 ================================================================================
 Flow(
   creation = [
-    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[Z1, Z3], measurements=[], resets={0}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[Z1, Z3], measurements=[], resets={2}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[Z1, Z3], measurements=[], resets={4}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[Z3, Z1], measurements=[], resets={0}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[Z3, Z1], measurements=[], resets={2}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[Z3, Z1], measurements=[], resets={4}, is_forward=True)
   ],
   destruction = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z2, Z4, Z0, Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={0, 1, 2}, is_forward=False)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z2, Z4, Z0, Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={2, 3, 4}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z2, Z3, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={0, 1, 2}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z2, Z3, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={2, 3, 4}, is_forward=False)
   ],
 total_number_of_measurements = 2
 )
 ================================================================================
 Flow(
   creation = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
   ],
   destruction = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=False)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=False)
   ],
 total_number_of_measurements = 2
 )
@@ -484,106 +484,106 @@ total_number_of_measurements = 3
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Collapsing Z1 over Z0
 Collapsing Z3 over Z0
 Collapsing Z1 over Z0
 Collapsing Z3 over Z0
+Collapsing Z1 over Z0
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2
 Collapsing Z3 over Z2
 Collapsing Z1 over Z2
 Collapsing Z3 over Z2
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z4
 Collapsing Z1 over Z4
 Collapsing Z3 over Z4
+Collapsing Z1 over Z4
 Collapsing Z2 over Z0*Z1*Z2
+Collapsing Z3 over Z0*Z1
 Collapsing Z4 over Z0*Z1
 Collapsing Z0 over Z0*Z1
 Collapsing Z1 over Z1
-Collapsing Z3 over
 Collapsing Z2 over Z0*Z1*Z2
+Collapsing Z3 over Z0*Z1
 Collapsing Z4 over Z0*Z1
 Collapsing Z0 over Z0*Z1
 Collapsing Z1 over Z1
-Collapsing Z3 over
 Collapsing Z2 over Z2*Z3*Z4
-Collapsing Z4 over Z3*Z4
-Collapsing Z0 over Z3
-Collapsing Z1 over Z3
-Collapsing Z3 over Z3
+Collapsing Z3 over Z3*Z4
+Collapsing Z4 over Z4
+Collapsing Z0 over
+Collapsing Z1 over
 Collapsing Z2 over Z2*Z3*Z4
-Collapsing Z4 over Z3*Z4
-Collapsing Z0 over Z3
-Collapsing Z1 over Z3
-Collapsing Z3 over Z3
+Collapsing Z3 over Z3*Z4
+Collapsing Z4 over Z4
+Collapsing Z0 over
+Collapsing Z1 over
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z0
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z0
-Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
 Collapsing Z1 over Z0
+Collapsing Z3 over Z0*Z1*Z2
+Collapsing Z1 over Z0*Z1*Z2
 Collapsing Z3 over Z0
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z0
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2
 Collapsing Z3 over Z2
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 </pre></div></div>
 </div>
 <p>This function will return, for each of the provided flows, a list of detectors:</p>
@@ -660,122 +660,122 @@ REPEAT 9 {
     TICK
 }
 M 0 2 4
-Collapsing Z1 over Z0
 Collapsing Z3 over Z0
 Collapsing Z1 over Z0
 Collapsing Z3 over Z0
+Collapsing Z1 over Z0
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2
 Collapsing Z3 over Z2
 Collapsing Z1 over Z2
 Collapsing Z3 over Z2
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z4
 Collapsing Z1 over Z4
 Collapsing Z3 over Z4
+Collapsing Z1 over Z4
 Collapsing Z2 over Z0*Z1*Z2
+Collapsing Z3 over Z0*Z1
 Collapsing Z4 over Z0*Z1
 Collapsing Z0 over Z0*Z1
 Collapsing Z1 over Z1
-Collapsing Z3 over
 Collapsing Z2 over Z0*Z1*Z2
+Collapsing Z3 over Z0*Z1
 Collapsing Z4 over Z0*Z1
 Collapsing Z0 over Z0*Z1
 Collapsing Z1 over Z1
-Collapsing Z3 over
 Collapsing Z2 over Z2*Z3*Z4
-Collapsing Z4 over Z3*Z4
-Collapsing Z0 over Z3
-Collapsing Z1 over Z3
-Collapsing Z3 over Z3
+Collapsing Z3 over Z3*Z4
+Collapsing Z4 over Z4
+Collapsing Z0 over
+Collapsing Z1 over
 Collapsing Z2 over Z2*Z3*Z4
-Collapsing Z4 over Z3*Z4
-Collapsing Z0 over Z3
-Collapsing Z1 over Z3
-Collapsing Z3 over Z3
+Collapsing Z3 over Z3*Z4
+Collapsing Z4 over Z4
+Collapsing Z0 over
+Collapsing Z1 over
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z0
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z0
-Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
 Collapsing Z1 over Z0
+Collapsing Z3 over Z0*Z1*Z2
+Collapsing Z1 over Z0*Z1*Z2
 Collapsing Z3 over Z0
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z0
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2
 Collapsing Z3 over Z2
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
+Collapsing Z3 over Z0*Z1*Z2
 Collapsing Z1 over Z0*Z1*Z2
-Collapsing Z3 over Z0*Z2
-Collapsing Z1 over Z2*Z3*Z4
 Collapsing Z3 over Z2*Z3*Z4
-Collapsing Z1 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 Collapsing Z3 over Z2*Z3*Z4
+Collapsing Z1 over Z2*Z4
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">

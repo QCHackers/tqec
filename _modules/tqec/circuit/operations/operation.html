@@ -78,10 +78,12 @@
   <h1>Source code for tqec.circuit.operations.operation</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">cirq</span>
+<span class="kn">import</span> <span class="nn">stim</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
@@ -141,7 +143,7 @@
 
 <div class="viewcode-block" id="ShiftCoords.with_qubits">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords.with_qubits">[docs]</a>
-    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ShiftCoords&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShiftCoords</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -223,7 +225,7 @@
 
 <div class="viewcode-block" id="RelativeMeasurementsRecord.with_qubits">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">[docs]</a>
-    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RelativeMeasurementsRecord&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelativeMeasurementsRecord</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -462,6 +464,114 @@
     <span class="k">return</span> <span class="n">Observable</span><span class="p">(</span>
         <span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurements_data</span><span class="p">,</span> <span class="n">observable_index</span>
     <span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RX">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX">[docs]</a>
+<span class="nd">@cirq</span><span class="o">.</span><span class="n">value_equality</span>
+<span class="k">class</span> <span class="nc">RX</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset in the X-basis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the X-reset operation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            qubits: the qubits that should be reset by the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
+
+<div class="viewcode-block" id="RX.with_qubits">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.with_qubits">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RX</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_value_equality_values_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
+
+    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RX </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_json_namespace_</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_json_dict_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;qubits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tqec.circuit.operations.operation.RX(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_decompose_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_is_comment_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_stim_conversion_</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">edit_circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">edit_circuit</span><span class="o">.</span><span class="n">append_operation</span><span class="p">(</span><span class="s2">&quot;RX&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MX">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX">[docs]</a>
+<span class="nd">@cirq</span><span class="o">.</span><span class="n">value_equality</span>
+<span class="k">class</span> <span class="nc">MX</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Measurement in the X-basis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the X-measurement operation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            qubits: the qubits that should be measured by the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
+
+<div class="viewcode-block" id="MX.with_qubits">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX.with_qubits">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MX</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_value_equality_values_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
+
+    <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;MX </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_json_namespace_</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_json_dict_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;qubits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tqec.circuit.operations.operation.MX(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_decompose_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_is_comment_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_stim_conversion_</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">edit_circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">edit_circuit</span><span class="o">.</span><span class="n">append_operation</span><span class="p">(</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
 </pre></div>
 
