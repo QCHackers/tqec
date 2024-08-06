@@ -4,18 +4,34 @@ tqec.sketchup package
 Submodules
 ----------
 
-tqec.sketchup.block module
---------------------------
+tqec.sketchup.block\_graph module
+---------------------------------
 
-.. automodule:: tqec.sketchup.block
+.. automodule:: tqec.sketchup.block_graph
    :members:
    :undoc-members:
    :show-inheritance:
 
-tqec.sketchup.model module
---------------------------
+tqec.sketchup.collada module
+----------------------------
 
-.. automodule:: tqec.sketchup.model
+.. automodule:: tqec.sketchup.collada
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.sketchup.geometry module
+-----------------------------
+
+.. automodule:: tqec.sketchup.geometry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.sketchup.zx\_graph module
+------------------------------
+
+.. automodule:: tqec.sketchup.zx_graph
    :members:
    :undoc-members:
    :show-inheritance:

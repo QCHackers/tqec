@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.sketchup.zx_graph &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.sketchup.zx_graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.sketchup.zx_graph</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ZX graph representation of a 3D spacetime defect diagram.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">astuple</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">Direction3D</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tqec.sketchup.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span>
+
+
+<div class="viewcode-block" id="NodeType">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.NodeType">[docs]</a>
+<span class="k">class</span> <span class="nc">NodeType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid node types in a ZX graph.&quot;&quot;&quot;</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span>  <span class="c1"># X-type node</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>  <span class="c1"># Z-type node</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>  <span class="c1"># Virtual node that represents an open port</span></div>
+
+
+
+<div class="viewcode-block" id="ZXNode">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXNode">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ZXNode</span><span class="p">:</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span>
+    <span class="n">node_type</span><span class="p">:</span> <span class="n">NodeType</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_virtual</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the node is virtual.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">V</span></div>
+
+
+
+<div class="viewcode-block" id="ZXEdge">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXEdge">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ZXEdge</span><span class="p">:</span>
+    <span class="n">u</span><span class="p">:</span> <span class="n">ZXNode</span>
+    <span class="n">v</span><span class="p">:</span> <span class="n">ZXNode</span>
+    <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">is_neighbour</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;An edge must connect two nearby nodes.&quot;</span><span class="p">)</span>
+        <span class="c1"># Ensure position of u is less than v</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the direction of the edge.&quot;&quot;&quot;</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">x</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">y</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Y</span>
+        <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span></div>
+
+
+
+<span class="n">_NODE_DATA_KEY</span> <span class="o">=</span> <span class="s2">&quot;tqec_zx_node_data&quot;</span>
+<span class="n">_EDGE_DATA_KEY</span> <span class="o">=</span> <span class="s2">&quot;tqec_zx_edge_data&quot;</span>
+
+
+<div class="viewcode-block" id="ZXGraph">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph">[docs]</a>
+<span class="k">class</span> <span class="nc">ZXGraph</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of a 3D spacetime defect diagram.</span>
+
+<span class="sd">        Despite the name, the graph is not exactly the ZX-calculus graph as rewrite rules</span>
+<span class="sd">        can not be applied to the graph arbitrarily. The graph must correspond to a valid</span>
+<span class="sd">        3D spacetime diagram, which can be realized with the lattice surgery on the 2D</span>
+<span class="sd">        patches of surface code. And rewrite rules can only be applied with respect to a</span>
+<span class="sd">        valid physical realization of the spacetime diagram.</span>
+
+<span class="sd">        Note that not all ZX graph admits a valid spacetime diagram representation. And the</span>
+<span class="sd">        graph construction **does not check** the validity constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="c1"># Internal undirected graph representation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The name of the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The internal networkx graph representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of nodes in the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of edges in the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of nodes in the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">_NODE_DATA_KEY</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of edges in the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">_EDGE_DATA_KEY</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="ZXGraph.add_node">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">,</span>
+        <span class="n">node_type</span><span class="p">:</span> <span class="n">NodeType</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node to the graph.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position: The 3D position of the node.</span>
+<span class="sd">            node_type: The type of the node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2"> already exists in the graph.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">_NODE_DATA_KEY</span><span class="p">:</span> <span class="n">ZXNode</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">node_type</span><span class="p">)})</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.add_z_node">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_z_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_z_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a Z-type node to the graph.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.add_x_node">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_x_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_x_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an X-type node to the graph.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.add_virtual_node">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_virtual_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_virtual_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a virtual node to the graph.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">V</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.add_edge">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_edge">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">u</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">,</span>
+        <span class="n">v</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">,</span>
+        <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an edge to the graph.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            u: The position of the first node.</span>
+<span class="sd">            v: The position of the second node.</span>
+<span class="sd">            has_hadamard: Whether the edge has a Hadamard transition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Both nodes must exist in the graph.&quot;</span><span class="p">)</span>
+        <span class="n">u_node</span><span class="p">:</span> <span class="n">ZXNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">_NODE_DATA_KEY</span><span class="p">]</span>
+        <span class="n">v_node</span><span class="p">:</span> <span class="n">ZXNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">_NODE_DATA_KEY</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">_EDGE_DATA_KEY</span><span class="p">:</span> <span class="n">ZXEdge</span><span class="p">(</span><span class="n">u_node</span><span class="p">,</span> <span class="n">v_node</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="p">)}</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.get_node">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.get_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXNode</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the node by position.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">ZXNode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="n">_NODE_DATA_KEY</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.get_edge">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.get_edge">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXEdge</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the edge by its endpoint positions.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">ZXEdge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">][</span><span class="n">_EDGE_DATA_KEY</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.edges_at">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.edges_at">[docs]</a>
+    <span class="k">def</span> <span class="nf">edges_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the edges incident to a node.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">_EDGE_DATA_KEY</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.draw">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.draw">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib.&quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="c1"># See https://matplotlib.org/stable/users/explain/toolkits/mplot3d.html</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Axes3D</span><span class="p">,</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">))</span>
+
+        <span class="n">node_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">astuple</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">edge_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="n">astuple</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">),</span> <span class="n">astuple</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">hadamard_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">edge_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">has_hadamard</span> <span class="o">=</span> <span class="n">hadamard_edges</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
+            <span class="n">hadamard_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">hadamard_edges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">node_positions</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+            <span class="n">c</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;black&quot;</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span> <span class="k">else</span> <span class="s2">&quot;white&quot;</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">is_virtual</span>
+            <span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_positions</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">edge</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:gray&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
+            <span class="c1"># use yellow square to indicate Hadamard transition</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">hadamard_position</span><span class="p">,</span>
+                <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                <span class="n">c</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="p">):</span>
+            <span class="n">dim</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">x_limits</span><span class="p">,</span> <span class="n">y_limits</span><span class="p">,</span> <span class="n">z_limits</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlim3d</span><span class="p">()</span>
+
+        <span class="n">plot_radius</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">limits</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x_limits</span><span class="p">,</span> <span class="n">y_limits</span><span class="p">,</span> <span class="n">z_limits</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_limits</span><span class="p">)</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_limits</span><span class="p">)</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_limits</span><span class="p">)</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_limits</span><span class="p">)</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">show_title</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ZXGraph.to_block_graph">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.to_block_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_block_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BlockGraph&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a block graph from a ZX graph.</span>
+
+<span class="sd">        The ZX graph includes the minimal information required to construct the block graph,</span>
+<span class="sd">        but not guaranteed to admit a valid block structure. The block structure will be inferred</span>
+<span class="sd">        from the ZX graph and validated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the new block graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The constructed block graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">tqec.sketchup.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span>
+
+        <span class="k">return</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_zx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">graphs_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_graph</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

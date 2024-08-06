@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.sketchup.block &mdash; TQEC  documentation</title>
+  <title>tqec.sketchup.geometry &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -66,7 +66,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">tqec.sketchup.block</li>
+      <li class="breadcrumb-item active">tqec.sketchup.geometry</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -75,7 +75,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for tqec.sketchup.block</h1><div class="highlight"><pre>
+  <h1>Source code for tqec.sketchup.geometry</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
@@ -85,25 +85,26 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
-<span class="n">_XYZ</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ty</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span>
+<span class="kn">from</span> <span class="nn">tqec.sketchup.block_graph</span> <span class="kn">import</span> <span class="n">BlockType</span><span class="p">,</span> <span class="n">CubeType</span><span class="p">,</span> <span class="n">PipeType</span>
 
 
 <div class="viewcode-block" id="FaceType">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.FaceType">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType">[docs]</a>
 <span class="k">class</span> <span class="nc">FaceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
     <span class="n">H</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
 
 <div class="viewcode-block" id="FaceType.from_string">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.FaceType.from_string">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType.from_string">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FaceType&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FaceType</span><span class="p">(</span><span class="n">face_type</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="FaceType.opposite">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.FaceType.opposite">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType.opposite">[docs]</a>
     <span class="k">def</span> <span class="nf">opposite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FaceType&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">Z</span>
@@ -115,32 +116,43 @@
 
 
 <div class="viewcode-block" id="Face">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.Face">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Face</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A rectangle face in the 3d space.</span>
 
 <span class="sd">    (axis_width, axis_height, axis_normal) is by the right-hand rule, which</span>
 <span class="sd">    only has 3 possible values: (X, Y, Z) | (Y, Z, X) | (Z, X, Y).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        face_type: The type of the face.</span>
+<span class="sd">        width: The width of the face.</span>
+<span class="sd">        height: The height of the face.</span>
+<span class="sd">        normal_direction: The normal direction of the face, which is the direction</span>
+<span class="sd">            of the axis that the face is perpendicular to.</span>
+<span class="sd">        positive_facing: Whether the normal direction is towards the positive direction</span>
+<span class="sd">            of the axis.</span>
+<span class="sd">        translation: The position translation of the face from the origin.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">face_type</span><span class="p">:</span> <span class="n">FaceType</span>
     <span class="n">width</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">height</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">normal_direction</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span>
+    <span class="n">normal_direction</span><span class="p">:</span> <span class="n">Direction3D</span>
+    <span class="n">positive_facing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">translation</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Face.get_triangle_indices">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.Face.get_triangle_indices">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_triangle_indices">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_triangle_indices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Face.get_vertices">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.Face.get_vertices">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_vertices">[docs]</a>
     <span class="k">def</span> <span class="nf">get_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
-        <span class="n">ax3_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="p">)</span>
+        <span class="n">ax3_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="o">.</span><span class="n">axis_index</span>
         <span class="n">ax1_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax3_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
         <span class="n">ax2_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax3_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
         <span class="c1"># rectangle vertices</span>
@@ -164,142 +176,124 @@
         <span class="k">return</span> <span class="n">vertices_position</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="Face.get_normal_vectors">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_normal_vectors">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_normal_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+        <span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
+        <span class="n">ax3_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="o">.</span><span class="n">axis_index</span>
+        <span class="n">normal</span><span class="p">[</span><span class="n">ax3_index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive_facing</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Face.translated_by">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.Face.translated_by">[docs]</a>
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.translated_by">[docs]</a>
     <span class="k">def</span> <span class="nf">translated_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Face</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Face</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">face_type</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">positive_facing</span><span class="p">,</span>
             <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">dz</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Face.with_opposite_facing">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.with_opposite_facing">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_opposite_facing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Face</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Face</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">face_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="p">,</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive_facing</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </div>
 
 
 
-<div class="viewcode-block" id="BlockType">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.BlockType">[docs]</a>
-<span class="k">class</span> <span class="nc">BlockType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid block types in the library.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Cubes</span>
-    <span class="n">ZXX</span> <span class="o">=</span> <span class="s2">&quot;zxx&quot;</span>
-    <span class="n">XZX</span> <span class="o">=</span> <span class="s2">&quot;xzx&quot;</span>
-    <span class="n">XXZ</span> <span class="o">=</span> <span class="s2">&quot;xxz&quot;</span>
-    <span class="n">XZZ</span> <span class="o">=</span> <span class="s2">&quot;xzz&quot;</span>
-    <span class="n">ZXZ</span> <span class="o">=</span> <span class="s2">&quot;zxz&quot;</span>
-    <span class="n">ZZX</span> <span class="o">=</span> <span class="s2">&quot;zzx&quot;</span>
-    <span class="c1"># Connectors without H</span>
-    <span class="n">OZX</span> <span class="o">=</span> <span class="s2">&quot;ozx&quot;</span>
-    <span class="n">OXZ</span> <span class="o">=</span> <span class="s2">&quot;oxz&quot;</span>
-    <span class="n">XOZ</span> <span class="o">=</span> <span class="s2">&quot;xoz&quot;</span>
-    <span class="n">ZOX</span> <span class="o">=</span> <span class="s2">&quot;zox&quot;</span>
-    <span class="n">XZO</span> <span class="o">=</span> <span class="s2">&quot;xzo&quot;</span>
-    <span class="n">ZXO</span> <span class="o">=</span> <span class="s2">&quot;zxo&quot;</span>
-    <span class="c1"># Connectors with H</span>
-    <span class="n">OZXH</span> <span class="o">=</span> <span class="s2">&quot;ozxh&quot;</span>
-    <span class="n">OXZH</span> <span class="o">=</span> <span class="s2">&quot;oxzh&quot;</span>
-    <span class="n">ZOXH</span> <span class="o">=</span> <span class="s2">&quot;zoxh&quot;</span>
-    <span class="n">XOZH</span> <span class="o">=</span> <span class="s2">&quot;xozh&quot;</span>
-    <span class="n">ZXOH</span> <span class="o">=</span> <span class="s2">&quot;zxoh&quot;</span>
-    <span class="n">XZOH</span> <span class="o">=</span> <span class="s2">&quot;xzoh&quot;</span>
-
-<div class="viewcode-block" id="BlockType.from_string">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.BlockType.from_string">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">block_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BlockType&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">BlockType</span><span class="p">(</span><span class="n">block_type</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the block type is a connector.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;o&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">has_hadamard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the block type has a hadamard transition.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;h&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
+<div class="viewcode-block" id="parse_block_type_from_str">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.parse_block_type_from_str">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_block_type_from_str</span><span class="p">(</span><span class="n">block_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a block type from a string.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;o&quot;</span> <span class="ow">in</span> <span class="n">block_type</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PipeType</span><span class="p">(</span><span class="n">block_type</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CubeType</span><span class="p">(</span><span class="n">block_type</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
 
-<div class="viewcode-block" id="Block">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.Block">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Block</span><span class="p">:</span>
-    <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span>
-    <span class="n">faces</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]</span></div>
+<span class="n">Geometry</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]]</span>
 
 
-
-<span class="k">def</span> <span class="nf">_create_cube_blocks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Block</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create zxx, xzx, xxz, xzz, zxz, zzx cube blocks.&quot;&quot;&quot;</span>
-    <span class="n">cube_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span> <span class="nf">_create_cube_geometries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create zxx, xzx, xxz, xzz, zxz, zzx cube geometries.&quot;&quot;&quot;</span>
+    <span class="n">cube_geometries</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;zxx&quot;</span><span class="p">,</span> <span class="s2">&quot;xzx&quot;</span><span class="p">,</span> <span class="s2">&quot;xxz&quot;</span><span class="p">,</span> <span class="s2">&quot;xzz&quot;</span><span class="p">,</span> <span class="s2">&quot;zxz&quot;</span><span class="p">,</span> <span class="s2">&quot;zzx&quot;</span><span class="p">]:</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">_XYZ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span>
-                <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">normal_direction</span>
+                <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">,</span> <span class="kc">False</span>
             <span class="p">)</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
             <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">translation</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">))</span>
-        <span class="n">cube_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Block</span><span class="p">(</span><span class="n">BlockType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">faces</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">cube_blocks</span>
+            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_opposite_facing</span><span class="p">())</span>
+        <span class="n">cube_geometries</span><span class="p">[</span><span class="n">parse_block_type_from_str</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">faces</span>
+    <span class="k">return</span> <span class="n">cube_geometries</span>
 
 
-<span class="k">def</span> <span class="nf">_create_connector_blocks_without_h</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Block</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create ozx, oxz, xoz, zox, xzo, zxo connector blocks.&quot;&quot;&quot;</span>
-    <span class="n">connector_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span> <span class="nf">_create_no_h_pipe_geometries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create ozx, oxz, xoz, zox, xzo, zxo pipe geometries.&quot;&quot;&quot;</span>
+    <span class="n">pipe_geometries</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ozx&quot;</span><span class="p">,</span> <span class="s2">&quot;oxz&quot;</span><span class="p">,</span> <span class="s2">&quot;xoz&quot;</span><span class="p">,</span> <span class="s2">&quot;zox&quot;</span><span class="p">,</span> <span class="s2">&quot;xzo&quot;</span><span class="p">,</span> <span class="s2">&quot;zxo&quot;</span><span class="p">]:</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">connector_direction_index</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+        <span class="n">pipe_direction_index</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">face_type</span> <span class="o">==</span> <span class="s2">&quot;o&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">connector_direction_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">pipe_direction_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
-            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">_XYZ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span>
-                <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">normal_direction</span>
+                <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">,</span> <span class="kc">False</span>
             <span class="p">)</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
             <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">translation</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">))</span>
-        <span class="n">connector_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Block</span><span class="p">(</span><span class="n">BlockType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">faces</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">connector_blocks</span>
+            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_opposite_facing</span><span class="p">())</span>
+        <span class="n">pipe_geometries</span><span class="p">[</span><span class="n">parse_block_type_from_str</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">faces</span>
+    <span class="k">return</span> <span class="n">pipe_geometries</span>
 
 
 <span class="k">def</span> <span class="nf">_get_3d_translation</span><span class="p">(</span>
-    <span class="n">connector_direction_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pipe_direction_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">connector_direction_index</span> <span class="o">&lt;=</span> <span class="mi">2</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">pipe_direction_index</span> <span class="o">&lt;=</span> <span class="mi">2</span>
     <span class="n">tmp</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="n">tmp</span><span class="p">[</span><span class="n">connector_direction_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">tmp</span><span class="p">[</span><span class="n">pipe_direction_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">_create_connector_blocks_with_h</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Block</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create ozxh, oxzh, zoxh, xozh, zxoh, xzoh connector blocks.&quot;&quot;&quot;</span>
-    <span class="n">connector_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span> <span class="nf">_create_h_pipe_geometries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create ozxh, oxzh, zoxh, xozh, zxoh, xzoh pipe geometries.&quot;&quot;&quot;</span>
+    <span class="n">pipe_geometries</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ozxh&quot;</span><span class="p">,</span> <span class="s2">&quot;oxzh&quot;</span><span class="p">,</span> <span class="s2">&quot;zoxh&quot;</span><span class="p">,</span> <span class="s2">&quot;xozh&quot;</span><span class="p">,</span> <span class="s2">&quot;zxoh&quot;</span><span class="p">,</span> <span class="s2">&quot;xzoh&quot;</span><span class="p">]:</span>
         <span class="n">faces</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">connector_direction_index</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+        <span class="n">pipe_direction_index</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">face_type</span> <span class="o">==</span> <span class="s2">&quot;o&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">connector_direction_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">pipe_direction_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span>
                 <span class="n">w2</span><span class="p">,</span> <span class="n">h2</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span>
                 <span class="n">w3</span><span class="p">,</span> <span class="n">h3</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span>
@@ -307,39 +301,44 @@
                 <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span>
                 <span class="n">w2</span><span class="p">,</span> <span class="n">h2</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span>
                 <span class="n">w3</span><span class="p">,</span> <span class="n">h3</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.9</span>
-            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">_XYZ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">face1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span><span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">)</span>
-            <span class="n">face2_translation</span> <span class="o">=</span> <span class="n">_get_3d_translation</span><span class="p">(</span><span class="n">connector_direction_index</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
-            <span class="n">face2</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span><span class="n">FaceType</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">,</span> <span class="n">face2_translation</span><span class="p">)</span>
-            <span class="n">face3_translation</span> <span class="o">=</span> <span class="n">_get_3d_translation</span><span class="p">(</span><span class="n">connector_direction_index</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)</span>
+            <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">face1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span>
+                <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">),</span> <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">face2_translation</span> <span class="o">=</span> <span class="n">_get_3d_translation</span><span class="p">(</span><span class="n">pipe_direction_index</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+            <span class="n">face2</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span><span class="n">FaceType</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">face2_translation</span><span class="p">)</span>
+            <span class="n">face3_translation</span> <span class="o">=</span> <span class="n">_get_3d_translation</span><span class="p">(</span><span class="n">pipe_direction_index</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)</span>
             <span class="n">face3</span> <span class="o">=</span> <span class="n">Face</span><span class="p">(</span>
                 <span class="n">FaceType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">)</span><span class="o">.</span><span class="n">opposite</span><span class="p">(),</span>
                 <span class="n">w3</span><span class="p">,</span>
                 <span class="n">h3</span><span class="p">,</span>
                 <span class="n">normal_direction</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
                 <span class="n">face3_translation</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">face1</span><span class="p">,</span> <span class="n">face2</span><span class="p">,</span> <span class="n">face3</span><span class="p">])</span>
             <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">translation</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                <span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="p">[</span><span class="n">face1</span><span class="p">,</span> <span class="n">face2</span><span class="p">,</span> <span class="n">face3</span><span class="p">]</span>
+                <span class="n">face</span><span class="o">.</span><span class="n">translated_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_opposite_facing</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="p">[</span><span class="n">face1</span><span class="p">,</span> <span class="n">face2</span><span class="p">,</span> <span class="n">face3</span><span class="p">]</span>
             <span class="p">)</span>
-        <span class="n">connector_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Block</span><span class="p">(</span><span class="n">BlockType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">faces</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">connector_blocks</span>
+        <span class="n">pipe_geometries</span><span class="p">[</span><span class="n">parse_block_type_from_str</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">faces</span>
+    <span class="k">return</span> <span class="n">pipe_geometries</span>
 
 
-<div class="viewcode-block" id="load_library_blocks">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block.load_library_blocks">[docs]</a>
-<span class="k">def</span> <span class="nf">load_library_blocks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Block</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the 18 library blocks.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="load_library_block_geometries">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.load_library_block_geometries">[docs]</a>
+<span class="k">def</span> <span class="nf">load_library_block_geometries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the geometries of all the library blocks.&quot;&quot;&quot;</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># 6 cube blocks</span>
-    <span class="n">cube_blocks</span> <span class="o">=</span> <span class="n">_create_cube_blocks</span><span class="p">()</span>
-    <span class="c1"># 6 connector blocks without H</span>
-    <span class="n">connector_blocks_without_h</span> <span class="o">=</span> <span class="n">_create_connector_blocks_without_h</span><span class="p">()</span>
-    <span class="c1"># 6 connector blocks with H</span>
-    <span class="n">connector_blocks_with_h</span> <span class="o">=</span> <span class="n">_create_connector_blocks_with_h</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">cube_blocks</span> <span class="o">+</span> <span class="n">connector_blocks_without_h</span> <span class="o">+</span> <span class="n">connector_blocks_with_h</span></div>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_create_cube_geometries</span><span class="p">())</span>
+    <span class="c1"># 6 pipe blocks without H</span>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_create_no_h_pipe_geometries</span><span class="p">())</span>
+    <span class="c1"># 6 pipe blocks with H</span>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_create_h_pipe_geometries</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">geometry</span></div>
 
 </pre></div>
 
