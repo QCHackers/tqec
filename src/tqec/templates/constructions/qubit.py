@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from abc import abstractmethod
+
+from typing_extensions import override
+
 from tqec.exceptions import TQECException
 from tqec.templates.atomic.rectangle import (
     AlternatingRectangleTemplate,
@@ -17,7 +21,13 @@ from tqec.templates.enums import (
 from tqec.templates.scale import LinearFunction
 
 
-class DenseQubitSquareTemplate(ComposedTemplate):
+class ComposedTemplateWithSides(ComposedTemplate):
+    @abstractmethod
+    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
+        pass
+
+
+class DenseQubitSquareTemplate(ComposedTemplateWithSides):
     def __init__(
         self,
         dim: LinearFunction,
@@ -108,11 +118,12 @@ class DenseQubitSquareTemplate(ComposedTemplate):
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
 
+    @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(sum((self._side_indices[side] for side in sides), start=[]))
+        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
 
 
-class QubitVerticalBorders(ComposedTemplate):
+class QubitVerticalBorders(ComposedTemplateWithSides):
     def __init__(
         self,
         dim: LinearFunction,
@@ -192,11 +203,12 @@ class QubitVerticalBorders(ComposedTemplate):
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
 
+    @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(sum((self._side_indices[side] for side in sides), start=[]))
+        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
 
 
-class QubitHorizontalBorders(ComposedTemplate):
+class QubitHorizontalBorders(ComposedTemplateWithSides):
     def __init__(
         self,
         dim: LinearFunction,
@@ -268,5 +280,6 @@ class QubitHorizontalBorders(ComposedTemplate):
             return [(row, midline) for row in range(iteration_shape)]
         return [(midline, column) for column in range(iteration_shape)]
 
+    @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(sum((self._side_indices[side] for side in sides), start=[]))
+        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))

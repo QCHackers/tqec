@@ -1,4 +1,5 @@
-import cirq
+import typing
+from collections import defaultdict
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
@@ -58,3 +59,8 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+
+Plaquettes = typing.Union[
+    list[Plaquette], dict[int, Plaquette], defaultdict[int, Plaquette]
+]

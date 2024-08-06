@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import numbers
+import bisect
 import typing
 from copy import deepcopy
 
@@ -35,12 +35,17 @@ class ScheduleEntryTooLowException(ScheduleException):
 
 
 class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
-    def __init__(self, schedule: list[int], number_of_non_virtual_moments: int) -> None:
+    def __init__(
+        self,
+        circuit: cirq.Circuit,
+        schedule: list[int],
+        number_of_non_virtual_moments: int,
+    ) -> None:
         super().__init__(
             (
                 f"The provided schedule contains {len(schedule)} entries, but "
                 f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
-                "provided circuit."
+                f"provided circuit:\n{circuit}"
             )
         )
 
@@ -48,9 +53,7 @@ class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
 class ScheduledCircuit:
     VIRTUAL_MOMENT_SCHEDULE: int = -1000
 
-    def __init__(
-        self, circuit: cirq.Circuit, schedule: list[int] | None = None
-    ) -> None:
+    def __init__(self, circuit: cirq.Circuit, schedule: list[int] | int = 0) -> None:
         """Represent a quantum circuit with scheduled moments.
 
         This class aims at representing a Circuit instance that has all its moments
@@ -66,10 +69,12 @@ class ScheduledCircuit:
 
         Args:
             circuit: the instance of Circuit that is scheduled.
-            schedule: a sorted list of time slices indices. The list should
-                contain as many indices as there are non-virtual moments in the
-                provided Circuit instance. If the list is None, it default to
-                `list(range(number_of_non_virtual_moments))`.
+            schedule: a sorted list of time slices indices or an integer. If a list
+                is given, it should contain as many indices as there are non-virtual
+                moments in the provided Circuit instance. If an integer is provided,
+                each non-virtual moment of the provided Circuit is scheduled
+                sequentially, starting by the provided schedule:
+                `list(range(schedule, schedule + self._number_of_non_virtual_moments))`.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -79,14 +84,16 @@ class ScheduledCircuit:
             for moment in circuit.moments
         ]
         self._number_of_non_virtual_moments: int = sum(self._is_non_virtual_moment_list)
-        if schedule is None:
-            schedule = list(range(self._number_of_non_virtual_moments))
+        if isinstance(schedule, int):
+            schedule = list(
+                range(schedule, schedule + self._number_of_non_virtual_moments)
+            )
         else:
             ScheduledCircuit._check_input_validity(circuit, schedule)
 
         self._raw_circuit: cirq.Circuit = circuit
         self._schedule: list[int]
-        self.schedule = schedule
+        self._set_schedule(schedule)
 
     @staticmethod
     def _check_input_validity(circuit: cirq.Circuit, schedule: list[int]) -> None:
@@ -154,7 +161,7 @@ class ScheduledCircuit:
         )
         if len(schedule) != non_virtual_moments_number:
             raise ScheduleCannotBeAppliedToCircuitException(
-                schedule, non_virtual_moments_number
+                circuit, schedule, non_virtual_moments_number
             )
 
     @staticmethod
@@ -218,14 +225,17 @@ class ScheduledCircuit:
             )
         return ScheduledCircuit(circuit, final_schedule)
 
+    def _set_schedule(self, new_schedule: list[int]) -> None:
+        ScheduledCircuit._check_input_validity(self.raw_circuit, new_schedule)
+        self._schedule = new_schedule
+
     @property
     def schedule(self) -> list[int]:
         return self._schedule
 
     @schedule.setter
     def schedule(self, new_schedule: list[int]) -> None:
-        ScheduledCircuit._check_input_validity(self.raw_circuit, new_schedule)
-        self._schedule = new_schedule
+        self._set_schedule(new_schedule)
 
     @property
     def raw_circuit(self) -> cirq.Circuit:
@@ -353,6 +363,48 @@ class ScheduledCircuit:
                 for moment in circuit.moments
             ]
         )
+
+    def add_to_schedule_index(self, schedule: int, moment: cirq.Moment) -> None:
+        """Add the operations contained in the provided moment at the provided
+        schedule.
+
+        Args:
+            schedule: schedule at which operations in `moment` should be added.
+            moment: operations that should be added.
+        """
+        # Performing a self.schedule.index, but handling the ValueError is tedious.
+        schedule_index = next(
+            (i for i, sched in enumerate(self._schedule) if sched == schedule), None
+        )
+        if schedule_index is None:
+            # We have to insert a new schedule and a new Moment.
+            insertion_index = bisect.bisect_left(self._schedule, schedule)
+            self._schedule.insert(insertion_index, schedule)
+            self._raw_circuit.insert(insertion_index, moment)
+            self._number_of_non_virtual_moments += ScheduledCircuit._is_virtual_moment(
+                moment
+            )
+        else:
+            # Else, the schedule already exists, in which case we just need to add the
+            # operations to an existing moment. Note that this might fail if two
+            # operations overlap.
+            try:
+                was_virtual_moment = ScheduledCircuit._is_virtual_moment(
+                    self._raw_circuit[schedule_index]
+                )
+                self._raw_circuit[schedule_index] += moment
+                is_virtual_moment = ScheduledCircuit._is_virtual_moment(
+                    self._raw_circuit[schedule_index]
+                )
+                self._number_of_non_virtual_moments += (
+                    not was_virtual_moment and is_virtual_moment
+                )
+            except ValueError as e:
+                raise TQECException(
+                    "Trying to merge two Moment instances that overlap.\n"
+                    f"Existing:\n{self._raw_circuit[schedule_index]}\n"
+                    f"Trying to add:\n{moment}."
+                ) from e
 
 
 class ScheduledCircuits:

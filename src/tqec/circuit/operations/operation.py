@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import typing
 from dataclasses import dataclass
 from typing import Any, Sequence
 
 import cirq
+import stim
 
 from tqec.exceptions import TQECException
 
@@ -59,7 +61,7 @@ class ShiftCoords(cirq.Operation):
     def qubits(self) -> tuple[cirq.Qid, ...]:
         return ()
 
-    def with_qubits(self, *new_qubits: cirq.Qid) -> "ShiftCoords":
+    def with_qubits(self, *new_qubits: cirq.Qid) -> ShiftCoords:
         return self
 
     def __repr__(self) -> str:
@@ -132,7 +134,7 @@ class RelativeMeasurementsRecord(cirq.Operation):
     def qubits(self) -> tuple[cirq.Qid, ...]:
         return ()
 
-    def with_qubits(self, *new_qubits: cirq.Qid) -> "RelativeMeasurementsRecord":
+    def with_qubits(self, *new_qubits: cirq.Qid) -> RelativeMeasurementsRecord:
         return self
 
     @property
@@ -355,3 +357,99 @@ def make_observable(
     return Observable(
         local_coordinate_system_origin, relative_measurements_data, observable_index
     ).with_tags(cirq.VirtualTag(), STIM_TAG)
+
+
+@cirq.value_equality
+class RX(cirq.Operation):
+    """Reset in the X-basis."""
+
+    def __init__(self, *qubits: cirq.Qid) -> None:
+        """Create the X-reset operation.
+
+        Args:
+            qubits: the qubits that should be reset by the operation.
+        """
+        self._qubits = tuple(qubits)
+
+    @property
+    def qubits(self) -> tuple[cirq.Qid, ...]:
+        return self._qubits
+
+    def with_qubits(self, *new_qubits: cirq.Qid) -> RX:
+        return RX(*new_qubits)
+
+    def _value_equality_values_(self) -> tuple[cirq.Qid, ...]:
+        return self._qubits
+
+    def _circuit_diagram_info_(self, args: Any) -> str:
+        k = ",".join(repr(e) for e in self.qubits)
+        return f"RX {k}"
+
+    @staticmethod
+    def _json_namespace_() -> str:
+        return ""
+
+    def _json_dict_(self) -> dict[str, Any]:
+        return {"qubits": self.qubits}
+
+    def __repr__(self) -> str:
+        return f"tqec.circuit.operations.operation.RX({self.qubits!r})"
+
+    def _decompose_(self) -> list[Any]:
+        return []
+
+    def _is_comment_(self) -> bool:
+        return False
+
+    def _stim_conversion_(
+        self, edit_circuit: stim.Circuit, **kwargs: dict[str, typing.Any]
+    ) -> None:
+        edit_circuit.append_operation("RX", list(self.qubits), None)
+
+
+@cirq.value_equality
+class MX(cirq.Operation):
+    """Measurement in the X-basis."""
+
+    def __init__(self, *qubits: cirq.Qid) -> None:
+        """Create the X-measurement operation.
+
+        Args:
+            qubits: the qubits that should be measured by the operation.
+        """
+        self._qubits = tuple(qubits)
+
+    @property
+    def qubits(self) -> tuple[cirq.Qid, ...]:
+        return self._qubits
+
+    def with_qubits(self, *new_qubits: cirq.Qid) -> MX:
+        return MX(*new_qubits)
+
+    def _value_equality_values_(self) -> Any:
+        return self._qubits
+
+    def _circuit_diagram_info_(self, args: Any) -> str:
+        k = ",".join(repr(e) for e in self.qubits)
+        return f"MX {k}"
+
+    @staticmethod
+    def _json_namespace_() -> str:
+        return ""
+
+    def _json_dict_(self) -> dict[str, Any]:
+        return {"qubits": self.qubits}
+
+    def __repr__(self) -> str:
+        return f"tqec.circuit.operations.operation.MX({self.qubits!r})"
+
+    def _decompose_(self) -> list[Any]:
+        return []
+
+    def _is_comment_(self) -> bool:
+        return False
+
+    def _stim_conversion_(
+        self, edit_circuit: stim.Circuit, **kwargs: dict[str, typing.Any]
+    ) -> None:
+        edit_circuit.append_operation("MX", list(self.qubits), None)

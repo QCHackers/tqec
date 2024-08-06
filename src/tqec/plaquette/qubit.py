@@ -67,7 +67,7 @@ class PlaquetteQubits:
 
         Args:
             orientation (TemplateOrientation, optional): Wheter to use horizontal or
-                vertical orientation. Defaults to horizontal.
+                vertical orientation as the axis. Defaults to horizontal.
         Returns:
             list[PlaquetteQubit]: The qubits on the edge of the plaquette.
         """
@@ -85,6 +85,32 @@ class PlaquetteQubits:
             for qubit in self.data_qubits
             if (_get_relevant_value(qubit) == max_index)
         ]
+
+    def get_qubits_on_side(self, side: PlaquetteSide) -> list[PlaquetteQubit]:
+        """Return the qubits one the provided side of the instance.
+
+        A qubit is on the left-side if there is no other qubit in the instance
+        with a strictly lower x-coordinate value. Similarly, a qubit is on the
+        right-side if there is no other qubit in the instance with a strictly
+        greater x-coordinate value. Up and down are about the y-coordinate.
+
+        Args:
+            side: the side to find qubits on.
+        Returns:
+            list[PlaquetteQubit]: The qubits on the edge of the plaquette.
+        """
+        if side == PlaquetteSide.LEFT:
+            min_x = min(q.position.x for q in self)
+            return [q for q in self if q.position.x == min_x]
+        elif side == PlaquetteSide.RIGHT:
+            max_x = max(q.position.x for q in self)
+            return [q for q in self if q.position.x == max_x]
+        elif side == PlaquetteSide.UP:
+            min_y = min(q.position.y for q in self)
+            return [q for q in self if q.position.y == min_y]
+        else:  # if orientation == PlaquetteSide.DOWN:
+            max_y = max(q.position.y for q in self)
+            return [q for q in self if q.position.y == max_y]
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):
