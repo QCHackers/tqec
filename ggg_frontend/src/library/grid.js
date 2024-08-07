@@ -8,7 +8,7 @@ export const makeGrid = (app, gridSize = 50, isRotated = true) => {
 	/**
 	 * Two grids are possible:
 	 * - a square grid with horizontal and vertical lines running at a distance equal to the gridSize
-	 * - a square grid with 45°/-45° lines, intersecting where the qubits are located 
+	 * - a square grid with 45°/-45° lines, intersecting where the qubits are located
 	 */
 	// Create a PIXI.Graphics object for the grid
 	const grid = new Graphics();

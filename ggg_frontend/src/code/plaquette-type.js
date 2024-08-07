@@ -81,7 +81,7 @@ export default class PlaquetteType extends Plaquette {
         // Horizontally aligned with a cell.
         let is_valid_translation = (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) % plaquetteDx === 0;
         // Vertically aligned with a cell.
-        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) % plaquetteDy === 0; 
+        is_valid_translation = is_valid_translation && (translate_y/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.y) % plaquetteDy === 0;
         // Horizontally within the cells in the guide.
         is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) + plaquetteDx <= GUIDE_MAX_BOTTOM_RIGHT_CORNER_CODE_WORKSPACE[0] - GUIDE_TOP_LEFT_CORNER_CODE_WORKSPACE[0];
         is_valid_translation = is_valid_translation && (translate_x/GRID_SIZE_CODE_WORKSPACE - this.base_translate_vector.x) >= 0;

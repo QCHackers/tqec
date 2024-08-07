@@ -415,7 +415,7 @@ class ColladaDisplayHelper:
             let scene = new Scene();
             scene.background = new Color("#CBDFC6");
             // Ambient light
-            const ambientLight = new AmbientLight(0xffffff, 3); 
+            const ambientLight = new AmbientLight(0xffffff, 3);
 
             scene.add(ambientLight);
 

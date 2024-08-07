@@ -82,7 +82,7 @@ def test_iter_by_moment_repeat_block() -> None:
     assert len(moment.body_copy()) == 9
     circuit = stim.Circuit("""
         R 0 1 2 3 4
-        TICK 
+        TICK
         CX 0 1 2 3
         TICK
         CX 2 1 4 3

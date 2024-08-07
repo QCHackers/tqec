@@ -10,12 +10,12 @@ TQEC
 .. toctree::
    :maxdepth: 2
    :hidden:
-   
+
    Introduction <self>
    Automatic detector computation <detectors>
 
 .. toctree::
    :maxdepth: 2
    :caption: Notebooks:
-   
+
    Automatic detector computation <media/detectors/detector_computation_illustration>

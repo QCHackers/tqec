@@ -68,9 +68,9 @@ export default class Plaquette extends Graphics {
 
 	/**
 	 * Create the convex hull using the naive algorithm
-     * 
+     *
      * Start from a verical line left to the qubits.
-     * Then 
+     * Then
 	 */
 	_createConvexHull(line_thickness = 10) {
         if (this.qubits.length === 0) return;

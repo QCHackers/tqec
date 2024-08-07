@@ -3,14 +3,14 @@ import { QUBIT_ROLES } from '../constants'
 
 /**
  * Create the circuit as ASCII art.
- * 
+ *
  * Two forms of circuits are possible:
- * 
+ *
  * [] "cnot"
  *    - Hadamard on the data qubits
  *    - only CNOT as 2q gates
  *    - every CNOT is controlled by a data qubit and targets the ancilla
- * 
+ *
  * [] "univ"
  *    - Hadamard on the ancilla qubit
  *    - both CNOT and CZ as 2q gates
@@ -94,7 +94,7 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 	lines.push(line);
 	// Add time ruler.
 	if (with_time) {
-		//      Q(__,__): 
+		//      Q(__,__):
 		line = '          ';
 		let line2 = 'time ruler';
 		for (let i = 0; i<data_qubits.length+4; i++) {
@@ -117,9 +117,9 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 
 /**
  * Create the circuit as stim code snippet.
- * 
+ *
  * For simplicity, a single form of circuits is available:
- * 
+ *
  * [] "univ"
  *    - Hadamard on the ancilla qubit
  *    - both CNOT and CZ as 2q gates
