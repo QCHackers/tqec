@@ -20,7 +20,7 @@ class ResetBasis(Enum):
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == ResetBasis.X:
             return RX(q).with_tags(Plaquette._MERGEABLE_TAG)
-        else: # self == ResetBasis.Z:
+        else:  # self == ResetBasis.Z:
             return cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
 
 
