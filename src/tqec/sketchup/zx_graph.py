@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast, Any
+from typing import TYPE_CHECKING, cast
 from enum import Enum
 from dataclasses import dataclass, astuple
 import itertools
