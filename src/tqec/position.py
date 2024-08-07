@@ -1,6 +1,6 @@
 import typing as ty
+from dataclasses import astuple, dataclass
 from enum import Enum
-from dataclasses import dataclass, astuple
 
 from tqec.exceptions import TQECException
 
