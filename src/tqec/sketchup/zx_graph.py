@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import copy
 from typing import TYPE_CHECKING, cast
 from enum import Enum
 from dataclasses import dataclass, astuple
@@ -148,7 +149,9 @@ class ZXGraph:
         Args:
             position: The 3D position of the node.
             node_type: The type of the node.
-            raise_if_exist: Whether to raise an exception if the node already exists.
+            raise_if_exist: Whether to raise an exception if the position already exists
+                in the graph. If set to False, when the position already exists, the node
+                type will be updated to the new type. Default is True.
 
         """
         if raise_if_exist and position in self._graph:
@@ -360,6 +363,35 @@ class ZXGraph:
         parent_zx_node_type: NodeType,
         visited_positions: set[Position3D],
     ) -> list[set[ZXEdge]]:
+        """Recursively find all the correlation subgraphs starting from a node,
+        represented by the correlation edges in the subgraph.
+
+        The algorithm is as follows:
+        1. Initialization
+            - Initialize the `correlation_subgraphs` as an empty list.
+            - Add the parent to the `visited_positions`.
+            - Initialize a list `branched_subgraph` to hold subgraphs constructed
+            from the neighbors of the parent.
+        2. Iterate through all edges connected to parent. For each edge:
+            - If the child node is already visited, skip the edge.
+            - Determine the correlation type of the child node based on the correlation
+            type of the parent and the Hadamard transition.
+            - Create a new correlation node for the child and the correlation edge
+            between the parent and the child.
+            - Recursively call this method to find the correlation subgraphs starting
+            from the child. Then add the edge in the last step to each of the subgraphs.
+            Append the subgraphs to the `branched_subgraph`.
+        3. Post-processing
+            - If no subgraphs are found, return a single empty subgraph.
+            - If the color of the node matches the correlation type, all the children
+            should be traversed. Iterate through all the combinations where exactly one
+            subgraph is selected from each child, and union them to form a new subgraph.
+            Append the new subgraph to the `correlation_subgraphs`.
+            - If the color of the node does not match the correlation type, only one
+            child can be traversed. Append all the subgraphs in the `branched_subgraph`
+            to the `correlation_subgraphs`.
+
+        """
         correlation_subgraphs: list[set[ZXEdge]] = []
         parent_position = parent_corr_node.position
         parent_corr_type = parent_corr_node.node_type
@@ -381,7 +413,9 @@ class ZXGraph:
                 [
                     subgraph | {edge_between_cur_parent}
                     for subgraph in self._find_correlation_subgraphs_dfs(
-                        cur_corr_node, cur_zx_node.node_type, set(visited_positions)
+                        cur_corr_node,
+                        cur_zx_node.node_type,
+                        copy(visited_positions),
                     )
                 ]
             )
@@ -407,12 +441,16 @@ class ZXGraph:
         Each node in the correlation subgraph is composed of its position and
         the correlation surface type, which is either `NodeType.X` or `NodeType.Z`.
 
-        For the closed diagram, the correlation
-        subgraph represents the correlation between the measured logical observables.
-        For the open diagram, the correlation subgraph represents the correlation
-        between the measured logical observables and the input/output observables,
-        which can be combined with the expected stabilizer flow to verify the correctness
-        of the computation.
+        For the closed diagram, the correlation subgraph represents the correlation
+        between the measured logical observables. For the open diagram, the
+        correlation subgraph represents the correlation between the measured logical
+        observables and the input/output observables, which can be combined with
+        the expected stabilizer flow to verify the correctness of the computation.
+
+        A recursive depth-first search algorithm is used to find the correlation
+        subgraphs starting from each leaf node. The algorithm is described in the
+        method `_find_correlation_subgraphs_dfs`.
+
         """
         single_node_correlation_subgraphs: list[ZXGraph] = []
         multi_edges_correlation_subgraphs: dict[frozenset[ZXEdge], ZXGraph] = {}
@@ -436,7 +474,6 @@ class ZXGraph:
                 subgraph = ZXGraph(
                     f"Correlation subgraph {num_subgraphs} of {self.name}"
                 )
-                subgraph.add_node(node.position, correlation_type)
                 for edge in edges:
                     subgraph.add_node(
                         edge.u.position, edge.u.node_type, raise_if_exist=False
