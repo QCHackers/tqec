@@ -215,7 +215,8 @@
 <span class="k">def</span> <span class="nf">_annotation_safety_check</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the first moment of the circuit for the presence of specific tqec annotations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the first moment of the circuit for the presence of specific tqec</span>
+<span class="sd">    annotations.</span>
 
 <span class="sd">    The `Detector`/`Observable` annotations should not be present in the first moment of the circuit</span>
 <span class="sd">    as there are no measurements to refer to. This function checks for the presence of these annotations</span>

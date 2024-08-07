@@ -103,7 +103,8 @@
 <div class="viewcode-block" id="Position.to_grid_qubit">
 <a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position.to_grid_qubit">[docs]</a>
     <span class="k">def</span> <span class="nf">to_grid_qubit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the position as a tuple following the cirq.GridQubit coordinate system.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the position as a tuple following the cirq.GridQubit</span>
+<span class="sd">        coordinate system.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
 </div>
 
@@ -131,9 +132,10 @@
     <span class="k">def</span> <span class="nf">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the shape according to numpy indexing.</span>
 
-<span class="sd">        In the coordinate system used in this library, numpy indexes arrays</span>
-<span class="sd">        using (y, x) coordinates. This method is here to translate a Shape</span>
-<span class="sd">        instance to a numpy shape transparently for the user.</span>
+<span class="sd">        In the coordinate system used in this library, numpy indexes</span>
+<span class="sd">        arrays using (y, x) coordinates. This method is here to</span>
+<span class="sd">        translate a Shape instance to a numpy shape transparently for</span>
+<span class="sd">        the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
 </div>
@@ -146,7 +148,7 @@
 <span class="k">class</span> <span class="nc">Displacement</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
 
-<span class="sd">    This class is here to explicitely name the type of variables as displacements</span>
+<span class="sd">    This class is here to explicitly name the type of variables as displacements</span>
 <span class="sd">    instead of having a tuple[int, int] that could be:</span>
 <span class="sd">    - a position,</span>
 <span class="sd">    - a shape,</span>
@@ -183,7 +185,8 @@
 <div class="viewcode-block" id="Position3D.is_neighbour">
 <a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position3D.is_neighbour">[docs]</a>
     <span class="k">def</span> <span class="nf">is_neighbour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Position3D&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the other position is near to this position, i.e. Manhattan distance is 1.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the other position is near to this position, i.e. Manhattan</span>
+<span class="sd">        distance is 1.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">z</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="p">)</span></div>

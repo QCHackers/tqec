@@ -100,7 +100,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ResetBasis</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RX</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">Plaquette</span><span class="o">.</span><span class="n">_MERGEABLE_TAG</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># self == ResetBasis.Z:</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># self == ResetBasis.Z:</span>
             <span class="k">return</span> <span class="n">cirq</span><span class="o">.</span><span class="n">R</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">Plaquette</span><span class="o">.</span><span class="n">_MERGEABLE_TAG</span><span class="p">)</span></div>
 
 
@@ -125,7 +125,8 @@
     <span class="n">pauli_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">reset_syndrome_qubit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build and return a quantum circuit measuring the provided Pauli syndrome.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build and return a quantum circuit measuring the provided Pauli</span>
+<span class="sd">    syndrome.</span>
 
 <span class="sd">    This function builds a quantum circuit measuring the Pauli observable</span>
 <span class="sd">    provided in `pauli_string` on the provided `data_qubits`, using</span>
@@ -140,7 +141,7 @@
 <span class="sd">            `data_qubits` as there are Pauli characters in the provided</span>
 <span class="sd">            `pauli_string`.</span>
 <span class="sd">        pauli_string: a string of case-independent characters, each</span>
-<span class="sd">            representing a Pauli matrix. Each charater should be present in</span>
+<span class="sd">            representing a Pauli matrix. Each character should be present in</span>
 <span class="sd">            _SUPPORTED_PAULI and the string should have as many characters as</span>
 <span class="sd">            there are qubits in `data_qubits`.</span>
 <span class="sd">        reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the</span>
@@ -198,12 +199,12 @@
     <span class="n">data_qubit_reset_basis</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_qubit_measurement_basis</span><span class="p">:</span> <span class="n">MeasurementBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plaquette</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic function to create a :class:`Plaquette` instance measuring a given</span>
-<span class="sd">    Pauli string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic function to create a :class:`Plaquette` instance measuring a</span>
+<span class="sd">    given Pauli string.</span>
 
 <span class="sd">    Warning:</span>
 <span class="sd">        This function cannot change the order in which data qubits, Pauli &quot;chars&quot; (one</span>
-<span class="sd">        caracter of the provided Pauli string) and schedule are provided. That means</span>
+<span class="sd">        character of the provided Pauli string) and schedule are provided. That means</span>
 <span class="sd">        that it cannot group X and Z basis measurements.</span>
 <span class="sd">        In practice, an input Pauli string &quot;XZXZXZ&quot; will lead to 3 pairs of Hadamard</span>
 <span class="sd">        gates being included to measure the 3 X Pauli strings. The `schedule` provided</span>

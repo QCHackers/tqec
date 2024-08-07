@@ -155,7 +155,7 @@
 <span class="sd">        - vertices that are integers, representing indices of Template instances stored</span>
 <span class="sd">          in the ordered list stored alongside the graph,</span>
 <span class="sd">        - edges that are connecting two vertices (i.e., two Template instances) that</span>
-<span class="sd">          are relatively positionned between each other.</span>
+<span class="sd">          are relatively positioned between each other.</span>
 
 <span class="sd">        The relative position is internally stored as a tuple of corners that should</span>
 <span class="sd">        represent the same underlying qubit. Each edge between vertices A and B should</span>
@@ -269,7 +269,7 @@
         <span class="n">template_id_to_position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">relative_position</span><span class="p">:</span> <span class="n">TemplateRelativePositionEnum</span><span class="p">,</span>
         <span class="n">anchor_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComposedTemplate</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a relative positioning between two templates.</span>
 
 <span class="sd">        This method has the same effect as ``add_corner_relation`` (it</span>
@@ -281,7 +281,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            template_id_to_position: index of the template that should be</span>
-<span class="sd">                positionned relatively to the provided anchor.</span>
+<span class="sd">                positioned relatively to the provided anchor.</span>
 <span class="sd">            relative_position: the relative position of the template provided as</span>
 <span class="sd">                first parameter with respect to the anchor provided as third</span>
 <span class="sd">                parameter. Can be any of ``LEFT_OF``, ``RIGHT_OF``, ``BELOW_OF``</span>
@@ -329,12 +329,12 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">template_id_to_position_corner</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">],</span>
         <span class="n">anchor_id_corner</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">CornerPositionEnum</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComposedTemplate&quot;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComposedTemplate</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a relative positioning between two templates.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            template_id_to_position_corner: a tuple containing the index of the</span>
-<span class="sd">                template that should be positionned relatively to the provided</span>
+<span class="sd">                template that should be positioned relatively to the provided</span>
 <span class="sd">                anchor and the corner that should be considered.</span>
 <span class="sd">            anchor_id_corner: a tuple containing the index of the (anchor)</span>
 <span class="sd">                template that should be used to position the template instance</span>
@@ -431,8 +431,8 @@
     <span class="k">def</span> <span class="nf">_get_bounding_box_from_ul_positions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Scalable2D</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box containing all the templates from their</span>
-<span class="sd">        upper-left corner position.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box containing all the templates from their upper-</span>
+<span class="sd">        left corner position.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ul_positions: a mapping between templates indices and their upper-left</span>
@@ -468,8 +468,8 @@
     <span class="k">def</span> <span class="nf">_get_bounding_boxes_from_ul_positions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ScalableBoundingBox</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box of each individual tempalte contained in the instance</span>
-<span class="sd">        from their computed upper-left corner position.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bounding box of each individual template contained in the</span>
+<span class="sd">        instance from their computed upper-left corner position.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ul_positions: a mapping between templates indices and their upper-left</span>
@@ -506,7 +506,8 @@
     <span class="k">def</span> <span class="nf">_get_shape_from_ul_positions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ul_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the upper-left corner positions of each template.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the shape of the represented code from the upper-left corner</span>
+<span class="sd">        positions of each template.&quot;&quot;&quot;</span>
         <span class="c1"># ul: upper-left</span>
         <span class="c1"># br: bottom-right</span>
         <span class="n">ul</span><span class="p">,</span> <span class="n">br</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bounding_box_from_ul_positions</span><span class="p">(</span><span class="n">ul_positions</span><span class="p">)</span>
@@ -598,7 +599,7 @@
 <div class="viewcode-block" id="ComposedTemplate.scale_to">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.composed.ComposedTemplate.scale_to">[docs]</a>
     <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales all the scalable component templates to the given scale ``k``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales all the scalable component templates to the given scale `k`.</span>
 
 <span class="sd">        Note that this function scales the template instance INLINE.</span>
 

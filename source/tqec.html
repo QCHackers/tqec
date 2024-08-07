@@ -729,7 +729,7 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Displacement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/position.html#Displacement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Displacement" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simple wrapper around tuple[int, int].</p>
-<p>This class is here to explicitely name the type of variables as displacements
+<p>This class is here to explicitly name the type of variables as displacements
 instead of having a tuple[int, int] that could be:
 - a position,
 - a shape,
@@ -761,7 +761,8 @@ instead of having a tuple[int, int] that could be:
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.position.Position.to_grid_qubit">
 <span class="sig-name descname"><span class="pre">to_grid_qubit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position.to_grid_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position.to_grid_qubit" title="Link to this definition"></a></dt>
-<dd><p>Returns the position as a tuple following the cirq.GridQubit coordinate system.</p>
+<dd><p>Returns the position as a tuple following the cirq.GridQubit
+coordinate system.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -790,7 +791,8 @@ instead of having a tuple[int, int] that could be:
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.position.Position3D.is_neighbour">
 <span class="sig-name descname"><span class="pre">is_neighbour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position3D.is_neighbour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position3D.is_neighbour" title="Link to this definition"></a></dt>
-<dd><p>Check if the other position is near to this position, i.e. Manhattan distance is 1.</p>
+<dd><p>Check if the other position is near to this position, i.e. Manhattan
+distance is 1.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -831,9 +833,10 @@ instead of having a tuple[int, int] that could be:
 <dt class="sig sig-object py" id="tqec.position.Shape2D.to_numpy_shape">
 <span class="sig-name descname"><span class="pre">to_numpy_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Shape2D.to_numpy_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Shape2D.to_numpy_shape" title="Link to this definition"></a></dt>
 <dd><p>Returns the shape according to numpy indexing.</p>
-<p>In the coordinate system used in this library, numpy indexes arrays
-using (y, x) coordinates. This method is here to translate a Shape
-instance to a numpy shape transparently for the user.</p>
+<p>In the coordinate system used in this library, numpy indexes
+arrays using (y, x) coordinates. This method is here to
+translate a Shape instance to a numpy shape transparently for
+the user.</p>
 </dd></dl>
 
 <dl class="py attribute">

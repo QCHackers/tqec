@@ -276,8 +276,8 @@
         <span class="n">root_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span>
         <span class="n">library_node_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library nodes and</span>
-<span class="sd">        the necessary material, geometry definitions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library</span>
+<span class="sd">        nodes and the necessary material, geometry definitions.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="n">root_node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">library_node_handles</span> <span class="o">=</span> <span class="n">library_node_handles</span>
@@ -425,8 +425,8 @@
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.Transformation">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Transformation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transformation data class to store the translation, scale, rotation, and the</span>
-<span class="sd">    composed affine matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transformation data class to store the translation, scale, rotation, and</span>
+<span class="sd">    the composed affine matrix.</span>
 
 <span class="sd">    For the reference of the transformation matrix, see https://en.wikipedia.org/wiki/Transformation_matrix.</span>
 
@@ -445,7 +445,7 @@
 <div class="viewcode-block" id="Transformation.from_4d_affine_matrix">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.Transformation.from_4d_affine_matrix">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Transformation&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Transformation</span><span class="p">:</span>
         <span class="n">translation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
@@ -457,7 +457,8 @@
 <div class="viewcode-block" id="ColladaDisplayHelper">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.ColladaDisplayHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">ColladaDisplayHelper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to display a Collada DAE file in IPython compatible environments.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to display a Collada DAE file in IPython compatible</span>
+<span class="sd">    environments.&quot;&quot;&quot;</span>
 
     <span class="n">HTML_TEMPLATE</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;!DOCTYPE html&gt;</span>
@@ -507,7 +508,7 @@
 <span class="s2">            let scene = new Scene();</span>
 <span class="s2">            scene.background = new Color(&quot;#CBDFC6&quot;);</span>
 <span class="s2">            // Ambient light</span>
-<span class="s2">            const ambientLight = new AmbientLight(0xffffff, 3); </span>
+<span class="s2">            const ambientLight = new AmbientLight(0xffffff, 3);</span>
 
 <span class="s2">            scene.add(ambientLight);</span>
 
@@ -638,7 +639,8 @@
     <span class="n">filepath_or_bytes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span>
     <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaDisplayHelper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a 3D model from a Collada DAE file in IPython compatible environments.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a 3D model from a Collada DAE file in IPython compatible</span>
+<span class="sd">    environments.</span>
 
 <span class="sd">    This function references the the code snippet from the `stim.Circuit().diagram()` method.</span>
 

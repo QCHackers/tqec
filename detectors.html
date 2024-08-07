@@ -105,7 +105,7 @@ specifically to the code in this sub-module:</p>
 <ul class="simple">
 <li><p>it should be self-contained, or in other words it should not call code from the main
 <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package, with the exception of code within <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code>,</p></li>
-<li><p>it should avoid uneeded dependencies. For that reason, the code in <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code>
+<li><p>it should avoid unneeded dependencies. For that reason, the code in <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code>
 does not use <code class="docutils literal notranslate"><span class="pre">cirq</span></code> as its intermediary representation but directly operates on
 <code class="docutils literal notranslate"><span class="pre">stim</span></code> data-structures.</p></li>
 </ul>
@@ -193,7 +193,7 @@ shown in the illustration below:</p>
 <img alt="_images/stabilizer-creation.png" src="_images/stabilizer-creation.png" />
 <p>Here, the fragment is creating a <code class="docutils literal notranslate"><span class="pre">Z0Z2</span></code> stabilizer: the <code class="docutils literal notranslate"><span class="pre">Z</span></code> Pauli string
 comes out of the final moment of the fragment on qubits <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
-<p>Quantum circuit can also “destroy” some incomming stabilizers with its measurements
+<p>Quantum circuit can also “destroy” some incoming stabilizers with its measurements
 as shown below:</p>
 <img alt="_images/stabilizer-destruction.png" src="_images/stabilizer-destruction.png" />
 <p>Here, the fragment is destroying an incoming <code class="docutils literal notranslate"><span class="pre">Z0Z2</span></code> stabilizer.</p>

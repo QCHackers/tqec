@@ -152,7 +152,8 @@ noisy version of the given operation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.noise_models.after_clifford_depolarization.is_clifford">
 <span class="sig-name descname"><span class="pre">is_clifford</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Operation</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/noise_models/after_clifford_depolarization.html#is_clifford"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.noise_models.after_clifford_depolarization.is_clifford" title="Link to this definition"></a></dt>
-<dd><p>Inefficiently checks if a given operation implements a Clifford operation</p>
+<dd><p>Inefficiently checks if a given operation implements a Clifford
+operation.</p>
 <p>The check is implemented by recovering the unitary matrix of the operation and
 trying to initialise a stim.Tableau from it. Both steps are costly for large
 operations, which is the reason why this function will print a warning if the
@@ -175,7 +176,7 @@ else False.</p>
 <dt class="sig sig-object py" id="tqec.noise_models.after_reset_flip.AfterResetFlipNoise">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AfterResetFlipNoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/noise_models/after_reset_flip.html#AfterResetFlipNoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.noise_models.after_reset_flip.AfterResetFlipNoise" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tqec.noise_models.base.BaseNoiseModel" title="tqec.noise_models.base.BaseNoiseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNoiseModel</span></code></a></p>
-<p>Base class for all <cite>tqec</cite> noise models</p>
+<p>Base class for all <cite>tqec</cite> noise models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>probability</strong> – strength of the noise described by the instance.</p>
@@ -239,7 +240,7 @@ instruction, this noise channel will <strong>not</strong> add any noise.</p>
 <dt class="sig sig-object py" id="tqec.noise_models.base.BaseNoiseModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseNoiseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/noise_models/base.html#BaseNoiseModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.noise_models.base.BaseNoiseModel" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NoiseModel</span></code></p>
-<p>Base class for all <cite>tqec</cite> noise models</p>
+<p>Base class for all <cite>tqec</cite> noise models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>probability</strong> – strength of the noise described by the instance.</p>
@@ -258,7 +259,7 @@ instruction, this noise channel will <strong>not</strong> add any noise.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.noise_models.base.BaseNoiseModel.recurse_in_operation_if_circuit_operation">
 <span class="sig-name descname"><span class="pre">recurse_in_operation_if_circuit_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Operation</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Operation</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">OpTree</span></span></span><a class="reference internal" href="../_modules/tqec/noise_models/base.html#BaseNoiseModel.recurse_in_operation_if_circuit_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.noise_models.base.BaseNoiseModel.recurse_in_operation_if_circuit_operation" title="Link to this definition"></a></dt>
-<dd><p>Helper method to handle cirq.CircuitOperation nearly transparently</p>
+<dd><p>Helper method to handle cirq.CircuitOperation nearly transparently.</p>
 <p>This method is here to help sub-classes handle cirq.CircuitOperation instances
 nearly transparently: they simply have to think about using this method if they stumble
 upon such an operation, and that is all!</p>

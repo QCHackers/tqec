@@ -350,8 +350,7 @@
 <span class="sd">      linear function encoded change and,</span>
 <span class="sd">    - a list of `n+1` instances of `LinearFunction`, representing the linear</span>
 <span class="sd">      functions on each of the `n+1` intervals represented by the `n` separators</span>
-<span class="sd">      (and both -infinity and +infinity that are never stored explicitely).</span>
-
+<span class="sd">      (and both -infinity and +infinity that are never stored explicitly).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
@@ -360,7 +359,8 @@
 <div class="viewcode-block" id="PiecewiseLinearFunction.__post_init__">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.__post_init__">[docs]</a>
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the invariants that should be met by any instance of this class.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the invariants that should be met by any instance of this</span>
+<span class="sd">        class.</span>
 
 <span class="sd">        First, there should be one more `LinearFunction` instance than there are</span>
 <span class="sd">        separators stored in the class.</span>
@@ -475,7 +475,8 @@
 <div class="viewcode-block" id="PiecewiseLinearFunction.simplify">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.simplify">[docs]</a>
     <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce the number of intervals this function is defined on, if possible.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce the number of intervals this function is defined on, if</span>
+<span class="sd">        possible.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            a new instance with a number of separators that is lower or equal to</span>
@@ -768,8 +769,8 @@
 <div class="viewcode-block" id="ScalableBoundingBox.inside">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableBoundingBox.inside">[docs]</a>
     <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Intervals</span><span class="p">,</span> <span class="n">Intervals</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns intervals in which the X and Y coordinates should both be for the</span>
-<span class="sd">        provided point to be in the bounding box.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns intervals in which the X and Y coordinates should both be</span>
+<span class="sd">        for the provided point to be in the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            point: a scalable point.</span>

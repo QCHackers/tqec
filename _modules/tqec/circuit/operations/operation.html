@@ -94,8 +94,7 @@
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords">[docs]</a>
 <span class="k">class</span> <span class="nc">ShiftCoords</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Annotates that the qubit/detector coordinate origin is being moved.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Annotates that the qubit/detector coordinate origin is being moved.</span>
 
 <span class="sd">        This is a replication of the</span>
 <span class="sd">        [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)</span>
@@ -156,7 +155,8 @@
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RelativeMeasurementData</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The relative_measurement_data of a spatially and temporally relative measurement</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The relative_measurement_data of a spatially and temporally relative</span>
+<span class="sd">    measurement.</span>
 
 <span class="sd">    This class stores two attributes (relative_qubit_positioning and</span>
 <span class="sd">    relative_measurement_offset) that respectively represent a spatial</span>
@@ -199,8 +199,9 @@
         <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
         <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of relative measurement data representing measurements relative</span>
-<span class="sd">        to the origin of local coordinate system and current measurement timestamp.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of relative measurement data representing measurements</span>
+<span class="sd">        relative to the origin of local coordinate system and current</span>
+<span class="sd">        measurement timestamp.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
@@ -365,8 +366,8 @@
 <div class="viewcode-block" id="make_shift_coords">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_shift_coords">[docs]</a>
 <span class="k">def</span> <span class="nf">make_shift_coords</span><span class="p">(</span><span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:~ShiftCoords operation with the</span>
-<span class="sd">    `cirq.VirtualTag` tag.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:~ShiftCoords operation with</span>
+<span class="sd">    the `cirq.VirtualTag` tag.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        *shifts: How much to shift each coordinate.</span>
@@ -432,8 +433,8 @@
     <span class="p">],</span>
     <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Observable` operation with the</span>
-<span class="sd">    `cirq.VirtualTag` tag.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Observable` operation with</span>
+<span class="sd">    the `cirq.VirtualTag` tag.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        local_coordinate_system_origin: origin of the local coordinate system.</span>

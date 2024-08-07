@@ -92,13 +92,12 @@
 <a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubit">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PlaquetteQubit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines a qubit in the plaquette coordinate system</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines a qubit in the plaquette coordinate system.</span>
 
-<span class="sd">    This class initially had more attributes, which ended-up being flagged</span>
-<span class="sd">    as superfluous and so have been removed.</span>
-<span class="sd">    For now, it only stores the position of the qubit in the plaquette</span>
-<span class="sd">    coordinate system and implements an helper method to get a cirq.GridQubit</span>
-<span class="sd">    instance.</span>
+<span class="sd">    This class initially had more attributes, which ended-up being</span>
+<span class="sd">    flagged as superfluous and so have been removed. For now, it only</span>
+<span class="sd">    stores the position of the qubit in the plaquette coordinate system</span>
+<span class="sd">    and implements an helper method to get a cirq.GridQubit instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">position</span><span class="p">:</span> <span class="n">Position</span>
@@ -168,11 +167,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the data qubits on the edge of the plaquette.</span>
-<span class="sd">        By convention, the edge is the one with the highest index in the relevant axis.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the data qubits on the edge of the plaquette. By convention,</span>
+<span class="sd">        the edge is the one with the highest index in the relevant axis.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            orientation (TemplateOrientation, optional): Wheter to use horizontal or</span>
+<span class="sd">            orientation (TemplateOrientation, optional): Whether to use horizontal or</span>
 <span class="sd">                vertical orientation as the axis. Defaults to horizontal.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            list[PlaquetteQubit]: The qubits on the edge of the plaquette.</span>

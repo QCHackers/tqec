@@ -85,7 +85,8 @@
 <div class="viewcode-block" id="is_clifford">
 <a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.after_clifford_depolarization.is_clifford">[docs]</a>
 <span class="k">def</span> <span class="nf">is_clifford</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inefficiently checks if a given operation implements a Clifford operation</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inefficiently checks if a given operation implements a Clifford</span>
+<span class="sd">    operation.</span>
 
 <span class="sd">    The check is implemented by recovering the unitary matrix of the operation and</span>
 <span class="sd">    trying to initialise a stim.Tableau from it. Both steps are costly for large</span>

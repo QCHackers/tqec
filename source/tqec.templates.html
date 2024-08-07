@@ -179,7 +179,8 @@ two plaquettes.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="tqec.templates.base.Template.expected_plaquettes_number">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.base.Template.expected_plaquettes_number" title="Link to this definition"></a></dt>
-<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite>
+method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
@@ -270,8 +271,8 @@ the underlying shape of the template.</p>
 <dt class="sig sig-object py" id="tqec.templates.base.TemplateWithIndices">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateWithIndices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/base.html#TemplateWithIndices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.base.TemplateWithIndices" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A wrapper around a Template instance and the indices representing the plaquettes
-it should be instantiated with.</p>
+<p>A wrapper around a Template instance and the indices representing the
+plaquettes it should be instantiated with.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.base.TemplateWithIndices.indices">
 <span class="sig-name descname"><span class="pre">indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.templates.base.TemplateWithIndices.indices" title="Link to this definition"></a></dt>
@@ -302,7 +303,7 @@ templates are stored in an oriented graph with:
 </div></blockquote>
 <ul class="simple">
 <li><p>edges that are connecting two vertices (i.e., two Template instances) that
-are relatively positionned between each other.</p></li>
+are relatively positioned between each other.</p></li>
 </ul>
 <p>The relative position is internally stored as a tuple of corners that should
 represent the same underlying qubit. Each edge between vertices A and B should
@@ -360,7 +361,7 @@ two plaquettes.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>template_id_to_position_corner</strong> – a tuple containing the index of the
-template that should be positionned relatively to the provided
+template that should be positioned relatively to the provided
 anchor and the corner that should be considered.</p></li>
 <li><p><strong>anchor_id_corner</strong> – a tuple containing the index of the (anchor)
 template that should be used to position the template instance
@@ -387,7 +388,7 @@ it provides is simpler to use and read than <code class="docutils literal notran
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>template_id_to_position</strong> – index of the template that should be
-positionned relatively to the provided anchor.</p></li>
+positioned relatively to the provided anchor.</p></li>
 <li><p><strong>relative_position</strong> – the relative position of the template provided as
 first parameter with respect to the anchor provided as third
 parameter. Can be any of <code class="docutils literal notranslate"><span class="pre">LEFT_OF</span></code>, <code class="docutils literal notranslate"><span class="pre">RIGHT_OF</span></code>, <code class="docutils literal notranslate"><span class="pre">BELOW_OF</span></code>
@@ -454,7 +455,8 @@ between plaquettes of the template.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.expected_plaquettes_number">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expected_plaquettes_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.expected_plaquettes_number" title="Link to this definition"></a></dt>
-<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
+<dd><p>Returns the number of plaquettes expected from the <cite>instantiate</cite>
+method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of plaquettes expected from the <cite>instantiate</cite> method.</p>
@@ -531,7 +533,7 @@ its parent Template class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.composed.ComposedTemplate.scale_to">
 <span class="sig-name descname"><span class="pre">scale_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/composed.html#ComposedTemplate.scale_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.composed.ComposedTemplate.scale_to" title="Link to this definition"></a></dt>
-<dd><p>Scales all the scalable component templates to the given scale <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
+<dd><p>Scales all the scalable component templates to the given scale <cite>k</cite>.</p>
 <p>Note that this function scales the template instance INLINE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -677,9 +679,10 @@ to <cite>template.instantiate</cite> to get the actual template representation.<
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemplateRelativePositionEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/enums.html#TemplateRelativePositionEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Represent a relative position between two Template instances.</p>
-<p>Template relative positions are stored as the relative displacement needed to
-encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
-on the left is one unit backwards on the X-axis.</p>
+<p>Template relative positions are stored as the relative displacement
+needed to encode the position. For example, LEFT_OF is encoded as
+(-1, 0) as a template on the left is one unit backwards on the
+X-axis.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.enums.TemplateRelativePositionEnum.ABOVE_OF">
 <span class="sig-name descname"><span class="pre">ABOVE_OF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Position(x=0,</span> <span class="pre">y=-1)</span></em><a class="headerlink" href="#tqec.templates.enums.TemplateRelativePositionEnum.ABOVE_OF" title="Link to this definition"></a></dt>
@@ -779,7 +782,8 @@ bound is included in the interval or excluded from it.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.interval.Interval.contains">
 <span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.contains" title="Link to this definition"></a></dt>
-<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else <cite>False</cite>.</p>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else
+<cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -801,8 +805,8 @@ bound is included in the interval or excluded from it.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.interval.Interval.is_disjoint">
 <span class="sig-name descname"><span class="pre">is_disjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.is_disjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.is_disjoint" title="Link to this definition"></a></dt>
-<dd><p>Returns <cite>True</cite> if <cite>self</cite> does not overlap with the provided interval,
-else <cite>False</cite>.</p>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> does not overlap with the provided
+interval, else <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -814,7 +818,8 @@ else <cite>False</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.interval.Interval.overlaps_with">
 <span class="sig-name descname"><span class="pre">overlaps_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Interval.overlaps_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Interval.overlaps_with" title="Link to this definition"></a></dt>
-<dd><p>Returns <cite>True</cite> if <cite>self</cite> overlaps with the provided interval, else <cite>False</cite>.</p>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> overlaps with the provided interval, else
+<cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -856,7 +861,8 @@ manipulate them using union / intersection operations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.interval.Intervals.contains">
 <span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/templates/interval.html#Intervals.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.interval.Intervals.contains" title="Link to this definition"></a></dt>
-<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else <cite>False</cite>.</p>
+<dd><p>Returns <cite>True</cite> if <cite>self</cite> contains the provided value, else
+<cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1032,7 +1038,7 @@ to be continuous) by storing:</p>
 linear function encoded change and,</p></li>
 <li><p>a list of <cite>n+1</cite> instances of <cite>LinearFunction</cite>, representing the linear
 functions on each of the <cite>n+1</cite> intervals represented by the <cite>n</cite> separators
-(and both -infinity and +infinity that are never stored explicitely).</p></li>
+(and both -infinity and +infinity that are never stored explicitly).</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.__call__">
@@ -1052,7 +1058,8 @@ provided point.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.__post_init__">
 <span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#PiecewiseLinearFunction.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.__post_init__" title="Link to this definition"></a></dt>
-<dd><p>Check the invariants that should be met by any instance of this class.</p>
+<dd><p>Check the invariants that should be met by any instance of this
+class.</p>
 <p>First, there should be one more <cite>LinearFunction</cite> instance than there are
 separators stored in the class.
 Secondly, separators should be sorted in increasing order.</p>
@@ -1086,7 +1093,8 @@ Secondly, separators should be sorted in increasing order.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.PiecewiseLinearFunction.simplify">
 <span class="sig-name descname"><span class="pre">simplify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.templates.scale.PiecewiseLinearFunction" title="tqec.templates.scale.PiecewiseLinearFunction"><span class="pre">PiecewiseLinearFunction</span></a></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#PiecewiseLinearFunction.simplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.PiecewiseLinearFunction.simplify" title="Link to this definition"></a></dt>
-<dd><p>Reduce the number of intervals this function is defined on, if possible.</p>
+<dd><p>Reduce the number of intervals this function is defined on, if
+possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a new instance with a number of separators that is lower or equal to
@@ -1160,8 +1168,8 @@ the number of separators in <cite>self</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.scale.ScalableBoundingBox.inside">
 <span class="sig-name descname"><span class="pre">inside</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.scale.Scalable2D" title="tqec.templates.scale.Scalable2D"><span class="pre">Scalable2D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tqec.templates.interval.Intervals" title="tqec.templates.interval.Intervals"><span class="pre">Intervals</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/scale.html#ScalableBoundingBox.inside"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.scale.ScalableBoundingBox.inside" title="Link to this definition"></a></dt>
-<dd><p>Returns intervals in which the X and Y coordinates should both be for the
-provided point to be in the bounding box.</p>
+<dd><p>Returns intervals in which the X and Y coordinates should both be
+for the provided point to be in the bounding box.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>point</strong> – a scalable point.</p>

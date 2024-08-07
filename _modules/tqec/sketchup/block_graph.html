@@ -80,22 +80,22 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">astuple</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">Direction3D</span>
-<span class="kn">from</span> <span class="nn">tqec.sketchup.zx_graph</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ZXGraph</span><span class="p">,</span>
-    <span class="n">NodeType</span><span class="p">,</span>
-    <span class="n">ZXNode</span><span class="p">,</span>
-    <span class="n">ZXEdge</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Position3D</span>
+<span class="kn">from</span> <span class="nn">tqec.sketchup.zx_graph</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NodeType</span><span class="p">,</span>
+    <span class="n">ZXEdge</span><span class="p">,</span>
+    <span class="n">ZXGraph</span><span class="p">,</span>
+    <span class="n">ZXNode</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="k">if</span> <span class="n">ty</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">ColladaDisplayHelper</span>
@@ -128,7 +128,7 @@
 <div class="viewcode-block" id="Color3D.null">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.Color3D.null">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">null</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;Color3D&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">null</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Color3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the null color.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Color3D</span><span class="p">(</span><span class="n">Color</span><span class="o">.</span><span class="n">NULL</span><span class="p">,</span> <span class="n">Color</span><span class="o">.</span><span class="n">NULL</span><span class="p">,</span> <span class="n">Color</span><span class="o">.</span><span class="n">NULL</span><span class="p">)</span></div>
 
@@ -167,7 +167,7 @@
 <div class="viewcode-block" id="Color3D.from_string">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.Color3D.from_string">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flip_xz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Color3D&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flip_xz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color3D</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;virtual&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Color3D</span><span class="o">.</span><span class="n">null</span><span class="p">()</span>
@@ -223,7 +223,7 @@
 <div class="viewcode-block" id="CubeType.from_color">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.from_color">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_color</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="n">Color3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CubeType&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_color</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="n">Color3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CubeType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the cube type from the color.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">is_null</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span>
@@ -235,10 +235,11 @@
 <div class="viewcode-block" id="CubeType.normal_direction_to_corner_plane">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.normal_direction_to_corner_plane">[docs]</a>
     <span class="k">def</span> <span class="nf">normal_direction_to_corner_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the cube is at a corner, return the normal direction to the corner plane.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the cube is at a corner, return the normal direction to the</span>
+<span class="sd">        corner plane.</span>
 
-<span class="sd">        Due to the color match rule at the corner turn, the corner plane can be inferred</span>
-<span class="sd">        from the type of the cube.</span>
+<span class="sd">        Due to the color match rule at the corner turn, the corner plane</span>
+<span class="sd">        can be inferred from the type of the cube.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer the corner plane for a virtual cube.&quot;</span><span class="p">)</span>
@@ -255,7 +256,8 @@
         <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe type connecting this cube at some direction with the color match rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe type connecting this cube at some direction with the</span>
+<span class="sd">        color match rule.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer the pipe type for a virtual cube.&quot;</span><span class="p">)</span>
         <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span><span class="o">.</span><span class="n">pop_color_at_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
@@ -308,7 +310,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_color_at_side</span><span class="p">(</span>
         <span class="n">color</span><span class="p">:</span> <span class="n">Color3D</span><span class="p">,</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PipeType&quot;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the pipe type from the color at one side.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_null</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="n">color</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -349,7 +351,8 @@
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.Cube">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Cube</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block representing the computational unit in a 3D spacetime diagram.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block representing the computational unit in a 3D spacetime</span>
+<span class="sd">    diagram.&quot;&quot;&quot;</span>
 
     <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span>
     <span class="n">cube_type</span><span class="p">:</span> <span class="n">CubeType</span>
@@ -367,8 +370,8 @@
 <span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two cubes in a 3D spacetime diagram.</span>
 
-<span class="sd">    The pipe represents the idle or merge/split lattice surgery operation on logical</span>
-<span class="sd">    qubits depending on its direction.</span>
+<span class="sd">    The pipe represents the idle or merge/split lattice surgery</span>
+<span class="sd">    operation on logical qubits depending on its direction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">u</span><span class="p">:</span> <span class="n">Cube</span>
@@ -399,8 +402,8 @@
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph">[docs]</a>
 <span class="k">class</span> <span class="nc">BlockGraph</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of a 3D spacetime defect diagram with</span>
-<span class="sd">        the block structures explicitly defined.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of a 3D spacetime defect diagram</span>
+<span class="sd">        with the block structures explicitly defined.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 
@@ -538,7 +541,7 @@
                 <span class="p">)</span>
         <span class="c1"># 3. Match color at turn</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipe_directions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="c1"># since we have checked the pass-throught match</span>
+            <span class="c1"># since we have checked the pass-through match</span>
             <span class="c1"># we only have to check that the surrounding walls at the turn plane have the same color</span>
             <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">cube_type</span><span class="o">.</span><span class="n">normal_direction_to_corner_plane</span><span class="p">()</span> <span class="ow">in</span> <span class="n">pipe_directions</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -574,7 +577,7 @@
 <div class="viewcode-block" id="BlockGraph.from_zx_graph">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.from_zx_graph">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_zx_graph</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BlockGraph&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_zx_graph</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a block graph from a ZX graph.</span>
 
 <span class="sd">        The ZX graph includes the minimal information required to construct the block graph,</span>
@@ -705,9 +708,7 @@
 <div class="viewcode-block" id="BlockGraph.from_dae_file">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.from_dae_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_dae_file</span><span class="p">(</span>
-        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BlockGraph&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_dae_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a block graph from a DAE file.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">read_block_graph_from_dae_file</span>
 
@@ -718,18 +719,20 @@
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.display">[docs]</a>
     <span class="k">def</span> <span class="nf">display</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">wirte_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ColladaDisplayHelper&quot;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaDisplayHelper</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the block graph in 3D.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
-        <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">display_collada_model</span>
+        <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">display_collada_model</span><span class="p">,</span>
+            <span class="n">write_block_graph_to_dae_file</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
         <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">display_collada_model</span><span class="p">(</span>
             <span class="n">filepath_or_bytes</span><span class="o">=</span><span class="n">bytes_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
-            <span class="n">write_html_filepath</span><span class="o">=</span><span class="n">wirte_html_filepath</span><span class="p">,</span>
+            <span class="n">write_html_filepath</span><span class="o">=</span><span class="n">write_html_filepath</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 

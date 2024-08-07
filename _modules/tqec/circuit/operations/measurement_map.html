@@ -104,7 +104,8 @@
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap">[docs]</a>
 <span class="k">class</span> <span class="nc">CircuitMeasurementMap</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores information about all the measurements found in the provided circuit</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores information about all the measurements found in the provided</span>
+<span class="sd">        circuit.</span>
 
 <span class="sd">        This class provides a method to recover the global record offset of a given</span>
 <span class="sd">        measurement from local information about this measurement.</span>
@@ -124,7 +125,8 @@
     <span class="k">def</span> <span class="nf">get_measurement_relative_offset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">qubit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="n">measurement_offset</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover the record offset of the given local measurement description</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover the record offset of the given local measurement</span>
+<span class="sd">        description.</span>
 
 <span class="sd">        This is the main method of CircuitMeasurementMap. It allows to query for measurements</span>
 <span class="sd">        with their local temporal description and to recover the global offset that should be</span>
@@ -201,7 +203,8 @@
         <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">,</span>
         <span class="n">_measurement_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes and returns the global measurement indices for the given circuit</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes and returns the global measurement indices for the given</span>
+<span class="sd">        circuit.</span>
 
 <span class="sd">        This method API takes into account the fact that some information need to be passed</span>
 <span class="sd">        across recursions and so is not really user-friendly.</span>
@@ -261,7 +264,8 @@
     <span class="n">measurement_map</span><span class="p">:</span> <span class="n">CircuitMeasurementMap</span><span class="p">,</span>
     <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes, from the data in the given measurement_map, the global measurement offsets</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes, from the data in the given measurement_map, the global</span>
+<span class="sd">    measurement offsets.</span>
 
 <span class="sd">    This method uses the global data computed in the CircuitMeasurementMap instance given as</span>
 <span class="sd">    parameter to compute the measurement record indices for the current gate instance.</span>

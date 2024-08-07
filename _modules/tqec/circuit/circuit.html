@@ -97,7 +97,7 @@
     <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span>
     <span class="n">plaquettes</span><span class="p">:</span> <span class="n">Plaquettes</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a quantum circuit from a template and its plaquettes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a quantum circuit from a template and its plaquettes.</span>
 
 <span class="sd">    This is one of the core methods of the `tqec` package. It generates a quantum circuit</span>
 <span class="sd">    from the description of the template that should be implemented as well as the plaquettes</span>
@@ -125,7 +125,7 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        TQECException: if ``len(plaquettes) != template.expected_plaquettes_number`` or</span>
-<span class="sd">            if plaquettes is provided as a dicitonary and ``0 in plaquettes``.</span>
+<span class="sd">            if plaquettes is provided as a dictionary and ``0 in plaquettes``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check that the user gave enough plaquettes.</span>
     <span class="k">if</span> <span class="p">(</span>
@@ -157,7 +157,7 @@
         <span class="n">i</span><span class="p">:</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_indices</span>
     <span class="p">}</span>
 
-    <span class="c1"># Generate the ScheduledCircuit instances for each plaquette instanciation</span>
+    <span class="c1"># Generate the ScheduledCircuit instances for each plaquette instantiation</span>
     <span class="n">all_scheduled_circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">plaquette_index</span><span class="p">:</span> <span class="nb">int</span>
     <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">template_plaquettes</span><span class="p">):</span>
