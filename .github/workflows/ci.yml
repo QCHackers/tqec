@@ -21,9 +21,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
+          python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Run pre-commit hooks
-        run: python -m pre-commit run --all-files
+        run: pre-commit run --all-files
 
   build-and-test-python:
     runs-on: ubuntu-latest
@@ -41,21 +41,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
+          python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Analyze code with pylint
         run: |
-          pip install pylint
+          python -m pip install pylint
           pylint $(git ls-files '*.py')
         continue-on-error: true
       - name: Build
         run: pip install .
       - name: Test and coverage
         run: |
-          pip install pytest pytest-cov
+          python -m pip install pytest pytest-cov
           pytest --cov=src/tqec $(git ls-files '*_test.py')
       - name: Mypy type checking
         run: |
-          pip install mypy
+          python -m pip install mypy
           mypy src/tqec/
 
   build-and-test-nodejs:
