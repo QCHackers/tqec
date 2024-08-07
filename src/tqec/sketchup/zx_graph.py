@@ -85,14 +85,16 @@ class ZXGraph:
     def __init__(self, name: str) -> None:
         """An undirected graph representation of a 3D spacetime defect diagram.
 
-        Despite the name, the graph is not exactly the ZX-calculus graph as rewrite rules
-        can not be applied to the graph arbitrarily. The graph must correspond to a valid
-        3D spacetime diagram, which can be realized with the lattice surgery on the 2D
-        patches of surface code. And rewrite rules can only be applied with respect to a
-        valid physical realization of the spacetime diagram.
+        Despite the name, the graph is not exactly the ZX-calculus graph
+        as rewrite rules can not be applied to the graph arbitrarily.
+        The graph must correspond to a valid 3D spacetime diagram, which
+        can be realized with the lattice surgery on the 2D patches of
+        surface code. And rewrite rules can only be applied with respect
+        to a valid physical realization of the spacetime diagram.
 
-        Note that not all ZX graph admits a valid spacetime diagram representation. And the
-        graph construction **does not check** the validity constraints.
+        Note that not all ZX graph admits a valid spacetime diagram
+        representation. And the graph construction **does not check**
+        the validity constraints.
         """
         self._name = name
         # Internal undirected graph representation
@@ -152,7 +154,6 @@ class ZXGraph:
             raise_if_exist: Whether to raise an exception if the position already exists
                 in the graph. If set to False, when the position already exists, the node
                 type will be updated to the new type. Default is True.
-
         """
         if raise_if_exist and position in self._graph:
             raise TQECException(f"Node {position} already exists in the graph.")
@@ -335,7 +336,7 @@ class ZXGraph:
         fig.tight_layout()
         plt.show()
 
-    def to_block_graph(self, name: str = "") -> "BlockGraph":
+    def to_block_graph(self, name: str = "") -> BlockGraph:
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -390,7 +391,6 @@ class ZXGraph:
             - If the color of the node does not match the correlation type, only one
             child can be traversed. Append all the subgraphs in the `branched_subgraph`
             to the `correlation_subgraphs`.
-
         """
         correlation_subgraphs: list[set[ZXEdge]] = []
         parent_position = parent_corr_node.position
@@ -450,7 +450,6 @@ class ZXGraph:
         A recursive depth-first search algorithm is used to find the correlation
         subgraphs starting from each leaf node. The algorithm is described in the
         method `_find_correlation_subgraphs_dfs`.
-
         """
         single_node_correlation_subgraphs: list[ZXGraph] = []
         multi_edges_correlation_subgraphs: dict[frozenset[ZXEdge], ZXGraph] = {}

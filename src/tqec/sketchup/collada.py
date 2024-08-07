@@ -192,8 +192,8 @@ class _BaseColladaData:
         root_node: collada.scene.Node,
         library_node_handles: dict[BlockType, collada.scene.Node],
     ) -> None:
-        """The base model template including the definition of all the library nodes and
-        the necessary material, geometry definitions."""
+        """The base model template including the definition of all the library
+        nodes and the necessary material, geometry definitions."""
         self.mesh = mesh
         self.root_node = root_node
         self.library_node_handles = library_node_handles
@@ -339,8 +339,8 @@ def _load_base_collada_data() -> _BaseColladaData:
 
 @dataclass(frozen=True)
 class Transformation:
-    """Transformation data class to store the translation, scale, rotation, and the
-    composed affine matrix.
+    """Transformation data class to store the translation, scale, rotation, and
+    the composed affine matrix.
 
     For the reference of the transformation matrix, see https://en.wikipedia.org/wiki/Transformation_matrix.
 
@@ -357,7 +357,7 @@ class Transformation:
     affine_matrix: npt.NDArray[np.float_]
 
     @staticmethod
-    def from_4d_affine_matrix(mat: npt.NDArray[np.float_]) -> "Transformation":
+    def from_4d_affine_matrix(mat: npt.NDArray[np.float_]) -> Transformation:
         translation = mat[:3, 3]
         scale = np.linalg.norm(mat[:3, :3], axis=1)
         rotation = mat[:3, :3] / scale[:, None]
@@ -365,7 +365,8 @@ class Transformation:
 
 
 class ColladaDisplayHelper:
-    """Helper class to display a Collada DAE file in IPython compatible environments."""
+    """Helper class to display a Collada DAE file in IPython compatible
+    environments."""
 
     HTML_TEMPLATE = r"""
 <!DOCTYPE html>
@@ -415,7 +416,7 @@ class ColladaDisplayHelper:
             let scene = new Scene();
             scene.background = new Color("#CBDFC6");
             // Ambient light
-            const ambientLight = new AmbientLight(0xffffff, 3); 
+            const ambientLight = new AmbientLight(0xffffff, 3);
 
             scene.add(ambientLight);
 
@@ -543,7 +544,8 @@ def display_collada_model(
     filepath_or_bytes: str | pathlib.Path | bytes,
     write_html_filepath: str | pathlib.Path | None = None,
 ) -> ColladaDisplayHelper:
-    """Display a 3D model from a Collada DAE file in IPython compatible environments.
+    """Display a 3D model from a Collada DAE file in IPython compatible
+    environments.
 
     This function references the the code snippet from the `stim.Circuit().diagram()` method.
 

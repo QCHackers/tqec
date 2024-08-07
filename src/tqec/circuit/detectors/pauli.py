@@ -61,7 +61,8 @@ class PauliString:
     def from_stim_pauli_string(
         stim_pauli_string: stim.PauliString,
     ) -> PauliString:
-        """Convert a `stim.PauliString` to a `PauliString` instance, ignoring the sign."""
+        """Convert a `stim.PauliString` to a `PauliString` instance, ignoring
+        the sign."""
         return PauliString(
             {
                 q: _IXYZ[stim_pauli_string[q]]
@@ -123,7 +124,8 @@ class PauliString:
         return not self.anticommutes(other)
 
     def anticommutes(self, other: PauliString) -> bool:
-        """Check if this Pauli string anticommutes with another Pauli string."""
+        """Check if this Pauli string anticommutes with another Pauli
+        string."""
         t = 0
         for q in self._pauli_by_qubit.keys() & other._pauli_by_qubit.keys():
             t += self._pauli_by_qubit[q] != other._pauli_by_qubit[q]

@@ -19,7 +19,7 @@ class Plaquette:
         qubits: PlaquetteQubits,
         circuit: ScheduledCircuit,
     ) -> None:
-        """Represents a QEC plaquette
+        """Represents a QEC plaquette.
 
         This class stores qubits in the plaquette local coordinate system and a scheduled
         circuit that should be applied on those qubits to perform the QEC experiment.

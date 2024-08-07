@@ -42,11 +42,9 @@ class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
         number_of_non_virtual_moments: int,
     ) -> None:
         super().__init__(
-            (
-                f"The provided schedule contains {len(schedule)} entries, but "
-                f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
-                f"provided circuit:\n{circuit}"
-            )
+            f"The provided schedule contains {len(schedule)} entries, but "
+            f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
+            f"provided circuit:\n{circuit}"
         )
 
 
@@ -97,7 +95,8 @@ class ScheduledCircuit:
 
     @staticmethod
     def _check_input_validity(circuit: cirq.Circuit, schedule: list[int]) -> None:
-        """Asserts that the given inputs are valid to construct a ScheduledCircuit instance.
+        """Asserts that the given inputs are valid to construct a
+        ScheduledCircuit instance.
 
         Args:
             schedule: the schedule to check.
@@ -167,8 +166,8 @@ class ScheduledCircuit:
     @staticmethod
     def from_multi_qubit_moment_schedule(
         circuit: cirq.Circuit, multi_qubit_moment_schedule: list[int]
-    ) -> "ScheduledCircuit":
-        """Construct a ScheduledCircuit from scheduled multi-qubit gates
+    ) -> ScheduledCircuit:
+        """Construct a ScheduledCircuit from scheduled multi-qubit gates.
 
         This construction method basically auto-schedules single-qubit gates from
         the schedule of multi-qubit ones.
@@ -257,17 +256,16 @@ class ScheduledCircuit:
 
     @property
     def mappable_qubits(self) -> frozenset[cirq.GridQubit]:
-        """Return the set of qubits involved in the circuit that can be mapped, which is
-        the union of the qubits of all the operations performed on and the origin of all
-        the detectors.
-        """
+        """Return the set of qubits involved in the circuit that can be mapped,
+        which is the union of the qubits of all the operations performed on and
+        the origin of all the detectors."""
         operation_qubits = self.qubits
-        detector_origins = set(detector.origin for detector in self.detectors)
+        detector_origins = {detector.origin for detector in self.detectors}
         return frozenset(operation_qubits.union(detector_origins))
 
     def map_to_qubits(
         self, qubit_map: dict[cirq.GridQubit, cirq.GridQubit], inplace: bool = False
-    ) -> "ScheduledCircuit":
+    ) -> ScheduledCircuit:
         """Map the qubits the ScheduledCircuit instance is applied on.
 
         This method forwards most of its logic to the underlying raw_circuit
@@ -306,13 +304,13 @@ class ScheduledCircuit:
         operand.raw_circuit = operand.raw_circuit.map_operations(remap_qubits)
         return operand
 
-    def __copy__(self) -> "ScheduledCircuit":
+    def __copy__(self) -> ScheduledCircuit:
         return ScheduledCircuit(
             self._raw_circuit,
             self._schedule,
         )
 
-    def __deepcopy__(self, memo: dict[typing.Any, typing.Any]) -> "ScheduledCircuit":
+    def __deepcopy__(self, memo: dict[typing.Any, typing.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._raw_circuit, memo=memo),
             deepcopy(self._schedule, memo=memo),
@@ -320,14 +318,16 @@ class ScheduledCircuit:
 
     @property
     def scheduled_moments(self) -> typing.Iterator[tuple[cirq.Moment, int]]:
-        """Yields Moment instances with their computed schedule
+        """Yields Moment instances with their computed schedule.
 
-        This property yields all the scheduled moments. Virtual moments are scheduled
-        at the timeslice ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE.
+        This property yields all the scheduled moments. Virtual moments
+        are scheduled at the timeslice
+        `ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE`.
 
-        The yielded elements are **NOT** sorted with respect to their schedule.
-        Removing all the virtual elements from the yielded items, the remaining elements
-        are sorted with respect to their schedule.
+        The yielded elements are **NOT** sorted with respect to their
+        schedule. Removing all the virtual elements from the yielded
+        items, the remaining elements are sorted with respect to their
+        schedule.
         """
         non_virtual_moment_index: int = 0
         for i, moment in enumerate(self.moments):
@@ -426,20 +426,24 @@ class ScheduledCircuits:
     def has_pending_moment(self) -> bool:
         """Checks if any of the managed instances has a pending moment.
 
-        Any moment that has not been collected by using collect_moment is considered to be pending.
+        Any moment that has not been collected by using collect_moment
+        is considered to be pending.
         """
         return any(self._has_pending_moment(i) for i in range(len(self._circuits)))
 
     def _has_pending_moment(self, index: int) -> bool:
-        """Check if the managed instance at the given index has a pending operation."""
+        """Check if the managed instance at the given index has a pending
+        operation."""
         return self._current_moments[index] is not None
 
     def _peek_scheduled_moment(self, index: int) -> tuple[cirq.Moment, int] | None:
-        """Recover **without collecting** the pending operation for the instance at the given index."""
+        """Recover **without collecting** the pending operation for the
+        instance at the given index."""
         return self._current_moments[index]
 
     def _pop_scheduled_moment(self, index: int) -> tuple[cirq.Moment, int]:
-        """Recover and mark as collected the pending moment for the instance at the given index.
+        """Recover and mark as collected the pending moment for the instance at
+        the given index.
 
         Raises:
             AssertionError: if not self.has_pending_operation(index).
@@ -492,7 +496,7 @@ class ScheduledCircuits:
 def remove_duplicate_operations(
     operations: list[cirq.Operation],
 ) -> list[cirq.Operation]:
-    """Removes all the duplicate mergeable operations from the given list
+    """Removes all the duplicate mergeable operations from the given list.
 
     An instance of cirq.Operation is considered mergeable if it is tagged
     with the tag returned by Plaquette.get_mergeable_tag().
@@ -525,7 +529,7 @@ def remove_duplicate_operations(
 
 
 def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
-    """Merge several ScheduledCircuit instances into one cirq.Circuit instance
+    """Merge several ScheduledCircuit instances into one cirq.Circuit instance.
 
     This function takes several scheduled circuits as input and merge them,
     respecting their schedules, into a unique cirq.Circuit instance that will

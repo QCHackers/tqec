@@ -119,8 +119,8 @@ def match_detectors_within_fragment(
     flows: FragmentFlows | FragmentLoopFlows,
     qubit_coordinates: dict[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
-    """Match all the detectors that can be resolved without considering neighbouring
-    fragments.
+    """Match all the detectors that can be resolved without considering
+    neighbouring fragments.
 
     Some detectors only include measurements from one fragment. This is for example the
     case during the initialisation of any code: some measurements from the first round
@@ -226,7 +226,8 @@ def _find_non_propagating_non_trivial_flows(
     boundary_stabilizers: list[BoundaryStabilizer],
 ) -> ty.Iterator[int]:
     """Find all the boundary stabilizers that do not have any anti-commuting
-    collapsing operations and that are fully collapsed by the commuting operations.
+    collapsing operations and that are fully collapsed by the commuting
+    operations.
 
     Args:
         boundary_stabilizers: the boundary stabilizers to search in.

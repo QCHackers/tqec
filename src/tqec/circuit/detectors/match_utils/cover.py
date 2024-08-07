@@ -82,7 +82,8 @@ def find_cover(
     qubit_coordinates: dict[int, tuple[float, ...]],
     maximum_qubit_distance: int = 5,
 ) -> list[BoundaryStabilizer] | None:
-    """Try to cover the provided `target` stabilizer with stabilizers from `sources`.
+    """Try to cover the provided `target` stabilizer with stabilizers from
+    `sources`.
 
     This function is currently performing a bruteforce search: it tries all combinations
     of stabilizers from `sources` and check if one matches with the provided `target`.
@@ -140,8 +141,8 @@ def find_cover(
 def _smallest_solution_shortcircuit(
     solutions: ty.Iterator[list[int]], lower_length_bound: int = 0, timeout: float = 0.1
 ) -> list[int] | None:
-    """Iterate over the provided `solutions` iterator to find the smallest possible
-    solution within the provided `timeout`.
+    """Iterate over the provided `solutions` iterator to find the smallest
+    possible solution within the provided `timeout`.
 
     Args:
         solutions: iterator yielding lists of integers representing the indices of
@@ -178,8 +179,8 @@ def _smallest_solution_shortcircuit(
 def _find_cover_sat(
     target: PauliString, sources: list[PauliString], on_qubits: frozenset[int]
 ) -> list[int] | None:
-    """Try to find a set of boundary stabilizers from `sources` that
-    generate target on qubits `on_qubits`.
+    """Try to find a set of boundary stabilizers from `sources` that generate
+    target on qubits `on_qubits`.
 
     If multiple valid covers exist, the covers involving the lowest number of
     :class:`PauliString` instances from `sources` are listed, and a random
@@ -265,8 +266,8 @@ def find_exact_cover_sat(
 def find_commuting_cover_on_target_qubits_sat(
     target: PauliString, sources: list[PauliString]
 ) -> list[int] | None:
-    """Try to find a set of boundary stabilizers from `sources` that
-    generate a superset of target.
+    """Try to find a set of boundary stabilizers from `sources` that generate a
+    superset of target.
 
     This function try to find a set of Pauli strings from `sources` that
     includes `target` (i.e., on every qubit where `target` is non-trivial,

@@ -75,7 +75,7 @@ class ComposedTemplate(Template):
         - vertices that are integers, representing indices of Template instances stored
           in the ordered list stored alongside the graph,
         - edges that are connecting two vertices (i.e., two Template instances) that
-          are relatively positionned between each other.
+          are relatively positioned between each other.
 
         The relative position is internally stored as a tuple of corners that should
         represent the same underlying qubit. Each edge between vertices A and B should
@@ -181,7 +181,7 @@ class ComposedTemplate(Template):
         template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
-    ) -> "ComposedTemplate":
+    ) -> ComposedTemplate:
         """Add a relative positioning between two templates.
 
         This method has the same effect as ``add_corner_relation`` (it
@@ -193,7 +193,7 @@ class ComposedTemplate(Template):
 
         Args:
             template_id_to_position: index of the template that should be
-                positionned relatively to the provided anchor.
+                positioned relatively to the provided anchor.
             relative_position: the relative position of the template provided as
                 first parameter with respect to the anchor provided as third
                 parameter. Can be any of ``LEFT_OF``, ``RIGHT_OF``, ``BELOW_OF``
@@ -238,12 +238,12 @@ class ComposedTemplate(Template):
         self,
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
-    ) -> "ComposedTemplate":
+    ) -> ComposedTemplate:
         """Add a relative positioning between two templates.
 
         Args:
             template_id_to_position_corner: a tuple containing the index of the
-                template that should be positionned relatively to the provided
+                template that should be positioned relatively to the provided
                 anchor and the corner that should be considered.
             anchor_id_corner: a tuple containing the index of the (anchor)
                 template that should be used to position the template instance
@@ -339,8 +339,8 @@ class ComposedTemplate(Template):
     def _get_bounding_box_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> tuple[Scalable2D, Scalable2D]:
-        """Get the bounding box containing all the templates from their
-        upper-left corner position.
+        """Get the bounding box containing all the templates from their upper-
+        left corner position.
 
         Args:
             ul_positions: a mapping between templates indices and their upper-left
@@ -376,8 +376,8 @@ class ComposedTemplate(Template):
     def _get_bounding_boxes_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> dict[int, ScalableBoundingBox]:
-        """Get the bounding box of each individual tempalte contained in the instance
-        from their computed upper-left corner position.
+        """Get the bounding box of each individual template contained in the
+        instance from their computed upper-left corner position.
 
         Args:
             ul_positions: a mapping between templates indices and their upper-left
@@ -414,7 +414,8 @@ class ComposedTemplate(Template):
     def _get_shape_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> Scalable2D:
-        """Get the shape of the represented code from the upper-left corner positions of each template."""
+        """Get the shape of the represented code from the upper-left corner
+        positions of each template."""
         # ul: upper-left
         # br: bottom-right
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
@@ -501,7 +502,7 @@ class ComposedTemplate(Template):
         return self._default_increments
 
     def scale_to(self, k: int) -> None:
-        """Scales all the scalable component templates to the given scale ``k``.
+        """Scales all the scalable component templates to the given scale `k`.
 
         Note that this function scales the template instance INLINE.
 

@@ -32,9 +32,9 @@ def test_all_pauli_string_combination_results_randomized() -> None:
         for _ in range(5)
     ]
 
-    from_function = set(
+    from_function = {
         pauli for _, pauli in _all_pauli_string_combination_results(paulis)
-    )
+    }
     from_alternative_implementation = set(
         _all_pauli_string_combination_results_alternative_implementation(paulis)
     )
@@ -119,7 +119,7 @@ def test_exact_match(
     obtained_result = find_exact_cover_sat(target, sources)
     # We expect the results to either both be None, or both be a list.
     assert (obtained_result is None) == (expected_result is None)
-    # If they are both a list, compare them and check the post-conditon documented.
+    # If they are both a list, compare them and check the post-condition documented.
     if obtained_result is not None and expected_result is not None:
         assert set(obtained_result) == set(expected_result)
         assert pauli_product([sources[i] for i in obtained_result]) == target
@@ -156,7 +156,7 @@ def test_commuting_match(
     obtained_result = find_commuting_cover_on_target_qubits_sat(target, sources)
     # We expect the results to either both be None, or both be a list.
     assert (obtained_result is None) == (expected_result is None)
-    # If they are both a list, compare them and check the post-conditon documented.
+    # If they are both a list, compare them and check the post-condition documented.
     if obtained_result is not None and expected_result is not None:
         assert set(obtained_result) == set(expected_result)
         assert pauli_product([sources[i] for i in obtained_result]).commutes(target)

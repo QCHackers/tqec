@@ -12,13 +12,12 @@ from tqec.templates.enums import TemplateOrientation
 
 @dataclass(frozen=True)
 class PlaquetteQubit:
-    """Defines a qubit in the plaquette coordinate system
+    """Defines a qubit in the plaquette coordinate system.
 
-    This class initially had more attributes, which ended-up being flagged
-    as superfluous and so have been removed.
-    For now, it only stores the position of the qubit in the plaquette
-    coordinate system and implements an helper method to get a cirq.GridQubit
-    instance.
+    This class initially had more attributes, which ended-up being
+    flagged as superfluous and so have been removed. For now, it only
+    stores the position of the qubit in the plaquette coordinate system
+    and implements an helper method to get a cirq.GridQubit instance.
     """
 
     position: Position
@@ -62,11 +61,11 @@ class PlaquetteQubits:
         self,
         orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
     ) -> list[PlaquetteQubit]:
-        """Return the data qubits on the edge of the plaquette.
-        By convention, the edge is the one with the highest index in the relevant axis.
+        """Return the data qubits on the edge of the plaquette. By convention,
+        the edge is the one with the highest index in the relevant axis.
 
         Args:
-            orientation (TemplateOrientation, optional): Wheter to use horizontal or
+            orientation (TemplateOrientation, optional): Whether to use horizontal or
                 vertical orientation as the axis. Defaults to horizontal.
         Returns:
             list[PlaquetteQubit]: The qubits on the edge of the plaquette.

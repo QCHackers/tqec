@@ -17,10 +17,10 @@ class FaceType(Enum):
     H = "H"
 
     @staticmethod
-    def from_string(face_type: str) -> "FaceType":
+    def from_string(face_type: str) -> FaceType:
         return FaceType(face_type.upper())
 
-    def opposite(self) -> "FaceType":
+    def opposite(self) -> FaceType:
         if self == FaceType.X:
             return FaceType.Z
         if self == FaceType.Z:

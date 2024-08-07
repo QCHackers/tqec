@@ -27,7 +27,7 @@ def test_position_3d() -> None:
     assert not p1.is_neighbour(Position3D(1, 0, 1))
     assert not p1.is_neighbour(Position3D(0, -1, 1))
     with pytest.raises(TQECException, match="Position must be an integer"):
-        Position3D(0.5, 0, 0) # type: ignore[arg-type]
+        Position3D(0.5, 0, 0)  # type: ignore[arg-type]
 
 
 def test_direction_3d() -> None:

@@ -140,10 +140,10 @@ export default class Footprint {
 
   /**
    * Update the visibility and event listeners
-   * @function updateVisiblityAndEventListeners
+   * @function updateVisibilityAndEventListeners
    * @returns {void}
    */
-  updateVisiblityAndEventListeners() {
+  updateVisibilityAndEventListeners() {
     this.isDragging = true;
     this.container.name = 'footprint';
     // Create the buttons

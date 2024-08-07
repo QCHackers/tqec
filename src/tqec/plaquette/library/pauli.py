@@ -20,7 +20,7 @@ class ResetBasis(Enum):
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == ResetBasis.X:
             return RX(q).with_tags(Plaquette._MERGEABLE_TAG)
-        else: # self == ResetBasis.Z:
+        else:  # self == ResetBasis.Z:
             return cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
 
 
@@ -41,7 +41,8 @@ def _make_pauli_syndrome_measurement_circuit(
     pauli_string: str,
     reset_syndrome_qubit: bool = True,
 ) -> cirq.Circuit:
-    """Build and return a quantum circuit measuring the provided Pauli syndrome.
+    """Build and return a quantum circuit measuring the provided Pauli
+    syndrome.
 
     This function builds a quantum circuit measuring the Pauli observable
     provided in `pauli_string` on the provided `data_qubits`, using
@@ -56,7 +57,7 @@ def _make_pauli_syndrome_measurement_circuit(
             `data_qubits` as there are Pauli characters in the provided
             `pauli_string`.
         pauli_string: a string of case-independent characters, each
-            representing a Pauli matrix. Each charater should be present in
+            representing a Pauli matrix. Each character should be present in
             _SUPPORTED_PAULI and the string should have as many characters as
             there are qubits in `data_qubits`.
         reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the
@@ -112,12 +113,12 @@ def pauli_memory_plaquette(
     data_qubit_reset_basis: ResetBasis | None = None,
     data_qubit_measurement_basis: MeasurementBasis | None = None,
 ) -> Plaquette:
-    """Generic function to create a :class:`Plaquette` instance measuring a given
-    Pauli string.
+    """Generic function to create a :class:`Plaquette` instance measuring a
+    given Pauli string.
 
     Warning:
         This function cannot change the order in which data qubits, Pauli "chars" (one
-        caracter of the provided Pauli string) and schedule are provided. That means
+        character of the provided Pauli string) and schedule are provided. That means
         that it cannot group X and Z basis measurements.
         In practice, an input Pauli string "XZXZXZ" will lead to 3 pairs of Hadamard
         gates being included to measure the 3 X Pauli strings. The `schedule` provided

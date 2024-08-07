@@ -17,7 +17,7 @@ def generate_circuit(
     template: Template,
     plaquettes: Plaquettes,
 ) -> cirq.Circuit:
-    """Generate a quantum circuit from a template and its plaquettes
+    """Generate a quantum circuit from a template and its plaquettes.
 
     This is one of the core methods of the `tqec` package. It generates a quantum circuit
     from the description of the template that should be implemented as well as the plaquettes
@@ -45,7 +45,7 @@ def generate_circuit(
 
     Raises:
         TQECException: if ``len(plaquettes) != template.expected_plaquettes_number`` or
-            if plaquettes is provided as a dicitonary and ``0 in plaquettes``.
+            if plaquettes is provided as a dictionary and ``0 in plaquettes``.
     """
     # Check that the user gave enough plaquettes.
     if (
@@ -77,7 +77,7 @@ def generate_circuit(
         i: plaquettes[i].circuit for i in _indices
     }
 
-    # Generate the ScheduledCircuit instances for each plaquette instanciation
+    # Generate the ScheduledCircuit instances for each plaquette instantiation
     all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
     for row_index, line in enumerate(template_plaquettes):

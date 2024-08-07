@@ -9,3 +9,4 @@ pytest
 mypy
 pytest-cov
 pandoc
+pre-commit

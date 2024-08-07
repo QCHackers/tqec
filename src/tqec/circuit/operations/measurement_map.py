@@ -21,7 +21,8 @@ def flatten(obj: cirq.Moment | cirq.AbstractCircuit) -> cirq.Circuit:
 
 class CircuitMeasurementMap:
     def __init__(self, circuit: cirq.AbstractCircuit) -> None:
-        """Stores information about all the measurements found in the provided circuit
+        """Stores information about all the measurements found in the provided
+        circuit.
 
         This class provides a method to recover the global record offset of a given
         measurement from local information about this measurement.
@@ -39,7 +40,8 @@ class CircuitMeasurementMap:
     def get_measurement_relative_offset(
         self, current_moment_index: int, qubit: cirq.Qid, measurement_offset: int
     ) -> int | None:
-        """Recover the record offset of the given local measurement description
+        """Recover the record offset of the given local measurement
+        description.
 
         This is the main method of CircuitMeasurementMap. It allows to query for measurements
         with their local temporal description and to recover the global offset that should be
@@ -115,7 +117,8 @@ class CircuitMeasurementMap:
         circuit: cirq.AbstractCircuit,
         _measurement_offset: int = 0,
     ) -> tuple[list[dict[cirq.Qid, int]], int]:
-        """Computes and returns the global measurement indices for the given circuit
+        """Computes and returns the global measurement indices for the given
+        circuit.
 
         This method API takes into account the fact that some information need to be passed
         across recursions and so is not really user-friendly.
@@ -172,7 +175,8 @@ def compute_global_measurements_lookback_offsets(
     measurement_map: CircuitMeasurementMap,
     current_moment_index: int,
 ) -> list[int]:
-    """Computes, from the data in the given measurement_map, the global measurement offsets
+    """Computes, from the data in the given measurement_map, the global
+    measurement offsets.
 
     This method uses the global data computed in the CircuitMeasurementMap instance given as
     parameter to compute the measurement record indices for the current gate instance.

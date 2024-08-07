@@ -67,7 +67,7 @@ class Qubit extends Position {
 
 	updateLabel() {
 		this.removeChildren();
-		// Create the label as a text element 
+		// Create the label as a text element
 		const label = new Text(this.name, {fill: Qubit.color_none, fontSize: 16, fontWeight: 'bold',});
 		label.anchor.set(0.5);
 

@@ -240,15 +240,15 @@ class PiecewiseLinearFunction:
       linear function encoded change and,
     - a list of `n+1` instances of `LinearFunction`, representing the linear
       functions on each of the `n+1` intervals represented by the `n` separators
-      (and both -infinity and +infinity that are never stored explicitely).
-
+      (and both -infinity and +infinity that are never stored explicitly).
     """
 
     separators: list[float]
     functions: list[LinearFunction]
 
     def __post_init__(self) -> None:
-        """Check the invariants that should be met by any instance of this class.
+        """Check the invariants that should be met by any instance of this
+        class.
 
         First, there should be one more `LinearFunction` instance than there are
         separators stored in the class.
@@ -357,7 +357,8 @@ class PiecewiseLinearFunction:
         )
 
     def simplify(self) -> PiecewiseLinearFunction:
-        """Reduce the number of intervals this function is defined on, if possible.
+        """Reduce the number of intervals this function is defined on, if
+        possible.
 
         Returns:
             a new instance with a number of separators that is lower or equal to
@@ -602,8 +603,8 @@ class ScalableBoundingBox:
         )
 
     def inside(self, point: Scalable2D) -> tuple[Intervals, Intervals]:
-        """Returns intervals in which the X and Y coordinates should both be for the
-        provided point to be in the bounding box.
+        """Returns intervals in which the X and Y coordinates should both be
+        for the provided point to be in the bounding box.
 
         Args:
             point: a scalable point.

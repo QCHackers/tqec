@@ -14,8 +14,7 @@ STIM_TAG = "STIM_OPERATION"
 
 class ShiftCoords(cirq.Operation):
     def __init__(self, *shifts: int) -> None:
-        """
-        Annotates that the qubit/detector coordinate origin is being moved.
+        """Annotates that the qubit/detector coordinate origin is being moved.
 
         This is a replication of the
         [stimcirq.ShiftCoordsAnnotation](https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py)
@@ -70,7 +69,8 @@ class ShiftCoords(cirq.Operation):
 
 @dataclass(frozen=True)
 class RelativeMeasurementData:
-    """The relative_measurement_data of a spatially and temporally relative measurement
+    """The relative_measurement_data of a spatially and temporally relative
+    measurement.
 
     This class stores two attributes (relative_qubit_positioning and
     relative_measurement_offset) that respectively represent a spatial
@@ -110,8 +110,9 @@ class RelativeMeasurementsRecord(cirq.Operation):
         local_coordinate_system_origin: cirq.GridQubit,
         relative_measurement_data: list[RelativeMeasurementData],
     ) -> None:
-        """A group of relative measurement data representing measurements relative
-        to the origin of local coordinate system and current measurement timestamp.
+        """A group of relative measurement data representing measurements
+        relative to the origin of local coordinate system and current
+        measurement timestamp.
 
         Args:
             local_coordinate_system_origin: origin of the local coordinate
@@ -264,8 +265,8 @@ class Observable(RelativeMeasurementsRecord):
 
 
 def make_shift_coords(*shifts: int) -> cirq.Operation:
-    """This is a helper function to make a :class:~ShiftCoords operation with the
-    `cirq.VirtualTag` tag.
+    """This is a helper function to make a :class:~ShiftCoords operation with
+    the `cirq.VirtualTag` tag.
 
     Args:
         *shifts: How much to shift each coordinate.
@@ -325,8 +326,8 @@ def make_observable(
     ],
     observable_index: int = 0,
 ) -> cirq.Operation:
-    """This is a helper function to make a :class:`Observable` operation with the
-    `cirq.VirtualTag` tag.
+    """This is a helper function to make a :class:`Observable` operation with
+    the `cirq.VirtualTag` tag.
 
     Args:
         local_coordinate_system_origin: origin of the local coordinate system.

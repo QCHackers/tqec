@@ -138,7 +138,8 @@ class Template(ABC):
     @property
     @abstractmethod
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the `instantiate` method.
+        """Returns the number of plaquettes expected from the `instantiate`
+        method.
 
         Returns:
             the number of plaquettes expected from the `instantiate` method.
@@ -156,8 +157,8 @@ class Template(ABC):
 
 @dataclass
 class TemplateWithIndices:
-    """A wrapper around a Template instance and the indices representing the plaquettes
-    it should be instantiated with."""
+    """A wrapper around a Template instance and the indices representing the
+    plaquettes it should be instantiated with."""
 
     template: Template
     indices: list[int]

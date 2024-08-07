@@ -21,9 +21,10 @@ class CornerPositionEnum(Enum):
 class TemplateRelativePositionEnum(Enum):
     """Represent a relative position between two Template instances.
 
-    Template relative positions are stored as the relative displacement needed to
-    encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
-    on the left is one unit backwards on the X-axis.
+    Template relative positions are stored as the relative displacement
+    needed to encode the position. For example, LEFT_OF is encoded as
+    (-1, 0) as a template on the left is one unit backwards on the
+    X-axis.
     """
 
     LEFT_OF = Position(-1, 0)

@@ -21,7 +21,8 @@ class Position:
     y: int
 
     def to_grid_qubit(self) -> tuple[int, int]:
-        """Returns the position as a tuple following the cirq.GridQubit coordinate system."""
+        """Returns the position as a tuple following the cirq.GridQubit
+        coordinate system."""
         return (self.y, self.x)
 
 
@@ -43,9 +44,10 @@ class Shape2D:
     def to_numpy_shape(self) -> tuple[int, int]:
         """Returns the shape according to numpy indexing.
 
-        In the coordinate system used in this library, numpy indexes arrays
-        using (y, x) coordinates. This method is here to translate a Shape
-        instance to a numpy shape transparently for the user.
+        In the coordinate system used in this library, numpy indexes
+        arrays using (y, x) coordinates. This method is here to
+        translate a Shape instance to a numpy shape transparently for
+        the user.
         """
         return (self.y, self.x)
 
@@ -54,7 +56,7 @@ class Shape2D:
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
-    This class is here to explicitely name the type of variables as displacements
+    This class is here to explicitly name the type of variables as displacements
     instead of having a tuple[int, int] that could be:
     - a position,
     - a shape,
@@ -83,7 +85,8 @@ class Position3D:
         return Position3D(self.x + dx, self.y + dy, self.z + dz)
 
     def is_neighbour(self, other: "Position3D") -> bool:
-        """Check if the other position is near to this position, i.e. Manhattan distance is 1."""
+        """Check if the other position is near to this position, i.e. Manhattan
+        distance is 1."""
         return (
             abs(self.x - other.x) + abs(self.y - other.y) + abs(self.z - other.z) == 1
         )

@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
-from io import BytesIO
-import typing as ty
 import pathlib
-from dataclasses import dataclass, astuple
+import typing as ty
+from dataclasses import astuple, dataclass
 from enum import Enum
+from io import BytesIO
 
 import networkx as nx
 
-from tqec.position import Position3D, Direction3D
-from tqec.sketchup.zx_graph import (
-    ZXGraph,
-    NodeType,
-    ZXNode,
-    ZXEdge,
-)
 from tqec.exceptions import TQECException
+from tqec.position import Direction3D, Position3D
+from tqec.sketchup.zx_graph import (
+    NodeType,
+    ZXEdge,
+    ZXGraph,
+    ZXNode,
+)
 
 if ty.TYPE_CHECKING:
     from tqec.sketchup.collada import ColladaDisplayHelper
@@ -43,7 +43,7 @@ class Color3D:
     z: Color
 
     @staticmethod
-    def null() -> "Color3D":
+    def null() -> Color3D:
         """Get the null color."""
         return Color3D(Color.NULL, Color.NULL, Color.NULL)
 
@@ -70,7 +70,7 @@ class Color3D:
         return Color3D(*colors)
 
     @staticmethod
-    def from_string(s: str, flip_xz: bool = False) -> "Color3D":
+    def from_string(s: str, flip_xz: bool = False) -> Color3D:
         s = s.lower()
         if s == "virtual":
             return Color3D.null()
@@ -114,7 +114,7 @@ class CubeType(Enum):
         return Color3D.from_string(self.value)
 
     @staticmethod
-    def from_color(color: Color3D) -> "CubeType":
+    def from_color(color: Color3D) -> CubeType:
         """Get the cube type from the color."""
         if color.is_null:
             return CubeType.VIRTUAL
@@ -123,10 +123,11 @@ class CubeType(Enum):
         return CubeType("".join(c.value for c in astuple(color)).lower())
 
     def normal_direction_to_corner_plane(self) -> Direction3D:
-        """If the cube is at a corner, return the normal direction to the corner plane.
+        """If the cube is at a corner, return the normal direction to the
+        corner plane.
 
-        Due to the color match rule at the corner turn, the corner plane can be inferred
-        from the type of the cube.
+        Due to the color match rule at the corner turn, the corner plane
+        can be inferred from the type of the cube.
         """
         if self == CubeType.VIRTUAL:
             raise TQECException("Cannot infer the corner plane for a virtual cube.")
@@ -140,7 +141,8 @@ class CubeType(Enum):
         src_side_if_h_pipe: bool = True,
         has_hadamard: bool = False,
     ) -> PipeType:
-        """Infer the pipe type connecting this cube at some direction with the color match rule."""
+        """Infer the pipe type connecting this cube at some direction with the
+        color match rule."""
         if self == CubeType.VIRTUAL:
             raise TQECException("Cannot infer the pipe type for a virtual cube.")
         color = self.get_color().pop_color_at_direction(direction)
@@ -184,7 +186,7 @@ class PipeType(Enum):
     @staticmethod
     def from_color_at_side(
         color: Color3D, src_side_if_h_pipe: bool = True, has_hadamard: bool = False
-    ) -> "PipeType":
+    ) -> PipeType:
         """Get the pipe type from the color at one side."""
         if not sum(c.is_null for c in astuple(color)) == 1:
             raise TQECException(
@@ -218,7 +220,8 @@ BlockType = ty.Union[CubeType, PipeType]
 
 @dataclass(frozen=True)
 class Cube:
-    """A block representing the computational unit in a 3D spacetime diagram."""
+    """A block representing the computational unit in a 3D spacetime
+    diagram."""
 
     position: Position3D
     cube_type: CubeType
@@ -233,8 +236,8 @@ class Cube:
 class Pipe:
     """A block connecting two cubes in a 3D spacetime diagram.
 
-    The pipe represents the idle or merge/split lattice surgery operation on logical
-    qubits depending on its direction.
+    The pipe represents the idle or merge/split lattice surgery
+    operation on logical qubits depending on its direction.
     """
 
     u: Cube
@@ -262,8 +265,8 @@ _PIPE_DATA_KEY = "tqec_block_pipe_data"
 
 class BlockGraph:
     def __init__(self, name: str) -> None:
-        """An undirected graph representation of a 3D spacetime defect diagram with
-        the block structures explicitly defined."""
+        """An undirected graph representation of a 3D spacetime defect diagram
+        with the block structures explicitly defined."""
         self._name = name
         self._graph = nx.Graph()
 
@@ -383,7 +386,7 @@ class BlockGraph:
                 )
         # 3. Match color at turn
         if len(pipe_directions) == 2:
-            # since we have checked the pass-throught match
+            # since we have checked the pass-through match
             # we only have to check that the surrounding walls at the turn plane have the same color
             if cube.cube_type.normal_direction_to_corner_plane() in pipe_directions:
                 raise TQECException(
@@ -411,7 +414,7 @@ class BlockGraph:
         return ty.cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
 
     @staticmethod
-    def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> "BlockGraph":
+    def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> BlockGraph:
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -536,9 +539,7 @@ class BlockGraph:
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
-    def from_dae_file(
-        filename: str | pathlib.Path, graph_name: str = ""
-    ) -> "BlockGraph":
+    def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
         """Construct a block graph from a DAE file."""
         from tqec.sketchup.collada import read_block_graph_from_dae_file
 
@@ -546,16 +547,18 @@ class BlockGraph:
 
     def display(
         self,
-        wirte_html_filepath: str | pathlib.Path | None = None,
+        write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
-    ) -> "ColladaDisplayHelper":
+    ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
-        from tqec.sketchup.collada import write_block_graph_to_dae_file
-        from tqec.sketchup.collada import display_collada_model
+        from tqec.sketchup.collada import (
+            display_collada_model,
+            write_block_graph_to_dae_file,
+        )
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(self, bytes_buffer, pipe_length)
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),
-            write_html_filepath=wirte_html_filepath,
+            write_html_filepath=write_html_filepath,
         )
