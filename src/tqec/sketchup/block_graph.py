@@ -123,10 +123,11 @@ class CubeType(Enum):
         return CubeType("".join(c.value for c in astuple(color)).lower())
 
     def normal_direction_to_corner_plane(self) -> Direction3D:
-        """If the cube is at a corner, return the normal direction to the corner plane.
+        """If the cube is at a corner, return the normal direction to the
+        corner plane.
 
-        Due to the color match rule at the corner turn, the corner plane can be inferred
-        from the type of the cube.
+        Due to the color match rule at the corner turn, the corner plane
+        can be inferred from the type of the cube.
         """
         if self == CubeType.VIRTUAL:
             raise TQECException("Cannot infer the corner plane for a virtual cube.")
@@ -140,7 +141,8 @@ class CubeType(Enum):
         src_side_if_h_pipe: bool = True,
         has_hadamard: bool = False,
     ) -> PipeType:
-        """Infer the pipe type connecting this cube at some direction with the color match rule."""
+        """Infer the pipe type connecting this cube at some direction with the
+        color match rule."""
         if self == CubeType.VIRTUAL:
             raise TQECException("Cannot infer the pipe type for a virtual cube.")
         color = self.get_color().pop_color_at_direction(direction)
@@ -218,7 +220,8 @@ BlockType = ty.Union[CubeType, PipeType]
 
 @dataclass(frozen=True)
 class Cube:
-    """A block representing the computational unit in a 3D spacetime diagram."""
+    """A block representing the computational unit in a 3D spacetime
+    diagram."""
 
     position: Position3D
     cube_type: CubeType
@@ -233,8 +236,8 @@ class Cube:
 class Pipe:
     """A block connecting two cubes in a 3D spacetime diagram.
 
-    The pipe represents the idle or merge/split lattice surgery operation on logical
-    qubits depending on its direction.
+    The pipe represents the idle or merge/split lattice surgery
+    operation on logical qubits depending on its direction.
     """
 
     u: Cube
@@ -262,8 +265,8 @@ _PIPE_DATA_KEY = "tqec_block_pipe_data"
 
 class BlockGraph:
     def __init__(self, name: str) -> None:
-        """An undirected graph representation of a 3D spacetime defect diagram with
-        the block structures explicitly defined."""
+        """An undirected graph representation of a 3D spacetime defect diagram
+        with the block structures explicitly defined."""
         self._name = name
         self._graph = nx.Graph()
 

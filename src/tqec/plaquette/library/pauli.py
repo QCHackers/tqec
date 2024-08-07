@@ -41,7 +41,8 @@ def _make_pauli_syndrome_measurement_circuit(
     pauli_string: str,
     reset_syndrome_qubit: bool = True,
 ) -> cirq.Circuit:
-    """Build and return a quantum circuit measuring the provided Pauli syndrome.
+    """Build and return a quantum circuit measuring the provided Pauli
+    syndrome.
 
     This function builds a quantum circuit measuring the Pauli observable
     provided in `pauli_string` on the provided `data_qubits`, using
@@ -112,8 +113,8 @@ def pauli_memory_plaquette(
     data_qubit_reset_basis: ResetBasis | None = None,
     data_qubit_measurement_basis: MeasurementBasis | None = None,
 ) -> Plaquette:
-    """Generic function to create a :class:`Plaquette` instance measuring a given
-    Pauli string.
+    """Generic function to create a :class:`Plaquette` instance measuring a
+    given Pauli string.
 
     Warning:
         This function cannot change the order in which data qubits, Pauli "chars" (one

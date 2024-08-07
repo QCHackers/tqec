@@ -127,8 +127,8 @@ def has_measurement(moment: stim.Circuit) -> bool:
 
 
 def has_only_measurement_or_is_virtual(moment: stim.Circuit) -> bool:
-    """Check if a `stim.Circuit` moment contains only measurement instructions or is
-    a virtual moment.
+    """Check if a `stim.Circuit` moment contains only measurement instructions
+    or is a virtual moment.
 
     Note:
         Annotations are ignored by this function.
@@ -224,7 +224,8 @@ def pauli_string_mean_coords(
 def _collapsing_inst_to_pauli_strings(
     inst: stim.CircuitInstruction,
 ) -> list[PauliString]:
-    """Create the `PauliString` instances representing the provided collapsing instruction.
+    """Create the `PauliString` instances representing the provided collapsing
+    instruction.
 
     Args:
         inst: a collapsing instruction.
@@ -257,8 +258,8 @@ def _collapsing_inst_to_pauli_strings(
 
 
 def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
-    """Compute and return the list of PauliString instances representing all the
-    collapsing operations found in the provided moment.
+    """Compute and return the list of PauliString instances representing all
+    the collapsing operations found in the provided moment.
 
     This function has the following pre-condition: all the instructions in the provided
     moment should be instances of `stim.CircuitInstruction`.
@@ -306,7 +307,8 @@ def remove_annotations(
         {"DETECTOR", "MPAD", "OBSERVABLE_INCLUDE", "SHIFT_COORDS"}
     ),
 ) -> stim.Circuit:
-    """Remove all the annotations from a given circuit, except TICK instructions.
+    """Remove all the annotations from a given circuit, except TICK
+    instructions.
 
     Args:
         circuit: the circuit to remove annotations from.

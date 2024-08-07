@@ -3,7 +3,7 @@ import cirq
 
 class BaseNoiseModel(cirq.NoiseModel):
     def __init__(self, probability: float) -> None:
-        """Base class for all `tqec` noise models
+        """Base class for all `tqec` noise models.
 
         Args:
             probability: strength of the noise described by the instance.
@@ -16,7 +16,7 @@ class BaseNoiseModel(cirq.NoiseModel):
     def recurse_in_operation_if_circuit_operation(
         self, operation: cirq.Operation
     ) -> cirq.OP_TREE:
-        """Helper method to handle cirq.CircuitOperation nearly transparently
+        """Helper method to handle cirq.CircuitOperation nearly transparently.
 
         This method is here to help sub-classes handle cirq.CircuitOperation instances
         nearly transparently: they simply have to think about using this method if they stumble

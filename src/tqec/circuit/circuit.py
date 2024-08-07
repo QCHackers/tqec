@@ -17,7 +17,7 @@ def generate_circuit(
     template: Template,
     plaquettes: Plaquettes,
 ) -> cirq.Circuit:
-    """Generate a quantum circuit from a template and its plaquettes
+    """Generate a quantum circuit from a template and its plaquettes.
 
     This is one of the core methods of the `tqec` package. It generates a quantum circuit
     from the description of the template that should be implemented as well as the plaquettes

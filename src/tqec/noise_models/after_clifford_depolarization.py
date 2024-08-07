@@ -5,7 +5,8 @@ from tqec.noise_models.base import BaseNoiseModel
 
 
 def is_clifford(operation: cirq.Operation) -> bool:
-    """Inefficiently checks if a given operation implements a Clifford operation
+    """Inefficiently checks if a given operation implements a Clifford
+    operation.
 
     The check is implemented by recovering the unitary matrix of the operation and
     trying to initialise a stim.Tableau from it. Both steps are costly for large

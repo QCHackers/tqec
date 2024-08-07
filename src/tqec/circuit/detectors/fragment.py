@@ -22,7 +22,8 @@ from tqec.exceptions import TQECException, TQECWarning
 
 class Fragment:
     def __init__(self, circuit: stim.Circuit):
-        """A sub-circuit guaranteed to end with a moment filled by measurement instructions.
+        """A sub-circuit guaranteed to end with a moment filled by measurement
+        instructions.
 
         Fragment instances represent sub-circuits that contain:
 

@@ -98,7 +98,8 @@ class AlternatingCornerSquareTemplate(Template):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
-        """Implements an atomic square corner template with alternating plaquettes.
+        """Implements an atomic square corner template with alternating
+        plaquettes.
 
         A corner template is a square, just like the logical qubit, but:
         - one of its corner is a special plaquette,

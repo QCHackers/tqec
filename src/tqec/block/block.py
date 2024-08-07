@@ -29,28 +29,31 @@ class Position3D:
 
 @dataclass
 class ComputationBlock(ABC):
-    """An abstract base class providing the necessary interface to implement a block.
+    """An abstract base class providing the necessary interface to implement a
+    block.
 
-    In theory, any block that might appear in a topological quantum error corrected
-    computation should be representable by a structure that can implement the
-    methods here.
+    In theory, any block that might appear in a topological quantum
+    error corrected computation should be representable by a structure
+    that can implement the methods here.
     """
 
     @property
     @abstractmethod
     def depth(self) -> int:
-        """Return the number of timesteps (`cirq.Moment`) needed by the block."""
+        """Return the number of timesteps (`cirq.Moment`) needed by the
+        block."""
         pass
 
     @abstractmethod
     def instantiate(self) -> cirq.Circuit:
-        """Return the full circuit representation of the computational block."""
+        """Return the full circuit representation of the computational
+        block."""
         pass
 
     @abstractmethod
     def instantiate_without_boundary(self, boundary: BlockDimension) -> cirq.Circuit:
-        """Return the circuit representation of the computational block without the
-        specified boundary."""
+        """Return the circuit representation of the computational block without
+        the specified boundary."""
         pass
 
     @abstractmethod
@@ -282,8 +285,8 @@ class StandardComputationBlock(ComputationBlock):
 class Computation:
     """Represents a topological quantum error corrected computation.
 
-    The computation is represented by a mapping from a position to the computational
-    block whose origin is located at that position.
+    The computation is represented by a mapping from a position to the
+    computational block whose origin is located at that position.
     """
 
     blocks: dict[Position3D, ComputationBlock]

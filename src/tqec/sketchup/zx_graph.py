@@ -69,14 +69,16 @@ class ZXGraph:
     def __init__(self, name: str) -> None:
         """An undirected graph representation of a 3D spacetime defect diagram.
 
-        Despite the name, the graph is not exactly the ZX-calculus graph as rewrite rules
-        can not be applied to the graph arbitrarily. The graph must correspond to a valid
-        3D spacetime diagram, which can be realized with the lattice surgery on the 2D
-        patches of surface code. And rewrite rules can only be applied with respect to a
-        valid physical realization of the spacetime diagram.
+        Despite the name, the graph is not exactly the ZX-calculus graph
+        as rewrite rules can not be applied to the graph arbitrarily.
+        The graph must correspond to a valid 3D spacetime diagram, which
+        can be realized with the lattice surgery on the 2D patches of
+        surface code. And rewrite rules can only be applied with respect
+        to a valid physical realization of the spacetime diagram.
 
-        Note that not all ZX graph admits a valid spacetime diagram representation. And the
-        graph construction **does not check** the validity constraints.
+        Note that not all ZX graph admits a valid spacetime diagram
+        representation. And the graph construction **does not check**
+        the validity constraints.
         """
         self._name = name
         # Internal undirected graph representation

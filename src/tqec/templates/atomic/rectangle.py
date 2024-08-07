@@ -18,7 +18,8 @@ class AlternatingRectangleTemplate(Template):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
-        """Implements an atomic rectangular template with alternating plaquettes.
+        """Implements an atomic rectangular template with alternating
+        plaquettes.
 
         Args:
             width: rectangle width.
@@ -115,8 +116,7 @@ class RawRectangleTemplate(Template):
         default_x_increment: int = 2,
         default_y_increment: int = 2,
     ) -> None:
-        """
-        Implements an atomic rectangular template with user-provided
+        """Implements an atomic rectangular template with user-provided
         plaquette distribution.
 
         User-provided ``indices`` defines the width and height of the template.

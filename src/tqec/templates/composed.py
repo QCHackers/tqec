@@ -339,8 +339,8 @@ class ComposedTemplate(Template):
     def _get_bounding_box_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> tuple[Scalable2D, Scalable2D]:
-        """Get the bounding box containing all the templates from their
-        upper-left corner position.
+        """Get the bounding box containing all the templates from their upper-
+        left corner position.
 
         Args:
             ul_positions: a mapping between templates indices and their upper-left
@@ -376,8 +376,8 @@ class ComposedTemplate(Template):
     def _get_bounding_boxes_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> dict[int, ScalableBoundingBox]:
-        """Get the bounding box of each individual template contained in the instance
-        from their computed upper-left corner position.
+        """Get the bounding box of each individual template contained in the
+        instance from their computed upper-left corner position.
 
         Args:
             ul_positions: a mapping between templates indices and their upper-left
@@ -414,7 +414,8 @@ class ComposedTemplate(Template):
     def _get_shape_from_ul_positions(
         self, ul_positions: dict[int, Scalable2D]
     ) -> Scalable2D:
-        """Get the shape of the represented code from the upper-left corner positions of each template."""
+        """Get the shape of the represented code from the upper-left corner
+        positions of each template."""
         # ul: upper-left
         # br: bottom-right
         ul, br = self._get_bounding_box_from_ul_positions(ul_positions)
@@ -501,7 +502,7 @@ class ComposedTemplate(Template):
         return self._default_increments
 
     def scale_to(self, k: int) -> None:
-        """Scales all the scalable component templates to the given scale ``k``.
+        """Scales all the scalable component templates to the given scale `k`.
 
         Note that this function scales the template instance INLINE.
 

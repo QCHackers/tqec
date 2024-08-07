@@ -16,7 +16,8 @@ def observable_qubits_from_template(
     plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
     orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> Sequence[tuple[cirq.GridQubit, int]]:
-    """Return the default observable qubits for the given template and its plaquettes.
+    """Return the default observable qubits for the given template and its
+    plaquettes.
 
     Args:
         template: The template to get the default observable qubits from.

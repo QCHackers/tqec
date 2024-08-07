@@ -28,3 +28,7 @@ repos:
     rev: v8.18.4
     hooks:
       - id: gitleaks
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter

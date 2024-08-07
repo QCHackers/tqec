@@ -134,7 +134,8 @@ def transform_to_stimcirq_compatible(
 def _annotation_safety_check(
     circuit: cirq.AbstractCircuit,
 ) -> None:
-    """Check the first moment of the circuit for the presence of specific tqec annotations.
+    """Check the first moment of the circuit for the presence of specific tqec
+    annotations.
 
     The `Detector`/`Observable` annotations should not be present in the first moment of the circuit
     as there are no measurements to refer to. This function checks for the presence of these annotations
