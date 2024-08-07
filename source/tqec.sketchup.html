@@ -155,7 +155,7 @@ boundary of the graph. Default is True.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.sketchup.block_graph.BlockGraph.display">
-<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wirte_html_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.collada.ColladaDisplayHelper" title="tqec.sketchup.collada.ColladaDisplayHelper"><span class="pre">ColladaDisplayHelper</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#BlockGraph.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.BlockGraph.display" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wirte_html_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.collada.ColladaDisplayHelper" title="tqec.sketchup.collada.ColladaDisplayHelper"><span class="pre">ColladaDisplayHelper</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#BlockGraph.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.BlockGraph.display" title="Link to this definition"></a></dt>
 <dd><p>Display the block graph in 3D.</p>
 </dd></dl>
 
@@ -902,6 +902,11 @@ of the axis.</p>
 <span class="sig-name descname"><span class="pre">Z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'z'</span></em><a class="headerlink" href="#tqec.sketchup.zx_graph.NodeType.Z" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.NodeType.dual">
+<span class="sig-name descname"><span class="pre">dual</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.zx_graph.NodeType" title="tqec.sketchup.zx_graph.NodeType"><span class="pre">NodeType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#NodeType.dual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.NodeType.dual" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -960,13 +965,16 @@ graph construction <strong>does not check</strong> the validity constraints.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.add_node">
-<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.zx_graph.NodeType" title="tqec.sketchup.zx_graph.NodeType"><span class="pre">NodeType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.add_node" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.sketchup.zx_graph.NodeType" title="tqec.sketchup.zx_graph.NodeType"><span class="pre">NodeType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_if_exist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.add_node" title="Link to this definition"></a></dt>
 <dd><p>Add a node to the graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>position</strong> – The 3D position of the node.</p></li>
 <li><p><strong>node_type</strong> – The type of the node.</p></li>
+<li><p><strong>raise_if_exist</strong> – Whether to raise an exception if the position already exists
+in the graph. If set to False, when the position already exists, the node
+type will be updated to the new type. Default is True.</p></li>
 </ul>
 </dd>
 </dl>
@@ -992,8 +1000,21 @@ graph construction <strong>does not check</strong> the validity constraints.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.draw">
-<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.draw" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_correlation_subgraph_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hadamard_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.draw" title="Link to this definition"></a></dt>
 <dd><p>Draw the 3D graph using matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show_correlation_subgraph_index</strong> – The index of the correlation subgraph to show.</p></li>
+<li><p><strong>figsize</strong> – The figure size. Default is (5, 6).</p></li>
+<li><p><strong>title</strong> – The title of the plot. Default is the name of the graph.</p></li>
+<li><p><strong>node_size</strong> – The size of the node. Default is 400.</p></li>
+<li><p><strong>hadamard_size</strong> – The size of the Hadamard transition. Default is 200.</p></li>
+<li><p><strong>edge_width</strong> – The width of the edge. Default is 1.</p></li>
+<li><p><strong>correlation_edge_width</strong> – The width of the correlation edge. Default is 3.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1009,6 +1030,24 @@ graph construction <strong>does not check</strong> the validity constraints.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.find_correlation_subgraphs">
+<span class="sig-name descname"><span class="pre">find_correlation_subgraphs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXGraph" title="tqec.sketchup.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.find_correlation_subgraphs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.find_correlation_subgraphs" title="Link to this definition"></a></dt>
+<dd><p>Find the correlation subgraphs of the ZX graph.</p>
+<p>Here a correlation subgraph is defined as a subgraph of the <cite>ZXGraph</cite>
+that represents the correlation surface within a 3D spacetime diagram.
+Each node in the correlation subgraph is composed of its position and
+the correlation surface type, which is either <cite>NodeType.X</cite> or <cite>NodeType.Z</cite>.</p>
+<p>For the closed diagram, the correlation subgraph represents the correlation
+between the measured logical observables. For the open diagram, the
+correlation subgraph represents the correlation between the measured logical
+observables and the input/output observables, which can be combined with
+the expected stabilizer flow to verify the correctness of the computation.</p>
+<p>A recursive depth-first search algorithm is used to find the correlation
+subgraphs starting from each leaf node. The algorithm is described in the
+method <cite>_find_correlation_subgraphs_dfs</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.get_edge">
 <span class="sig-name descname"><span class="pre">get_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXEdge" title="tqec.sketchup.zx_graph.ZXEdge"><span class="pre">ZXEdge</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.get_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.get_edge" title="Link to this definition"></a></dt>
 <dd><p>Get the edge by its endpoint positions.</p>
@@ -1018,6 +1057,18 @@ graph construction <strong>does not check</strong> the validity constraints.</p>
 <dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.get_node">
 <span class="sig-name descname"><span class="pre">get_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXNode" title="tqec.sketchup.zx_graph.ZXNode"><span class="pre">ZXNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.get_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.get_node" title="Link to this definition"></a></dt>
 <dd><p>Get the node by position.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.isolated_nodes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isolated_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXNode" title="tqec.sketchup.zx_graph.ZXNode"><span class="pre">ZXNode</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.isolated_nodes" title="Link to this definition"></a></dt>
+<dd><p>Get the isolated nodes of the graph.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.leaf_nodes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">leaf_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXNode" title="tqec.sketchup.zx_graph.ZXNode"><span class="pre">ZXNode</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.leaf_nodes" title="Link to this definition"></a></dt>
+<dd><p>Get the leaf nodes of the graph.</p>
 </dd></dl>
 
 <dl class="py property">

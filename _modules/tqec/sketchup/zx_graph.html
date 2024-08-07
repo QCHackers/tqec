@@ -80,12 +80,15 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">astuple</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">Direction3D</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
@@ -101,7 +104,18 @@
 
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span>  <span class="c1"># X-type node</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>  <span class="c1"># Z-type node</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>  <span class="c1"># Virtual node that represents an open port</span></div>
+    <span class="n">V</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>  <span class="c1"># Virtual node that represents an open port</span>
+
+<div class="viewcode-block" id="NodeType.dual">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.NodeType.dual">[docs]</a>
+    <span class="k">def</span> <span class="nf">dual</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeType</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span></div>
+</div>
 
 
 
@@ -150,6 +164,11 @@
 
 <span class="n">_NODE_DATA_KEY</span> <span class="o">=</span> <span class="s2">&quot;tqec_zx_node_data&quot;</span>
 <span class="n">_EDGE_DATA_KEY</span> <span class="o">=</span> <span class="s2">&quot;tqec_zx_edge_data&quot;</span>
+
+<span class="n">CORRELATION_COLOR</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">NodeType</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="s2">&quot;#ff0000&quot;</span><span class="p">,</span>
+    <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="s2">&quot;#0000ff&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="ZXGraph">
@@ -201,20 +220,35 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of edges in the graph.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">_EDGE_DATA_KEY</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">leaf_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the leaf nodes of the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isolated_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the isolated nodes of the graph.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
 <div class="viewcode-block" id="ZXGraph.add_node">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.add_node">[docs]</a>
     <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">,</span>
         <span class="n">node_type</span><span class="p">:</span> <span class="n">NodeType</span><span class="p">,</span>
+        <span class="n">raise_if_exist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node to the graph.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            position: The 3D position of the node.</span>
 <span class="sd">            node_type: The type of the node.</span>
+<span class="sd">            raise_if_exist: Whether to raise an exception if the position already exists</span>
+<span class="sd">                in the graph. If set to False, when the position already exists, the node</span>
+<span class="sd">                type will be updated to the new type. Default is True.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">raise_if_exist</span> <span class="ow">and</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2"> already exists in the graph.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">_NODE_DATA_KEY</span><span class="p">:</span> <span class="n">ZXNode</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">node_type</span><span class="p">)})</span></div>
 
@@ -294,60 +328,108 @@
 
 <div class="viewcode-block" id="ZXGraph.draw">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.draw">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">show_correlation_subgraph_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">node_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
+        <span class="n">hadamard_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+        <span class="n">edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">correlation_edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            show_correlation_subgraph_index: The index of the correlation subgraph to show.</span>
+<span class="sd">            figsize: The figure size. Default is (5, 6).</span>
+<span class="sd">            title: The title of the plot. Default is the name of the graph.</span>
+<span class="sd">            node_size: The size of the node. Default is 400.</span>
+<span class="sd">            hadamard_size: The size of the Hadamard transition. Default is 200.</span>
+<span class="sd">            edge_width: The width of the edge. Default is 1.</span>
+<span class="sd">            correlation_edge_width: The width of the correlation edge. Default is 3.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
         <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">correlation_subgraph</span><span class="p">:</span> <span class="n">ZXGraph</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">show_correlation_subgraph_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">correlation_subgraphs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_correlation_subgraphs</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">show_correlation_subgraph_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">correlation_subgraphs</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">correlation_subgraphs</span><span class="p">)</span><span class="si">}</span><span class="s2"> correlation subgraphs found.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Index </span><span class="si">{</span><span class="n">show_correlation_subgraph_index</span><span class="si">}</span><span class="s2"> is out of range.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">correlation_subgraph</span> <span class="o">=</span> <span class="n">correlation_subgraphs</span><span class="p">[</span>
+                <span class="n">show_correlation_subgraph_index</span>
+            <span class="p">]</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
         <span class="c1"># See https://matplotlib.org/stable/users/explain/toolkits/mplot3d.html</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Axes3D</span><span class="p">,</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">))</span>
 
-        <span class="n">node_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">astuple</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">]</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">edge_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="p">(</span><span class="n">astuple</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">),</span> <span class="n">astuple</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">hadamard_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">edge_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span>
-            <span class="p">],</span>
-        <span class="p">)</span>
-        <span class="n">has_hadamard</span> <span class="o">=</span> <span class="n">hadamard_edges</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
-            <span class="n">hadamard_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">hadamard_edges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">def</span> <span class="nf">positions_array</span><span class="p">(</span><span class="o">*</span><span class="n">positions</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">astuple</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-            <span class="o">*</span><span class="n">node_positions</span><span class="p">,</span>
-            <span class="n">s</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-            <span class="n">c</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;black&quot;</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span> <span class="k">else</span> <span class="s2">&quot;white&quot;</span>
-                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">is_virtual</span>
-            <span class="p">],</span>
-            <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-            <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+        <span class="n">non_virtual_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">]</span>
+        <span class="n">non_virtual_nodes_array</span> <span class="o">=</span> <span class="n">positions_array</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">non_virtual_nodes</span><span class="p">]</span>
         <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_positions</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">edge</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:gray&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
-            <span class="c1"># use yellow square to indicate Hadamard transition</span>
+        <span class="k">if</span> <span class="n">non_virtual_nodes_array</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">hadamard_position</span><span class="p">,</span>
-                <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                <span class="n">c</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+                <span class="o">*</span><span class="n">non_virtual_nodes_array</span><span class="p">,</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">node_size</span><span class="p">,</span>
+                <span class="n">c</span><span class="o">=</span><span class="p">[</span>
+                    <span class="s2">&quot;black&quot;</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span> <span class="k">else</span> <span class="s2">&quot;white&quot;</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">non_virtual_nodes</span>
+                <span class="p">],</span>
                 <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                 <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
             <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="n">pos_array</span> <span class="o">=</span> <span class="n">positions_array</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">pos_array</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:gray&quot;</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="n">edge_width</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span><span class="p">:</span>
+                <span class="n">hadamard_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pos_array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># use yellow square to indicate Hadamard transition</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">hadamard_position</span><span class="p">,</span>
+                    <span class="n">s</span><span class="o">=</span><span class="n">hadamard_size</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">correlation_subgraph</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">correlation_subgraph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+                <span class="n">pos_array</span> <span class="o">=</span> <span class="n">positions_array</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span><span class="p">:</span>
+                    <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">node_type</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                        <span class="o">*</span><span class="n">pos_array</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="n">CORRELATION_COLOR</span><span class="p">[</span><span class="n">correlation_type</span><span class="p">],</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="n">correlation_edge_width</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">hadamard_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pos_array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">[</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="p">]:</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                            <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                                <span class="p">[</span>
+                                    <span class="n">hadamard_position</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                    <span class="n">positions_array</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">),</span>
+                                <span class="p">]</span>
+                            <span class="p">),</span>
+                            <span class="n">color</span><span class="o">=</span><span class="n">CORRELATION_COLOR</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">node_type</span><span class="p">],</span>
+                            <span class="n">linewidth</span><span class="o">=</span><span class="n">correlation_edge_width</span><span class="p">,</span>
+                        <span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="p">):</span>
@@ -367,9 +449,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">show_title</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
@@ -397,7 +477,150 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">graphs_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_graph</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">graphs_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_graph</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_find_correlation_subgraphs_dfs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent_corr_node</span><span class="p">:</span> <span class="n">ZXNode</span><span class="p">,</span>
+        <span class="n">parent_zx_node_type</span><span class="p">:</span> <span class="n">NodeType</span><span class="p">,</span>
+        <span class="n">visited_positions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Position3D</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively find all the correlation subgraphs starting from a node,</span>
+<span class="sd">        represented by the correlation edges in the subgraph.</span>
+
+<span class="sd">        The algorithm is as follows:</span>
+<span class="sd">        1. Initialization</span>
+<span class="sd">            - Initialize the `correlation_subgraphs` as an empty list.</span>
+<span class="sd">            - Add the parent to the `visited_positions`.</span>
+<span class="sd">            - Initialize a list `branched_subgraph` to hold subgraphs constructed</span>
+<span class="sd">            from the neighbors of the parent.</span>
+<span class="sd">        2. Iterate through all edges connected to parent. For each edge:</span>
+<span class="sd">            - If the child node is already visited, skip the edge.</span>
+<span class="sd">            - Determine the correlation type of the child node based on the correlation</span>
+<span class="sd">            type of the parent and the Hadamard transition.</span>
+<span class="sd">            - Create a new correlation node for the child and the correlation edge</span>
+<span class="sd">            between the parent and the child.</span>
+<span class="sd">            - Recursively call this method to find the correlation subgraphs starting</span>
+<span class="sd">            from the child. Then add the edge in the last step to each of the subgraphs.</span>
+<span class="sd">            Append the subgraphs to the `branched_subgraph`.</span>
+<span class="sd">        3. Post-processing</span>
+<span class="sd">            - If no subgraphs are found, return a single empty subgraph.</span>
+<span class="sd">            - If the color of the node matches the correlation type, all the children</span>
+<span class="sd">            should be traversed. Iterate through all the combinations where exactly one</span>
+<span class="sd">            subgraph is selected from each child, and union them to form a new subgraph.</span>
+<span class="sd">            Append the new subgraph to the `correlation_subgraphs`.</span>
+<span class="sd">            - If the color of the node does not match the correlation type, only one</span>
+<span class="sd">            child can be traversed. Append all the subgraphs in the `branched_subgraph`</span>
+<span class="sd">            to the `correlation_subgraphs`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">correlation_subgraphs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">parent_position</span> <span class="o">=</span> <span class="n">parent_corr_node</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">parent_corr_type</span> <span class="o">=</span> <span class="n">parent_corr_node</span><span class="o">.</span><span class="n">node_type</span>
+        <span class="n">visited_positions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">parent_position</span><span class="p">)</span>
+
+        <span class="n">branched_subgraphs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges_at</span><span class="p">(</span><span class="n">parent_position</span><span class="p">):</span>
+            <span class="n">cur_zx_node</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">u</span> <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">parent_position</span> <span class="k">else</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span>
+            <span class="k">if</span> <span class="n">cur_zx_node</span><span class="o">.</span><span class="n">position</span> <span class="ow">in</span> <span class="n">visited_positions</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">cur_corr_type</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">parent_corr_type</span><span class="o">.</span><span class="n">dual</span><span class="p">()</span> <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span> <span class="k">else</span> <span class="n">parent_corr_type</span>
+            <span class="p">)</span>
+            <span class="n">cur_corr_node</span> <span class="o">=</span> <span class="n">ZXNode</span><span class="p">(</span><span class="n">cur_zx_node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">cur_corr_type</span><span class="p">)</span>
+            <span class="n">edge_between_cur_parent</span> <span class="o">=</span> <span class="n">ZXEdge</span><span class="p">(</span>
+                <span class="n">parent_corr_node</span><span class="p">,</span> <span class="n">cur_corr_node</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span>
+            <span class="p">)</span>
+            <span class="n">branched_subgraphs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">subgraph</span> <span class="o">|</span> <span class="p">{</span><span class="n">edge_between_cur_parent</span><span class="p">}</span>
+                    <span class="k">for</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_correlation_subgraphs_dfs</span><span class="p">(</span>
+                        <span class="n">cur_corr_node</span><span class="p">,</span>
+                        <span class="n">cur_zx_node</span><span class="o">.</span><span class="n">node_type</span><span class="p">,</span>
+                        <span class="n">copy</span><span class="p">(</span><span class="n">visited_positions</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">branched_subgraphs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">set</span><span class="p">()]</span>
+        <span class="c1"># the color of node matches the correlation type</span>
+        <span class="c1"># broadcast the correlation type to all the neighbors</span>
+        <span class="k">if</span> <span class="n">parent_zx_node_type</span> <span class="o">==</span> <span class="n">parent_corr_type</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prod</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">branched_subgraphs</span><span class="p">):</span>
+                <span class="n">correlation_subgraphs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">prod</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">correlation_subgraphs</span>
+
+        <span class="c1"># the color of node does not match the correlation type</span>
+        <span class="c1"># only one of the neighbors can be the correlation path</span>
+        <span class="n">correlation_subgraphs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">branched_subgraphs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">correlation_subgraphs</span>
+
+<div class="viewcode-block" id="ZXGraph.find_correlation_subgraphs">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.zx_graph.ZXGraph.find_correlation_subgraphs">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_correlation_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXGraph</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the correlation subgraphs of the ZX graph.</span>
+
+<span class="sd">        Here a correlation subgraph is defined as a subgraph of the `ZXGraph`</span>
+<span class="sd">        that represents the correlation surface within a 3D spacetime diagram.</span>
+<span class="sd">        Each node in the correlation subgraph is composed of its position and</span>
+<span class="sd">        the correlation surface type, which is either `NodeType.X` or `NodeType.Z`.</span>
+
+<span class="sd">        For the closed diagram, the correlation subgraph represents the correlation</span>
+<span class="sd">        between the measured logical observables. For the open diagram, the</span>
+<span class="sd">        correlation subgraph represents the correlation between the measured logical</span>
+<span class="sd">        observables and the input/output observables, which can be combined with</span>
+<span class="sd">        the expected stabilizer flow to verify the correctness of the computation.</span>
+
+<span class="sd">        A recursive depth-first search algorithm is used to find the correlation</span>
+<span class="sd">        subgraphs starting from each leaf node. The algorithm is described in the</span>
+<span class="sd">        method `_find_correlation_subgraphs_dfs`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">single_node_correlation_subgraphs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXGraph</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">multi_edges_correlation_subgraphs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">],</span> <span class="n">ZXGraph</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">num_subgraphs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isolated_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">subgraph</span> <span class="o">=</span> <span class="n">ZXGraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Correlation subgraph </span><span class="si">{</span><span class="n">num_subgraphs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">node_type</span><span class="p">)</span>
+            <span class="n">single_node_correlation_subgraphs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span>
+            <span class="n">num_subgraphs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">def</span> <span class="nf">add_subgraphs</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">ZXNode</span><span class="p">,</span> <span class="n">correlation_type</span><span class="p">:</span> <span class="n">NodeType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">nonlocal</span> <span class="n">num_subgraphs</span>
+            <span class="n">root_corr_node</span> <span class="o">=</span> <span class="n">ZXNode</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">correlation_type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">edges</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_correlation_subgraphs_dfs</span><span class="p">(</span>
+                <span class="n">root_corr_node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">node_type</span><span class="p">,</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span> <span class="ow">in</span> <span class="n">multi_edges_correlation_subgraphs</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">subgraph</span> <span class="o">=</span> <span class="n">ZXGraph</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Correlation subgraph </span><span class="si">{</span><span class="n">num_subgraphs</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+                        <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">node_type</span><span class="p">,</span> <span class="n">raise_if_exist</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+                    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+                        <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">node_type</span><span class="p">,</span> <span class="n">raise_if_exist</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+                    <span class="n">subgraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+                        <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">has_hadamard</span>
+                    <span class="p">)</span>
+                <span class="n">multi_edges_correlation_subgraphs</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">edges</span><span class="p">)]</span> <span class="o">=</span> <span class="n">subgraph</span>
+                <span class="n">num_subgraphs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaf_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">correlation_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">NodeType</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span><span class="p">]:</span>
+                    <span class="n">add_subgraphs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">correlation_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">add_subgraphs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">node_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">single_node_correlation_subgraphs</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">multi_edges_correlation_subgraphs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span></div>
+</div>
 
 </pre></div>
 

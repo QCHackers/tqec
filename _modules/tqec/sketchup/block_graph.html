@@ -717,14 +717,16 @@
 <div class="viewcode-block" id="BlockGraph.display">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.display">[docs]</a>
     <span class="k">def</span> <span class="nf">display</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">wirte_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">wirte_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ColladaDisplayHelper&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the block graph in 3D.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
         <span class="kn">from</span> <span class="nn">tqec.sketchup.collada</span> <span class="kn">import</span> <span class="n">display_collada_model</span>
 
         <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">)</span>
+        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">display_collada_model</span><span class="p">(</span>
             <span class="n">filepath_or_bytes</span><span class="o">=</span><span class="n">bytes_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
             <span class="n">write_html_filepath</span><span class="o">=</span><span class="n">wirte_html_filepath</span><span class="p">,</span>
