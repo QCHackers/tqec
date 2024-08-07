@@ -549,7 +549,7 @@ class BlockGraph:
         self,
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
-    ) -> "ColladaDisplayHelper":
+    ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
         from tqec.sketchup.collada import (
             display_collada_model,

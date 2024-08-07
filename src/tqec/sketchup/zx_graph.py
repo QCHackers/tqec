@@ -154,7 +154,6 @@ class ZXGraph:
             raise_if_exist: Whether to raise an exception if the position already exists
                 in the graph. If set to False, when the position already exists, the node
                 type will be updated to the new type. Default is True.
-
         """
         if raise_if_exist and position in self._graph:
             raise TQECException(f"Node {position} already exists in the graph.")
@@ -392,7 +391,6 @@ class ZXGraph:
             - If the color of the node does not match the correlation type, only one
             child can be traversed. Append all the subgraphs in the `branched_subgraph`
             to the `correlation_subgraphs`.
-
         """
         correlation_subgraphs: list[set[ZXEdge]] = []
         parent_position = parent_corr_node.position
@@ -452,7 +450,6 @@ class ZXGraph:
         A recursive depth-first search algorithm is used to find the correlation
         subgraphs starting from each leaf node. The algorithm is described in the
         method `_find_correlation_subgraphs_dfs`.
-
         """
         single_node_correlation_subgraphs: list[ZXGraph] = []
         multi_edges_correlation_subgraphs: dict[frozenset[ZXEdge], ZXGraph] = {}
