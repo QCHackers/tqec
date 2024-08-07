@@ -79,6 +79,8 @@ jobs:
   coverage-python:
     runs-on: ubuntu-latest
     needs: pre-commit-ci
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
