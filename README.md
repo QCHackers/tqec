@@ -5,7 +5,7 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-Live endpoint: https://tqec.app
+Live endpoint: [https://tqec.app](https://tqec.app)
 
 ## Installation
 
@@ -40,12 +40,12 @@ The next step is to install the package and its dependencies using
 python -m pip install "."
 ```
 
-If you want to run the
-[`logical_qubit_memory_experiment.ipynb`](https://github.com/QCHackers/tqec/blob/main/notebooks/logical_qubit_memory_experiment.ipynb)
-notebook, you will also have to install a few other packages:
+If you want to help developing the `tqec` Python package, you should install the development
+environment by using instead
 
 ```sh
 python -m pip install ".[dev]"
+python -m pre-commit install
 ```
 
 If no errors happen, the package is installed! You can try to launch a jupyter
