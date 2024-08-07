@@ -51,7 +51,7 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
 
     This is the main user-facing function to automatically insert detectors into
     a quantum circuit composed of Clifford operations. The provided circuit should
-    check some pre-conditions to be accepted, which are detailled in details below.
+    check some pre-conditions to be accepted, which are detailed in details below.
 
     First and foremost, the provided circuit should check the pre-conditions listed
     in the documentation of :func:`split_stim_circuit_into_fragments`.

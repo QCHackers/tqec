@@ -1,5 +1,5 @@
 // Constant values used in this project.
-// They are needed by different componenets of the TQEC app.
+// They are needed by different components of the TQEC app.
 
 /////////////////////////////////////////////////////////////
 

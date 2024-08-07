@@ -118,7 +118,7 @@ class BoundaryStabilizer:
                 collapsing operations.
 
         Returns:
-            the merged boudary stabilizer, defined on the same set of collapsing
+            the merged boundary stabilizer, defined on the same set of collapsing
             operations (i.e., the same boundary), but with the two pre-collapsing
             stabilizers multiplied together.
         """

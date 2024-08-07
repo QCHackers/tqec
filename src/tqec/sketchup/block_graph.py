@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
-from io import BytesIO
-import typing as ty
 import pathlib
-from dataclasses import dataclass, astuple
+import typing as ty
+from dataclasses import astuple, dataclass
 from enum import Enum
+from io import BytesIO
 
 import networkx as nx
 
-from tqec.position import Position3D, Direction3D
-from tqec.sketchup.zx_graph import (
-    ZXGraph,
-    NodeType,
-    ZXNode,
-    ZXEdge,
-)
 from tqec.exceptions import TQECException
+from tqec.position import Direction3D, Position3D
+from tqec.sketchup.zx_graph import (
+    NodeType,
+    ZXEdge,
+    ZXGraph,
+    ZXNode,
+)
 
 if ty.TYPE_CHECKING:
     from tqec.sketchup.collada import ColladaDisplayHelper
@@ -383,7 +383,7 @@ class BlockGraph:
                 )
         # 3. Match color at turn
         if len(pipe_directions) == 2:
-            # since we have checked the pass-throught match
+            # since we have checked the pass-through match
             # we only have to check that the surrounding walls at the turn plane have the same color
             if cube.cube_type.normal_direction_to_corner_plane() in pipe_directions:
                 raise TQECException(
@@ -543,15 +543,17 @@ class BlockGraph:
         return read_block_graph_from_dae_file(filename, graph_name)
 
     def display(
-        self, wirte_html_filepath: str | pathlib.Path | None = None
+        self, write_html_filepath: str | pathlib.Path | None = None
     ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
-        from tqec.sketchup.collada import write_block_graph_to_dae_file
-        from tqec.sketchup.collada import display_collada_model
+        from tqec.sketchup.collada import (
+            display_collada_model,
+            write_block_graph_to_dae_file,
+        )
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(self, bytes_buffer)
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),
-            write_html_filepath=wirte_html_filepath,
+            write_html_filepath=write_html_filepath,
         )

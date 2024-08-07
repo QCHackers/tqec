@@ -66,7 +66,7 @@ class PlaquetteQubits:
         By convention, the edge is the one with the highest index in the relevant axis.
 
         Args:
-            orientation (TemplateOrientation, optional): Wheter to use horizontal or
+            orientation (TemplateOrientation, optional): Whether to use horizontal or
                 vertical orientation as the axis. Defaults to horizontal.
         Returns:
             list[PlaquetteQubit]: The qubits on the edge of the plaquette.

@@ -54,7 +54,7 @@ class Shape2D:
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
-    This class is here to explicitely name the type of variables as displacements
+    This class is here to explicitly name the type of variables as displacements
     instead of having a tuple[int, int] that could be:
     - a position,
     - a shape,

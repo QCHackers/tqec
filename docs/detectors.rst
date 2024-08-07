@@ -18,7 +18,7 @@ specifically to the code in this sub-module:
 
 - it should be self-contained, or in other words it should not call code from the main
   ``tqec`` package, with the exception of code within ``tqec.circuit.detectors``,
-- it should avoid uneeded dependencies. For that reason, the code in ``tqec.circuit.detectors``
+- it should avoid unneeded dependencies. For that reason, the code in ``tqec.circuit.detectors``
   does not use ``cirq`` as its intermediary representation but directly operates on
   ``stim`` data-structures.
 
@@ -129,7 +129,7 @@ shown in the illustration below:
 Here, the fragment is creating a ``Z0Z2`` stabilizer: the ``Z`` Pauli string
 comes out of the final moment of the fragment on qubits ``0`` and ``2``.
 
-Quantum circuit can also "destroy" some incomming stabilizers with its measurements
+Quantum circuit can also "destroy" some incoming stabilizers with its measurements
 as shown below:
 
 .. image:: media/detectors/stabilizer-destruction.png

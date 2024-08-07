@@ -190,7 +190,7 @@ def test_raw_rectangle_midline() -> None:
     assert midline == [(0, 2), (1, 2), (2, 2), (3, 2)]
     template.scale_to(4)
     midline = template.get_midline_plaquettes()
-    # shoudl be 4*3 elements
+    # should be 4*3 elements
     template = RawRectangleTemplate([[0]])
     with pytest.raises(TQECException, match="Midline is not defined for odd height."):
         template.get_midline_plaquettes()
@@ -206,7 +206,7 @@ def test_rectangle_midline() -> None:
     assert midline == [(0, 2), (1, 2), (2, 2), (3, 2)]
     template.scale_to(4)
     midline = template.get_midline_plaquettes()
-    # shoudl be 4*3 elements
+    # should be 4*3 elements
     assert midline == [
         (3, 0),
         (3, 1),

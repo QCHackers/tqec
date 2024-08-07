@@ -56,7 +56,7 @@ def _make_pauli_syndrome_measurement_circuit(
             `data_qubits` as there are Pauli characters in the provided
             `pauli_string`.
         pauli_string: a string of case-independent characters, each
-            representing a Pauli matrix. Each charater should be present in
+            representing a Pauli matrix. Each character should be present in
             _SUPPORTED_PAULI and the string should have as many characters as
             there are qubits in `data_qubits`.
         reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the
@@ -117,7 +117,7 @@ def pauli_memory_plaquette(
 
     Warning:
         This function cannot change the order in which data qubits, Pauli "chars" (one
-        caracter of the provided Pauli string) and schedule are provided. That means
+        character of the provided Pauli string) and schedule are provided. That means
         that it cannot group X and Z basis measurements.
         In practice, an input Pauli string "XZXZXZ" will lead to 3 pairs of Hadamard
         gates being included to measure the 3 X Pauli strings. The `schedule` provided

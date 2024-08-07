@@ -113,7 +113,7 @@ export default class PlaquetteType extends Plaquette {
         this.x = 0;
         this.y = 0;
 
-        // Update the compact representation of teh QEC code
+        // Update the compact representation of the QEC code
         const codesummary = document.getElementById('codeSummary');
         let message = codesummary.value.split('\n');
         let lines = message;

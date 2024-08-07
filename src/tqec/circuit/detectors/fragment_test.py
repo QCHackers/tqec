@@ -240,9 +240,9 @@ REPEAT 9 {
         [Fragment(stim.Circuit("R 1 3\nTICK\nM 1 3"))], 9
     )
 
-    errorneous_circuit = stim.Circuit("REPEAT 9 {\nR 1 3\nTICK\nH 1 3\n}")
+    erroneous_circuit = stim.Circuit("REPEAT 9 {\nR 1 3\nTICK\nH 1 3\n}")
     with pytest.raises(TQECException, match=r"^Error when splitting .* REPEAT block.*"):
-        split_stim_circuit_into_fragments(errorneous_circuit)
+        split_stim_circuit_into_fragments(erroneous_circuit)
 
 
 def test_split_stim_circuit_into_fragments_error_before_repeat() -> None:

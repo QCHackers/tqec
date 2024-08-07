@@ -42,7 +42,7 @@ export default function createCircuitStimCode(data_qubits, anc_qubit, addTickMar
   line = `H ${id_ancilla}`;
   lines.push(line);
   if (addTickMarks) lines.push('TICK');
-  // Then apply one CNOt or CZ at a time, everyone controlled by the ancilla
+  // Then apply one CNot or CZ at a time, everyone controlled by the ancilla
   // and acting on a different data qubit.
   q = 1;
   data_qubits.forEach((qubit) => {

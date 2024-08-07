@@ -20,7 +20,7 @@ def observable_qubits_from_template(
 
     Args:
         template: The template to get the default observable qubits from.
-        plaquettes: The plaquettes to use to get the acurate positions of the observable qubits.
+        plaquettes: The plaquettes to use to get the accurate positions of the observable qubits.
         orientation: Whether to get the observable qubits from
             the horizontal or vertical midline. Defaults to horizontal.
 

@@ -240,7 +240,7 @@ class PiecewiseLinearFunction:
       linear function encoded change and,
     - a list of `n+1` instances of `LinearFunction`, representing the linear
       functions on each of the `n+1` intervals represented by the `n` separators
-      (and both -infinity and +infinity that are never stored explicitely).
+      (and both -infinity and +infinity that are never stored explicitly).
 
     """
 
