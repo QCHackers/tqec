@@ -24,3 +24,7 @@ repos:
     rev: v1.23.6
     hooks:
       - id: typos
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
