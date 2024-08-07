@@ -258,7 +258,7 @@ class ZXGraph:
         fig.tight_layout()
         plt.show()
 
-    def to_block_graph(self, name: str = "") -> "BlockGraph":
+    def to_block_graph(self, name: str = "") -> BlockGraph:
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,

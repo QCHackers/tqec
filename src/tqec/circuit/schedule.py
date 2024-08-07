@@ -42,11 +42,9 @@ class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
         number_of_non_virtual_moments: int,
     ) -> None:
         super().__init__(
-            (
-                f"The provided schedule contains {len(schedule)} entries, but "
-                f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
-                f"provided circuit:\n{circuit}"
-            )
+            f"The provided schedule contains {len(schedule)} entries, but "
+            f"{number_of_non_virtual_moments} non-virtual moments have been found in the "
+            f"provided circuit:\n{circuit}"
         )
 
 
@@ -167,7 +165,7 @@ class ScheduledCircuit:
     @staticmethod
     def from_multi_qubit_moment_schedule(
         circuit: cirq.Circuit, multi_qubit_moment_schedule: list[int]
-    ) -> "ScheduledCircuit":
+    ) -> ScheduledCircuit:
         """Construct a ScheduledCircuit from scheduled multi-qubit gates
 
         This construction method basically auto-schedules single-qubit gates from
@@ -262,12 +260,12 @@ class ScheduledCircuit:
         the detectors.
         """
         operation_qubits = self.qubits
-        detector_origins = set(detector.origin for detector in self.detectors)
+        detector_origins = {detector.origin for detector in self.detectors}
         return frozenset(operation_qubits.union(detector_origins))
 
     def map_to_qubits(
         self, qubit_map: dict[cirq.GridQubit, cirq.GridQubit], inplace: bool = False
-    ) -> "ScheduledCircuit":
+    ) -> ScheduledCircuit:
         """Map the qubits the ScheduledCircuit instance is applied on.
 
         This method forwards most of its logic to the underlying raw_circuit
@@ -306,13 +304,13 @@ class ScheduledCircuit:
         operand.raw_circuit = operand.raw_circuit.map_operations(remap_qubits)
         return operand
 
-    def __copy__(self) -> "ScheduledCircuit":
+    def __copy__(self) -> ScheduledCircuit:
         return ScheduledCircuit(
             self._raw_circuit,
             self._schedule,
         )
 
-    def __deepcopy__(self, memo: dict[typing.Any, typing.Any]) -> "ScheduledCircuit":
+    def __deepcopy__(self, memo: dict[typing.Any, typing.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._raw_circuit, memo=memo),
             deepcopy(self._schedule, memo=memo),

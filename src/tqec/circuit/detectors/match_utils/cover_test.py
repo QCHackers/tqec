@@ -32,9 +32,9 @@ def test_all_pauli_string_combination_results_randomized() -> None:
         for _ in range(5)
     ]
 
-    from_function = set(
+    from_function = {
         pauli for _, pauli in _all_pauli_string_combination_results(paulis)
-    )
+    }
     from_alternative_implementation = set(
         _all_pauli_string_combination_results_alternative_implementation(paulis)
     )

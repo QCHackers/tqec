@@ -181,7 +181,7 @@ class ComposedTemplate(Template):
         template_id_to_position: int,
         relative_position: TemplateRelativePositionEnum,
         anchor_id: int,
-    ) -> "ComposedTemplate":
+    ) -> ComposedTemplate:
         """Add a relative positioning between two templates.
 
         This method has the same effect as ``add_corner_relation`` (it
@@ -238,7 +238,7 @@ class ComposedTemplate(Template):
         self,
         template_id_to_position_corner: tuple[int, CornerPositionEnum],
         anchor_id_corner: tuple[int, CornerPositionEnum],
-    ) -> "ComposedTemplate":
+    ) -> ComposedTemplate:
         """Add a relative positioning between two templates.
 
         Args:

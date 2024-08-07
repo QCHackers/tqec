@@ -43,7 +43,7 @@ class Color3D:
     z: Color
 
     @staticmethod
-    def null() -> "Color3D":
+    def null() -> Color3D:
         """Get the null color."""
         return Color3D(Color.NULL, Color.NULL, Color.NULL)
 
@@ -70,7 +70,7 @@ class Color3D:
         return Color3D(*colors)
 
     @staticmethod
-    def from_string(s: str, flip_xz: bool = False) -> "Color3D":
+    def from_string(s: str, flip_xz: bool = False) -> Color3D:
         s = s.lower()
         if s == "virtual":
             return Color3D.null()
@@ -114,7 +114,7 @@ class CubeType(Enum):
         return Color3D.from_string(self.value)
 
     @staticmethod
-    def from_color(color: Color3D) -> "CubeType":
+    def from_color(color: Color3D) -> CubeType:
         """Get the cube type from the color."""
         if color.is_null:
             return CubeType.VIRTUAL
@@ -184,7 +184,7 @@ class PipeType(Enum):
     @staticmethod
     def from_color_at_side(
         color: Color3D, src_side_if_h_pipe: bool = True, has_hadamard: bool = False
-    ) -> "PipeType":
+    ) -> PipeType:
         """Get the pipe type from the color at one side."""
         if not sum(c.is_null for c in astuple(color)) == 1:
             raise TQECException(
@@ -411,7 +411,7 @@ class BlockGraph:
         return ty.cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
 
     @staticmethod
-    def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> "BlockGraph":
+    def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> BlockGraph:
         """Construct a block graph from a ZX graph.
 
         The ZX graph includes the minimal information required to construct the block graph,
@@ -536,9 +536,7 @@ class BlockGraph:
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
-    def from_dae_file(
-        filename: str | pathlib.Path, graph_name: str = ""
-    ) -> "BlockGraph":
+    def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
         """Construct a block graph from a DAE file."""
         from tqec.sketchup.collada import read_block_graph_from_dae_file
 
@@ -546,7 +544,7 @@ class BlockGraph:
 
     def display(
         self, wirte_html_filepath: str | pathlib.Path | None = None
-    ) -> "ColladaDisplayHelper":
+    ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
         from tqec.sketchup.collada import write_block_graph_to_dae_file
         from tqec.sketchup.collada import display_collada_model
