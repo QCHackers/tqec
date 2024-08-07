@@ -45,7 +45,7 @@ environment by using instead
 
 ```sh
 python -m pip install ".[dev]"
-python -m pre-commit install
+pre-commit install
 ```
 
 If no errors happen, the package is installed! You can try to launch a jupyter
