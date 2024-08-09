@@ -596,7 +596,10 @@ class BlockGraph:
 
         for g in correlation_subgraphs:
             if g.num_nodes == 1:
-                cube = ty.cast(Cube, self.get_cube(g.nodes[0].position))
+                cube = self.get_cube(g.nodes[0].position)
+                assert (
+                    cube is not None
+                ), f"{g.nodes[0]} is in the graph and should be associated with a Cube instance."
                 abstract_observables.append(
                     AbstractObservable(frozenset({cube}), frozenset())
                 )
@@ -604,17 +607,22 @@ class BlockGraph:
             top_lines: set[Cube | Pipe] = set()
             bottom_regions: set[Pipe] = set()
             for edge in g.edges:
-                pipe = ty.cast(Pipe, self.get_pipe(edge.u.position, edge.v.position))
+                pipe = self.get_pipe(edge.u.position, edge.v.position)
+                assert (
+                    pipe is not None
+                ), f"{edge} is in the graph and should be associated with a Pipe instance."
                 u, v = pipe.u, pipe.v
                 if pipe.direction == Direction3D.Z:
                     if is_measured(v):
                         top_lines.add(v)
                     continue
                 correlation_type_at_src = edge.u.node_type.value
-                surface_attach_direction = Direction3D.from_axis_index(
+                # The direction for which the correlation surface of that type
+                # can be attached to the pipe
+                correlation_type_direction = Direction3D.from_axis_index(
                     pipe.pipe_type.value.index(correlation_type_at_src)
                 )
-                if surface_attach_direction == Direction3D.Z:
+                if correlation_type_direction == Direction3D.Z:
                     top_lines.add(pipe)
                     if is_measured(u):
                         top_lines.add(u)
