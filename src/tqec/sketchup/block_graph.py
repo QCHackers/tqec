@@ -14,7 +14,6 @@ from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 from tqec.sketchup.zx_graph import (
     NodeType,
-    ZXEdge,
     ZXGraph,
     ZXNode,
 )
@@ -259,6 +258,24 @@ class Pipe:
         return self.pipe_type.direction
 
 
+@dataclass(frozen=True)
+class AbstractObservable:
+    """An abstract description of an observable in a 3D spacetime diagram.
+
+    In a **closed** 3D spacetime diagram, the abstract observable can be derived from
+    the corresponding correlation surface:
+    1. When the correlation surface attaches to the top/bottom faces of a block in
+    the diagram, the measurements of the line of qubits on the top face are included
+    in the observable.
+    2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer
+    measurements at the start of the pipe and part of the stabilizer measurements within
+    the cubes connected by the pipe are included in the observable.
+    """
+
+    top_lines: frozenset[Cube | Pipe]
+    bottom_regions: frozenset[Pipe]
+
+
 _CUBE_DATA_KEY = "tqec_block_cube_data"
 _PIPE_DATA_KEY = "tqec_block_pipe_data"
 
@@ -284,6 +301,11 @@ class BlockGraph:
     def num_pipes(self) -> int:
         """The number of pipes in the graph."""
         return ty.cast(int, self._graph.number_of_edges())
+
+    @property
+    def num_open_ports(self) -> int:
+        """The number of open ports in the graph."""
+        return sum(cube.is_virtual for cube in self.cubes)
 
     @property
     def cubes(self) -> list[Cube]:
@@ -334,7 +356,7 @@ class BlockGraph:
         """Get the pipe by its endpoint cube positions."""
         if not self._graph.has_edge(u, v):
             return None
-        return ty.cast(Pipe, self._graph.edges[u, v][_CUBE_DATA_KEY])
+        return ty.cast(Pipe, self._graph.edges[u, v][_PIPE_DATA_KEY])
 
     def pipes_at(self, position: Position3D) -> list[Pipe]:
         """Get the pipes connected to a cube."""
@@ -562,3 +584,53 @@ class BlockGraph:
             filepath_or_bytes=bytes_buffer.getvalue(),
             write_html_filepath=write_html_filepath,
         )
+
+    def get_abstract_observables(self) -> list[AbstractObservable]:
+        """Get all the abstract observables from the block graph."""
+        self.check_validity(allow_virtual_node=False)
+        correlation_subgraphs = self.to_zx_graph().find_correlation_subgraphs()
+        abstract_observables: list[AbstractObservable] = []
+
+        def is_measured(cube: Cube) -> bool:
+            return self.get_pipe(cube.position, cube.position.shift_by(0, 0, 1)) is None
+
+        for g in correlation_subgraphs:
+            if g.num_nodes == 1:
+                cube = self.get_cube(g.nodes[0].position)
+                assert (
+                    cube is not None
+                ), f"{g.nodes[0]} is in the graph and should be associated with a Cube instance."
+                abstract_observables.append(
+                    AbstractObservable(frozenset({cube}), frozenset())
+                )
+                continue
+            top_lines: set[Cube | Pipe] = set()
+            bottom_regions: set[Pipe] = set()
+            for edge in g.edges:
+                pipe = self.get_pipe(edge.u.position, edge.v.position)
+                assert (
+                    pipe is not None
+                ), f"{edge} is in the graph and should be associated with a Pipe instance."
+                u, v = pipe.u, pipe.v
+                if pipe.direction == Direction3D.Z:
+                    if is_measured(v):
+                        top_lines.add(v)
+                    continue
+                correlation_type_at_src = edge.u.node_type.value
+                # The direction for which the correlation surface of that type
+                # can be attached to the pipe
+                correlation_type_direction = Direction3D.from_axis_index(
+                    pipe.pipe_type.value.index(correlation_type_at_src)
+                )
+                if correlation_type_direction == Direction3D.Z:
+                    top_lines.add(pipe)
+                    if is_measured(u):
+                        top_lines.add(u)
+                    if is_measured(v):
+                        top_lines.add(v)
+                else:
+                    bottom_regions.add(pipe)
+            abstract_observables.append(
+                AbstractObservable(frozenset(top_lines), frozenset(bottom_regions))
+            )
+        return abstract_observables
