@@ -592,7 +592,7 @@ class BlockGraph:
         abstract_observables: list[AbstractObservable] = []
 
         def is_measured(cube: Cube) -> bool:
-            return self.get_cube(cube.position.shift_by(0, 0, 1)) is None
+            return self.get_pipe(cube.position, cube.position.shift_by(0, 0, 1)) is None
 
         for g in correlation_subgraphs:
             if g.num_nodes == 1:
