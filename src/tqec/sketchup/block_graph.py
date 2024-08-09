@@ -270,7 +270,6 @@ class AbstractObservable:
     2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer
     measurements at the start of the pipe and part of the stabilizer measurements within
     the cubes connected by the pipe are included in the observable.
-
     """
 
     top_lines: frozenset[Cube | Pipe]
