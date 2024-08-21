@@ -1,42 +1,58 @@
 # Usage
 
-How to use this tool.
+How to use `tqec` to build, scale and simulate error correction codes.
 
 ## Preconditions
 
-- Sketchup version 8
-- Install Library, see
+To run `tqec` you need to 
+- (Optional) Install SketchUp version 8, requires Windows.
+	This is used for building 3d modles of the computation you want to do.
+- Install the `tqec` library, see the [readme](./README.md).
+	`tqec` detects observables, scales up your error correction codes and runs the simulation by interfacing with [`stim`](https://github.com/quantumlib/stim).
 
-## What do we want to do
+## Intended workflow
 
-Simulate an error correction do
+The simulation of an error correction code consists of the steps below.
+Steps 2 and 3 are automated by `tqec`
 
-1. Define the base model
-a) Sketchup -> build a model -> export do `.dae` import using pycollada
-b) python -> build model
+1. Define the base model with one of two ways
+	- Sketchup:  build a model in SketchUp, export it to  a `.dae` file, and  import in `tqec` using pycollada.
+	- Python: build model programatically in `tqec`
 
-2. Model should look like an abstrtact model
--> Need to find observables
+2. Convert the modeled instance to a generic model
+	- Find possible observables to investigate
+	- Generate a scalable computation 
 
-3. Tranform this to a stim circuit
-- build scalable version
-- build scalable observables
-- find detectors
-- create stim files
+3. Tranform the computatio to an executable stim circuit
+	- build scalable version of various sizes
+	- build scalable observables
+	- find detectors
+	- create `stim` files 
 
-4. Repeat for multiple different parameters
+4. Run the simulations, repeat for multiple different parameters and investigate interesting areas.
 
 ## Current state
 
-### Dae Conversion
+This section explains the current state of the above pipline.
+Currently no cli commands are exposed.
 
-Currently no cli command is exposed, has to be used directly. See `./notebooks/sketchup_demo.ipynb` for converting `.dae` to `Blockgrahps` and `ZXGraph`
+### Model Definition 
 
--
+Conversion of sketchup models has to be done in code. 
+See the [sketchup demo](./notebooks/sketchup_demo.ipynb) for converting `.dae` to `BlockGraph` and `ZXGraph` structures.
+
+Additionally, the above notebook also contains instructions how to programmatically define the model.
+
+
+### Conversion
+
+Observables can be found using `find_correlation_subgraphs()` on the defined models.
+Currently, there is no way to directly convert a 3d structure to mutliple layers of 2d computation.
 
 ### Scaling
 
-See `logical_qubit_memory_experiment`
+Automatic scaling can be achieved programatically, circuits can be executed through the `stim` python interface.
+For an example, refer to the [memory experiment](./notebooks/logical_qubit_memory_experiment.ipynb).
 
 ## Todos:
 
@@ -45,5 +61,6 @@ See `logical_qubit_memory_experiment`
 	- .dae input
 	- Show observables (according to structure)
 	- show computation (as executed)
-	- show plots ()
-- Specify how to select / resimulate
+	- show plots (multiple combinations)
+- Specify how to select / re-simulate specific areas
+
