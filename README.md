@@ -80,3 +80,8 @@ Refer to [this wiki page](https://github.com/QCHackers/tqec/wiki/TQEC-Architectu
 For jupyterlab there is a market place extension which you need to enable first
 and that will let you search and install extensions from within jupyter lab. You
 can enable the marketplace extension with the following code:
+
+## Usage
+
+For usager reffer to the [`usage file`](./USAGE.md).
+Advanced examples are in the [`notebooks`](https://github.com/QCHackers/tqec/tree/main/notebooks) directory.
