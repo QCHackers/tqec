@@ -1,8 +1,8 @@
-import typing as ty
 from dataclasses import astuple, dataclass
 from enum import Enum
 
 from tqec.exceptions import TQECException
+from tqec.templates.enums import TemplateSide
 
 
 @dataclass(frozen=True)
@@ -109,7 +109,7 @@ class Direction3D(Enum):
     @staticmethod
     def all() -> list["Direction3D"]:
         """Get all directions."""
-        return [e for e in Direction3D]
+        return list(Direction3D)
 
     @staticmethod
     def from_axis_index(i: int) -> "Direction3D":
@@ -125,3 +125,34 @@ class Direction3D(Enum):
 
     def __str__(self) -> str:
         return self.name
+
+    def to_template_sides(self) -> list[TemplateSide]:
+        """Convert the direction to the corresponding template sides.
+
+        Raises:
+            TQECException: It the temporal direction is requested.
+
+        Returns:
+            list[TemplateSide]: The template sides corresponding to the direction.
+        """
+        match self:
+            case Direction3D.X:
+                return [
+                    TemplateSide.TOP_LEFT,
+                    TemplateSide.LEFT,
+                    TemplateSide.BOTTOM_LEFT,
+                    TemplateSide.TOP_RIGHT,
+                    TemplateSide.RIGHT,
+                    TemplateSide.BOTTOM_RIGHT,
+                ]
+            case Direction3D.Y:
+                return [
+                    TemplateSide.TOP_LEFT,
+                    TemplateSide.TOP,
+                    TemplateSide.TOP_RIGHT,
+                    TemplateSide.BOTTOM_LEFT,
+                    TemplateSide.BOTTOM,
+                    TemplateSide.BOTTOM_RIGHT,
+                ]
+            case Direction3D.Z | _:
+                raise TQECException("Cannot get a TemplateSide from the time boundary.")
