@@ -40,24 +40,22 @@ class Direction3D(Enum):
         Returns:
             list[TemplateSide]: The template sides corresponding to the direction.
         """
-        match self:
-            case Direction3D.X:
-                return [
-                    TemplateSide.TOP_LEFT,
-                    TemplateSide.LEFT,
-                    TemplateSide.BOTTOM_LEFT,
-                    TemplateSide.TOP_RIGHT,
-                    TemplateSide.RIGHT,
-                    TemplateSide.BOTTOM_RIGHT,
-                ]
-            case Direction3D.Y:
-                return [
-                    TemplateSide.TOP_LEFT,
-                    TemplateSide.TOP,
-                    TemplateSide.TOP_RIGHT,
-                    TemplateSide.BOTTOM_LEFT,
-                    TemplateSide.BOTTOM,
-                    TemplateSide.BOTTOM_RIGHT,
-                ]
-            case Direction3D.Z | _:
-                raise TQECException("Cannot get a TemplateSide from the time boundary.")
+        if self == Direction3D.X:
+            return [
+                TemplateSide.TOP_LEFT,
+                TemplateSide.LEFT,
+                TemplateSide.BOTTOM_LEFT,
+                TemplateSide.TOP_RIGHT,
+                TemplateSide.RIGHT,
+                TemplateSide.BOTTOM_RIGHT,
+            ]
+        if self == Direction3D.Y:
+            return [
+                TemplateSide.TOP_LEFT,
+                TemplateSide.TOP,
+                TemplateSide.TOP_RIGHT,
+                TemplateSide.BOTTOM_LEFT,
+                TemplateSide.BOTTOM,
+                TemplateSide.BOTTOM_RIGHT,
+            ]
+        raise TQECException("Cannot get a TemplateSide from the time boundary.")
