@@ -5,19 +5,21 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
-
+from functools import partial
 from typing_extensions import override
+
 import cirq
 import cirq.circuits
+import networkx as nx
+from tqec.direction import Direction3D
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
-from tqec.position import Direction3D, Position3D
+from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
-from functools import partial
 
 
 @dataclass
@@ -35,24 +37,20 @@ class ComputationBlock(ABC):
     def depth(self) -> int:
         """Return the number of timesteps (`cirq.Moment`) needed by the
         block."""
-        pass
 
     @abstractmethod
     def instantiate(self) -> cirq.Circuit:
         """Return the full circuit representation of the computational
         block."""
-        pass
 
     @abstractmethod
     def instantiate_without_boundary(self, boundary: Direction3D) -> cirq.Circuit:
         """Return the circuit representation of the computational block without
         the specified boundary."""
-        pass
 
     @abstractmethod
     def scale_to(self, k: int) -> None:
         """Scale the block to the provided scale factor."""
-        pass
 
 
 def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
@@ -121,6 +119,13 @@ class TemporalPlaquetteSequence:
     final_plaquettes: Plaquettes
 
     def without_time_boundaries(self) -> TemporalPlaquetteSequence:
+        """Generate a new `TemporalPlaquetteSequence` without the time boundaries.
+
+        Replaces the initial and final plaquettes with empty plaquettes.
+
+        Returns:
+            TemporalPlaquetteSequence: The new sequence.
+        """
         return TemporalPlaquetteSequence(
             defaultdict(empty_square_plaquette),
             deepcopy(self.repeating_plaquettes),
@@ -130,6 +135,15 @@ class TemporalPlaquetteSequence:
     def with_updated_plaquettes(
         self, plaquettes_to_update: dict[int, Plaquette]
     ) -> TemporalPlaquetteSequence:
+        """Replaces the plaquettes in the sequence with the provided ones.
+
+        If the current se
+        Args:
+            plaquettes_to_update (dict[int, Plaquette]): _description_
+
+        Returns:
+            TemporalPlaquetteSequence: _description_
+        """
         repeating_plaquettes = None
         if self.repeating_plaquettes is not None:
             repeating_plaquettes = self.repeating_plaquettes.with_updated_plaquettes(
@@ -148,7 +162,7 @@ class StandardComputationBlock(ComputationBlock):
 
     The standard computational block is composed of 3 distinct layers:
 
-    1. an initialisation layer,
+    1. an initialization layer,
     2. an (optional) repeated layer,
     3. a final layer.
 
@@ -274,7 +288,10 @@ class StandardComputationBlock(ComputationBlock):
         self.template.scale_to(k)
 
 
-@dataclass
+_COMPUTATION_DATA_KEY = "tqec_computation_block"
+
+
+# @dataclass
 class Computation:
     """Represents a topological quantum error corrected computation.
 
@@ -282,7 +299,11 @@ class Computation:
     computational block whose origin is located at that position.
     """
 
-    blocks: dict[Position3D, ComputationBlock]
+    def __init__(self, blocks: dict[Position3D, ComputationBlock]) -> None:
+        self.blocks = blocks
+        self._graph = nx.Graph()
+        for position, block in blocks.items():
+            self._graph.add_node(position, **{_COMPUTATION_DATA_KEY: block})
 
     def to_circuit(self) -> cirq.Circuit:
         """Build and return the quantum circuit representing the computation.
@@ -295,14 +316,15 @@ class Computation:
             a cirq.Circuit instance representing the full computation.
         """
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
-
+        depth = 0
         for position, block in self.blocks.items():
             spatially_shifted_circuit = block.instantiate().transform_qubits(
                 partial(_shift_qubits, position)
             )
             instantiated_scheduled_blocks.append(
-                ScheduledCircuit(spatially_shifted_circuit, position.z)
+                ScheduledCircuit(spatially_shifted_circuit, depth)
             )
+            depth += block.depth
 
         return merge_scheduled_circuits(instantiated_scheduled_blocks)
 
