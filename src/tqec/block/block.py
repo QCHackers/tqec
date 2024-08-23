@@ -9,13 +9,12 @@ from dataclasses import dataclass
 from typing_extensions import override
 import cirq
 import cirq.circuits
-from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
-from tqec.position import Position3D
+from tqec.position import Direction3D, Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
 from functools import partial
@@ -45,7 +44,7 @@ class ComputationBlock(ABC):
         pass
 
     @abstractmethod
-    def instantiate_without_boundary(self, boundary: BlockDimension) -> cirq.Circuit:
+    def instantiate_without_boundary(self, boundary: Direction3D) -> cirq.Circuit:
         """Return the circuit representation of the computational block without
         the specified boundary."""
         pass
@@ -232,10 +231,10 @@ class StandardComputationBlock(ComputationBlock):
         return time
 
     def replace_boundary_with_empty_plaquettes(
-        self, boundary: BlockDimension
+        self, boundary: Direction3D
     ) -> StandardComputationBlock:
         # Handle the time dimension as an edge case.
-        if boundary == BlockDimension.Z:
+        if boundary == Direction3D.Z:
             return StandardComputationBlock(
                 self.template, self.plaquettes.without_time_boundaries()
             )
@@ -267,7 +266,7 @@ class StandardComputationBlock(ComputationBlock):
         return circuit
 
     @override
-    def instantiate_without_boundary(self, boundary: BlockDimension) -> cirq.Circuit:
+    def instantiate_without_boundary(self, boundary: Direction3D) -> cirq.Circuit:
         return self.replace_boundary_with_empty_plaquettes(boundary).instantiate()
 
     @override

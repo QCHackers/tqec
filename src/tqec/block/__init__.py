@@ -5,4 +5,3 @@ from .block import (
     TemporalPlaquetteSequence,
 )
 
-from .enums import BlockDimension

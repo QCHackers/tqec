@@ -35,6 +35,7 @@ from .position import (
     Displacement,
     Position,
     Shape2D,
+    Direction3D,
 )
 from .templates import (
     AlternatingCornerSquareTemplate,
