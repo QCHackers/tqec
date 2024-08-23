@@ -20,7 +20,7 @@ class BlockDimension(Enum):
                 TemplateSide.RIGHT,
                 TemplateSide.BOTTOM_RIGHT,
             ]
-        elif self == BlockDimension.Y:
+        if self == BlockDimension.Y:
             return [
                 TemplateSide.TOP_LEFT,
                 TemplateSide.TOP,
@@ -29,5 +29,5 @@ class BlockDimension(Enum):
                 TemplateSide.BOTTOM,
                 TemplateSide.BOTTOM_RIGHT,
             ]
-        else:  # if self == BlockDimension.Z:
-            raise TQECException("Cannot get a TemplateSide from the time boundary.")
+        #else:  # if self == BlockDimension.Z:
+        raise TQECException("Cannot get a TemplateSide from the time boundary.")

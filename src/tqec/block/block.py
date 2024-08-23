@@ -6,6 +6,7 @@ from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
 
+from typing_extensions import override
 import cirq
 import cirq.circuits
 from tqec.block.enums import BlockDimension
@@ -17,7 +18,7 @@ from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
-from typing_extensions import override
+from functools import partial
 
 
 @dataclass
@@ -87,7 +88,7 @@ def _plaquette_dict(
 ) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
     if isinstance(plaquettes, (dict, defaultdict)):
         return plaquettes
-    return {i: p for i, p in enumerate(plaquettes)}
+    return dict(enumerate(plaquettes))
 
 
 @dataclass
@@ -295,20 +296,21 @@ class Computation:
             a cirq.Circuit instance representing the full computation.
         """
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
+
         for position, block in self.blocks.items():
-
-            def shift_qubits(q: cirq.Qid) -> cirq.GridQubit:
-                if not isinstance(q, cirq.GridQubit):
-                    raise TQECException(
-                        f"Found a circuit with {q} that is not a cirq.GridQubit instance."
-                    )
-                return q + (position.x, position.y)
-
             spatially_shifted_circuit = block.instantiate().transform_qubits(
-                shift_qubits
+                partial(_shift_qubits, position)
             )
             instantiated_scheduled_blocks.append(
                 ScheduledCircuit(spatially_shifted_circuit, position.z)
             )
 
         return merge_scheduled_circuits(instantiated_scheduled_blocks)
+
+
+def _shift_qubits(position: Position3D, q: cirq.Qid) -> cirq.GridQubit:
+    if not isinstance(q, cirq.GridQubit):
+        raise TQECException(
+            f"Found a circuit with {q} that is not a cirq.GridQubit instance."
+        )
+    return q + (position.x, position.y)
