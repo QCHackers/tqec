@@ -10,8 +10,9 @@ from io import BytesIO
 
 import networkx as nx
 
+from tqec.direction import Direction3D
 from tqec.exceptions import TQECException
-from tqec.position import Direction3D, Position3D
+from tqec.position import Position3D
 from tqec.sketchup.zx_graph import (
     NodeType,
     ZXEdge,

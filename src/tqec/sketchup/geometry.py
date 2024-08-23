@@ -7,7 +7,7 @@ from enum import Enum
 import numpy as np
 import numpy.typing as npt
 
-from tqec.position import Direction3D
+from tqec.direction import Direction3D
 from tqec.sketchup.block_graph import BlockType, CubeType, PipeType
 
 

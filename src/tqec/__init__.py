@@ -1,3 +1,4 @@
+
 from . import (
     circuit,
     noise_models,
@@ -11,6 +12,7 @@ from .circuit import (
     generate_circuit,
     merge_scheduled_circuits,
 )
+from .direction import Direction3D
 from .exceptions import TQECException
 from .noise_models import (
     AfterCliffordDepolarizingNoise,
@@ -35,7 +37,6 @@ from .position import (
     Displacement,
     Position,
     Shape2D,
-    Direction3D,
 )
 from .templates import (
     AlternatingCornerSquareTemplate,

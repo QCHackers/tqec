@@ -12,7 +12,8 @@ import networkx as nx
 import numpy as np
 import numpy.typing as npt
 
-from tqec.position import Position3D, Direction3D
+from tqec.direction import Direction3D
+from tqec.position import Position3D
 from tqec.exceptions import TQECException
 
 if TYPE_CHECKING:
