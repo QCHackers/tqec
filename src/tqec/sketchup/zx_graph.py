@@ -289,6 +289,43 @@ class ZXGraph:
         )
         return ax
 
+    def draw_correlation_surface_on(
+        self,
+        ax: Axes3D,
+        correlation_subgraph_index: int,
+        correlation_edge_width: int = 3,
+    ) -> None:
+        correlation_subgraphs = self.find_correlation_subgraphs()
+        if correlation_subgraph_index >= len(correlation_subgraphs):
+            raise TQECException(
+                f"Only {len(correlation_subgraphs)} correlation subgraphs found."
+                f"Index {correlation_subgraph_index} is out of range."
+            )
+        correlation_subgraph = correlation_subgraphs[correlation_subgraph_index]
+
+        for edge in correlation_subgraph.edges:
+            pos_array = _positions_array(edge.u.position, edge.v.position)
+            if not edge.has_hadamard:
+                correlation_type = edge.u.node_type
+                ax.plot(
+                    *pos_array,
+                    color=CORRELATION_COLOR[correlation_type],
+                    linewidth=correlation_edge_width,
+                )
+            else:
+                hadamard_position = np.mean(pos_array, axis=1)
+                for node in [edge.u, edge.v]:
+                    ax.plot(
+                        *np.hstack(
+                            [
+                                hadamard_position.reshape(3, 1),
+                                _positions_array(node.position),
+                            ]
+                        ),
+                        color=CORRELATION_COLOR[node.node_type],
+                        linewidth=correlation_edge_width,
+                    )
+
     def draw(
         self,
         *,
@@ -313,46 +350,15 @@ class ZXGraph:
         """
         import matplotlib.pyplot as plt
 
-        correlation_subgraph: ZXGraph | None = None
-        if show_correlation_subgraph_index is not None:
-            correlation_subgraphs = self.find_correlation_subgraphs()
-            if show_correlation_subgraph_index >= len(correlation_subgraphs):
-                raise TQECException(
-                    f"Only {len(correlation_subgraphs)} correlation subgraphs found."
-                    f"Index {show_correlation_subgraph_index} is out of range."
-                )
-            correlation_subgraph = correlation_subgraphs[
-                show_correlation_subgraph_index
-            ]
-
         fig = plt.figure(figsize=figsize)
         ax = self.draw_zx_graph_on(
             fig, node_size=node_size, hadamard_size=hadamard_size, edge_width=edge_width
         )
+        if show_correlation_subgraph_index is not None:
+            self.draw_correlation_surface_on(
+                ax, show_correlation_subgraph_index, correlation_edge_width
+            )
 
-        if correlation_subgraph is not None:
-            for edge in correlation_subgraph.edges:
-                pos_array = _positions_array(edge.u.position, edge.v.position)
-                if not edge.has_hadamard:
-                    correlation_type = edge.u.node_type
-                    ax.plot(
-                        *pos_array,
-                        color=CORRELATION_COLOR[correlation_type],
-                        linewidth=correlation_edge_width,
-                    )
-                else:
-                    hadamard_position = np.mean(pos_array, axis=1)
-                    for node in [edge.u, edge.v]:
-                        ax.plot(
-                            *np.hstack(
-                                [
-                                    hadamard_position.reshape(3, 1),
-                                    _positions_array(node.position),
-                                ]
-                            ),
-                            color=CORRELATION_COLOR[node.node_type],
-                            linewidth=correlation_edge_width,
-                        )
         ax.set_title(title or self.name)
         fig.tight_layout()
         plt.show()
