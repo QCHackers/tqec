@@ -49,6 +49,9 @@ dev = ["sinter", "pymatching", "jupyterlab", "tqec[test]", "pre-commit"]
 doc = ["sphinx", "myst-parser", "sphinx-rtd-theme", "pandoc"]
 all = ["tqec[test, dev, doc]"]
 
+[project.scripts]
+dae2observables = "tqec._cli.dae2observables:main"
+
 [tool.setuptools]
 include-package-data = true
 
