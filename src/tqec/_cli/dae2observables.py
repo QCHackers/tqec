@@ -1,4 +1,5 @@
 import argparse
+import os
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -49,6 +50,8 @@ def main():
             "directory by using the '--out-dir' argument to visualize them."
         )
     else:
+        if not args.out_dir.exists():
+            os.makedirs(args.out_dir)
         save_correlation_surfaces_to(zx_graph, args.out_dir, correlation_surfaces)
 
 
