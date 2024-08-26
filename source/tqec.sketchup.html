@@ -1061,6 +1061,31 @@ type will be updated to the new type. Default is True.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.draw_as_correlation_surface_on">
+<span class="sig-name descname"><span class="pre">draw_as_correlation_surface_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes3D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.draw_as_correlation_surface_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.draw_as_correlation_surface_on" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.draw_as_zx_graph_on">
+<span class="sig-name descname"><span class="pre">draw_as_zx_graph_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hadamard_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Axes3D</span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/zx_graph.html#ZXGraph.draw_as_zx_graph_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.draw_as_zx_graph_on" title="Link to this definition"></a></dt>
+<dd><p>Draw the 3D graph using matplotlib on the provided figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – The figure to draw on.</p></li>
+<li><p><strong>node_size</strong> – The size of the node. Default is 400.</p></li>
+<li><p><strong>hadamard_size</strong> – The size of the Hadamard transition. Default is 200.</p></li>
+<li><p><strong>edge_width</strong> – The width of the edge. Default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a 3 dimension Axes3D instance that has been used to draw the ZX graph
+on the provided Figure.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="tqec.sketchup.zx_graph.ZXGraph.edges">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.sketchup.zx_graph.ZXEdge" title="tqec.sketchup.zx_graph.ZXEdge"><span class="pre">ZXEdge</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tqec.sketchup.zx_graph.ZXGraph.edges" title="Link to this definition"></a></dt>
