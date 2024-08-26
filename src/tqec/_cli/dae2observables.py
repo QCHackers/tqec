@@ -22,7 +22,7 @@ def save_correlation_surfaces_to(
         fig.clear()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         prog="dae2observables",
         description="Takes a .dae file in and list all the observables that has been found.",
