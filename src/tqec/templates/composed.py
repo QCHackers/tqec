@@ -454,7 +454,7 @@ class ComposedTemplate(Template):
         return ret
 
     def instantiate(
-        self, plaquette_indices: ty.Sequence[int]
+        self, plaquette_indices: ty.Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         """Generate the numpy array representing the template.
 
@@ -480,6 +480,8 @@ class ComposedTemplate(Template):
 
             The current implementation does not expect such a plaquette anymore.
         """
+        if plaquette_indices is None:
+            plaquette_indices = list(range(1, 1 + self.expected_plaquettes_number))
         if 0 in plaquette_indices:
             raise TQECException(
                 f"{self.__class__.__name__} does not expect a plaquette 0 anymore."
