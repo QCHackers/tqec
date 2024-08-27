@@ -81,7 +81,7 @@ class Plaquette:
         return self._circuit
 
     @property
-    def measured_qubits(self) -> list[Measurement]:
+    def measurements(self) -> list[Measurement]:
         return self._measurements
 
 
