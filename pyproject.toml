@@ -117,3 +117,22 @@ module = [
     "mpl_toolkits.mplot3d.axes3d",
 ]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+omit = ["*/*_test.py"]
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
