@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing
+import typing as ty
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from copy import deepcopy
@@ -12,12 +12,14 @@ from typing_extensions import override
 
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
+from tqec.circuit.operations.measurement import Measurement, RepeatedMeasurement
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
+from tqec.templates.interval import Interval
 from tqec.templates.scale import LinearFunction, round_or_fail
 
 
@@ -253,6 +255,68 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
+
+    @staticmethod
+    def _get_measurements(
+        template: ComposedTemplateWithSides, plaquettes: Plaquettes
+    ) -> ty.Iterator[Measurement]:
+        template_array = template.instantiate()
+        default_increments = template.default_increments
+
+        for i, row in enumerate(template_array):
+            for j, plaquette_index in enumerate(row):
+                xoffset = j * default_increments.x
+                yoffset = i * default_increments.y
+                yield from (
+                    m.offset_spatially_by(xoffset, yoffset)
+                    for m in plaquettes[plaquette_index].measurements
+                )
+
+    @property
+    def measurements(self) -> frozenset[Measurement | RepeatedMeasurement]:
+        """Returns all the measurements in the block, relative to the end of
+        the block."""
+        measurement_number_by_qubits: dict[cirq.GridQubit, int] = {}
+        all_measurements: list[Measurement | RepeatedMeasurement] = []
+        # Start by the final measurements.
+        for final_measurement in self._get_measurements(
+            self.template, self.final_plaquettes
+        ):
+            all_measurements.append(final_measurement)
+            measurement_number_by_qubits[final_measurement.qubit] = 1
+        # Continue with the repeating measurements
+        if self.repeating_plaquettes is not None:
+            repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
+            for repeating_measurement in self._get_measurements(
+                self.template, self.repeating_plaquettes.plaquettes
+            ):
+                qubit = repeating_measurement.qubit
+                past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
+                all_measurements.append(
+                    RepeatedMeasurement(
+                        qubit,
+                        Interval(
+                            -past_measurement_number - repetitions,
+                            -past_measurement_number,
+                            start_excluded=False,
+                            end_excluded=True,
+                        ),
+                    )
+                )
+                measurement_number_by_qubits[repeating_measurement.qubit] = (
+                    past_measurement_number + repetitions
+                )
+        # Finish with the initial measurements
+        for initial_measurement in self._get_measurements(
+            self.template, self.initial_plaquettes
+        ):
+            qubit = repeating_measurement.qubit
+            past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
+            all_measurements.append(
+                initial_measurement.offset_temporally_by(-past_measurement_number)
+            )
+
+        return frozenset(all_measurements)
 
 
 @dataclass
