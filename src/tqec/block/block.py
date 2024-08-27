@@ -318,6 +318,16 @@ class StandardComputationBlock(ComputationBlock):
 
         return frozenset(all_measurements)
 
+    @property
+    def all_measurements(self) -> list[Measurement]:
+        measurements: list[Measurement] = []
+        for m in self.measurements:
+            if isinstance(m, Measurement):
+                measurements.append(m)
+            else:  # isinstance(m, RepeatedMeasurement):
+                measurements.extend(m.measurements())
+        return measurements
+
 
 @dataclass
 class Computation:
