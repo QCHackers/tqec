@@ -205,10 +205,6 @@ class StandardComputationBlock(ComputationBlock):
     def repeating_plaquettes(self) -> RepeatedPlaquettes | None:
         return self.plaquettes.repeating_plaquettes
 
-    @repeating_plaquettes.setter
-    def repeating_plaquettes(self, value: RepeatedPlaquettes | None) -> None:
-        self.plaquettes.repeating_plaquettes = value
-
     @property
     def final_plaquettes(self) -> Plaquettes:
         return self.plaquettes.final_plaquettes
