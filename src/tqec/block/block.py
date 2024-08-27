@@ -8,6 +8,8 @@ from dataclasses import dataclass
 
 import cirq
 import cirq.circuits
+from typing_extensions import override
+
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
@@ -17,7 +19,6 @@ from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
-from typing_extensions import override
 
 
 @dataclass
@@ -82,14 +83,6 @@ def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
     return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
 
 
-def _plaquette_dict(
-    plaquettes: Plaquettes,
-) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
-    if isinstance(plaquettes, (dict, defaultdict)):
-        return plaquettes
-    return {i: p for i, p in enumerate(plaquettes)}
-
-
 @dataclass
 class RepeatedPlaquettes:
     """Represent plaquettes that should be repeated for several rounds."""
@@ -107,7 +100,7 @@ class RepeatedPlaquettes:
         self, plaquettes_to_update: dict[int, Plaquette]
     ) -> RepeatedPlaquettes:
         return RepeatedPlaquettes(
-            _plaquette_dict(self.plaquettes) | plaquettes_to_update, self.repetitions
+            self.plaquettes | plaquettes_to_update, self.repetitions
         )
 
 
@@ -122,9 +115,9 @@ class TemporalPlaquetteSequence:
 
     def without_time_boundaries(self) -> TemporalPlaquetteSequence:
         return TemporalPlaquetteSequence(
-            defaultdict(empty_square_plaquette),
+            Plaquettes(defaultdict(empty_square_plaquette)),
             deepcopy(self.repeating_plaquettes),
-            defaultdict(empty_square_plaquette),
+            Plaquettes(defaultdict(empty_square_plaquette)),
         )
 
     def with_updated_plaquettes(
@@ -136,9 +129,9 @@ class TemporalPlaquetteSequence:
                 plaquettes_to_update
             )
         return TemporalPlaquetteSequence(
-            _plaquette_dict(self.initial_plaquettes) | plaquettes_to_update,
+            self.initial_plaquettes | plaquettes_to_update,
             repeating_plaquettes,
-            _plaquette_dict(self.final_plaquettes) | plaquettes_to_update,
+            self.final_plaquettes | plaquettes_to_update,
         )
 
 
@@ -252,13 +245,15 @@ class StandardComputationBlock(ComputationBlock):
 
     @override
     def instantiate(self) -> cirq.Circuit:
-        circuit = generate_circuit(self.template, self.initial_plaquettes)
+        circuit = generate_circuit(self.template, self.initial_plaquettes.collection)
         if self.repeating_plaquettes is not None:
             repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             plaquettes = self.repeating_plaquettes.plaquettes
-            inner_circuit = generate_circuit(self.template, plaquettes).freeze()
+            inner_circuit = generate_circuit(
+                self.template, plaquettes.collection
+            ).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
-        circuit += generate_circuit(self.template, self.final_plaquettes)
+        circuit += generate_circuit(self.template, self.final_plaquettes.collection)
         return circuit
 
     @override

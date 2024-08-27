@@ -1,6 +1,11 @@
+from __future__ import annotations
+
+import itertools
 import typing
 from collections import defaultdict
+from dataclasses import dataclass
 
+from tqec.circuit.operations.measurement import Measurement
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
@@ -18,6 +23,7 @@ class Plaquette:
         self,
         qubits: PlaquetteQubits,
         circuit: ScheduledCircuit,
+        measurements: list[Measurement] | None = None,
     ) -> None:
         """Represents a QEC plaquette.
 
@@ -32,6 +38,8 @@ class Plaquette:
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
+            measurements: a list of measurements performed by the plaquette. Measurement
+                instances should be relative to the end of the provided circuit.
 
         Raises:
             TQECException: if the provided circuit uses qubits not in the list of
@@ -48,6 +56,18 @@ class Plaquette:
         self._qubits = qubits
         self._circuit = circuit
 
+        if measurements is None:
+            measurements = list()
+        measured_qubits_not_in_plaquette = {m.qubit for m in measurements}.difference(
+            plaquette_qubits
+        )
+        if measured_qubits_not_in_plaquette:
+            raise TQECException(
+                "You provided at least one measurement that is performed on a "
+                f"qubit that is not in the plaquette: {measured_qubits_not_in_plaquette}."
+            )
+        self._measurements = measurements
+
     @property
     def origin(self) -> Position:
         return Position(0, 0)
@@ -60,7 +80,66 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
+    @property
+    def measured_qubits(self) -> list[Measurement]:
+        return self._measurements
 
-Plaquettes = typing.Union[
-    list[Plaquette], dict[int, Plaquette], defaultdict[int, Plaquette]
-]
+
+def _to_plaquette_dict(
+    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
+) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
+    if isinstance(plaquettes, (dict, defaultdict)):
+        return plaquettes
+    return {i: p for i, p in enumerate(plaquettes)}
+
+
+@dataclass(frozen=True)
+class Plaquettes:
+    collection: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.collection, (list, dict, defaultdict)):
+            raise TQECException(
+                f"Plaquettes initialized with {type(self.collection)} but only list, "
+                "dict and defaultdict instances are allowed."
+            )
+
+    def __getitem__(self, index: int) -> Plaquette:
+        return self.collection[index]
+
+    def __iter__(self) -> typing.Iterator[Plaquette]:
+        if isinstance(self.collection, list):
+            return iter(self.collection)
+        if isinstance(self.collection, defaultdict):
+            if self.collection.default_factory is not None:
+                default = self.collection.default_factory()
+                return itertools.chain(
+                    self.collection.values(), [default] if default is not None else []
+                )
+            else:
+                return iter(self.collection.values())
+        if isinstance(self.collection, dict):
+            return iter(self.collection.values())
+        else:
+            raise TQECException(
+                f"Plaquette is initialised with the wrong type: {type(self.collection)}."
+            )
+
+    @property
+    def has_default(self) -> bool:
+        return isinstance(self.collection, defaultdict)
+
+    def __len__(self) -> int:
+        if isinstance(self.collection, defaultdict):
+            raise TQECException(
+                "Cannot accurately get the length of a defaultdict instance."
+            )
+        return len(self.collection)
+
+    def __or__(self, other: Plaquettes | dict[int, Plaquette]) -> Plaquettes:
+        other_plaquettes = (
+            _to_plaquette_dict(other.collection)
+            if isinstance(other, Plaquettes)
+            else other
+        )
+        return Plaquettes(_to_plaquette_dict(self.collection) | other_plaquettes)
