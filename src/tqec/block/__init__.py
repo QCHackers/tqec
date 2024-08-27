@@ -1,7 +1,6 @@
 from .block import (
-    Computation,
     ComputationBlock,
     RepeatedPlaquettes,
     TemporalPlaquetteSequence,
 )
-
+from .computation import Computation
