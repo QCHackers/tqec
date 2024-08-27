@@ -5,19 +5,15 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
-from functools import partial
 from typing_extensions import override
 
 import cirq
 import cirq.circuits
-import networkx as nx
 from tqec.direction import Direction3D
 from tqec.circuit.circuit import generate_circuit
-from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
-from tqec.position import Position3D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.scale import LinearFunction, round_or_fail
 
@@ -286,52 +282,3 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
-
-
-_COMPUTATION_DATA_KEY = "tqec_computation_block"
-
-
-# @dataclass
-class Computation:
-    """Represents a topological quantum error corrected computation.
-
-    The computation is represented by a mapping from a position to the
-    computational block whose origin is located at that position.
-    """
-
-    def __init__(self, blocks: dict[Position3D, ComputationBlock]) -> None:
-        self.blocks = blocks
-        self._graph = nx.Graph()
-        for position, block in blocks.items():
-            self._graph.add_node(position, **{_COMPUTATION_DATA_KEY: block})
-
-    def to_circuit(self) -> cirq.Circuit:
-        """Build and return the quantum circuit representing the computation.
-
-        Raises:
-            TQECException: if any of the circuits obtained by instantiating the
-                computational blocks is contains a qubit that is not a cirq.GridQubit.
-
-        Returns:
-            a cirq.Circuit instance representing the full computation.
-        """
-        instantiated_scheduled_blocks: list[ScheduledCircuit] = []
-        depth = 0
-        for position, block in self.blocks.items():
-            spatially_shifted_circuit = block.instantiate().transform_qubits(
-                partial(_shift_qubits, position)
-            )
-            instantiated_scheduled_blocks.append(
-                ScheduledCircuit(spatially_shifted_circuit, depth)
-            )
-            depth += block.depth
-
-        return merge_scheduled_circuits(instantiated_scheduled_blocks)
-
-
-def _shift_qubits(position: Position3D, q: cirq.Qid) -> cirq.GridQubit:
-    if not isinstance(q, cirq.GridQubit):
-        raise TQECException(
-            f"Found a circuit with {q} that is not a cirq.GridQubit instance."
-        )
-    return q + (position.x, position.y)
