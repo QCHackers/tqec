@@ -6,7 +6,7 @@ from tqec.block.block import (
     StandardComputationBlock,
     TemporalPlaquetteSequence,
 )
-from tqec.block.library.closed import xzz_block, zxz_block
+from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.library.memory import (
@@ -17,6 +17,7 @@ from tqec.plaquette.library.memory import (
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
+from tqec.sketchup import Pipe, PipeType
 from tqec.templates.constructions.qubit import (
     DenseQubitSquareTemplate,
     QubitHorizontalBorders,
@@ -279,3 +280,31 @@ def zxo_block(dimension: LinearFunction) -> StandardComputationBlock:
         DenseQubitSquareTemplate(dimension),
         TemporalPlaquetteSequence(initial_plaquettes, None, final_plaquettes),
     )
+
+
+def pipe_to_block(pipe: Pipe, dimension: LinearFunction) -> StandardComputationBlock:
+    """Converts a pipe to a standard computation block.
+
+    Args:
+        pipe (Cube): The pipe to convert.
+        dimension (LinearFunction): The underlying dimension of the block.
+
+    Raises:
+        TQECException: If the pipe type is not implemented.
+
+    Returns:
+        StandardComputationBlock: A standard computation block according to the pipe type.
+    """
+    if pipe.pipe_type == PipeType.OZX:
+        return ozx_block(dimension)
+    if pipe.pipe_type == PipeType.OXZ:
+        return oxz_block(dimension)
+    if pipe.pipe_type == PipeType.XOZ:
+        return xoz_block(dimension)
+    if pipe.pipe_type == PipeType.ZOX:
+        return zox_block(dimension)
+    if pipe.pipe_type == PipeType.XZO:
+        return xzo_block(dimension)
+    if pipe.pipe_type == PipeType.ZXO:
+        return zxo_block(dimension)
+    raise TQECException(f"Unknown pipe type: {pipe.pipe_type}")
