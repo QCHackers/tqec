@@ -70,17 +70,7 @@ def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
         the number of `cirq.Moment` needed to execute the provided plaquettes
         in parallel.
     """
-    all_plaquettes: typing.Iterable[Plaquette]
-    if isinstance(plaquettes, list):
-        all_plaquettes = plaquettes
-    elif isinstance(plaquettes, typing.Mapping):
-        all_plaquettes = plaquettes.values()
-        if (
-            isinstance(plaquettes, defaultdict)
-            and plaquettes.default_factory is not None
-        ):
-            all_plaquettes = list(all_plaquettes) + [plaquettes.default_factory()]
-    return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
+    return max(max(p.circuit.schedule, default=0) for p in plaquettes)
 
 
 @dataclass
@@ -162,7 +152,7 @@ class StandardComputationBlock(ComputationBlock):
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
         if (
-            not isinstance(self.initial_plaquettes, defaultdict)
+            not self.initial_plaquettes.has_default
             and len(self.initial_plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
@@ -171,7 +161,7 @@ class StandardComputationBlock(ComputationBlock):
                 "plaquettes."
             )
         if (
-            not isinstance(self.final_plaquettes, defaultdict)
+            not self.final_plaquettes.has_default
             and len(self.final_plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
@@ -181,7 +171,7 @@ class StandardComputationBlock(ComputationBlock):
             )
         if (
             self.repeating_plaquettes is not None
-            and not isinstance(self.repeating_plaquettes.plaquettes, defaultdict)
+            and not self.repeating_plaquettes.plaquettes.has_default
             and len(self.repeating_plaquettes.plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
