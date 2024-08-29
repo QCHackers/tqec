@@ -501,11 +501,32 @@ class BlockGraph:
                     corner_cube_in_component = corner_cubes[pos]
                     bfs_sources.append(corner_cube_in_component)
                     break
+            # No corner cube can be found, then choose the orientation
+            # of a non-virtual node with minimum position in the component
             if corner_cube_in_component is None:
-                raise TQECException(
-                    "There should be at least one corner node in each connected component of"
-                    "the ZX graph to infer the block structure."
+                sorted_positions: list[Position3D] = sorted(component)
+                aligned_node = next(
+                    ty.cast(ZXNode, zx_graph.get_node(pos))
+                    for pos in sorted_positions
+                    if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_virtual
                 )
+                node_pos, node_type = aligned_node.position, aligned_node.node_type
+                edges_at_node = zx_graph.edges_at(node_pos)
+                if not edges_at_node:
+                    aligned_node_type = (
+                        CubeType.XZZ if node_type == NodeType.Z else CubeType.XZX
+                    )
+                else:
+                    edge_direction = edges_at_node[0].direction
+                    node_type_list = ["x", "z"]
+                    node_type_list.insert(
+                        edge_direction.axis_index,
+                        "x" if node_type == NodeType.X else "z",
+                    )
+                    aligned_node_type = CubeType("".join(node_type_list))
+                block_graph.add_cube(aligned_node.position, aligned_node_type)
+                nodes_to_handle.remove(aligned_node)
+                bfs_sources.append(Cube(aligned_node.position, aligned_node_type))
         for src_cube in bfs_sources:
             for p1, p2 in nx.bfs_edges(zx_graph.nx_graph, src_cube.position):
                 edge = zx_graph.get_edge(p1, p2)
