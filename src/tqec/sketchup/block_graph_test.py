@@ -78,16 +78,24 @@ def test_convert_zx_graph_no_corner() -> None:
     g.add_z_node(Position3D(0, 0, 1))
     g.add_edge(Position3D(0, 0, 0), Position3D(0, 0, 1))
     bg = g.to_block_graph()
-    assert bg.get_cube(Position3D(0, 0, 0)).cube_type == CubeType.XZZ
-    assert bg.get_cube(Position3D(0, 0, 1)).cube_type == CubeType.XZZ
+    c1 = bg.get_cube(Position3D(0, 0, 0))
+    assert c1 is not None
+    assert c1.cube_type == CubeType.XZZ
+    c2 = bg.get_cube(Position3D(0, 0, 1))
+    assert c2 is not None
+    assert c2.cube_type == CubeType.XZZ
 
     g2 = ZXGraph("Horizontal line")
     g2.add_z_node(Position3D(0, 0, 0))
     g2.add_x_node(Position3D(1, 0, 0))
     g2.add_edge(Position3D(0, 0, 0), Position3D(1, 0, 0), has_hadamard=True)
     bg2 = g2.to_block_graph()
-    assert bg2.get_cube(Position3D(0, 0, 0)).cube_type == CubeType.ZXZ
-    assert bg2.get_cube(Position3D(1, 0, 0)).cube_type == CubeType.XZX
+    c3 = bg2.get_cube(Position3D(0, 0, 0))
+    assert c3 is not None
+    assert c3.cube_type == CubeType.ZXZ
+    c4 = bg2.get_cube(Position3D(1, 0, 0))
+    assert c4 is not None
+    assert c4.cube_type == CubeType.XXZ
 
 
 def test_convert_zx_graph_roundtrip() -> None:
