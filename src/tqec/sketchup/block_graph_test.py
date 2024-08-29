@@ -95,7 +95,7 @@ def test_convert_zx_graph_no_corner() -> None:
     assert c3.cube_type == CubeType.ZXZ
     c4 = bg2.get_cube(Position3D(1, 0, 0))
     assert c4 is not None
-    assert c4.cube_type == CubeType.XXZ
+    assert c4.cube_type == CubeType.XZX
 
 
 def test_convert_zx_graph_roundtrip() -> None:
