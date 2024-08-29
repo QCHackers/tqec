@@ -501,11 +501,22 @@ class BlockGraph:
                     corner_cube_in_component = corner_cubes[pos]
                     bfs_sources.append(corner_cube_in_component)
                     break
+            # No corner cube can be found, then force the spatial X boundary
+            # aligned to the X axis for an arbitrary cube
             if corner_cube_in_component is None:
-                raise TQECException(
-                    "There should be at least one corner node in each connected component of"
-                    "the ZX graph to infer the block structure."
+                aligned_node = next(
+                    ty.cast(ZXNode, zx_graph.get_node(pos))
+                    for pos in component
+                    if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_virtual
                 )
+                aligned_node_type = (
+                    CubeType.XZZ
+                    if aligned_node.node_type == NodeType.Z
+                    else CubeType.XZX
+                )
+                block_graph.add_cube(aligned_node.position, aligned_node_type)
+                nodes_to_handle.remove(aligned_node)
+                bfs_sources.append(Cube(aligned_node.position, aligned_node_type))
         for src_cube in bfs_sources:
             for p1, p2 in nx.bfs_edges(zx_graph.nx_graph, src_cube.position):
                 edge = zx_graph.get_edge(p1, p2)
