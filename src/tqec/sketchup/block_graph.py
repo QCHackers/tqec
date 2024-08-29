@@ -501,19 +501,28 @@ class BlockGraph:
                     corner_cube_in_component = corner_cubes[pos]
                     bfs_sources.append(corner_cube_in_component)
                     break
-            # No corner cube can be found, then force the spatial X boundary
-            # aligned to the X axis for an arbitrary cube
+            # No corner cube can be found, then choose the orientation
+            # of a non-virtual node in the component
             if corner_cube_in_component is None:
                 aligned_node = next(
                     ty.cast(ZXNode, zx_graph.get_node(pos))
                     for pos in component
                     if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_virtual
                 )
-                aligned_node_type = (
-                    CubeType.XZZ
-                    if aligned_node.node_type == NodeType.Z
-                    else CubeType.XZX
-                )
+                node_pos, node_type = aligned_node.position, aligned_node.node_type
+                edges_at_node = zx_graph.edges_at(node_pos)
+                if not edges_at_node:
+                    aligned_node_type = (
+                        CubeType.XZZ if node_type == NodeType.Z else CubeType.XZX
+                    )
+                else:
+                    edge_direction = edges_at_node[0].direction
+                    node_type_list = ["x", "z"]
+                    node_type_list.insert(
+                        edge_direction.axis_index,
+                        "x" if node_type == NodeType.X else "z",
+                    )
+                    aligned_node_type = CubeType("".join(node_type_list))
                 block_graph.add_cube(aligned_node.position, aligned_node_type)
                 nodes_to_handle.remove(aligned_node)
                 bfs_sources.append(Cube(aligned_node.position, aligned_node_type))
