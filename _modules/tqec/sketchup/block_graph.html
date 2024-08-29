@@ -667,11 +667,32 @@
                     <span class="n">corner_cube_in_component</span> <span class="o">=</span> <span class="n">corner_cubes</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
                     <span class="n">bfs_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corner_cube_in_component</span><span class="p">)</span>
                     <span class="k">break</span>
+            <span class="c1"># No corner cube can be found, then choose the orientation</span>
+            <span class="c1"># of a non-virtual node with minimum position in the component</span>
             <span class="k">if</span> <span class="n">corner_cube_in_component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                    <span class="s2">&quot;There should be at least one corner node in each connected component of&quot;</span>
-                    <span class="s2">&quot;the ZX graph to infer the block structure.&quot;</span>
+                <span class="n">sorted_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Position3D</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+                <span class="n">aligned_node</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                    <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">ZXNode</span><span class="p">,</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">pos</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">sorted_positions</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">ZXNode</span><span class="p">,</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">pos</span><span class="p">))</span><span class="o">.</span><span class="n">is_virtual</span>
                 <span class="p">)</span>
+                <span class="n">node_pos</span><span class="p">,</span> <span class="n">node_type</span> <span class="o">=</span> <span class="n">aligned_node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">aligned_node</span><span class="o">.</span><span class="n">node_type</span>
+                <span class="n">edges_at_node</span> <span class="o">=</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">edges_at</span><span class="p">(</span><span class="n">node_pos</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">edges_at_node</span><span class="p">:</span>
+                    <span class="n">aligned_node_type</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">CubeType</span><span class="o">.</span><span class="n">XZZ</span> <span class="k">if</span> <span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span> <span class="k">else</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">XZX</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">edge_direction</span> <span class="o">=</span> <span class="n">edges_at_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">direction</span>
+                    <span class="n">node_type_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
+                    <span class="n">node_type_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="n">edge_direction</span><span class="o">.</span><span class="n">axis_index</span><span class="p">,</span>
+                        <span class="s2">&quot;x&quot;</span> <span class="k">if</span> <span class="n">node_type</span> <span class="o">==</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span> <span class="k">else</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">aligned_node_type</span> <span class="o">=</span> <span class="n">CubeType</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">node_type_list</span><span class="p">))</span>
+                <span class="n">block_graph</span><span class="o">.</span><span class="n">add_cube</span><span class="p">(</span><span class="n">aligned_node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">aligned_node_type</span><span class="p">)</span>
+                <span class="n">nodes_to_handle</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">aligned_node</span><span class="p">)</span>
+                <span class="n">bfs_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cube</span><span class="p">(</span><span class="n">aligned_node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">aligned_node_type</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">src_cube</span> <span class="ow">in</span> <span class="n">bfs_sources</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">bfs_edges</span><span class="p">(</span><span class="n">zx_graph</span><span class="o">.</span><span class="n">nx_graph</span><span class="p">,</span> <span class="n">src_cube</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
                 <span class="n">edge</span> <span class="o">=</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">get_edge</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
