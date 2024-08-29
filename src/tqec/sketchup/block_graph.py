@@ -502,11 +502,12 @@ class BlockGraph:
                     bfs_sources.append(corner_cube_in_component)
                     break
             # No corner cube can be found, then choose the orientation
-            # of a non-virtual node in the component
+            # of a non-virtual node with minimum position in the component
             if corner_cube_in_component is None:
+                sorted_positions: list[Position3D] = sorted(component)
                 aligned_node = next(
                     ty.cast(ZXNode, zx_graph.get_node(pos))
-                    for pos in component
+                    for pos in sorted_positions
                     if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_virtual
                 )
                 node_pos, node_type = aligned_node.position, aligned_node.node_type
