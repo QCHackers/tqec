@@ -6,25 +6,35 @@ import pathlib
 import typing as ty
 from dataclasses import astuple, dataclass
 from enum import Enum
+from functools import partial
 from io import BytesIO
 
+import cirq
 import networkx as nx
 
+from tqec.block.library import cube_to_block
+from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.direction import Direction3D
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
+from tqec.sketchup.collada import (
+    display_collada_model,
+    write_block_graph_to_dae_file,
+)
 from tqec.sketchup.zx_graph import (
     NodeType,
-    ZXEdge,
     ZXGraph,
     ZXNode,
 )
+from tqec.templates.scale import LinearFunction
 
 if ty.TYPE_CHECKING:
     from tqec.sketchup.collada import ColladaDisplayHelper
 
 
 class Color(Enum):
+    """Color of a face in a 3D block."""
+
     X = "x"
     Z = "z"
     NULL = "o"
@@ -265,9 +275,10 @@ _PIPE_DATA_KEY = "tqec_block_pipe_data"
 
 
 class BlockGraph:
+    """An undirected graph representation of a 3D spacetime defect diagram with
+    the block structures explicitly defined."""
+
     def __init__(self, name: str) -> None:
-        """An undirected graph representation of a 3D spacetime defect diagram
-        with the block structures explicitly defined."""
         self._name = name
         self._graph = nx.Graph()
 
@@ -535,8 +546,6 @@ class BlockGraph:
         self, filename: str | pathlib.Path, pipe_length: float = 2.0
     ) -> None:
         """Export the block graph to a DAE file."""
-        from tqec.sketchup.collada import write_block_graph_to_dae_file
-
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
@@ -552,14 +561,46 @@ class BlockGraph:
         pipe_length: float = 2.0,
     ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
-        from tqec.sketchup.collada import (
-            display_collada_model,
-            write_block_graph_to_dae_file,
-        )
-
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(self, bytes_buffer, pipe_length)
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),
             write_html_filepath=write_html_filepath,
         )
+
+    def to_circuit(self, dimension: LinearFunction) -> cirq.Circuit:
+        """Build and return the quantum circuit representing the computation.
+
+        Raises:
+            TQECException: if any of the circuits obtained by instantiating the
+                computational blocks is contains a qubit that is not a cirq.GridQubit.
+
+        Returns:
+            a cirq.Circuit instance representing the full computation.
+        """
+        blocks = {}
+        for cube in self.cubes:
+            blocks[cube.position] = cube_to_block(cube, dimension)
+        for pipe in self.pipes:
+            pass
+
+        instantiated_scheduled_blocks: list[ScheduledCircuit] = []
+        depth = 0
+        for position, block in blocks.items():
+            spatially_shifted_circuit = block.instantiate().transform_qubits(
+                partial(_shift_qubits, position)
+            )
+            instantiated_scheduled_blocks.append(
+                ScheduledCircuit(spatially_shifted_circuit, depth)
+            )
+            depth += block.depth
+
+        return merge_scheduled_circuits(instantiated_scheduled_blocks)
+
+
+def _shift_qubits(position: Position3D, q: cirq.Qid) -> cirq.GridQubit:
+    if not isinstance(q, cirq.GridQubit):
+        raise TQECException(
+            f"Found a circuit with {q} that is not a cirq.GridQubit instance."
+        )
+    return q + (position.x, position.y)

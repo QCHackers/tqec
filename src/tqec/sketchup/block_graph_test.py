@@ -1,8 +1,9 @@
 import pytest
 
+from tqec.exceptions import TQECException
 from tqec.sketchup.zx_graph import Position3D, ZXGraph
 from tqec.sketchup.block_graph import BlockGraph, CubeType, PipeType
-from tqec.exceptions import TQECException
+from tqec.templates.scale import LinearFunction
 
 
 def test_block_graph_construction() -> None:
@@ -99,3 +100,20 @@ def test_convert_zx_graph_roundtrip() -> None:
     g2 = block_graph.to_zx_graph()
     assert g2 == g
     assert g2.to_block_graph() == block_graph
+
+
+def test_computation_from_blockgraph() -> None:
+    cubes = [
+        (Position3D(0, 0, 0), CubeType.ZXZ),
+        (Position3D(0, 0, 1), CubeType.ZXZ),
+    ]
+    pipes = [
+        (cubes[0][0], cubes[1][0], PipeType.ZXO),
+    ]
+    block_graph = BlockGraph(name="Memory Experiment")
+    for cube in cubes:
+        block_graph.add_cube(*cube)
+    block_graph.add_pipe(*pipes[0])
+    circuit = block_graph.to_circuit(LinearFunction(2, 0))
+    assert circuit is not None
+    assert False
