@@ -11,7 +11,9 @@ from tqec.sketchup.block_graph import BlockGraph
 class CheckDaeTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
-    def add_subcommand(main_parser: argparse._SubParsersAction) -> None:
+    def add_subcommand(
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
+    ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "check_dae",
             description="Takes a .dae file in and check that it is correctly recognized by the tqec library.",

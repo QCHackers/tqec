@@ -13,7 +13,9 @@ from tqec.sketchup.zx_graph import ZXGraph
 class Dae2ObservablesTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
-    def add_subcommand(main_parser: argparse._SubParsersAction) -> None:
+    def add_subcommand(
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
+    ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "dae2observables",
             description="Takes a .dae file in and list all the observables that has been found.",
