@@ -115,7 +115,8 @@ class TemporalPlaquetteSequence:
     final_plaquettes: Plaquettes
 
     def without_time_boundaries(self) -> TemporalPlaquetteSequence:
-        """Generate a new `TemporalPlaquetteSequence` without the time boundaries.
+        """Generate a new `TemporalPlaquetteSequence` without the time
+        boundaries.
 
         Replaces the initial and final plaquettes with empty plaquettes.
 
@@ -263,6 +264,32 @@ class StandardComputationBlock(ComputationBlock):
             self.template,
             self.plaquettes.with_updated_plaquettes(plaquettes_to_replace),
         )
+
+    def replace_boundary_with_plaquettes(
+        self, boundary: Direction3D, outgoing: bool = True
+    ) -> None:
+        """Mutating."""
+        if boundary == Direction3D.Z:
+            if self.repeating_plaquettes is None:
+                raise TQECException(
+                    "Cannot replace the boundary with plaquettes for a connector."
+                )
+            if outgoing:
+                self.plaquettes.initial_plaquettes = (
+                    self.repeating_plaquettes.plaquettes
+                )
+            else:
+                self.plaquettes.final_plaquettes = self.repeating_plaquettes.plaquettes
+        if boundary == Direction3D.X:
+            if outgoing:
+                pass
+            else:
+                pass
+        if boundary == Direction3D.Y:
+            if outgoing:
+                pass
+            else:
+                pass
 
     @override
     def instantiate(self) -> cirq.Circuit:
