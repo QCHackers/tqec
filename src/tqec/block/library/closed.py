@@ -28,7 +28,6 @@ from tqec.plaquette.library.memory import (
     zzzz_memory_plaquette,
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
-from tqec.sketchup import Cube, CubeType
 from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
 from tqec.templates.scale import LinearFunction
 
@@ -171,32 +170,3 @@ def zzx_block(dimension: LinearFunction) -> StandardComputationBlock:
 
 def xxz_block(dimension: LinearFunction) -> StandardComputationBlock:
     raise TQECException("'xxz' block is not implemented yet.")
-
-
-def cube_to_block(cube: Cube, dimension: LinearFunction) -> StandardComputationBlock:
-    """Converts a cube to a standard computation block.
-
-    Args:
-        cube (Cube): The cube to convert.
-        dimension (LinearFunction): The underlying dimension of the block.
-
-    Raises:
-        TQECException: If the cube type is not implemented.
-
-    Returns:
-        StandardComputationBlock: A standard computation block according to the cube type.
-    """
-    if cube.cube_type == CubeType.ZXX:
-        return zxx_block(dimension)
-    if cube.cube_type == CubeType.XZX:
-        return xzx_block(dimension)
-    if cube.cube_type == CubeType.XXZ:
-        return xxz_block(dimension)
-    if cube.cube_type == CubeType.XZZ:
-        return xzz_block(dimension)
-    if cube.cube_type == CubeType.ZXZ:
-        return zxz_block(dimension)
-    if cube.cube_type == CubeType.ZZX:
-        return zzx_block(dimension)
-
-    raise TQECException(f"Cube type {cube.cube_type} is not implemented yet.")
