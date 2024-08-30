@@ -49,7 +49,7 @@ doc = ["sphinx", "myst-parser", "sphinx-rtd-theme", "pandoc"]
 all = ["tqec[test, dev, doc]"]
 
 [project.scripts]
-dae2observables = "tqec._cli.dae2observables:main"
+tqec = "tqec._cli.tqec:main"
 
 [tool.setuptools]
 include-package-data = true
