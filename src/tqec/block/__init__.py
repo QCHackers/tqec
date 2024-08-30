@@ -2,5 +2,5 @@ from .block import (
     ComputationBlock,
     RepeatedPlaquettes,
     TemporalPlaquetteSequence,
+    StandardComputationBlock,
 )
-from .computation import Computation
