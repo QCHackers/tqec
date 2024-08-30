@@ -12,15 +12,26 @@ from io import BytesIO
 import cirq
 import networkx as nx
 
-from tqec.block.library import cube_to_block
+from tqec.block.library import (
+    zxx_block,
+    xzx_block,
+    xxz_block,
+    xzz_block,
+    zxz_block,
+    zzx_block,
+    ozx_block,
+    oxz_block,
+    xoz_block,
+    zox_block,
+    xzo_block,
+    zxo_block,
+)
+from tqec.block import StandardComputationBlock
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.direction import Direction3D
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
-from tqec.sketchup.collada import (
-    display_collada_model,
-    write_block_graph_to_dae_file,
-)
+
 from tqec.sketchup.zx_graph import (
     NodeType,
     ZXGraph,
@@ -361,12 +372,15 @@ class BlockGraph:
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we only check the constraints
         d, f and g in the figure:
             1. No 3D corner: all the pipes are within the same plane.
-            2. Match color at pass-through: the pipes and cube have the same color at the pass-through.
-            3. Match color at turn: the pipes and cube have the same color at the bent side of the turn.
+            2. Match color at pass-through:
+                the pipes and cube have the same color at the pass-through.
+            3. Match color at turn:
+                the pipes and cube have the same color at the bent side of the turn.
 
         Args:
-            allow_virtual_node: Whether to allow the virtual node in the graph. A virtual node is an open
-                port of a pipe. It is not a physical cube but a placeholder for the pipe to connect to the
+            allow_virtual_node: Whether to allow the virtual node in the graph.
+                A virtual node is an open port of a pipe.
+                It is not a physical cube but a placeholder for the pipe to connect to the
                 boundary of the graph. Default is True.
         """
         if not allow_virtual_node and any(cube.is_virtual for cube in self.cubes):
@@ -394,7 +408,8 @@ class BlockGraph:
                 for pipe in pipes
             ):
                 raise TQECException(
-                    f"Cube at {cube.position} has unmatched color at pass-through along {direction} direction."
+                    f"Cube at {cube.position} has unmatched color at pass-through"
+                    + f" along {direction} direction."
                 )
         # 3. Match color at turn
         if len(pipe_directions) == 2:
@@ -532,11 +547,13 @@ class BlockGraph:
 
         if nodes_to_handle:
             raise TQECException(
-                f"The cube structure at positions {[n.position for n in nodes_to_handle]} cannot be resolved."
+                "The cube structure at positions"
+                + f"{[n.position for n in nodes_to_handle]} cannot be resolved."
             )
         if edges_to_handle:
             raise TQECException(
-                f"The pipe structure at {[(e.u.position, e.v.position) for e in edges_to_handle]} cannot be resolved."
+                "The pipe structure at "
+                + f"{[(e.u.position, e.v.position) for e in edges_to_handle]} cannot be resolved."
             )
 
         block_graph.check_validity(allow_virtual_node=True)
@@ -546,6 +563,8 @@ class BlockGraph:
         self, filename: str | pathlib.Path, pipe_length: float = 2.0
     ) -> None:
         """Export the block graph to a DAE file."""
+        from tqec.sketchup.collada import write_block_graph_to_dae_file
+
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
@@ -562,6 +581,11 @@ class BlockGraph:
     ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
         bytes_buffer = BytesIO()
+        from tqec.sketchup.collada import (
+            display_collada_model,
+            write_block_graph_to_dae_file,
+        )
+
         write_block_graph_to_dae_file(self, bytes_buffer, pipe_length)
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),
@@ -571,6 +595,10 @@ class BlockGraph:
     def to_circuit(self, dimension: LinearFunction) -> cirq.Circuit:
         """Build and return the quantum circuit representing the computation.
 
+        A block graph can be interpreted as a quantum computation.
+        Each cube represents a self contained layer of computations.
+        Each pipe modifies the initial and final layer of the cubes it connects.
+
         Raises:
             TQECException: if any of the circuits obtained by instantiating the
                 computational blocks is contains a qubit that is not a cirq.GridQubit.
@@ -578,11 +606,18 @@ class BlockGraph:
         Returns:
             a cirq.Circuit instance representing the full computation.
         """
-        blocks = {}
+        blocks: dict[Position3D, StandardComputationBlock] = {}
         for cube in self.cubes:
             blocks[cube.position] = cube_to_block(cube, dimension)
         for pipe in self.pipes:
-            pass
+            u_computation, v_computation = (
+                blocks[pipe.u.position],
+                blocks[pipe.v.position],
+            )
+            u_computation.replace_boundary_with_plaquettes(pipe.direction)
+            v_computation.replace_boundary_with_plaquettes(
+                pipe.direction, outgoing=False
+            )
 
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
         depth = 0
@@ -604,3 +639,60 @@ def _shift_qubits(position: Position3D, q: cirq.Qid) -> cirq.GridQubit:
             f"Found a circuit with {q} that is not a cirq.GridQubit instance."
         )
     return q + (position.x, position.y)
+
+
+def cube_to_block(cube: Cube, dimension: LinearFunction) -> StandardComputationBlock:
+    """Converts a cube to a standard computation block.
+
+    Args:
+        cube (Cube): The cube to convert.
+        dimension (LinearFunction): The underlying dimension of the block.
+
+    Raises:
+        TQECException: If the cube type is not implemented.
+
+    Returns:
+        StandardComputationBlock: A standard computation block according to the cube type.
+    """
+    if cube.cube_type == CubeType.ZXX:
+        return zxx_block(dimension)
+    if cube.cube_type == CubeType.XZX:
+        return xzx_block(dimension)
+    if cube.cube_type == CubeType.XXZ:
+        return xxz_block(dimension)
+    if cube.cube_type == CubeType.XZZ:
+        return xzz_block(dimension)
+    if cube.cube_type == CubeType.ZXZ:
+        return zxz_block(dimension)
+    if cube.cube_type == CubeType.ZZX:
+        return zzx_block(dimension)
+
+    raise TQECException(f"Cube type {cube.cube_type} is not implemented yet.")
+
+
+def pipe_to_block(pipe: Pipe, dimension: LinearFunction) -> StandardComputationBlock:
+    """Converts a pipe to a standard computation block.
+
+    Args:
+        pipe (Cube): The pipe to convert.
+        dimension (LinearFunction): The underlying dimension of the block.
+
+    Raises:
+        TQECException: If the pipe type is not implemented.
+
+    Returns:
+        StandardComputationBlock: A standard computation block according to the pipe type.
+    """
+    if pipe.pipe_type == PipeType.OZX:
+        return ozx_block(dimension)
+    if pipe.pipe_type == PipeType.OXZ:
+        return oxz_block(dimension)
+    if pipe.pipe_type == PipeType.XOZ:
+        return xoz_block(dimension)
+    if pipe.pipe_type == PipeType.ZOX:
+        return zox_block(dimension)
+    if pipe.pipe_type == PipeType.XZO:
+        return xzo_block(dimension)
+    if pipe.pipe_type == PipeType.ZXO:
+        return zxo_block(dimension)
+    raise TQECException(f"Unknown pipe type: {pipe.pipe_type}")
