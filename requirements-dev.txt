@@ -4,7 +4,6 @@ jupyterlab
 sphinx
 myst-parser
 sphinx-rtd-theme
-nbsphinx
 pytest
 mypy
 pytest-cov
