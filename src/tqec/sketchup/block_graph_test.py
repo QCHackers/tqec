@@ -102,7 +102,7 @@ def test_convert_zx_graph_roundtrip() -> None:
     assert g2.to_block_graph() == block_graph
 
 
-def test_computation_from_blockgraph() -> None:
+def test_circuit_from_blockgraph() -> None:
     cubes = [
         (Position3D(0, 0, 0), CubeType.ZXZ),
         (Position3D(0, 0, 1), CubeType.ZXZ),
@@ -116,4 +116,31 @@ def test_computation_from_blockgraph() -> None:
     block_graph.add_pipe(*pipes[0])
     circuit = block_graph.to_circuit(LinearFunction(2, 0))
     assert circuit is not None
-    assert False
+
+
+def test_circuit_from_cx_blockgraph() -> None:
+    block_graph = BlockGraph("Logical CNOT Block Graph")
+    for position, cube_type in [
+        (Position3D(0, 0, 0), CubeType.ZXZ),
+        (Position3D(0, 0, 1), CubeType.ZXX),
+        (Position3D(0, 0, 2), CubeType.ZXZ),
+        (Position3D(0, 1, 1), CubeType.ZXX),
+        (Position3D(0, 1, 2), CubeType.ZXZ),
+        (Position3D(1, 1, 0), CubeType.ZXZ),
+        (Position3D(1, 1, 1), CubeType.ZXZ),
+        (Position3D(1, 1, 2), CubeType.ZXZ),
+    ]:
+        block_graph.add_cube(position, cube_type)
+
+    for u, v, pipe_type in [
+        (Position3D(0, 0, 0), Position3D(0, 0, 1), PipeType.ZXO),
+        (Position3D(0, 0, 1), Position3D(0, 0, 2), PipeType.ZXO),
+        (Position3D(0, 0, 1), Position3D(0, 1, 1), PipeType.ZOX),
+        (Position3D(0, 1, 1), Position3D(0, 1, 2), PipeType.ZXO),
+        (Position3D(0, 1, 2), Position3D(1, 1, 2), PipeType.OXZ),
+        (Position3D(1, 1, 0), Position3D(1, 1, 1), PipeType.ZXO),
+        (Position3D(1, 1, 1), Position3D(1, 1, 2), PipeType.ZXO),
+    ]:
+        block_graph.add_pipe(u, v, pipe_type)
+    circuit = block_graph.to_circuit(LinearFunction(2, 0))
+    assert circuit is not None
