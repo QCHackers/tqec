@@ -7,8 +7,7 @@ on:
     types:
       - completed
     branches:
-      # - main # << Not yet, test on the specific PR branch for the moment
-      - "ci/test-windows-macos"
+      - main
 
 jobs:
   exotic-os-python-tests:
