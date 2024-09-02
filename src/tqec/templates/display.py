@@ -206,7 +206,7 @@ def display_templates_svg(
     for i, template in enumerate(template_list):
         ul_position = ul_positions[i]
         indices = [
-            plaquette_indices[k]
+            plaquette_indices[k - 1]
             for k in templates._relative_position_graph.nodes[i]["plaquette_indices"]
         ]
         arr = template.instantiate(indices)
