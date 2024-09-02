@@ -40,22 +40,26 @@ The next step is to install the package and its dependencies using
 python -m pip install "."
 ```
 
-If you want to help developing the `tqec` Python package, you should install the development
-environment by using instead
+If you want to help developing the `tqec` Python package, you should install the development environment by using instead
 
 ```sh
 python -m pip install ".[dev]"
 pre-commit install
 ```
 
-If no errors happen, the package is installed! You can try to launch a jupyter
-lab server
+If no errors happen, the package is installed!
+
+#### Error when installing pycryptosat
+
+On some OSes (basically anything that is not a Linux), `pycryptosat` does not have pre-compiled binaries and `pip` will fallback to compile the package locally. This requires you to have a working C and C++ development environment and in particular a working compiler toolchain.
+
+On MacOS, you might need to add
 
 ```sh
-python -m jupyter lab
+export AR=/usr/bin/ar
 ```
 
-and to run some of the notebooks in the [`notebooks`](https://github.com/QCHackers/tqec/tree/main/notebooks) directory.
+before installing the `tqec` package. See [#311](https://github.com/QCHackers/tqec/issues/311) for more information.
 
 ### Frontend
 
