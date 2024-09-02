@@ -8,7 +8,7 @@ on:
       - completed
     branches:
       # - main # << Not yet, test on the specific PR branch for the moment
-      - ci/test-windows-macos
+      - "ci/test-windows-macos"
 
 jobs:
   exotic-os-python-tests:
@@ -24,7 +24,7 @@ jobs:
           # Use smallest supported Python version as the common denominator.
           # In theory, if everything succeed in 3.10, everything should succeed in
           # 3.11, 3.12 and follow-up version.
-          python-version: '3.10'
+          python-version: "3.10"
           cache: "pip"
       - name: Install dependencies
         run: |
