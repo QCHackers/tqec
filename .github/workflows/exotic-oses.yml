@@ -1,16 +1,14 @@
 name: exotic-oses
 
 on:
-  # Trigger on PR in order to test within the PR, should be changed
-  # BEFORE merging the PR.
-  pull_request:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
     branches:
-      - main
-#   workflow_run:
-#     workflows:
-#       - CI
-#     types:
-#       - completed
+      # - main # << Not yet, test on the specific PR branch for the moment
+      - ci/test-windows-macos
 
 jobs:
   exotic-os-python-tests:
