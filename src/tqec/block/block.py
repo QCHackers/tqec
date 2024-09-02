@@ -15,6 +15,7 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
+from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import LinearFunction, round_or_fail
 
 
@@ -265,7 +266,7 @@ class StandardComputationBlock(ComputationBlock):
             self.plaquettes.with_updated_plaquettes(plaquettes_to_replace),
         )
 
-    def replace_boundary_with_plaquettes(
+    def replace_boundary_plaquettes(
         self, boundary: Direction3D, outgoing: bool = True
     ) -> None:
         """Mutating."""
@@ -282,14 +283,30 @@ class StandardComputationBlock(ComputationBlock):
                 self.plaquettes.final_plaquettes = self.repeating_plaquettes.plaquettes
         if boundary == Direction3D.X:
             if outgoing:
-                pass
+                self._update_plaquettes(
+                    [TemplateSide.TOP, TemplateSide.TOP_LEFT, TemplateSide.TOP_RIGHT]
+                )
             else:
-                pass
+                self._update_plaquettes(
+                    [
+                        TemplateSide.BOTTOM,
+                        TemplateSide.BOTTOM_LEFT,
+                        TemplateSide.BOTTOM_RIGHT,
+                    ]
+                )
         if boundary == Direction3D.Y:
             if outgoing:
-                pass
+                self._update_plaquettes(
+                    [
+                        TemplateSide.RIGHT,
+                        TemplateSide.TOP_RIGHT,
+                        TemplateSide.BOTTOM_RIGHT,
+                    ]
+                )
             else:
-                pass
+                self._update_plaquettes(
+                    [TemplateSide.LEFT, TemplateSide.TOP_LEFT, TemplateSide.BOTTOM_LEFT]
+                )
 
     @override
     def instantiate(self) -> cirq.Circuit:
@@ -309,3 +326,18 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
+
+    def _update_plaquettes(self, sides: list[TemplateSide]) -> None:
+        "Replaces plaquettes according to substitution rules."
+        for index in self.template.get_plaquette_indices_on_sides(sides):
+            replacement_index = self.template.get_corresponding_mid_for_side(index)
+            self.plaquettes.initial_plaquettes[index] = (
+                self.plaquettes.initial_plaquettes[replacement_index]
+            )
+            self.plaquettes.final_plaquettes[index] = self.plaquettes.final_plaquettes[
+                replacement_index
+            ]
+            if self.repeating_plaquettes is not None:
+                self.plaquettes.repeating_plaquettes.plaquettes[index] = (
+                    self.plaquettes.repeating_plaquettes.plaquettes[replacement_index]
+                )
