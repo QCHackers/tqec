@@ -111,18 +111,21 @@ virtual environment has been activated.</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;.&quot;</span>
 </pre></div>
 </div>
-<p>If you want to help developing the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> Python package, you should install the development
-environment by using instead</p>
+<p>If you want to help developing the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> Python package, you should install the development environment by using instead</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
 pre-commit<span class="w"> </span>install
 </pre></div>
 </div>
-<p>If no errors happen, the package is installed! You can try to launch a jupyter
-lab server</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>jupyter<span class="w"> </span>lab
+<p>If no errors happen, the package is installed!</p>
+<section id="error-when-installing-pycryptosat">
+<h5>Error when installing pycryptosat<a class="headerlink" href="#error-when-installing-pycryptosat" title="Link to this heading"></a></h5>
+<p>On some OSes (basically anything that is not a Linux), <code class="docutils literal notranslate"><span class="pre">pycryptosat</span></code> does not have pre-compiled binaries and <code class="docutils literal notranslate"><span class="pre">pip</span></code> will fallback to compile the package locally. This requires you to have a working C and C++ development environment and in particular a working compiler toolchain.</p>
+<p>On MacOS, you might need to add</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span>/usr/bin/ar
 </pre></div>
 </div>
-<p>and to run some of the notebooks in the <a class="reference external" href="https://github.com/QCHackers/tqec/tree/main/notebooks"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></a> directory.</p>
+<p>before installing the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package. See <a class="reference external" href="https://github.com/QCHackers/tqec/issues/311">#311</a> for more information.</p>
+</section>
 </section>
 <section id="frontend">
 <h4>Frontend<a class="headerlink" href="#frontend" title="Link to this heading"></a></h4>
