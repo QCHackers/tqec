@@ -614,10 +614,8 @@ class BlockGraph:
                 blocks[pipe.u.position],
                 blocks[pipe.v.position],
             )
-            u_computation.replace_boundary_with_plaquettes(pipe.direction)
-            v_computation.replace_boundary_with_plaquettes(
-                pipe.direction, outgoing=False
-            )
+            u_computation.replace_boundary_plaquettes(pipe.direction)
+            v_computation.replace_boundary_plaquettes(pipe.direction, outgoing=False)
 
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
         depth = 0
