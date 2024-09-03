@@ -196,12 +196,11 @@ def compute_global_measurements_lookback_offsets(
         TQECException: if the global measurement offset computation fails.
     """
     global_measurements_lookback_offsets = []
-    origin = relative_measurements_record.origin
     for relative_measurement in relative_measurements_record.relative_measurement_data:
         # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
         #                    coordinate system, so no issue here.
-        qubit = origin + relative_measurement.relative_qubit_positioning
-        relative_measurement_offset = relative_measurement.relative_measurement_offset
+        qubit = relative_measurement.qubit
+        relative_measurement_offset = relative_measurement.offset
         relative_offset = measurement_map.get_measurement_relative_offset(
             current_moment_index,
             qubit,

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from dataclasses import dataclass
 
 import cirq
@@ -52,6 +53,11 @@ class Measurement:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.qubit}, {self.offset})"
+
+    def map_qubit(
+        self, qubit_map: typing.Mapping[cirq.GridQubit, cirq.GridQubit]
+    ) -> Measurement:
+        return Measurement(qubit_map[self.qubit], self.offset)
 
 
 @dataclass(frozen=True)
