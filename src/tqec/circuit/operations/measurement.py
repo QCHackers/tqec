@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import cirq
 
 from tqec.exceptions import TQECException
-from tqec.templates.interval import Interval
+from tqec.templates.interval import Interval, Rplus_interval
 
 
 @dataclass(frozen=True)
@@ -78,6 +78,13 @@ class RepeatedMeasurement:
 
     qubit: cirq.GridQubit
     offsets: Interval
+
+    def __post_init__(self) -> None:
+        if not self.offsets.intersection(Rplus_interval).is_empty():
+            raise TQECException(
+                "Measurement.offsets should be an Interval "
+                "containing only strictly negative values."
+            )
 
     def offset_spatially_by(self, x: int, y: int) -> RepeatedMeasurement:
         return RepeatedMeasurement(self.qubit + (y, x), self.offsets)
