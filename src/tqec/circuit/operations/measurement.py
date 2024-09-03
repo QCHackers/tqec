@@ -10,6 +10,26 @@ from tqec.templates.interval import Interval
 
 @dataclass(frozen=True)
 class Measurement:
+    """A unique representation for each measurement in a quantum circuit.
+
+    This class aims at being able to represent measurements in a quantum circuit
+    in a unique and easily usable way.
+
+    Note:
+        This is not a global representation as the `offset` is always
+        relative to the end of the quantum circuit considered.
+
+    Attributes:
+        qubit: qubit on which the represented measurement is performed.
+        offset: negative offset representing the number of measurements
+            performed on the provided qubit after the represented measurement.
+            A value of `-1` means that the represented measurement is the
+            last one applied on `qubit`.
+
+    Raises:
+        TQECException: if the provided `offset` is not strictly negative.
+    """
+
     qubit: cirq.GridQubit
     offset: int
 
@@ -33,6 +53,29 @@ class Measurement:
 
 @dataclass(frozen=True)
 class RepeatedMeasurement:
+    """A unique representation for a repeated measurement in a quantum circuit.
+
+    This class aims at being able to represent a repeated measurement in a
+    quantum circuit in a unique and easily usable way.
+    Repeated measurements can be found when a :class:`stim.CircuitRepeatBlock`
+    contains measurements.
+
+    Note:
+        This is not a global representation as the `offsets` is always
+        relative to the end of the quantum circuit considered.
+
+    Attributes:
+        qubit: qubit on which the represented repeated measurement is performed.
+        offsets: an interval only containing negative offsets representing the
+            number of measurements performed on the provided qubit after the
+            represented measurement.
+            A value of `-1` means that the represented measurement is the
+            last one applied on `qubit`.
+
+    Raises:
+        TQECException: if the provided `offsetd` contains positive entries.
+    """
+
     qubit: cirq.GridQubit
     offsets: Interval
 
