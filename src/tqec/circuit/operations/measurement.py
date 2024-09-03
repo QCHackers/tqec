@@ -50,6 +50,9 @@ class Measurement:
             return self.qubit < other.qubit
         return self.offset < other.offset
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.qubit}, {self.offset})"
+
 
 @dataclass(frozen=True)
 class RepeatedMeasurement:
@@ -96,3 +99,6 @@ class RepeatedMeasurement:
         return [
             Measurement(self.qubit, offset) for offset in self.offsets.iter_integers()
         ]
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.qubit}, {self.offsets})"
