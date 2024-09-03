@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import pytest
@@ -38,10 +39,15 @@ def test_logical_cnot_collada_write_read(pipe_length: float) -> None:
 
     block_graph = zx_graph.to_block_graph()
 
-    with tempfile.NamedTemporaryFile(suffix=".dae") as temp_file:
+    # Set `delete=False` to be compatible with Windows
+    # https://docs.python.org/3/library/tempfile.html#tempfile.NamedTemporaryFile
+    with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
         block_graph.to_dae_file(temp_file.name, pipe_length)
         block_graph_from_file = BlockGraph.from_dae_file(
             temp_file.name, "Logical CNOT Block Graph"
         )
         assert block_graph_from_file == block_graph
         assert block_graph_from_file.to_zx_graph() == zx_graph
+
+    # Manually delete the temporary file
+    os.remove(temp_file.name)
