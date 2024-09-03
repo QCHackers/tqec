@@ -67,19 +67,24 @@ class ShiftCoords(cirq.Operation):
         return f"{self.__class__.__name__}{self._shifts}"
 
 
-class RelativeMeasurementsRecord(cirq.Operation):
+class MeasurementsRecord(cirq.Operation):
     def __init__(self, measurement_data: Sequence[Measurement]) -> None:
-        """A group of relative measurement data representing measurements
-        relative to the origin of local coordinate system and current
-        measurement timestamp.
+        """A group of measurements.
+
+        This class simply stores a list of :class:`~.Measurement` instances.
+        Its purpose is to be used as a base to build operations that require
+        a list of measurements.
 
         Args:
-            local_coordinate_system_origin: origin of the local coordinate
-                system. The origin along with the local coordinate system will
-                be pinned to the global coordinate system to resolve the actual
-                qubit coordinates the measurements applied to.
-            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the
-                relative measurements' operation.
+            measurement_data: a sequence of :class:`~.Measurement` that form
+                a group. The exact meaning of this group (e.g., a detector or
+                an observable) is not explicit and have to be provided by
+                subclasses.
+                There should be no duplicate in the provided sequence.
+
+        Raises:
+            TQECException: if there is any duplicate entry in the provided
+                `measurement_data`.
         """
         # check there is no duplicate relative_measurement_data
         if len(set(measurement_data)) != len(measurement_data):
@@ -93,11 +98,11 @@ class RelativeMeasurementsRecord(cirq.Operation):
     def qubits(self) -> tuple[cirq.Qid, ...]:
         return ()
 
-    def with_qubits(self, *new_qubits: cirq.Qid) -> RelativeMeasurementsRecord:
+    def with_qubits(self, *new_qubits: cirq.Qid) -> MeasurementsRecord:
         return self
 
     @property
-    def relative_measurement_data(self) -> list[Measurement]:
+    def measurement_data(self) -> list[Measurement]:
         """The recorded relative measurement data."""
         return self._data
 
@@ -105,11 +110,9 @@ class RelativeMeasurementsRecord(cirq.Operation):
         return f"{self.__class__.__name__}({self._data})"
 
 
-class Detector(RelativeMeasurementsRecord):
+class Detector(MeasurementsRecord):
     def __init__(
-        self,
-        relative_measurement_data: Sequence[Measurement],
-        coordinates: tuple[float, ...],
+        self, measurement_data: Sequence[Measurement], coordinates: tuple[float, ...]
     ) -> None:
         """Operation representing a detector.
 
@@ -128,14 +131,15 @@ class Detector(RelativeMeasurementsRecord):
             you should use `make_detector` to create instances of this class.
             To understand how to use this class directly, please refer to the
             documentation above.
+
         Args:
-            relative_measurement_data: a list of measurements that compose the
-                relative measurements' operation.
-            time_coordinate: an annotation that will be forwarded to the
-                DETECTOR Stim structure as the last coordinate.
+            measurement_data: a sequence of :class:`~.Measurement` that form
+                a group. There should be no duplicate in the provided sequence.
+            coordinates: an annotation that will be forwarded to the DETECTOR Stim
+                instruction.
         """
 
-        super().__init__(relative_measurement_data)
+        super().__init__(measurement_data)
         self._coordinates = coordinates
 
     def _circuit_diagram_info_(self, _: Any) -> str:
@@ -147,11 +151,9 @@ class Detector(RelativeMeasurementsRecord):
         return self._coordinates
 
 
-class Observable(RelativeMeasurementsRecord):
+class Observable(MeasurementsRecord):
     def __init__(
-        self,
-        relative_measurement_data: Sequence[Measurement],
-        observable_index: int = 0,
+        self, measurement_data: Sequence[Measurement], observable_index: int = 0
     ) -> None:
         """Operation representing an observable.
 
@@ -170,14 +172,11 @@ class Observable(RelativeMeasurementsRecord):
             you should use `make_observable` to create instances of this class.
             To understand how to use this class directly, please refer to the
             documentation above.
+
         Args:
-            local_coordinate_system_origin: origin of the local coordinate
-                system. The origin along with the local coordinate system will
-                be pinned to the global coordinate system to resolve the actual
-                qubit coordinates the measurements applied to.
-            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the
-                relative measurements' operation.
-            observable_index: the index of the observable.
+            measurement_data: a sequence of :class:`~.Measurement` that form
+                a group. There should be no duplicate in the provided sequence.
+            observable_index: index of the observable.
         """
         if observable_index < 0:
             raise TQECException(
@@ -185,7 +184,7 @@ class Observable(RelativeMeasurementsRecord):
                 f"but got {observable_index}."
             )
 
-        super().__init__(relative_measurement_data)
+        super().__init__(measurement_data)
         self._observable_index = observable_index
 
     def _circuit_diagram_info_(self, _: cirq.CircuitDiagramInfoArgs) -> str:
@@ -211,27 +210,16 @@ def make_shift_coords(*shifts: int) -> cirq.Operation:
 
 
 def make_detector(
-    relative_measurements: Sequence[Measurement],
-    coordinates: tuple[float, ...],
+    measurements: Sequence[Measurement], coordinates: tuple[float, ...]
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Detector` operation with the
     `cirq.VirtualTag` tag.
 
     Args:
-        local_coordinate_system_origin: origin of the local coordinate system.
-            The origin along with the local coordinate system will be pinned to
-            the global coordinate system to resolve the actual qubit coordinates
-            the measurements applied to.
-        relative_measurements: a list of relative measurements that compose the
-            parity check of the detector. Each element of the list is a tuple of
-            (relative_qubit_position, relative_measurement_offset) or a
-            :class:`RelativeMeasurementData` instance. When a tuple is provided,
-            the first element is the position of the qubit relative to the local
-            coordinate system origin and the second element is the relative
-            measurement offset with respect to the most recent measurement
-            performed on the qubit.
-        time_coordinate: an annotation that will be forwarded to the DETECTOR
-            Stim structure as the last coordinate.
+        measurements: a list of measurements that compose the parity check of
+            the detector.
+        coordinates: an annotation that will be forwarded to the DETECTOR Stim
+            instruction.
 
     Returns:
         A :class:`Detector` operation with the `cirq.VirtualTag` tag.
@@ -241,38 +229,25 @@ def make_detector(
             "The last coordinate should represent the time coordinate "
             f"and cannot be negative. Got {coordinates[-1]}."
         )
-    return Detector(relative_measurements, coordinates).with_tags(
-        cirq.VirtualTag(), STIM_TAG
-    )
+    return Detector(measurements, coordinates).with_tags(cirq.VirtualTag(), STIM_TAG)
 
 
 def make_observable(
-    relative_measurements: Sequence[Measurement],
-    observable_index: int = 0,
+    measurements: Sequence[Measurement], observable_index: int = 0
 ) -> cirq.Operation:
     """This is a helper function to make a :class:`Observable` operation with
     the `cirq.VirtualTag` tag.
 
     Args:
-        local_coordinate_system_origin: origin of the local coordinate system.
-            The origin along with the local coordinate system will be pinned to
-            the global coordinate system to resolve the actual qubit coordinates
-            the measurements applied to.
-        relative_measurements: a list of relative measurements that compose the
-            parity check of the observable. Each element of the list is a tuple
-            of (relative_qubit_position, relative_measurement_offset) or a
-            :class:`RelativeMeasurementData` instance. When a tuple is provided,
-            the first element is the position of the qubit relative to the local
-            coordinate system origin and the second element is the relative
-            measurement offset with respect to the most recent measurement
-            performed on the qubit.
-        observable_index: the index of the observable.
+        relative_measurements: a list of measurements that compose the
+            parity check of the observable.
+        observable_index: index of the observable.
 
     Returns:
         A :class:`Observable` operation with the `cirq.VirtualTag` tag.
     """
 
-    return Observable(relative_measurements, observable_index).with_tags(
+    return Observable(measurements, observable_index).with_tags(
         cirq.VirtualTag(), STIM_TAG
     )
 

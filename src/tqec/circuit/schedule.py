@@ -291,10 +291,7 @@ class ScheduledCircuit:
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
             elif isinstance(untagged, Detector):
                 return make_detector(
-                    [
-                        meas.map_qubit(qubit_map)
-                        for meas in untagged.relative_measurement_data
-                    ],
+                    [meas.map_qubit(qubit_map) for meas in untagged.measurement_data],
                     coordinates=untagged.coordinates,
                 )
             else:
