@@ -2,6 +2,7 @@ import typing
 from collections import defaultdict
 
 from tqec.block.block import (
+    _DEFAULT_BLOCK_REPETITIONS,
     RepeatedPlaquettes,
     StandardComputationBlock,
     TemporalPlaquetteSequence,
@@ -28,13 +29,11 @@ from tqec.plaquette.library.memory import (
     zzzz_memory_plaquette,
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
-from tqec.templates.constructions.qubit import DenseQubitSquareTemplate
+from tqec.templates.qubit import QubitTemplate
 from tqec.templates.scale import LinearFunction
 
 
-def _zxB_block(
-    dimension: LinearFunction, basis: typing.Literal["X", "Z"]
-) -> StandardComputationBlock:
+def _zxB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
@@ -64,7 +63,7 @@ def _zxB_block(
             12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
             13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
         },
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         6: xx_measurement_plaquette(
@@ -83,16 +82,14 @@ def _zxB_block(
         ),
     }
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dimension),
+        QubitTemplate(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def _xzB_block(
-    dimension: LinearFunction, basis: typing.Literal["X", "Z"]
-) -> StandardComputationBlock:
+def _xzB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
@@ -122,7 +119,7 @@ def _xzB_block(
             12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
             13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
         },
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = defaultdict(empty_square_plaquette) | {
         6: zz_measurement_plaquette(
@@ -141,32 +138,32 @@ def _xzB_block(
         ),
     }
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dimension),
+        QubitTemplate(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def zxz_block(dimension: LinearFunction) -> StandardComputationBlock:
-    return _zxB_block(dimension, "Z")
+def zxz_block() -> StandardComputationBlock:
+    return _zxB_block("Z")
 
 
-def xzz_block(dimension: LinearFunction) -> StandardComputationBlock:
-    return _xzB_block(dimension, "Z")
+def xzz_block() -> StandardComputationBlock:
+    return _xzB_block("Z")
 
 
-def zxx_block(dimension: LinearFunction) -> StandardComputationBlock:
-    return _zxB_block(dimension, "X")
+def zxx_block() -> StandardComputationBlock:
+    return _zxB_block("X")
 
 
-def xzx_block(dimension: LinearFunction) -> StandardComputationBlock:
-    return _xzB_block(dimension, "X")
+def xzx_block() -> StandardComputationBlock:
+    return _xzB_block("X")
 
 
-def zzx_block(dimension: LinearFunction) -> StandardComputationBlock:
+def zzx_block() -> StandardComputationBlock:
     raise TQECException("'zzx' block is not implemented yet.")
 
 
-def xxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+def xxz_block() -> StandardComputationBlock:
     raise TQECException("'xxz' block is not implemented yet.")

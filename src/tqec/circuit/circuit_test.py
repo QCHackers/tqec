@@ -9,7 +9,7 @@ from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library import zz_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import PlaquetteQubits
-from tqec.templates.atomic.rectangle import RawRectangleTemplate
+from tqec.templates._testing import FixedTemplate
 from tqec.templates.base import Template
 
 
@@ -20,7 +20,7 @@ def plaquette() -> Plaquette:
 
 @pytest.fixture
 def one_by_one_template() -> Template:
-    return RawRectangleTemplate([[0]])
+    return FixedTemplate([[0]])
 
 
 def _expected_circuit(qubits: PlaquetteQubits) -> cirq.Circuit:

@@ -8,6 +8,8 @@ from dataclasses import dataclass
 
 import cirq
 import cirq.circuits
+from typing_extensions import override
+
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
@@ -15,9 +17,10 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
-from tqec.templates.constructions.qubit import ComposedTemplateWithSides
+from tqec.templates import Template
 from tqec.templates.scale import LinearFunction, round_or_fail
-from typing_extensions import override
+
+_DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, 1)
 
 
 @dataclass
@@ -163,7 +166,7 @@ class StandardComputationBlock(ComputationBlock):
             of plaquette of the provided template.
     """
 
-    template: ComposedTemplateWithSides
+    template: Template
     plaquettes: TemporalPlaquetteSequence
 
     def __post_init__(self) -> None:
