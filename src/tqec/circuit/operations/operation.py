@@ -403,9 +403,13 @@ class RX(cirq.Operation):
         return False
 
     def _stim_conversion_(
-        self, edit_circuit: stim.Circuit, **kwargs: dict[str, typing.Any]
+        self,
+        edit_circuit: stim.Circuit,
+        edit_measurement_key_lengths: list[tuple[str, int]],
+        targets: list[int],
+        **kwargs: dict[str, typing.Any],
     ) -> None:
-        edit_circuit.append_operation("RX", list(self.qubits), None)
+        edit_circuit.append("RX", targets, [])
 
 
 @cirq.value_equality
@@ -451,6 +455,11 @@ class MX(cirq.Operation):
         return False
 
     def _stim_conversion_(
-        self, edit_circuit: stim.Circuit, **kwargs: dict[str, typing.Any]
+        self,
+        edit_circuit: stim.Circuit,
+        edit_measurement_key_lengths: list[tuple[str, int]],
+        targets: list[int],
+        **kwargs: dict[str, typing.Any],
     ) -> None:
-        edit_circuit.append_operation("MX", list(self.qubits), None)
+        edit_measurement_key_lengths.append((",".join(map(str, targets)), len(targets)))
+        edit_circuit.append_operation("MX", targets, [])
