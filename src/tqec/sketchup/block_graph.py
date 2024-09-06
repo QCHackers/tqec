@@ -614,11 +614,18 @@ class BlockGraph:
                 blocks[pipe.u.position],
                 blocks[pipe.v.position],
             )
-            u_computation.replace_boundary_plaquettes(pipe.direction)
-            v_computation.replace_boundary_plaquettes(pipe.direction, outgoing=False)
+            pipe_block = pipe_to_block(pipe, dimension)
+            u_computation.replace_boundary_plaquettes(
+                pipe.direction, pipe_block, outgoing=True
+            )
+            v_computation.replace_boundary_plaquettes(
+                pipe.direction, pipe_block, outgoing=False
+            )
 
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
         depth = 0
+        # TODO this only works for single qubit instances potentially brakes when qubits
+        # are not around the origin
         for position, block in blocks.items():
             spatially_shifted_circuit = block.instantiate().transform_qubits(
                 partial(_shift_qubits, position)

@@ -267,24 +267,22 @@ class StandardComputationBlock(ComputationBlock):
         )
 
     def replace_boundary_plaquettes(
-        self, boundary: Direction3D, outgoing: bool = True
+        self,
+        boundary: Direction3D,
+        replacement: StandardComputationBlock,
+        outgoing: bool = True,
     ) -> None:
         """Mutating."""
         if boundary == Direction3D.Z:
-            if self.repeating_plaquettes is None:
-                raise TQECException(
-                    "Cannot replace the boundary with plaquettes for a connector."
-                )
             if outgoing:
-                self.plaquettes.initial_plaquettes = (
-                    self.repeating_plaquettes.plaquettes
-                )
+                self.plaquettes.final_plaquettes = replacement.initial_plaquettes
             else:
-                self.plaquettes.final_plaquettes = self.repeating_plaquettes.plaquettes
+                self.plaquettes.initial_plaquettes = replacement.initial_plaquettes
         if boundary == Direction3D.X:
             if outgoing:
                 self._update_plaquettes(
-                    [TemplateSide.TOP, TemplateSide.TOP_LEFT, TemplateSide.TOP_RIGHT]
+                    [TemplateSide.TOP, TemplateSide.TOP_LEFT, TemplateSide.TOP_RIGHT],
+                    replacement,
                 )
             else:
                 self._update_plaquettes(
@@ -292,7 +290,8 @@ class StandardComputationBlock(ComputationBlock):
                         TemplateSide.BOTTOM,
                         TemplateSide.BOTTOM_LEFT,
                         TemplateSide.BOTTOM_RIGHT,
-                    ]
+                    ],
+                    replacement,
                 )
         if boundary == Direction3D.Y:
             if outgoing:
@@ -301,11 +300,17 @@ class StandardComputationBlock(ComputationBlock):
                         TemplateSide.RIGHT,
                         TemplateSide.TOP_RIGHT,
                         TemplateSide.BOTTOM_RIGHT,
-                    ]
+                    ],
+                    replacement,
                 )
             else:
                 self._update_plaquettes(
-                    [TemplateSide.LEFT, TemplateSide.TOP_LEFT, TemplateSide.BOTTOM_LEFT]
+                    [
+                        TemplateSide.LEFT,
+                        TemplateSide.TOP_LEFT,
+                        TemplateSide.BOTTOM_LEFT,
+                    ],
+                    replacement,
                 )
 
     @override
@@ -327,17 +332,21 @@ class StandardComputationBlock(ComputationBlock):
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
 
-    def _update_plaquettes(self, sides: list[TemplateSide]) -> None:
+    def _update_plaquettes(
+        self, sides: list[TemplateSide], replacement: StandardComputationBlock
+    ) -> None:
         "Replaces plaquettes according to substitution rules."
         for index in self.template.get_plaquette_indices_on_sides(sides):
-            replacement_index = self.template.get_corresponding_mid_for_side(index)
-            self.plaquettes.initial_plaquettes[index] = (
-                self.plaquettes.initial_plaquettes[replacement_index]
-            )
-            self.plaquettes.final_plaquettes[index] = self.plaquettes.final_plaquettes[
-                replacement_index
+            self.plaquettes.initial_plaquettes[index] = replacement.initial_plaquettes[
+                index
             ]
-            if self.repeating_plaquettes is not None:
-                self.plaquettes.repeating_plaquettes.plaquettes[index] = (
-                    self.plaquettes.repeating_plaquettes.plaquettes[replacement_index]
+            self.plaquettes.final_plaquettes[index] = replacement.initial_plaquettes[
+                index
+            ]
+            if (
+                self.repeating_plaquettes is not None
+                and replacement.repeating_plaquettes is not None
+            ):
+                self.repeating_plaquettes.plaquettes[index] = (
+                    replacement.repeating_plaquettes.plaquettes[index]
                 )
