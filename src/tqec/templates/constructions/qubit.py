@@ -26,10 +26,6 @@ class ComposedTemplateWithSides(ComposedTemplate):
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
         pass
 
-    @abstractmethod
-    def get_corresponding_mid_for_side(self, side_index: int) -> int:
-        pass
-
 
 class DenseQubitSquareTemplate(ComposedTemplateWithSides):
     def __init__(
@@ -126,16 +122,6 @@ class DenseQubitSquareTemplate(ComposedTemplateWithSides):
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
         return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
 
-    @override
-    def get_corresponding_mid_for_side(self, side_index: int) -> int:
-        if side_index in [6, 8, 11, 13]:
-            return 9
-        if side_index in [5, 7, 12, 14]:
-            return 10
-        if side_index in [1, 2, 3, 4]:
-            return side_index
-        raise TQECException(f"Side index {side_index} is not a valid side index.")
-
 
 class QubitVerticalBorders(ComposedTemplateWithSides):
     def __init__(
@@ -221,10 +207,6 @@ class QubitVerticalBorders(ComposedTemplateWithSides):
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
         return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
 
-    @override
-    def get_corresponding_mid_for_side(self, side_index: int) -> int:
-        raise NotImplementedError("This template cannot extend mid plaquettes.")
-
 
 class QubitHorizontalBorders(ComposedTemplateWithSides):
     def __init__(
@@ -301,7 +283,3 @@ class QubitHorizontalBorders(ComposedTemplateWithSides):
     @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
         return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
-
-    @override
-    def get_corresponding_mid_for_side(self, side_index: int) -> int:
-        raise NotImplementedError("This template cannot extend mid plaquettes.")
