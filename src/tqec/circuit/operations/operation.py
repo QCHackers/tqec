@@ -346,3 +346,6 @@ class MX(cirq.Operation):
         self, edit_circuit: stim.Circuit, **kwargs: dict[str, typing.Any]
     ) -> None:
         edit_circuit.append_operation("MX", list(self.qubits), None)
+
+    def _is_measurement_(self) -> bool:
+        return True
