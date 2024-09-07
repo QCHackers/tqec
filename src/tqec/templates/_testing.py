@@ -4,11 +4,10 @@ import numpy
 import numpy.typing as npt
 from typing_extensions import override
 
-from tqec.exceptions import TQECException
-from tqec.position import Displacement, Shape2D
+from tqec.position import Displacement
 from tqec.templates.base import Template
 from tqec.templates.enums import TemplateSide
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.scale import LinearFunction, Scalable2D
 
 
 class FixedTemplate(Template):
@@ -38,10 +37,7 @@ class FixedTemplate(Template):
     @override
     def scalable_shape(self) -> Scalable2D:
         y, x = self._indices.shape
-        return Scalable2D(
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, x)),
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, y)),
-        )
+        return Scalable2D(LinearFunction(0, x), LinearFunction(0, y))
 
     @property
     @override

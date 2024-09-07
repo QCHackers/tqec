@@ -6,7 +6,7 @@ from typing_extensions import override
 
 from tqec.templates.base import Template
 from tqec.templates.enums import TemplateSide
-from tqec.templates.scale import LinearFunction, PiecewiseLinearFunction, Scalable2D
+from tqec.templates.scale import LinearFunction, Scalable2D
 
 
 class QubitTemplate(Template):
@@ -59,10 +59,7 @@ class QubitTemplate(Template):
     @property
     @override
     def scalable_shape(self) -> Scalable2D:
-        return Scalable2D(
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
-        )
+        return Scalable2D(LinearFunction(2, 2), LinearFunction(2, 2))
 
     @property
     @override
@@ -134,10 +131,7 @@ class QubitVerticalBorders(Template):
     @override
     def scalable_shape(self) -> Scalable2D:
         """Returns a scalable version of the template shape."""
-        return Scalable2D(
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, 2)),
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
-        )
+        return Scalable2D(LinearFunction(0, 2), LinearFunction(2, 2))
 
     @property
     @override
@@ -204,10 +198,7 @@ class QubitHorizontalBorders(Template):
     @property
     @override
     def scalable_shape(self) -> Scalable2D:
-        return Scalable2D(
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(2, 2)),
-            PiecewiseLinearFunction.from_linear_function(LinearFunction(0, 2)),
-        )
+        return Scalable2D(LinearFunction(2, 2), LinearFunction(0, 2))
 
     @property
     @override
