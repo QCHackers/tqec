@@ -69,19 +69,21 @@ def get_spatially_distinct_subtemplates(
         all_possible_subarrays, axis=0, return_inverse=True
     )
 
-    # Note that the inverse_indices DO NOT include the ignored sub-templates because
-    # their center was a 0 plaquette, so we should reconstruct the full indices from
-    # inverse_indices and ignored_flattened_indices.
+    # Note that the `inverse_indices` DO NOT include the ignored sub-templates because
+    # their center was a 0 plaquette if `avoid_zero_plaquettes` is `True` so we
+    # should reconstruct the full indices from `inverse_indices` and
+    # `ignored_flattened_indices`.
     # By convention, the index 0 will represent the ignored sub-templates, so we
-    # also have to shift the inverse_indices and unique_situations keys by 1.
+    # also have to shift the `inverse_indices` and `unique_situations` keys by 1.
     # Start by shifting by 1.
     inverse_indices += 1
     subtemplates_by_indices = {
         i + 1: situation for i, situation in enumerate(unique_situations)
     }
-    # Add the index 0
-    final_indices = numpy.zeros((y * x,), dtype=numpy.int_)
-    final_indices[ignored_flattened_indices] = 0
-    final_indices[considered_flattened_indices] = inverse_indices
-
+    if avoid_zero_plaquettes:
+        final_indices = numpy.zeros((y * x,), dtype=numpy.int_)
+        final_indices[ignored_flattened_indices] = 0
+        final_indices[considered_flattened_indices] = inverse_indices
+    else:
+        final_indices = inverse_indices
     return final_indices.reshape((y, x)), subtemplates_by_indices
