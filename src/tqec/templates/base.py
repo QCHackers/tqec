@@ -3,6 +3,7 @@ from typing import Sequence
 
 import numpy
 import numpy.typing as npt
+from typing_extensions import override
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
@@ -43,7 +44,6 @@ class Template(ABC):
             a numpy array with the given plaquette indices arranged according to
             the underlying shape of the template.
         """
-        pass
 
     def scale_to(self, k: int) -> None:
         """Scales self to the given scale k.
@@ -71,8 +71,8 @@ class Template(ABC):
     @abstractmethod
     def scalable_shape(self) -> Scalable2D:
         """Returns a scalable version of the template shape."""
-        pass
 
+    @abstractmethod
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
@@ -92,16 +92,6 @@ class Template(ABC):
         Raises:
             TQECException: If the midline is not uniquely defined.
         """
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
-        if midline_shape % 2 == 1:
-            raise TQECException(
-                "Midline is not defined for odd "
-                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
-            )
-        midline = midline_shape // 2 - 1
-        if orientation == TemplateOrientation.VERTICAL:
-            return [(row, midline) for row in range(iteration_shape)]
-        return [(midline, column) for column in range(iteration_shape)]
 
     @property
     @abstractmethod
@@ -112,7 +102,6 @@ class Template(ABC):
         Returns:
             the number of plaquettes expected from the `instantiate` method.
         """
-        pass
 
     def get_increments(self) -> Displacement:
         """Get the default increments of the template.
@@ -133,4 +122,20 @@ class Template(ABC):
         Returns:
             a non-ordered list of plaquette numbers.
         """
-        pass
+
+
+class SquareTemplate(Template):
+    @override
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
