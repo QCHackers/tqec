@@ -10,11 +10,9 @@ def get_spatially_distinct_subtemplates(
     """Returns a representation of all the distinct sub-templates of the
     provided manhattan radius.
 
-    This method filters out any
-
     Note:
         This method will likely be inefficient for large templates (i.e., large
-        values of `k`) or for large manhattan radiuses, both in terms of memory
+        values of `k`) or for large Manhattan radiuses, both in terms of memory
         used and computation time.
         Subclasses are invited to reimplement that method using a specialized
         algorithm (or hard-coded values) to speed things up.
