@@ -45,12 +45,20 @@ def get_spatially_distinct_subtemplates(
     )
 
     all_possible_subarrays: list[npt.NDArray[numpy.int_]] = []
+    ignored_flattened_indices: list[int] = []
+    considered_flattened_indices: list[int] = []
     for i in range(manhattan_radius, manhattan_radius + y):
         for j in range(manhattan_radius, manhattan_radius + x):
             # Do not generate anything if the center plaquette is 0 in the
             # original instantiation.
             if avoid_zero_plaquettes and extended_instantiation[i, j] == 0:
+                ignored_flattened_indices.append(
+                    (i - manhattan_radius) * x + (j - manhattan_radius)
+                )
                 continue
+            considered_flattened_indices.append(
+                (i - manhattan_radius) * x + (j - manhattan_radius)
+            )
             all_possible_subarrays.append(
                 extended_instantiation[
                     i - manhattan_radius : i + manhattan_radius + 1,
@@ -61,7 +69,19 @@ def get_spatially_distinct_subtemplates(
         all_possible_subarrays, axis=0, return_inverse=True
     )
 
-    situations = inverse_indices.reshape((y, x))
-    subtemplates_by_indices = dict(enumerate(unique_situations))
+    # Note that the inverse_indices DO NOT include the ignored sub-templates because
+    # their center was a 0 plaquette, so we should reconstruct the full indices from
+    # inverse_indices and ignored_flattened_indices.
+    # By convention, the index 0 will represent the ignored sub-templates, so we
+    # also have to shift the inverse_indices and unique_situations keys by 1.
+    # Start by shifting by 1.
+    inverse_indices += 1
+    subtemplates_by_indices = {
+        i + 1: situation for i, situation in enumerate(unique_situations)
+    }
+    # Add the index 0
+    final_indices = numpy.zeros((y * x,), dtype=numpy.int_)
+    final_indices[ignored_flattened_indices] = 0
+    final_indices[considered_flattened_indices] = inverse_indices
 
-    return situations, subtemplates_by_indices
+    return final_indices.reshape((y, x)), subtemplates_by_indices
