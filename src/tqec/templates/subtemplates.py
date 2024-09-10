@@ -36,10 +36,8 @@ def get_spatially_distinct_subtemplates(
         2. a mapping from indices to the corresponding sub-template.
     """
     y, x = instantiation.shape
-    vzeros = numpy.zeros((y + 2 * manhattan_radius, manhattan_radius), dtype=numpy.int_)
-    hzeros = numpy.zeros((manhattan_radius, x), dtype=numpy.int_)
-    extended_instantiation = numpy.hstack(
-        (vzeros, numpy.vstack((hzeros, instantiation, hzeros)), vzeros)
+    extended_instantiation = numpy.pad(
+        instantiation, manhattan_radius, "constant", constant_values=0
     )
 
     all_possible_subarrays: list[npt.NDArray[numpy.int_]] = []
