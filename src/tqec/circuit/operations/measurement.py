@@ -132,7 +132,7 @@ def get_measurements_from_circuit(
                         "Found a qubit that is not an instance of cirq.GridQubit."
                     )
                 ordered_measured_qubits.append(qubit)
-    measured_qubit_offset = defaultdict(lambda: -1)
+    measured_qubit_offset: defaultdict[cirq.GridQubit, int] = defaultdict(lambda: -1)
     measurements: list[Measurement] = []
     for mqubit in ordered_measured_qubits:
         index = measured_qubit_offset[mqubit]
