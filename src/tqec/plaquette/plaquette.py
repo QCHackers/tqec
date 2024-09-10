@@ -5,7 +5,10 @@ import typing
 from collections import defaultdict
 from dataclasses import dataclass
 
-from tqec.circuit.operations.measurement import Measurement
+from tqec.circuit.operations.measurement import (
+    Measurement,
+    get_measurements_from_circuit,
+)
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
@@ -23,7 +26,6 @@ class Plaquette:
         self,
         qubits: PlaquetteQubits,
         circuit: ScheduledCircuit,
-        measurements: list[Measurement] | None = None,
     ) -> None:
         """Represents a QEC plaquette.
 
@@ -38,8 +40,6 @@ class Plaquette:
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
-            measurements: a list of measurements performed by the plaquette. Measurement
-                instances should be relative to the end of the provided circuit.
 
         Raises:
             TQECException: if the provided circuit uses qubits not in the list of
@@ -55,18 +55,7 @@ class Plaquette:
             )
         self._qubits = qubits
         self._circuit = circuit
-
-        if measurements is None:
-            measurements = list()
-        measured_qubits_not_in_plaquette = {m.qubit for m in measurements}.difference(
-            plaquette_qubits
-        )
-        if measured_qubits_not_in_plaquette:
-            raise TQECException(
-                "You provided at least one measurement that is performed on a "
-                f"qubit that is not in the plaquette: {measured_qubits_not_in_plaquette}."
-            )
-        self._measurements = measurements
+        self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
 
     @property
     def origin(self) -> Position:

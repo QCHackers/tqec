@@ -165,8 +165,6 @@ def pauli_memory_plaquette(
     circuit = _make_pauli_syndrome_measurement_circuit(
         syndrome_qubit, data_qubits, pauli_string
     )
-    # _make_pauli_syndrome_measurement_circuit only measures the syndrome qubit.
-    measurements = [Measurement(syndrome_qubit.to_grid_qubit(), -1)]
 
     if data_qubit_reset_basis is not None:
         circuit[0] += [data_qubit_reset_basis(q) for q in qubits.get_data_qubits_cirq()]
@@ -174,6 +172,5 @@ def pauli_memory_plaquette(
         circuit[-1] += [
             data_qubit_measurement_basis(q) for q in qubits.get_data_qubits_cirq()
         ]
-        measurements += [Measurement(q, -1) for q in qubits.get_data_qubits_cirq()]
 
-    return Plaquette(qubits, ScheduledCircuit(circuit, schedule), measurements)
+    return Plaquette(qubits, ScheduledCircuit(circuit, schedule))

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+from collections import defaultdict
 from dataclasses import dataclass
 
 import cirq
@@ -108,3 +109,33 @@ class RepeatedMeasurement:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.qubit}, {self.offsets})"
+
+
+def get_measurements_from_circuit(
+    circuit: cirq.AbstractCircuit,
+) -> list[Measurement]:
+    ordered_measured_qubits: list[cirq.GridQubit] = []
+    for moment in circuit.moments:
+        for op in moment:
+            if isinstance(op, cirq.CircuitOperation):
+                raise TQECException(
+                    "Found an instance of cirq.CircuitOperation in a function "
+                    "expecting a flat quantum circuit."
+                )
+            if cirq.is_measurement(op):
+                qubits = op.qubits
+                if len(qubits) != 1:
+                    raise TQECException("Found a measurement on multiple qubits.")
+                (qubit,) = qubits
+                if not isinstance(qubit, cirq.GridQubit):
+                    raise TQECException(
+                        "Found a qubit that is not an instance of cirq.GridQubit."
+                    )
+                ordered_measured_qubits.append(qubit)
+    measured_qubit_offset = defaultdict(lambda: -1)
+    measurements: list[Measurement] = []
+    for mqubit in ordered_measured_qubits:
+        index = measured_qubit_offset[mqubit]
+        measured_qubit_offset[mqubit] = index - 1
+        measurements.append(Measurement(mqubit, index))
+    return measurements
