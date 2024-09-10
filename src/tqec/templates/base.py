@@ -25,7 +25,8 @@ class Template(ABC):
                 to `Displacement(2, 2)` when `None`
         """
         super().__init__()
-        self._k = k
+        self._k: int
+        self.scale_to(k)
         self._default_increments = default_increments or Displacement(2, 2)
 
     @abstractmethod
@@ -53,6 +54,8 @@ class Template(ABC):
         Args:
             k: the new scale of the template.
         """
+        if k < 0:
+            raise TQECException(f"Cannot have a negative scaling parameter. Got {k}.")
         self._k = k
 
     @property
