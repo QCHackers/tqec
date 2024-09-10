@@ -160,7 +160,7 @@ class Template(ABC):
         )
 
 
-class SquareTemplate(Template):
+class RectangularTemplate(Template):
     @override
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
