@@ -9,7 +9,10 @@ from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 from tqec.templates.enums import TemplateOrientation, TemplateSide
 from tqec.templates.scale import Scalable2D, round_or_fail
-from tqec.templates.subtemplates import get_spatially_distinct_subtemplates
+from tqec.templates.subtemplates import (
+    UniqueSubTemplates,
+    get_spatially_distinct_subtemplates,
+)
 
 
 class Template(ABC):
@@ -130,7 +133,7 @@ class Template(ABC):
 
     def get_spatially_distinct_subtemplates(
         self, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True
-    ) -> tuple[npt.NDArray[numpy.int_], dict[int, npt.NDArray[numpy.int_]]]:
+    ) -> UniqueSubTemplates:
         """Returns a representation of all the distinct sub-templates of the
         provided manhattan radius.
 
@@ -150,12 +153,7 @@ class Template(ABC):
                 its center should be ignored. Default to `True`.
 
         Returns:
-            a tuple containing:
-
-            1. an array that has the exact same shape as `self.instantiate()`
-                but that is filled with indices from the second part of this
-                tuple.
-            2. a mapping from indices to the corresponding sub-template.
+            a representation of all the sub-templates found.
         """
         return get_spatially_distinct_subtemplates(
             self.instantiate(), manhattan_radius, avoid_zero_plaquettes

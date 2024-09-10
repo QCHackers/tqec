@@ -1,12 +1,124 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
 import numpy
 import numpy.typing as npt
+
+from tqec.exceptions import TQECException
+
+
+@dataclass(frozen=True)
+class UniqueSubTemplates:
+    """Stores information on the sub-templates of a specific radius present on
+    a larger `Template` instance.
+
+    A sub-template is defined here as a portion of a `Template` instantiation.
+    In other words, a sub-template is a sub-array of the array resulting from
+    calling the method `Template.instantiate` on any `Template` instance.
+    The size of this sub-array is defined by its `radius`, which is computed
+    according to the Manhattan distance.
+
+    For example, let's say you have the following array from calling
+    `Template.instantiate` on a `Template` instance:
+
+    ```
+    1  5  6  5  6  2
+    7  9 10  9 10 11
+    8 10  9 10  9 12
+    7  9 10  9 10 11
+    8 10  9 10  9 12
+    3 13 14 13 14  4
+    ```
+
+    Focusing on the top-left `9` (coordinates `(1, 1)` in the array), the
+    following sub-array is a sub-template of radius `1`, centered on the
+    `(1, 1)` coordinate of the above instantiation:
+
+    ```
+    1  5  6
+    7  9 10
+    8 10  9
+    ```
+
+    Still focusing on the top-left `9`, the following sub-array is a
+    sub-template of radius `2`, centered on the `(1, 1)` coordinate of the
+    above instantiation:
+
+    ```
+    .  .  .  .  .
+    .  1  5  6  5
+    .  7  9 10  9
+    .  8 10  9 10
+    .  7  9 10  9
+    ```
+
+    Note the inclusion of `.` that are here to represent `0` (i.e., the
+    absence of plaquette at that particular point) because there is no
+    plaquette in the original `Template` instantiation.
+
+    This dataclass efficiently stores all the sub-templates of a given
+    `Template` instantiation and of a given `radius`.
+
+
+    Attributes:
+        subtemplate_indices: an array that has the same shape as the
+            original `Template` instantiation but stores sub-template
+            indices referencing sub-templates from the `subtemplates`
+            attribute. The integers in this array do NOT represent
+            plaquette indices.
+        subtemplates: a store of sub-template (values) indexed by integers
+            (keys) that link the sub-template center to the original
+            template instantiation thanks to `subtemplate_indices`.
+
+    Raises:
+        TQECException: if any index in `self.subtemplate_indices` is
+            not present in `self.subtemplates.keys()`.
+        TQECException: if any of the sub-template shapes is non-square
+            or of even width or length.
+        TQECException: if not all the sub-template shapes in
+            `self.subtemplates.values()` are equal.
+    """
+
+    subtemplate_indices: npt.NDArray[numpy.int_]
+    subtemplates: dict[int, npt.NDArray[numpy.int_]]
+
+    def __post_init__(self) -> None:
+        indices = frozenset(numpy.unique(self.subtemplate_indices))
+        if not indices.issubset(self.subtemplates.keys()):
+            raise TQECException(
+                "Found an index in subtemplate_indices that does "
+                "not correspond to a valid subtemplate."
+            )
+        shape = next(iter(self.subtemplates.values())).shape
+        if shape[0] != shape[1]:
+            raise TQECException(
+                "Subtemplate shapes are expected to be square. "
+                f"Found the shape {shape} that is not a square."
+            )
+        if shape[0] % 2 == 0:
+            raise TQECException(
+                "Subtemplate shapes are expected to be squares with an "
+                f"odd size length. Found size length {shape[0]}."
+            )
+        if not all(
+            subtemplate.shape == shape for subtemplate in self.subtemplates.values()
+        ):
+            raise TQECException(
+                "All the subtemplates should have the exact same shape. "
+                "Found one with a differing shape."
+            )
+
+    @property
+    def manhattan_radius(self) -> int:
+        return next(iter(self.subtemplates.values())).shape[0] // 2
 
 
 def get_spatially_distinct_subtemplates(
     instantiation: npt.NDArray[numpy.int_],
     manhattan_radius: int = 1,
     avoid_zero_plaquettes: bool = True,
-) -> tuple[npt.NDArray[numpy.int_], dict[int, npt.NDArray[numpy.int_]]]:
+) -> UniqueSubTemplates:
     """Returns a representation of all the distinct sub-templates of the
     provided manhattan radius.
 
@@ -28,12 +140,7 @@ def get_spatially_distinct_subtemplates(
             its center should be ignored. Default to `True`.
 
     Returns:
-        a tuple containing:
-
-        1. an array that has the exact same shape as `self.instantiate()`
-            but that is filled with indices from the second part of this
-            tuple.
-        2. a mapping from indices to the corresponding sub-template.
+        a representation of all the sub-templates found.
     """
     y, x = instantiation.shape
     extended_instantiation = numpy.pad(
@@ -82,4 +189,4 @@ def get_spatially_distinct_subtemplates(
         final_indices[considered_flattened_indices] = inverse_indices
     else:
         final_indices = inverse_indices
-    return final_indices.reshape((y, x)), subtemplates_by_indices
+    return UniqueSubTemplates(final_indices.reshape((y, x)), subtemplates_by_indices)
