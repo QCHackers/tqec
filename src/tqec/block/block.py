@@ -13,7 +13,9 @@ from typing_extensions import override
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.operations.measurement import Measurement, RepeatedMeasurement
+from tqec.circuit.operations.operation import Detector
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
+from tqec.detectors.computation import compute_detectors_in_last_timestep
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
@@ -327,6 +329,27 @@ class StandardComputationBlock(ComputationBlock):
             else:  # isinstance(m, RepeatedMeasurement):
                 measurements.extend(m.measurements())
         return measurements
+
+    @property
+    def detectors(self) -> list[list[Detector]]:
+        initial_detectors = compute_detectors_in_last_timestep(
+            self.template, [self.initial_plaquettes]
+        )
+        if self.repeating_plaquettes is not None:
+            repeating_detectors = compute_detectors_in_last_timestep(
+                self.template,
+                [self.initial_plaquettes, self.repeating_plaquettes.plaquettes],
+            )
+            final_detectors = compute_detectors_in_last_timestep(
+                self.template,
+                [self.repeating_plaquettes.plaquettes, self.final_plaquettes],
+            )
+        else:
+            repeating_detectors: list[Detector] = []
+            final_detectors = compute_detectors_in_last_timestep(
+                self.template, [self.initial_plaquettes, self.final_plaquettes]
+            )
+        return [initial_detectors, repeating_detectors, final_detectors]
 
 
 @dataclass
