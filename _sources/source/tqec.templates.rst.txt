@@ -28,6 +28,14 @@ tqec.templates.enums module
    :undoc-members:
    :show-inheritance:
 
+tqec.templates.grid module
+--------------------------
+
+.. automodule:: tqec.templates.grid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.templates.interval module
 ------------------------------
 
@@ -48,6 +56,14 @@ tqec.templates.scale module
 ---------------------------
 
 .. automodule:: tqec.templates.scale
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.subtemplates module
+----------------------------------
+
+.. automodule:: tqec.templates.subtemplates
    :members:
    :undoc-members:
    :show-inheritance:

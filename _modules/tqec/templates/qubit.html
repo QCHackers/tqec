@@ -84,14 +84,14 @@
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECWarning</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">RectangularTemplate</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateSide</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">Scalable2D</span>
 
 
 <div class="viewcode-block" id="QubitTemplate">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitTemplate">[docs]</a>
-<span class="k">class</span> <span class="nc">QubitTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QubitTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit.</span>
 
 <span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
@@ -181,7 +181,7 @@
 
 <div class="viewcode-block" id="QubitVerticalBorders">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitVerticalBorders">[docs]</a>
-<span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Two vertical sides of neighbouring error-corrected qubits glued</span>
 <span class="sd">    together.</span>
 
@@ -262,7 +262,7 @@
 
 <div class="viewcode-block" id="QubitHorizontalBorders">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitHorizontalBorders">[docs]</a>
-<span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Two horizontal sides of neighbouring error-corrected qubits glued</span>
 <span class="sd">    together.</span>
 
@@ -338,7 +338,7 @@
 
 <div class="viewcode-block" id="Qubit4WayJunctionTemplate">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate">[docs]</a>
-<span class="k">class</span> <span class="nc">Qubit4WayJunctionTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Qubit4WayJunctionTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit that is making a 4-way junction with other</span>
 <span class="sd">    logical qubits.</span>
 

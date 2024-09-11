@@ -81,11 +81,16 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span><span class="p">,</span> <span class="n">TemplateSide</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">round_or_fail</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.subtemplates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">UniqueSubTemplates</span><span class="p">,</span>
+    <span class="n">get_spatially_distinct_subtemplates</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="Template">
@@ -105,8 +110,9 @@
 <span class="sd">                to `Displacement(2, 2)` when `None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">:</span> <span class="nb">int</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot have a negative scaling parameter. Got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">default_increments</span> <span class="ow">or</span> <span class="n">Displacement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Template.instantiate">
@@ -125,8 +131,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            a numpy array with the given plaquette indices arranged according to</span>
 <span class="sd">            the underlying shape of the template.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="Template.scale_to">
@@ -160,7 +165,6 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
 <div class="viewcode-block" id="Template.get_midline_plaquettes">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.get_midline_plaquettes">[docs]</a>
@@ -204,7 +208,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            the number of plaquettes expected from the `instantiate` method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
 <div class="viewcode-block" id="Template.get_increments">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.get_increments">[docs]</a>
@@ -229,8 +232,61 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            a non-ordered list of plaquette numbers.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Template.get_spatially_distinct_subtemplates">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.Template.get_spatially_distinct_subtemplates">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_spatially_distinct_subtemplates</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UniqueSubTemplates</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of all the distinct sub-templates of the</span>
+<span class="sd">        provided manhattan radius.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method will likely be inefficient for large templates (i.e., large</span>
+<span class="sd">            values of `k`) or for large Manhattan radiuses, both in terms of memory</span>
+<span class="sd">            used and computation time.</span>
+<span class="sd">            Subclasses are invited to reimplement that method using a specialized</span>
+<span class="sd">            algorithm (or hard-coded values) to speed things up.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            manhattan_radius: radius of the considered ball using the Manhattan</span>
+<span class="sd">                distance. Only squares with sides of `2*manhattan_radius+1`</span>
+<span class="sd">                plaquettes will be considered.</span>
+<span class="sd">            avoid_zero_plaquettes: `True` if sub-templates with an empty plaquette</span>
+<span class="sd">                (i.e., 0 value in the instantiation of the Template instance) at</span>
+<span class="sd">                its center should be ignored. Default to `True`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a representation of all the sub-templates found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">return</span> <span class="n">get_spatially_distinct_subtemplates</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(),</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RectangularTemplate">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.RectangularTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">RectangularTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
+<div class="viewcode-block" id="RectangularTemplate.get_midline_plaquettes">
+<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.base.RectangularTemplate.get_midline_plaquettes">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Midline is not defined for odd &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;height&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">orientation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;width&#39;</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
 </div>
 
 </pre></div>
