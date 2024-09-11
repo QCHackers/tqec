@@ -4,7 +4,7 @@ import pytest
 from tqec.circuit.observable_qubits import observable_qubits_from_template
 from tqec.plaquette.library import xxxx_memory_plaquette, zzzz_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
-from tqec.templates import RawRectangleTemplate
+from tqec.templates._testing import FixedTemplate
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def plaquettes() -> list[Plaquette]:
 
 
 def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]) -> None:
-    template = RawRectangleTemplate(
+    template = FixedTemplate(
         [
             [0, 1, 0, 1],
             [1, 0, 1, 0],

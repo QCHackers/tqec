@@ -1,4 +1,3 @@
-import typing as ty
 from dataclasses import astuple, dataclass
 from enum import Enum
 

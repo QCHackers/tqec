@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import math
-import operator
-import typing as ty
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
@@ -157,7 +155,10 @@ class Interval:
                 Interval(
                     self.end,
                     float("inf"),
-                    start_excluded=not self.end_excluded,
+                    start_excluded=(
+                        not self.end_excluded
+                        or (self.start_excluded and self.start == self.end)
+                    ),
                     end_excluded=True,
                 ),
             ]
