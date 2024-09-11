@@ -1,1 +1,0 @@
-from .qubit import DenseQubitSquareTemplate

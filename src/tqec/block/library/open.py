@@ -3,11 +3,11 @@ from collections import defaultdict
 import cirq
 
 from tqec.block.block import (
+    _DEFAULT_BLOCK_REPETITIONS,
     RepeatedPlaquettes,
     StandardComputationBlock,
     TemporalPlaquetteSequence,
 )
-from tqec.block.library.closed import xzz_block, zxz_block
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.library.memory import (
@@ -18,9 +18,9 @@ from tqec.plaquette.library.memory import (
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
-from tqec.templates.constructions.qubit import (
-    DenseQubitSquareTemplate,
+from tqec.templates.qubit import (
     QubitHorizontalBorders,
+    QubitTemplate,
     QubitVerticalBorders,
 )
 from tqec.templates.scale import LinearFunction
@@ -55,12 +55,14 @@ def _with_measurements_on_data_qubits_on_side(
     return plaquette
 
 
-def ozx_block(dimension: LinearFunction) -> StandardComputationBlock:
+def ozx_block() -> StandardComputationBlock:
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
             2: _with_resets_on_data_qubits_on_side(
-                zzzz_memory_plaquette(), PlaquetteSide.RIGHT, reset_basis=ResetBasis.X
+                zzzz_memory_plaquette(),
+                PlaquetteSide.RIGHT,
+                reset_basis=ResetBasis.X,
             ),
             3: xxxx_memory_plaquette(),
             4: _with_resets_on_data_qubits_on_side(
@@ -77,15 +79,23 @@ def ozx_block(dimension: LinearFunction) -> StandardComputationBlock:
         Plaquettes(
             defaultdict(empty_square_plaquette)
             | {
-                2: zzzz_memory_plaquette(),
+                2: _with_resets_on_data_qubits_on_side(
+                    zzzz_memory_plaquette(),
+                    PlaquetteSide.RIGHT,
+                    reset_basis=ResetBasis.X,
+                ),
                 3: xxxx_memory_plaquette(),
-                4: zz_memory_plaquette(PlaquetteOrientation.DOWN),
+                4: _with_resets_on_data_qubits_on_side(
+                    zz_memory_plaquette(PlaquetteOrientation.DOWN),
+                    PlaquetteSide.RIGHT,
+                    reset_basis=ResetBasis.X,
+                ),
                 5: zz_memory_plaquette(PlaquetteOrientation.UP),
                 6: xxxx_memory_plaquette(),
                 7: zzzz_memory_plaquette(),
             }
         ),
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
@@ -107,14 +117,14 @@ def ozx_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        QubitVerticalBorders(dimension),
+        QubitVerticalBorders(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def oxz_block(dimension: LinearFunction) -> StandardComputationBlock:
+def oxz_block() -> StandardComputationBlock:
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
@@ -135,15 +145,20 @@ def oxz_block(dimension: LinearFunction) -> StandardComputationBlock:
         Plaquettes(
             defaultdict(empty_square_plaquette)
             | {
-                2: xxxx_memory_plaquette(),
+                2: _with_resets_on_data_qubits_on_side(
+                    xxxx_memory_plaquette(), PlaquetteSide.RIGHT
+                ),
                 3: zzzz_memory_plaquette(),
-                4: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+                4: _with_resets_on_data_qubits_on_side(
+                    xx_memory_plaquette(PlaquetteOrientation.DOWN),
+                    PlaquetteSide.RIGHT,
+                ),
                 5: xx_memory_plaquette(PlaquetteOrientation.UP),
                 6: zzzz_memory_plaquette(),
                 7: xxxx_memory_plaquette(),
             }
         ),
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
@@ -161,14 +176,14 @@ def oxz_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        QubitVerticalBorders(dimension),
+        QubitVerticalBorders(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def xoz_block(dimension: LinearFunction) -> StandardComputationBlock:
+def xoz_block() -> StandardComputationBlock:
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
@@ -190,15 +205,21 @@ def xoz_block(dimension: LinearFunction) -> StandardComputationBlock:
         Plaquettes(
             defaultdict(empty_square_plaquette)
             | {
-                1: xx_memory_plaquette(PlaquetteOrientation.LEFT),
+                1: _with_resets_on_data_qubits_on_side(
+                    xx_memory_plaquette(PlaquetteOrientation.LEFT),
+                    PlaquetteSide.DOWN,
+                ),
                 2: zzzz_memory_plaquette(),
-                3: xxxx_memory_plaquette(),
+                3: _with_resets_on_data_qubits_on_side(
+                    xxxx_memory_plaquette(),
+                    PlaquetteSide.DOWN,
+                ),
                 6: xxxx_memory_plaquette(),
                 7: zzzz_memory_plaquette(),
                 8: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
             }
         ),
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
@@ -218,14 +239,14 @@ def xoz_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        QubitHorizontalBorders(dimension),
+        QubitHorizontalBorders(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def zox_block(dimension: LinearFunction) -> StandardComputationBlock:
+def zox_block() -> StandardComputationBlock:
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
@@ -247,15 +268,23 @@ def zox_block(dimension: LinearFunction) -> StandardComputationBlock:
         Plaquettes(
             defaultdict(empty_square_plaquette)
             | {
-                1: zz_memory_plaquette(PlaquetteOrientation.LEFT),
+                1: _with_resets_on_data_qubits_on_side(
+                    zz_memory_plaquette(PlaquetteOrientation.LEFT),
+                    PlaquetteSide.DOWN,
+                    reset_basis=ResetBasis.X,
+                ),
                 2: xxxx_memory_plaquette(),
-                3: zzzz_memory_plaquette(),
+                3: _with_resets_on_data_qubits_on_side(
+                    zzzz_memory_plaquette(),
+                    PlaquetteSide.DOWN,
+                    reset_basis=ResetBasis.X,
+                ),
                 6: zzzz_memory_plaquette(),
                 7: xxxx_memory_plaquette(),
                 8: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
             }
         ),
-        dimension - 1,
+        _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
@@ -277,14 +306,14 @@ def zox_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        QubitHorizontalBorders(dimension),
+        QubitHorizontalBorders(),
         TemporalPlaquetteSequence(
             initial_plaquettes, repeating_plaquettes, final_plaquettes
         ),
     )
 
 
-def xzo_block(dimension: LinearFunction) -> StandardComputationBlock:
+def xzo_block() -> StandardComputationBlock:
     initial_plaquettes = final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
@@ -297,12 +326,12 @@ def xzo_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dimension),
+        QubitTemplate(),
         TemporalPlaquetteSequence(initial_plaquettes, None, final_plaquettes),
     )
 
 
-def zxo_block(dimension: LinearFunction) -> StandardComputationBlock:
+def zxo_block() -> StandardComputationBlock:
     initial_plaquettes = final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
@@ -315,6 +344,6 @@ def zxo_block(dimension: LinearFunction) -> StandardComputationBlock:
         }
     )
     return StandardComputationBlock(
-        DenseQubitSquareTemplate(dimension),
+        QubitTemplate(),
         TemporalPlaquetteSequence(initial_plaquettes, None, final_plaquettes),
     )

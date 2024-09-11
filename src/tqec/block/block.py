@@ -18,9 +18,11 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
-from tqec.templates.constructions.qubit import ComposedTemplateWithSides
+from tqec.templates import Template
 from tqec.templates.interval import Interval
 from tqec.templates.scale import LinearFunction, round_or_fail
+
+_DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, 1)
 
 
 @dataclass
@@ -148,7 +150,7 @@ class StandardComputationBlock(ComputationBlock):
             of plaquette of the provided template.
     """
 
-    template: ComposedTemplateWithSides
+    template: Template
     plaquettes: TemporalPlaquetteSequence
 
     def __post_init__(self) -> None:
@@ -258,10 +260,10 @@ class StandardComputationBlock(ComputationBlock):
 
     @staticmethod
     def _get_measurements(
-        template: ComposedTemplateWithSides, plaquettes: Plaquettes
+        template: Template, plaquettes: Plaquettes
     ) -> ty.Iterator[Measurement]:
         template_array = template.instantiate()
-        default_increments = template.default_increments
+        default_increments = template.get_increments()
 
         for i, row in enumerate(template_array):
             for j, plaquette_index in enumerate(row):

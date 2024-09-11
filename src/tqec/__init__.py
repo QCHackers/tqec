@@ -36,19 +36,7 @@ from .position import (
     Position,
     Shape2D,
 )
-from .templates import (
-    AlternatingCornerSquareTemplate,
-    AlternatingRectangleTemplate,
-    AlternatingSquareTemplate,
-    ComposedTemplate,
-    DenseQubitSquareTemplate,
-    LinearFunction,
-    RawRectangleTemplate,
-    Template,
-    TemplateWithIndices,
-    display_template,
-    display_templates_svg,
-)
+from .templates import LinearFunction, Template
 from .templates.enums import (
     CornerPositionEnum,
     TemplateOrientation,

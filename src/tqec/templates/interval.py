@@ -156,7 +156,10 @@ class Interval:
                 Interval(
                     self.end,
                     float("inf"),
-                    start_excluded=not self.end_excluded,
+                    start_excluded=(
+                        not self.end_excluded
+                        or (self.start_excluded and self.start == self.end)
+                    ),
                     end_excluded=True,
                 ),
             ]
