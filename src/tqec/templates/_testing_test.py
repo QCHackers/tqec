@@ -15,6 +15,7 @@ def test_construction() -> None:
 
 def test_instantiation() -> None:
     numpy.testing.assert_array_equal(FixedTemplate([[0]]).instantiate([1]), [[1]])
+    numpy.testing.assert_array_equal(FixedTemplate([[0]]).instantiate(), [[1]])
     numpy.testing.assert_array_equal(FixedTemplate([[1]]).instantiate([1, 2]), [[2]])
     numpy.testing.assert_array_equal(
         FixedTemplate([[0, 1], [1, 2]]).instantiate([1, 2, 3]), [[1, 2], [2, 3]]
