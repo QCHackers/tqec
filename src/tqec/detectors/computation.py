@@ -15,6 +15,7 @@ from tqec.circuit.detectors.match import (
     match_detectors_from_flows_shallow,
     match_detectors_within_fragment,
 )
+from tqec.circuit.operations.measurement import Measurement
 from tqec.circuit.operations.operation import Detector
 from tqec.exceptions import TQECException, TQECWarning
 from tqec.plaquette.plaquette import Plaquettes
@@ -122,20 +123,39 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
     # measurements from the central plaquette).
     central_plaquette_index: int = subtemplate[radius, radius]
     central_plaquette = plaquettes_at_timestep[-1][central_plaquette_index]
-    # Waiting for #305 to be merged.
-    ## 1. List all the measurements from the central plaquette
-    ## 2. Offset them all with `central_plaquette_origin`
-    central_plaquette_origin = Position(radius * increments.x, radius * increments.y)
-    considered_measurements = central_plaquette
+    # considered_measurements is using the subtemplate coordinate system (origin is
+    # at the top-left corner of the subtemplate).
+    considered_measurements = {
+        m.offset_spatially_by(radius * increments.x, radius * increments.y)
+        for m in central_plaquette.measurements
+    }
 
     filtered_detectors: list[Detector] = []
     for potential_detector in matched_detectors:
-        # 1. Filter potential detector to only keep detectors involving at least one
-        #    measurement from `considered_measurements`.
-        # 2. Transform a MatchedDetector into a Detector, changing the coordinate
-        #    system origin from the subtemplate top-left plaquette origin to the
-        #    central plaquette origin, and add it to `filtered_detectors`.
-        pass
+        potential_detector_measurements = {
+            Measurement(index_to_qubit[m.qubit_index], m.offset)
+            for m in potential_detector.measurements
+        }
+        if potential_detector_measurements.isdisjoint(considered_measurements):
+            # This is not an interesting detector, filter it out.
+            continue
+        # From here on, potential_detector is a detector we want to keep.
+        # We have two transformations to apply to it:
+        # 1. Change of coordinate system for the qubits. potential_detector is
+        #    using a coordinate system with the origin at the top-left corner of
+        #    the current sub-template, but we need to return detectors that use
+        #    the central plaquette origin as their coordinate system origin.
+        # 2. Transform the MatchedDetector instance into a Detector instance.
+        detector_measurements_central_plaquette_coordinates = [
+            m.offset_spatially_by(-radius * increments.x, -radius * increments.y)
+            for m in potential_detector_measurements
+        ]
+        filtered_detectors.append(
+            Detector(
+                detector_measurements_central_plaquette_coordinates,
+                potential_detector.coords,
+            )
+        )
     return filtered_detectors
 
 
@@ -168,6 +188,8 @@ def compute_detectors_in_last_timestep(
         considered_manhattan_radius, avoid_zero_plaquettes=True
     )
     increments = template.get_increments()
+    # Each detector in detectors_by_subtemplate is using a coordinate system
+    # centered on the central plaquette origin.
     detectors_by_subtemplate: dict[int, list[Detector]] = {
         i: _compute_detectors_in_last_timestep_from_subtemplate(
             subtemplate, plaquettes, increments
@@ -178,6 +200,10 @@ def compute_detectors_in_last_timestep(
     for i, row in enumerate(unique_subtemplates.subtemplate_indices):
         for j, subtemplate_index in enumerate(row):
             plaquette_origin = Position(j * increments.x, i * increments.x)
-            # Offset all the detectors in detectors_by_subtemplate[subtemplate_index]
-            # Add them to detectors.
+            for d in detectors_by_subtemplate[subtemplate_index]:
+                offset_measurements = [
+                    m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)
+                    for m in d.measurement_data
+                ]
+                detectors.append(Detector(offset_measurements, d.coordinates))
     return detectors
