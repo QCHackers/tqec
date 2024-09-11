@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import stim
+
 from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import (
     Fragment,

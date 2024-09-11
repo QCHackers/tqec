@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing
+import typing as ty
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from copy import deepcopy
@@ -12,12 +12,14 @@ from typing_extensions import override
 
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
+from tqec.circuit.operations.measurement import Measurement, RepeatedMeasurement
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Position3D
 from tqec.templates import Template
+from tqec.templates.interval import Interval
 from tqec.templates.scale import LinearFunction, round_or_fail
 
 _DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, 1)
@@ -72,25 +74,7 @@ def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
         the number of `cirq.Moment` needed to execute the provided plaquettes
         in parallel.
     """
-    all_plaquettes: typing.Iterable[Plaquette]
-    if isinstance(plaquettes, list):
-        all_plaquettes = plaquettes
-    elif isinstance(plaquettes, typing.Mapping):
-        all_plaquettes = plaquettes.values()
-        if (
-            isinstance(plaquettes, defaultdict)
-            and plaquettes.default_factory is not None
-        ):
-            all_plaquettes = list(all_plaquettes) + [plaquettes.default_factory()]
-    return max(max(p.circuit.schedule, default=0) for p in all_plaquettes)
-
-
-def _plaquette_dict(
-    plaquettes: Plaquettes,
-) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
-    if isinstance(plaquettes, (dict, defaultdict)):
-        return plaquettes
-    return {i: p for i, p in enumerate(plaquettes)}
+    return max(max(p.circuit.schedule, default=0) for p in plaquettes)
 
 
 @dataclass
@@ -110,7 +94,7 @@ class RepeatedPlaquettes:
         self, plaquettes_to_update: dict[int, Plaquette]
     ) -> RepeatedPlaquettes:
         return RepeatedPlaquettes(
-            _plaquette_dict(self.plaquettes) | plaquettes_to_update, self.repetitions
+            self.plaquettes | plaquettes_to_update, self.repetitions
         )
 
 
@@ -125,9 +109,9 @@ class TemporalPlaquetteSequence:
 
     def without_time_boundaries(self) -> TemporalPlaquetteSequence:
         return TemporalPlaquetteSequence(
-            defaultdict(empty_square_plaquette),
+            Plaquettes(defaultdict(empty_square_plaquette)),
             deepcopy(self.repeating_plaquettes),
-            defaultdict(empty_square_plaquette),
+            Plaquettes(defaultdict(empty_square_plaquette)),
         )
 
     def with_updated_plaquettes(
@@ -139,9 +123,9 @@ class TemporalPlaquetteSequence:
                 plaquettes_to_update
             )
         return TemporalPlaquetteSequence(
-            _plaquette_dict(self.initial_plaquettes) | plaquettes_to_update,
+            self.initial_plaquettes | plaquettes_to_update,
             repeating_plaquettes,
-            _plaquette_dict(self.final_plaquettes) | plaquettes_to_update,
+            self.final_plaquettes | plaquettes_to_update,
         )
 
 
@@ -172,7 +156,7 @@ class StandardComputationBlock(ComputationBlock):
     def __post_init__(self) -> None:
         expected_plaquette_number = self.template.expected_plaquettes_number
         if (
-            not isinstance(self.initial_plaquettes, defaultdict)
+            not self.initial_plaquettes.has_default
             and len(self.initial_plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
@@ -181,7 +165,7 @@ class StandardComputationBlock(ComputationBlock):
                 "plaquettes."
             )
         if (
-            not isinstance(self.final_plaquettes, defaultdict)
+            not self.final_plaquettes.has_default
             and len(self.final_plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
@@ -191,7 +175,7 @@ class StandardComputationBlock(ComputationBlock):
             )
         if (
             self.repeating_plaquettes is not None
-            and not isinstance(self.repeating_plaquettes.plaquettes, defaultdict)
+            and not self.repeating_plaquettes.plaquettes.has_default
             and len(self.repeating_plaquettes.plaquettes) != expected_plaquette_number
         ):
             raise TQECException(
@@ -207,10 +191,6 @@ class StandardComputationBlock(ComputationBlock):
     @property
     def repeating_plaquettes(self) -> RepeatedPlaquettes | None:
         return self.plaquettes.repeating_plaquettes
-
-    @repeating_plaquettes.setter
-    def repeating_plaquettes(self, value: RepeatedPlaquettes | None) -> None:
-        self.plaquettes.repeating_plaquettes = value
 
     @property
     def final_plaquettes(self) -> Plaquettes:
@@ -259,13 +239,15 @@ class StandardComputationBlock(ComputationBlock):
 
     @override
     def instantiate(self) -> cirq.Circuit:
-        circuit = generate_circuit(self.template, self.initial_plaquettes)
+        circuit = generate_circuit(self.template, self.initial_plaquettes.collection)
         if self.repeating_plaquettes is not None:
             repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             plaquettes = self.repeating_plaquettes.plaquettes
-            inner_circuit = generate_circuit(self.template, plaquettes).freeze()
+            inner_circuit = generate_circuit(
+                self.template, plaquettes.collection
+            ).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
-        circuit += generate_circuit(self.template, self.final_plaquettes)
+        circuit += generate_circuit(self.template, self.final_plaquettes.collection)
         return circuit
 
     @override
@@ -275,6 +257,78 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
+
+    @staticmethod
+    def _get_measurements(
+        template: Template, plaquettes: Plaquettes
+    ) -> ty.Iterator[Measurement]:
+        template_array = template.instantiate()
+        default_increments = template.get_increments()
+
+        for i, row in enumerate(template_array):
+            for j, plaquette_index in enumerate(row):
+                xoffset = j * default_increments.x
+                yoffset = i * default_increments.y
+                yield from (
+                    m.offset_spatially_by(xoffset, yoffset)
+                    for m in plaquettes[plaquette_index].measurements
+                )
+
+    @property
+    def measurements(self) -> frozenset[Measurement | RepeatedMeasurement]:
+        """Returns all the measurements in the block, relative to the end of
+        the block."""
+        measurement_number_by_qubits: dict[cirq.GridQubit, int] = {}
+        all_measurements: list[Measurement | RepeatedMeasurement] = []
+        # Start by the final measurements.
+        for final_measurement in self._get_measurements(
+            self.template, self.final_plaquettes
+        ):
+            all_measurements.append(final_measurement)
+            measurement_number_by_qubits[final_measurement.qubit] = 1
+        # Continue with the repeating measurements
+        if self.repeating_plaquettes is not None:
+            repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
+            for repeating_measurement in self._get_measurements(
+                self.template, self.repeating_plaquettes.plaquettes
+            ):
+                qubit = repeating_measurement.qubit
+                past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
+                all_measurements.append(
+                    RepeatedMeasurement(
+                        qubit,
+                        Interval(
+                            -past_measurement_number - repetitions,
+                            -past_measurement_number,
+                            start_excluded=False,
+                            end_excluded=True,
+                        ),
+                    )
+                )
+                measurement_number_by_qubits[repeating_measurement.qubit] = (
+                    past_measurement_number + repetitions
+                )
+        # Finish with the initial measurements
+        for initial_measurement in self._get_measurements(
+            self.template, self.initial_plaquettes
+        ):
+            qubit = repeating_measurement.qubit
+            past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
+            all_measurements.append(
+                initial_measurement.offset_temporally_by(-past_measurement_number)
+            )
+
+        return frozenset(all_measurements)
+
+    @property
+    def all_measurements(self) -> list[Measurement]:
+        measurements: list[Measurement] = []
+        for m in self.measurements:
+            if isinstance(m, Measurement):
+                measurements.append(m)
+            else:  # isinstance(m, RepeatedMeasurement):
+                measurements.extend(m.measurements())
+        return measurements
 
 
 @dataclass

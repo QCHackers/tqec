@@ -4,6 +4,7 @@ from enum import Enum, auto
 
 import cirq
 
+from tqec.circuit.operations.measurement import Measurement
 from tqec.circuit.operations.operation import MX, RX
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
