@@ -146,17 +146,17 @@ class QubitVerticalBorders(RectangularTemplate):
                 case TemplateSide.TOP_LEFT:
                     indices.append(1)
                 case TemplateSide.TOP_RIGHT:
-                    indices.append(5)
+                    indices.append(2)
                 case TemplateSide.BOTTOM_LEFT:
-                    indices.append(4)
+                    indices.append(3)
                 case TemplateSide.BOTTOM_RIGHT:
-                    indices.append(8)
+                    indices.append(4)
                 case TemplateSide.TOP:
                     pass
                 case TemplateSide.LEFT:
-                    indices.extend((2, 3))
+                    indices.extend((5, 6))
                 case TemplateSide.RIGHT:
-                    indices.extend((6, 7))
+                    indices.extend((7, 8))
                 case TemplateSide.BOTTOM:
                     pass
         return indices
