@@ -5,12 +5,12 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.position import Displacement
-from tqec.templates.base import Template
-from tqec.templates.enums import TemplateSide
+from tqec.templates.base import RectangularTemplate
+from tqec.templates.enums import TemplateOrientation, TemplateSide
 from tqec.templates.scale import LinearFunction, Scalable2D
 
 
-class FixedTemplate(Template):
+class FixedTemplate(RectangularTemplate):
     """A fixed template, only used internally for testing."""
 
     def __init__(
@@ -45,7 +45,7 @@ class FixedTemplate(Template):
         return max((max(line, default=0) for line in self._indices), default=0) + 1
 
     @override
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
+    def get_plaquette_indices_on_sides(self, _: list[TemplateSide]) -> list[int]:
         raise NotImplementedError(
             "Cannot call FixedTemplate.get_plaquette_indices_on_sides."
         )

@@ -3,11 +3,16 @@ from typing import Sequence
 
 import numpy
 import numpy.typing as npt
+from typing_extensions import override
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
 from tqec.templates.enums import TemplateOrientation, TemplateSide
 from tqec.templates.scale import Scalable2D, round_or_fail
+from tqec.templates.subtemplates import (
+    UniqueSubTemplates,
+    get_spatially_distinct_subtemplates,
+)
 
 
 class Template(ABC):
@@ -25,8 +30,9 @@ class Template(ABC):
                 to `Displacement(2, 2)` when `None`
         """
         super().__init__()
-        self._k: int
-        self.scale_to(k)
+        if k < 0:
+            raise TQECException(f"Cannot have a negative scaling parameter. Got {k}.")
+        self._k = k
         self._default_increments = default_increments or Displacement(2, 2)
 
     @abstractmethod
@@ -44,7 +50,6 @@ class Template(ABC):
             a numpy array with the given plaquette indices arranged according to
             the underlying shape of the template.
         """
-        pass
 
     def scale_to(self, k: int) -> None:
         """Scales self to the given scale k.
@@ -74,7 +79,6 @@ class Template(ABC):
     @abstractmethod
     def scalable_shape(self) -> Scalable2D:
         """Returns a scalable version of the template shape."""
-        pass
 
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
@@ -115,7 +119,6 @@ class Template(ABC):
         Returns:
             the number of plaquettes expected from the `instantiate` method.
         """
-        pass
 
     def get_increments(self) -> Displacement:
         """Get the default increments of the template.
@@ -136,4 +139,48 @@ class Template(ABC):
         Returns:
             a non-ordered list of plaquette numbers.
         """
-        pass
+
+    def get_spatially_distinct_subtemplates(
+        self, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True
+    ) -> UniqueSubTemplates:
+        """Returns a representation of all the distinct sub-templates of the
+        provided manhattan radius.
+
+        Note:
+            This method will likely be inefficient for large templates (i.e., large
+            values of `k`) or for large Manhattan radiuses, both in terms of memory
+            used and computation time.
+            Subclasses are invited to reimplement that method using a specialized
+            algorithm (or hard-coded values) to speed things up.
+
+        Args:
+            manhattan_radius: radius of the considered ball using the Manhattan
+                distance. Only squares with sides of `2*manhattan_radius+1`
+                plaquettes will be considered.
+            avoid_zero_plaquettes: `True` if sub-templates with an empty plaquette
+                (i.e., 0 value in the instantiation of the Template instance) at
+                its center should be ignored. Default to `True`.
+
+        Returns:
+            a representation of all the sub-templates found.
+        """
+        return get_spatially_distinct_subtemplates(
+            self.instantiate(), manhattan_radius, avoid_zero_plaquettes
+        )
+
+
+class RectangularTemplate(Template):
+    @override
+    def get_midline_plaquettes(
+        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+    ) -> list[tuple[int, int]]:
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]

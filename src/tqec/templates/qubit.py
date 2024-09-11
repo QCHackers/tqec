@@ -6,12 +6,12 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.exceptions import TQECWarning
-from tqec.templates.base import Template
+from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import LinearFunction, Scalable2D
 
 
-class QubitTemplate(Template):
+class QubitTemplate(RectangularTemplate):
     """An error-corrected qubit.
 
     The below text represents this template for an input ``k == 2`` ::
@@ -92,7 +92,7 @@ class QubitTemplate(Template):
         return indices
 
 
-class QubitVerticalBorders(Template):
+class QubitVerticalBorders(RectangularTemplate):
     """Two vertical sides of neighbouring error-corrected qubits glued
     together.
 
@@ -164,7 +164,7 @@ class QubitVerticalBorders(Template):
         return indices
 
 
-class QubitHorizontalBorders(Template):
+class QubitHorizontalBorders(RectangularTemplate):
     """Two horizontal sides of neighbouring error-corrected qubits glued
     together.
 
@@ -231,7 +231,7 @@ class QubitHorizontalBorders(Template):
         return indices
 
 
-class Qubit4WayJunctionTemplate(Template):
+class Qubit4WayJunctionTemplate(RectangularTemplate):
     """An error-corrected qubit that is making a 4-way junction with other
     logical qubits.
 

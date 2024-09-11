@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import typing as ty
 
+import numpy
+import numpy.typing as npt
+
 from tqec.templates.base import Template
 
 
@@ -18,8 +21,18 @@ def display_template(
     """
     if plaquette_indices is None:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
-    arr = template.instantiate(plaquette_indices)
-    for line in arr:
+    display_template_from_instantiation(template.instantiate(plaquette_indices))
+
+
+def display_template_from_instantiation(instantiation: npt.NDArray[numpy.int_]) -> None:
+    """Display an array representing a template instantiation with ASCII
+    output.
+
+    Args:
+        instantiation: the integer array obtained from the `Template.instantiate`
+            method.
+    """
+    for line in instantiation:
         for element in line:
             element = str(element) if element != 0 else "."
             print(f"{element:>3}", end="")
