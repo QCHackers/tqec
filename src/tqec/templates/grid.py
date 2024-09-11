@@ -25,7 +25,7 @@ class GridTemplate(RectangularTemplate):
             raise TQECException("Cannot create a grid with no row.")
         if len(index_grid[0]) == 0:
             raise TQECException("Cannot create a grid with no column.")
-        indices_in_grid = numpy.unique(index_grid)
+        indices_in_grid: npt.NDArray[numpy.int_] = numpy.unique(index_grid)
         if indices_in_grid[0] not in [0, 1] or not numpy.all(
             numpy.equal(
                 indices_in_grid,
@@ -115,9 +115,8 @@ class GridTemplate(RectangularTemplate):
         Returns:
             the number of plaquettes expected from the `instantiate` method.
         """
-        return self._tiled_template.expected_plaquettes_number * max(
-            self._sorted_indices_in_grid
-        )
+        max_index: int = self._sorted_indices_in_grid[-1]
+        return self._tiled_template.expected_plaquettes_number * max_index
 
     @override
     def get_plaquette_indices_on_sides(self, _: list[TemplateSide]) -> list[int]:

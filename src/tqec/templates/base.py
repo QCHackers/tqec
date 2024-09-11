@@ -80,7 +80,6 @@ class Template(ABC):
     def scalable_shape(self) -> Scalable2D:
         """Returns a scalable version of the template shape."""
 
-    @abstractmethod
     def get_midline_plaquettes(
         self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
@@ -100,6 +99,16 @@ class Template(ABC):
         Raises:
             TQECException: If the midline is not uniquely defined.
         """
+        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        if midline_shape % 2 == 1:
+            raise TQECException(
+                "Midline is not defined for odd "
+                + f"{'height' if orientation == TemplateOrientation.HORIZONTAL else 'width'}."
+            )
+        midline = midline_shape // 2 - 1
+        if orientation == TemplateOrientation.VERTICAL:
+            return [(row, midline) for row in range(iteration_shape)]
+        return [(midline, column) for column in range(iteration_shape)]
 
     @property
     @abstractmethod
