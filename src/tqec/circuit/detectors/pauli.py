@@ -13,6 +13,7 @@ import operator
 import typing as ty
 
 import stim
+
 from tqec.exceptions import TQECException
 
 PAULI_STRING_TYPE = ty.Literal["I", "X", "Y", "Z"]
@@ -154,7 +155,6 @@ class PauliString:
         """
         ret = PauliString(self._pauli_by_qubit.copy())
         for op in collapse_operators:
-            print(f"Collapsing {op} over {ret}")
             if not ret.commutes(op):
                 raise TQECException(
                     f"Cannot collapse {ret} by a non-commuting operator {op}."
