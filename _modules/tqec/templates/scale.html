@@ -78,22 +78,13 @@
   <h1>Source code for tqec.templates.scale</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">bisect</span>
-<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Shape2D</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">Axis</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.interval</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">EMPTY_INTERVAL</span><span class="p">,</span>
-    <span class="n">Interval</span><span class="p">,</span>
-    <span class="n">Intervals</span><span class="p">,</span>
-    <span class="n">R_interval</span><span class="p">,</span>
-    <span class="n">R_intervals</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.interval</span> <span class="kn">import</span> <span class="n">EMPTY_INTERVAL</span><span class="p">,</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">Intervals</span><span class="p">,</span> <span class="n">R_interval</span>
 
 
 <div class="viewcode-block" id="LinearFunction">
@@ -274,372 +265,6 @@
 
 
 
-<span class="k">def</span> <span class="nf">_linear_function_minmax</span><span class="p">(</span>
-    <span class="n">lhs</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">is_min</span><span class="p">:</span> <span class="nb">bool</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]]:</span>
-    <span class="n">intersection</span> <span class="o">=</span> <span class="n">lhs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">intersection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">lhs</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[],</span> <span class="p">[</span><span class="n">lhs</span> <span class="k">if</span> <span class="n">is_min</span> <span class="k">else</span> <span class="n">rhs</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[],</span> <span class="p">[</span><span class="n">rhs</span> <span class="k">if</span> <span class="n">is_min</span> <span class="k">else</span> <span class="n">lhs</span><span class="p">]</span>
-
-    <span class="n">before_intersection</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">intersection</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">lhs</span><span class="p">(</span><span class="n">before_intersection</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">(</span><span class="n">before_intersection</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">intersection</span><span class="p">],</span> <span class="p">([</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_min</span> <span class="k">else</span> <span class="p">[</span><span class="n">rhs</span><span class="p">,</span> <span class="n">lhs</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># lhs(before_intersection) &gt; rhs(before_intersection):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">intersection</span><span class="p">],</span> <span class="p">([</span><span class="n">rhs</span><span class="p">,</span> <span class="n">lhs</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_min</span> <span class="k">else</span> <span class="p">[</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">_filter_on_interval</span><span class="p">(</span>
-    <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-    <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">],</span>
-    <span class="n">start_inclusive</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">end_exclusive</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]]:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">separators</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">separators</span><span class="p">,</span> <span class="n">functions</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">separators</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Expected one separator at most.&quot;</span><span class="p">)</span>
-    <span class="n">separator</span> <span class="o">=</span> <span class="n">separators</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">separator</span> <span class="o">&lt;</span> <span class="n">start_inclusive</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[],</span> <span class="p">[</span><span class="n">functions</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="k">elif</span> <span class="n">separator</span> <span class="o">&gt;=</span> <span class="n">end_exclusive</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[],</span> <span class="p">[</span><span class="n">functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">separators</span><span class="p">,</span> <span class="n">functions</span>
-
-
-<span class="k">def</span> <span class="nf">_get_minmax_on_interval</span><span class="p">(</span>
-    <span class="n">lhs</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span>
-    <span class="n">rhs</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">,</span>
-    <span class="n">is_min</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-    <span class="n">start_inclusive</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">end_exclusive</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]]:</span>
-    <span class="n">seps</span><span class="p">,</span> <span class="n">funcs</span> <span class="o">=</span> <span class="n">_linear_function_minmax</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">is_min</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_filter_on_interval</span><span class="p">(</span><span class="n">seps</span><span class="p">,</span> <span class="n">funcs</span><span class="p">,</span> <span class="n">start_inclusive</span><span class="p">,</span> <span class="n">end_exclusive</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="intervals_from_separators">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.intervals_from_separators">[docs]</a>
-<span class="k">def</span> <span class="nf">intervals_from_separators</span><span class="p">(</span><span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Interval</span><span class="p">]:</span>
-    <span class="n">separators_with_inf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">),</span> <span class="o">*</span><span class="n">separators</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;+inf&quot;</span><span class="p">)]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">separators_with_inf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="n">Interval</span><span class="p">(</span>
-            <span class="n">separators_with_inf</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="n">separators_with_inf</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-            <span class="n">start_excluded</span><span class="o">=</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Exclude the first start that is float(&quot;-inf&quot;)</span>
-            <span class="n">end_excluded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="PiecewiseLinearFunction">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">PiecewiseLinearFunction</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A piecewise linear function.</span>
-
-<span class="sd">    This dataclass encodes a piecewise linear function (that does not need</span>
-<span class="sd">    to be continuous) by storing:</span>
-
-<span class="sd">    - a list of `n` separators representing the `n` points at which the</span>
-<span class="sd">      linear function encoded change and,</span>
-<span class="sd">    - a list of `n+1` instances of `LinearFunction`, representing the linear</span>
-<span class="sd">      functions on each of the `n+1` intervals represented by the `n` separators</span>
-<span class="sd">      (and both -infinity and +infinity that are never stored explicitly).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]</span>
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.__post_init__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.__post_init__">[docs]</a>
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the invariants that should be met by any instance of this</span>
-<span class="sd">        class.</span>
-
-<span class="sd">        First, there should be one more `LinearFunction` instance than there are</span>
-<span class="sd">        separators stored in the class.</span>
-<span class="sd">        Secondly, separators should be sorted in increasing order.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">separators</span></div>
-
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.__call__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.__call__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the value of the piecewise linear function at point `x`.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            x: point to compute the value of.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the value taken by the represented piecewise linear function at the</span>
-<span class="sd">            provided point.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">index</span><span class="p">](</span><span class="n">x</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_functions_in_common</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">,</span> <span class="n">LinearFunction</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to compute the common separators between two</span>
-<span class="sd">        `PiecewiseLinearFunction` instances.</span>
-
-<span class="sd">        This method returns a tuple composed of two lists:</span>
-
-<span class="sd">        1. the list of separators that should be</span>
-<span class="sd">           `sorted(set(self.separators) | set(other.separators))`.</span>
-<span class="sd">        2. a list of pairs of `LinearFunction` instances representing the</span>
-<span class="sd">           linear functions from `self` (in the first entry of each pair) and</span>
-<span class="sd">           `other` (in the second entry of each pair) that appear together</span>
-<span class="sd">           in the interval.</span>
-
-<span class="sd">        These lists can then be used to easily compute binary functions between two</span>
-<span class="sd">        `PiecewiseLinearFunction` instances.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            other (PiecewiseLinearFunction): second instance to consider.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a tuple composed of two lists</span>
-<span class="sd">            1. the list of separators that should be</span>
-<span class="sd">               `sorted(set(self.separators) | set(other.separators))`.</span>
-<span class="sd">            2. a list of pairs of `LinearFunction` instances representing the</span>
-<span class="sd">               linear functions from `self` (in the first entry of each pair) and</span>
-<span class="sd">               `other` (in the second entry of each pair) that appear together</span>
-<span class="sd">               in the interval.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">,</span> <span class="n">LinearFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># si: self index</span>
-        <span class="c1"># oi: other index</span>
-        <span class="n">si</span><span class="p">,</span> <span class="n">oi</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">si</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">)</span> <span class="ow">and</span> <span class="n">oi</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">):</span>
-            <span class="n">self_is_below</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">oi</span><span class="p">]</span>
-            <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="k">if</span> <span class="n">self_is_below</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">oi</span><span class="p">]</span>
-            <span class="p">)</span>
-            <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">si</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">oi</span><span class="p">]))</span>
-            <span class="k">if</span> <span class="n">self_is_below</span><span class="p">:</span>
-                <span class="n">si</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">oi</span><span class="p">]:</span>
-                <span class="n">si</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">oi</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">oi</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">if</span> <span class="n">si</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">oi</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">)):</span>
-                <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">si</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">)):</span>
-                <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-
-        <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">separators</span><span class="p">,</span> <span class="n">functions</span>
-
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span> <span class="o">+</span> <span class="n">other</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">]</span>
-            <span class="p">)</span>
-        <span class="n">separators</span><span class="p">,</span> <span class="n">functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_in_common</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="n">separators</span><span class="p">,</span> <span class="p">[</span><span class="n">f1</span> <span class="o">+</span> <span class="n">f2</span> <span class="k">for</span> <span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span> <span class="o">-</span> <span class="n">other</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">]</span>
-            <span class="p">)</span>
-        <span class="n">separators</span><span class="p">,</span> <span class="n">functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_in_common</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="n">separators</span><span class="p">,</span> <span class="p">[</span><span class="n">f1</span> <span class="o">-</span> <span class="n">f2</span> <span class="k">for</span> <span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">,</span> <span class="p">[</span><span class="n">other</span> <span class="o">*</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">]</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.simplify">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.simplify">[docs]</a>
-    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce the number of intervals this function is defined on, if</span>
-<span class="sd">        possible.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a new instance with a number of separators that is lower or equal to</span>
-<span class="sd">            the number of separators in `self`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">)):</span>
-            <span class="n">before_func</span> <span class="o">=</span> <span class="n">functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">after_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">before_func</span> <span class="o">!=</span> <span class="n">after_func</span><span class="p">:</span>
-                <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">after_func</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="n">separators</span><span class="p">,</span> <span class="n">functions</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_restrict_on_positive_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">[</span><span class="n">index</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">index</span><span class="p">:])</span>
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.simplify_positive">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.simplify_positive">[docs]</a>
-    <span class="k">def</span> <span class="nf">simplify_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restrict_on_positive_inputs</span><span class="p">()</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span></div>
-
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_minmax</span><span class="p">(</span>
-        <span class="n">lhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">is_min</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the min/max between two `PiecewiseLinearFunction` instances.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            lhs: left-hand side.</span>
-<span class="sd">            rhs: right-hand side.</span>
-<span class="sd">            is_min: if `True`, the minimum is computed. Else, the maximum</span>
-<span class="sd">                is computed.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a new instance of `PiecewiseLinearFunction` that represents the minimum</span>
-<span class="sd">            or maximum of the two provided `PiecewiseLinearFunction` instances.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">separators</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinearFunction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">common_separators</span><span class="p">,</span> <span class="n">common_functions</span> <span class="o">=</span> <span class="n">lhs</span><span class="o">.</span><span class="n">_functions_in_common</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-
-        <span class="c1"># The special case of 2 linear functions (i.e., no separators):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">common_separators</span><span class="p">:</span>
-            <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">common_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">additional_separators</span><span class="p">,</span> <span class="n">functions_on_interval</span> <span class="o">=</span> <span class="n">_linear_function_minmax</span><span class="p">(</span>
-                <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">is_min</span>
-            <span class="p">)</span>
-            <span class="n">separators</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_separators</span><span class="p">)</span>
-            <span class="n">functions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">functions_on_interval</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="n">separators</span><span class="p">,</span> <span class="n">functions</span><span class="p">)</span>
-
-        <span class="c1"># Compute for the first open interval (-inf, common_separators[0])</span>
-        <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">common_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">additional_separators</span><span class="p">,</span> <span class="n">functions_on_interval</span> <span class="o">=</span> <span class="n">_get_minmax_on_interval</span><span class="p">(</span>
-            <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">is_min</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">),</span> <span class="n">common_separators</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">separators</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_separators</span><span class="p">)</span>
-        <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common_separators</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">functions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">functions_on_interval</span><span class="p">)</span>
-        <span class="c1"># Compute all the intervals with finite bounds</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-            <span class="nb">zip</span><span class="p">(</span><span class="n">common_separators</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">common_separators</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="p">):</span>
-            <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">common_functions</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">additional_separators</span><span class="p">,</span> <span class="n">functions_on_interval</span> <span class="o">=</span> <span class="n">_get_minmax_on_interval</span><span class="p">(</span>
-                <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">is_min</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span>
-            <span class="p">)</span>
-            <span class="n">separators</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_separators</span><span class="p">)</span>
-            <span class="n">separators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
-            <span class="n">functions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">functions_on_interval</span><span class="p">)</span>
-        <span class="c1"># Compute for the last open interval (common_separators[-1], inf)</span>
-        <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">common_functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">additional_separators</span><span class="p">,</span> <span class="n">functions_on_interval</span> <span class="o">=</span> <span class="n">_get_minmax_on_interval</span><span class="p">(</span>
-            <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">is_min</span><span class="p">,</span> <span class="n">common_separators</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="n">separators</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_separators</span><span class="p">)</span>
-        <span class="n">functions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">functions_on_interval</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">(</span><span class="n">separators</span><span class="p">,</span> <span class="n">functions</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.min">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.min">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
-        <span class="n">lhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_minmax</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.max">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.max">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
-        <span class="n">lhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_minmax</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PiecewiseLinearFunction.from_linear_function">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.PiecewiseLinearFunction.from_linear_function">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_linear_function</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="p">([],</span> <span class="p">[</span><span class="n">function</span><span class="p">])</span></div>
-
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from</span><span class="p">(</span>
-        <span class="n">obj</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">from_linear_function</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">LinearFunction</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">from_linear_function</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">obj</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_comparison</span><span class="p">(</span>
-        <span class="n">lhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">rhs</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">operator</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">LinearFunction</span><span class="p">,</span> <span class="n">LinearFunction</span><span class="p">],</span> <span class="n">Interval</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intervals</span><span class="p">:</span>
-        <span class="n">lhs</span> <span class="o">=</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_from</span><span class="p">(</span><span class="n">lhs</span><span class="p">)</span>
-        <span class="n">rhs</span> <span class="o">=</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_from</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-
-        <span class="n">result_intervals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">common_separators</span><span class="p">,</span> <span class="n">common_functions</span> <span class="o">=</span> <span class="n">lhs</span><span class="o">.</span><span class="n">_functions_in_common</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-        <span class="n">intervals</span> <span class="o">=</span> <span class="n">intervals_from_separators</span><span class="p">(</span><span class="n">common_separators</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">interval</span><span class="p">,</span> <span class="p">(</span><span class="n">lhs_f</span><span class="p">,</span> <span class="n">rhs_f</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">common_functions</span><span class="p">):</span>
-            <span class="n">result_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">operator</span><span class="p">(</span><span class="n">lhs_f</span><span class="p">,</span> <span class="n">rhs_f</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">Intervals</span><span class="p">(</span><span class="n">result_intervals</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intervals</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lt</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span> <span class="o">|</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intervals</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">piecewise_representations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">interval</span><span class="p">,</span> <span class="n">function</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">intervals_from_separators</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span>
-        <span class="p">):</span>
-            <span class="n">piecewise_representations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">function</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">interval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">piecewise_representations</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-        <span class="p">)</span></div>
-
-
-
 <div class="viewcode-block" id="round_or_fail">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.round_or_fail">[docs]</a>
 <span class="k">def</span> <span class="nf">round_or_fail</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -654,8 +279,8 @@
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Scalable2D</span><span class="p">:</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
-    <span class="n">y</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">LinearFunction</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">LinearFunction</span>
 
 <div class="viewcode-block" id="Scalable2D.to_shape_2d">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_shape_2d">[docs]</a>
@@ -667,18 +292,6 @@
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_numpy_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Scalable2D.simplify">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.simplify">[docs]</a>
-    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">simplify</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">simplify</span><span class="p">())</span></div>
-
-
-<div class="viewcode-block" id="Scalable2D.simplify_positive">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.simplify_positive">[docs]</a>
-    <span class="k">def</span> <span class="nf">simplify_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">simplify_positive</span><span class="p">())</span></div>
 
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
@@ -695,11 +308,11 @@
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ScalableInterval</span><span class="p">:</span>
-    <span class="n">start</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
-    <span class="n">end</span><span class="p">:</span> <span class="n">PiecewiseLinearFunction</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">LinearFunction</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">LinearFunction</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
 
 <div class="viewcode-block" id="ScalableInterval.is_empty">
@@ -708,100 +321,10 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="ScalableInterval.intersection">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval.intersection">[docs]</a>
-    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ScalableInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalableInterval</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ScalableInterval</span><span class="p">(</span>
-            <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
-            <span class="n">PiecewiseLinearFunction</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span><span class="p">),</span>
-        <span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="ScalableInterval.non_empty_on">
 <a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval.non_empty_on">[docs]</a>
     <span class="k">def</span> <span class="nf">non_empty_on</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intervals</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="ScalableBoundingBox">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableBoundingBox">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ScalableBoundingBox</span><span class="p">:</span>
-    <span class="n">ul</span><span class="p">:</span> <span class="n">Scalable2D</span>
-    <span class="n">br</span><span class="p">:</span> <span class="n">Scalable2D</span>
-    <span class="n">possible_inputs</span><span class="p">:</span> <span class="n">Intervals</span> <span class="o">=</span> <span class="n">R_intervals</span>
-
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">negative_width_inputs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_inputs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">negative_width_inputs</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot create a bounding box that would have a negative width on &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;a valid input. Valid inputs are </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_inputs</span><span class="si">}</span><span class="s2"> and the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;computed width (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">) is negative on </span><span class="si">{</span><span class="n">negative_width_inputs</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
-        <span class="n">negative_height_inputs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_inputs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">negative_height_inputs</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot create a bounding box that would have a negative height on &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;a valid input. Valid inputs are </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_inputs</span><span class="si">}</span><span class="s2"> and the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;computed height (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">) is negative on </span><span class="si">{</span><span class="n">negative_height_inputs</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PiecewiseLinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">corners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Scalable2D</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="p">,</span>
-            <span class="n">Scalable2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="p">,</span>
-            <span class="n">Scalable2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="ScalableBoundingBox.inside">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableBoundingBox.inside">[docs]</a>
-    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Intervals</span><span class="p">,</span> <span class="n">Intervals</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns intervals in which the X and Y coordinates should both be</span>
-<span class="sd">        for the provided point to be in the bounding box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            point: a scalable point.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a tuple of intervals `(X, Y)`. The provided `point` is within `self` if</span>
-<span class="sd">            and only if BOTH the x and y pre-images are in the return ranges.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_condition</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">point</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">y_condition</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">point</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x_condition</span><span class="p">,</span> <span class="n">y_condition</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_on_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Axis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalableInterval</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="n">Axis</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ScalableInterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="n">Axis</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ScalableInterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ul</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">br</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Axis </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2"> not implemented.&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ScalableBoundingBox.intersect">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableBoundingBox.intersect">[docs]</a>
-    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ScalableBoundingBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Intervals</span><span class="p">,</span> <span class="n">Intervals</span><span class="p">]:</span>
-        <span class="n">x_axis_projection_intersection</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_on_axis</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_on_axis</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">X</span><span class="p">))</span><span class="o">.</span><span class="n">non_empty_on</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">y_axis_projection_intersection</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_on_axis</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_on_axis</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">Y</span><span class="p">))</span><span class="o">.</span><span class="n">non_empty_on</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">x_axis_projection_intersection</span><span class="p">,</span> <span class="n">y_axis_projection_intersection</span></div>
 </div>
 
 </pre></div>

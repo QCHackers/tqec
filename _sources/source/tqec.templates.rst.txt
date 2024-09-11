@@ -1,15 +1,6 @@
 tqec.templates package
 ======================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   tqec.templates.atomic
-   tqec.templates.constructions
-
 Submodules
 ----------
 
@@ -17,14 +8,6 @@ tqec.templates.base module
 --------------------------
 
 .. automodule:: tqec.templates.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tqec.templates.composed module
-------------------------------
-
-.. automodule:: tqec.templates.composed
    :members:
    :undoc-members:
    :show-inheritance:
@@ -49,6 +32,14 @@ tqec.templates.interval module
 ------------------------------
 
 .. automodule:: tqec.templates.interval
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.templates.qubit module
+---------------------------
+
+.. automodule:: tqec.templates.qubit
    :members:
    :undoc-members:
    :show-inheritance:
