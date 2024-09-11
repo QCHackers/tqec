@@ -239,15 +239,13 @@ class StandardComputationBlock(ComputationBlock):
 
     @override
     def instantiate(self) -> cirq.Circuit:
-        circuit = generate_circuit(self.template, self.initial_plaquettes.collection)
+        circuit = generate_circuit(self.template, self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
             repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             plaquettes = self.repeating_plaquettes.plaquettes
-            inner_circuit = generate_circuit(
-                self.template, plaquettes.collection
-            ).freeze()
+            inner_circuit = generate_circuit(self.template, plaquettes).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
-        circuit += generate_circuit(self.template, self.final_plaquettes.collection)
+        circuit += generate_circuit(self.template, self.final_plaquettes)
         return circuit
 
     @override

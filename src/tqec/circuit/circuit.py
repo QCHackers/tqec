@@ -5,20 +5,19 @@ from collections import defaultdict
 from copy import deepcopy
 
 import cirq
-import cirq.circuits
 import numpy
 import numpy.typing as npt
 
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
-from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Displacement
 from tqec.templates.base import Template
 
 
 def generate_circuit(
     template: Template,
-    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
+    plaquettes: Plaquettes,
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes.
 
@@ -52,17 +51,12 @@ def generate_circuit(
     """
     # Check that the user gave enough plaquettes.
     if (
-        not isinstance(plaquettes, defaultdict)
+        not plaquettes.has_default
         and len(plaquettes) != template.expected_plaquettes_number
     ):
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
             f"{template.expected_plaquettes_number} were expected."
-        )
-    if isinstance(plaquettes, ty.Mapping) and 0 in plaquettes:
-        raise TQECException(
-            "If using a dictionary, the input plaquettes parameter should not "
-            f"contain the entry 0. Found a value ({plaquettes[0]}) at entry 0."
         )
 
     # instantiate the template with the appropriate plaquette indices.
@@ -120,23 +114,11 @@ def generate_circuit_from_instantiation(
     if indices[0] == 0:
         indices = indices[1:]
     expected_plaquettes_number = len(indices)
-    if (
-        not isinstance(plaquettes, defaultdict)
-        and len(plaquettes) != expected_plaquettes_number
-    ):
+    if not plaquettes.has_default and len(plaquettes) != expected_plaquettes_number:
         raise TQECException(
             f"{len(plaquettes)} plaquettes have been provided, but "
             f"{expected_plaquettes_number} were expected."
         )
-    if isinstance(plaquettes, ty.Mapping) and 0 in plaquettes:
-        raise TQECException(
-            "If using a dictionary, the input plaquettes parameter should not "
-            f"contain the entry 0. Found a value ({plaquettes[0]}) at entry 0."
-        )
-
-    # If plaquettes are given as a list, make that a dict to simplify the following operations
-    if isinstance(plaquettes, list):
-        plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
