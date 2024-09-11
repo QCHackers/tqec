@@ -1,9 +1,11 @@
+import warnings
 from typing import Sequence
 
 import numpy
 import numpy.typing as npt
 from typing_extensions import override
 
+from tqec.exceptions import TQECWarning
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import LinearFunction, Scalable2D
@@ -245,6 +247,11 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
         7  9 11 10 11 10 11 10 11 12
         8 11 10 11 10 11 10 11 10 13
         3 14 15 14 15 14 15 14 15  4
+
+    Warning:
+        For `k == 1`, this template does not include any of the plaquette
+        indexed `9` and so its instantiation has a "hole" in the plaquette
+        indices.
     """
 
     @override
@@ -253,6 +260,14 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))
+
+        if self.k == 1:
+            warnings.warn(
+                "Instantiating Qubit4WayJunctionTemplate with k=1. The "
+                "instantiation array returned will not have any plaquette indexed "
+                "9, which might break other parts of the library.",
+                TQECWarning,
+            )
 
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
         size = self.shape.x
