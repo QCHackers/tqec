@@ -104,6 +104,7 @@ class Plaquettes:
             )
         return iter(self.collection.values())
 
+
     @property
     def has_default(self) -> bool:
         return isinstance(self.collection, defaultdict)
