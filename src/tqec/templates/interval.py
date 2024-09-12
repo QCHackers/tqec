@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import typing
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
@@ -21,8 +22,8 @@ class Interval:
             the provided `end` value.
     """
 
-    start: float
-    end: float
+    start: float | int
+    end: float | int
     start_excluded: bool = False
     end_excluded: bool = True
 
@@ -166,6 +167,25 @@ class Interval:
 
     def __repr__(self) -> str:
         return f"{'(' if self.start_excluded else '['}{self.start}, {self.end}{')' if self.end_excluded else ']'}"
+
+    def __add__(self, value: int | float) -> Interval:
+        return Interval(
+            self.start + value, self.end + value, self.start_excluded, self.end_excluded
+        )
+
+    def __sub__(self, value: int | float) -> Interval:
+        return Interval(
+            self.start - value, self.end - value, self.start_excluded, self.end_excluded
+        )
+
+    def iter_integers(self) -> typing.Iterable[int]:
+        inclusive_start_int = int(math.ceil(self.start))
+        if self.start_excluded and abs(self.start - inclusive_start_int) < 1e-8:
+            inclusive_start_int += 1
+        exclusive_end_int = int(math.floor(self.end)) + 1
+        if self.end_excluded and abs(self.end - exclusive_end_int) < 1e-8:
+            exclusive_end_int -= 1
+        return range(inclusive_start_int, exclusive_end_int)
 
 
 EMPTY_INTERVAL = Interval(0, 0, start_excluded=True, end_excluded=True)

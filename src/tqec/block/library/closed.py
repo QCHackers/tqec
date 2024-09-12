@@ -29,58 +29,73 @@ from tqec.plaquette.library.memory import (
     zzzz_memory_plaquette,
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
+from tqec.plaquette.plaquette import Plaquettes
 from tqec.templates.qubit import QubitTemplate
-from tqec.templates.scale import LinearFunction
 
 
 def _zxB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
-    initial_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: xx_initialisation_plaquette(
-            PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
-        ),
-        7: zz_initialisation_plaquette(
-            PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
-        ),
-        9: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-        10: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-        12: zz_initialisation_plaquette(
-            PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
-        ),
-        13: xx_initialisation_plaquette(
-            PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
-        ),
-    }
-    repeating_plaquettes = RepeatedPlaquettes(
+    initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: xx_memory_plaquette(PlaquetteOrientation.UP),
-            7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
-            9: xxxx_memory_plaquette(),
-            10: zzzz_memory_plaquette(),
-            12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
-            13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
-        },
+            6: xx_initialisation_plaquette(
+                PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
+            ),
+            7: zz_initialisation_plaquette(
+                PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
+            ),
+            9: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+            10: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+            12: zz_initialisation_plaquette(
+                PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
+            ),
+            13: xx_initialisation_plaquette(
+                PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
+            ),
+        }
+    )
+    repeating_plaquettes = RepeatedPlaquettes(
+        Plaquettes(
+            defaultdict(empty_square_plaquette)
+            | {
+                6: xx_memory_plaquette(PlaquetteOrientation.UP),
+                7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
+                9: xxxx_memory_plaquette(),
+                10: zzzz_memory_plaquette(),
+                12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
+                13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+            }
+        ),
         _DEFAULT_BLOCK_REPETITIONS,
     )
-    final_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: xx_measurement_plaquette(
-            PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
-        ),
-        7: zz_measurement_plaquette(
-            PlaquetteOrientation.LEFT, data_qubit_measurement_basis=measurement_basis
-        ),
-        9: xxxx_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
-        10: zzzz_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
-        12: zz_measurement_plaquette(
-            PlaquetteOrientation.RIGHT, data_qubit_measurement_basis=measurement_basis
-        ),
-        13: xx_measurement_plaquette(
-            PlaquetteOrientation.DOWN, data_qubit_measurement_basis=measurement_basis
-        ),
-    }
+    final_plaquettes = Plaquettes(
+        defaultdict(empty_square_plaquette)
+        | {
+            6: xx_measurement_plaquette(
+                PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
+            ),
+            7: zz_measurement_plaquette(
+                PlaquetteOrientation.LEFT,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+            9: xxxx_measurement_plaquette(
+                data_qubit_measurement_basis=measurement_basis
+            ),
+            10: zzzz_measurement_plaquette(
+                data_qubit_measurement_basis=measurement_basis
+            ),
+            12: zz_measurement_plaquette(
+                PlaquetteOrientation.RIGHT,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+            13: xx_measurement_plaquette(
+                PlaquetteOrientation.DOWN,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+        }
+    )
     return StandardComputationBlock(
         QubitTemplate(),
         TemporalPlaquetteSequence(
@@ -93,50 +108,65 @@ def _xzB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
-    initial_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: zz_initialisation_plaquette(
-            PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
-        ),
-        7: xx_initialisation_plaquette(
-            PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
-        ),
-        9: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-        10: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-        12: xx_initialisation_plaquette(
-            PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
-        ),
-        13: zz_initialisation_plaquette(
-            PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
-        ),
-    }
-    repeating_plaquettes = RepeatedPlaquettes(
+    initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: zz_memory_plaquette(PlaquetteOrientation.UP),
-            7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
-            9: zzzz_memory_plaquette(),
-            10: xxxx_memory_plaquette(),
-            12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
-            13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
-        },
+            6: zz_initialisation_plaquette(
+                PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
+            ),
+            7: xx_initialisation_plaquette(
+                PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
+            ),
+            9: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+            10: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
+            12: xx_initialisation_plaquette(
+                PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
+            ),
+            13: zz_initialisation_plaquette(
+                PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
+            ),
+        }
+    )
+    repeating_plaquettes = RepeatedPlaquettes(
+        Plaquettes(
+            defaultdict(empty_square_plaquette)
+            | {
+                6: zz_memory_plaquette(PlaquetteOrientation.UP),
+                7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
+                9: zzzz_memory_plaquette(),
+                10: xxxx_memory_plaquette(),
+                12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
+                13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
+            }
+        ),
         _DEFAULT_BLOCK_REPETITIONS,
     )
-    final_plaquettes = defaultdict(empty_square_plaquette) | {
-        6: zz_measurement_plaquette(
-            PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
-        ),
-        7: xx_measurement_plaquette(
-            PlaquetteOrientation.LEFT, data_qubit_measurement_basis=measurement_basis
-        ),
-        9: zzzz_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
-        10: xxxx_measurement_plaquette(data_qubit_measurement_basis=measurement_basis),
-        12: xx_measurement_plaquette(
-            PlaquetteOrientation.RIGHT, data_qubit_measurement_basis=measurement_basis
-        ),
-        13: zz_measurement_plaquette(
-            PlaquetteOrientation.DOWN, data_qubit_measurement_basis=measurement_basis
-        ),
-    }
+    final_plaquettes = Plaquettes(
+        defaultdict(empty_square_plaquette)
+        | {
+            6: zz_measurement_plaquette(
+                PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
+            ),
+            7: xx_measurement_plaquette(
+                PlaquetteOrientation.LEFT,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+            9: zzzz_measurement_plaquette(
+                data_qubit_measurement_basis=measurement_basis
+            ),
+            10: xxxx_measurement_plaquette(
+                data_qubit_measurement_basis=measurement_basis
+            ),
+            12: xx_measurement_plaquette(
+                PlaquetteOrientation.RIGHT,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+            13: zz_measurement_plaquette(
+                PlaquetteOrientation.DOWN,
+                data_qubit_measurement_basis=measurement_basis,
+            ),
+        }
+    )
     return StandardComputationBlock(
         QubitTemplate(),
         TemporalPlaquetteSequence(

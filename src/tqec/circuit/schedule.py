@@ -259,9 +259,7 @@ class ScheduledCircuit:
         """Return the set of qubits involved in the circuit that can be mapped,
         which is the union of the qubits of all the operations performed on and
         the origin of all the detectors."""
-        operation_qubits = self.qubits
-        detector_origins = {detector.origin for detector in self.detectors}
-        return frozenset(operation_qubits.union(detector_origins))
+        return frozenset(self.qubits)
 
     def map_to_qubits(
         self, qubit_map: dict[cirq.GridQubit, cirq.GridQubit], inplace: bool = False
@@ -293,9 +291,8 @@ class ScheduledCircuit:
                 return cirq.measure(*op.qubits).with_tags(*op.tags)
             elif isinstance(untagged, Detector):
                 return make_detector(
-                    qubit_map.get(untagged.origin, untagged.origin),
-                    untagged.relative_measurement_data,
-                    time_coordinate=untagged.coordinates[-1],
+                    [meas.map_qubit(qubit_map) for meas in untagged.measurement_data],
+                    coordinates=untagged.coordinates,
                 )
             else:
                 return op

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import cirq
 
-from tqec.circuit.operations.operation import RelativeMeasurementsRecord
+from tqec.circuit.operations.operation import MeasurementsRecord
 from tqec.exceptions import TQECException
 
 
@@ -171,7 +171,7 @@ class CircuitMeasurementMap:
 
 
 def compute_global_measurements_lookback_offsets(
-    relative_measurements_record: RelativeMeasurementsRecord,
+    measurements_record: MeasurementsRecord,
     measurement_map: CircuitMeasurementMap,
     current_moment_index: int,
 ) -> list[int]:
@@ -182,8 +182,8 @@ def compute_global_measurements_lookback_offsets(
     parameter to compute the measurement record indices for the current gate instance.
 
     Args:
-        relative_measurements_record: the record of relative measurements to
-            compute global measurements offset from.
+        measurements_record: the record of measurements to compute global
+            measurements offset from.
         measurement_map: global measurement data obtained from the complete
             quantum circuit.
         current_moment_index: index of the moment this gate instance is found
@@ -196,21 +196,20 @@ def compute_global_measurements_lookback_offsets(
         TQECException: if the global measurement offset computation fails.
     """
     global_measurements_lookback_offsets = []
-    origin = relative_measurements_record.origin
-    for relative_measurement in relative_measurements_record.relative_measurement_data:
+    for measurement in measurements_record.measurement_data:
         # Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit
         #                    coordinate system, so no issue here.
-        qubit = origin + relative_measurement.relative_qubit_positioning
-        relative_measurement_offset = relative_measurement.relative_measurement_offset
+        qubit = measurement.qubit
+        measurement_offset = measurement.offset
         relative_offset = measurement_map.get_measurement_relative_offset(
             current_moment_index,
             qubit,
-            relative_measurement_offset,
+            measurement_offset,
         )
         if relative_offset is None:
             raise TQECException(
                 "An error happened during the measurement offset lookback computation. "
-                f"You asked for the {relative_measurement_offset} measurement on {qubit} "
+                f"You asked for the {measurement_offset} measurement on {qubit} "
                 f"at the moment {current_moment_index}. The computed measurement map is "
                 f"{measurement_map}."
             )
