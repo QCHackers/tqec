@@ -10,14 +10,14 @@ import numpy.typing as npt
 
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
-from tqec.plaquette.plaquette import Plaquette
+from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Displacement
 from tqec.templates.base import Template
 
 
 def generate_circuit(
     template: Template,
-    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
+    plaquettes: Plaquettes,
 ) -> cirq.Circuit:
     """Generate a quantum circuit from a template and its plaquettes.
 

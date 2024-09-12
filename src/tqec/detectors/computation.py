@@ -12,7 +12,6 @@ from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import Fragment
 from tqec.circuit.detectors.match import (
     match_boundary_stabilizers,
-    match_detectors_from_flows_shallow,
     match_detectors_within_fragment,
 )
 from tqec.circuit.operations.measurement import Measurement
@@ -196,6 +195,7 @@ def compute_detectors_in_last_timestep(
         )
         for i, subtemplate in unique_subtemplates.subtemplates.items()
     }
+
     detectors: list[Detector] = []
     for i, row in enumerate(unique_subtemplates.subtemplate_indices):
         for j, subtemplate_index in enumerate(row):
