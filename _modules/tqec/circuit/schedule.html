@@ -354,9 +354,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the set of qubits involved in the circuit that can be mapped,</span>
 <span class="sd">        which is the union of the qubits of all the operations performed on and</span>
 <span class="sd">        the origin of all the detectors.&quot;&quot;&quot;</span>
-        <span class="n">operation_qubits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span>
-        <span class="n">detector_origins</span> <span class="o">=</span> <span class="p">{</span><span class="n">detector</span><span class="o">.</span><span class="n">origin</span> <span class="k">for</span> <span class="n">detector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectors</span><span class="p">}</span>
-        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">operation_qubits</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">detector_origins</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ScheduledCircuit.map_to_qubits">
 <a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.map_to_qubits">[docs]</a>
@@ -390,9 +388,8 @@
                 <span class="k">return</span> <span class="n">cirq</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="o">*</span><span class="n">op</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="o">*</span><span class="n">op</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">untagged</span><span class="p">,</span> <span class="n">Detector</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">make_detector</span><span class="p">(</span>
-                    <span class="n">qubit_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">untagged</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">untagged</span><span class="o">.</span><span class="n">origin</span><span class="p">),</span>
-                    <span class="n">untagged</span><span class="o">.</span><span class="n">relative_measurement_data</span><span class="p">,</span>
-                    <span class="n">time_coordinate</span><span class="o">=</span><span class="n">untagged</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">meas</span><span class="o">.</span><span class="n">map_qubit</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">)</span> <span class="k">for</span> <span class="n">meas</span> <span class="ow">in</span> <span class="n">untagged</span><span class="o">.</span><span class="n">measurement_data</span><span class="p">],</span>
+                    <span class="n">coordinates</span><span class="o">=</span><span class="n">untagged</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">op</span>

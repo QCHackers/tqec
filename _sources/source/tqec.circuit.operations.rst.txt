@@ -4,6 +4,14 @@ tqec.circuit.operations package
 Submodules
 ----------
 
+tqec.circuit.operations.measurement module
+------------------------------------------
+
+.. automodule:: tqec.circuit.operations.measurement
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.circuit.operations.measurement\_map module
 -----------------------------------------------
 

@@ -84,6 +84,30 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tqec.circuit.operations.html">tqec.circuit.operations package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.operations.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.circuit.operations.html#module-tqec.circuit.operations.measurement">tqec.circuit.operations.measurement module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement"><code class="docutils literal notranslate"><span class="pre">Measurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement.qubit"><code class="docutils literal notranslate"><span class="pre">Measurement.qubit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement.offset"><code class="docutils literal notranslate"><span class="pre">Measurement.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement.map_qubit"><code class="docutils literal notranslate"><span class="pre">Measurement.map_qubit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#id0"><code class="docutils literal notranslate"><span class="pre">Measurement.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement.offset_spatially_by"><code class="docutils literal notranslate"><span class="pre">Measurement.offset_spatially_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.Measurement.offset_temporally_by"><code class="docutils literal notranslate"><span class="pre">Measurement.offset_temporally_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#id1"><code class="docutils literal notranslate"><span class="pre">Measurement.qubit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement.qubit"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.qubit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement.offsets"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.offsets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement.measurements"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.measurements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement.offset_spatially_by"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.offset_spatially_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.RepeatedMeasurement.offset_temporally_by"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.offset_temporally_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#id2"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.offsets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#id3"><code class="docutils literal notranslate"><span class="pre">RepeatedMeasurement.qubit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement.get_measurements_from_circuit"><code class="docutils literal notranslate"><span class="pre">get_measurements_from_circuit()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.operations.html#module-tqec.circuit.operations.measurement_map">tqec.circuit.operations.measurement_map module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap"><code class="docutils literal notranslate"><span class="pre">CircuitMeasurementMap</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap.get_measurement_relative_offset"><code class="docutils literal notranslate"><span class="pre">CircuitMeasurementMap.get_measurement_relative_offset()</span></code></a></li>
@@ -103,6 +127,12 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.MX.with_qubits"><code class="docutils literal notranslate"><span class="pre">MX.with_qubits()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord"><code class="docutils literal notranslate"><span class="pre">MeasurementsRecord</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord.measurement_data"><code class="docutils literal notranslate"><span class="pre">MeasurementsRecord.measurement_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord.qubits"><code class="docutils literal notranslate"><span class="pre">MeasurementsRecord.qubits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord.with_qubits"><code class="docutils literal notranslate"><span class="pre">MeasurementsRecord.with_qubits()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.Observable"><code class="docutils literal notranslate"><span class="pre">Observable</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.Observable.index"><code class="docutils literal notranslate"><span class="pre">Observable.index</span></code></a></li>
 </ul>
@@ -110,18 +140,6 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RX"><code class="docutils literal notranslate"><span class="pre">RX</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.qubits"><code class="docutils literal notranslate"><span class="pre">RX.qubits</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.with_qubits"><code class="docutils literal notranslate"><span class="pre">RX.with_qubits()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementData</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData.relative_measurement_offset"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementData.relative_measurement_offset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData.relative_qubit_positioning"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementData.relative_qubit_positioning</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.origin"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord.origin</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.qubits"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord.qubits</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.relative_measurement_data"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord.relative_measurement_data</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits"><code class="docutils literal notranslate"><span class="pre">RelativeMeasurementsRecord.with_qubits()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords"><code class="docutils literal notranslate"><span class="pre">ShiftCoords</span></code></a><ul>

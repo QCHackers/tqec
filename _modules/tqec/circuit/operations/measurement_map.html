@@ -80,7 +80,7 @@
 
 <span class="kn">import</span> <span class="nn">cirq</span>
 
-<span class="kn">from</span> <span class="nn">tqec.circuit.operations.operation</span> <span class="kn">import</span> <span class="n">RelativeMeasurementsRecord</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.operation</span> <span class="kn">import</span> <span class="n">MeasurementsRecord</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
 
@@ -260,7 +260,7 @@
 <div class="viewcode-block" id="compute_global_measurements_lookback_offsets">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_global_measurements_lookback_offsets</span><span class="p">(</span>
-    <span class="n">relative_measurements_record</span><span class="p">:</span> <span class="n">RelativeMeasurementsRecord</span><span class="p">,</span>
+    <span class="n">measurements_record</span><span class="p">:</span> <span class="n">MeasurementsRecord</span><span class="p">,</span>
     <span class="n">measurement_map</span><span class="p">:</span> <span class="n">CircuitMeasurementMap</span><span class="p">,</span>
     <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -271,8 +271,8 @@
 <span class="sd">    parameter to compute the measurement record indices for the current gate instance.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        relative_measurements_record: the record of relative measurements to</span>
-<span class="sd">            compute global measurements offset from.</span>
+<span class="sd">        measurements_record: the record of measurements to compute global</span>
+<span class="sd">            measurements offset from.</span>
 <span class="sd">        measurement_map: global measurement data obtained from the complete</span>
 <span class="sd">            quantum circuit.</span>
 <span class="sd">        current_moment_index: index of the moment this gate instance is found</span>
@@ -285,21 +285,20 @@
 <span class="sd">        TQECException: if the global measurement offset computation fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">global_measurements_lookback_offsets</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">origin</span> <span class="o">=</span> <span class="n">relative_measurements_record</span><span class="o">.</span><span class="n">origin</span>
-    <span class="k">for</span> <span class="n">relative_measurement</span> <span class="ow">in</span> <span class="n">relative_measurements_record</span><span class="o">.</span><span class="n">relative_measurement_data</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">measurements_record</span><span class="o">.</span><span class="n">measurement_data</span><span class="p">:</span>
         <span class="c1"># Coordinate system: adding 2 GridQubit instances together, both are using the GridQubit</span>
         <span class="c1">#                    coordinate system, so no issue here.</span>
-        <span class="n">qubit</span> <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="n">relative_measurement</span><span class="o">.</span><span class="n">relative_qubit_positioning</span>
-        <span class="n">relative_measurement_offset</span> <span class="o">=</span> <span class="n">relative_measurement</span><span class="o">.</span><span class="n">relative_measurement_offset</span>
+        <span class="n">qubit</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">qubit</span>
+        <span class="n">measurement_offset</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">offset</span>
         <span class="n">relative_offset</span> <span class="o">=</span> <span class="n">measurement_map</span><span class="o">.</span><span class="n">get_measurement_relative_offset</span><span class="p">(</span>
             <span class="n">current_moment_index</span><span class="p">,</span>
             <span class="n">qubit</span><span class="p">,</span>
-            <span class="n">relative_measurement_offset</span><span class="p">,</span>
+            <span class="n">measurement_offset</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">relative_offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;An error happened during the measurement offset lookback computation. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;You asked for the </span><span class="si">{</span><span class="n">relative_measurement_offset</span><span class="si">}</span><span class="s2"> measurement on </span><span class="si">{</span><span class="n">qubit</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;You asked for the </span><span class="si">{</span><span class="n">measurement_offset</span><span class="si">}</span><span class="s2"> measurement on </span><span class="si">{</span><span class="n">qubit</span><span class="si">}</span><span class="s2"> &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;at the moment </span><span class="si">{</span><span class="n">current_moment_index</span><span class="si">}</span><span class="s2">. The computed measurement map is &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">measurement_map</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>

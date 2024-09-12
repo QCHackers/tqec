@@ -79,12 +79,12 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">cirq</span>
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.measurement</span> <span class="kn">import</span> <span class="n">Measurement</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
 <span class="n">STIM_TAG</span> <span class="o">=</span> <span class="s2">&quot;STIM_OPERATION&quot;</span>
@@ -151,113 +151,60 @@
 
 
 
-<div class="viewcode-block" id="RelativeMeasurementData">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementData">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">RelativeMeasurementData</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The relative_measurement_data of a spatially and temporally relative</span>
-<span class="sd">    measurement.</span>
+<div class="viewcode-block" id="MeasurementsRecord">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord">[docs]</a>
+<span class="k">class</span> <span class="nc">MeasurementsRecord</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of measurements.</span>
 
-<span class="sd">    This class stores two attributes (relative_qubit_positioning and</span>
-<span class="sd">    relative_measurement_offset) that respectively represent a spatial</span>
-<span class="sd">    offset (a **relative** positioning with respect to some origin) and</span>
-<span class="sd">    a temporal offset (with respect to a given Moment index).</span>
-
-<span class="sd">    This relative information will be analysed by the fill_in_global_record_indices</span>
-<span class="sd">    transformer and replaced by real qubit and global measurement records.</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        relative_qubit_positioning: The qubit coordinate offset. This will be added to a</span>
-<span class="sd">            qubit coordinate system origin to obtain the actual qubit the measurement</span>
-<span class="sd">            has been performed on.</span>
-<span class="sd">        relative_measurement_offset: The relative measurement offset. The measurements</span>
-<span class="sd">            performed on the qubit specified bt the relative_qubit_positioning will be</span>
-<span class="sd">            accessed using this offset. For example, a value of -1 means the last</span>
-<span class="sd">            measurement performed on the qubit till the time of the current operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">relative_qubit_positioning</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span>
-    <span class="n">relative_measurement_offset</span><span class="p">:</span> <span class="nb">int</span>
-
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The relative_measurement_offset should be a negative integer, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_qubit_positioning</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_measurement_offset</span><span class="si">}</span><span class="s2">)&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="RelativeMeasurementsRecord">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord">[docs]</a>
-<span class="k">class</span> <span class="nc">RelativeMeasurementsRecord</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
-        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of relative measurement data representing measurements</span>
-<span class="sd">        relative to the origin of local coordinate system and current</span>
-<span class="sd">        measurement timestamp.</span>
+<span class="sd">        This class simply stores a list of :class:`~.Measurement` instances.</span>
+<span class="sd">        Its purpose is to be used as a base to build operations that require</span>
+<span class="sd">        a list of measurements.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
-<span class="sd">                system. The origin along with the local coordinate system will</span>
-<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
-<span class="sd">                qubit coordinates the measurements applied to.</span>
-<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
-<span class="sd">                relative measurements&#39; operation.</span>
+<span class="sd">            measurement_data: a sequence of :class:`~.Measurement` that form</span>
+<span class="sd">                a group. The exact meaning of this group (e.g., a detector or</span>
+<span class="sd">                an observable) is not explicit and have to be provided by</span>
+<span class="sd">                subclasses.</span>
+<span class="sd">                There should be no duplicate in the provided sequence.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if there is any duplicate entry in the provided</span>
+<span class="sd">                `measurement_data`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check there is no duplicate relative_measurement_data</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">relative_measurement_data</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_measurement_data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;The relative_measurement_data should not contain duplicate elements.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span> <span class="o">=</span> <span class="n">local_coordinate_system_origin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">relative_measurement_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">()</span>
 
-<div class="viewcode-block" id="RelativeMeasurementsRecord.with_qubits">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RelativeMeasurementsRecord.with_qubits">[docs]</a>
-    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelativeMeasurementsRecord</span><span class="p">:</span>
+<div class="viewcode-block" id="MeasurementsRecord.with_qubits">
+<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord.with_qubits">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementsRecord</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">relative_measurement_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">measurement_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The recorded relative measurement data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The origin of the local coordinate system.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span>
-
-    <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The origin of the local coordinate system.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span> <span class="o">=</span> <span class="n">new_origin</span>
-
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_coordinate_system_origin</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="Detector">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Detector">[docs]</a>
-<span class="k">class</span> <span class="nc">Detector</span><span class="p">(</span><span class="n">RelativeMeasurementsRecord</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Detector</span><span class="p">(</span><span class="n">MeasurementsRecord</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
-        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
-        <span class="n">time_coordinate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Operation representing a detector.</span>
 
@@ -276,47 +223,32 @@
 <span class="sd">            you should use `make_detector` to create instances of this class.</span>
 <span class="sd">            To understand how to use this class directly, please refer to the</span>
 <span class="sd">            documentation above.</span>
-<span class="sd">        Args:</span>
-<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
-<span class="sd">                system. The origin along with the local coordinate system will</span>
-<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
-<span class="sd">                qubit coordinates the measurements applied to.</span>
-<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
-<span class="sd">                relative measurements&#39; operation.</span>
-<span class="sd">            time_coordinate: an annotation that will be forwarded to the</span>
-<span class="sd">                DETECTOR Stim structure as the last coordinate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">time_coordinate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The time_coordinate should be a non-negative integer, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="n">time_coordinate</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurement_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_time_coordinate</span> <span class="o">=</span> <span class="n">time_coordinate</span>
+<span class="sd">        Args:</span>
+<span class="sd">            measurement_data: a sequence of :class:`~.Measurement` that form</span>
+<span class="sd">                a group. There should be no duplicate in the provided sequence.</span>
+<span class="sd">            coordinates: an annotation that will be forwarded to the DETECTOR Stim</span>
+<span class="sd">                instruction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span> <span class="o">=</span> <span class="n">coordinates</span>
 
     <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Detector(</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">row</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">col</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_time_coordinate</span><span class="p">,</span>
-        <span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span></div>
 
 
 
 <div class="viewcode-block" id="Observable">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Observable">[docs]</a>
-<span class="k">class</span> <span class="nc">Observable</span><span class="p">(</span><span class="n">RelativeMeasurementsRecord</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Observable</span><span class="p">(</span><span class="n">MeasurementsRecord</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
-        <span class="n">relative_measurement_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementData</span><span class="p">],</span>
-        <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Operation representing an observable.</span>
 
@@ -335,14 +267,11 @@
 <span class="sd">            you should use `make_observable` to create instances of this class.</span>
 <span class="sd">            To understand how to use this class directly, please refer to the</span>
 <span class="sd">            documentation above.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            local_coordinate_system_origin: origin of the local coordinate</span>
-<span class="sd">                system. The origin along with the local coordinate system will</span>
-<span class="sd">                be pinned to the global coordinate system to resolve the actual</span>
-<span class="sd">                qubit coordinates the measurements applied to.</span>
-<span class="sd">            relative_measurement_data: a list of :class:`RelativeMeasurementData` that composed the</span>
-<span class="sd">                relative measurements&#39; operation.</span>
-<span class="sd">            observable_index: the index of the observable.</span>
+<span class="sd">            measurement_data: a sequence of :class:`~.Measurement` that form</span>
+<span class="sd">                a group. There should be no duplicate in the provided sequence.</span>
+<span class="sd">            observable_index: index of the observable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">observable_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -350,7 +279,7 @@
                 <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="n">observable_index</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurement_data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span> <span class="o">=</span> <span class="n">observable_index</span>
 
     <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitDiagramInfoArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -382,89 +311,49 @@
 <div class="viewcode-block" id="make_detector">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_detector">[docs]</a>
 <span class="k">def</span> <span class="nf">make_detector</span><span class="p">(</span>
-    <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
-    <span class="n">relative_measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span>
-        <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">RelativeMeasurementData</span>
-    <span class="p">],</span>
-    <span class="n">time_coordinate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Detector` operation with the</span>
 <span class="sd">    `cirq.VirtualTag` tag.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        local_coordinate_system_origin: origin of the local coordinate system.</span>
-<span class="sd">            The origin along with the local coordinate system will be pinned to</span>
-<span class="sd">            the global coordinate system to resolve the actual qubit coordinates</span>
-<span class="sd">            the measurements applied to.</span>
-<span class="sd">        relative_measurements: a list of relative measurements that compose the</span>
-<span class="sd">            parity check of the detector. Each element of the list is a tuple of</span>
-<span class="sd">            (relative_qubit_position, relative_measurement_offset) or a</span>
-<span class="sd">            :class:`RelativeMeasurementData` instance. When a tuple is provided,</span>
-<span class="sd">            the first element is the position of the qubit relative to the local</span>
-<span class="sd">            coordinate system origin and the second element is the relative</span>
-<span class="sd">            measurement offset with respect to the most recent measurement</span>
-<span class="sd">            performed on the qubit.</span>
-<span class="sd">        time_coordinate: an annotation that will be forwarded to the DETECTOR</span>
-<span class="sd">            Stim structure as the last coordinate.</span>
+<span class="sd">        measurements: a list of measurements that compose the parity check of</span>
+<span class="sd">            the detector.</span>
+<span class="sd">        coordinates: an annotation that will be forwarded to the DETECTOR Stim</span>
+<span class="sd">            instruction.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A :class:`Detector` operation with the `cirq.VirtualTag` tag.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">relative_measurements_data</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span>
-            <span class="n">RelativeMeasurementData</span><span class="p">(</span><span class="o">*</span><span class="n">rm</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm</span><span class="p">,</span> <span class="n">RelativeMeasurementData</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">rm</span>
+    <span class="k">if</span> <span class="n">coordinates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="s2">&quot;The last coordinate should represent the time coordinate &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;and cannot be negative. Got </span><span class="si">{</span><span class="n">coordinates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">rm</span> <span class="ow">in</span> <span class="n">relative_measurements</span>
-    <span class="p">]</span>
-    <span class="k">return</span> <span class="n">Detector</span><span class="p">(</span>
-        <span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurements_data</span><span class="p">,</span> <span class="n">time_coordinate</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">Detector</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="make_observable">
 <a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_observable">[docs]</a>
 <span class="k">def</span> <span class="nf">make_observable</span><span class="p">(</span>
-    <span class="n">local_coordinate_system_origin</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span>
-    <span class="n">relative_measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span>
-        <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">RelativeMeasurementData</span>
-    <span class="p">],</span>
-    <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:`Observable` operation with</span>
 <span class="sd">    the `cirq.VirtualTag` tag.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        local_coordinate_system_origin: origin of the local coordinate system.</span>
-<span class="sd">            The origin along with the local coordinate system will be pinned to</span>
-<span class="sd">            the global coordinate system to resolve the actual qubit coordinates</span>
-<span class="sd">            the measurements applied to.</span>
-<span class="sd">        relative_measurements: a list of relative measurements that compose the</span>
-<span class="sd">            parity check of the observable. Each element of the list is a tuple</span>
-<span class="sd">            of (relative_qubit_position, relative_measurement_offset) or a</span>
-<span class="sd">            :class:`RelativeMeasurementData` instance. When a tuple is provided,</span>
-<span class="sd">            the first element is the position of the qubit relative to the local</span>
-<span class="sd">            coordinate system origin and the second element is the relative</span>
-<span class="sd">            measurement offset with respect to the most recent measurement</span>
-<span class="sd">            performed on the qubit.</span>
-<span class="sd">        observable_index: the index of the observable.</span>
+<span class="sd">        relative_measurements: a list of measurements that compose the</span>
+<span class="sd">            parity check of the observable.</span>
+<span class="sd">        observable_index: index of the observable.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A :class:`Observable` operation with the `cirq.VirtualTag` tag.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">relative_measurements_data</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span>
-            <span class="n">RelativeMeasurementData</span><span class="p">(</span><span class="o">*</span><span class="n">rm</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm</span><span class="p">,</span> <span class="n">RelativeMeasurementData</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">rm</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">rm</span> <span class="ow">in</span> <span class="n">relative_measurements</span>
-    <span class="p">]</span>
-    <span class="k">return</span> <span class="n">Observable</span><span class="p">(</span>
-        <span class="n">local_coordinate_system_origin</span><span class="p">,</span> <span class="n">relative_measurements_data</span><span class="p">,</span> <span class="n">observable_index</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span><span class="p">)</span></div>
+
+    <span class="k">return</span> <span class="n">Observable</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">observable_index</span><span class="p">)</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span>
+        <span class="n">cirq</span><span class="o">.</span><span class="n">VirtualTag</span><span class="p">(),</span> <span class="n">STIM_TAG</span>
+    <span class="p">)</span></div>
 
 
 
@@ -581,7 +470,10 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">edit_measurement_key_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">targets</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)))</span>
-        <span class="n">edit_circuit</span><span class="o">.</span><span class="n">append_operation</span><span class="p">(</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="p">[])</span></div>
+        <span class="n">edit_circuit</span><span class="o">.</span><span class="n">append_operation</span><span class="p">(</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_is_measurement_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 </pre></div>
 
