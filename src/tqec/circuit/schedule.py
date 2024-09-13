@@ -546,6 +546,8 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> cirq.Circuit:
         # is considered mergeable, and can be removed if another operation in the list
         # is considered equal (and has the mergeable tag).
         non_duplicated_operations = remove_duplicate_operations(operations)
-        all_moments.append(cirq.Moment(*non_duplicated_operations))
+        all_moments.append(
+            cirq.Moment(*sorted(non_duplicated_operations, key=lambda op: op.qubits))
+        )
 
     return cirq.Circuit(all_moments)
