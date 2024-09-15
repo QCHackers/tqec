@@ -134,8 +134,8 @@ def get_measurements_from_circuit(
                 ordered_measured_qubits.append(qubit)
     measured_qubit_offset: defaultdict[cirq.GridQubit, int] = defaultdict(lambda: -1)
     measurements: list[Measurement] = []
-    for mqubit in ordered_measured_qubits:
+    for mqubit in ordered_measured_qubits[::-1]:
         index = measured_qubit_offset[mqubit]
         measured_qubit_offset[mqubit] = index - 1
         measurements.append(Measurement(mqubit, index))
-    return measurements
+    return measurements[::-1]

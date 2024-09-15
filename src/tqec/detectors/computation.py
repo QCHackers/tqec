@@ -1,6 +1,5 @@
 import typing as ty
 import warnings
-from pprint import pprint
 
 import cirq
 import numpy
@@ -209,10 +208,12 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         m.offset_spatially_by(radius * increments.x, radius * increments.y)
         for m in central_plaquette.measurements
     }
+    if not considered_measurements:
+        return []
 
     filtered_detectors: list[Detector] = []
     for potential_detector in matched_detectors:
-        if considered_measurements.isdisjoint(potential_detector.measurement_data):
+        if not considered_measurements.issubset(potential_detector.measurement_data):
             # This is not an interesting detector, filter it out.
             continue
         # From here on, potential_detector is a detector we want to keep.
