@@ -194,7 +194,7 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         matched_detectors.extend(
             match_boundary_stabilizers(flows[-2], flows[-1], coordinates_by_index)
         )
-    matched_detectors = _map_all_measurements_from_offset(
+    potential_detectors = _map_all_measurements_from_offset(
         matched_detectors, measurements_by_offset, qubits_by_index
     )
 
@@ -212,7 +212,7 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         return []
 
     filtered_detectors: list[Detector] = []
-    for potential_detector in matched_detectors:
+    for potential_detector in potential_detectors:
         if not considered_measurements.issubset(potential_detector.measurement_data):
             # This is not an interesting detector, filter it out.
             continue
