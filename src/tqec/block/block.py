@@ -330,9 +330,11 @@ class StandardComputationBlock(ComputationBlock):
                 measurements.extend(m.measurements())
         return measurements
 
-    def compute_detectors(self, manhattan_radius: int = 2) -> list[list[Detector]]:
+    def compute_detectors(
+        self, subtemplate_radius_trial_range: range = range(1, 2)
+    ) -> list[list[Detector]]:
         initial_detectors = compute_detectors_in_last_timestep(
-            self.template, [self.initial_plaquettes], manhattan_radius
+            self.template, [self.initial_plaquettes], subtemplate_radius_trial_range
         )
         repeating_detectors: list[Detector]
         final_detectors: list[Detector]
@@ -340,19 +342,19 @@ class StandardComputationBlock(ComputationBlock):
             repeating_detectors = compute_detectors_in_last_timestep(
                 self.template,
                 [self.initial_plaquettes, self.repeating_plaquettes.plaquettes],
-                manhattan_radius,
+                subtemplate_radius_trial_range,
             )
             final_detectors = compute_detectors_in_last_timestep(
                 self.template,
                 [self.repeating_plaquettes.plaquettes, self.final_plaquettes],
-                manhattan_radius,
+                subtemplate_radius_trial_range,
             )
         else:
             repeating_detectors = []
             final_detectors = compute_detectors_in_last_timestep(
                 self.template,
                 [self.initial_plaquettes, self.final_plaquettes],
-                manhattan_radius,
+                subtemplate_radius_trial_range,
             )
         return [initial_detectors, repeating_detectors, final_detectors]
 

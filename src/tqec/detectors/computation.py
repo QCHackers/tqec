@@ -181,7 +181,7 @@ def _check_plaquettes_at_timestep(
     return plaquettes_at_timestep[0], plaquettes_at_timestep[1]
 
 
-def compute_detectors_in_last_timestep(
+def _compute_detectors_for_fixed_radius(
     template: Template,
     plaquettes_at_timestep: list[Plaquettes],
     fixed_subtemplate_radius: int = 2,
@@ -211,3 +211,33 @@ def compute_detectors_in_last_timestep(
                     offset_measurements, d.coordinates
                 )
     return list(detectors_by_measurements.values())
+
+
+def compute_detectors_in_last_timestep(
+    template: Template,
+    plaquettes_at_timestep: list[Plaquettes],
+    subtemplate_radius_trial_range: range = range(1, 2),
+) -> list[Detector]:
+    radius_range = subtemplate_radius_trial_range
+    start, stop, step = radius_range.start, radius_range.stop, radius_range.step
+    # Check the range is monotonically increasing
+    if start < 1 or stop <= start or step < 1:
+        raise TQECException(
+            "The range of subtemplate raius must be a monotonically increasing range of positive integers."
+        )
+
+    measurements_set: set[frozenset[Measurement]] = set()
+    detectors: list[Detector]
+    for radius in radius_range:
+        detectors = _compute_detectors_for_fixed_radius(
+            template, plaquettes_at_timestep, radius
+        )
+        cur_measurements_set = {frozenset(d.measurement_data) for d in detectors}
+        if not measurements_set.issubset(cur_measurements_set):
+            raise TQECException(
+                "The detectors found for a smaller radius are not a subset of the detectors found for a larger radius."
+            )
+        if cur_measurements_set == measurements_set:
+            return detectors
+        measurements_set = cur_measurements_set
+    return detectors
