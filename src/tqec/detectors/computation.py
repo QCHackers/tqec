@@ -123,6 +123,7 @@ def _compute_detectors_within_subtemplate(
     Returns:
         all the detectors appearing in the subtemplate.
     """
+    radius = subtemplate.shape[0] // 2
     # Build subcircuit for each Plaquettes layer
     subcircuits_cirq: list[cirq.Circuit] = []
     complete_circuit_cirq = cirq.Circuit()
@@ -157,9 +158,26 @@ def _compute_detectors_within_subtemplate(
         matched_detectors.extend(
             match_boundary_stabilizers(flows[-2], flows[-1], coordinates_by_index)
         )
-    return _map_all_measurements_from_offset(
+    detectors = _map_all_measurements_from_offset(
         matched_detectors, measurements_by_offset, qubits_by_index
     )
+
+    # We have two transformations to apply to it:
+    # 1. Change of coordinate system for the qubits. potential_detector is
+    #    using a coordinate system with the origin at the top-left corner of
+    #    the current sub-template, but we need to return detectors that use
+    #    the central plaquette origin as their coordinate system origin.
+    # 2. Transform the MatchedDetector instance into a Detector instance.
+    return [
+        Detector(
+            [
+                m.offset_spatially_by(-radius * increments.x, -radius * increments.y)
+                for m in detector.measurement_data
+            ],
+            detector.coordinates,
+        )
+        for detector in detectors
+    ]
 
 
 def _check_plaquettes_at_timestep(
