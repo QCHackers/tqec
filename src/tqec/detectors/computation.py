@@ -26,35 +26,6 @@ from tqec.position import Displacement, Position
 from tqec.templates.base import Template
 
 
-def _get_full_circuit(
-    instantiation: npt.NDArray[numpy.int_],
-    plaquettes_at_timestep: ty.Sequence[Plaquettes],
-    increments: Displacement,
-) -> cirq.Circuit:
-    """Get the circuit obtained from the provided `instantiation` and
-    `plaquettes_at_timestep`.
-
-    Args:
-        instantiation: a 2-dimensional array of integers representing
-            the spatial repartition of `Plaquette` instances in
-            `plaquettes_at_timestep`.
-        plaquettes_at_timestep: a list that contains as many values as
-            there are QEC rounds in the resulting circuit. Each value
-            should be a collection of `Plaquette` instances used to
-            generate a quantum circuit along with `instantiation`.
-        increments: spatial increments between each `Plaquette` origin.
-
-    Returns:
-        the quantum circuit represented by the provided arguments.
-    """
-    circuit = cirq.Circuit()
-    for plaquettes in plaquettes_at_timestep:
-        circuit += generate_circuit_from_instantiation(
-            instantiation, plaquettes, increments
-        )
-    return circuit
-
-
 def _get_qubit_mapping(circuit: cirq.Circuit) -> dict[cirq.GridQubit, int]:
     """Get a mapping from qubit to indices for the provided circuit.
 
@@ -162,31 +133,33 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         relative to the central plaquette origin.
     """
     radius = subtemplate.shape[0] // 2
-    complete_circuit = _get_full_circuit(
-        subtemplate, plaquettes_at_timestep, increments
-    )
+    # Build subcircuit for each Plaquettes layer
+    subcircuits_cirq: list[cirq.Circuit] = []
+    complete_circuit_cirq = cirq.Circuit()
+    for plaquettes in plaquettes_at_timestep:
+        subcircuit_cirq = generate_circuit_from_instantiation(
+            subtemplate, plaquettes, increments
+        )
+        complete_circuit_cirq += subcircuit_cirq
+        subcircuits_cirq.append(subcircuit_cirq)
+
     # Construct the different mappings we will need during the computation
-    indices_by_qubit = _get_qubit_mapping(complete_circuit)
+    indices_by_qubit = _get_qubit_mapping(complete_circuit_cirq)
     qubits_by_index = {i: q for q, i in indices_by_qubit.items()}
     coordinates_by_index: dict[int, tuple[float, ...]] = {
         i: (q.row, q.col) for q, i in indices_by_qubit.items()
     }
-    measurements_by_offset = _get_measurement_offset_mapping(complete_circuit)
+    measurements_by_offset = _get_measurement_offset_mapping(complete_circuit_cirq)
 
-    # Build one subcircuit per timestep, transform each of them into a
-    # Fragment instance and build flows.
-    subcircuits: list[stim.Circuit] = []
-    for plaquettes in plaquettes_at_timestep:
-        subcircuit = generate_circuit_from_instantiation(
-            subtemplate, plaquettes, increments
+    subcircuits_stim: list[stim.Circuit] = [
+        stimcirq.cirq_circuit_to_stim_circuit(
+            subcircuit_cirq,
+            qubit_to_index_dict=ty.cast(dict[cirq.Qid, int], indices_by_qubit),
         )
-        subcircuits.append(
-            stimcirq.cirq_circuit_to_stim_circuit(
-                subcircuit,
-                qubit_to_index_dict=ty.cast(dict[cirq.Qid, int], indices_by_qubit),
-            )
-        )
-    fragments = [Fragment(circ) for circ in subcircuits]
+        for subcircuit_cirq in subcircuits_cirq
+    ]
+
+    fragments = [Fragment(circ) for circ in subcircuits_stim]
     flows = build_flows_from_fragments(fragments)
     # Match the detectors
     matched_detectors = match_detectors_within_fragment(flows[-1], coordinates_by_index)
@@ -258,11 +231,11 @@ def _check_plaquettes_at_timestep(
 def compute_detectors_in_last_timestep(
     template: Template,
     plaquettes_at_timestep: list[Plaquettes],
-    considered_manhattan_radius: int = 2,
+    fixed_subtemplate_radius: int = 2,
 ) -> list[Detector]:
     plaquettes = _check_plaquettes_at_timestep(plaquettes_at_timestep)
     unique_subtemplates = template.get_spatially_distinct_subtemplates(
-        considered_manhattan_radius, avoid_zero_plaquettes=True
+        fixed_subtemplate_radius, avoid_zero_plaquettes=True
     )
     increments = template.get_increments()
     # Each detector in detectors_by_subtemplate is using a coordinate system
