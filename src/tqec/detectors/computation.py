@@ -106,18 +106,12 @@ def _map_all_measurements_from_offset(
     return ret
 
 
-def _compute_detectors_in_last_timestep_from_subtemplate(
+def _compute_detectors_within_subtemplate(
     subtemplate: npt.NDArray[numpy.int_],
     plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     increments: Displacement,
 ) -> list[Detector]:
-    """Returns detectors involving measurements on the central plaquette and in
-    the last timestep.
-
-    The central plaquette of a `subtemplate` is always correctly defined as any
-    `subtemplate` should have been obtained by taking a ball of a given radius `R`
-    (using the Manhattan distance) around one specific plaquette. The radius `R` is
-    computed from the given `subtemplate` shape.
+    """Returns detectors within the subtemplate.
 
     Args:
         subtemplate: a square 2-dimensional array of integers with odd-length
@@ -127,12 +121,8 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         increments: spatial increments between each `Plaquette` origin.
 
     Returns:
-        all the detectors involving at least one measurement of the central
-        plaquette and from the last timestep (last values in
-        `plaquettes_at_timestep`). The spatial coordinates used are all
-        relative to the central plaquette origin.
+        all the detectors appearing in the subtemplate.
     """
-    radius = subtemplate.shape[0] // 2
     # Build subcircuit for each Plaquettes layer
     subcircuits_cirq: list[cirq.Circuit] = []
     complete_circuit_cirq = cirq.Circuit()
@@ -167,46 +157,9 @@ def _compute_detectors_in_last_timestep_from_subtemplate(
         matched_detectors.extend(
             match_boundary_stabilizers(flows[-2], flows[-1], coordinates_by_index)
         )
-    potential_detectors = _map_all_measurements_from_offset(
+    return _map_all_measurements_from_offset(
         matched_detectors, measurements_by_offset, qubits_by_index
     )
-
-    # Compute the coordinates of the measurements we care about (i.e., only the
-    # measurements from the central plaquette).
-    central_plaquette_index: int = subtemplate[radius, radius]
-    central_plaquette = plaquettes_at_timestep[-1][central_plaquette_index]
-    # considered_measurements is using the subtemplate coordinate system (origin is
-    # at the top-left corner of the subtemplate).
-    considered_measurements = {
-        m.offset_spatially_by(radius * increments.x, radius * increments.y)
-        for m in central_plaquette.measurements
-    }
-    if not considered_measurements:
-        return []
-
-    filtered_detectors: list[Detector] = []
-    for potential_detector in potential_detectors:
-        if not considered_measurements.issubset(potential_detector.measurement_data):
-            # This is not an interesting detector, filter it out.
-            continue
-        # From here on, potential_detector is a detector we want to keep.
-        # We have two transformations to apply to it:
-        # 1. Change of coordinate system for the qubits. potential_detector is
-        #    using a coordinate system with the origin at the top-left corner of
-        #    the current sub-template, but we need to return detectors that use
-        #    the central plaquette origin as their coordinate system origin.
-        # 2. Transform the MatchedDetector instance into a Detector instance.
-        detector_measurements_central_plaquette_coordinates = [
-            m.offset_spatially_by(-radius * increments.x, -radius * increments.y)
-            for m in potential_detector.measurement_data
-        ]
-        filtered_detectors.append(
-            Detector(
-                detector_measurements_central_plaquette_coordinates,
-                potential_detector.coordinates,
-            )
-        )
-    return filtered_detectors
 
 
 def _check_plaquettes_at_timestep(
@@ -241,20 +194,20 @@ def compute_detectors_in_last_timestep(
     # Each detector in detectors_by_subtemplate is using a coordinate system
     # centered on the central plaquette origin.
     detectors_by_subtemplate: dict[int, list[Detector]] = {
-        i: _compute_detectors_in_last_timestep_from_subtemplate(
-            subtemplate, plaquettes, increments
-        )
+        i: _compute_detectors_within_subtemplate(subtemplate, plaquettes, increments)
         for i, subtemplate in unique_subtemplates.subtemplates.items()
     }
 
-    detectors: list[Detector] = []
+    detectors_by_measurements: dict[frozenset[Measurement], Detector] = dict()
     for i, row in enumerate(unique_subtemplates.subtemplate_indices):
         for j, subtemplate_index in enumerate(row):
             plaquette_origin = Position(j * increments.x, i * increments.x)
             for d in detectors_by_subtemplate[subtemplate_index]:
-                offset_measurements = [
+                offset_measurements = list(
                     m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)
                     for m in d.measurement_data
-                ]
-                detectors.append(Detector(offset_measurements, d.coordinates))
-    return detectors
+                )
+                detectors_by_measurements[frozenset(offset_measurements)] = Detector(
+                    offset_measurements, d.coordinates
+                )
+    return list(detectors_by_measurements.values())
