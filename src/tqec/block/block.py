@@ -14,6 +14,7 @@ from tqec.circuit.circuit import generate_circuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
+from tqec.position import Shape2D
 from tqec.templates.constructions.qubit import ComposedTemplateWithSides
 from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import LinearFunction, round_or_fail
@@ -72,6 +73,11 @@ class ComputationBlock(ABC):
     @abstractmethod
     def scale_to(self, k: int) -> None:
         """Scale the block to the provided scale factor."""
+
+    @property
+    @abstractmethod
+    def shape(self) -> Shape2D:
+        """Returns the X,Y extents of the underlying template."""
 
 
 def _number_of_moments_needed(plaquettes: Plaquettes) -> int:
@@ -327,6 +333,11 @@ class StandardComputationBlock(ComputationBlock):
     @override
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
+
+    @property
+    @abstractmethod
+    def shape(self) -> Shape2D:
+        return self.template.shape
 
     def _update_plaquettes(
         self,
