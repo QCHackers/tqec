@@ -120,7 +120,7 @@ class DenseQubitSquareTemplate(ComposedTemplateWithSides):
 
     @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
+        return sum((self._side_indices[side] for side in sides), start=[])
 
 
 class QubitVerticalBorders(ComposedTemplateWithSides):
@@ -205,7 +205,7 @@ class QubitVerticalBorders(ComposedTemplateWithSides):
 
     @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
+        return sum((self._side_indices[side] for side in sides), start=[])
 
 
 class QubitHorizontalBorders(ComposedTemplateWithSides):
@@ -282,4 +282,4 @@ class QubitHorizontalBorders(ComposedTemplateWithSides):
 
     @override
     def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        return sorted(set(sum((self._side_indices[side] for side in sides), start=[])))
+        return sum((self._side_indices[side] for side in sides), start=[])
