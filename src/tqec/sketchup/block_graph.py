@@ -624,11 +624,13 @@ class BlockGraph:
 
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
         depth = 0
-        # TODO this only works for single qubit instances potentially brakes when qubits
-        # are not around the origin
+        # TODO this has some baked in assumptions i.e. all blocks have the same dimensions
         for position, block in blocks.items():
             spatially_shifted_circuit = block.instantiate().transform_qubits(
-                partial(_shift_qubits, position)
+                partial(
+                    _shift_qubits,
+                    position.shift_by(block.shape.x * 2 + 2, block.shape.y * 2 + 2),
+                )
             )
             instantiated_scheduled_blocks.append(
                 ScheduledCircuit(spatially_shifted_circuit, depth)
