@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pathlib
 import typing as ty
+from collections import defaultdict
 from dataclasses import astuple, dataclass
 from enum import Enum
 from functools import partial
@@ -623,9 +624,9 @@ class BlockGraph:
             )
 
         instantiated_scheduled_blocks: list[ScheduledCircuit] = []
-        depth = 0
+        depths: dict[int, int] = defaultdict(int)
         # TODO this has some baked in assumptions i.e. all blocks have the same dimensions
-        for position, block in blocks.items():
+        for position, block in sorted(blocks.items(), key=lambda item: item[0].z):
             spatially_shifted_circuit = block.instantiate().transform_qubits(
                 partial(
                     _shift_qubits,
@@ -633,9 +634,9 @@ class BlockGraph:
                 )
             )
             instantiated_scheduled_blocks.append(
-                ScheduledCircuit(spatially_shifted_circuit, depth)
+                ScheduledCircuit(spatially_shifted_circuit, depths[position.z - 1])
             )
-            depth += block.depth
+            depths[position.z] = depths[position.z - 1] + block.depth
 
         return merge_scheduled_circuits(instantiated_scheduled_blocks)
 
