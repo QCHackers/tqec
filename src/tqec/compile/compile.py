@@ -1,4 +1,3 @@
-from functools import partial
 import cirq
 import stim
 import stimcirq

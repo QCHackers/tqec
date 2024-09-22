@@ -113,7 +113,7 @@ def _substitute_in_space_with_usual_cubes(
     substitute_side1 = (
         PlaquetteSide.RIGHT
         if pipe_type.direction == Direction3D.X
-        else PlaquetteSide.UP
+        else PlaquetteSide.DOWN
     )
     substitute_side2 = substitute_side1.opposite()
     # Get reset/mesurement basis
