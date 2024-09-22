@@ -1,12 +1,9 @@
-import typing
+from typing import Protocol, Literal
+from dataclasses import dataclass
 from collections import defaultdict
 
-from tqec.block.block import (
-    _DEFAULT_BLOCK_REPETITIONS,
-    RepeatedPlaquettes,
-    StandardComputationBlock,
-    TemporalPlaquetteSequence,
-)
+from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
+from tqec.compile.block import CompiledBlock, _DEFAULT_BLOCK_REPETITIONS
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.empty import empty_square_plaquette
@@ -29,11 +26,54 @@ from tqec.plaquette.library.memory import (
     zzzz_memory_plaquette,
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
-from tqec.plaquette.plaquette import Plaquettes
+from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
 
 
-def _zxB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
+@dataclass(frozen=True)
+class CubeSpec:
+    """Specification of a cube in a block graph.
+
+    Attributes:
+        cube_type: Type of the cube.
+        arm_flags: Flags indicating whether the cube connects to the adjacent cubes.
+            The flags are in the order of [up, right, down, left].
+    """
+
+    cube_type: CubeType
+    arm_flags: tuple[bool, bool, bool, bool] | None = None
+
+    def __post_init__(self) -> None:
+        # arm_flags is not None iff cube_type is ZZX or XXZ(Spatial Junctions)
+        if (self.is_spatial_junction) ^ (self.arm_flags is not None):
+            raise TQECException(
+                "arm_flags is not None if and only if cube_type is spatial junctions(ZZX or XXZ)."
+            )
+
+    @property
+    def is_spatial_junction(self) -> bool:
+        return self.cube_type in [CubeType.ZZX, CubeType.XXZ]
+
+    @staticmethod
+    def from_cube(cube: Cube, graph: BlockGraph) -> "CubeSpec":
+        """Returns the cube spec from a cube in a block graph."""
+        if cube.cube_type not in [CubeType.ZZX, CubeType.XXZ]:
+            return CubeSpec(cube.cube_type)
+        pos = cube.position
+        arm_flags = (
+            graph.get_pipe(pos, pos.shift_by(dy=1)) is not None,
+            graph.get_pipe(pos, pos.shift_by(dx=1)) is not None,
+            graph.get_pipe(pos, pos.shift_by(dy=-1)) is not None,
+            graph.get_pipe(pos, pos.shift_by(dx=-1)) is not None,
+        )
+        return CubeSpec(cube.cube_type, arm_flags)
+
+
+class SpecRule(Protocol):
+    def __call__(self, spec: CubeSpec) -> CompiledBlock: ...
+
+
+def _zxB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
@@ -57,17 +97,15 @@ def _zxB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
         }
     )
     repeating_plaquettes = RepeatedPlaquettes(
-        Plaquettes(
-            defaultdict(empty_square_plaquette)
-            | {
-                6: xx_memory_plaquette(PlaquetteOrientation.UP),
-                7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
-                9: xxxx_memory_plaquette(),
-                10: zzzz_memory_plaquette(),
-                12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
-                13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
-            }
-        ),
+        defaultdict(empty_square_plaquette)
+        | {
+            6: xx_memory_plaquette(PlaquetteOrientation.UP),
+            7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
+            9: xxxx_memory_plaquette(),
+            10: zzzz_memory_plaquette(),
+            12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
+            13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+        },
         _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
@@ -96,15 +134,13 @@ def _zxB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
             ),
         }
     )
-    return StandardComputationBlock(
-        QubitTemplate(),
-        TemporalPlaquetteSequence(
-            initial_plaquettes, repeating_plaquettes, final_plaquettes
-        ),
+    return CompiledBlock(
+        template=QubitTemplate(),
+        layers=[initial_plaquettes, repeating_plaquettes, final_plaquettes],
     )
 
 
-def _xzB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
+def _xzB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
 
@@ -128,17 +164,15 @@ def _xzB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
         }
     )
     repeating_plaquettes = RepeatedPlaquettes(
-        Plaquettes(
-            defaultdict(empty_square_plaquette)
-            | {
-                6: zz_memory_plaquette(PlaquetteOrientation.UP),
-                7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
-                9: zzzz_memory_plaquette(),
-                10: xxxx_memory_plaquette(),
-                12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
-                13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
-            }
-        ),
+        defaultdict(empty_square_plaquette)
+        | {
+            6: zz_memory_plaquette(PlaquetteOrientation.UP),
+            7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
+            9: zzzz_memory_plaquette(),
+            10: xxxx_memory_plaquette(),
+            12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
+            13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
+        },
         _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
@@ -167,33 +201,28 @@ def _xzB_block(basis: typing.Literal["X", "Z"]) -> StandardComputationBlock:
             ),
         }
     )
-    return StandardComputationBlock(
-        QubitTemplate(),
-        TemporalPlaquetteSequence(
-            initial_plaquettes, repeating_plaquettes, final_plaquettes
-        ),
+    return CompiledBlock(
+        template=QubitTemplate(),
+        layers=[initial_plaquettes, repeating_plaquettes, final_plaquettes],
     )
 
 
-def zxz_block() -> StandardComputationBlock:
-    return _zxB_block("Z")
+def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
+    match spec.cube_type, spec.arm_flags:
+        case CubeType.ZXZ, None:
+            return _zxB_block("Z")
+        case CubeType.ZXX, None:
+            return _zxB_block("X")
+        case CubeType.XZZ, None:
+            return _xzB_block("Z")
+        case CubeType.XZX, None:
+            return _xzB_block("X")
+        case CubeType.ZZX | CubeType.XXZ, _arm_flags:
+            raise NotImplementedError("Spatial junctions are not implemented yet.")
+        case _, _:
+            raise TQECException(f"Unsupported cube spec: {spec}")
 
 
-def xzz_block() -> StandardComputationBlock:
-    return _xzB_block("Z")
-
-
-def zxx_block() -> StandardComputationBlock:
-    return _zxB_block("X")
-
-
-def xzx_block() -> StandardComputationBlock:
-    return _xzB_block("X")
-
-
-def zzx_block() -> StandardComputationBlock:
-    raise TQECException("'zzx' block is not implemented yet.")
-
-
-def xxz_block() -> StandardComputationBlock:
-    raise TQECException("'xxz' block is not implemented yet.")
+DEFAULT_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(
+    lambda: default_spec_rule
+)

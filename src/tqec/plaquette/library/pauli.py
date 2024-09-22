@@ -15,8 +15,8 @@ _SUPPORTED_PAULI: set[str] = set("xz")
 
 
 class ResetBasis(Enum):
-    X = auto()
-    Z = auto()
+    X = "X"
+    Z = "Z"
 
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == ResetBasis.X:
@@ -26,8 +26,8 @@ class ResetBasis(Enum):
 
 
 class MeasurementBasis(Enum):
-    X = auto()
-    Z = auto()
+    X = "X"
+    Z = "Z"
 
     def __call__(self, q: cirq.Qid) -> cirq.Operation:
         if self == MeasurementBasis.X:

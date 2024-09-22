@@ -26,18 +26,11 @@ def one_by_one_template() -> Template:
 def _expected_circuit(qubits: PlaquetteQubits) -> cirq.Circuit:
     (syndrome_qubit,) = qubits.get_syndrome_qubits_cirq()
     return cirq.Circuit(
-        cirq.Moment(cirq.R(syndrome_qubit)),
+        cirq.Moment(cirq.R(syndrome_qubit).with_tags(Plaquette.get_mergeable_tag())),
         cirq.Moment(cirq.CNOT(qubits.data_qubits[0].to_grid_qubit(), syndrome_qubit)),
         cirq.Moment(cirq.CNOT(qubits.data_qubits[1].to_grid_qubit(), syndrome_qubit)),
-        cirq.Moment(cirq.M(syndrome_qubit)),
+        cirq.Moment(cirq.M(syndrome_qubit).with_tags(Plaquette.get_mergeable_tag())),
     )
-
-
-def test_generate_circuit_list(
-    plaquette: Plaquette, one_by_one_template: Template
-) -> None:
-    circuit = generate_circuit(one_by_one_template, [plaquette])
-    assert circuit == _expected_circuit(plaquette.qubits)
 
 
 def test_generate_circuit_dict(

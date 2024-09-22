@@ -35,6 +35,8 @@ from .position import (
     Displacement,
     Position,
     Shape2D,
+    Position3D,
+    Direction3D,
 )
 from .templates import LinearFunction, Template
 from .templates.enums import (

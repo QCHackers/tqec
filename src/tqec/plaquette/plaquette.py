@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import itertools
 import typing
+from typing_extensions import override
+import itertools
 from collections import defaultdict
 from dataclasses import dataclass
 
@@ -13,6 +14,7 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position
+from tqec.templates.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:
@@ -69,27 +71,27 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
+    @circuit.setter
+    def circuit(self, circuit: ScheduledCircuit) -> None:
+        self._circuit = circuit
+        self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
+
     @property
     def measurements(self) -> list[Measurement]:
         return self._measurements
 
 
-def _to_plaquette_dict(
-    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
-) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
-    if isinstance(plaquettes, (dict, defaultdict)):
-        return plaquettes
-    return {i: p for i, p in enumerate(plaquettes)}
+CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
 
-@dataclass(frozen=True)
+@dataclass
 class Plaquettes:
-    collection: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette]
+    collection: CollectionType
 
     def __post_init__(self) -> None:
-        if not isinstance(self.collection, (list, dict, defaultdict)):
+        if not isinstance(self.collection, (dict, defaultdict)):
             raise TQECException(
-                f"Plaquettes initialized with {type(self.collection)} but only list, "
+                f"Plaquettes initialized with {type(self.collection)} but only"
                 "dict and defaultdict instances are allowed."
             )
 
@@ -97,8 +99,6 @@ class Plaquettes:
         return self.collection[index]
 
     def __iter__(self) -> typing.Iterator[Plaquette]:
-        if isinstance(self.collection, list):
-            return iter(self.collection)
         if isinstance(self.collection, defaultdict):
             if self.collection.default_factory is not None:
                 default = self.collection.default_factory()
@@ -125,10 +125,29 @@ class Plaquettes:
             )
         return len(self.collection)
 
-    def __or__(self, other: Plaquettes | dict[int, Plaquette]) -> Plaquettes:
-        other_plaquettes = (
-            _to_plaquette_dict(other.collection)
-            if isinstance(other, Plaquettes)
-            else other
+    def repeat(self, repetitions: LinearFunction) -> RepeatedPlaquettes:
+        return RepeatedPlaquettes(self.collection, repetitions)
+
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> Plaquettes:
+        return Plaquettes(self.collection | plaquettes_to_update)
+
+
+@dataclass
+class RepeatedPlaquettes(Plaquettes):
+    """Represent plaquettes that should be repeated for several rounds."""
+
+    repetitions: LinearFunction
+
+    def number_of_rounds(self, k: int) -> int:
+        return round_or_fail(self.repetitions(k))
+
+    @override
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> RepeatedPlaquettes:
+        return RepeatedPlaquettes(
+            self.collection | plaquettes_to_update,
+            repetitions=self.repetitions,
         )
-        return Plaquettes(_to_plaquette_dict(self.collection) | other_plaquettes)

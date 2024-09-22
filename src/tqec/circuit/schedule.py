@@ -361,6 +361,21 @@ class ScheduledCircuit:
             ]
         )
 
+    def moment_at_schedule(self, schedule: int) -> cirq.Moment:
+        """Get the Moment instance scheduled at the provided schedule.
+
+        Args:
+            schedule: the schedule at which the Moment instance should be returned.
+        """
+        schedule_index = next(
+            (i for i, sched in enumerate(self._schedule) if sched == schedule), None
+        )
+        if schedule_index is None:
+            raise TQECException(
+                f"No Moment instance scheduled at the provided schedule {schedule}."
+            )
+        return self._raw_circuit[schedule_index]
+
     def add_to_schedule_index(self, schedule: int, moment: cirq.Moment) -> None:
         """Add the operations contained in the provided moment at the provided
         schedule.
@@ -517,11 +532,7 @@ def remove_duplicate_operations(
         else:
             final_operations.append(operation)
     # Remove duplicated mergeable operations with the set data-structure.
-    for merged_operation in set(mergeable_operations):
-        tags = set(merged_operation.tags)
-        if Plaquette.get_mergeable_tag() in tags:
-            tags.remove(Plaquette.get_mergeable_tag())
-        final_operations.append(merged_operation.untagged.with_tags(*tags))
+    final_operations.extend(set(mergeable_operations))
     return final_operations
 
 
