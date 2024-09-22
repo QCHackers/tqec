@@ -354,7 +354,7 @@ class MX(cirq.Operation):
         **kwargs: dict[str, typing.Any],
     ) -> None:
         edit_measurement_key_lengths.append((",".join(map(str, targets)), len(targets)))
-        edit_circuit.append_operation("MX", list(self.qubits), None)
+        edit_circuit.append_operation("MX", targets, [])
 
     def _is_measurement_(self) -> bool:
         return True
