@@ -6,7 +6,7 @@ from typing_extensions import override
 
 from tqec.position import Displacement
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.enums import TemplateOrientation, TemplateSide
+from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import LinearFunction, Scalable2D
 
 

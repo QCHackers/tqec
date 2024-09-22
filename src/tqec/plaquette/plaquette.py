@@ -94,25 +94,25 @@ class Plaquettes:
                 f"Plaquettes initialized with {type(self.collection)} but only"
                 "dict and defaultdict instances are allowed."
             )
+        if 0 in self.collection:
+            raise TQECException(
+                "Found a Plaquette with index 0. This index is reserved to express "
+                '"no plaquette". Please re-number your plaquettes starting from 1.'
+            )
 
     def __getitem__(self, index: int) -> Plaquette:
         return self.collection[index]
 
     def __iter__(self) -> typing.Iterator[Plaquette]:
-        if isinstance(self.collection, defaultdict):
-            if self.collection.default_factory is not None:
-                default = self.collection.default_factory()
-                return itertools.chain(
-                    self.collection.values(), [default] if default is not None else []
-                )
-            else:
-                return iter(self.collection.values())
-        if isinstance(self.collection, dict):
-            return iter(self.collection.values())
-        else:
-            raise TQECException(
-                f"Plaquette is initialised with the wrong type: {type(self.collection)}."
+        if (
+            isinstance(self.collection, defaultdict)
+            and self.collection.default_factory is not None
+        ):
+            default = self.collection.default_factory()
+            return itertools.chain(
+                self.collection.values(), [default] if default is not None else []
             )
+        return iter(self.collection.values())
 
     @property
     def has_default(self) -> bool:
