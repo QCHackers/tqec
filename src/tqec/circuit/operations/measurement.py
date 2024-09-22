@@ -49,7 +49,7 @@ class Measurement:
         if not isinstance(other, Measurement):
             raise NotImplementedError(f"Cannot compare {type(self)} < {type(other)}.")
         if self.offset == other.offset:
-            return self.qubit < other.qubit
+            return bool(self.qubit < other.qubit)
         return self.offset < other.offset
 
     def __repr__(self) -> str:

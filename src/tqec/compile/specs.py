@@ -219,7 +219,7 @@ def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
             return _xzB_block("X")
         case CubeType.ZZX | CubeType.XXZ, _arm_flags:
             raise NotImplementedError("Spatial junctions are not implemented yet.")
-        case _, _:
+        case _:
             raise TQECException(f"Unsupported cube spec: {spec}")
 
 

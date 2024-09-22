@@ -29,14 +29,6 @@ class CompiledBlock:
     def num_layers(self) -> int:
         return len(self.layers)
 
-    @property
-    def first_layer(self) -> Plaquettes:
-        return self.layers[0]
-
-    @property
-    def last_layer(self) -> Plaquettes:
-        return self.layers[-1]
-
     def with_updated_plaquettes(
         self,
         plaquettes_to_update: dict[int, Plaquette],
@@ -55,93 +47,9 @@ class CompiledBlock:
                 new_plaquette_layers.append(plaquettes)
         return CompiledBlock(self.template, new_plaquette_layers)
 
-    @property
-    def depth(self) -> int:
-        """Return the number of `cirq.Moment` needed to execute all the
-        plaquettes."""
-        depth = 0
-        for layer in self.layers:
-            t = max(max(p.circuit.schedule, default=0) for p in layer)
-            if isinstance(layer, RepeatedPlaquettes):
-                t *= layer.num_rounds(self.template.k)
-            depth += t
-        return depth
-
     def instantiate_layer(self, layer_index: int) -> cirq.Circuit:
         layer = self.layers[layer_index]
         return generate_circuit(self.template, layer.collection)
 
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
-
-    # @staticmethod
-    # def _get_measurements(
-    #     template: Template, plaquettes: Plaquettes
-    # ) -> ty.Iterator[Measurement]:
-    #     template_array = template.instantiate()
-    #     default_increments = template.get_increments()
-    #
-    #     for i, row in enumerate(template_array):
-    #         for j, plaquette_index in enumerate(row):
-    #             xoffset = j * default_increments.x
-    #             yoffset = i * default_increments.y
-    #             yield from (
-    #                 m.offset_spatially_by(xoffset, yoffset)
-    #                 for m in plaquettes[plaquette_index].measurements
-    #             )
-    #
-    # @property
-    # def measurements(self) -> frozenset[Measurement | RepeatedMeasurement]:
-    #     """Returns all the measurements in the block, relative to the end of
-    #     the block."""
-    #     measurement_number_by_qubits: dict[cirq.GridQubit, int] = {}
-    #     all_measurements: list[Measurement | RepeatedMeasurement] = []
-    #     # Start by the final measurements.
-    #     for final_measurement in self._get_measurements(
-    #         self.template, self.final_plaquettes
-    #     ):
-    #         all_measurements.append(final_measurement)
-    #         measurement_number_by_qubits[final_measurement.qubit] = 1
-    #     # Continue with the repeating measurements
-    #     if self.repeating_plaquettes is not None:
-    #         repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
-    #         for repeating_measurement in self._get_measurements(
-    #             self.template, self.repeating_plaquettes.plaquettes
-    #         ):
-    #             qubit = repeating_measurement.qubit
-    #             past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
-    #             all_measurements.append(
-    #                 RepeatedMeasurement(
-    #                     qubit,
-    #                     Interval(
-    #                         -past_measurement_number - repetitions,
-    #                         -past_measurement_number,
-    #                         start_excluded=False,
-    #                         end_excluded=True,
-    #                     ),
-    #                 )
-    #             )
-    #             measurement_number_by_qubits[repeating_measurement.qubit] = (
-    #                 past_measurement_number + repetitions
-    #             )
-    #     # Finish with the initial measurements
-    #     for initial_measurement in self._get_measurements(
-    #         self.template, self.initial_plaquettes
-    #     ):
-    #         qubit = repeating_measurement.qubit
-    #         past_measurement_number = measurement_number_by_qubits.get(qubit, 0)
-    #         all_measurements.append(
-    #             initial_measurement.offset_temporally_by(-past_measurement_number)
-    #         )
-    #
-    #     return frozenset(all_measurements)
-    #
-    # @property
-    # def all_measurements(self) -> list[Measurement]:
-    #     measurements: list[Measurement] = []
-    #     for m in self.measurements:
-    #         if isinstance(m, Measurement):
-    #             measurements.append(m)
-    #         else:  # isinstance(m, RepeatedMeasurement):
-    #             measurements.extend(m.measurements())
-    #     return measurements
