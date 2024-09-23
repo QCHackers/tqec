@@ -201,6 +201,8 @@ def _compute_detectors_for_fixed_radius(
     detectors_by_measurements: dict[frozenset[Measurement], Detector] = dict()
     for i, row in enumerate(unique_subtemplates.subtemplate_indices):
         for j, subtemplate_index in enumerate(row):
+            if subtemplate_index == 0:
+                continue
             plaquette_origin = Position(j * increments.x, i * increments.x)
             for d in detectors_by_subtemplate[subtemplate_index]:
                 offset_measurements = list(

@@ -84,7 +84,8 @@ class UniqueSubTemplates:
     subtemplates: dict[int, npt.NDArray[numpy.int_]]
 
     def __post_init__(self) -> None:
-        indices = frozenset(numpy.unique(self.subtemplate_indices))
+        # We do not need a valid subtemplate for the 0 index.
+        indices = frozenset(numpy.unique(self.subtemplate_indices)) - {0}
         if not indices.issubset(self.subtemplates.keys()):
             raise TQECException(
                 "Found an index in subtemplate_indices that does "
