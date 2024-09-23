@@ -19,8 +19,14 @@ from tqec.sketchup.block_graph import PipeType
 class SubstitutionKey:
     """The key for selecting the substitution rule.
 
-    By convention, the cube corresponding to `spec1` should have a smaller position
-    than the cube corresponding to `spec2`.
+    Substitution rules will be selected based on the key to apply the substitution
+    during the block graph compilation.
+
+    Attributes:
+        spec1: the cube specification of the first cube. By convention, the cube corresponding
+            to `spec1` should have a smaller position than the cube corresponding to `spec2`.
+        spec2: the cube specification of the second cube.
+        pipe_type: the type of the pipe connecting the two cubes.
     """
 
     spec1: CubeSpec
@@ -34,7 +40,16 @@ class SubstitutionRule(Protocol):
         key: SubstitutionKey,
         block1: CompiledBlock,
         block2: CompiledBlock,
-    ) -> tuple[CompiledBlock, CompiledBlock]: ...
+    ) -> tuple[CompiledBlock, CompiledBlock]:
+        """Substitute the two blocks with the given key.
+
+        Args:
+            key: `SubstitutionKey` that includes the necessary information for the substitution, including
+                the cube specifications and the pipe type that connecting the two blocks.
+            block1: the first block to substitute.
+            block2: the second block to substitute.
+        """
+        ...
 
 
 def default_substitution_rule(
@@ -42,6 +57,7 @@ def default_substitution_rule(
     block1: CompiledBlock,
     block2: CompiledBlock,
 ) -> tuple[CompiledBlock, CompiledBlock]:
+    """The default substitution rule for the block graph compilation."""
     # 1. The spatial junctions are not supported yet
     if key.spec1.is_spatial_junction or key.spec2.is_spatial_junction:
         raise TQECException("Spatial junctions are not supported yet.")
@@ -67,12 +83,12 @@ def _substitute_in_time_direction(
     # Substitute the final layer of the bottom block with the bulk layer
     bottom_block = block1.with_updated_layer(
         plaquettes_to_update=deepcopy(block1.layers[1].collection),
-        layers_to_update=[block1.num_layers - 1],
+        layer_to_update=block1.num_layers - 1,
     )
     # Substitute the first layer of the top block with the bulk layer
     top_block = block2.with_updated_layer(
         plaquettes_to_update=deepcopy(block2.layers[1].collection),
-        layers_to_update=[0],
+        layer_to_update=0,
     )
     # If the pipe has a hadamard, apply the hadamard transformation
     # The hadamard transformation is applied to the end of the bottom block
@@ -145,7 +161,7 @@ def _substitute_on_the_border(
             plaquettes_to_update={
                 dst: deepcopy(block.layers[i][src]) for dst, src in substitution.items()
             },
-            layers_to_update=[i],
+            layer_to_update=i,
         )
     # 2. Add resets/measurements on the middle of the border
     for i in substitution.keys():

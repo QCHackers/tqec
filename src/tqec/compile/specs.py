@@ -34,10 +34,16 @@ from tqec.templates.qubit import QubitTemplate
 class CubeSpec:
     """Specification of a cube in a block graph.
 
+    The template of the `CompiledBlock` will be determined based on the specification.
+    This class can be used as a key to look up the corresponding `CompiledBlock` before
+    applying the substitution rules.
+
     Attributes:
         cube_type: Type of the cube.
         arm_flags: Flags indicating whether the cube connects to the adjacent cubes.
-            The flags are in the order of [up, right, down, left].
+            The flags are in the order of [up, right, down, left]. This is useful for
+            spatial junctions (XXZ and ZZX) where the arms can determine the template
+            used to implement the cube.
     """
 
     cube_type: CubeType
@@ -70,7 +76,19 @@ class CubeSpec:
 
 
 class SpecRule(Protocol):
-    def __call__(self, spec: CubeSpec) -> CompiledBlock: ...
+    def __call__(self, spec: CubeSpec) -> CompiledBlock:
+        """Protocol for returning a `CompiledBlock` based on a `CubeSpec`.
+
+        Users can define their own rules for generating `CompiledBlock`s based on the
+        `CubeSpec` provided and register them during the compilation process.
+
+        Args:
+            spec: Specification of the cube in the block graph.
+
+        Returns:
+            a `CompiledBlock` based on the provided `CubeSpec`.
+        """
+        ...
 
 
 def _zxB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
@@ -208,6 +226,7 @@ def _xzB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
 
 
 def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
+    """Default rule for generating a `CompiledBlock` based on a `CubeSpec`."""
     match spec.cube_type, spec.arm_flags:
         case CubeType.ZXZ, None:
             return _zxB_block("Z")

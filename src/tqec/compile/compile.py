@@ -37,9 +37,20 @@ def compile_block_graph_to_stim(
     Args:
         block_graph: The block graph to compile.
         k: The scale factor of the templates.
-        observables: The observables to be included in the compiled circuit.
-        custom_spec_rules: Custom specification rules for the cube specs.
-        custom_substitute_rules: Custom substitution rules for the compiled blocks.
+        observables: The abstract observables to be included in the compiled circuit.
+            If set to "auto", the observables will be automatically determined from the
+            block graph. If a list of abstract observables is provided, only those
+            observables will be included in the compiled circuit. If set to None, no
+            observables will be included in the compiled circuit.
+        custom_spec_rules: Custom specification rules for the cube specs. This is a dict
+            mapping the cube specs to the corresponding spec rules. If not provided, the
+            default spec rules will be used. Spec rules determine how to compile a cube
+            spec into a compiled block, i.e which template to use and the specific plaquettes
+            to use in the template.
+        custom_substitute_rules: Custom substitution rules for the compiled blocks. This is
+            a dict mapping the substitution keys to the corresponding substitution rules. If
+            not provided, the default substitution rules will be used. Substitution rules
+            determine how to substitute plaquettes in the two compiled blocks connected by a pipe.
 
     Returns:
         The compiled stim circuit.
