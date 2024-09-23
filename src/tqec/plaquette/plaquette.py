@@ -140,7 +140,7 @@ class RepeatedPlaquettes(Plaquettes):
 
     repetitions: LinearFunction
 
-    def number_of_rounds(self, k: int) -> int:
+    def num_rounds(self, k: int) -> int:
         return round_or_fail(self.repetitions(k))
 
     @override

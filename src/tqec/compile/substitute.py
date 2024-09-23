@@ -65,12 +65,12 @@ def _substitute_in_time_direction(
 ) -> tuple[CompiledBlock, CompiledBlock]:
     assert key.pipe_type.direction == Direction3D.Z, "Pipe direction must be Z."
     # Substitute the final layer of the bottom block with the bulk layer
-    bottom_block = block1.with_updated_plaquettes(
+    bottom_block = block1.with_updated_layer(
         plaquettes_to_update=deepcopy(block1.layers[1].collection),
         layers_to_update=[block1.num_layers - 1],
     )
     # Substitute the first layer of the top block with the bulk layer
-    top_block = block2.with_updated_plaquettes(
+    top_block = block2.with_updated_layer(
         plaquettes_to_update=deepcopy(block2.layers[1].collection),
         layers_to_update=[0],
     )
@@ -141,7 +141,7 @@ def _substitute_on_the_border(
         substitution = {4: 13, 11: 9, 12: 10}
     # 1. Fill in the empty plaquettes on the border
     for i in range(block.num_layers):
-        block = block.with_updated_plaquettes(
+        block = block.with_updated_layer(
             plaquettes_to_update={
                 dst: deepcopy(block.layers[i][src]) for dst, src in substitution.items()
             },

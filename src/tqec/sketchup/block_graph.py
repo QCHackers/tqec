@@ -100,6 +100,10 @@ class CubeType(Enum):
     # Virtual cube for open port
     VIRTUAL = "virtual"
 
+    @property
+    def is_spatial_junction(self) -> bool:
+        return self in [CubeType.ZZX, CubeType.XXZ]
+
     def to_zx_node_type(self) -> NodeType:
         """Convert the cube type to a ZX node type."""
         if self == CubeType.VIRTUAL:

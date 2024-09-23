@@ -52,7 +52,7 @@ class CubeSpec:
 
     @property
     def is_spatial_junction(self) -> bool:
-        return self.cube_type in [CubeType.ZZX, CubeType.XXZ]
+        return self.cube_type.is_spatial_junction
 
     @staticmethod
     def from_cube(cube: Cube, graph: BlockGraph) -> "CubeSpec":

@@ -8,6 +8,7 @@ import cirq.circuits
 
 from tqec.circuit.circuit import generate_circuit
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
+from tqec.position import Position3D
 from tqec.templates import Template
 from tqec.templates.scale import LinearFunction
 
@@ -24,7 +25,7 @@ class CompiledBlock:
     def num_layers(self) -> int:
         return len(self.layers)
 
-    def with_updated_plaquettes(
+    def with_updated_layer(
         self,
         plaquettes_to_update: dict[int, Plaquette],
         layers_to_update: ty.Iterable[int] | None = None,
@@ -46,5 +47,21 @@ class CompiledBlock:
         layer = self.layers[layer_index]
         return generate_circuit(self.template, layer)
 
+    @property
+    def size(self) -> int:
+        template_shape = self.template.shape
+        assert (
+            template_shape.x == template_shape.y
+        ), "Template must be square for a block."
+        return 2 * template_shape.x
+
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
+
+
+def map_qubit_at_block(
+    qubit: cirq.GridQubit,
+    block_position: Position3D,
+    block_size: int,
+) -> cirq.GridQubit:
+    return qubit + (block_position.y * block_size, block_position.x * block_size)
