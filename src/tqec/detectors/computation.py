@@ -180,31 +180,11 @@ def _compute_detectors_within_subtemplate(
     ]
 
 
-def _check_plaquettes_at_timestep(
-    plaquettes_at_timestep: list[Plaquettes],
-) -> tuple[Plaquettes] | tuple[Plaquettes, Plaquettes]:
-    if len(plaquettes_at_timestep) == 0:
-        raise TQECException(
-            "Cannot compute detectors without plaquettes to build a circuit."
-        )
-    if len(plaquettes_at_timestep) == 1:
-        return (plaquettes_at_timestep[0],)
-    if len(plaquettes_at_timestep) > 2:
-        warnings.warn(
-            "Detector computation is currently limited to flows from 2 "
-            f"adjacent QEC rounds. You provided {len(plaquettes_at_timestep)} "
-            "QEC rounds. Only the last 2 rounds will be considered.",
-            TQECWarning,
-        )
-    return plaquettes_at_timestep[0], plaquettes_at_timestep[1]
-
-
 def _compute_detectors_for_fixed_radius(
     template: Template,
-    plaquettes_at_timestep: list[Plaquettes],
+    plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     fixed_subtemplate_radius: int = 2,
 ) -> list[Detector]:
-    plaquettes = _check_plaquettes_at_timestep(plaquettes_at_timestep)
     unique_subtemplates = template.get_spatially_distinct_subtemplates(
         fixed_subtemplate_radius, avoid_zero_plaquettes=True
     )
@@ -212,7 +192,9 @@ def _compute_detectors_for_fixed_radius(
     # Each detector in detectors_by_subtemplate is using a coordinate system
     # centered on the central plaquette origin.
     detectors_by_subtemplate: dict[int, list[Detector]] = {
-        i: _compute_detectors_within_subtemplate(subtemplate, plaquettes, increments)
+        i: _compute_detectors_within_subtemplate(
+            subtemplate, plaquettes_at_timestep, increments
+        )
         for i, subtemplate in unique_subtemplates.subtemplates.items()
     }
 
@@ -233,7 +215,7 @@ def _compute_detectors_for_fixed_radius(
 
 def compute_detectors_in_last_timestep(
     template: Template,
-    plaquettes_at_timestep: list[Plaquettes],
+    plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     subtemplate_radius_trial_range: range = range(1, 2),
 ) -> list[Detector]:
     radius_range = subtemplate_radius_trial_range
