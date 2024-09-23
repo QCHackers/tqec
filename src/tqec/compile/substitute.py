@@ -134,7 +134,6 @@ def _substitute_in_space_with_usual_cubes(
     substitute_side2 = substitute_side1.opposite()
     # Get reset/mesurement basis
     basis = pipe_type.value[2].upper()
-    # 1. Fill in the empty plaquettes on the border
     block1 = _substitute_on_the_border(block1, substitute_side1, basis)
     block2 = _substitute_on_the_border(block2, substitute_side2, basis)
     return block1, block2
@@ -145,8 +144,6 @@ def _substitute_on_the_border(
     plaquette_side: PlaquetteSide,
     basis: str,
 ) -> CompiledBlock:
-    # Copy `bdy_src` plaquette to `bdy_fill` plaquette
-    # Copy `bulk_src` plaquette to `bulk_fill` plaquette
     if plaquette_side == PlaquetteSide.LEFT:
         substitution = {1: 6, 8: 9, 7: 10}
     elif plaquette_side == PlaquetteSide.UP:
@@ -155,7 +152,7 @@ def _substitute_on_the_border(
         substitution = {3: 7, 14: 10, 13: 9}
     else:  # plaquette_side == PlaquetteSide.RIGHT:
         substitution = {4: 13, 11: 9, 12: 10}
-    # 1. Fill in the empty plaquettes on the border
+    # 1. Fill in/Substitue the plaquettes on the border
     for i in range(block.num_layers):
         block = block.with_updated_layer(
             plaquettes_to_update={
