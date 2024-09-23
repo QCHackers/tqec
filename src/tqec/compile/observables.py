@@ -91,9 +91,3 @@ def get_stabilizer_region_qubits_for_pipe(
                 stabilizer_qubits.append(cirq.GridQubit(y1, x1))
                 stabilizer_qubits.append(cirq.GridQubit(y2, x2))
     return stabilizer_qubits
-
-
-# def include_measurements_from_pipe_top_line(
-#     pipe: Pipe,
-# ) -> Observable:
-#     pass
