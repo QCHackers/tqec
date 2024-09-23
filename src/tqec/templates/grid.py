@@ -20,6 +20,31 @@ class GridTemplate(RectangularTemplate):
         k: int = 2,
         default_increments: Displacement | None = None,
     ) -> None:
+        """A grid of the same repeating template.
+
+        This class provides a way to efficiently represent a 2-dimensional grid
+        of the same `RectangularTemplate` instance tiled all over the grid.
+
+        Args:
+            index_grid: a sequence of rows representing the arrangement of the
+                provided `tiled_template` with integer indices. An entry of `0`
+                means "empty" or "no template". Then, each entry strictly above
+                `1` represent an instance of `tiled_template` on the grid.
+                Entries with the same value (e.g., in `[[1, 0], [1, 0]]`, two
+                entries have the value `1`) represent `tiled_template` instances
+                that will share the same plaquette indices.
+            tiled_template: base `RectangularTemplate` instance that will be
+                tiled over a grid.
+            k: scaling factor forwarded to the template instances composing the
+                grid. Defaults to 2.
+            default_increments: default increments between two plaquettes.
+
+        Raises:
+            TQECException: if the provided grid is empty (e.g., `[]`).
+            TQECException: if the provided grid has empty rows (e.g., `[[]]`).
+            TQECException: if the provided grid indices are not a contiguous
+                sequence of integers starting from either `0` or `1`.
+        """
         super().__init__(k, default_increments)
         if len(index_grid) == 0:
             raise TQECException("Cannot create a grid with no row.")
@@ -65,7 +90,7 @@ class GridTemplate(RectangularTemplate):
 
         Args:
             plaquette_indices: the plaquette indices that will be forwarded to
-                the underlying Shape instance's instantiate method. Defaults
+                the underlying Template instance's instantiate method. Defaults
                 to `range(1, self.expected_plaquettes_number + 1)` if `None`.
 
         Returns:
