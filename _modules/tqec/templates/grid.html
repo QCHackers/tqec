@@ -100,6 +100,31 @@
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">default_increments</span><span class="p">:</span> <span class="n">Displacement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A grid of the same repeating template.</span>
+
+<span class="sd">        This class provides a way to efficiently represent a 2-dimensional grid</span>
+<span class="sd">        of the same `RectangularTemplate` instance tiled all over the grid.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index_grid: a sequence of rows representing the arrangement of the</span>
+<span class="sd">                provided `tiled_template` with integer indices. An entry of `0`</span>
+<span class="sd">                means &quot;empty&quot; or &quot;no template&quot;. Then, each entry strictly above</span>
+<span class="sd">                `1` represent an instance of `tiled_template` on the grid.</span>
+<span class="sd">                Entries with the same value (e.g., in `[[1, 0], [1, 0]]`, two</span>
+<span class="sd">                entries have the value `1`) represent `tiled_template` instances</span>
+<span class="sd">                that will share the same plaquette indices.</span>
+<span class="sd">            tiled_template: base `RectangularTemplate` instance that will be</span>
+<span class="sd">                tiled over a grid.</span>
+<span class="sd">            k: scaling factor forwarded to the template instances composing the</span>
+<span class="sd">                grid. Defaults to 2.</span>
+<span class="sd">            default_increments: default increments between two plaquettes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the provided grid is empty (e.g., `[]`).</span>
+<span class="sd">            TQECException: if the provided grid has empty rows (e.g., `[[]]`).</span>
+<span class="sd">            TQECException: if the provided grid indices are not a contiguous</span>
+<span class="sd">                sequence of integers starting from either `0` or `1`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">default_increments</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_grid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot create a grid with no row.&quot;</span><span class="p">)</span>
@@ -150,7 +175,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            plaquette_indices: the plaquette indices that will be forwarded to</span>
-<span class="sd">                the underlying Shape instance&#39;s instantiate method. Defaults</span>
+<span class="sd">                the underlying Template instance&#39;s instantiate method. Defaults</span>
 <span class="sd">                to `range(1, self.expected_plaquettes_number + 1)` if `None`.</span>
 
 <span class="sd">        Returns:</span>

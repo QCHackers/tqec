@@ -442,15 +442,32 @@ X-axis.</p>
 <dt class="sig sig-object py" id="tqec.templates.grid.GridTemplate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GridTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tiled_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><span class="pre">RectangularTemplate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/grid.html#GridTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.grid.GridTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">RectangularTemplate</span></code></a></p>
-<p>Base class for all the templates.</p>
-<p>This class is the base of all templates and provide the necessary interface
-that all templates should implement to be usable by the library.</p>
+<p>A grid of the same repeating template.</p>
+<p>This class provides a way to efficiently represent a 2-dimensional grid
+of the same <cite>RectangularTemplate</cite> instance tiled all over the grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
-<li><p><strong>default_increments</strong> – default increments between two plaquettes. Defaults
-to <cite>Displacement(2, 2)</cite> when <cite>None</cite></p></li>
+<li><p><strong>index_grid</strong> – a sequence of rows representing the arrangement of the
+provided <cite>tiled_template</cite> with integer indices. An entry of <cite>0</cite>
+means “empty” or “no template”. Then, each entry strictly above
+<cite>1</cite> represent an instance of <cite>tiled_template</cite> on the grid.
+Entries with the same value (e.g., in <cite>[[1, 0], [1, 0]]</cite>, two
+entries have the value <cite>1</cite>) represent <cite>tiled_template</cite> instances
+that will share the same plaquette indices.</p></li>
+<li><p><strong>tiled_template</strong> – base <cite>RectangularTemplate</cite> instance that will be
+tiled over a grid.</p></li>
+<li><p><strong>k</strong> – scaling factor forwarded to the template instances composing the
+grid. Defaults to 2.</p></li>
+<li><p><strong>default_increments</strong> – default increments between two plaquettes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided grid is empty (e.g., <cite>[]</cite>).</p></li>
+<li><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided grid has empty rows (e.g., <cite>[[]]</cite>).</p></li>
+<li><p><a class="reference internal" href="tqec.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided grid indices are not a contiguous
+    sequence of integers starting from either <cite>0</cite> or <cite>1</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -488,7 +505,7 @@ sides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>plaquette_indices</strong> – the plaquette indices that will be forwarded to
-the underlying Shape instance’s instantiate method. Defaults
+the underlying Template instance’s instantiate method. Defaults
 to <cite>range(1, self.expected_plaquettes_number + 1)</cite> if <cite>None</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
