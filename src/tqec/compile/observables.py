@@ -76,8 +76,8 @@ def get_stabilizer_region_qubits_for_pipe(
             x1 = block_border_x - 2 * i - 1
             x2 = block_border_x + 2 * i + 1
             for j in range(half_region_size):
-                y1 = (1 - 2 * (i % 2)) + 4 * j + u_pos.y * block_size
-                y2 = (2 * (i % 2) - 1) + 4 * j + u_pos.y * block_size
+                y1 = (2 - 2 * (i % 2)) + 4 * j + u_pos.y * block_size
+                y2 = 2 * (i % 2) + 4 * j + u_pos.y * block_size
                 stabilizer_qubits.append(cirq.GridQubit(y1, x1))
                 stabilizer_qubits.append(cirq.GridQubit(y2, x2))
     else:
@@ -86,8 +86,8 @@ def get_stabilizer_region_qubits_for_pipe(
             y1 = block_border_y - 2 * j - 1
             y2 = block_border_y + 2 * j + 1
             for i in range(half_region_size):
-                x1 = (2 * (j % 2) - 1) + 4 * i + u_pos.x * block_size
-                x2 = (1 - 2 * (j % 2)) + 4 * i + u_pos.x * block_size
+                x1 = 2 * (j % 2) + 4 * i + u_pos.x * block_size
+                x2 = (2 - 2 * (j % 2)) + 4 * i + u_pos.x * block_size
                 stabilizer_qubits.append(cirq.GridQubit(y1, x1))
                 stabilizer_qubits.append(cirq.GridQubit(y2, x2))
     return stabilizer_qubits
