@@ -23,7 +23,6 @@ from tqec.templates.qubit import (
     QubitTemplate,
     QubitVerticalBorders,
 )
-from tqec.templates.scale import LinearFunction
 
 
 def _with_resets_on_data_qubits_on_side(

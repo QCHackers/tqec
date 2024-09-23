@@ -74,45 +74,35 @@ class Plaquette:
         return self._measurements
 
 
-def _to_plaquette_dict(
-    plaquettes: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette],
-) -> dict[int, Plaquette] | defaultdict[int, Plaquette]:
-    if isinstance(plaquettes, (dict, defaultdict)):
-        return plaquettes
-    return {i: p for i, p in enumerate(plaquettes)}
-
-
 @dataclass(frozen=True)
 class Plaquettes:
-    collection: list[Plaquette] | dict[int, Plaquette] | defaultdict[int, Plaquette]
+    collection: dict[int, Plaquette] | defaultdict[int, Plaquette]
 
     def __post_init__(self) -> None:
-        if not isinstance(self.collection, (list, dict, defaultdict)):
+        if not isinstance(self.collection, (dict, defaultdict)):
             raise TQECException(
                 f"Plaquettes initialized with {type(self.collection)} but only list, "
                 "dict and defaultdict instances are allowed."
+            )
+        if 0 in self.collection:
+            raise TQECException(
+                "Found a Plaquette with index 0. This index is reserved to express "
+                '"no plaquette". Please re-number your plaquettes starting from 1.'
             )
 
     def __getitem__(self, index: int) -> Plaquette:
         return self.collection[index]
 
     def __iter__(self) -> typing.Iterator[Plaquette]:
-        if isinstance(self.collection, list):
-            return iter(self.collection)
-        if isinstance(self.collection, defaultdict):
-            if self.collection.default_factory is not None:
-                default = self.collection.default_factory()
-                return itertools.chain(
-                    self.collection.values(), [default] if default is not None else []
-                )
-            else:
-                return iter(self.collection.values())
-        if isinstance(self.collection, dict):
-            return iter(self.collection.values())
-        else:
-            raise TQECException(
-                f"Plaquette is initialised with the wrong type: {type(self.collection)}."
+        if (
+            isinstance(self.collection, defaultdict)
+            and self.collection.default_factory is not None
+        ):
+            default = self.collection.default_factory()
+            return itertools.chain(
+                self.collection.values(), [default] if default is not None else []
             )
+        return iter(self.collection.values())
 
     @property
     def has_default(self) -> bool:
@@ -126,9 +116,5 @@ class Plaquettes:
         return len(self.collection)
 
     def __or__(self, other: Plaquettes | dict[int, Plaquette]) -> Plaquettes:
-        other_plaquettes = (
-            _to_plaquette_dict(other.collection)
-            if isinstance(other, Plaquettes)
-            else other
-        )
-        return Plaquettes(_to_plaquette_dict(self.collection) | other_plaquettes)
+        other_plaquettes = other.collection if isinstance(other, Plaquettes) else other
+        return Plaquettes(self.collection | other_plaquettes)

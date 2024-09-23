@@ -13,7 +13,9 @@ from typing_extensions import override
 from tqec.block.enums import BlockDimension
 from tqec.circuit.circuit import generate_circuit
 from tqec.circuit.operations.measurement import Measurement, RepeatedMeasurement
+from tqec.circuit.operations.operation import Detector
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
+from tqec.detectors.computation import compute_detectors_in_last_timestep
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
@@ -239,15 +241,13 @@ class StandardComputationBlock(ComputationBlock):
 
     @override
     def instantiate(self) -> cirq.Circuit:
-        circuit = generate_circuit(self.template, self.initial_plaquettes.collection)
+        circuit = generate_circuit(self.template, self.initial_plaquettes)
         if self.repeating_plaquettes is not None:
             repetitions = self.repeating_plaquettes.number_of_rounds(self.template.k)
             plaquettes = self.repeating_plaquettes.plaquettes
-            inner_circuit = generate_circuit(
-                self.template, plaquettes.collection
-            ).freeze()
+            inner_circuit = generate_circuit(self.template, plaquettes).freeze()
             circuit += cirq.CircuitOperation(inner_circuit, repetitions=repetitions)
-        circuit += generate_circuit(self.template, self.final_plaquettes.collection)
+        circuit += generate_circuit(self.template, self.final_plaquettes)
         return circuit
 
     @override
@@ -329,6 +329,34 @@ class StandardComputationBlock(ComputationBlock):
             else:  # isinstance(m, RepeatedMeasurement):
                 measurements.extend(m.measurements())
         return measurements
+
+    def compute_detectors(
+        self, subtemplate_radius_trial_range: range = range(1, 2)
+    ) -> list[list[Detector]]:
+        initial_detectors = compute_detectors_in_last_timestep(
+            self.template, (self.initial_plaquettes,), subtemplate_radius_trial_range
+        )
+        repeating_detectors: list[Detector]
+        final_detectors: list[Detector]
+        if self.repeating_plaquettes is not None:
+            repeating_detectors = compute_detectors_in_last_timestep(
+                self.template,
+                (self.initial_plaquettes, self.repeating_plaquettes.plaquettes),
+                subtemplate_radius_trial_range,
+            )
+            final_detectors = compute_detectors_in_last_timestep(
+                self.template,
+                (self.repeating_plaquettes.plaquettes, self.final_plaquettes),
+                subtemplate_radius_trial_range,
+            )
+        else:
+            repeating_detectors = []
+            final_detectors = compute_detectors_in_last_timestep(
+                self.template,
+                (self.initial_plaquettes, self.final_plaquettes),
+                subtemplate_radius_trial_range,
+            )
+        return [initial_detectors, repeating_detectors, final_detectors]
 
 
 @dataclass
