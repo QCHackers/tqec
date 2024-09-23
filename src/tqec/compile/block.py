@@ -7,13 +7,8 @@ import cirq
 import cirq.circuits
 
 from tqec.circuit.circuit import generate_circuit
-from tqec.circuit.operations.measurement import Measurement, RepeatedMeasurement
-from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.exceptions import TQECException
-from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
-from tqec.position import Position3D
+from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates import Template
-from tqec.templates.interval import Interval
 from tqec.templates.scale import LinearFunction
 
 # NOTE: Need to change this to LinearFunction(2, -1), refer to Issue#320
@@ -49,7 +44,7 @@ class CompiledBlock:
 
     def instantiate_layer(self, layer_index: int) -> cirq.Circuit:
         layer = self.layers[layer_index]
-        return generate_circuit(self.template, layer.collection)
+        return generate_circuit(self.template, layer)
 
     def scale_to(self, k: int) -> None:
         self.template.scale_to(k)
