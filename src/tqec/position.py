@@ -97,6 +97,10 @@ class Position3D:
     def __str__(self) -> str:
         return f"({self.x},{self.y},{self.z})"
 
+    def as_2d(self) -> Position:
+        """Return the position as a 2D position."""
+        return Position(self.x, self.y)
+
 
 class Direction3D(Enum):
     """Axis directions in the 3D spacetime diagram."""

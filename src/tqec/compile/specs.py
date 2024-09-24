@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
-from tqec.compile.block import CompiledBlock, _DEFAULT_BLOCK_REPETITIONS
+from tqec.compile.block import CompiledBlock
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.empty import empty_square_plaquette
@@ -28,6 +28,10 @@ from tqec.plaquette.library.memory import (
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
 from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
+from tqec.templates.scale import LinearFunction
+
+# NOTE: Need to change this to LinearFunction(2, -1), refer to Issue#320
+_DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, 1)
 
 
 @dataclass(frozen=True)

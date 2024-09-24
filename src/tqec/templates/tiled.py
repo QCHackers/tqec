@@ -6,7 +6,7 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.exceptions import TQECException
-from tqec.position import Displacement, Position
+from tqec.position import Displacement, Position, Shape2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import Scalable2D
@@ -92,6 +92,10 @@ class TiledTemplate(RectangularTemplate):
             self._nx * self._base_scalable_shape.x,
             self._ny * self._base_scalable_shape.y,
         )
+
+    @property
+    def tile_shape(self) -> Shape2D:
+        return next(iter(self._template_by_position.values())).shape
 
     @property
     @override
