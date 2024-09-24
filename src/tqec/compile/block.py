@@ -10,7 +10,7 @@ from tqec.circuit.circuit import generate_circuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
-from tqec.position import Position
+from tqec.position import Position2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.scale import LinearFunction
 from tqec.templates.tiled import TiledTemplate
@@ -55,30 +55,12 @@ class CompiledBlock:
                 new_plaquette_layers.append(plaquettes)
         return CompiledBlock(self.template, new_plaquette_layers)
 
-    @property
-    def size(self) -> int:
-        """Returns the spatial width/height of the block.
-
-        The block is assumed to be square, so the width and height are
-        the same.
-        """
-        template_shape = self.template.shape
-        assert (
-            template_shape.x == template_shape.y
-        ), "Template must be square for a block."
-        return 2 * template_shape.x
-
-    def scale_to(self, k: int) -> None:
-        """Scales the underlying template in space and implicitly the repeated
-        layers in time direction."""
-        self.template.scale_to(k)
-
 
 class TiledBlocks:
     """Represents a collection of `CompiledBlock`s tiled in a 2D grid."""
 
-    def __init__(self, blocks_by_position: dict[Position, CompiledBlock]):
-        templates_by_position: dict[Position, RectangularTemplate] = {}
+    def __init__(self, blocks_by_position: dict[Position2D, CompiledBlock]):
+        templates_by_position: dict[Position2D, RectangularTemplate] = {}
         for pos, block in blocks_by_position.items():
             templates_by_position[pos] = block.template
         self._tiled_template = TiledTemplate(template_by_position=templates_by_position)
@@ -99,8 +81,9 @@ class TiledBlocks:
         return self._tiled_layers
 
     def _merge_layers(
-        self, layers_by_position: dict[Position, list[Plaquettes]]
+        self, layers_by_position: dict[Position2D, list[Plaquettes]]
     ) -> list[Plaquettes]:
+        """Merge the layers of the different tiled blocks."""
         # Check if all the blocks have the same number of layers.
         num_layers = {len(layers) for layers in layers_by_position.values()}
         if len(num_layers) != 1:

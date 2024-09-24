@@ -33,7 +33,7 @@ from .plaquette.enums import (
 )
 from .position import (
     Displacement,
-    Position,
+    Position2D,
     Shape2D,
     Position3D,
     Direction3D,

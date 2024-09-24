@@ -21,7 +21,7 @@ from tqec.circuit.operations.measurement import (
 from tqec.circuit.operations.operation import Detector, make_detector
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
-from tqec.position import Displacement, Position
+from tqec.position import Displacement, Position2D
 from tqec.templates.base import Template
 
 
@@ -203,7 +203,7 @@ def _compute_detectors_for_fixed_radius(
         for j, subtemplate_index in enumerate(row):
             if subtemplate_index == 0:
                 continue
-            plaquette_origin = Position(j * increments.y, i * increments.x)
+            plaquette_origin = Position2D(j * increments.y, i * increments.x)
             for d in detectors_by_subtemplate[subtemplate_index]:
                 offset_measurements = list(
                     m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)

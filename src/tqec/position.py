@@ -5,7 +5,7 @@ from tqec.exceptions import TQECException
 
 
 @dataclass(frozen=True)
-class Position:
+class Position2D:
     """Simple wrapper around tuple[int, int].
 
     This class is here to explicitly name the type of variables as positions
@@ -97,9 +97,9 @@ class Position3D:
     def __str__(self) -> str:
         return f"({self.x},{self.y},{self.z})"
 
-    def as_2d(self) -> Position:
+    def as_2d(self) -> Position2D:
         """Return the position as a 2D position."""
-        return Position(self.x, self.y)
+        return Position2D(self.x, self.y)
 
 
 class Direction3D(Enum):

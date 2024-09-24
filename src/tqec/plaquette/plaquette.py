@@ -13,7 +13,7 @@ from tqec.circuit.operations.measurement import (
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
-from tqec.position import Position
+from tqec.position import Position2D
 from tqec.templates.scale import LinearFunction, round_or_fail
 
 
@@ -60,8 +60,8 @@ class Plaquette:
         self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
 
     @property
-    def origin(self) -> Position:
-        return Position(0, 0)
+    def origin(self) -> Position2D:
+        return Position2D(0, 0)
 
     @property
     def qubits(self) -> PlaquetteQubits:

@@ -43,13 +43,20 @@ class CompiledGraph:
     block_graph: BlockGraph
     tiles_by_time: dict[int, TiledBlocks]
 
+    def _check_equal_block_size(self) -> None:
+        block_sizes = {tiles.block_size for tiles in self.tiles_by_time.values()}
+        if len(block_sizes) != 1:
+            raise TQECException("The block sizes of the compiled blocks are not equal.")
+
     def scale_to(self, k: int) -> None:
         """Scale the compiled graph to the given scale `k`."""
         for tiled_blocks in self.tiles_by_time.values():
             tiled_blocks.scale_to(k)
+        self._check_equal_block_size()
 
     @property
     def block_size(self) -> int:
+        self._check_equal_block_size()
         return next(iter(self.tiles_by_time.values())).block_size
 
     def generate_stim_circuit(
@@ -244,12 +251,6 @@ def compile_block_graph(
 
     Args:
         block_graph: The block graph to compile.
-        k: The scale factor of the templates.
-        observables: The abstract observables to be included in the compiled circuit.
-            If set to "auto", the observables will be automatically determined from the
-            block graph. If a list of abstract observables is provided, only those
-            observables will be included in the compiled circuit. If set to None, no
-            observables will be included in the compiled circuit.
         custom_spec_rules: Custom specification rules for the cube specs. This is a dict
             mapping the cube specs to the corresponding spec rules. If not provided, the
             default spec rules will be used. Spec rules determine how to compile a cube

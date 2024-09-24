@@ -1,11 +1,11 @@
 import pytest
 
-from tqec.position import Position, Shape2D, Position3D, Direction3D
+from tqec.position import Position2D, Shape2D, Position3D, Direction3D
 from tqec.exceptions import TQECException
 
 
 def test_position() -> None:
-    pos = Position(1, 3)
+    pos = Position2D(1, 3)
     assert pos.x == 1
     assert pos.y == 3
 

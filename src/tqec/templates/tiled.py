@@ -6,7 +6,7 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.exceptions import TQECException
-from tqec.position import Displacement, Position, Shape2D
+from tqec.position import Displacement, Position2D, Shape2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import Scalable2D
@@ -15,7 +15,7 @@ from tqec.templates.scale import Scalable2D
 class TiledTemplate(RectangularTemplate):
     def __init__(
         self,
-        template_by_position: dict[Position, RectangularTemplate],
+        template_by_position: dict[Position2D, RectangularTemplate],
         k: int = 2,
         default_increments: Displacement | None = None,
     ) -> None:
@@ -35,7 +35,7 @@ class TiledTemplate(RectangularTemplate):
         self._base_scalable_shape = scalable_shapes.pop()
 
         # Build plaquette indices map
-        indices_map: dict[Position, dict[int, int]] = {}
+        indices_map: dict[Position2D, dict[int, int]] = {}
         index_count = 1
         indices_map = {}
         for position, template in template_by_position.items():
@@ -61,7 +61,7 @@ class TiledTemplate(RectangularTemplate):
     def get_indices_map_for_instantiation(
         self,
         instantiate_indices: Sequence[int] | None = None,
-    ) -> dict[Position, dict[int, int]]:
+    ) -> dict[Position2D, dict[int, int]]:
         if instantiate_indices is None:
             instantiate_indices = list(range(1, self.expected_plaquettes_number + 1))
         index_count = 0
@@ -149,7 +149,7 @@ class TiledTemplate(RectangularTemplate):
                 imap[i] for i in range(1, template.expected_plaquettes_number + 1)
             ]
             sub_template = template.instantiate(indices)
-            shifted_pos = Position(
+            shifted_pos = Position2D(
                 pos.x - self.origin_shift.x, pos.y - self.origin_shift.y
             )
             ret[
