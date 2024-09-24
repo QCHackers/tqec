@@ -47,7 +47,6 @@ class TiledTemplate(RectangularTemplate):
                 i: i + index_count for i in range(template.expected_plaquettes_number)
             }
             index_count += template.expected_plaquettes_number
-        self._indices_map = indices_map
 
         all_positions = list(template_by_position.keys())
         min_x = min(position.x for position in all_positions)
