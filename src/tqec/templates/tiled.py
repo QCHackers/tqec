@@ -61,8 +61,8 @@ class TiledTemplate(RectangularTemplate):
         indices_map = {}
         for position, template in self._template_by_position.items():
             indices_map[position] = {
-                i: instantiate_indices[i - 1 + index_count]
-                for i in range(1, template.expected_plaquettes_number + 1)
+                i + 1: instantiate_indices[i + index_count]
+                for i in range(template.expected_plaquettes_number)
             }
             index_count += template.expected_plaquettes_number
         return indices_map
