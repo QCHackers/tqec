@@ -121,8 +121,6 @@ def setup(app):
     app.connect("autodoc-skip-member", autodoc_skip_member_handler)
 
 
-autoclass_content = "init"
-
 # Automatically execute and import some notebooks in the documentation.
 
 # In order for Crumble IFrames to be included correctly, 1200px seems
