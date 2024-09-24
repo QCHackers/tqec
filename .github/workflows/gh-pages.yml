@@ -3,7 +3,7 @@ name: GitHub Pages
 on:
   push:
     branches:
-      - main # Set a branch name to trigger deployment
+      - main
   pull_request:
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
@@ -18,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           cache: "pip"
       - name: Install dependencies
         run: |
@@ -31,12 +32,28 @@ jobs:
         run: |
           cd docs/
           make html
-      - name: Deploy
+      - name: Deploy on 'main' branch
         uses: peaceiris/actions-gh-pages@v4
         # Only publish if we are on main!
-        # If you're changing the branch from main, also change the `main` in
-        # `refs/heads/main` below accordingly.
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/
+      - name: Deploy on PR
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref != 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html/
+          destination_dir: ./pull/${{github.event.number}}/
+      - name: Add comment on PR with the documentation link
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          message: |
+            A preview of ${{ github.event.after }} is uploaded and can be seen here:
+
+            ✨ ${{github.actor}}.github.io/pull/${{github.event.number}}/ ✨
+
+            Changes may take a few minutes to propagate.
