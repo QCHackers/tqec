@@ -1,0 +1,30 @@
+tqec.position.Position
+======================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: Position
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Position.__init__
+      ~Position.to_grid_qubit
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Position.x
+      ~Position.y
+   
+   

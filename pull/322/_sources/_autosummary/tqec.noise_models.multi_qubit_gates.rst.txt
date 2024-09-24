@@ -1,0 +1,30 @@
+tqec.noise\_models.multi\_qubit\_gates
+======================================
+
+.. automodule:: tqec.noise_models.multi_qubit_gates
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      MultiQubitDepolarizingNoiseAfterMultiQubitGate
+   
+   
+
+   
+   
+   
+
+
+

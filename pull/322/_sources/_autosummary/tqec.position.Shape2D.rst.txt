@@ -1,0 +1,30 @@
+tqec.position.Shape2D
+=====================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: Shape2D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Shape2D.__init__
+      ~Shape2D.to_numpy_shape
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Shape2D.x
+      ~Shape2D.y
+   
+   

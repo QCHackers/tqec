@@ -1,0 +1,39 @@
+tqec.circuit.schedule.ScheduledCircuit
+======================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autoclass:: ScheduledCircuit
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ScheduledCircuit.__init__
+      ~ScheduledCircuit.add_to_schedule_index
+      ~ScheduledCircuit.from_multi_qubit_moment_schedule
+      ~ScheduledCircuit.map_to_qubits
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE
+      ~ScheduledCircuit.detectors
+      ~ScheduledCircuit.mappable_qubits
+      ~ScheduledCircuit.moments
+      ~ScheduledCircuit.number_of_non_virtual_moments
+      ~ScheduledCircuit.qubits
+      ~ScheduledCircuit.raw_circuit
+      ~ScheduledCircuit.schedule
+      ~ScheduledCircuit.scheduled_moments
+   
+   

@@ -1,0 +1,33 @@
+tqec.templates.qubit
+====================
+
+.. automodule:: tqec.templates.qubit
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Qubit4WayJunctionTemplate
+      QubitHorizontalBorders
+      QubitTemplate
+      QubitVerticalBorders
+   
+   
+
+   
+   
+   
+
+
+

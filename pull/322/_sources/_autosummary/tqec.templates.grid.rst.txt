@@ -1,0 +1,30 @@
+tqec.templates.grid
+===================
+
+.. automodule:: tqec.templates.grid
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      GridTemplate
+   
+   
+
+   
+   
+   
+
+
+

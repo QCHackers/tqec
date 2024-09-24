@@ -1,0 +1,40 @@
+tqec.circuit
+============
+
+.. automodule:: tqec.circuit
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   circuit
+
+
+   observable_qubits
+
+
+   operations
+
+   schedule
+

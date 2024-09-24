@@ -1,0 +1,49 @@
+tqec.templates
+==============
+
+.. automodule:: tqec.templates
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   base
+
+   display
+
+   enums
+
+   grid
+
+   interval
+
+
+   qubit
+
+
+   scale
+
+
+   subtemplates
+
