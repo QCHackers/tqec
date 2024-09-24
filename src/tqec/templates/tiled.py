@@ -38,16 +38,6 @@ class TiledTemplate(RectangularTemplate):
             )
         self._base_scalable_shape = scalable_shapes.pop()
 
-        # Build plaquette indices map
-        indices_map: dict[Position2D, dict[int, int]] = {}
-        index_count = 1
-        indices_map = {}
-        for position, template in template_by_position.items():
-            indices_map[position] = {
-                i: i + index_count for i in range(template.expected_plaquettes_number)
-            }
-            index_count += template.expected_plaquettes_number
-
         all_positions = list(template_by_position.keys())
         min_x = min(position.x for position in all_positions)
         max_x = max(position.x for position in all_positions)
@@ -71,7 +61,7 @@ class TiledTemplate(RectangularTemplate):
         indices_map = {}
         for position, template in self._template_by_position.items():
             indices_map[position] = {
-                i: instantiate_indices[i + index_count]
+                i: instantiate_indices[i - 1 + index_count]
                 for i in range(1, template.expected_plaquettes_number + 1)
             }
             index_count += template.expected_plaquettes_number
