@@ -12,6 +12,9 @@ TQEC
    :hidden:
 
    Introduction <self>
+   Installation <installation>
+   Quick start <quick_start>
+   Contributing <contributing>
    Automatic detector computation <detectors>
 
 .. toctree::
