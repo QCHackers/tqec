@@ -25,7 +25,7 @@ class Position:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Shape2D:
     """Simple wrapper around tuple[int, int].
 
