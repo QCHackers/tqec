@@ -1,0 +1,25 @@
+# .github/workflows/pr-close.yml
+
+name: Delete preview on PR close
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: make empty dir
+        run: mkdir public
+      - name: Push an empty directory to pull/[number]
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/
+          destination_dir: ./pull/${{github.event.number}}/
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            🪓 PR closed, deleted preview at https://qchackers.github.io/tqec/pull/${{github.event.number}}/
