@@ -30,7 +30,6 @@ jobs:
       - name: Generate the documentation
         run: |
           cd docs/
-          sphinx-apidoc --no-toc -o source ../src/ '../src/**/*_test.py'
           make html
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4

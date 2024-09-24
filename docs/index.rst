@@ -22,3 +22,10 @@ TQEC
    :caption: Notebooks:
 
    Automatic detector computation <media/detectors/detector_computation_illustration>
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: API documentation
+   :recursive:
+
+   tqec

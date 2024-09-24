@@ -179,7 +179,7 @@ pyvenv.cfg
 
 # Sphinx
 docs/_build
-docs/source
+docs/_autosummary
 
 # Rye
 .python-version

@@ -370,9 +370,12 @@ class BlockGraph:
 
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we only check the constraints
         d, f and g in the figure:
-            1. No 3D corner: all the pipes are within the same plane.
-            2. Match color at pass-through: the pipes and cube have the same color at the pass-through.
-            3. Match color at turn: the pipes and cube have the same color at the bent side of the turn.
+
+        1. No 3D corner: all the pipes are within the same plane.
+        2. Match color at pass-through: the pipes and cube have the same color at the
+            pass-through.
+        3. Match color at turn: the pipes and cube have the same color at the bent side
+            of the turn.
 
         Args:
             allow_virtual_node: Whether to allow the virtual node in the graph. A virtual node is an open
