@@ -22,9 +22,10 @@ class CompiledBlock:
 
     Attributes:
         template: the template that defines the cube implementation.
-        layers: a list of `Plaquettes` that represent different functional layers of the cube.
-            When aligning two `CompiledBlock`s, the layers are aligned in order. Typically, there
-            are three layers in most cube implementations: Initialization, Repetitions, and Measurement.
+        layers: a list of `Plaquettes` that represent different functional layers of the
+            cube. When aligning two `CompiledBlock`s, the layers are aligned in order.
+            Typically, there are three layers in most cube implementations:
+            Initialization, Repetitions, and Measurement.
     """
 
     template: RectangularTemplate
@@ -98,28 +99,25 @@ class TiledBlocks:
             merged_plaquettes: defaultdict[int, Plaquette] = defaultdict(
                 empty_square_plaquette
             )
-            repetitions: set[LinearFunction] = set()
-            repeated: bool = False
+            repetitions: LinearFunction | None = None
             for pos, layers in layers_by_position.items():
                 layer = layers[i]
                 if isinstance(layer, RepeatedPlaquettes):
-                    repetitions.add(layer.repetitions)
-                    repeated = True
-                else:
-                    repetitions.add(LinearFunction(0, 0))
-                if len(repetitions) > 1:
-                    raise TQECException(
-                        "All the block layers on the same z-plane must have the same repeating structure, i.e.",
-                        "either all the layers are repeated and have the same scaling behavior for the repetitions"
-                        "or none of them are repeated.",
-                    )
+                    if repetitions is not None and layer.repetitions != repetitions:
+                        raise TQECException(
+                            "All the block layers on the same z-plane must have the "
+                            "same repeating structure, i.e. either all the layers are "
+                            "repeated and have the same scaling behavior for the "
+                            "repetitions or none of them are repeated."
+                        )
+                    repetitions = layer.repetitions
                 imap = indices_map[pos]
                 merged_plaquettes.update(
                     {imap[i]: plaquette for i, plaquette in layer.collection.items()}
                 )
             plaquettes = Plaquettes(merged_plaquettes)
-            if repeated:
-                plaquettes = plaquettes.repeat(repetitions.pop())
+            if repetitions is not None:
+                plaquettes = plaquettes.repeat(repetitions)
             tiled_layers.append(plaquettes)
         return tiled_layers
 

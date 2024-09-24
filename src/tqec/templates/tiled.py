@@ -99,7 +99,7 @@ class TiledTemplate(RectangularTemplate):
 
     @property
     def tile_shape(self) -> Shape2D:
-        return next(iter(self._template_by_position.values())).shape
+        return self._base_scalable_shape.to_shape_2d(self._k)
 
     @property
     @override
