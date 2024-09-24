@@ -115,7 +115,7 @@ class CompiledGraph:
             # construct detectors
             if detection_radius is None:
                 continue
-            detectors = self.construct_detectors(
+            detectors = _construct_detectors_by_layer(
                 tiles.tiled_template, tiles.tiled_layers, detection_radius
             )
             for i, layer_detectors in enumerate(detectors):
@@ -124,7 +124,7 @@ class CompiledGraph:
                     make_shift_coords(0, 0, 1), cirq.InsertStrategy.INLINE
                 )
         # construct observables
-        self.inplace_add_observables(
+        _inplace_add_observables(
             circuits, self.get_abstract_observables(observables), self.block_size
         )
         # shift and merge circuits
@@ -182,64 +182,64 @@ class CompiledGraph:
             circuits_by_time.append(sum(circuits_at_t, cirq.Circuit()))
         return sum(circuits_by_time, cirq.Circuit())
 
-    def construct_detectors(
-        self,
-        template: TiledTemplate,
-        layers: list[Plaquettes],
-        subtemplate_radius_trial_range: range = range(1, 2),
-    ) -> list[list[Detector]]:
-        detectors_by_layer = []
-        for i in range(len(layers)):
-            if i == 0:
-                subsequent_layers = (layers[0],)
-            else:
-                subsequent_layers = (layers[i - 1], layers[i])
-            detectors = compute_detectors_in_last_timestep(
-                template, subsequent_layers, subtemplate_radius_trial_range
-            )
-            detectors_by_layer.append(detectors)
-        return detectors_by_layer
 
-    def inplace_add_observables(
-        self,
-        assembled_circuits: dict[int, list[cirq.Circuit]],
-        abstract_observables: list[AbstractObservable],
-        block_size: int,
-    ) -> None:
-        """Inplace add the observable components to the circuits."""
-        for i, observable in enumerate(abstract_observables):
-            # Add the stabilizer region measurements to the end of the first layer of circuits at z.
-            for pipe in observable.bottom_regions:
-                z = pipe.u.position.z
-                stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
-                    pipe, block_size
+def _construct_detectors_by_layer(
+    template: TiledTemplate,
+    layers: list[Plaquettes],
+    subtemplate_radius_trial_range: range = range(1, 2),
+) -> list[list[cirq.Operation]]:
+    detectors_by_layer = []
+    subsequent_layers: tuple[Plaquettes, Plaquettes] | tuple[Plaquettes]
+    for i in range(len(layers)):
+        if i == 0:
+            subsequent_layers = (layers[0],)
+        else:
+            subsequent_layers = (layers[i - 1], layers[i])
+        detectors = compute_detectors_in_last_timestep(
+            template, subsequent_layers, subtemplate_radius_trial_range
+        )
+        detectors_by_layer.append(detectors)
+    return detectors_by_layer
+
+
+def _inplace_add_observables(
+    circuits: dict[int, list[cirq.Circuit]],
+    abstract_observables: list[AbstractObservable],
+    block_size: int,
+) -> None:
+    """Inplace add the observable components to the circuits.
+
+    The circuits are grouped by time slices and layers. The key of the
+    circuits is the time coordinate and the value is a list of circuits
+    at that time slice ordered by layers.
+    """
+    for i, observable in enumerate(abstract_observables):
+        # Add the stabilizer region measurements to the end of the first layer of circuits at z.
+        for pipe in observable.bottom_regions:
+            z = pipe.u.position.z
+            stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(pipe, block_size)
+            observables = [
+                make_observable(
+                    measurements=[Measurement(q, -1) for q in stabilizer_qubits],
+                    observable_index=i,
                 )
-                observables = [
-                    make_observable(
-                        measurements=[Measurement(q, -1) for q in stabilizer_qubits],
-                        observable_index=i,
-                    )
-                ]
-                assembled_circuits[z][0].append(observables, cirq.InsertStrategy.INLINE)
-            # Add the line measurements to the end of the last layer of circuits at z.
-            for cube_or_pipe in observable.top_lines:
-                if isinstance(cube_or_pipe, Cube):
-                    qubits = get_midline_qubits_for_cube(cube_or_pipe, block_size)
-                    z = cube_or_pipe.position.z
-                else:
-                    qubits = [
-                        get_center_qubit_at_horizontal_pipe(cube_or_pipe, block_size)
-                    ]
-                    z = cube_or_pipe.u.position.z
-                observables = [
-                    make_observable(
-                        measurements=[Measurement(q, -1) for q in qubits],
-                        observable_index=i,
-                    )
-                ]
-                assembled_circuits[z][-1].append(
-                    observables, cirq.InsertStrategy.INLINE
+            ]
+            circuits[z][0].append(observables, cirq.InsertStrategy.INLINE)
+        # Add the line measurements to the end of the last layer of circuits at z.
+        for cube_or_pipe in observable.top_lines:
+            if isinstance(cube_or_pipe, Cube):
+                qubits = get_midline_qubits_for_cube(cube_or_pipe, block_size)
+                z = cube_or_pipe.position.z
+            else:
+                qubits = [get_center_qubit_at_horizontal_pipe(cube_or_pipe, block_size)]
+                z = cube_or_pipe.u.position.z
+            observables = [
+                make_observable(
+                    measurements=[Measurement(q, -1) for q in qubits],
+                    observable_index=i,
                 )
+            ]
+            circuits[z][-1].append(observables, cirq.InsertStrategy.INLINE)
 
 
 def compile_block_graph(

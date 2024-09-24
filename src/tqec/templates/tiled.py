@@ -19,6 +19,10 @@ class TiledTemplate(RectangularTemplate):
         k: int = 2,
         default_increments: Displacement | None = None,
     ) -> None:
+        """A template representing a tiling of other templates.
+
+        The tiles are indexed by their position in the tiling.
+        """
         super().__init__(k, default_increments)
         if not template_by_position:
             raise TQECException(

@@ -95,7 +95,9 @@ class TiledBlocks:
         indices_map = self._tiled_template.get_indices_map_for_instantiation()
         tiled_layers: list[Plaquettes] = []
         for i in range(num_layers.pop()):
-            merged_plaquettes = defaultdict(empty_square_plaquette)
+            merged_plaquettes: defaultdict[int, Plaquette] = defaultdict(
+                empty_square_plaquette
+            )
             repetitions: set[LinearFunction] = set()
             repeated: bool = False
             for pos, layers in layers_by_position.items():
