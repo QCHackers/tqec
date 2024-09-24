@@ -95,8 +95,8 @@ generated.
 
     circuit_with_detectors = annotate_detectors_automatically(circuit)
 
+And that's all! You now have a quantum circuit representing the topological
+error-corrected implementation of a CNOT gate shown at the beginning of this page.
 
-6. Enjoy
---------
-
-The quantum circuit can now be used in simulations using ``stim``.
+You can download the circuit in a ``stim`` format here:
+:download:`media/quick_start/clean_exportable_cnot.stim <./media/quick_start/clean_exportable_cnot.stim>`.
