@@ -53,14 +53,12 @@ if __name__ == "__main__":
 
     # 3. Compile the `BlockGraph` and generate noisy `stim.Circuit`
     # NOTE:that the scalable detector automation approach is still work in process.
-    # Here we disable it in `generate_stim_circuit` by setting `detection_region=None`
     compiled_graph = compile_block_graph(block_graph)
 
     def generate_stim_circuit(k: int, p: float) -> stim.Circuit:
         circuit_without_detectors = compiled_graph.generate_stim_circuit(
             k,
             observables=[observables[1]],
-            detection_radius=None,
             noise_models=[
                 AfterCliffordDepolarizingNoise(p),
                 DepolarizingNoiseOnIdlingQubit(p),

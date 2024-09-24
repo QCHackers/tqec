@@ -1,4 +1,6 @@
+from matplotlib.pyplot import annotate
 from tqec import BlockGraph, CubeType, Position3D, PipeType
+from tqec.circuit import annotate_detectors_automatically
 from tqec.compile import compile_block_graph
 
 # 1. Logical Memory(1 Cube)
@@ -38,5 +40,6 @@ from tqec.compile import compile_block_graph
 # 5. CNOT
 cnot = BlockGraph.from_dae_file("notebooks/assets/clean_exportable_cnot.dae")
 compiled_graph = compile_block_graph(cnot)
-circuit = compiled_graph.generate_stim_circuit(k=1)
+circuit_without_detectors = compiled_graph.generate_stim_circuit(k=1)
+circuit = annotate_detectors_automatically(circuit_without_detectors)
 print(circuit)

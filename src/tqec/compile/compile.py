@@ -6,13 +6,9 @@ import stim
 import stimcirq
 
 from tqec.circuit.operations.measurement import Measurement
-from tqec.circuit.operations.operation import (
-    make_observable,
-    make_shift_coords,
-)
+from tqec.circuit.operations.operation import make_observable
 from tqec.circuit.operations.transformer import transform_to_stimcirq_compatible
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.compile.detectors import compute_detectors_in_last_timestep
 from tqec.compile.observables import (
     get_center_qubit_at_horizontal_pipe,
     get_midline_qubits_for_cube,
@@ -25,13 +21,12 @@ from tqec.compile.substitute import (
 )
 from tqec.exceptions import TQECException
 from tqec.noise_models.base import BaseNoiseModel
-from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
+from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
 from tqec.sketchup.block_graph import AbstractObservable, BlockGraph, Cube
 from tqec.compile.block import CompiledBlock, TiledBlocks
 from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
 from tqec.templates.scale import round_or_fail
-from tqec.templates.tiled import TiledTemplate
 
 
 @dataclass
@@ -64,7 +59,6 @@ class CompiledGraph:
         self,
         k: int,
         observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
-        detection_radius: range | None = range(1, 2),
         noise_models: Iterable[BaseNoiseModel] = (),
     ) -> stim.Circuit:
         """Generate the stim circuit from the compiled graph.
@@ -77,15 +71,11 @@ class CompiledGraph:
                 the block graph. If a list of abstract observables is provided, only
                 those observables will be included in the compiled circuit. If set to
                 None, no observables will be included in the compiled circuit.
-            detection_radius: The radius of the subtemplates to be used for the
-                constructing detectors automatically.
             noise_models: The noise models to be applied to the circuit.
 
             A compiled stim circuit.
         """
-        cirq_circuit = self.generate_cirq_circuit(
-            k, observables, detection_radius, noise_models
-        )
+        cirq_circuit = self.generate_cirq_circuit(k, observables, noise_models)
         cirq_circuit = transform_to_stimcirq_compatible(cirq_circuit)
         return stimcirq.cirq_circuit_to_stim_circuit(cirq_circuit)
 
@@ -93,7 +83,6 @@ class CompiledGraph:
         self,
         k: int,
         observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
-        detection_radius: range | None = range(1, 2),
         noise_models: Iterable[BaseNoiseModel] = (),
     ) -> cirq.Circuit:
         """Generate the cirq circuit from the compiled graph.
@@ -106,8 +95,6 @@ class CompiledGraph:
                 the block graph. If a list of abstract observables is provided, only
                 those observables will be included in the compiled circuit. If set to
                 None, no observables will be included in the compiled circuit.
-            detection_radius: The radius of the subtemplates to be used for the
-                constructing detectors automatically.
             noise_models: The noise models to be applied to the circuit.
 
         Returns:
@@ -120,17 +107,6 @@ class CompiledGraph:
             circuits.append(
                 [tiles.instantiate_layer(i) for i in range(tiles.num_layers)]
             )
-            # construct detectors
-            if detection_radius is None:
-                continue
-            detectors = _construct_detectors_by_layer(
-                tiles.tiled_template, tiles.tiled_layers, detection_radius
-            )
-            for i, layer_detectors in enumerate(detectors):
-                circuits[-1][i].append(layer_detectors, cirq.InsertStrategy.INLINE)
-                circuits[-1][i].append(
-                    make_shift_coords(0, 0, 1), cirq.InsertStrategy.INLINE
-                )
         # construct observables
         self._inplace_add_observables(
             circuits, self.get_abstract_observables(observables), self.block_size
@@ -239,25 +215,6 @@ class CompiledGraph:
                     )
                 ]
                 circuits[z][-1].append(observables, cirq.InsertStrategy.INLINE)
-
-
-def _construct_detectors_by_layer(
-    template: TiledTemplate,
-    layers: list[Plaquettes],
-    subtemplate_radius_trial_range: range = range(1, 2),
-) -> list[list[cirq.Operation]]:
-    detectors_by_layer = []
-    subsequent_layers: tuple[Plaquettes, Plaquettes] | tuple[Plaquettes]
-    for i in range(len(layers)):
-        if i == 0:
-            subsequent_layers = (layers[0],)
-        else:
-            subsequent_layers = (layers[i - 1], layers[i])
-        detectors = compute_detectors_in_last_timestep(
-            template, subsequent_layers, subtemplate_radius_trial_range
-        )
-        detectors_by_layer.append(detectors)
-    return detectors_by_layer
 
 
 def compile_block_graph(
