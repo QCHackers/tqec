@@ -30,8 +30,7 @@ from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
 from tqec.templates.scale import LinearFunction
 
-# NOTE: Need to change this to LinearFunction(2, -1), refer to Issue#320
-_DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, 1)
+_DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, -1)
 
 
 @dataclass(frozen=True)
