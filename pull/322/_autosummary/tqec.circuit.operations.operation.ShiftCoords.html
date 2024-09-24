@@ -115,33 +115,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ShiftCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shifts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#ShiftCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords" title="Link to this definition"></a></dt>
-<dd><p>Annotates that the qubit/detector coordinate origin is being moved.</p>
-<p>This is a replication of the
-[stimcirq.ShiftCoordsAnnotation](<a class="reference external" href="https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py">https://github.com/quantumlib/Stim/blob/main/glue/cirq/stimcirq/_shift_coords_annotation.py</a>)
-class. We can directly use <cite>stimcirq.ShiftCoordsAnnotation</cite> here, however,
-replication brings the class into the <cite>tqec</cite> namespace and is useful for the
-potential future iteration.</p>
-<p>Since the operation is not a real quantum operation, it does not have qubits
-and is not applied to any qubits. This might cause surprising behavior if you
-try to append or insert it into a circuit. It is always recommended to containerize
-this operation in a <cite>cirq.Moment</cite> before appending it to a circuit.</p>
-<p>In <cite>tqec</cite>, this kind of annotation operation should be tagged with the <cite>cirq.VirtualTag</cite>
-and the <cite>STIM_TAG</cite> to work correctly with the circuit transformation and the noise model.
-You can use the <cite>make_shift_coords</cite> helper function to create an instance of this class
-with the correct tags. Otherwise, you might need to manually tag the operation with the
-<cite>cirq.VirtualTag</cite> and the <cite>STIM_TAG</cite>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>you should use <cite>make_shift_coords</cite> to create instances of this class.
-To understand how to use this class directly, please refer to the
-documentation above.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>*shifts</strong> – How much to shift each coordinate.</p>
-</dd>
-</dl>
-<dl class="py method">
+<dd><dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.ShiftCoords.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shifts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#ShiftCoords.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.ShiftCoords.__init__" title="Link to this definition"></a></dt>
 <dd><p>Annotates that the qubit/detector coordinate origin is being moved.</p>

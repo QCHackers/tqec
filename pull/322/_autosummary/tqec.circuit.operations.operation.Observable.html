@@ -115,32 +115,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.operations.measurement.Measurement.html#tqec.circuit.operations.measurement.Measurement" title="tqec.circuit.operations.measurement.Measurement"><span class="pre">Measurement</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#Observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.Observable" title="Link to this definition"></a></dt>
-<dd><p>Operation representing an observable.</p>
-<p>Since the operation is not a real quantum operation, it does not have qubits
-and is not applied to any qubits. This might cause surprising behavior if you
-try to append or insert it into a circuit. It is always recommended to containerize
-this operation in a <cite>cirq.Moment</cite> before appending it to a circuit.</p>
-<p>In <cite>tqec</cite>, this kind of annotation operation should be tagged with the <cite>cirq.VirtualTag</cite>
-and the <cite>STIM_TAG</cite> to work correctly with the circuit transformation and the noise model.
-You can use the <cite>make_observable</cite> helper function to create an instance of this class
-with the correct tags. Otherwise, you might need to manually tag the operation with the
-<cite>cirq.VirtualTag</cite> and the <cite>STIM_TAG</cite>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>you should use <cite>make_observable</cite> to create instances of this class.
-To understand how to use this class directly, please refer to the
-documentation above.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>measurement_data</strong> – a sequence of <a class="reference internal" href="tqec.circuit.operations.measurement.Measurement.html#tqec.circuit.operations.measurement.Measurement" title="tqec.circuit.operations.measurement.Measurement"><code class="xref py py-class docutils literal notranslate"><span class="pre">Measurement</span></code></a> that form
-a group. There should be no duplicate in the provided sequence.</p></li>
-<li><p><strong>observable_index</strong> – index of the observable.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
+<dd><dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.operations.operation.Observable.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.operations.measurement.Measurement.html#tqec.circuit.operations.measurement.Measurement" title="tqec.circuit.operations.measurement.Measurement"><span class="pre">Measurement</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/operations/operation.html#Observable.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.operations.operation.Observable.__init__" title="Link to this definition"></a></dt>
 <dd><p>Operation representing an observable.</p>
