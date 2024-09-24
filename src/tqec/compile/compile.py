@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Literal
 import cirq
@@ -23,6 +24,7 @@ from tqec.compile.substitute import (
     DEFAULT_SUBSTITUTION_RULES,
 )
 from tqec.exceptions import TQECException
+from tqec.noise_models.base import BaseNoiseModel
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
 from tqec.sketchup.block_graph import AbstractObservable, BlockGraph, Cube
@@ -63,6 +65,7 @@ class CompiledGraph:
         k: int,
         observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
         detection_radius: range | None = range(1, 2),
+        noise_models: Iterable[BaseNoiseModel] = (),
     ) -> stim.Circuit:
         """Generate the stim circuit from the compiled graph.
 
@@ -76,10 +79,13 @@ class CompiledGraph:
                 None, no observables will be included in the compiled circuit.
             detection_radius: The radius of the subtemplates to be used for the
                 constructing detectors automatically.
+            noise_models: The noise models to be applied to the circuit.
 
             A compiled stim circuit.
         """
-        cirq_circuit = self.generate_cirq_circuit(k, observables, detection_radius)
+        cirq_circuit = self.generate_cirq_circuit(
+            k, observables, detection_radius, noise_models
+        )
         cirq_circuit = transform_to_stimcirq_compatible(cirq_circuit)
         return stimcirq.cirq_circuit_to_stim_circuit(cirq_circuit)
 
@@ -88,6 +94,7 @@ class CompiledGraph:
         k: int,
         observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
         detection_radius: range | None = range(1, 2),
+        noise_models: Iterable[BaseNoiseModel] = (),
     ) -> cirq.Circuit:
         """Generate the cirq circuit from the compiled graph.
 
@@ -101,6 +108,7 @@ class CompiledGraph:
                 None, no observables will be included in the compiled circuit.
             detection_radius: The radius of the subtemplates to be used for the
                 constructing detectors automatically.
+            noise_models: The noise models to be applied to the circuit.
 
         Returns:
             A compiled cirq circuit.
@@ -128,7 +136,11 @@ class CompiledGraph:
             circuits, self.get_abstract_observables(observables), self.block_size
         )
         # shift and merge circuits
-        return self._shift_and_merge_circuits(circuits)
+        circuit = self._shift_and_merge_circuits(circuits)
+        # apply noise models
+        for noise_model in noise_models:
+            circuit = circuit.with_noise(noise_model)
+        return circuit
 
     def get_abstract_observables(
         self,

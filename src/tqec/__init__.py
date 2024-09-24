@@ -10,6 +10,7 @@ from .circuit import (
     ScheduleException,
     generate_circuit,
     merge_scheduled_circuits,
+    annotate_detectors_automatically,
 )
 from .exceptions import TQECException
 from .noise_models import (
@@ -61,3 +62,5 @@ from .sketchup import (
     write_block_graph_to_dae_file,
     display_collada_model,
 )
+
+from tqec.compile import compile_block_graph
