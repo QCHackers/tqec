@@ -32,21 +32,21 @@ jobs:
         run: |
           cd docs/
           make html
-      - name: Deploy on 'main' branch
+      - name: Deploy if 'main' branch
         uses: peaceiris/actions-gh-pages@v4
         # Only publish if we are on main!
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/
-      - name: Deploy on PR
+      - name: Deploy if PR
         uses: peaceiris/actions-gh-pages@v4
         if: github.ref != 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/
           destination_dir: ./pull/${{github.event.number}}/
-      - name: Add comment on PR with the documentation link
+      - name: Add comment if PR
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
@@ -54,6 +54,6 @@ jobs:
           message: |
             A preview of ${{ github.event.after }} is uploaded and can be seen here:
 
-            ✨ ${{github.actor}}.github.io/pull/${{github.event.number}}/ ✨
+            ✨ https://qchackers.github.io/tqec/pull/${{github.event.number}}/ ✨
 
             Changes may take a few minutes to propagate.
