@@ -33,7 +33,7 @@ class CompiledGraph:
     tiles_by_time: list[TiledBlocks]
     observables: list[AbstractObservable]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if len(self.tiles_by_time) == 0:
             raise TQECException(
                 "The compiled graph should have at least one time slice."
