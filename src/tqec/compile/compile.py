@@ -12,7 +12,7 @@ from tqec.compile.substitute import (
     SubstitutionRule,
     DEFAULT_SUBSTITUTION_RULES,
 )
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 from tqec.noise_models.base import BaseNoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
@@ -32,6 +32,15 @@ class CompiledGraph:
 
     tiles_by_time: list[TiledBlocks]
     observables: list[AbstractObservable]
+
+    def __post_init__(self):
+        if len(self.tiles_by_time) == 0:
+            raise TQECException(
+                "The compiled graph should have at least one time slice."
+                "But get an empty tiles_by_time."
+            )
+        if len(self.observables) == 0:
+            raise TQECWarning("The compiled graph includes no observable.")
 
     def _check_equal_block_size(self) -> None:
         block_sizes = {tiles.block_size for tiles in self.tiles_by_time}

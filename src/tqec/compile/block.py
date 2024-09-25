@@ -71,6 +71,12 @@ class TiledBlocks:
 
     @property
     def block_size(self) -> int:
+        """Return the uniform block size of the tiled blocks.
+
+        In this implementation, all the block itself should be square
+        shape and have the same width and height as the block size. And
+        all the blocks should have the same size.
+        """
         return 2 * self._tiled_template.tile_shape.x
 
     @property
