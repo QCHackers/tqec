@@ -64,7 +64,7 @@ In order to get a ``stim.Circuit`` instance, the computation first need to be co
 
     from tqec import compile_block_graph
 
-    compiled_computation = compile_block_graph(block_graph)
+    compiled_computation = compile_block_graph(block_graph, [observables[1]])
 
 From this compiled computation, the final ``stim.Circuit`` instance can be generated.
 
@@ -76,7 +76,6 @@ From this compiled computation, the final ``stim.Circuit`` instance can be gener
 
     circuit = compiled_computation.generate_stim_circuit(
         k=2,
-        observables=[observables[1]],
         noise_models=[
             AfterCliffordDepolarizingNoise(0.001),
             DepolarizingNoiseOnIdlingQubit(0.001),

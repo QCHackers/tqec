@@ -29,14 +29,12 @@ from tqec.noise_models import (
 
 block_graph = BlockGraph.from_dae_file("clean_exportable_cnot.dae")
 observables = block_graph.get_abstract_observables()
-compiled_computation = compile_block_graph(block_graph)
+compiled_computation = compile_block_graph(block_graph, [observables[1]])
 
 circuit = compiled_computation.generate_stim_circuit(
     # Can be changed to whatever value you want. Large values will
     # take a lot of time.
     k=2,
-    # Can be changed to any of the observables in `observables`.
-    observables=[observables[1]],
     # The noise applied and noise levels can be changed.
     noise_models=[
         AfterCliffordDepolarizingNoise(0.001),
