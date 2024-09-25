@@ -20,6 +20,7 @@ jobs:
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: documentation-preview
           recreate: true
           message: |
             🪓 PR closed, deleted preview at https://qchackers.github.io/tqec/pull/${{github.event.number}}/

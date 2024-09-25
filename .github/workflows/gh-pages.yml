@@ -50,6 +50,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
+          header: documentation-preview
           recreate: true
           message: |
             A preview of ${{ github.event.after }} is uploaded and can be seen here:
