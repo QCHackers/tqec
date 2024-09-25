@@ -94,11 +94,49 @@
 <p>Design automation software tools for Topological Quantum Error Correction</p>
 <section id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
-<p>See the <a class="reference external" href="https://qchackers.github.io/tqec/installation.html">installation procedure</a>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/QCHackers/tqec.git
+</pre></div>
+</div>
+<p>For a more in-depth explanation, see the <a class="reference external" href="https://qchackers.github.io/tqec/installation.html">installation procedure</a>.</p>
 </section>
-<section id="architecture">
-<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
-<p>Refer to <a class="reference external" href="https://github.com/QCHackers/tqec/wiki/TQEC-Architecture">this wiki page</a> for more information.</p>
+<section id="quick-start">
+<h3>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h3>
+<p>Download the example file <a class="reference external" href="https://qchackers.github.io/tqec/_downloads/fcd0bb4733dfdae3092f2457e73d0c47/clean_exportable_cnot.dae">clean_exportable_cnot.dae</a>.</p>
+<p>You can generate <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instances representing that computation using</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">compile_block_graph</span><span class="p">,</span> <span class="n">annotate_detectors_automatically</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">,</span> <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;clean_exportable_cnot.dae&quot;</span><span class="p">)</span>
+<span class="n">observables</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
+<span class="n">compiled_computation</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span><span class="n">block_graph</span><span class="p">)</span>
+
+<span class="n">circuit</span> <span class="o">=</span> <span class="n">compiled_computation</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>
+    <span class="c1"># Can be changed to whatever value you want. Large values will</span>
+    <span class="c1"># take a lot of time.</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="c1"># Can be changed to any of the observables in `observables`.</span>
+    <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+    <span class="c1"># The noise applied and noise levels can be changed.</span>
+    <span class="n">noise_models</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
+        <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="n">circuit_with_detectors</span> <span class="o">=</span> <span class="n">annotate_detectors_automatically</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">circuit_with_detectors</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://qchackers.github.io/tqec/quick_start.html">quick start tutorial</a> for a
+more in-depth explanation.</p>
+</section>
+<section id="contributing">
+<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h3>
+<p>Pull requests and issues are more than welcomed!</p>
+<p>See the <a class="reference external" href="https://qchackers.github.io/tqec/contributing.html">contributing page</a> for specific instructions to start contributing.</p>
 </section>
 <section id="helpful-links">
 <h3>Helpful Links<a class="headerlink" href="#helpful-links" title="Link to this heading"></a></h3>
@@ -109,10 +147,6 @@
 <li><p><a class="reference external" href="https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing">Overview of state of the art 2D QEC</a></p></li>
 <li><p><a class="reference external" href="https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view">Backend deep dive</a></p></li>
 </ol>
-</section>
-<section id="contributing">
-<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h3>
-<p>See the <a class="reference external" href="https://qchackers.github.io/tqec/contributing.html">contributing page</a>.</p>
 </section>
 </section>
 <div class="toctree-wrapper compound">
