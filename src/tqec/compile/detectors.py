@@ -209,6 +209,11 @@ def _compute_detectors_for_fixed_radius(
                     m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)
                     for m in d.measurement_data
                 )
+                # We use the convention of `cirq.GridQubit` where the first coordinate
+                # is the column and the second coordinate is the row. Note that the
+                # coordinates of detectors are derived from the qubits, which are
+                # already in the `GridQubit` convention. So we only need to swap the
+                # coordinates of the plaquette origin.
                 coordinates = (
                     d.coordinates[0] + plaquette_origin.y,
                     d.coordinates[1] + plaquette_origin.x,
