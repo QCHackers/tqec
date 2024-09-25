@@ -5,15 +5,8 @@ import cirq
 import stim
 import stimcirq
 
-from tqec.circuit.operations.measurement import Measurement
-from tqec.circuit.operations.operation import make_observable
 from tqec.circuit.operations.transformer import transform_to_stimcirq_compatible
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.compile.observables import (
-    get_center_qubit_at_horizontal_pipe,
-    get_midline_qubits_for_cube,
-    get_stabilizer_region_qubits_for_pipe,
-)
 from tqec.compile.substitute import (
     SubstitutionKey,
     SubstitutionRule,
@@ -23,9 +16,10 @@ from tqec.exceptions import TQECException
 from tqec.noise_models.base import BaseNoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
-from tqec.sketchup.block_graph import AbstractObservable, BlockGraph, Cube
+from tqec.sketchup.block_graph import AbstractObservable, BlockGraph
 from tqec.compile.block import CompiledBlock, TiledBlocks
 from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
+from tqec.compile.observables import inplace_add_observables
 from tqec.templates.scale import round_or_fail
 
 
@@ -36,8 +30,8 @@ class CompiledGraph:
     This class should be easy to scale and generate circuits directly.
     """
 
-    block_graph: BlockGraph
     tiles_by_time: list[TiledBlocks]
+    observables: list[AbstractObservable]
 
     def _check_equal_block_size(self) -> None:
         block_sizes = {tiles.block_size for tiles in self.tiles_by_time}
@@ -58,43 +52,29 @@ class CompiledGraph:
     def generate_stim_circuit(
         self,
         k: int,
-        observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
         noise_models: Iterable[BaseNoiseModel] = (),
     ) -> stim.Circuit:
         """Generate the stim circuit from the compiled graph.
 
         Args:
             k: The scale factor of the templates.
-            observables: The abstract observables to be included in the compiled
-                circuit.
-                If set to "auto", the observables will be automatically determined from
-                the block graph. If a list of abstract observables is provided, only
-                those observables will be included in the compiled circuit. If set to
-                None, no observables will be included in the compiled circuit.
             noise_models: The noise models to be applied to the circuit.
 
             A compiled stim circuit.
         """
-        cirq_circuit = self.generate_cirq_circuit(k, observables, noise_models)
+        cirq_circuit = self.generate_cirq_circuit(k, noise_models)
         cirq_circuit = transform_to_stimcirq_compatible(cirq_circuit)
         return stimcirq.cirq_circuit_to_stim_circuit(cirq_circuit)
 
     def generate_cirq_circuit(
         self,
         k: int,
-        observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
         noise_models: Iterable[BaseNoiseModel] = (),
     ) -> cirq.Circuit:
         """Generate the cirq circuit from the compiled graph.
 
         Args:
             k: The scale factor of the templates.
-            observables: The abstract observables to be included in the compiled
-                circuit.
-                If set to "auto", the observables will be automatically determined from
-                the block graph. If a list of abstract observables is provided, only
-                those observables will be included in the compiled circuit. If set to
-                None, no observables will be included in the compiled circuit.
             noise_models: The noise models to be applied to the circuit.
 
         Returns:
@@ -108,27 +88,13 @@ class CompiledGraph:
                 [tiles.instantiate_layer(i) for i in range(tiles.num_layers)]
             )
         # construct observables
-        self._inplace_add_observables(
-            circuits, self.get_abstract_observables(observables), self.block_size
-        )
+        inplace_add_observables(circuits, self.observables, self.block_size)
         # shift and merge circuits
         circuit = self._shift_and_merge_circuits(circuits)
         # apply noise models
         for noise_model in noise_models:
             circuit = circuit.with_noise(noise_model)
         return circuit
-
-    def get_abstract_observables(
-        self,
-        observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
-    ) -> list[AbstractObservable]:
-        """Get the abstract observables to be included in the compiled
-        circuit."""
-        if observables is None:
-            return []
-        if observables == "auto":
-            return self.block_graph.get_abstract_observables()
-        return observables
 
     def _shift_and_merge_circuits(
         self, circuits: list[list[cirq.Circuit]]
@@ -168,57 +134,10 @@ class CompiledGraph:
             circuits_by_time.append(sum(circuits_at_t, cirq.Circuit()))
         return sum(circuits_by_time, cirq.Circuit())
 
-    def _inplace_add_observables(
-        self,
-        circuits: list[list[cirq.Circuit]],
-        abstract_observables: list[AbstractObservable],
-        block_size: int,
-    ) -> None:
-        """Inplace add the observable components to the circuits.
-
-        The circuits are grouped by time slices and layers. The outer
-        list represents the time slices and the inner list represents
-        the layers.
-        """
-        # The z coordinate of the cubes in the block graph not necessarily
-        # starts from zero. We need to find the minimum z coordinate to
-        # offset the z coordinate in the abstract observables.
-        min_z = min(cube.position.z for cube in self.block_graph.cubes)
-        for i, observable in enumerate(abstract_observables):
-            # Add the stabilizer region measurements to the end of the first layer of circuits at z.
-            for pipe in observable.bottom_regions:
-                z = pipe.u.position.z - min_z
-                stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
-                    pipe, block_size
-                )
-                observables = [
-                    make_observable(
-                        measurements=[Measurement(q, -1) for q in stabilizer_qubits],
-                        observable_index=i,
-                    )
-                ]
-                circuits[z][0].append(observables, cirq.InsertStrategy.INLINE)
-            # Add the line measurements to the end of the last layer of circuits at z.
-            for cube_or_pipe in observable.top_lines:
-                if isinstance(cube_or_pipe, Cube):
-                    qubits = get_midline_qubits_for_cube(cube_or_pipe, block_size)
-                    z = cube_or_pipe.position.z - min_z
-                else:
-                    qubits = [
-                        get_center_qubit_at_horizontal_pipe(cube_or_pipe, block_size)
-                    ]
-                    z = cube_or_pipe.u.position.z - min_z
-                observables = [
-                    make_observable(
-                        measurements=[Measurement(q, -1) for q in qubits],
-                        observable_index=i,
-                    )
-                ]
-                circuits[z][-1].append(observables, cirq.InsertStrategy.INLINE)
-
 
 def compile_block_graph(
     block_graph: BlockGraph,
+    observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
     custom_spec_rules: dict[CubeSpec, SpecRule] | None = None,
     custom_substitute_rules: dict[SubstitutionKey, SubstitutionRule] | None = None,
 ) -> CompiledGraph:
@@ -226,6 +145,12 @@ def compile_block_graph(
 
     Args:
         block_graph: The block graph to compile.
+        observables: The abstract observables to be included in the compiled
+            circuit.
+            If set to "auto", the observables will be automatically determined from
+            the block graph. If a list of abstract observables is provided, only
+            those observables will be included in the compiled circuit. If set to
+            None, no observables will be included in the compiled circuit.
         custom_spec_rules: Custom specification rules for the cube specs. This is a dict
             mapping the cube specs to the corresponding spec rules. If not provided, the
             default spec rules will be used. Spec rules determine how to compile a cube
@@ -250,6 +175,9 @@ def compile_block_graph(
     cube_specs = {
         cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.cubes
     }
+
+    # 0. Set the minimum z of block graph to 0.(time starts from zero)
+    block_graph = block_graph.with_zero_min_z()
 
     # 1. Get the base compiled blocks before applying the substitution rules.
     blocks: dict[Position3D, CompiledBlock] = {}
@@ -279,4 +207,14 @@ def compile_block_graph(
         TiledBlocks({pos.as_2d(): block for pos, block in blocks.items() if pos.z == z})
         for z in range(min_z, max_z + 1)
     ]
-    return CompiledGraph(block_graph, tiles_in_time)
+
+    # 4. Get the abstract observables to be included in the compiled circuit.
+    obs_included: list[AbstractObservable]
+    if observables is None:
+        obs_included = []
+    elif observables == "auto":
+        obs_included = block_graph.get_abstract_observables()
+    else:
+        obs_included = observables
+
+    return CompiledGraph(tiles_in_time, obs_included)

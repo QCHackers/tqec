@@ -1,8 +1,10 @@
 import cirq
 
+from tqec.circuit.operations.measurement import Measurement
+from tqec.circuit.operations.operation import make_observable
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.sketchup.block_graph import Cube, Pipe
+from tqec.sketchup.block_graph import AbstractObservable, Cube, Pipe
 from tqec.templates.scale import round_or_fail
 
 
@@ -91,3 +93,42 @@ def get_stabilizer_region_qubits_for_pipe(
                 stabilizer_qubits.append(cirq.GridQubit(y1, x1))
                 stabilizer_qubits.append(cirq.GridQubit(y2, x2))
     return stabilizer_qubits
+
+
+def inplace_add_observables(
+    circuits: list[list[cirq.Circuit]],
+    abstract_observables: list[AbstractObservable],
+    block_size: int,
+) -> None:
+    """Inplace add the observable components to the circuits.
+
+    The circuits are grouped by time slices and layers. The outer list
+    represents the time slices and the inner list represents the layers.
+    """
+    for i, observable in enumerate(abstract_observables):
+        # Add the stabilizer region measurements to the end of the first layer of circuits at z.
+        for pipe in observable.bottom_regions:
+            z = pipe.u.position.z
+            stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(pipe, block_size)
+            observables = [
+                make_observable(
+                    measurements=[Measurement(q, -1) for q in stabilizer_qubits],
+                    observable_index=i,
+                )
+            ]
+            circuits[z][0].append(observables, cirq.InsertStrategy.INLINE)
+        # Add the line measurements to the end of the last layer of circuits at z.
+        for cube_or_pipe in observable.top_lines:
+            if isinstance(cube_or_pipe, Cube):
+                qubits = get_midline_qubits_for_cube(cube_or_pipe, block_size)
+                z = cube_or_pipe.position.z
+            else:
+                qubits = [get_center_qubit_at_horizontal_pipe(cube_or_pipe, block_size)]
+                z = cube_or_pipe.u.position.z
+            observables = [
+                make_observable(
+                    measurements=[Measurement(q, -1) for q in qubits],
+                    observable_index=i,
+                )
+            ]
+            circuits[z][-1].append(observables, cirq.InsertStrategy.INLINE)

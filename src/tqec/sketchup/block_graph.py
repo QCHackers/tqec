@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import pathlib
 import typing as ty
 from dataclasses import astuple, dataclass
@@ -668,3 +669,20 @@ class BlockGraph:
                 AbstractObservable(frozenset(top_lines), frozenset(bottom_regions))
             )
         return abstract_observables
+
+    def with_zero_min_z(self) -> BlockGraph:
+        """Shift the whole graph in the z direction to make the minimum z
+        zero."""
+        minz = min(cube.position.z for cube in self.cubes)
+        if minz == 0:
+            return deepcopy(self)
+        new_graph = BlockGraph(self.name)
+        for cube in self.cubes:
+            new_graph.add_cube(cube.position.shift_by(dz=-minz), cube.cube_type)
+        for pipe in self.pipes:
+            new_graph.add_pipe(
+                pipe.u.position.shift_by(dz=-minz),
+                pipe.v.position.shift_by(dz=-minz),
+                pipe.pipe_type,
+            )
+        return new_graph
