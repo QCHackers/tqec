@@ -203,7 +203,7 @@ def _compute_detectors_for_fixed_radius(
         for j, subtemplate_index in enumerate(row):
             if subtemplate_index == 0:
                 continue
-            plaquette_origin = Position2D(j * increments.y, i * increments.x)
+            plaquette_origin = Position2D(j * increments.x, i * increments.y)
             for d in detectors_by_subtemplate[subtemplate_index]:
                 offset_measurements = list(
                     m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)

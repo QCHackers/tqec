@@ -366,7 +366,11 @@ class ScheduledCircuit:
 
         Args:
             schedule: the schedule at which the Moment instance should be returned.
+                If the schedule is negative, it is considered as an index from
+                the end. For example, -1 is the last schedule and -2 is the
+                last schedule - 1.
         """
+        schedule = self._schedule[-1] + 1 + schedule if schedule < 0 else schedule
         schedule_index = next(
             (i for i, sched in enumerate(self._schedule) if sched == schedule), None
         )
@@ -376,14 +380,33 @@ class ScheduledCircuit:
             )
         return self._raw_circuit[schedule_index]
 
+    def schedule_new_moment_at_end(self, moment: cirq.Moment) -> None:
+        """Schedule the provided Moment instance at the end of the circuit. The
+        new schedule will be the last schedule plus one.
+
+        Args:
+            moment: the moment to schedule.
+        """
+        self.add_to_schedule_index(self._schedule[-1] + 1, moment)
+
     def add_to_schedule_index(self, schedule: int, moment: cirq.Moment) -> None:
         """Add the operations contained in the provided moment at the provided
         schedule.
 
         Args:
             schedule: schedule at which operations in `moment` should be added.
+                If the schedule is negative, it is considered as an index from
+                the end. For example, -1 is the last schedule and -2 is the
+                last schedule - 1.
             moment: operations that should be added.
         """
+        # If the schedule is negative, we consider it as an index from the end.
+        schedule = self._schedule[-1] + 1 + schedule if schedule < 0 else schedule
+        if schedule < 0:
+            raise TQECException(
+                f"Trying to schedule a Moment at a negative schedule {schedule}."
+            )
+
         # Performing a self.schedule.index, but handling the ValueError is tedious.
         schedule_index = next(
             (i for i, sched in enumerate(self._schedule) if sched == schedule), None

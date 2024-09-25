@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Literal, Protocol
 from copy import deepcopy
 
 import cirq
@@ -23,8 +23,9 @@ class SubstitutionKey:
     during the block graph compilation.
 
     Attributes:
-        spec1: the cube specification of the first cube. By convention, the cube corresponding
-            to `spec1` should have a smaller position than the cube corresponding to `spec2`.
+        spec1: the cube specification of the first cube. By convention, the cube
+            corresponding to `spec1` should have a smaller position than the cube
+            corresponding to `spec2`.
         spec2: the cube specification of the second cube.
         pipe_type: the type of the pipe connecting the two cubes.
     """
@@ -44,8 +45,9 @@ class SubstitutionRule(Protocol):
         """Substitute the two blocks with the given key.
 
         Args:
-            key: `SubstitutionKey` that includes the necessary information for the substitution, including
-                the cube specifications and the pipe type that connecting the two blocks.
+            key: `SubstitutionKey` that includes the necessary information for the
+                substitution, including the cube specifications and the pipe type that
+                is connecting the two blocks.
             block1: the first block to substitute.
             block2: the second block to substitute.
         """
@@ -103,10 +105,8 @@ def _inplace_append_timelike_hadamard_transition(
 ) -> None:
     """Append a moment of transversal hadamard gates to the data qubits in the
     plaquette."""
-    max_schedule_index = max(plaquette.circuit.schedule)
-    plaquette.circuit.add_to_schedule_index(
-        schedule=max_schedule_index + 1,
-        moment=cirq.Moment(
+    plaquette.circuit.schedule_new_moment_at_end(
+        cirq.Moment(
             cirq.H(dq.to_grid_qubit()).with_tags(Plaquette._MERGEABLE_TAG)
             for dq in plaquette.qubits.data_qubits
         ),
@@ -133,7 +133,7 @@ def _substitute_in_space_with_usual_cubes(
     )
     substitute_side2 = substitute_side1.opposite()
     # Get reset/mesurement basis
-    basis = pipe_type.value[2].upper()
+    basis = pipe_type.temporal_basis()
     block1 = _substitute_on_the_border(block1, substitute_side1, basis)
     block2 = _substitute_on_the_border(block2, substitute_side2, basis)
     return block1, block2
@@ -142,7 +142,7 @@ def _substitute_in_space_with_usual_cubes(
 def _substitute_on_the_border(
     block: CompiledBlock,
     plaquette_side: PlaquetteSide,
-    basis: str,
+    basis: Literal["X", "Z"],
 ) -> CompiledBlock:
     if plaquette_side == PlaquetteSide.LEFT:
         substitution = {1: 6, 8: 9, 7: 10}
@@ -198,7 +198,7 @@ def _inplace_add_measurements_on_data_qubits(
     plaquette: Plaquette,
     side: PlaquetteSide,
     measurement_basis: MeasurementBasis = MeasurementBasis.Z,
-    measurement_moment_schedule: int = 8,
+    measurement_moment_schedule: int = -1,
 ) -> None:
     qubits = plaquette.qubits.get_qubits_on_side(side)
 

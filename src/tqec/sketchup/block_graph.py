@@ -216,6 +216,15 @@ class PipeType(Enum):
         )
         return CubeType.from_color(color)
 
+    def temporal_basis(self) -> ty.Literal["X", "Z"]:
+        if self.direction == Direction3D.Z:
+            raise TQECException("Cannot get the temporal basis on a temporal pipe.")
+        # Because this is not a temporal pipe, we know for sure
+        # that there is no "o" in the Z direction. Also, "h" can
+        # not appear in the first 3 entries, so self.value[2] is
+        # either "x" or "z".
+        return ty.cast(ty.Literal["X", "Z"], self.value[2].upper())
+
 
 BlockType = ty.Union[CubeType, PipeType]
 """Valid block types in the library."""

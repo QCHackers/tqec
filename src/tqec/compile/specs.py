@@ -1,3 +1,4 @@
+from enum import Flag, auto
 from typing import Protocol, Literal
 from dataclasses import dataclass
 from collections import defaultdict
@@ -33,6 +34,14 @@ from tqec.templates.scale import LinearFunction
 _DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, -1)
 
 
+class JunctionArms(Flag):
+    NONE = 0
+    UP = auto()
+    RIGHT = auto()
+    DOWN = auto()
+    LEFT = auto()
+
+
 @dataclass(frozen=True)
 class CubeSpec:
     """Specification of a cube in a block graph.
@@ -43,20 +52,19 @@ class CubeSpec:
 
     Attributes:
         cube_type: Type of the cube.
-        arm_flags: Flags indicating whether the cube connects to the adjacent cubes.
-            The flags are in the order of [up, right, down, left]. This is useful for
-            spatial junctions (XXZ and ZZX) where the arms can determine the template
-            used to implement the cube.
+        junction_arms: Flag indicating the spatial directions the cube connects to the
+            adjacent cubes. This is useful for spatial junctions (XXZ and ZZX) where
+            the arms can determine the template used to implement the cube.
     """
 
     cube_type: CubeType
-    arm_flags: tuple[bool, bool, bool, bool] | None = None
+    junction_arms: JunctionArms = JunctionArms.NONE
 
     def __post_init__(self) -> None:
         # arm_flags is not None iff cube_type is ZZX or XXZ(Spatial Junctions)
-        if (self.is_spatial_junction) ^ (self.arm_flags is not None):
+        if (self.is_spatial_junction) ^ (self.junction_arms != JunctionArms.NONE):
             raise TQECException(
-                "arm_flags is not None if and only if cube_type is spatial junctions(ZZX or XXZ)."
+                "junction_arms is not NONE if and only if cube_type is spatial junctions(ZZX or XXZ)."
             )
 
     @property
@@ -69,13 +77,14 @@ class CubeSpec:
         if cube.cube_type not in [CubeType.ZZX, CubeType.XXZ]:
             return CubeSpec(cube.cube_type)
         pos = cube.position
-        arm_flags = (
-            graph.get_pipe(pos, pos.shift_by(dy=1)) is not None,
-            graph.get_pipe(pos, pos.shift_by(dx=1)) is not None,
-            graph.get_pipe(pos, pos.shift_by(dy=-1)) is not None,
-            graph.get_pipe(pos, pos.shift_by(dx=-1)) is not None,
-        )
-        return CubeSpec(cube.cube_type, arm_flags)
+        junction_arms = JunctionArms.NONE
+        for shift, flag in zip(
+            [(0, 1), (1, 0), (0, -1), (-1, 0)],
+            [JunctionArms.UP, JunctionArms.RIGHT, JunctionArms.DOWN, JunctionArms.LEFT],
+        ):
+            if graph.get_pipe(pos, pos.shift_by(*shift)) is not None:
+                junction_arms |= flag
+        return CubeSpec(cube.cube_type, junction_arms)
 
 
 class SpecRule(Protocol):
@@ -230,14 +239,14 @@ def _xzB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
 
 def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
     """Default rule for generating a `CompiledBlock` based on a `CubeSpec`."""
-    match spec.cube_type, spec.arm_flags:
-        case CubeType.ZXZ, None:
+    match spec.cube_type, spec.junction_arms:
+        case CubeType.ZXZ, _:
             return _zxB_block("Z")
-        case CubeType.ZXX, None:
+        case CubeType.ZXX, _:
             return _zxB_block("X")
-        case CubeType.XZZ, None:
+        case CubeType.XZZ, _:
             return _xzB_block("Z")
-        case CubeType.XZX, None:
+        case CubeType.XZX, _:
             return _xzB_block("X")
         case CubeType.ZZX | CubeType.XXZ, _arm_flags:
             raise NotImplementedError("Spatial junctions are not implemented yet.")
