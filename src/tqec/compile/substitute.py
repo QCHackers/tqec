@@ -95,22 +95,8 @@ def _substitute_in_time_direction(
     # If the pipe has a hadamard, apply the hadamard transformation
     # The hadamard transformation is applied to the end of the bottom block
     if key.pipe_type.has_hadamard:
-        for plaquette in bottom_block.layers[-1].collection.values():
-            _inplace_append_timelike_hadamard_transition(plaquette)
+        raise TQECException("Pipe with hadamard is not supported yet.")
     return bottom_block, top_block
-
-
-def _inplace_append_timelike_hadamard_transition(
-    plaquette: Plaquette,
-) -> None:
-    """Append a moment of transversal hadamard gates to the data qubits in the
-    plaquette."""
-    plaquette.circuit.schedule_new_moment_at_end(
-        cirq.Moment(
-            cirq.H(dq.to_grid_qubit()).with_tags(Plaquette._MERGEABLE_TAG)
-            for dq in plaquette.qubits.data_qubits
-        ),
-    )
 
 
 def _substitute_in_space_with_usual_cubes(
@@ -123,9 +109,8 @@ def _substitute_in_space_with_usual_cubes(
         not key.spec1.is_spatial_junction and not key.spec2.is_spatial_junction
     ), "Both cubes must not be spatial junction."
     assert pipe_type.direction != Direction3D.Z, "Pipe direction must be X or Y."
-    # TODO: If the pipe has a hadamard, apply the spatial hadamard transformation
     if pipe_type.has_hadamard:
-        raise TQECException("Hadamard on spatial pipes is not supported yet.")
+        raise TQECException("Pipe with hadamard is not supported yet.")
     substitute_side1 = (
         PlaquetteSide.RIGHT
         if pipe_type.direction == Direction3D.X
