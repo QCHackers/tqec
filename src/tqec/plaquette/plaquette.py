@@ -84,7 +84,7 @@ class Plaquette:
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Plaquettes:
     collection: CollectionType
 
@@ -134,7 +134,7 @@ class Plaquettes:
         return Plaquettes(self.collection | plaquettes_to_update)
 
 
-@dataclass
+@dataclass(frozen=True)
 class RepeatedPlaquettes(Plaquettes):
     """Represent plaquettes that should be repeated for several rounds."""
 

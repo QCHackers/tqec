@@ -198,7 +198,10 @@ class Observable(MeasurementsRecord):
         return self._observable_index
 
     def __repr__(self) -> str:
-        return f"Observable(measurement_data={self._data}, observable_index={self._observable_index})"
+        return (
+            f"Observable(measurement_data={self._data}, "
+            f"observable_index={self._observable_index})"
+        )
 
 
 def make_shift_coords(*shifts: int) -> cirq.Operation:
