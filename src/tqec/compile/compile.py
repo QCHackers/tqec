@@ -127,8 +127,8 @@ class CompiledGraph:
                 qubit_map = {
                     q: q
                     + (
-                        origin_shift.y * self.block_size * 2,
-                        origin_shift.x * self.block_size * 2,
+                        origin_shift.y * self.block_size,
+                        origin_shift.x * self.block_size,
                     )
                     for q in scheduled.qubits
                 }
