@@ -119,6 +119,7 @@ def _substitute_in_space_with_usual_cubes(
     assert pipe_type.direction != Direction3D.Z, "Pipe direction must be X or Y."
     if pipe_type.has_hadamard:
         raise TQECException("Pipe with hadamard is not supported yet.")
+    # In `tqec` library, the positive y-axis is the downward direction
     substitute_side1 = (
         PlaquetteSide.RIGHT
         if pipe_type.direction == Direction3D.X
