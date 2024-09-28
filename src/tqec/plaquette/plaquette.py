@@ -71,10 +71,8 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
-    @circuit.setter
-    def circuit(self, circuit: ScheduledCircuit) -> None:
-        self._circuit = circuit
-        self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
+    def with_circuit(self, circuit: ScheduledCircuit) -> Plaquette:
+        return Plaquette(self.qubits, circuit)
 
     @property
     def measurements(self) -> list[Measurement]:
