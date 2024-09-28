@@ -48,7 +48,7 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
         parser.add_argument(
             "--add-detectors",
             help="Whether to add detectors to the circuits.",
-            type=bool,
+            action="store_true",
         )
         # TODO: add noise models
         parser.set_defaults(func=Dae2CircuitsTQECSubCommand.execute)
