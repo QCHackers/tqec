@@ -41,6 +41,15 @@ class JunctionArms(Flag):
     DOWN = auto()
     LEFT = auto()
 
+    @classmethod
+    def get_map_from_arm_to_shift(cls) -> dict["JunctionArms", tuple[int, int]]:
+        return {
+            cls.UP: (0, 1),
+            cls.RIGHT: (1, 0),
+            cls.DOWN: (0, -1),
+            cls.LEFT: (-1, 0),
+        }
+
 
 @dataclass(frozen=True)
 class CubeSpec:
@@ -78,21 +87,21 @@ class CubeSpec:
             return CubeSpec(cube.cube_type)
         pos = cube.position
         junction_arms = JunctionArms.NONE
-        for shift, flag in zip(
-            [(0, 1), (1, 0), (0, -1), (-1, 0)],
-            [JunctionArms.UP, JunctionArms.RIGHT, JunctionArms.DOWN, JunctionArms.LEFT],
-        ):
+        for flag, shift in JunctionArms.get_map_from_arm_to_shift().items():
             if graph.get_pipe(pos, pos.shift_by(*shift)) is not None:
                 junction_arms |= flag
         return CubeSpec(cube.cube_type, junction_arms)
 
 
 class SpecRule(Protocol):
-    def __call__(self, spec: CubeSpec) -> CompiledBlock:
-        """Protocol for returning a `CompiledBlock` based on a `CubeSpec`.
+    """Protocol for returning a `CompiledBlock` based on a `CubeSpec`.
 
-        Users can define their own rules for generating `CompiledBlock`s based on the
-        `CubeSpec` provided and register them during the compilation process.
+    Users can define their own rules for generating `CompiledBlock`s based on the
+    `CubeSpec` provided and register them during compilation.
+    """
+
+    def __call__(self, spec: CubeSpec) -> CompiledBlock:
+        """Get a `CompiledBlock` instance from a `CubeSpec`.
 
         Args:
             spec: Specification of the cube in the block graph.

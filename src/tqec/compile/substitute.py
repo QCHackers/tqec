@@ -36,6 +36,14 @@ class SubstitutionKey:
 
 
 class SubstitutionRule(Protocol):
+    """Protocol for applying the substitution to the two blocks connected by a
+    pipe, based on the `SubstitutionKey`.
+
+    Users can define their own rules for the substitution by
+    implementing this protocol and register the rules during
+    compilation.
+    """
+
     def __call__(
         self,
         key: SubstitutionKey,
@@ -147,57 +155,30 @@ def _substitute_on_the_border(
         )
     # 2. Add resets/measurements on the middle of the border
     for i in substitution.keys():
-        _inplace_add_resets_on_data_qubits(
-            block.layers[0][i], plaquette_side, ResetBasis(basis)
+        _inplace_add_operation_on_data_qubits(
+            block.layers[0][i], plaquette_side, ResetBasis(basis), 1
         )
-        _inplace_add_measurements_on_data_qubits(
-            block.layers[-1][i], plaquette_side, MeasurementBasis(basis)
+        _inplace_add_operation_on_data_qubits(
+            block.layers[-1][i], plaquette_side, MeasurementBasis(basis), -1
         )
-
     return block
 
 
-def _inplace_add_resets_on_data_qubits(
+def _inplace_add_operation_on_data_qubits(
     plaquette: Plaquette,
     side: PlaquetteSide,
-    reset_basis: ResetBasis = ResetBasis.Z,
-    reset_moment_schedule: int = 1,
+    operation_basis: ResetBasis | MeasurementBasis,
+    moment_schedule: int,
 ) -> None:
     qubits = plaquette.qubits.get_qubits_on_side(side)
-
     # Do not add resets on qubits that have already be reset
-    reset_moment = plaquette.circuit.moment_at_schedule(reset_moment_schedule)
-    reset_to_add = []
+    moment = plaquette.circuit.moment_at_schedule(moment_schedule)
+    operation_to_add = []
     for q in qubits:
         gq = q.to_grid_qubit()
-        if reset_moment.operates_on([gq]):
+        if moment.operates_on([gq]):
             continue
-        reset_to_add.append(reset_basis(gq))
-
+        operation_to_add.append(operation_basis(gq))
     plaquette.circuit.add_to_schedule_index(
-        reset_moment_schedule, cirq.Moment(*reset_to_add)
-    )
-
-
-def _inplace_add_measurements_on_data_qubits(
-    plaquette: Plaquette,
-    side: PlaquetteSide,
-    measurement_basis: MeasurementBasis = MeasurementBasis.Z,
-    measurement_moment_schedule: int = -1,
-) -> None:
-    qubits = plaquette.qubits.get_qubits_on_side(side)
-
-    # Do not add measurements on qubits that have already be measured
-    measurement_moment = plaquette.circuit.moment_at_schedule(
-        measurement_moment_schedule
-    )
-    measurement_to_add = []
-    for q in qubits:
-        gq = q.to_grid_qubit()
-        if measurement_moment.operates_on([gq]):
-            continue
-        measurement_to_add.append(measurement_basis(gq))
-
-    plaquette.circuit.add_to_schedule_index(
-        measurement_moment_schedule, cirq.Moment(*measurement_to_add)
+        moment_schedule, cirq.Moment(*operation_to_add)
     )
