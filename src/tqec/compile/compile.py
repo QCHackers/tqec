@@ -17,7 +17,7 @@ from tqec.noise_models.base import BaseNoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
 from tqec.sketchup.block_graph import AbstractObservable, BlockGraph
-from tqec.compile.block import CompiledBlock, TiledBlocks
+from tqec.compile.block import CompiledBlock, BlockLayout
 from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
 from tqec.compile.observables import inplace_add_observables
 from tqec.templates.scale import round_or_fail
@@ -28,35 +28,41 @@ class CompiledGraph:
     """Represents a compiled block graph.
 
     This class should be easy to scale and generate circuits directly.
+
+    Attributes:
+        layout_slices: a list of `BlockLayout` objects that represent the compiled blocks
+            at contiguous time slices.
+        observables: a list of `AbstractObservable` objects that represent the observables
+            to be included in the compiled circuit.
     """
 
-    tiles_by_time: list[TiledBlocks]
+    layout_slices: list[BlockLayout]
     observables: list[AbstractObservable]
 
     def __post_init__(self) -> None:
-        if len(self.tiles_by_time) == 0:
+        if len(self.layout_slices) == 0:
             raise TQECException(
-                "The compiled graph should have at least one time slice."
-                "But get an empty tiles_by_time."
+                "The compiled graph should have at least one time slice "
+                "but got an empty layout_slices."
             )
         if len(self.observables) == 0:
             raise TQECWarning("The compiled graph includes no observable.")
 
     def _check_equal_block_size(self) -> None:
-        block_sizes = {tiles.block_size for tiles in self.tiles_by_time}
+        block_sizes = {layout.block_size for layout in self.layout_slices}
         if len(block_sizes) != 1:
             raise TQECException("The block sizes of the compiled blocks are not equal.")
 
     def scale_to(self, k: int) -> None:
         """Scale the compiled graph to the given scale `k`."""
-        for tiled_blocks in self.tiles_by_time:
-            tiled_blocks.scale_to(k)
+        for layout in self.layout_slices:
+            layout.scale_to(k)
         self._check_equal_block_size()
 
     @property
     def block_size(self) -> int:
         self._check_equal_block_size()
-        return self.tiles_by_time[0].block_size
+        return self.layout_slices[0].block_size
 
     def generate_stim_circuit(
         self,
@@ -92,9 +98,9 @@ class CompiledGraph:
         self.scale_to(k)
         # assemble circuits time slice by time slice, layer by layer.
         circuits: list[list[cirq.Circuit]] = []
-        for tiles in self.tiles_by_time:
+        for layout in self.layout_slices:
             circuits.append(
-                [tiles.instantiate_layer(i) for i in range(tiles.num_layers)]
+                [layout.instantiate_layer(i) for i in range(layout.num_layers)]
             )
         # construct observables
         inplace_add_observables(circuits, self.observables, self.block_size)
@@ -109,11 +115,11 @@ class CompiledGraph:
         self, circuits: list[list[cirq.Circuit]]
     ) -> cirq.Circuit:
         circuits_by_time = []
-        for t, tiles in enumerate(self.tiles_by_time):
+        for t, layout in enumerate(self.layout_slices):
             circuits_at_t = []
-            # We need to shift the circuit based on the shift of the tiled template.
-            origin_shift = tiles.tiled_template.origin_shift
-            for i in range(tiles.num_layers):
+            # We need to shift the circuit based on the shift of the layout template.
+            origin_shift = layout.template.origin_shift
+            for i in range(layout.num_layers):
                 circuit_before_shift = circuits[t][i]
                 # Need to use `qubit_map` on `ScheduledCircuit` instead of
                 # `transform_qubits` on `cirq.Circuit` to map the MeasurementKey correctly.
@@ -129,13 +135,13 @@ class CompiledGraph:
                 shifted_circuit = scheduled.map_to_qubits(
                     qubit_map, inplace=True
                 ).raw_circuit
-                layer = tiles.tiled_layers[i]
+                layer = layout.layers[i]
                 if isinstance(layer, RepeatedPlaquettes):
                     shifted_circuit = cirq.Circuit(
                         cirq.CircuitOperation(
                             shifted_circuit.freeze(),
                             repetitions=round_or_fail(
-                                layer.repetitions(tiles.tiled_template.k)
+                                layer.repetitions(layout.template.k)
                             ),
                         )
                     )
@@ -209,11 +215,11 @@ def compile_block_graph(
         rule = substitute_rules[key]
         blocks[pos1], blocks[pos2] = rule(key, blocks[pos1], blocks[pos2])
 
-    # 3. Collect by time and tile the blocks.
+    # 3. Collect by time and create the blocks layout.
     min_z = min(pos.z for pos in blocks.keys())
     max_z = max(pos.z for pos in blocks.keys())
-    tiles_in_time: list[TiledBlocks] = [
-        TiledBlocks({pos.as_2d(): block for pos, block in blocks.items() if pos.z == z})
+    layout_slices: list[BlockLayout] = [
+        BlockLayout({pos.as_2d(): block for pos, block in blocks.items() if pos.z == z})
         for z in range(min_z, max_z + 1)
     ]
 
@@ -226,4 +232,4 @@ def compile_block_graph(
     else:
         obs_included = observables
 
-    return CompiledGraph(tiles_in_time, obs_included)
+    return CompiledGraph(layout_slices, obs_included)

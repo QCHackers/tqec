@@ -12,33 +12,46 @@ from tqec.templates.enums import TemplateSide
 from tqec.templates.scale import Scalable2D
 
 
-class TiledTemplate(RectangularTemplate):
+class LayoutTemplate(RectangularTemplate):
     def __init__(
         self,
-        template_by_position: dict[Position2D, RectangularTemplate],
+        element_layout: dict[Position2D, RectangularTemplate],
         k: int = 2,
         default_increments: Displacement | None = None,
     ) -> None:
-        """A template representing a tiling of other templates.
+        """A template representing a layout of other templates.
 
-        The tiles are indexed by their position in the tiling.
+        Each element template in the layout is placed at a specific position in
+        the 2D grid.
+
+        Note:
+            The provided template positions have only one restriction: two
+            templates should not be at the same position.
+            In particular, this class does not require that the provided
+            template are spatially connected or entirely cover a rectangular
+            portion of the 2 spatial dimensions.
+
+        Args:
+            element_layout: a dictionary with the position of the element
+                templates in the layout as keys and the templates as values.
+            k: initial value for the scaling parameter.
+            default_increments: default increments between two plaquettes. Defaults
+                to `Displacement(2, 2)` when `None`.
         """
         super().__init__(k, default_increments)
-        if not template_by_position:
-            raise TQECException(
-                "Cannot create a tiled template with an empty template map."
-            )
+        if not element_layout:
+            raise TQECException("Cannot create a layout with an empty template map.")
 
         scalable_shapes = {
-            template.scalable_shape for template in template_by_position.values()
+            template.scalable_shape for template in element_layout.values()
         }
         if len(scalable_shapes) != 1:
             raise TQECException(
-                "All templates in the TiledTemplate should have the same scalable shape."
+                "All templates in the layout should have the same scalable shape."
             )
-        self._base_scalable_shape = scalable_shapes.pop()
+        self._element_scalable_shape = scalable_shapes.pop()
 
-        all_positions = list(template_by_position.keys())
+        all_positions = list(element_layout.keys())
         min_x = min(position.x for position in all_positions)
         max_x = max(position.x for position in all_positions)
         min_y = min(position.y for position in all_positions)
@@ -48,7 +61,7 @@ class TiledTemplate(RectangularTemplate):
         self._nx = max_x - min_x + 1
         self._ny = max_y - min_y + 1
 
-        self._template_by_position = deepcopy(template_by_position)
+        self._layout = deepcopy(element_layout)
         self.scale_to(k)
 
     def get_indices_map_for_instantiation(
@@ -59,7 +72,7 @@ class TiledTemplate(RectangularTemplate):
             instantiate_indices = list(range(1, self.expected_plaquettes_number + 1))
         index_count = 0
         indices_map = {}
-        for position, template in self._template_by_position.items():
+        for position, template in self._layout.items():
             indices_map[position] = {
                 i + 1: instantiate_indices[i + index_count]
                 for i in range(template.expected_plaquettes_number)
@@ -73,8 +86,8 @@ class TiledTemplate(RectangularTemplate):
 
     @override
     def scale_to(self, k: int) -> None:
-        self._k = k
-        for template in self._template_by_position.values():
+        super().scale_to(k)
+        for template in self._layout.values():
             template.scale_to(k)
 
     @property
@@ -82,13 +95,14 @@ class TiledTemplate(RectangularTemplate):
     def scalable_shape(self) -> Scalable2D:
         """Returns a scalable version of the template shape."""
         return Scalable2D(
-            self._nx * self._base_scalable_shape.x,
-            self._ny * self._base_scalable_shape.y,
+            self._nx * self._element_scalable_shape.x,
+            self._ny * self._element_scalable_shape.y,
         )
 
     @property
-    def tile_shape(self) -> Shape2D:
-        return self._base_scalable_shape.to_shape_2d(self._k)
+    def element_shape(self) -> Shape2D:
+        """Return the uniform shape of the element templates."""
+        return self._element_scalable_shape.to_shape_2d(self._k)
 
     @property
     @override
@@ -100,8 +114,7 @@ class TiledTemplate(RectangularTemplate):
             the number of plaquettes expected from the `instantiate` method.
         """
         return sum(
-            template.expected_plaquettes_number
-            for template in self._template_by_position.values()
+            template.expected_plaquettes_number for template in self._layout.values()
         )
 
     @override
@@ -134,9 +147,9 @@ class TiledTemplate(RectangularTemplate):
         """
         indices_map = self.get_indices_map_for_instantiation(plaquette_indices)
 
-        tile_shape = self._base_scalable_shape.to_numpy_shape(self.k)
+        base_shape = self._element_scalable_shape.to_numpy_shape(self.k)
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
-        for pos, template in self._template_by_position.items():
+        for pos, template in self._layout.items():
             imap = indices_map[pos]
             indices = [
                 imap[i] for i in range(1, template.expected_plaquettes_number + 1)
@@ -146,7 +159,7 @@ class TiledTemplate(RectangularTemplate):
                 pos.x - self.origin_shift.x, pos.y - self.origin_shift.y
             )
             ret[
-                shifted_pos.y * tile_shape[0] : (shifted_pos.y + 1) * tile_shape[0],
-                shifted_pos.x * tile_shape[1] : (shifted_pos.x + 1) * tile_shape[1],
+                shifted_pos.y * base_shape[0] : (shifted_pos.y + 1) * base_shape[0],
+                shifted_pos.x * base_shape[1] : (shifted_pos.x + 1) * base_shape[1],
             ] = sub_template
         return ret

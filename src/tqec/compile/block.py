@@ -13,7 +13,7 @@ from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
 from tqec.position import Position2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.scale import LinearFunction
-from tqec.templates.tiled import TiledTemplate
+from tqec.templates.layout import LayoutTemplate
 
 
 @dataclass
@@ -57,56 +57,63 @@ class CompiledBlock:
         return CompiledBlock(self.template, new_plaquette_layers)
 
 
-class TiledBlocks:
-    """Represents a collection of `CompiledBlock`s tiled in a 2D grid."""
+class BlockLayout:
+    def __init__(self, blocks_layout: dict[Position2D, CompiledBlock]):
+        """Create a layout of `CompiledBlock`s in the 2D grid.
 
-    def __init__(self, blocks_by_position: dict[Position2D, CompiledBlock]):
-        templates_by_position: dict[Position2D, RectangularTemplate] = {}
-        for pos, block in blocks_by_position.items():
-            templates_by_position[pos] = block.template
-        self._tiled_template = TiledTemplate(template_by_position=templates_by_position)
-        self._tiled_layers = self._merge_layers(
-            {pos: block.layers for pos, block in blocks_by_position.items()}
+        We require that all the blocks in the layout are square and have
+        the same scalable shape.
+        """
+        template_layout: dict[Position2D, RectangularTemplate] = {}
+        for pos, block in blocks_layout.items():
+            template_layout[pos] = block.template
+        self._template = LayoutTemplate(element_layout=template_layout)
+        block_shape = self._template.element_shape
+        # all the block templates should be square
+        if not block_shape.x == block_shape.y:
+            raise TQECException("All the block templates should be square shape.")
+        self._layers = self._merge_layers(
+            {pos: block.layers for pos, block in blocks_layout.items()}
         )
 
     @property
     def block_size(self) -> int:
-        """Return the uniform block size of the tiled blocks.
+        """Return the uniform width/height of the blocks in the layout.
 
-        In this implementation, all the block itself should be square
-        shape and have the same width and height as the block size. And
-        all the blocks should have the same size.
+        This equals to the width/height of the element templates in the
+        layout. Because all the elements are square, the width and
+        height are the same.
         """
-        return 2 * self._tiled_template.tile_shape.x
+        return 2 * self._template.element_shape.x
 
     @property
-    def tiled_template(self) -> TiledTemplate:
-        return self._tiled_template
+    def template(self) -> LayoutTemplate:
+        return self._template
 
     @property
-    def tiled_layers(self) -> list[Plaquettes]:
-        return self._tiled_layers
+    def layers(self) -> list[Plaquettes]:
+        return self._layers
 
     def _merge_layers(
-        self, layers_by_position: dict[Position2D, list[Plaquettes]]
+        self, layers_layout: dict[Position2D, list[Plaquettes]]
     ) -> list[Plaquettes]:
-        """Merge the layers of the different tiled blocks."""
+        """Merge the layers of the different blocks in the layout."""
         # Check if all the blocks have the same number of layers.
-        num_layers = {len(layers) for layers in layers_by_position.values()}
+        num_layers = {len(layers) for layers in layers_layout.values()}
         if len(num_layers) != 1:
             raise TQECException(
-                "All blocks in the TiledBlocks should have the same number of layers."
+                "All blocks in the layout should have the same number of layers."
             )
         # Check if all the block layers have the same repeating structure.
         # And merge the layers.
-        indices_map = self._tiled_template.get_indices_map_for_instantiation()
-        tiled_layers: list[Plaquettes] = []
+        indices_map = self._template.get_indices_map_for_instantiation()
+        merged_layers: list[Plaquettes] = []
         for i in range(num_layers.pop()):
             merged_plaquettes: defaultdict[int, Plaquette] = defaultdict(
                 empty_square_plaquette
             )
             repetitions: LinearFunction | None = None
-            for pos, layers in layers_by_position.items():
+            for pos, layers in layers_layout.items():
                 layer = layers[i]
                 if isinstance(layer, RepeatedPlaquettes):
                     if repetitions is not None and layer.repetitions != repetitions:
@@ -124,22 +131,22 @@ class TiledBlocks:
             plaquettes = Plaquettes(merged_plaquettes)
             if repetitions is not None:
                 plaquettes = plaquettes.repeat(repetitions)
-            tiled_layers.append(plaquettes)
-        return tiled_layers
+            merged_layers.append(plaquettes)
+        return merged_layers
 
     def scale_to(self, k: int) -> None:
-        """Scales all the blocks in the tiled template to the given factor."""
-        self._tiled_template.scale_to(k)
+        """Scales all the blocks in the layout to the given factor."""
+        self._template.scale_to(k)
 
     @property
     def num_layers(self) -> int:
-        return len(self._tiled_layers)
+        return len(self._layers)
 
     def instantiate_layer(self, layer_index: int) -> cirq.Circuit:
         """Instantiates the specified layer into a `cirq.Circuit`.
 
         Note that this method does not shift the circuits based on the
-        tiled template. And the circuits are not repeated based on the
+        layout template. And the circuits are not repeated based on the
         repetitions in the layer.
         """
-        return generate_circuit(self._tiled_template, self._tiled_layers[layer_index])
+        return generate_circuit(self._template, self._layers[layer_index])
