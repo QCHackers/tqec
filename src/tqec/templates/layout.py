@@ -147,19 +147,21 @@ class LayoutTemplate(RectangularTemplate):
         """
         indices_map = self.get_indices_map_for_instantiation(plaquette_indices)
 
-        base_shape = self._element_scalable_shape.to_numpy_shape(self.k)
+        element_shape = self._element_scalable_shape.to_numpy_shape(self.k)
         ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
-        for pos, template in self._layout.items():
+        for pos, element in self._layout.items():
             imap = indices_map[pos]
             indices = [
-                imap[i] for i in range(1, template.expected_plaquettes_number + 1)
+                imap[i] for i in range(1, element.expected_plaquettes_number + 1)
             ]
-            sub_template = template.instantiate(indices)
+            element_instantiation = element.instantiate(indices)
             shifted_pos = Position2D(
                 pos.x - self.origin_shift.x, pos.y - self.origin_shift.y
             )
             ret[
-                shifted_pos.y * base_shape[0] : (shifted_pos.y + 1) * base_shape[0],
-                shifted_pos.x * base_shape[1] : (shifted_pos.x + 1) * base_shape[1],
-            ] = sub_template
+                shifted_pos.y * element_shape[0] : (shifted_pos.y + 1)
+                * element_shape[0],
+                shifted_pos.x * element_shape[1] : (shifted_pos.x + 1)
+                * element_shape[1],
+            ] = element_instantiation
         return ret
