@@ -48,21 +48,10 @@ class CompiledGraph:
         if len(self.observables) == 0:
             raise TQECWarning("The compiled graph includes no observable.")
 
-    def _check_equal_block_size(self) -> None:
-        block_sizes = {layout.block_size for layout in self.layout_slices}
-        if len(block_sizes) != 1:
-            raise TQECException("The block sizes of the compiled blocks are not equal.")
-
     def scale_to(self, k: int) -> None:
         """Scale the compiled graph to the given scale `k`."""
         for layout in self.layout_slices:
             layout.scale_to(k)
-        self._check_equal_block_size()
-
-    @property
-    def block_size(self) -> int:
-        self._check_equal_block_size()
-        return self.layout_slices[0].block_size
 
     def generate_stim_circuit(
         self,
@@ -103,7 +92,11 @@ class CompiledGraph:
                 [layout.instantiate_layer(i) for i in range(layout.num_layers)]
             )
         # construct observables
-        inplace_add_observables(circuits, self.observables, self.block_size)
+        inplace_add_observables(
+            circuits,
+            [layout.template for layout in self.layout_slices],
+            self.observables,
+        )
         # shift and merge circuits
         circuit = self._shift_and_merge_circuits(circuits)
         # apply noise models
@@ -119,6 +112,8 @@ class CompiledGraph:
             circuits_at_t = []
             # We need to shift the circuit based on the shift of the layout template.
             origin_shift = layout.template.origin_shift
+            element_shape = layout.template.element_shape
+            increment = layout.template.get_increments()
             for i in range(layout.num_layers):
                 circuit_before_shift = circuits[t][i]
                 # Need to use `qubit_map` on `ScheduledCircuit` instead of
@@ -127,8 +122,8 @@ class CompiledGraph:
                 qubit_map = {
                     q: q
                     + (
-                        origin_shift.y * self.block_size,
-                        origin_shift.x * self.block_size,
+                        origin_shift.y * element_shape.y * increment.y,
+                        origin_shift.x * element_shape.x * increment.x,
                     )
                     for q in scheduled.qubits
                 }

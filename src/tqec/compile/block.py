@@ -61,30 +61,16 @@ class BlockLayout:
     def __init__(self, blocks_layout: dict[Position2D, CompiledBlock]):
         """Create a layout of `CompiledBlock`s in the 2D grid.
 
-        We require that all the blocks in the layout are square and have
-        the same scalable shape.
+        We require that all the blocks in the layout have the same
+        scalable shape.
         """
         template_layout: dict[Position2D, RectangularTemplate] = {}
         for pos, block in blocks_layout.items():
             template_layout[pos] = block.template
         self._template = LayoutTemplate(element_layout=template_layout)
-        block_shape = self._template.element_shape
-        # all the block templates should be square
-        if not block_shape.x == block_shape.y:
-            raise TQECException("All the block templates should be square shape.")
         self._layers = self._merge_layers(
             {pos: block.layers for pos, block in blocks_layout.items()}
         )
-
-    @property
-    def block_size(self) -> int:
-        """Return the uniform width/height of the blocks in the layout.
-
-        This equals to the width/height of the element templates in the
-        layout. Because all the elements are square, the width and
-        height are the same.
-        """
-        return 2 * self._template.element_shape.x
 
     @property
     def template(self) -> LayoutTemplate:
