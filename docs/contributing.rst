@@ -35,7 +35,7 @@ Issues can be filtered by tags. Below are a few of the most interesting tags:
   for issues related to the Python code.
 
 Pick one issue that you **want** to work on. We emphasize on **want**: this is an open
-source project, so do not force yourself to work on something that do not interest
+source project, so do not force yourself to work on something that does not interest
 you.
 
 2. Comment on one or more issues
@@ -45,7 +45,7 @@ Once you have found one or more issue(s) you want to work on, send a comment on 
 issues to:
 
 1. make your interest public,
-2. ask for updates as the issue might not be up-to-date.
+2. ask for updates, as the issue might not be up-to-date.
 
 One of the lead developers will come back to you and assign you the issue if
 
@@ -69,7 +69,7 @@ You should only work on the branch you just created. Implement the fix you envis
 to the issue you were assigned to.
 
 If, for personnal/professional reasons, lack of motivation, lack of time, or whatever
-the reason, you know that you won't be able to complete your implementation, please
+the reason for which you know that you won't be able to complete your implementation, please
 let us know in the issue so that we can un-assign you and let someone else work on
 the issue.
 
