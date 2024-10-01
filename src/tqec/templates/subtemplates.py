@@ -185,7 +185,7 @@ def get_spatially_distinct_subtemplates(
         i + 1: situation for i, situation in enumerate(unique_situations)
     }
     if avoid_zero_plaquettes:
-        final_indices = numpy.zeros((y * x,), dtype=numpy.int_)
+        final_indices = numpy.zeros((y * x,), dtype=numpy.intp)
         final_indices[ignored_flattened_indices] = 0
         final_indices[considered_flattened_indices] = inverse_indices
     else:
