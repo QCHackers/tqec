@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from tqec.position import Position
+from tqec.position import Position2D
 
 
 class CornerPositionEnum(Enum):
@@ -12,10 +12,10 @@ class CornerPositionEnum(Enum):
     - the Y-axis that goes from the origin to the lower-left corner
     """
 
-    LOWER_LEFT = Position(0, 1)
-    LOWER_RIGHT = Position(1, 1)
-    UPPER_LEFT = Position(0, 0)
-    UPPER_RIGHT = Position(1, 0)
+    LOWER_LEFT = Position2D(0, 1)
+    LOWER_RIGHT = Position2D(1, 1)
+    UPPER_LEFT = Position2D(0, 0)
+    UPPER_RIGHT = Position2D(1, 0)
 
 
 class TemplateRelativePositionEnum(Enum):
@@ -27,10 +27,10 @@ class TemplateRelativePositionEnum(Enum):
     X-axis.
     """
 
-    LEFT_OF = Position(-1, 0)
-    RIGHT_OF = Position(1, 0)
-    ABOVE_OF = Position(0, -1)
-    BELOW_OF = Position(0, 1)
+    LEFT_OF = Position2D(-1, 0)
+    RIGHT_OF = Position2D(1, 0)
+    ABOVE_OF = Position2D(0, -1)
+    BELOW_OF = Position2D(0, 1)
 
 
 LEFT_OF = TemplateRelativePositionEnum.LEFT_OF

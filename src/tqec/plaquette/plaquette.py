@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import itertools
 import typing
+from typing_extensions import override
+import itertools
 from collections import defaultdict
 from dataclasses import dataclass
 
@@ -12,7 +13,8 @@ from tqec.circuit.operations.measurement import (
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
-from tqec.position import Position
+from tqec.position import Position2D
+from tqec.templates.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:
@@ -58,8 +60,8 @@ class Plaquette:
         self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
 
     @property
-    def origin(self) -> Position:
-        return Position(0, 0)
+    def origin(self) -> Position2D:
+        return Position2D(0, 0)
 
     @property
     def qubits(self) -> PlaquetteQubits:
@@ -74,14 +76,17 @@ class Plaquette:
         return self._measurements
 
 
+CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
+
+
 @dataclass(frozen=True)
 class Plaquettes:
-    collection: dict[int, Plaquette] | defaultdict[int, Plaquette]
+    collection: CollectionType
 
     def __post_init__(self) -> None:
         if not isinstance(self.collection, (dict, defaultdict)):
             raise TQECException(
-                f"Plaquettes initialized with {type(self.collection)} but only list, "
+                f"Plaquettes initialized with {type(self.collection)} but only"
                 "dict and defaultdict instances are allowed."
             )
         if 0 in self.collection:
@@ -115,6 +120,29 @@ class Plaquettes:
             )
         return len(self.collection)
 
-    def __or__(self, other: Plaquettes | dict[int, Plaquette]) -> Plaquettes:
-        other_plaquettes = other.collection if isinstance(other, Plaquettes) else other
-        return Plaquettes(self.collection | other_plaquettes)
+    def repeat(self, repetitions: LinearFunction) -> RepeatedPlaquettes:
+        return RepeatedPlaquettes(self.collection, repetitions)
+
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> Plaquettes:
+        return Plaquettes(self.collection | plaquettes_to_update)
+
+
+@dataclass(frozen=True)
+class RepeatedPlaquettes(Plaquettes):
+    """Represent plaquettes that should be repeated for several rounds."""
+
+    repetitions: LinearFunction
+
+    def num_rounds(self, k: int) -> int:
+        return round_or_fail(self.repetitions(k))
+
+    @override
+    def with_updated_plaquettes(
+        self, plaquettes_to_update: dict[int, Plaquette]
+    ) -> RepeatedPlaquettes:
+        return RepeatedPlaquettes(
+            self.collection | plaquettes_to_update,
+            repetitions=self.repetitions,
+        )

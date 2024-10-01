@@ -167,7 +167,7 @@ def round_or_fail(f: float) -> int:
     return rounded_value
 
 
-@dataclass
+@dataclass(frozen=True)
 class Scalable2D:
     x: LinearFunction
     y: LinearFunction

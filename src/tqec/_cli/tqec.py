@@ -1,7 +1,9 @@
 import argparse
+import sys
 
 from tqec._cli.subcommands.check_dae import CheckDaeTQECSubCommand
 from tqec._cli.subcommands.dae2observables import Dae2ObservablesTQECSubCommand
+from tqec._cli.subcommands.dae2circuits import Dae2CircuitsTQECSubCommand
 
 
 def main() -> None:
@@ -13,6 +15,7 @@ def main() -> None:
 
     Dae2ObservablesTQECSubCommand.add_subcommand(subparser)
     CheckDaeTQECSubCommand.add_subcommand(subparser)
+    Dae2CircuitsTQECSubCommand.add_subcommand(subparser)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=None if sys.argv[1:] else ["--help"])
     args.func(args)

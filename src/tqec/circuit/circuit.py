@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import typing as ty
-from collections import defaultdict
 from copy import deepcopy
 
 import cirq

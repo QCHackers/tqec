@@ -1,5 +1,4 @@
 import typing as ty
-import warnings
 
 import cirq
 import numpy
@@ -19,10 +18,10 @@ from tqec.circuit.operations.measurement import (
     Measurement,
     get_measurements_from_circuit,
 )
-from tqec.circuit.operations.operation import Detector
-from tqec.exceptions import TQECException, TQECWarning
+from tqec.circuit.operations.operation import Detector, make_detector
+from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
-from tqec.position import Displacement, Position
+from tqec.position import Displacement, Position2D
 from tqec.templates.base import Template
 
 
@@ -168,13 +167,14 @@ def _compute_detectors_within_subtemplate(
     #    the current sub-template, but we need to return detectors that use
     #    the central plaquette origin as their coordinate system origin.
     # 2. Transform the MatchedDetector instance into a Detector instance.
+    shift_x, shift_y = -radius * increments.x, -radius * increments.y
     return [
         Detector(
             [
-                m.offset_spatially_by(-radius * increments.x, -radius * increments.y)
+                m.offset_spatially_by(shift_x, shift_y)
                 for m in detector.measurement_data
             ],
-            detector.coordinates,
+            (detector.coordinates[0] + shift_x, detector.coordinates[1] + shift_y, 0.0),
         )
         for detector in detectors
     ]
@@ -203,14 +203,24 @@ def _compute_detectors_for_fixed_radius(
         for j, subtemplate_index in enumerate(row):
             if subtemplate_index == 0:
                 continue
-            plaquette_origin = Position(j * increments.x, i * increments.x)
+            plaquette_origin = Position2D(j * increments.x, i * increments.y)
             for d in detectors_by_subtemplate[subtemplate_index]:
                 offset_measurements = list(
                     m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)
                     for m in d.measurement_data
                 )
+                # We use the convention of `cirq.GridQubit` where the first coordinate
+                # is the column and the second coordinate is the row. Note that the
+                # coordinates of detectors are derived from the qubits, which are
+                # already in the `GridQubit` convention. So we only need to swap the
+                # coordinates of the plaquette origin.
+                coordinates = (
+                    d.coordinates[0] + plaquette_origin.y,
+                    d.coordinates[1] + plaquette_origin.x,
+                    d.coordinates[2],
+                )
                 detectors_by_measurements[frozenset(offset_measurements)] = Detector(
-                    offset_measurements, d.coordinates
+                    offset_measurements, coordinates
                 )
     return list(detectors_by_measurements.values())
 
@@ -219,7 +229,7 @@ def compute_detectors_in_last_timestep(
     template: Template,
     plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     subtemplate_radius_trial_range: range = range(1, 2),
-) -> list[Detector]:
+) -> list[cirq.Operation]:
     radius_range = subtemplate_radius_trial_range
     start, stop, step = radius_range.start, radius_range.stop, radius_range.step
     # Check the range is monotonically increasing
@@ -240,6 +250,12 @@ def compute_detectors_in_last_timestep(
                 "The detectors found for a smaller radius are not a subset of the detectors found for a larger radius."
             )
         if cur_measurements_set == measurements_set:
-            return detectors
+            break
         measurements_set = cur_measurements_set
-    return detectors
+    return [
+        make_detector(
+            detector.measurement_data,
+            detector.coordinates,
+        )
+        for detector in detectors
+    ]

@@ -106,9 +106,6 @@ class MeasurementsRecord(cirq.Operation):
         """The recorded relative measurement data."""
         return self._data
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._data})"
-
 
 class Detector(MeasurementsRecord):
     def __init__(
@@ -145,6 +142,11 @@ class Detector(MeasurementsRecord):
     def _circuit_diagram_info_(self, _: Any) -> str:
         row, col, t = self.coordinates
         return f"Detector({row},{col},{t})"
+
+    def __repr__(self) -> str:
+        return (
+            f"Detector(measurement_data={self._data}, coordinates={self._coordinates})"
+        )
 
     @property
     def coordinates(self) -> tuple[float, ...]:
@@ -194,6 +196,12 @@ class Observable(MeasurementsRecord):
     def index(self) -> int:
         """Return the index of the observable."""
         return self._observable_index
+
+    def __repr__(self) -> str:
+        return (
+            f"Observable(measurement_data={self._data}, "
+            f"observable_index={self._observable_index})"
+        )
 
 
 def make_shift_coords(*shifts: int) -> cirq.Operation:
@@ -354,7 +362,7 @@ class MX(cirq.Operation):
         **kwargs: dict[str, typing.Any],
     ) -> None:
         edit_measurement_key_lengths.append((",".join(map(str, targets)), len(targets)))
-        edit_circuit.append_operation("MX", list(self.qubits), None)
+        edit_circuit.append_operation("MX", targets, [])
 
     def _is_measurement_(self) -> bool:
         return True

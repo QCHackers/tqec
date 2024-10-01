@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import pathlib
 import typing as ty
 from dataclasses import astuple, dataclass
@@ -99,6 +100,10 @@ class CubeType(Enum):
     ZZX = "zzx"
     # Virtual cube for open port
     VIRTUAL = "virtual"
+
+    @property
+    def is_spatial_junction(self) -> bool:
+        return self in [CubeType.ZZX, CubeType.XXZ]
 
     def to_zx_node_type(self) -> NodeType:
         """Convert the cube type to a ZX node type."""
@@ -211,6 +216,15 @@ class PipeType(Enum):
             self.direction, Color.Z if is_z_cube else Color.X
         )
         return CubeType.from_color(color)
+
+    def temporal_basis(self) -> ty.Literal["X", "Z"]:
+        if self.direction == Direction3D.Z:
+            raise TQECException("Cannot get the temporal basis on a temporal pipe.")
+        # Because this is not a temporal pipe, we know for sure
+        # that there is no "o" in the Z direction. Also, "h" can
+        # not appear in the first 3 entries, so self.value[2] is
+        # either "x" or "z".
+        return ty.cast(ty.Literal["X", "Z"], self.value[2].upper())
 
 
 BlockType = ty.Union[CubeType, PipeType]
@@ -658,3 +672,20 @@ class BlockGraph:
                 AbstractObservable(frozenset(top_lines), frozenset(bottom_regions))
             )
         return abstract_observables
+
+    def with_zero_min_z(self) -> BlockGraph:
+        """Shift the whole graph in the z direction to make the minimum z
+        zero."""
+        minz = min(cube.position.z for cube in self.cubes)
+        if minz == 0:
+            return deepcopy(self)
+        new_graph = BlockGraph(self.name)
+        for cube in self.cubes:
+            new_graph.add_cube(cube.position.shift_by(dz=-minz), cube.cube_type)
+        for pipe in self.pipes:
+            new_graph.add_pipe(
+                pipe.u.position.shift_by(dz=-minz),
+                pipe.v.position.shift_by(dz=-minz),
+                pipe.pipe_type,
+            )
+        return new_graph

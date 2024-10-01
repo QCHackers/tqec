@@ -1,6 +1,4 @@
 from tqec.sketchup.zx_graph import (
-    Position3D,
-    Direction3D,
     NodeType,
     ZXNode,
     ZXEdge,
