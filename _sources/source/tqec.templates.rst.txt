@@ -44,6 +44,14 @@ tqec.templates.interval module
    :undoc-members:
    :show-inheritance:
 
+tqec.templates.layout module
+----------------------------
+
+.. automodule:: tqec.templates.layout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tqec.templates.qubit module
 ---------------------------
 

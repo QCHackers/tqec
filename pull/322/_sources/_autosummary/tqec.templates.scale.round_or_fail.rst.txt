@@ -1,6 +1,0 @@
-tqec.templates.scale.round\_or\_fail
-====================================
-
-.. currentmodule:: tqec.templates.scale
-
-.. autofunction:: round_or_fail

@@ -459,6 +459,64 @@
             <span class="p">]</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_get_moment_index_by_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the index of the moment scheduled at the provided schedule.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            schedule: the schedule at which the Moment instance should be returned.</span>
+<span class="sd">                If the schedule is negative, it is considered as an index from</span>
+<span class="sd">                the end. For example, -1 is the last schedule and -2 is the</span>
+<span class="sd">                last schedule - 1 (which might not be the second to last schedule).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the index of the Moment instance scheduled at the provided schedule.</span>
+<span class="sd">            If no Moment instance is scheduled at the provided schedule, None is</span>
+<span class="sd">            returned.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the provided calculated schedule is negative.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">schedule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">schedule</span> <span class="k">if</span> <span class="n">schedule</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">schedule</span>
+        <span class="k">if</span> <span class="n">schedule</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Trying to get the index of a Moment instance with a negative schedule </span><span class="si">{</span><span class="n">schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">moment_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sched</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">)</span> <span class="k">if</span> <span class="n">sched</span> <span class="o">==</span> <span class="n">schedule</span><span class="p">),</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">moment_index</span>
+
+<div class="viewcode-block" id="ScheduledCircuit.moment_at_schedule">
+<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.moment_at_schedule">[docs]</a>
+    <span class="k">def</span> <span class="nf">moment_at_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the Moment instance scheduled at the provided schedule.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            schedule: the schedule at which the Moment instance should be returned.</span>
+<span class="sd">                If the schedule is negative, it is considered as an index from</span>
+<span class="sd">                the end. For example, -1 is the last schedule and -2 is the</span>
+<span class="sd">                last schedule - 1 (which might not be the second to last schedule).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">moment_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_moment_index_by_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">moment_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No Moment instance scheduled at the provided schedule </span><span class="si">{</span><span class="n">schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ScheduledCircuit.append_new_moment">
+<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.append_new_moment">[docs]</a>
+    <span class="k">def</span> <span class="nf">append_new_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Schedule the provided Moment instance at the end of the circuit. The</span>
+<span class="sd">        new schedule will be the last schedule plus one.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            moment: the moment to schedule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">moment</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ScheduledCircuit.add_to_schedule_index">
 <a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.add_to_schedule_index">[docs]</a>
     <span class="k">def</span> <span class="nf">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -467,13 +525,13 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            schedule: schedule at which operations in `moment` should be added.</span>
+<span class="sd">                If the schedule is negative, it is considered as an index from</span>
+<span class="sd">                the end. For example, -1 is the last schedule and -2 is the</span>
+<span class="sd">                last schedule - 1 (which might not be the second to last schedule).</span>
 <span class="sd">            moment: operations that should be added.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Performing a self.schedule.index, but handling the ValueError is tedious.</span>
-        <span class="n">schedule_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sched</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">)</span> <span class="k">if</span> <span class="n">sched</span> <span class="o">==</span> <span class="n">schedule</span><span class="p">),</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">schedule_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">moment_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_moment_index_by_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">moment_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We have to insert a new schedule and a new Moment.</span>
             <span class="n">insertion_index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">,</span> <span class="n">schedule</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insertion_index</span><span class="p">,</span> <span class="n">schedule</span><span class="p">)</span>
@@ -487,11 +545,11 @@
             <span class="c1"># operations overlap.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">was_virtual_moment</span> <span class="o">=</span> <span class="n">ScheduledCircuit</span><span class="o">.</span><span class="n">_is_virtual_moment</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">schedule_index</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span>
                 <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">schedule_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">moment</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">moment</span>
                 <span class="n">is_virtual_moment</span> <span class="o">=</span> <span class="n">ScheduledCircuit</span><span class="o">.</span><span class="n">_is_virtual_moment</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">schedule_index</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_non_virtual_moments</span> <span class="o">+=</span> <span class="p">(</span>
                     <span class="ow">not</span> <span class="n">was_virtual_moment</span> <span class="ow">and</span> <span class="n">is_virtual_moment</span>
@@ -499,7 +557,7 @@
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                     <span class="s2">&quot;Trying to merge two Moment instances that overlap.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Existing:</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">schedule_index</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Existing:</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;Trying to add:</span><span class="se">\n</span><span class="si">{</span><span class="n">moment</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 </div>
@@ -630,11 +688,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">final_operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
     <span class="c1"># Remove duplicated mergeable operations with the set data-structure.</span>
-    <span class="k">for</span> <span class="n">merged_operation</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">mergeable_operations</span><span class="p">):</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">merged_operation</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">Plaquette</span><span class="o">.</span><span class="n">get_mergeable_tag</span><span class="p">()</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">Plaquette</span><span class="o">.</span><span class="n">get_mergeable_tag</span><span class="p">())</span>
-        <span class="n">final_operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merged_operation</span><span class="o">.</span><span class="n">untagged</span><span class="o">.</span><span class="n">with_tags</span><span class="p">(</span><span class="o">*</span><span class="n">tags</span><span class="p">))</span>
+    <span class="n">final_operations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mergeable_operations</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">final_operations</span></div>
 
 

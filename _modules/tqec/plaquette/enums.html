@@ -108,7 +108,20 @@
     <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">LEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">DOWN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+    <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PlaquetteSide.opposite">
+<a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.opposite">[docs]</a>
+    <span class="k">def</span> <span class="nf">opposite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PlaquetteSide&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span></div>
+</div>
 
 </pre></div>
 

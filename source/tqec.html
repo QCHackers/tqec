@@ -113,10 +113,12 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.VIRTUAL_MOMENT_SCHEDULE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.add_to_schedule_index"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.add_to_schedule_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.append_new_moment"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.append_new_moment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.detectors"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.detectors</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.from_multi_qubit_moment_schedule"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.from_multi_qubit_moment_schedule()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.map_to_qubits"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.map_to_qubits()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.mappable_qubits"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.mappable_qubits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.moment_at_schedule"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.moment_at_schedule()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.moments"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.moments</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.number_of_non_virtual_moments"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.number_of_non_virtual_moments</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.qubits"><code class="docutils literal notranslate"><span class="pre">ScheduledCircuit.qubits</span></code></a></li>
@@ -136,6 +138,99 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html#module-tqec.circuit">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tqec.compile.html">tqec.compile package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.block">tqec.compile.block module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout"><code class="docutils literal notranslate"><span class="pre">BlockLayout</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout.instantiate_layer"><code class="docutils literal notranslate"><span class="pre">BlockLayout.instantiate_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout.layers"><code class="docutils literal notranslate"><span class="pre">BlockLayout.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout.num_layers"><code class="docutils literal notranslate"><span class="pre">BlockLayout.num_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout.scale_to"><code class="docutils literal notranslate"><span class="pre">BlockLayout.scale_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.BlockLayout.template"><code class="docutils literal notranslate"><span class="pre">BlockLayout.template</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.CompiledBlock"><code class="docutils literal notranslate"><span class="pre">CompiledBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.CompiledBlock.template"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.CompiledBlock.layers"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id0"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.CompiledBlock.num_layers"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.num_layers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id5"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.block.CompiledBlock.with_updated_layer"><code class="docutils literal notranslate"><span class="pre">CompiledBlock.with_updated_layer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.compile">tqec.compile.compile module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph"><code class="docutils literal notranslate"><span class="pre">CompiledGraph</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph.layout_slices"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.layout_slices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph.observables"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.observables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph.generate_cirq_circuit"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.generate_cirq_circuit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph.generate_stim_circuit"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.generate_stim_circuit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id6"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.layout_slices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id7"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.observables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.CompiledGraph.scale_to"><code class="docutils literal notranslate"><span class="pre">CompiledGraph.scale_to()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.compile.compile_block_graph"><code class="docutils literal notranslate"><span class="pre">compile_block_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.detectors">tqec.compile.detectors module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.detectors.compute_detectors_in_last_timestep"><code class="docutils literal notranslate"><span class="pre">compute_detectors_in_last_timestep()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.observables">tqec.compile.observables module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.observables.get_center_qubit_at_horizontal_pipe"><code class="docutils literal notranslate"><span class="pre">get_center_qubit_at_horizontal_pipe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.observables.get_midline_qubits_for_cube"><code class="docutils literal notranslate"><span class="pre">get_midline_qubits_for_cube()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.observables.get_stabilizer_region_qubits_for_pipe"><code class="docutils literal notranslate"><span class="pre">get_stabilizer_region_qubits_for_pipe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.observables.inplace_add_observables"><code class="docutils literal notranslate"><span class="pre">inplace_add_observables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.specs">tqec.compile.specs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.CubeSpec"><code class="docutils literal notranslate"><span class="pre">CubeSpec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.CubeSpec.cube_type"><code class="docutils literal notranslate"><span class="pre">CubeSpec.cube_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.CubeSpec.junction_arms"><code class="docutils literal notranslate"><span class="pre">CubeSpec.junction_arms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id8"><code class="docutils literal notranslate"><span class="pre">CubeSpec.cube_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.CubeSpec.from_cube"><code class="docutils literal notranslate"><span class="pre">CubeSpec.from_cube()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.CubeSpec.is_spatial_junction"><code class="docutils literal notranslate"><span class="pre">CubeSpec.is_spatial_junction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id9"><code class="docutils literal notranslate"><span class="pre">CubeSpec.junction_arms</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms"><code class="docutils literal notranslate"><span class="pre">JunctionArms</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.DOWN"><code class="docutils literal notranslate"><span class="pre">JunctionArms.DOWN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.LEFT"><code class="docutils literal notranslate"><span class="pre">JunctionArms.LEFT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.NONE"><code class="docutils literal notranslate"><span class="pre">JunctionArms.NONE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.RIGHT"><code class="docutils literal notranslate"><span class="pre">JunctionArms.RIGHT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.UP"><code class="docutils literal notranslate"><span class="pre">JunctionArms.UP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.JunctionArms.get_map_from_arm_to_shift"><code class="docutils literal notranslate"><span class="pre">JunctionArms.get_map_from_arm_to_shift()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.SpecRule"><code class="docutils literal notranslate"><span class="pre">SpecRule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.SpecRule.__call__"><code class="docutils literal notranslate"><span class="pre">SpecRule.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.specs.default_spec_rule"><code class="docutils literal notranslate"><span class="pre">default_spec_rule()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile.substitute">tqec.compile.substitute module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionKey"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionKey.spec1"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.spec1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionKey.spec2"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.spec2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionKey.pipe_type"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.pipe_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id10"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.pipe_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id11"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.spec1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#id12"><code class="docutils literal notranslate"><span class="pre">SubstitutionKey.spec2</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionRule"><code class="docutils literal notranslate"><span class="pre">SubstitutionRule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.SubstitutionRule.__call__"><code class="docutils literal notranslate"><span class="pre">SubstitutionRule.__call__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.compile.html#tqec.compile.substitute.default_substitution_rule"><code class="docutils literal notranslate"><span class="pre">default_substitution_rule()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html#module-tqec.compile">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models package</a><ul>
@@ -236,6 +331,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.LEFT"><code class="docutils literal notranslate"><span class="pre">PlaquetteSide.LEFT</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.RIGHT"><code class="docutils literal notranslate"><span class="pre">PlaquetteSide.RIGHT</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.UP"><code class="docutils literal notranslate"><span class="pre">PlaquetteSide.UP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.enums.PlaquetteSide.opposite"><code class="docutils literal notranslate"><span class="pre">PlaquetteSide.opposite()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -252,6 +348,14 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.Plaquettes"><code class="docutils literal notranslate"><span class="pre">Plaquettes</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.Plaquettes.collection"><code class="docutils literal notranslate"><span class="pre">Plaquettes.collection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.Plaquettes.has_default"><code class="docutils literal notranslate"><span class="pre">Plaquettes.has_default</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.Plaquettes.repeat"><code class="docutils literal notranslate"><span class="pre">Plaquettes.repeat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.Plaquettes.with_updated_plaquettes"><code class="docutils literal notranslate"><span class="pre">Plaquettes.with_updated_plaquettes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.RepeatedPlaquettes"><code class="docutils literal notranslate"><span class="pre">RepeatedPlaquettes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.RepeatedPlaquettes.num_rounds"><code class="docutils literal notranslate"><span class="pre">RepeatedPlaquettes.num_rounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.RepeatedPlaquettes.repetitions"><code class="docutils literal notranslate"><span class="pre">RepeatedPlaquettes.repetitions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.html#tqec.plaquette.plaquette.RepeatedPlaquettes.with_updated_plaquettes"><code class="docutils literal notranslate"><span class="pre">RepeatedPlaquettes.with_updated_plaquettes()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -310,6 +414,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.pipes_at"><code class="docutils literal notranslate"><span class="pre">BlockGraph.pipes_at()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.to_dae_file"><code class="docutils literal notranslate"><span class="pre">BlockGraph.to_dae_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.to_zx_graph"><code class="docutils literal notranslate"><span class="pre">BlockGraph.to_zx_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.with_zero_min_z"><code class="docutils literal notranslate"><span class="pre">BlockGraph.with_zero_min_z()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.BlockType"><code class="docutils literal notranslate"><span class="pre">BlockType</span></code></a></li>
@@ -349,6 +454,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.from_color"><code class="docutils literal notranslate"><span class="pre">CubeType.from_color()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.get_color"><code class="docutils literal notranslate"><span class="pre">CubeType.get_color()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.infer_pipe_type_at_direction"><code class="docutils literal notranslate"><span class="pre">CubeType.infer_pipe_type_at_direction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.is_spatial_junction"><code class="docutils literal notranslate"><span class="pre">CubeType.is_spatial_junction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.normal_direction_to_corner_plane"><code class="docutils literal notranslate"><span class="pre">CubeType.normal_direction_to_corner_plane()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.to_zx_node_type"><code class="docutils literal notranslate"><span class="pre">CubeType.to_zx_node_type()</span></code></a></li>
 </ul>
@@ -378,6 +484,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.PipeType.get_color_at_side"><code class="docutils literal notranslate"><span class="pre">PipeType.get_color_at_side()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.PipeType.has_hadamard"><code class="docutils literal notranslate"><span class="pre">PipeType.has_hadamard</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.PipeType.infer_cube_type_at_side"><code class="docutils literal notranslate"><span class="pre">PipeType.infer_cube_type_at_side()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.sketchup.html#tqec.sketchup.block_graph.PipeType.temporal_basis"><code class="docutils literal notranslate"><span class="pre">PipeType.temporal_basis()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -585,6 +692,20 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.layout">tqec.templates.layout module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.element_shape"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.element_shape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.expected_plaquettes_number</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.get_indices_map_for_instantiation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.get_plaquette_indices_on_sides"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.get_plaquette_indices_on_sides()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.instantiate"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.instantiate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.origin_shift"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.origin_shift</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.scalable_shape"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.scalable_shape</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.layout.LayoutTemplate.scale_to"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.scale_to()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.html#module-tqec.templates.qubit">tqec.templates.qubit module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate"><code class="docutils literal notranslate"><span class="pre">Qubit4WayJunctionTemplate</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate.expected_plaquettes_number"><code class="docutils literal notranslate"><span class="pre">Qubit4WayJunctionTemplate.expected_plaquettes_number</span></code></a></li>
@@ -750,8 +871,8 @@ instead of having a tuple[int, int] that could be:
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="tqec.position.Position">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/position.html#Position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.position.Position2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Position2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/position.html#Position2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position2D" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simple wrapper around tuple[int, int].</p>
 <p>This class is here to explicitly name the type of variables as positions
@@ -761,20 +882,20 @@ instead of having a tuple[int, int] that could be:
 - coefficients for positions,
 - displacements.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="tqec.position.Position.to_grid_qubit">
-<span class="sig-name descname"><span class="pre">to_grid_qubit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position.to_grid_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position.to_grid_qubit" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.position.Position2D.to_grid_qubit">
+<span class="sig-name descname"><span class="pre">to_grid_qubit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position2D.to_grid_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position2D.to_grid_qubit" title="Link to this definition"></a></dt>
 <dd><p>Returns the position as a tuple following the cirq.GridQubit
 coordinate system.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.position.Position.x">
-<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.position.Position.x" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.position.Position2D.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.position.Position2D.x" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tqec.position.Position.y">
-<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.position.Position.y" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.position.Position2D.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tqec.position.Position2D.y" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -784,6 +905,12 @@ coordinate system.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Position3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/position.html#Position3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position3D" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A 3D integer position.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.position.Position3D.as_2d">
+<span class="sig-name descname"><span class="pre">as_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.position.Position2D" title="tqec.position.Position2D"><span class="pre">Position2D</span></a></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position3D.as_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position3D.as_2d" title="Link to this definition"></a></dt>
+<dd><p>Return the position as a 2D position.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.position.Position3D.as_tuple">
 <span class="sig-name descname"><span class="pre">as_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/position.html#Position3D.as_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.Position3D.as_tuple" title="Link to this definition"></a></dt>

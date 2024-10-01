@@ -1,0 +1,61 @@
+tqec.compile package
+====================
+
+Submodules
+----------
+
+tqec.compile.block module
+-------------------------
+
+.. automodule:: tqec.compile.block
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.compile.compile module
+---------------------------
+
+.. automodule:: tqec.compile.compile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.compile.detectors module
+-----------------------------
+
+.. automodule:: tqec.compile.detectors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.compile.observables module
+-------------------------------
+
+.. automodule:: tqec.compile.observables
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.compile.specs module
+-------------------------
+
+.. automodule:: tqec.compile.specs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tqec.compile.substitute module
+------------------------------
+
+.. automodule:: tqec.compile.substitute
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tqec.compile
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -236,7 +236,7 @@
         <span class="k">for</span> <span class="n">moment</span> <span class="ow">in</span> <span class="n">circuit</span><span class="p">:</span>
             <span class="n">global_measurement_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">moment</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">gate</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">MeasurementGate</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">cirq</span><span class="o">.</span><span class="n">is_measurement</span><span class="p">(</span><span class="n">op</span><span class="p">):</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Found a measurement applied on an invalid number of qubits (</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">qubits</span><span class="si">}</span><span class="s2">).&quot;</span>

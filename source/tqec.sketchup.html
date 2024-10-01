@@ -276,6 +276,13 @@ from the ZX graph and validated.</p>
 <dd><p>Convert the block graph to a ZX graph.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block_graph.BlockGraph.with_zero_min_z">
+<span class="sig-name descname"><span class="pre">with_zero_min_z</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block_graph.BlockGraph" title="tqec.sketchup.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#BlockGraph.with_zero_min_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.BlockGraph.with_zero_min_z" title="Link to this definition"></a></dt>
+<dd><p>Shift the whole graph in the z direction to make the minimum z
+zero.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py data">
@@ -452,6 +459,11 @@ diagram.</p>
 color match rule.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="tqec.sketchup.block_graph.CubeType.is_spatial_junction">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_spatial_junction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tqec.sketchup.block_graph.CubeType.is_spatial_junction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.sketchup.block_graph.CubeType.normal_direction_to_corner_plane">
 <span class="sig-name descname"><span class="pre">normal_direction_to_corner_plane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.html#tqec.position.Direction3D" title="tqec.position.Direction3D"><span class="pre">Direction3D</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#CubeType.normal_direction_to_corner_plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.CubeType.normal_direction_to_corner_plane" title="Link to this definition"></a></dt>
@@ -593,6 +605,11 @@ operation on logical qubits depending on its direction.</p>
 <span class="sig-name descname"><span class="pre">infer_cube_type_at_side</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_side_if_h_pipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_z_cube</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.sketchup.block_graph.CubeType" title="tqec.sketchup.block_graph.CubeType"><span class="pre">CubeType</span></a></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#PipeType.infer_cube_type_at_side"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.PipeType.infer_cube_type_at_side" title="Link to this definition"></a></dt>
 <dd><p>Infer the cube type at the side of the pipe.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.sketchup.block_graph.PipeType.temporal_basis">
+<span class="sig-name descname"><span class="pre">temporal_basis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/sketchup/block_graph.html#PipeType.temporal_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.sketchup.block_graph.PipeType.temporal_basis" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

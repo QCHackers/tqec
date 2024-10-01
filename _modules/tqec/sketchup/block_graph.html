@@ -80,6 +80,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
@@ -200,6 +201,10 @@
     <span class="n">ZZX</span> <span class="o">=</span> <span class="s2">&quot;zzx&quot;</span>
     <span class="c1"># Virtual cube for open port</span>
     <span class="n">VIRTUAL</span> <span class="o">=</span> <span class="s2">&quot;virtual&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CubeType</span><span class="o">.</span><span class="n">ZZX</span><span class="p">,</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">XXZ</span><span class="p">]</span>
 
 <div class="viewcode-block" id="CubeType.to_zx_node_type">
 <a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.CubeType.to_zx_node_type">[docs]</a>
@@ -338,6 +343,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="n">Color</span><span class="o">.</span><span class="n">Z</span> <span class="k">if</span> <span class="n">is_z_cube</span> <span class="k">else</span> <span class="n">Color</span><span class="o">.</span><span class="n">X</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">from_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipeType.temporal_basis">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.PipeType.temporal_basis">[docs]</a>
+    <span class="k">def</span> <span class="nf">temporal_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot get the temporal basis on a temporal pipe.&quot;</span><span class="p">)</span>
+        <span class="c1"># Because this is not a temporal pipe, we know for sure</span>
+        <span class="c1"># that there is no &quot;o&quot; in the Z direction. Also, &quot;h&quot; can</span>
+        <span class="c1"># not appear in the first 3 entries, so self.value[2] is</span>
+        <span class="c1"># either &quot;x&quot; or &quot;z&quot;.</span>
+        <span class="k">return</span> <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">ty</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
 </div>
 
 
@@ -833,6 +850,26 @@
                 <span class="n">AbstractObservable</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">top_lines</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">bottom_regions</span><span class="p">))</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">abstract_observables</span></div>
+
+
+<div class="viewcode-block" id="BlockGraph.with_zero_min_z">
+<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.block_graph.BlockGraph.with_zero_min_z">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_zero_min_z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the whole graph in the z direction to make the minimum z</span>
+<span class="sd">        zero.&quot;&quot;&quot;</span>
+        <span class="n">minz</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span> <span class="k">for</span> <span class="n">cube</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cubes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">new_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cube</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cubes</span><span class="p">:</span>
+            <span class="n">new_graph</span><span class="o">.</span><span class="n">add_cube</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=-</span><span class="n">minz</span><span class="p">),</span> <span class="n">cube</span><span class="o">.</span><span class="n">cube_type</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipes</span><span class="p">:</span>
+            <span class="n">new_graph</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
+                <span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=-</span><span class="n">minz</span><span class="p">),</span>
+                <span class="n">pipe</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=-</span><span class="n">minz</span><span class="p">),</span>
+                <span class="n">pipe</span><span class="o">.</span><span class="n">pipe_type</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_graph</span></div>
 </div>
 
 </pre></div>

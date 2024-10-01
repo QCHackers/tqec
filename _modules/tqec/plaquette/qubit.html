@@ -84,7 +84,7 @@
 <span class="kn">import</span> <span class="nn">cirq</span>
 
 <span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">PlaquetteOrientation</span><span class="p">,</span> <span class="n">PlaquetteSide</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 
 
@@ -100,7 +100,7 @@
 <span class="sd">    and implements an helper method to get a cirq.GridQubit instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">position</span><span class="p">:</span> <span class="n">Position</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Position2D</span>
 
 <div class="viewcode-block" id="PlaquetteQubit.to_grid_qubit">
 <a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.qubit.PlaquetteQubit.to_grid_qubit">[docs]</a>
@@ -229,12 +229,12 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
-                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+                <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
             <span class="p">],</span>
-            <span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span>
+            <span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span>
         <span class="p">)</span></div>
 
 
@@ -243,10 +243,10 @@
 <a class="viewcode-back" href="../../../source/tqec.plaquette.html#tqec.plaquette.qubit.RoundedPlaquetteQubits">[docs]</a>
 <span class="k">class</span> <span class="nc">RoundedPlaquetteQubits</span><span class="p">(</span><span class="n">PlaquetteQubits</span><span class="p">):</span>
     <span class="n">_POTENTIAL_DATA_QUBITS</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
-        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
-        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
     <span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
@@ -265,7 +265,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">PlaquetteOrientation</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">RoundedPlaquetteQubits</span><span class="o">.</span><span class="n">_get_qubits_on_side</span><span class="p">(</span><span class="n">orientation</span><span class="o">.</span><span class="n">to_plaquette_side</span><span class="p">()),</span>
-            <span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span>
+            <span class="p">[</span><span class="n">PlaquetteQubit</span><span class="p">(</span><span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span>
         <span class="p">)</span></div>
 
 </pre></div>

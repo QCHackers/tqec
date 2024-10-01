@@ -340,9 +340,24 @@ schedule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>schedule</strong> – schedule at which operations in <cite>moment</cite> should be added.</p></li>
+<li><p><strong>schedule</strong> – schedule at which operations in <cite>moment</cite> should be added.
+If the schedule is negative, it is considered as an index from
+the end. For example, -1 is the last schedule and -2 is the
+last schedule - 1 (which might not be the second to last schedule).</p></li>
 <li><p><strong>moment</strong> – operations that should be added.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.schedule.ScheduledCircuit.append_new_moment">
+<span class="sig-name descname"><span class="pre">append_new_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Moment</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#ScheduledCircuit.append_new_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.ScheduledCircuit.append_new_moment" title="Link to this definition"></a></dt>
+<dd><p>Schedule the provided Moment instance at the end of the circuit. The
+new schedule will be the last schedule plus one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>moment</strong> – the moment to schedule.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -396,6 +411,20 @@ else self).</p>
 <dd><p>Return the set of qubits involved in the circuit that can be mapped,
 which is the union of the qubits of all the operations performed on and
 the origin of all the detectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.schedule.ScheduledCircuit.moment_at_schedule">
+<span class="sig-name descname"><span class="pre">moment_at_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Moment</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#ScheduledCircuit.moment_at_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.ScheduledCircuit.moment_at_schedule" title="Link to this definition"></a></dt>
+<dd><p>Get the Moment instance scheduled at the provided schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>schedule</strong> – the schedule at which the Moment instance should be returned.
+If the schedule is negative, it is considered as an index from
+the end. For example, -1 is the last schedule and -2 is the
+last schedule - 1 (which might not be the second to last schedule).</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">

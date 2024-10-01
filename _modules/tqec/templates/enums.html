@@ -78,7 +78,7 @@
   <h1>Source code for tqec.templates.enums</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position2D</span>
 
 
 <div class="viewcode-block" id="CornerPositionEnum">
@@ -92,10 +92,10 @@
 <span class="sd">    - the Y-axis that goes from the origin to the lower-left corner</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">LOWER_LEFT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">LOWER_RIGHT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">UPPER_LEFT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">UPPER_RIGHT</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+    <span class="n">LOWER_LEFT</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">LOWER_RIGHT</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">UPPER_LEFT</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">UPPER_RIGHT</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
 
@@ -110,10 +110,10 @@
 <span class="sd">    X-axis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">LEFT_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">RIGHT_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">ABOVE_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">BELOW_OF</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+    <span class="n">LEFT_OF</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">RIGHT_OF</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ABOVE_OF</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">BELOW_OF</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 

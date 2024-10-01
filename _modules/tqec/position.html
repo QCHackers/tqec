@@ -82,10 +82,10 @@
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
 
-<div class="viewcode-block" id="Position">
-<a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position">[docs]</a>
+<div class="viewcode-block" id="Position2D">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position2D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Position2D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
 
 <span class="sd">    This class is here to explicitly name the type of variables as positions</span>
@@ -99,8 +99,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">int</span>
 
-<div class="viewcode-block" id="Position.to_grid_qubit">
-<a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position.to_grid_qubit">[docs]</a>
+<div class="viewcode-block" id="Position2D.to_grid_qubit">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position2D.to_grid_qubit">[docs]</a>
     <span class="k">def</span> <span class="nf">to_grid_qubit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the position as a tuple following the cirq.GridQubit</span>
 <span class="sd">        coordinate system.&quot;&quot;&quot;</span>
@@ -111,7 +111,7 @@
 
 <div class="viewcode-block" id="Shape2D">
 <a class="viewcode-back" href="../../source/tqec.html#tqec.position.Shape2D">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Shape2D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
 
@@ -199,7 +199,14 @@
 
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+<div class="viewcode-block" id="Position3D.as_2d">
+<a class="viewcode-back" href="../../source/tqec.html#tqec.position.Position3D.as_2d">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the position as a 2D position.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Position2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+</div>
 
 
 
