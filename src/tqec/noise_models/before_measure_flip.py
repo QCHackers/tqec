@@ -17,7 +17,7 @@ class BeforeMeasurementFlipNoise(BaseNoiseModel):
         super().__init__(p)
 
     def noisy_operation(self, operation: cirq.Operation) -> cirq.OP_TREE:
-        if isinstance(operation.gate, cirq.MeasurementGate):
+        if cirq.is_measurement(operation):
             return [
                 [
                     cirq.bit_flip(self.prob).on(qubit).with_tags(cirq.VirtualTag())

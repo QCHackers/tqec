@@ -150,7 +150,7 @@ class CircuitMeasurementMap:
         for moment in circuit:
             global_measurement_indices.append(dict())
             for op in moment.operations:
-                if isinstance(op.gate, cirq.MeasurementGate):
+                if cirq.is_measurement(op):
                     if len(op.qubits) != 1:
                         raise TQECException(
                             f"Found a measurement applied on an invalid number of qubits ({op.qubits})."

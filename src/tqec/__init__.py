@@ -10,6 +10,7 @@ from .circuit import (
     ScheduleException,
     generate_circuit,
     merge_scheduled_circuits,
+    annotate_detectors_automatically,
 )
 from .exceptions import TQECException
 from .noise_models import (
@@ -33,8 +34,10 @@ from .plaquette.enums import (
 )
 from .position import (
     Displacement,
-    Position,
+    Position2D,
     Shape2D,
+    Position3D,
+    Direction3D,
 )
 from .templates import LinearFunction, Template
 from .templates.enums import (
@@ -42,3 +45,22 @@ from .templates.enums import (
     TemplateOrientation,
     TemplateRelativePositionEnum,
 )
+
+from .sketchup import (
+    NodeType,
+    ZXNode,
+    ZXEdge,
+    ZXGraph,
+    Color3D,
+    CubeType,
+    PipeType,
+    BlockType,
+    Cube,
+    Pipe,
+    BlockGraph,
+    read_block_graph_from_dae_file,
+    write_block_graph_to_dae_file,
+    display_collada_model,
+)
+
+from tqec.compile import compile_block_graph

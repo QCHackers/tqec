@@ -44,7 +44,7 @@ class Dae2ObservablesTQECSubCommand(TQECSubCommand):
 
         if args.out_dir is None:
             print(
-                f"Found {len(correlation_surfaces)} correlation surfaces. Please provide an output "
+                f"Found {len(correlation_surfaces)} observables. Please provide an output "
                 "directory by using the '--out-dir' argument to visualize them."
             )
         else:

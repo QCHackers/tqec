@@ -9,34 +9,34 @@ from tqec.plaquette.qubit import (
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
-from tqec.position import Position
+from tqec.position import Position2D
 from tqec.templates.enums import TemplateOrientation
 
 
 def test_creation() -> None:
-    PlaquetteQubit(Position(0, 0))
-    PlaquetteQubit(Position(100000, -2398467235))
-    PlaquetteQubit(Position(-234897659345, 349578))
+    PlaquetteQubit(Position2D(0, 0))
+    PlaquetteQubit(Position2D(100000, -2398467235))
+    PlaquetteQubit(Position2D(-234897659345, 349578))
 
 
 def test_to_grid_qubit_origin() -> None:
-    pq = PlaquetteQubit(Position(0, 0))
+    pq = PlaquetteQubit(Position2D(0, 0))
     assert pq.to_grid_qubit() == cirq.GridQubit(0, 0)
 
 
 def test_to_grid_qubit_non_origin() -> None:
     row, col = 238957462345, -945678
-    pq = PlaquetteQubit(Position(col, row))
+    pq = PlaquetteQubit(Position2D(col, row))
     assert pq.to_grid_qubit() == cirq.GridQubit(row, col)
 
 
 def test_square_plaquette_qubits() -> None:
     qubits = SquarePlaquetteQubits()
-    top_left = PlaquetteQubit(Position(-1, -1))
-    top_right = PlaquetteQubit(Position(1, -1))
-    bot_left = PlaquetteQubit(Position(-1, 1))
-    bot_right = PlaquetteQubit(Position(1, 1))
-    center = PlaquetteQubit(Position(0, 0))
+    top_left = PlaquetteQubit(Position2D(-1, -1))
+    top_right = PlaquetteQubit(Position2D(1, -1))
+    bot_left = PlaquetteQubit(Position2D(-1, 1))
+    bot_right = PlaquetteQubit(Position2D(1, 1))
+    center = PlaquetteQubit(Position2D(0, 0))
     assert set(qubits.data_qubits) == {top_left, top_right, bot_left, bot_right}
     assert set(qubits.syndrome_qubits) == {center}
     assert set(qubits.get_qubits_on_side(PlaquetteSide.LEFT)) == {top_left, bot_left}
@@ -70,9 +70,9 @@ def test_square_plaquette_qubits() -> None:
 
 def test_rounded_plaquette_qubits() -> None:
     qubits = RoundedPlaquetteQubits(PlaquetteOrientation.UP)
-    bot_left = PlaquetteQubit(Position(-1, 1))
-    bot_right = PlaquetteQubit(Position(1, 1))
-    center = PlaquetteQubit(Position(0, 0))
+    bot_left = PlaquetteQubit(Position2D(-1, 1))
+    bot_right = PlaquetteQubit(Position2D(1, 1))
+    center = PlaquetteQubit(Position2D(0, 0))
     assert set(qubits.data_qubits) == {bot_left, bot_right}
     assert set(qubits.syndrome_qubits) == {center}
     assert set(qubits.get_qubits_on_side(PlaquetteSide.LEFT)) == {bot_left}

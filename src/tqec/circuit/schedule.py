@@ -361,19 +361,71 @@ class ScheduledCircuit:
             ]
         )
 
+    def _get_moment_index_by_schedule(self, schedule: int) -> int | None:
+        """Get the index of the moment scheduled at the provided schedule.
+
+        Args:
+            schedule: the schedule at which the Moment instance should be returned.
+                If the schedule is negative, it is considered as an index from
+                the end. For example, -1 is the last schedule and -2 is the
+                last schedule - 1 (which might not be the second to last schedule).
+
+        Returns:
+            the index of the Moment instance scheduled at the provided schedule.
+            If no Moment instance is scheduled at the provided schedule, None is
+            returned.
+
+        Raises:
+            TQECException: if the provided calculated schedule is negative.
+        """
+        schedule = self._schedule[-1] + 1 + schedule if schedule < 0 else schedule
+        if schedule < 0:
+            raise TQECException(
+                f"Trying to get the index of a Moment instance with a negative schedule {schedule}."
+            )
+        moment_index = next(
+            (i for i, sched in enumerate(self._schedule) if sched == schedule), None
+        )
+        return moment_index
+
+    def moment_at_schedule(self, schedule: int) -> cirq.Moment:
+        """Get the Moment instance scheduled at the provided schedule.
+
+        Args:
+            schedule: the schedule at which the Moment instance should be returned.
+                If the schedule is negative, it is considered as an index from
+                the end. For example, -1 is the last schedule and -2 is the
+                last schedule - 1 (which might not be the second to last schedule).
+        """
+        moment_index = self._get_moment_index_by_schedule(schedule)
+        if moment_index is None:
+            raise TQECException(
+                f"No Moment instance scheduled at the provided schedule {schedule}."
+            )
+        return self._raw_circuit[moment_index]
+
+    def append_new_moment(self, moment: cirq.Moment) -> None:
+        """Schedule the provided Moment instance at the end of the circuit. The
+        new schedule will be the last schedule plus one.
+
+        Args:
+            moment: the moment to schedule.
+        """
+        self.add_to_schedule_index(self._schedule[-1] + 1, moment)
+
     def add_to_schedule_index(self, schedule: int, moment: cirq.Moment) -> None:
         """Add the operations contained in the provided moment at the provided
         schedule.
 
         Args:
             schedule: schedule at which operations in `moment` should be added.
+                If the schedule is negative, it is considered as an index from
+                the end. For example, -1 is the last schedule and -2 is the
+                last schedule - 1 (which might not be the second to last schedule).
             moment: operations that should be added.
         """
-        # Performing a self.schedule.index, but handling the ValueError is tedious.
-        schedule_index = next(
-            (i for i, sched in enumerate(self._schedule) if sched == schedule), None
-        )
-        if schedule_index is None:
+        moment_index = self._get_moment_index_by_schedule(schedule)
+        if moment_index is None:
             # We have to insert a new schedule and a new Moment.
             insertion_index = bisect.bisect_left(self._schedule, schedule)
             self._schedule.insert(insertion_index, schedule)
@@ -387,11 +439,11 @@ class ScheduledCircuit:
             # operations overlap.
             try:
                 was_virtual_moment = ScheduledCircuit._is_virtual_moment(
-                    self._raw_circuit[schedule_index]
+                    self._raw_circuit[moment_index]
                 )
-                self._raw_circuit[schedule_index] += moment
+                self._raw_circuit[moment_index] += moment
                 is_virtual_moment = ScheduledCircuit._is_virtual_moment(
-                    self._raw_circuit[schedule_index]
+                    self._raw_circuit[moment_index]
                 )
                 self._number_of_non_virtual_moments += (
                     not was_virtual_moment and is_virtual_moment
@@ -399,7 +451,7 @@ class ScheduledCircuit:
             except ValueError as e:
                 raise TQECException(
                     "Trying to merge two Moment instances that overlap.\n"
-                    f"Existing:\n{self._raw_circuit[schedule_index]}\n"
+                    f"Existing:\n{self._raw_circuit[moment_index]}\n"
                     f"Trying to add:\n{moment}."
                 ) from e
 
@@ -517,11 +569,7 @@ def remove_duplicate_operations(
         else:
             final_operations.append(operation)
     # Remove duplicated mergeable operations with the set data-structure.
-    for merged_operation in set(mergeable_operations):
-        tags = set(merged_operation.tags)
-        if Plaquette.get_mergeable_tag() in tags:
-            tags.remove(Plaquette.get_mergeable_tag())
-        final_operations.append(merged_operation.untagged.with_tags(*tags))
+    final_operations.extend(set(mergeable_operations))
     return final_operations
 
 

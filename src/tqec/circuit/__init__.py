@@ -6,3 +6,4 @@ from .operations import (
     transform_to_stimcirq_compatible,
 )
 from .schedule import ScheduledCircuit, ScheduleException, merge_scheduled_circuits
+from .detectors.construction import annotate_detectors_automatically
