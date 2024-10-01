@@ -368,7 +368,7 @@ class ScheduledCircuit:
             schedule: the schedule at which the Moment instance should be returned.
                 If the schedule is negative, it is considered as an index from
                 the end. For example, -1 is the last schedule and -2 is the
-                last schedule - 1.
+                last schedule - 1 (which might not be the second to last schedule).
 
         Returns:
             the index of the Moment instance scheduled at the provided schedule.
@@ -395,7 +395,7 @@ class ScheduledCircuit:
             schedule: the schedule at which the Moment instance should be returned.
                 If the schedule is negative, it is considered as an index from
                 the end. For example, -1 is the last schedule and -2 is the
-                last schedule - 1.
+                last schedule - 1 (which might not be the second to last schedule).
         """
         moment_index = self._get_moment_index_by_schedule(schedule)
         if moment_index is None:
@@ -421,7 +421,7 @@ class ScheduledCircuit:
             schedule: schedule at which operations in `moment` should be added.
                 If the schedule is negative, it is considered as an index from
                 the end. For example, -1 is the last schedule and -2 is the
-                last schedule - 1.
+                last schedule - 1 (which might not be the second to last schedule).
             moment: operations that should be added.
         """
         moment_index = self._get_moment_index_by_schedule(schedule)

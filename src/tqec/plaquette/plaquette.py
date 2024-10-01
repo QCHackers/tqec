@@ -71,9 +71,6 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
-    def with_circuit(self, circuit: ScheduledCircuit) -> Plaquette:
-        return Plaquette(self.qubits, circuit)
-
     @property
     def measurements(self) -> list[Measurement]:
         return self._measurements

@@ -19,7 +19,10 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
     ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "dae2circuits",
-            description="Convert a .dae file representing a logical computation into concrete stim circuits.",
+            description=(
+                "Convert a .dae file representing a logical "
+                "computation into concrete stim circuits."
+            ),
         )
         parser.add_argument(
             "dae_file",
@@ -41,7 +44,10 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
         )
         parser.add_argument(
             "--obs-include",
-            help="The observable indices to be included in the circuits. If not provided, all potential observables will be included.",
+            help=(
+                "The observable indices to be included in the circuits. "
+                "If not provided, all potential observables will be included."
+            ),
             nargs="*",
             type=int,
         )
@@ -58,7 +64,7 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
     def execute(args: argparse.Namespace) -> None:
         dae_absolute_path: Path = args.dae_file.resolve()
         out_dir: Path = args.out_dir.resolve()
-        if not args.out_dir.exists():
+        if not out_dir.exists():
             out_dir.mkdir(parents=True)
 
         # Construct the block graph from the given .dae file
