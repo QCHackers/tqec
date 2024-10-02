@@ -12,8 +12,8 @@ from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
 from tqec.position import Position2D
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.scale import LinearFunction
 from tqec.templates.layout import LayoutTemplate
+from tqec.templates.scale import LinearFunction
 
 
 @dataclass
@@ -23,8 +23,8 @@ class CompiledBlock:
     Attributes:
         template: the template that defines the cube implementation.
         layers: a list of `Plaquettes` that represent different functional layers of the
-            cube. When aligning two `CompiledBlock`s, the layers are aligned in order.
-            Typically, there are three layers in most cube implementations:
+            cube. When aligning two `CompiledBlock` instances, the layers are aligned in
+            order. Typically, there are three layers in most cube implementations:
             Initialization, Repetitions, and Measurement.
     """
 
@@ -59,7 +59,7 @@ class CompiledBlock:
 
 class BlockLayout:
     def __init__(self, blocks_layout: dict[Position2D, CompiledBlock]):
-        """Create a layout of `CompiledBlock`s in the 2D grid.
+        """Create a layout of `CompiledBlock` instances in the 2D grid.
 
         We require that all the blocks in the layout have the same
         scalable shape.
