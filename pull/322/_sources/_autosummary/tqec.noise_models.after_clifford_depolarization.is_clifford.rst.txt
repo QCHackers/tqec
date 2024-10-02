@@ -1,6 +1,0 @@
-tqec.noise\_models.after\_clifford\_depolarization.is\_clifford
-===============================================================
-
-.. currentmodule:: tqec.noise_models.after_clifford_depolarization
-
-.. autofunction:: is_clifford

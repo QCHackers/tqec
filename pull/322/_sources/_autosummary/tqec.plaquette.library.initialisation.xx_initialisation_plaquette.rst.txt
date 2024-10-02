@@ -1,6 +1,0 @@
-tqec.plaquette.library.initialisation.xx\_initialisation\_plaquette
-===================================================================
-
-.. currentmodule:: tqec.plaquette.library.initialisation
-
-.. autofunction:: xx_initialisation_plaquette
