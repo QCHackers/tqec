@@ -1,0 +1,6 @@
+tqec.circuit.schedule.remove\_duplicate\_operations
+===================================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autofunction:: remove_duplicate_operations

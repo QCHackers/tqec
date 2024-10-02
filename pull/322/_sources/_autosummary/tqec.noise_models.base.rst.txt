@@ -1,0 +1,30 @@
+tqec.noise\_models.base
+=======================
+
+.. automodule:: tqec.noise_models.base
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BaseNoiseModel
+   
+   
+
+   
+   
+   
+
+
+

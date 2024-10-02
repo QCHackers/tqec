@@ -1,0 +1,30 @@
+tqec.noise\_models.before\_round\_data\_depolarization
+======================================================
+
+.. automodule:: tqec.noise_models.before_round_data_depolarization
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BeforeRoundDataDepolarizationNoise
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,33 @@
+tqec.plaquette.qubit
+====================
+
+.. automodule:: tqec.plaquette.qubit
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      PlaquetteQubit
+      PlaquetteQubits
+      RoundedPlaquetteQubits
+      SquarePlaquetteQubits
+   
+   
+
+   
+   
+   
+
+
+

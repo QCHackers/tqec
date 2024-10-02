@@ -1,0 +1,6 @@
+tqec.sketchup.block\_graph.BlockType
+====================================
+
+.. currentmodule:: tqec.sketchup.block_graph
+
+.. autodata:: BlockType

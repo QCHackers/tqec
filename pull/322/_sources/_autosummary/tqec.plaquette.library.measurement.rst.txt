@@ -1,0 +1,33 @@
+tqec.plaquette.library.measurement
+==================================
+
+.. automodule:: tqec.plaquette.library.measurement
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      xx_measurement_plaquette
+      xxxx_measurement_plaquette
+      zz_measurement_plaquette
+      zzzz_measurement_plaquette
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

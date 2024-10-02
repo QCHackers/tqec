@@ -1,0 +1,47 @@
+﻿tqec
+====
+
+.. automodule:: tqec
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   circuit
+
+   compile
+
+   exceptions
+
+   noise_models
+
+   plaquette
+
+   position
+
+
+   sketchup
+
+   templates
+

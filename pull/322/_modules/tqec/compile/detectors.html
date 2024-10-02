@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.compile.detectors &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.compile.detectors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.compile.detectors</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+
+<span class="kn">import</span> <span class="nn">cirq</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+<span class="kn">import</span> <span class="nn">stim</span>
+<span class="kn">import</span> <span class="nn">stimcirq</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.circuit</span> <span class="kn">import</span> <span class="n">generate_circuit_from_instantiation</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.flow</span> <span class="kn">import</span> <span class="n">build_flows_from_fragments</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.fragment</span> <span class="kn">import</span> <span class="n">Fragment</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.match</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MatchedDetector</span><span class="p">,</span>
+    <span class="n">match_boundary_stabilizers</span><span class="p">,</span>
+    <span class="n">match_detectors_within_fragment</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.measurement</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Measurement</span><span class="p">,</span>
+    <span class="n">get_measurements_from_circuit</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.operations.operation</span> <span class="kn">import</span> <span class="n">Detector</span><span class="p">,</span> <span class="n">make_detector</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position2D</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
+
+
+<span class="k">def</span> <span class="nf">_get_qubit_mapping</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a mapping from qubit to indices for the provided circuit.</span>
+
+<span class="sd">    This function requires the whole circuit in order to avoid issues such</span>
+<span class="sd">    as qubits only appearing in some time steps and not the others.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: the circuit to create the mapping for.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if any qubit of the provided circuit is not a</span>
+<span class="sd">            `cirq.GridQubit` instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a mapping qubit -&gt; index for all the qubits appearing in the circuit</span>
+<span class="sd">        provided. Each qubit should be mapped to a different index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mapping</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">all_qubits</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qubit</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Found a qubit that is not an instance of cirq.GridQubit.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">mapping</span><span class="p">[</span><span class="n">qubit</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mapping</span>
+
+
+<span class="k">def</span> <span class="nf">_get_measurement_offset_mapping</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a mapping from measurement offsets as used and returned by the</span>
+<span class="sd">    package `tqec.circuit.detectors` to a `Measurement` instance.</span>
+
+<span class="sd">    This function returns the mapping from negative offsets that are</span>
+<span class="sd">    supposed to each represent a unique measurement in the circuit to</span>
+<span class="sd">    `Measurement` instances, that serve the same purpose but use a different</span>
+<span class="sd">    encoding.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        As a sanity check, the user of this function is encouraged to check</span>
+<span class="sd">        if the qubits in each `Measurement` instances returned as values of</span>
+<span class="sd">        the mapping corresponds to the expected qubit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: the circuit to create the mapping for.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if any qubit of the generated circuit is not a</span>
+<span class="sd">            `cirq.GridQubit` instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a mapping qubit -&gt; index for all the qubits appearing in the circuit</span>
+<span class="sd">        built from the provided `instantiation` and `plaquettes_at_timestep`.</span>
+<span class="sd">        Each qubit should be mapped to a different index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">m</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">get_measurements_from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)))</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_map_all_measurements_from_offset</span><span class="p">(</span>
+    <span class="n">detectors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MatchedDetector</span><span class="p">],</span>
+    <span class="n">measurements_by_offset</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">],</span>
+    <span class="n">qubits_by_indices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]:</span>
+    <span class="n">ret</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
+        <span class="n">measurements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">measurements</span><span class="p">:</span>
+            <span class="n">measurement</span> <span class="o">=</span> <span class="n">measurements_by_offset</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">offset</span><span class="p">]</span>
+            <span class="n">expected_qubit</span> <span class="o">=</span> <span class="n">qubits_by_indices</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">qubit_index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">measurement</span><span class="o">.</span><span class="n">qubit</span> <span class="o">!=</span> <span class="n">expected_qubit</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected qubit </span><span class="si">{</span><span class="n">expected_qubit</span><span class="si">}</span><span class="s2"> from index </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">qubit_index</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="n">measurement</span><span class="o">.</span><span class="n">qubit</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">measurements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">measurement</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Detector</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_detectors_within_subtemplate</span><span class="p">(</span>
+    <span class="n">subtemplate</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span>
+    <span class="n">plaquettes_at_timestep</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">],</span>
+    <span class="n">increments</span><span class="p">:</span> <span class="n">Displacement</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns detectors within the subtemplate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        subtemplate: a square 2-dimensional array of integers with odd-length</span>
+<span class="sd">            sides representing the arrangement of plaquettes in a subtemplate.</span>
+<span class="sd">        plaquettes_at_timestep: a tuple containing either one or two collection(s)</span>
+<span class="sd">            of plaquettes each representing one QEC round.</span>
+<span class="sd">        increments: spatial increments between each `Plaquette` origin.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        all the detectors appearing in the subtemplate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">subtemplate</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="c1"># Build subcircuit for each Plaquettes layer</span>
+    <span class="n">subcircuits_cirq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">complete_circuit_cirq</span> <span class="o">=</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">plaquettes</span> <span class="ow">in</span> <span class="n">plaquettes_at_timestep</span><span class="p">:</span>
+        <span class="n">subcircuit_cirq</span> <span class="o">=</span> <span class="n">generate_circuit_from_instantiation</span><span class="p">(</span>
+            <span class="n">subtemplate</span><span class="p">,</span> <span class="n">plaquettes</span><span class="p">,</span> <span class="n">increments</span>
+        <span class="p">)</span>
+        <span class="n">complete_circuit_cirq</span> <span class="o">+=</span> <span class="n">subcircuit_cirq</span>
+        <span class="n">subcircuits_cirq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subcircuit_cirq</span><span class="p">)</span>
+
+    <span class="c1"># Construct the different mappings we will need during the computation</span>
+    <span class="n">indices_by_qubit</span> <span class="o">=</span> <span class="n">_get_qubit_mapping</span><span class="p">(</span><span class="n">complete_circuit_cirq</span><span class="p">)</span>
+    <span class="n">qubits_by_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_by_qubit</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">coordinates_by_index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">i</span><span class="p">:</span> <span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_by_qubit</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">measurements_by_offset</span> <span class="o">=</span> <span class="n">_get_measurement_offset_mapping</span><span class="p">(</span><span class="n">complete_circuit_cirq</span><span class="p">)</span>
+
+    <span class="n">subcircuits_stim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">stimcirq</span><span class="o">.</span><span class="n">cirq_circuit_to_stim_circuit</span><span class="p">(</span>
+            <span class="n">subcircuit_cirq</span><span class="p">,</span>
+            <span class="n">qubit_to_index_dict</span><span class="o">=</span><span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">indices_by_qubit</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">subcircuit_cirq</span> <span class="ow">in</span> <span class="n">subcircuits_cirq</span>
+    <span class="p">]</span>
+
+    <span class="n">fragments</span> <span class="o">=</span> <span class="p">[</span><span class="n">Fragment</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span> <span class="k">for</span> <span class="n">circ</span> <span class="ow">in</span> <span class="n">subcircuits_stim</span><span class="p">]</span>
+    <span class="n">flows</span> <span class="o">=</span> <span class="n">build_flows_from_fragments</span><span class="p">(</span><span class="n">fragments</span><span class="p">)</span>
+    <span class="c1"># Match the detectors</span>
+    <span class="n">matched_detectors</span> <span class="o">=</span> <span class="n">match_detectors_within_fragment</span><span class="p">(</span><span class="n">flows</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">coordinates_by_index</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flows</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">matched_detectors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">match_boundary_stabilizers</span><span class="p">(</span><span class="n">flows</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">flows</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">coordinates_by_index</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">detectors</span> <span class="o">=</span> <span class="n">_map_all_measurements_from_offset</span><span class="p">(</span>
+        <span class="n">matched_detectors</span><span class="p">,</span> <span class="n">measurements_by_offset</span><span class="p">,</span> <span class="n">qubits_by_index</span>
+    <span class="p">)</span>
+
+    <span class="c1"># We have two transformations to apply to it:</span>
+    <span class="c1"># 1. Change of coordinate system for the qubits. potential_detector is</span>
+    <span class="c1">#    using a coordinate system with the origin at the top-left corner of</span>
+    <span class="c1">#    the current sub-template, but we need to return detectors that use</span>
+    <span class="c1">#    the central plaquette origin as their coordinate system origin.</span>
+    <span class="c1"># 2. Transform the MatchedDetector instance into a Detector instance.</span>
+    <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span> <span class="o">=</span> <span class="o">-</span><span class="n">radius</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">radius</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">y</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">Detector</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">offset_spatially_by</span><span class="p">(</span><span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">detector</span><span class="o">.</span><span class="n">measurement_data</span>
+            <span class="p">],</span>
+            <span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">detector</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift_y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">detector</span> <span class="ow">in</span> <span class="n">detectors</span>
+    <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_detectors_for_fixed_radius</span><span class="p">(</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span>
+    <span class="n">plaquettes_at_timestep</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">],</span>
+    <span class="n">fixed_subtemplate_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]:</span>
+    <span class="n">unique_subtemplates</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">get_spatially_distinct_subtemplates</span><span class="p">(</span>
+        <span class="n">fixed_subtemplate_radius</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">increments</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+    <span class="c1"># Each detector in detectors_by_subtemplate is using a coordinate system</span>
+    <span class="c1"># centered on the central plaquette origin.</span>
+    <span class="n">detectors_by_subtemplate</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">i</span><span class="p">:</span> <span class="n">_compute_detectors_within_subtemplate</span><span class="p">(</span>
+            <span class="n">subtemplate</span><span class="p">,</span> <span class="n">plaquettes_at_timestep</span><span class="p">,</span> <span class="n">increments</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subtemplate</span> <span class="ow">in</span> <span class="n">unique_subtemplates</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="n">detectors_by_measurements</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">Detector</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_subtemplates</span><span class="o">.</span><span class="n">subtemplate_indices</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">subtemplate_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">subtemplate_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">plaquette_origin</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detectors_by_subtemplate</span><span class="p">[</span><span class="n">subtemplate_index</span><span class="p">]:</span>
+                <span class="n">offset_measurements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">offset_spatially_by</span><span class="p">(</span><span class="n">plaquette_origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">plaquette_origin</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">measurement_data</span>
+                <span class="p">)</span>
+                <span class="c1"># We use the convention of `cirq.GridQubit` where the first coordinate</span>
+                <span class="c1"># is the column and the second coordinate is the row. Note that the</span>
+                <span class="c1"># coordinates of detectors are derived from the qubits, which are</span>
+                <span class="c1"># already in the `GridQubit` convention. So we only need to swap the</span>
+                <span class="c1"># coordinates of the plaquette origin.</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">plaquette_origin</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">plaquette_origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="n">detectors_by_measurements</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">offset_measurements</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Detector</span><span class="p">(</span>
+                    <span class="n">offset_measurements</span><span class="p">,</span> <span class="n">coordinates</span>
+                <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">detectors_by_measurements</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="compute_detectors_in_last_timestep">
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.detectors.compute_detectors_in_last_timestep.html#tqec.compile.detectors.compute_detectors_in_last_timestep">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_detectors_in_last_timestep</span><span class="p">(</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span>
+    <span class="n">plaquettes_at_timestep</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">],</span>
+    <span class="n">subtemplate_radius_trial_range</span><span class="p">:</span> <span class="nb">range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">]:</span>
+    <span class="n">radius_range</span> <span class="o">=</span> <span class="n">subtemplate_radius_trial_range</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">radius_range</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">radius_range</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">radius_range</span><span class="o">.</span><span class="n">step</span>
+    <span class="c1"># Check the range is monotonically increasing</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">stop</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="s2">&quot;The range of subtemplate raius must be a monotonically increasing range of positive integers.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">measurements_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">detectors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Detector</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">radius</span> <span class="ow">in</span> <span class="n">radius_range</span><span class="p">:</span>
+        <span class="n">detectors</span> <span class="o">=</span> <span class="n">_compute_detectors_for_fixed_radius</span><span class="p">(</span>
+            <span class="n">template</span><span class="p">,</span> <span class="n">plaquettes_at_timestep</span><span class="p">,</span> <span class="n">radius</span>
+        <span class="p">)</span>
+        <span class="n">cur_measurements_set</span> <span class="o">=</span> <span class="p">{</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">measurement_data</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">measurements_set</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">cur_measurements_set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The detectors found for a smaller radius are not a subset of the detectors found for a larger radius.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">cur_measurements_set</span> <span class="o">==</span> <span class="n">measurements_set</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">measurements_set</span> <span class="o">=</span> <span class="n">cur_measurements_set</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">make_detector</span><span class="p">(</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">measurement_data</span><span class="p">,</span>
+            <span class="n">detector</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">detector</span> <span class="ow">in</span> <span class="n">detectors</span>
+    <span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

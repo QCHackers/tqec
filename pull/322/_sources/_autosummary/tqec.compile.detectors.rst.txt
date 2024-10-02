@@ -1,0 +1,30 @@
+tqec.compile.detectors
+======================
+
+.. automodule:: tqec.compile.detectors
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compute_detectors_in_last_timestep
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

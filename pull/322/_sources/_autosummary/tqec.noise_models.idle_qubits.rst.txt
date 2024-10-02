@@ -1,0 +1,30 @@
+tqec.noise\_models.idle\_qubits
+===============================
+
+.. automodule:: tqec.noise_models.idle_qubits
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      DepolarizingNoiseOnIdlingQubit
+   
+   
+
+   
+   
+   
+
+
+

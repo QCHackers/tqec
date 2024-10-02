@@ -1,0 +1,6 @@
+tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException
+============================================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autoexception:: ScheduleWithNonIntegerEntriesException

@@ -1,0 +1,23 @@
+tqec.plaquette.library.pauli.ResetBasis
+=======================================
+
+.. currentmodule:: tqec.plaquette.library.pauli
+
+.. autoclass:: ResetBasis
+
+   
+   .. automethod:: __init__
+
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ResetBasis.X
+      ~ResetBasis.Z
+   
+   
