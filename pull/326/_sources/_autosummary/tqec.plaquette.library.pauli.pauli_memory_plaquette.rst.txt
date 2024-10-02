@@ -1,0 +1,6 @@
+tqec.plaquette.library.pauli.pauli\_memory\_plaquette
+=====================================================
+
+.. currentmodule:: tqec.plaquette.library.pauli
+
+.. autofunction:: pauli_memory_plaquette

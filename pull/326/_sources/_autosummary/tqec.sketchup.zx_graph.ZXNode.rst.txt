@@ -1,0 +1,30 @@
+tqec.sketchup.zx\_graph.ZXNode
+==============================
+
+.. currentmodule:: tqec.sketchup.zx_graph
+
+.. autoclass:: ZXNode
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ZXNode.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ZXNode.is_virtual
+      ~ZXNode.position
+      ~ZXNode.node_type
+   
+   
