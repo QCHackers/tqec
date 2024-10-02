@@ -15,7 +15,6 @@ from tqec.templates.base import RectangularTemplate
 from tqec.templates.layout import LayoutTemplate
 from tqec.templates.scale import LinearFunction
 
-
 @dataclass
 class CompiledBlock:
     """Represents a specific implementation of a cube in a `BlockGraph`.

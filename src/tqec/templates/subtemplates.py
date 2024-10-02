@@ -189,5 +189,5 @@ def get_spatially_distinct_subtemplates(
         final_indices[ignored_flattened_indices] = 0
         final_indices[considered_flattened_indices] = inverse_indices
     else:
-        final_indices = inverse_indices
+        final_indices = inverse_indices.astype(numpy.int_)
     return UniqueSubTemplates(final_indices.reshape((y, x)), subtemplates_by_indices)
