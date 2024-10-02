@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -94,7 +101,7 @@
 
 
 <div class="viewcode-block" id="SubstitutionKey">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.substitute.SubstitutionKey">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.substitute.SubstitutionKey.html#tqec.compile.substitute.SubstitutionKey">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SubstitutionKey</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The key for selecting the substitution rule.</span>
@@ -117,7 +124,7 @@
 
 
 <div class="viewcode-block" id="SubstitutionRule">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.substitute.SubstitutionRule">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.substitute.SubstitutionRule.html#tqec.compile.substitute.SubstitutionRule">[docs]</a>
 <span class="k">class</span> <span class="nc">SubstitutionRule</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol for applying the substitution to the two blocks connected by a</span>
 <span class="sd">    pipe, based on the `SubstitutionKey`.</span>
@@ -127,8 +134,6 @@
 <span class="sd">    compilation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SubstitutionRule.__call__">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.substitute.SubstitutionRule.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">key</span><span class="p">:</span> <span class="n">SubstitutionKey</span><span class="p">,</span>
@@ -145,12 +150,11 @@
 <span class="sd">            block2: the second block to substitute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="default_substitution_rule">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.substitute.default_substitution_rule">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.substitute.default_substitution_rule.html#tqec.compile.substitute.default_substitution_rule">[docs]</a>
 <span class="k">def</span> <span class="nf">default_substitution_rule</span><span class="p">(</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">SubstitutionKey</span><span class="p">,</span>
     <span class="n">block1</span><span class="p">:</span> <span class="n">CompiledBlock</span><span class="p">,</span>

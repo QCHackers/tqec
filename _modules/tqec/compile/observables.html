@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -88,7 +95,7 @@
 
 
 <div class="viewcode-block" id="get_center_qubit_at_horizontal_pipe">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.observables.get_center_qubit_at_horizontal_pipe">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.observables.get_center_qubit_at_horizontal_pipe.html#tqec.compile.observables.get_center_qubit_at_horizontal_pipe">[docs]</a>
 <span class="k">def</span> <span class="nf">get_center_qubit_at_horizontal_pipe</span><span class="p">(</span>
     <span class="n">pipe</span><span class="p">:</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">block_shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span> <span class="n">template_increments</span><span class="p">:</span> <span class="n">Displacement</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">:</span>
@@ -115,7 +122,7 @@
 
 
 <div class="viewcode-block" id="get_midline_qubits_for_cube">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.observables.get_midline_qubits_for_cube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.observables.get_midline_qubits_for_cube.html#tqec.compile.observables.get_midline_qubits_for_cube">[docs]</a>
 <span class="k">def</span> <span class="nf">get_midline_qubits_for_cube</span><span class="p">(</span>
     <span class="n">cube</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">block_shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span> <span class="n">template_increments</span><span class="p">:</span> <span class="n">Displacement</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">]:</span>
@@ -164,7 +171,7 @@
 
 
 <div class="viewcode-block" id="get_stabilizer_region_qubits_for_pipe">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.observables.get_stabilizer_region_qubits_for_pipe">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.observables.get_stabilizer_region_qubits_for_pipe.html#tqec.compile.observables.get_stabilizer_region_qubits_for_pipe">[docs]</a>
 <span class="k">def</span> <span class="nf">get_stabilizer_region_qubits_for_pipe</span><span class="p">(</span>
     <span class="n">pipe</span><span class="p">:</span> <span class="n">Pipe</span><span class="p">,</span>
     <span class="n">block_shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span>
@@ -222,7 +229,7 @@
 
 
 <div class="viewcode-block" id="inplace_add_observables">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.observables.inplace_add_observables">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.observables.inplace_add_observables.html#tqec.compile.observables.inplace_add_observables">[docs]</a>
 <span class="k">def</span> <span class="nf">inplace_add_observables</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]],</span>
     <span class="n">template_slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LayoutTemplate</span><span class="p">],</span>

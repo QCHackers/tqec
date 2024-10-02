@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -123,7 +130,7 @@
 
 
 <div class="viewcode-block" id="read_block_graph_from_dae_file">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.read_block_graph_from_dae_file">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.read_block_graph_from_dae_file.html#tqec.sketchup.collada.read_block_graph_from_dae_file">[docs]</a>
 <span class="k">def</span> <span class="nf">read_block_graph_from_dae_file</span><span class="p">(</span>
     <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -226,7 +233,7 @@
 
 
 <div class="viewcode-block" id="write_block_graph_to_dae_file">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.write_block_graph_to_dae_file">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.write_block_graph_to_dae_file.html#tqec.sketchup.collada.write_block_graph_to_dae_file">[docs]</a>
 <span class="k">def</span> <span class="nf">write_block_graph_to_dae_file</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
     <span class="n">file_like</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="n">ty</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span>
@@ -422,7 +429,7 @@
 
 
 <div class="viewcode-block" id="Transformation">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.Transformation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.Transformation.html#tqec.sketchup.collada.Transformation">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Transformation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transformation data class to store the translation, scale, rotation, and</span>
@@ -442,20 +449,17 @@
     <span class="n">rotation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
     <span class="n">affine_matrix</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Transformation.from_4d_affine_matrix">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.Transformation.from_4d_affine_matrix">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Transformation</span><span class="p">:</span>
         <span class="n">translation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">mat</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ColladaDisplayHelper">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.ColladaDisplayHelper">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.ColladaDisplayHelper.html#tqec.sketchup.collada.ColladaDisplayHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">ColladaDisplayHelper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to display a Collada DAE file in IPython compatible</span>
 <span class="sd">    environments.&quot;&quot;&quot;</span>
@@ -613,6 +617,8 @@
 <span class="s2">    &lt;/script&gt;</span>
 <span class="s2">&lt;/body&gt;&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="ColladaDisplayHelper.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.ColladaDisplayHelper.html#tqec.sketchup.collada.ColladaDisplayHelper.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_bytes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_bytes</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="n">collada_bytes</span> <span class="o">=</span> <span class="n">filepath_or_bytes</span>
@@ -622,7 +628,8 @@
         <span class="n">collada_base64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">collada_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">html_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HTML_TEMPLATE</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
             <span class="sa">r</span><span class="s2">&quot;{{MODEL_BASE64_PLACEHOLDER}}&quot;</span><span class="p">,</span> <span class="n">collada_base64</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">framed</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;iframe style=&quot;width: 100%; height: 300px; overflow: hidden; resize: both; border: 1px dashed gray;&quot; frameBorder=&quot;0&quot; srcdoc=&quot;</span><span class="si">{</span><span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html_str</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&gt;&lt;/iframe&gt;&quot;&quot;&quot;</span>
@@ -634,7 +641,7 @@
 
 
 <div class="viewcode-block" id="display_collada_model">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.collada.display_collada_model">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.collada.display_collada_model.html#tqec.sketchup.collada.display_collada_model">[docs]</a>
 <span class="k">def</span> <span class="nf">display_collada_model</span><span class="p">(</span>
     <span class="n">filepath_or_bytes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span>
     <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

@@ -1,0 +1,38 @@
+tqec.circuit.operations.measurement\_map
+========================================
+
+.. automodule:: tqec.circuit.operations.measurement_map
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compute_global_measurements_lookback_offsets
+      flatten
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      CircuitMeasurementMap
+   
+   
+
+   
+   
+   
+
+
+

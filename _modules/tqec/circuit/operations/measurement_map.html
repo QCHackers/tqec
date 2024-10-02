@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -85,7 +92,7 @@
 
 
 <div class="viewcode-block" id="flatten">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.flatten">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.measurement_map.flatten.html#tqec.circuit.operations.measurement_map.flatten">[docs]</a>
 <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span> <span class="o">|</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
     <span class="c1"># From https://github.com/quantumlib/Cirq/issues/3783</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">):</span>
@@ -101,8 +108,10 @@
 
 
 <div class="viewcode-block" id="CircuitMeasurementMap">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.measurement_map.CircuitMeasurementMap.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap">[docs]</a>
 <span class="k">class</span> <span class="nc">CircuitMeasurementMap</span><span class="p">:</span>
+<div class="viewcode-block" id="CircuitMeasurementMap.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.measurement_map.CircuitMeasurementMap.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">AbstractCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores information about all the measurements found in the provided</span>
 <span class="sd">        circuit.</span>
@@ -118,10 +127,9 @@
             <span class="n">global_measurement_indices</span><span class="p">,</span>
             <span class="n">_</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">CircuitMeasurementMap</span><span class="o">.</span><span class="n">_get_global_measurement_index</span><span class="p">(</span><span class="n">flattened_circuit</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_global_measurement_indices</span> <span class="o">=</span> <span class="n">global_measurement_indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_measurement_indices</span> <span class="o">=</span> <span class="n">global_measurement_indices</span></div>
 
-<div class="viewcode-block" id="CircuitMeasurementMap.get_measurement_relative_offset">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.CircuitMeasurementMap.get_measurement_relative_offset">[docs]</a>
+
     <span class="k">def</span> <span class="nf">get_measurement_relative_offset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">qubit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="n">measurement_offset</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -186,8 +194,7 @@
                     <span class="n">last_performed_measurement</span>
                     <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_measurement_indices</span><span class="p">[</span><span class="n">moment_index</span><span class="p">][</span><span class="n">qubit</span><span class="p">]</span>
                 <span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_get_index_of_last_performed_measurement</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">current_moment_index</span><span class="p">:</span> <span class="nb">int</span>
@@ -258,7 +265,7 @@
 
 
 <div class="viewcode-block" id="compute_global_measurements_lookback_offsets">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets.html#tqec.circuit.operations.measurement_map.compute_global_measurements_lookback_offsets">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_global_measurements_lookback_offsets</span><span class="p">(</span>
     <span class="n">measurements_record</span><span class="p">:</span> <span class="n">MeasurementsRecord</span><span class="p">,</span>
     <span class="n">measurement_map</span><span class="p">:</span> <span class="n">CircuitMeasurementMap</span><span class="p">,</span>

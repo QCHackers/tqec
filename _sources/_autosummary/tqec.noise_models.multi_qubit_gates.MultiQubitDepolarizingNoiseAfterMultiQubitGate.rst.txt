@@ -1,0 +1,35 @@
+tqec.noise\_models.multi\_qubit\_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate
+=====================================================================================
+
+.. currentmodule:: tqec.noise_models.multi_qubit_gates
+
+.. autoclass:: MultiQubitDepolarizingNoiseAfterMultiQubitGate
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.__init__
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.from_noise_model_like
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.is_in_effect
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.is_virtual_moment
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.noisy_moment
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.noisy_moments
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.noisy_operation
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.recurse_in_operation_if_circuit_operation
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MultiQubitDepolarizingNoiseAfterMultiQubitGate.prob
+   
+   

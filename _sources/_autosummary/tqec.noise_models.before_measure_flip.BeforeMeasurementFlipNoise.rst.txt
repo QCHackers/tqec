@@ -1,0 +1,35 @@
+tqec.noise\_models.before\_measure\_flip.BeforeMeasurementFlipNoise
+===================================================================
+
+.. currentmodule:: tqec.noise_models.before_measure_flip
+
+.. autoclass:: BeforeMeasurementFlipNoise
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BeforeMeasurementFlipNoise.__init__
+      ~BeforeMeasurementFlipNoise.from_noise_model_like
+      ~BeforeMeasurementFlipNoise.is_in_effect
+      ~BeforeMeasurementFlipNoise.is_virtual_moment
+      ~BeforeMeasurementFlipNoise.noisy_moment
+      ~BeforeMeasurementFlipNoise.noisy_moments
+      ~BeforeMeasurementFlipNoise.noisy_operation
+      ~BeforeMeasurementFlipNoise.recurse_in_operation_if_circuit_operation
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BeforeMeasurementFlipNoise.prob
+   
+   

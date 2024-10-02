@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -90,33 +97,27 @@
 
 
 <div class="viewcode-block" id="FaceType">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.geometry.FaceType.html#tqec.sketchup.geometry.FaceType">[docs]</a>
 <span class="k">class</span> <span class="nc">FaceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
     <span class="n">H</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
 
-<div class="viewcode-block" id="FaceType.from_string">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType.from_string">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">face_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FaceType</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">FaceType</span><span class="p">(</span><span class="n">face_type</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="n">FaceType</span><span class="p">(</span><span class="n">face_type</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
 
-
-<div class="viewcode-block" id="FaceType.opposite">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.FaceType.opposite">[docs]</a>
     <span class="k">def</span> <span class="nf">opposite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FaceType</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">Z</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">X</span>
         <span class="k">return</span> <span class="n">FaceType</span><span class="o">.</span><span class="n">H</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="Face">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.geometry.Face.html#tqec.sketchup.geometry.Face">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Face</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A rectangle face in the 3d space.</span>
@@ -142,15 +143,10 @@
     <span class="n">positive_facing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">translation</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Face.get_triangle_indices">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_triangle_indices">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_triangle_indices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Face.get_vertices">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_vertices">[docs]</a>
     <span class="k">def</span> <span class="nf">get_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
         <span class="n">ax3_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="o">.</span><span class="n">axis_index</span>
         <span class="n">ax1_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax3_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
@@ -173,20 +169,14 @@
         <span class="n">vertices_position</span> <span class="o">=</span> <span class="n">vertices_position</span><span class="p">[:,</span> <span class="n">permutation</span><span class="p">]</span>
         <span class="c1"># translate the rectangle</span>
         <span class="n">vertices_position</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">vertices_position</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">vertices_position</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="Face.get_normal_vectors">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.get_normal_vectors">[docs]</a>
     <span class="k">def</span> <span class="nf">get_normal_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
         <span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
         <span class="n">ax3_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_direction</span><span class="o">.</span><span class="n">axis_index</span>
         <span class="n">normal</span><span class="p">[</span><span class="n">ax3_index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive_facing</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Face.translated_by">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.translated_by">[docs]</a>
     <span class="k">def</span> <span class="nf">translated_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Face</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Face</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">face_type</span><span class="p">,</span>
@@ -199,11 +189,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">dz</span><span class="p">,</span>
             <span class="p">),</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-
-<div class="viewcode-block" id="Face.with_opposite_facing">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.Face.with_opposite_facing">[docs]</a>
     <span class="k">def</span> <span class="nf">with_opposite_facing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Face</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Face</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">face_type</span><span class="p">,</span>
@@ -213,12 +200,11 @@
             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive_facing</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="p">,</span>
         <span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="parse_block_type_from_str">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.parse_block_type_from_str">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.geometry.parse_block_type_from_str.html#tqec.sketchup.geometry.parse_block_type_from_str">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_block_type_from_str</span><span class="p">(</span><span class="n">block_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a block type from a string.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;o&quot;</span> <span class="ow">in</span> <span class="n">block_type</span><span class="p">:</span>
@@ -328,7 +314,7 @@
 
 
 <div class="viewcode-block" id="load_library_block_geometries">
-<a class="viewcode-back" href="../../../source/tqec.sketchup.html#tqec.sketchup.geometry.load_library_block_geometries">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.sketchup.geometry.load_library_block_geometries.html#tqec.sketchup.geometry.load_library_block_geometries">[docs]</a>
 <span class="k">def</span> <span class="nf">load_library_block_geometries</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the geometries of all the library blocks.&quot;&quot;&quot;</span>
     <span class="n">geometry</span> <span class="o">=</span> <span class="p">{}</span>

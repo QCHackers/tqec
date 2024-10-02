@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -91,8 +98,10 @@
 
 
 <div class="viewcode-block" id="ShiftCoords">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.ShiftCoords.html#tqec.circuit.operations.operation.ShiftCoords">[docs]</a>
 <span class="k">class</span> <span class="nc">ShiftCoords</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+<div class="viewcode-block" id="ShiftCoords.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.ShiftCoords.html#tqec.circuit.operations.operation.ShiftCoords.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Annotates that the qubit/detector coordinate origin is being moved.</span>
 
@@ -129,7 +138,8 @@
                 <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shifts</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">=</span> <span class="n">shifts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">=</span> <span class="n">shifts</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
@@ -140,11 +150,8 @@
     <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">()</span>
 
-<div class="viewcode-block" id="ShiftCoords.with_qubits">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.ShiftCoords.with_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShiftCoords</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="si">}</span><span class="s2">&quot;</span></div>
@@ -152,8 +159,10 @@
 
 
 <div class="viewcode-block" id="MeasurementsRecord">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.MeasurementsRecord.html#tqec.circuit.operations.operation.MeasurementsRecord">[docs]</a>
 <span class="k">class</span> <span class="nc">MeasurementsRecord</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
+<div class="viewcode-block" id="MeasurementsRecord.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.MeasurementsRecord.html#tqec.circuit.operations.operation.MeasurementsRecord.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A group of measurements.</span>
 
@@ -178,17 +187,15 @@
                 <span class="s2">&quot;The relative_measurement_data should not contain duplicate elements.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">()</span>
 
-<div class="viewcode-block" id="MeasurementsRecord.with_qubits">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MeasurementsRecord.with_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementsRecord</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">measurement_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]:</span>
@@ -198,8 +205,10 @@
 
 
 <div class="viewcode-block" id="Detector">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Detector">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.Detector.html#tqec.circuit.operations.operation.Detector">[docs]</a>
 <span class="k">class</span> <span class="nc">Detector</span><span class="p">(</span><span class="n">MeasurementsRecord</span><span class="p">):</span>
+<div class="viewcode-block" id="Detector.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.Detector.html#tqec.circuit.operations.operation.Detector.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -229,7 +238,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span> <span class="o">=</span> <span class="n">coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coordinates</span> <span class="o">=</span> <span class="n">coordinates</span></div>
+
 
     <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span>
@@ -247,8 +257,10 @@
 
 
 <div class="viewcode-block" id="Observable">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.Observable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.Observable.html#tqec.circuit.operations.operation.Observable">[docs]</a>
 <span class="k">class</span> <span class="nc">Observable</span><span class="p">(</span><span class="n">MeasurementsRecord</span><span class="p">):</span>
+<div class="viewcode-block" id="Observable.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.Observable.html#tqec.circuit.operations.operation.Observable.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -282,7 +294,8 @@
             <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">measurement_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span> <span class="o">=</span> <span class="n">observable_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span> <span class="o">=</span> <span class="n">observable_index</span></div>
+
 
     <span class="k">def</span> <span class="nf">_circuit_diagram_info_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitDiagramInfoArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Observable(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_observable_index</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -301,7 +314,7 @@
 
 
 <div class="viewcode-block" id="make_shift_coords">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_shift_coords">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.make_shift_coords.html#tqec.circuit.operations.operation.make_shift_coords">[docs]</a>
 <span class="k">def</span> <span class="nf">make_shift_coords</span><span class="p">(</span><span class="o">*</span><span class="n">shifts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a helper function to make a :class:~ShiftCoords operation with</span>
 <span class="sd">    the `cirq.VirtualTag` tag.</span>
@@ -317,7 +330,7 @@
 
 
 <div class="viewcode-block" id="make_detector">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_detector">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.make_detector.html#tqec.circuit.operations.operation.make_detector">[docs]</a>
 <span class="k">def</span> <span class="nf">make_detector</span><span class="p">(</span>
     <span class="n">measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
@@ -343,7 +356,7 @@
 
 
 <div class="viewcode-block" id="make_observable">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.make_observable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.make_observable.html#tqec.circuit.operations.operation.make_observable">[docs]</a>
 <span class="k">def</span> <span class="nf">make_observable</span><span class="p">(</span>
     <span class="n">measurements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Measurement</span><span class="p">],</span> <span class="n">observable_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">:</span>
@@ -366,28 +379,28 @@
 
 
 <div class="viewcode-block" id="RX">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.RX.html#tqec.circuit.operations.operation.RX">[docs]</a>
 <span class="nd">@cirq</span><span class="o">.</span><span class="n">value_equality</span>
 <span class="k">class</span> <span class="nc">RX</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset in the X-basis.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="RX.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.RX.html#tqec.circuit.operations.operation.RX.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the X-reset operation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            qubits: the qubits that should be reset by the operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
 
-<div class="viewcode-block" id="RX.with_qubits">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.RX.with_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RX</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">RX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">RX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_value_equality_values_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
@@ -424,28 +437,28 @@
 
 
 <div class="viewcode-block" id="MX">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.MX.html#tqec.circuit.operations.operation.MX">[docs]</a>
 <span class="nd">@cirq</span><span class="o">.</span><span class="n">value_equality</span>
 <span class="k">class</span> <span class="nc">MX</span><span class="p">(</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Measurement in the X-basis.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="MX.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.operations.operation.MX.html#tqec.circuit.operations.operation.MX.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the X-measurement operation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            qubits: the qubits that should be measured by the operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>
 
-<div class="viewcode-block" id="MX.with_qubits">
-<a class="viewcode-back" href="../../../../source/tqec.circuit.operations.html#tqec.circuit.operations.operation.MX.with_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">with_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">new_qubits</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MX</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">MX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">MX</span><span class="p">(</span><span class="o">*</span><span class="n">new_qubits</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_value_equality_values_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span>

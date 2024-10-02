@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -83,8 +90,10 @@
 
 
 <div class="viewcode-block" id="DepolarizingNoiseOnIdlingQubit">
-<a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit.html#tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit">[docs]</a>
 <span class="k">class</span> <span class="nc">DepolarizingNoiseOnIdlingQubit</span><span class="p">(</span><span class="n">BaseNoiseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="DepolarizingNoiseOnIdlingQubit.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit.html#tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies a depolarizing noise on all idle qubits.</span>
 
@@ -96,10 +105,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            p: strength (probability of error) of the applied noise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DepolarizingNoiseOnIdlingQubit.noisy_moment">
-<a class="viewcode-back" href="../../../source/tqec.noise_models.html#tqec.noise_models.idle_qubits.DepolarizingNoiseOnIdlingQubit.noisy_moment">[docs]</a>
+
     <span class="k">def</span> <span class="nf">noisy_moment</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">,</span> <span class="n">system_qubits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Qid</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">OP_TREE</span><span class="p">:</span>
@@ -123,7 +131,6 @@
             <span class="p">)</span>
         <span class="c1"># Return the modified moment</span>
         <span class="k">return</span> <span class="n">moment</span></div>
-</div>
 
 </pre></div>
 

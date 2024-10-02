@@ -1,0 +1,40 @@
+tqec.circuit.operations.operation.MX
+====================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autoclass:: MX
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MX.__init__
+      ~MX.controlled_by
+      ~MX.transform_qubits
+      ~MX.validate_args
+      ~MX.with_classical_controls
+      ~MX.with_probability
+      ~MX.with_qubits
+      ~MX.with_tags
+      ~MX.without_classical_controls
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MX.classical_controls
+      ~MX.gate
+      ~MX.qubits
+      ~MX.tags
+      ~MX.untagged
+   
+   

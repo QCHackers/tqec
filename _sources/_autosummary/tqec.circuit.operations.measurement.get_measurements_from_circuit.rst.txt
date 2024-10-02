@@ -1,0 +1,6 @@
+tqec.circuit.operations.measurement.get\_measurements\_from\_circuit
+====================================================================
+
+.. currentmodule:: tqec.circuit.operations.measurement
+
+.. autofunction:: get_measurements_from_circuit

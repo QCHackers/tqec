@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -89,14 +96,14 @@
 
 
 <div class="viewcode-block" id="ScheduleException">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduleException">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduleException.html#tqec.circuit.schedule.ScheduleException">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduleException</span><span class="p">(</span><span class="n">TQECException</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="ScheduleWithNonIntegerEntriesException">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException.html#tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduleWithNonIntegerEntriesException</span><span class="p">(</span><span class="n">ScheduleException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">non_integer_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -107,7 +114,7 @@
 
 
 <div class="viewcode-block" id="ScheduleEntryTooLowException">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduleEntryTooLowException">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduleEntryTooLowException.html#tqec.circuit.schedule.ScheduleEntryTooLowException">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduleEntryTooLowException</span><span class="p">(</span><span class="n">ScheduleException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_schedule_entry</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initial_virtual_moments</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -122,7 +129,7 @@
 
 
 <div class="viewcode-block" id="ScheduleCannotBeAppliedToCircuitException">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException.html#tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduleCannotBeAppliedToCircuitException</span><span class="p">(</span><span class="n">ScheduleException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -139,10 +146,12 @@
 
 
 <div class="viewcode-block" id="ScheduledCircuit">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduledCircuit</span><span class="p">:</span>
     <span class="n">VIRTUAL_MOMENT_SCHEDULE</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span>
 
+<div class="viewcode-block" id="ScheduledCircuit.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent a quantum circuit with scheduled moments.</span>
 
@@ -183,7 +192,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span> <span class="o">=</span> <span class="n">circuit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="p">)</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_input_validity</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -255,8 +265,6 @@
                 <span class="n">circuit</span><span class="p">,</span> <span class="n">schedule</span><span class="p">,</span> <span class="n">non_virtual_moments_number</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="ScheduledCircuit.from_multi_qubit_moment_schedule">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.from_multi_qubit_moment_schedule">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_multi_qubit_moment_schedule</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">multi_qubit_moment_schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
@@ -316,8 +324,7 @@
                 <span class="sa">f</span><span class="s2">&quot;The provided cirq.Circuit instance:</span><span class="se">\n</span><span class="si">{</span><span class="n">circuit</span><span class="si">}</span><span class="se">\n</span><span class="s2"> cannot be scheduled. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Final (invalid) schedule: </span><span class="si">{</span><span class="n">final_schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">final_schedule</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">final_schedule</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ScheduledCircuit</span><span class="o">.</span><span class="n">_check_input_validity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_circuit</span><span class="p">,</span> <span class="n">new_schedule</span><span class="p">)</span>
@@ -356,8 +363,6 @@
 <span class="sd">        the origin of all the detectors.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ScheduledCircuit.map_to_qubits">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.map_to_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">map_to_qubits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">GridQubit</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
@@ -396,8 +401,7 @@
 
         <span class="n">operand</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">operand</span><span class="o">.</span><span class="n">raw_circuit</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">raw_circuit</span><span class="o">.</span><span class="n">map_operations</span><span class="p">(</span><span class="n">remap_qubits</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">operand</span></div>
-
+        <span class="k">return</span> <span class="n">operand</span>
 
     <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span>
@@ -486,8 +490,6 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">moment_index</span>
 
-<div class="viewcode-block" id="ScheduledCircuit.moment_at_schedule">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.moment_at_schedule">[docs]</a>
     <span class="k">def</span> <span class="nf">moment_at_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the Moment instance scheduled at the provided schedule.</span>
 
@@ -502,11 +504,8 @@
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No Moment instance scheduled at the provided schedule </span><span class="si">{</span><span class="n">schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="ScheduledCircuit.append_new_moment">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.append_new_moment">[docs]</a>
     <span class="k">def</span> <span class="nf">append_new_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Schedule the provided Moment instance at the end of the circuit. The</span>
 <span class="sd">        new schedule will be the last schedule plus one.</span>
@@ -514,11 +513,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            moment: the moment to schedule.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">moment</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">moment</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ScheduledCircuit.add_to_schedule_index">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuit.add_to_schedule_index">[docs]</a>
     <span class="k">def</span> <span class="nf">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the operations contained in the provided moment at the provided</span>
 <span class="sd">        schedule.</span>
@@ -560,13 +556,14 @@
                     <span class="sa">f</span><span class="s2">&quot;Existing:</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_circuit</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;Trying to add:</span><span class="se">\n</span><span class="si">{</span><span class="n">moment</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ScheduledCircuits">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduledCircuits.html#tqec.circuit.schedule.ScheduledCircuits">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduledCircuits</span><span class="p">:</span>
+<div class="viewcode-block" id="ScheduledCircuits.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduledCircuits.html#tqec.circuit.schedule.ScheduledCircuits.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents a collection of ScheduledCircuit instances.</span>
 
@@ -580,18 +577,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span> <span class="o">=</span> <span class="n">circuits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iterators</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">scheduled_moments</span> <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_current_moments</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterators</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_moments</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterators</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ScheduledCircuits.has_pending_moment">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuits.has_pending_moment">[docs]</a>
+
     <span class="k">def</span> <span class="nf">has_pending_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if any of the managed instances has a pending moment.</span>
 
 <span class="sd">        Any moment that has not been collected by using collect_moment</span>
 <span class="sd">        is considered to be pending.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_has_pending_moment</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">)))</span></div>
-
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_has_pending_moment</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_has_pending_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the managed instance at the given index has a pending</span>
@@ -622,8 +617,6 @@
     <span class="k">def</span> <span class="nf">number_of_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ScheduledCircuits.collect_moments">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.ScheduledCircuits.collect_moments">[docs]</a>
     <span class="k">def</span> <span class="nf">collect_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Moment</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all the moments that can be collected.</span>
 
@@ -655,12 +648,11 @@
             <span class="n">moment</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_scheduled_moment</span><span class="p">(</span><span class="n">circuit_index</span><span class="p">)</span>
             <span class="n">moments_to_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moment</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">moments_to_return</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="remove_duplicate_operations">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.remove_duplicate_operations">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.remove_duplicate_operations.html#tqec.circuit.schedule.remove_duplicate_operations">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_duplicate_operations</span><span class="p">(</span>
     <span class="n">operations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Operation</span><span class="p">]:</span>
@@ -694,7 +686,7 @@
 
 
 <div class="viewcode-block" id="merge_scheduled_circuits">
-<a class="viewcode-back" href="../../../source/tqec.circuit.html#tqec.circuit.schedule.merge_scheduled_circuits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.merge_scheduled_circuits.html#tqec.circuit.schedule.merge_scheduled_circuits">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_scheduled_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge several ScheduledCircuit instances into one cirq.Circuit instance.</span>
 

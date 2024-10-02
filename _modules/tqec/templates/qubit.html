@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -90,7 +97,7 @@
 
 
 <div class="viewcode-block" id="QubitTemplate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitTemplate.html#tqec.templates.qubit.QubitTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">QubitTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit.</span>
 
@@ -104,8 +111,6 @@
 <span class="sd">        3 13 14 13 14  4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="QubitTemplate.instantiate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitTemplate.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -138,8 +143,7 @@
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ret</span></div>
-
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -151,8 +155,6 @@
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">14</span>
 
-<div class="viewcode-block" id="QubitTemplate.get_plaquette_indices_on_sides">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitTemplate.get_plaquette_indices_on_sides">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -175,12 +177,11 @@
                 <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
                     <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">indices</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="QubitVerticalBorders">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitVerticalBorders">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitVerticalBorders.html#tqec.templates.qubit.QubitVerticalBorders">[docs]</a>
 <span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Two vertical sides of neighbouring error-corrected qubits glued</span>
 <span class="sd">    together.</span>
@@ -195,8 +196,6 @@
 <span class="sd">        3 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="QubitVerticalBorders.instantiate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitVerticalBorders.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -218,8 +217,7 @@
         <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
         <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ret</span></div>
-
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -232,8 +230,6 @@
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">8</span>
 
-<div class="viewcode-block" id="QubitVerticalBorders.get_plaquette_indices_on_sides">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitVerticalBorders.get_plaquette_indices_on_sides">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -256,12 +252,11 @@
                 <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
                     <span class="k">pass</span>
         <span class="k">return</span> <span class="n">indices</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="QubitHorizontalBorders">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitHorizontalBorders">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitHorizontalBorders.html#tqec.templates.qubit.QubitHorizontalBorders">[docs]</a>
 <span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Two horizontal sides of neighbouring error-corrected qubits glued</span>
 <span class="sd">    together.</span>
@@ -272,8 +267,6 @@
 <span class="sd">        3 7 8 7 8 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="QubitHorizontalBorders.instantiate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitHorizontalBorders.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -295,8 +288,7 @@
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ret</span></div>
-
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -308,8 +300,6 @@
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">8</span>
 
-<div class="viewcode-block" id="QubitHorizontalBorders.get_plaquette_indices_on_sides">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.QubitHorizontalBorders.get_plaquette_indices_on_sides">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -332,12 +322,11 @@
                 <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
                     <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">indices</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="Qubit4WayJunctionTemplate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.Qubit4WayJunctionTemplate.html#tqec.templates.qubit.Qubit4WayJunctionTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">Qubit4WayJunctionTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit that is making a 4-way junction with other</span>
 <span class="sd">    logical qubits.</span>
@@ -361,8 +350,6 @@
 <span class="sd">        indices.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Qubit4WayJunctionTemplate.instantiate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -422,8 +409,7 @@
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ret</span></div>
-
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -435,8 +421,6 @@
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">15</span>
 
-<div class="viewcode-block" id="Qubit4WayJunctionTemplate.get_plaquette_indices_on_sides">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.qubit.Qubit4WayJunctionTemplate.get_plaquette_indices_on_sides">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -459,7 +443,6 @@
                 <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
                     <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">indices</span></div>
-</div>
 
 </pre></div>
 

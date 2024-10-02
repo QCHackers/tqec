@@ -1,0 +1,6 @@
+tqec.circuit.operations.operation.make\_observable
+==================================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autofunction:: make_observable

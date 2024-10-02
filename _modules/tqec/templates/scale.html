@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -88,7 +95,7 @@
 
 
 <div class="viewcode-block" id="LinearFunction">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.scale.LinearFunction.html#tqec.templates.scale.LinearFunction">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">LinearFunction</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a linear function.</span>
@@ -99,8 +106,6 @@
     <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-<div class="viewcode-block" id="LinearFunction.__call__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the linear function on a given input.</span>
 
@@ -110,11 +115,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            the image of x.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__add__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__add__">[docs]</a>
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add two linear functions and returns the result.</span>
 
@@ -128,11 +130,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__sub__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__sub__">[docs]</a>
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subtract two linear functions and returns the result.</span>
 
@@ -146,11 +145,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__mul__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__mul__">[docs]</a>
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiply a linear function by a scalar.</span>
 
@@ -160,11 +156,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            a copy of `self`, scaled by the provided `other`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__rmul__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__rmul__">[docs]</a>
     <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiply a linear function by a scalar.</span>
 
@@ -174,11 +167,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            a copy of `self`, scaled by the provided `other`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.intersection">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.intersection">[docs]</a>
     <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the intersection between two linear functions.</span>
 
@@ -192,11 +182,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">slope</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">slope</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">slope</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__lt__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__lt__">[docs]</a>
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the interval on which `self &lt; other`.</span>
 
@@ -219,11 +206,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Interval</span><span class="p">(</span>
                 <span class="n">intersection</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">start_excluded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">end_excluded</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
 
-
-<div class="viewcode-block" id="LinearFunction.__le__">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.LinearFunction.__le__">[docs]</a>
     <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interval</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the interval on which `self &lt;= other`.</span>
 
@@ -246,8 +230,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Interval</span><span class="p">(</span>
                 <span class="n">intersection</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">start_excluded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">end_excluded</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span></div>
-
+            <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_from</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">LinearFunction</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
@@ -266,7 +249,7 @@
 
 
 <div class="viewcode-block" id="round_or_fail">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.round_or_fail">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.scale.round_or_fail.html#tqec.templates.scale.round_or_fail">[docs]</a>
 <span class="k">def</span> <span class="nf">round_or_fail</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="n">rounded_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">rounded_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-8</span><span class="p">:</span>
@@ -276,23 +259,17 @@
 
 
 <div class="viewcode-block" id="Scalable2D">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.scale.Scalable2D.html#tqec.templates.scale.Scalable2D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Scalable2D</span><span class="p">:</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">LinearFunction</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">LinearFunction</span>
 
-<div class="viewcode-block" id="Scalable2D.to_shape_2d">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_shape_2d">[docs]</a>
     <span class="k">def</span> <span class="nf">to_shape_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
 
-
-<div class="viewcode-block" id="Scalable2D.to_numpy_shape">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.Scalable2D.to_numpy_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Scalable2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Scalable2D</span><span class="p">):</span>
@@ -305,7 +282,7 @@
 
 
 <div class="viewcode-block" id="ScalableInterval">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.scale.ScalableInterval.html#tqec.templates.scale.ScalableInterval">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ScalableInterval</span><span class="p">:</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">LinearFunction</span>
@@ -315,17 +292,11 @@
     <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
 
-<div class="viewcode-block" id="ScalableInterval.is_empty">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval.is_empty">[docs]</a>
     <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="ScalableInterval.non_empty_on">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.scale.ScalableInterval.non_empty_on">[docs]</a>
     <span class="k">def</span> <span class="nf">non_empty_on</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intervals</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span></div>
-</div>
 
 </pre></div>
 

@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -91,8 +98,10 @@
 
 
 <div class="viewcode-block" id="LayoutTemplate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.layout.LayoutTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">LayoutTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
+<div class="viewcode-block" id="LayoutTemplate.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">element_layout</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position2D</span><span class="p">,</span> <span class="n">RectangularTemplate</span><span class="p">],</span>
@@ -142,10 +151,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">-</span> <span class="n">min_y</span> <span class="o">+</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">element_layout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LayoutTemplate.get_indices_map_for_instantiation">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation">[docs]</a>
+
     <span class="k">def</span> <span class="nf">get_indices_map_for_instantiation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">instantiate_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -160,21 +168,17 @@
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span><span class="p">)</span>
             <span class="p">}</span>
             <span class="n">index_count</span> <span class="o">+=</span> <span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span>
-        <span class="k">return</span> <span class="n">indices_map</span></div>
-
+        <span class="k">return</span> <span class="n">indices_map</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">origin_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Displacement</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin_shift</span>
 
-<div class="viewcode-block" id="LayoutTemplate.scale_to">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.layout.LayoutTemplate.scale_to">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">template</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
-
+            <span class="n">template</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -203,8 +207,6 @@
             <span class="n">template</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="LayoutTemplate.get_plaquette_indices_on_sides">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.layout.LayoutTemplate.get_plaquette_indices_on_sides">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the indices of plaquettes that are located on the provided</span>
@@ -216,11 +218,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            a non-ordered list of plaquette numbers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="LayoutTemplate.instantiate">
-<a class="viewcode-back" href="../../../source/tqec.templates.html#tqec.templates.layout.LayoutTemplate.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -256,7 +255,6 @@
                 <span class="o">*</span> <span class="n">element_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">]</span> <span class="o">=</span> <span class="n">element_instantiation</span>
         <span class="k">return</span> <span class="n">ret</span></div>
-</div>
 
 </pre></div>
 

@@ -1,0 +1,42 @@
+tqec.circuit.operations.operation.Detector
+==========================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autoclass:: Detector
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Detector.__init__
+      ~Detector.controlled_by
+      ~Detector.transform_qubits
+      ~Detector.validate_args
+      ~Detector.with_classical_controls
+      ~Detector.with_probability
+      ~Detector.with_qubits
+      ~Detector.with_tags
+      ~Detector.without_classical_controls
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Detector.classical_controls
+      ~Detector.coordinates
+      ~Detector.gate
+      ~Detector.measurement_data
+      ~Detector.qubits
+      ~Detector.tags
+      ~Detector.untagged
+   
+   

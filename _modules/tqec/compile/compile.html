@@ -44,11 +44,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
 </ul>
 
         </div>
@@ -102,7 +109,7 @@
 
 
 <div class="viewcode-block" id="CompiledGraph">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.compile.CompiledGraph">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.compile.CompiledGraph.html#tqec.compile.compile.CompiledGraph">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">CompiledGraph</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a compiled block graph.</span>
@@ -128,16 +135,11 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECWarning</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CompiledGraph.scale_to">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.compile.CompiledGraph.scale_to">[docs]</a>
     <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Scale the compiled graph to the given scale `k`.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">:</span>
-            <span class="n">layout</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
+            <span class="n">layout</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CompiledGraph.generate_stim_circuit">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.compile.CompiledGraph.generate_stim_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_stim_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -153,11 +155,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cirq_circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_cirq_circuit</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">noise_models</span><span class="p">)</span>
         <span class="n">cirq_circuit</span> <span class="o">=</span> <span class="n">transform_to_stimcirq_compatible</span><span class="p">(</span><span class="n">cirq_circuit</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">stimcirq</span><span class="o">.</span><span class="n">cirq_circuit_to_stim_circuit</span><span class="p">(</span><span class="n">cirq_circuit</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">stimcirq</span><span class="o">.</span><span class="n">cirq_circuit_to_stim_circuit</span><span class="p">(</span><span class="n">cirq_circuit</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CompiledGraph.generate_cirq_circuit">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.compile.CompiledGraph.generate_cirq_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_cirq_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -190,8 +189,7 @@
         <span class="c1"># apply noise models</span>
         <span class="k">for</span> <span class="n">noise_model</span> <span class="ow">in</span> <span class="n">noise_models</span><span class="p">:</span>
             <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">with_noise</span><span class="p">(</span><span class="n">noise_model</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">circuit</span></div>
-
+        <span class="k">return</span> <span class="n">circuit</span>
 
     <span class="k">def</span> <span class="nf">_shift_and_merge_circuits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]]</span>
@@ -236,7 +234,7 @@
 
 
 <div class="viewcode-block" id="compile_block_graph">
-<a class="viewcode-back" href="../../../source/tqec.compile.html#tqec.compile.compile.compile_block_graph">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.compile.compile_block_graph.html#tqec.compile.compile.compile_block_graph">[docs]</a>
 <span class="k">def</span> <span class="nf">compile_block_graph</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
     <span class="n">observables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
