@@ -64,6 +64,10 @@ In order to get a ``stim.Circuit`` instance, the computation first need to be co
 
     from tqec import compile_block_graph
 
+    # You can pick any number of observables from the output of
+    # block_graph.get_abstract_observables() and provide them here.
+    # In this example, picking only the second observable for demonstration
+    # purposes.
     compiled_computation = compile_block_graph(block_graph, [observables[1]])
 
 From this compiled computation, the final ``stim.Circuit`` instance can be generated.
