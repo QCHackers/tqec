@@ -12,6 +12,9 @@ TQEC
    :hidden:
 
    Introduction <self>
+   Installation <installation>
+   Quick start <quick_start>
+   Contributing <contributing>
    Automatic detector computation <detectors>
 
 .. toctree::
@@ -19,3 +22,10 @@ TQEC
    :caption: Notebooks:
 
    Automatic detector computation <media/detectors/detector_computation_illustration>
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: API documentation
+   :recursive:
+
+   tqec
