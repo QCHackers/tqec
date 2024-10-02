@@ -15,7 +15,7 @@ For a more in-depth explanation, see the [installation procedure](https://qchack
 
 ## Quick start
 
-Download the example file [clean_exportable_cnot.dae](https://qchackers.github.io/tqec/pull/322/_downloads/fcd0bb4733dfdae3092f2457e73d0c47/clean_exportable_cnot.dae).
+Download the example file [clean_exportable_cnot.dae](./docs/media/quick_start/clean_exportable_cnot.dae).
 
 You can generate `stim.Circuit` instances representing that computation using
 
