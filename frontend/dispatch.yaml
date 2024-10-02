@@ -1,5 +1,0 @@
-dispatch:
-  - url: "tqec.app/*"
-    service: tqecjs
-  - url: "www.tqec.app/*"
-    service: tqecjs
