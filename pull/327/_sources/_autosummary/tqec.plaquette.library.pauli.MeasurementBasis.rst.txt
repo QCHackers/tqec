@@ -1,0 +1,23 @@
+tqec.plaquette.library.pauli.MeasurementBasis
+=============================================
+
+.. currentmodule:: tqec.plaquette.library.pauli
+
+.. autoclass:: MeasurementBasis
+
+   
+   .. automethod:: __init__
+
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MeasurementBasis.X
+      ~MeasurementBasis.Z
+   
+   

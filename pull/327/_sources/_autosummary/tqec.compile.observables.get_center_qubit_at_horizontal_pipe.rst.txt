@@ -1,0 +1,6 @@
+tqec.compile.observables.get\_center\_qubit\_at\_horizontal\_pipe
+=================================================================
+
+.. currentmodule:: tqec.compile.observables
+
+.. autofunction:: get_center_qubit_at_horizontal_pipe

@@ -1,0 +1,34 @@
+tqec.position
+=============
+
+.. automodule:: tqec.position
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Direction3D
+      Displacement
+      Position2D
+      Position3D
+      Shape2D
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+tqec.plaquette.library.empty.empty\_rounded\_plaquette
+======================================================
+
+.. currentmodule:: tqec.plaquette.library.empty
+
+.. autofunction:: empty_rounded_plaquette
