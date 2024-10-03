@@ -1,0 +1,41 @@
+tqec.circuit.operations.operation.ShiftCoords
+=============================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autoclass:: ShiftCoords
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ShiftCoords.__init__
+      ~ShiftCoords.controlled_by
+      ~ShiftCoords.transform_qubits
+      ~ShiftCoords.validate_args
+      ~ShiftCoords.with_classical_controls
+      ~ShiftCoords.with_probability
+      ~ShiftCoords.with_qubits
+      ~ShiftCoords.with_tags
+      ~ShiftCoords.without_classical_controls
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ShiftCoords.classical_controls
+      ~ShiftCoords.gate
+      ~ShiftCoords.qubits
+      ~ShiftCoords.shifts
+      ~ShiftCoords.tags
+      ~ShiftCoords.untagged
+   
+   

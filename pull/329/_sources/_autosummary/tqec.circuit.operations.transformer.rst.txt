@@ -1,0 +1,30 @@
+tqec.circuit.operations.transformer
+===================================
+
+.. automodule:: tqec.circuit.operations.transformer
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      transform_to_stimcirq_compatible
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

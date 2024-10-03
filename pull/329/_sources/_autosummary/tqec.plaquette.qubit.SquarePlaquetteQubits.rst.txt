@@ -1,0 +1,37 @@
+tqec.plaquette.qubit.SquarePlaquetteQubits
+==========================================
+
+.. currentmodule:: tqec.plaquette.qubit
+
+.. autoclass:: SquarePlaquetteQubits
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SquarePlaquetteQubits.__init__
+      ~SquarePlaquetteQubits.get_data_qubits
+      ~SquarePlaquetteQubits.get_data_qubits_cirq
+      ~SquarePlaquetteQubits.get_edge_qubits
+      ~SquarePlaquetteQubits.get_qubits_on_side
+      ~SquarePlaquetteQubits.get_syndrome_qubits
+      ~SquarePlaquetteQubits.get_syndrome_qubits_cirq
+      ~SquarePlaquetteQubits.permute_data_qubits
+      ~SquarePlaquetteQubits.to_grid_qubit
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SquarePlaquetteQubits.data_qubits
+      ~SquarePlaquetteQubits.syndrome_qubits
+   
+   
