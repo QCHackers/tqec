@@ -1,6 +1,0 @@
-tqec.circuit.operations.operation.make\_shift\_coords
-=====================================================
-
-.. currentmodule:: tqec.circuit.operations.operation
-
-.. autofunction:: make_shift_coords

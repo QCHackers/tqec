@@ -1,6 +1,0 @@
-tqec.circuit.operations.measurement\_map.compute\_global\_measurements\_lookback\_offsets
-=========================================================================================
-
-.. currentmodule:: tqec.circuit.operations.measurement_map
-
-.. autofunction:: compute_global_measurements_lookback_offsets
