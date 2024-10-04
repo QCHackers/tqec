@@ -1,6 +1,0 @@
-tqec.circuit.operations.measurement\_map.flatten
-================================================
-
-.. currentmodule:: tqec.circuit.operations.measurement_map
-
-.. autofunction:: flatten
