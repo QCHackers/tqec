@@ -1,0 +1,6 @@
+tqec.circuit.schedule.ScheduleEntryTooLowException
+==================================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autoexception:: ScheduleEntryTooLowException

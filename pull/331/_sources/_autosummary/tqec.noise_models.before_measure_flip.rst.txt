@@ -1,0 +1,30 @@
+tqec.noise\_models.before\_measure\_flip
+========================================
+
+.. automodule:: tqec.noise_models.before_measure_flip
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BeforeMeasurementFlipNoise
+   
+   
+
+   
+   
+   
+
+
+

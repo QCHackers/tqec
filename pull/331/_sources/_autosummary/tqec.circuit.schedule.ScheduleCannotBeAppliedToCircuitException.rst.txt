@@ -1,0 +1,6 @@
+tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException
+===============================================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autoexception:: ScheduleCannotBeAppliedToCircuitException

@@ -1,0 +1,42 @@
+tqec.circuit.operations.operation.Observable
+============================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autoclass:: Observable
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Observable.__init__
+      ~Observable.controlled_by
+      ~Observable.transform_qubits
+      ~Observable.validate_args
+      ~Observable.with_classical_controls
+      ~Observable.with_probability
+      ~Observable.with_qubits
+      ~Observable.with_tags
+      ~Observable.without_classical_controls
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Observable.classical_controls
+      ~Observable.gate
+      ~Observable.index
+      ~Observable.measurement_data
+      ~Observable.qubits
+      ~Observable.tags
+      ~Observable.untagged
+   
+   
