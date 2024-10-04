@@ -31,7 +31,7 @@ python -m pyinstrument -o "${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}_k=${SCALING_FA
 echo "Profiling saved as an HTML webpage in ${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}.html"
 
 CLI_OUTDIR="${BENCH_DIRECTORY}/dae2circuits/"
-DAE_CNOT_FILE="$(realpath "${PARENT_PATH}/../assets/clean_exportable_cnot.dae")"
+DAE_CNOT_FILE="$(realpath "${PARENT_PATH}/../assets/logical_cnot.dae")"
 CLI_CMD="tqec dae2circuits --out-dir ${CLI_OUTDIR} -k ${SCALING_FACTOR} --add-detectors ${DAE_CNOT_FILE}"
 
 echo "Statistical profiling of the command '${CLI_CMD}' using pyinstrument..."

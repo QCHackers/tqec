@@ -16,7 +16,7 @@ from tqec.sketchup.zx_graph import ZXGraph
 BENCHMARK_FOLDER = Path(__file__).resolve().parent
 TQEC_FOLDER = BENCHMARK_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
-CNOT_DAE_FILE = ASSETS_FOLDER / "clean_exportable_cnot.dae"
+CNOT_DAE_FILE = ASSETS_FOLDER / "logical_cnot.dae"
 
 
 def create_block_graph(from_scratch: bool = False) -> BlockGraph:

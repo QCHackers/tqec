@@ -1,6 +1,7 @@
 """This is an example of compiling a logical CNOT `.dae` model to
 `stim.Circuit`."""
 
+from pathlib import Path
 from typing import Iterable
 
 import matplotlib.pyplot as plt
@@ -20,8 +21,10 @@ from tqec.noise_models import (
     DepolarizingNoiseOnIdlingQubit,
 )
 
-
-CNOT_DAE_FILE = "examples/assets/logical_cnot.dae"
+EXAMPLE_FOLDER = Path(__file__).parent
+TQEC_FOLDER = EXAMPLE_FOLDER.parent
+ASSETS_FOLDER = TQEC_FOLDER / "assets"
+CNOT_DAE_FILE = ASSETS_FOLDER / "logical_cnot.dae"
 
 
 def create_block_graph(from_scratch: bool = False) -> BlockGraph:
@@ -109,7 +112,7 @@ def main() -> None:
     ax.legend()
     ax.loglog()
     ax.set_title("Logical CNOT Error Rate")
-    fig.savefig("examples/assets/logical_cnot_result.png")
+    fig.savefig(ASSETS_FOLDER / "logical_cnot_result.png")
 
 
 if __name__ == "__main__":
