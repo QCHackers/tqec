@@ -13,10 +13,9 @@ from tqec.position import Position3D
 from tqec.sketchup.block_graph import BlockGraph
 from tqec.sketchup.zx_graph import ZXGraph
 
-HERE = Path(__file__).resolve().parent
-BENCHMARK_FOLDER = HERE
-EXAMPLES_FOLDER = HERE.parent
-ASSETS_FOLDER = EXAMPLES_FOLDER / "assets"
+BENCHMARK_FOLDER = Path(__file__).resolve().parent
+TQEC_FOLDER = BENCHMARK_FOLDER.parent
+ASSETS_FOLDER = TQEC_FOLDER / "assets"
 CNOT_DAE_FILE = ASSETS_FOLDER / "logical_cnot.dae"
 
 
