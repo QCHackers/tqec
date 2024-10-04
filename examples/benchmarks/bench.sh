@@ -5,28 +5,39 @@ set -e
 
 usage() {
     echo "Usage:"
-    echo "\tbench.sh [python file] [value of k]"
+    echo "\tbench.sh [value of k]"
     echo ""
     echo "Examples:"
-    echo "\tbench.sh cnot_all_observables.py 2"
+    echo "\tbench.sh 2"
 }
 
-if [ $# -ne 2 ]
+if [ $# -ne 1 ]
   then
     usage
     exit 1
 fi
 
-PYTHON_EXEC_NAME=$(basename "$1" .py)
-SCALING_FACTOR="$2"
-BENCH_DIRECTORY="data/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}_$(date '+%F_%H-%M-%S')"
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+PYTHON_EXEC_NAME="cnot_all_observables"
+SCALING_FACTOR="$1"
+BENCH_DIRECTORY="${PARENT_PATH}/data/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}_$(date '+%F_%H-%M-%S')"
 
 echo "Saving all benchmark data to ${BENCH_DIRECTORY}"
 mkdir -p $BENCH_DIRECTORY
 
 echo "Statistical profiling of ${PYTHON_EXEC_NAME}.py using pyinstrument..."
-python -m pyinstrument -o "${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}.html" -r html ${PYTHON_EXEC_NAME}.py -k "$2"
+python -m pyinstrument -o "${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}.html" -r html ${PYTHON_EXEC_NAME}.py -k "${SCALING_FACTOR}"
 echo "Profiling saved as an HTML webpage in ${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}.html"
+
+CLI_OUTDIR="${BENCH_DIRECTORY}/dae2circuits/"
+DAE_CNOT_FILE="$(realpath "${PARENT_PATH}/../assets/logical_cnot.dae")"
+CLI_CMD="tqec dae2circuits --out-dir ${CLI_OUTDIR} -k ${SCALING_FACTOR} --add-detectors ${DAE_CNOT_FILE}"
+
+echo "Statistical profiling of the command '${CLI_CMD}' using pyinstrument..."
+python -m pyinstrument -o "${BENCH_DIRECTORY}/tqec_dae2circuits_k=${SCALING_FACTOR}.html" -r html --from-path ${CLI_CMD}
+echo "Profiling saved as an HTML webpage in ${BENCH_DIRECTORY}/tqec_dae2circuits_k=${SCALING_FACTOR}.html"
+echo "Results of the tqec dae2circuits command saved in '${CLI_OUTDIR}'."
 
 # echo "Profiling ${PYTHON_EXEC_NAME}.py using cProfile..."
 # python -m cProfile -o "${BENCH_DIRECTORY}/${PYTHON_EXEC_NAME}.pstats" ${PYTHON_EXEC_NAME}.py -k $@
