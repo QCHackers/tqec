@@ -1,0 +1,35 @@
+tqec.noise\_models.base.BaseNoiseModel
+======================================
+
+.. currentmodule:: tqec.noise_models.base
+
+.. autoclass:: BaseNoiseModel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BaseNoiseModel.__init__
+      ~BaseNoiseModel.from_noise_model_like
+      ~BaseNoiseModel.is_in_effect
+      ~BaseNoiseModel.is_virtual_moment
+      ~BaseNoiseModel.noisy_moment
+      ~BaseNoiseModel.noisy_moments
+      ~BaseNoiseModel.noisy_operation
+      ~BaseNoiseModel.recurse_in_operation_if_circuit_operation
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BaseNoiseModel.prob
+   
+   

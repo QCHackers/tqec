@@ -1,0 +1,30 @@
+tqec.noise\_models.after\_reset\_flip
+=====================================
+
+.. automodule:: tqec.noise_models.after_reset_flip
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      AfterResetFlipNoise
+   
+   
+
+   
+   
+   
+
+
+

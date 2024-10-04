@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.templates.layout.LayoutTemplate &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.templates.qubit" href="tqec.templates.qubit.html" />
+    <link rel="prev" title="tqec.templates.layout" href="tqec.templates.layout.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.sketchup.html">tqec.sketchup</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.templates.html">tqec.templates</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.base.html">tqec.templates.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.display.html">tqec.templates.display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.enums.html">tqec.templates.enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.grid.html">tqec.templates.grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.interval.html">tqec.templates.interval</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.templates.layout.html">tqec.templates.layout</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.templates.layout.LayoutTemplate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.qubit.html">tqec.templates.qubit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.scale.html">tqec.templates.scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.templates.subtemplates.html">tqec.templates.subtemplates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
+          <li class="breadcrumb-item"><a href="tqec.templates.html">tqec.templates</a></li>
+          <li class="breadcrumb-item"><a href="tqec.templates.layout.html">tqec.templates.layout</a></li>
+      <li class="breadcrumb-item active">tqec.templates.layout.LayoutTemplate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/tqec.templates.layout.LayoutTemplate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-templates-layout-layouttemplate">
+<h1>tqec.templates.layout.LayoutTemplate<a class="headerlink" href="#tqec-templates-layout-layouttemplate" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.templates.layout.LayoutTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LayoutTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.position.Position2D.html#tqec.position.Position2D" title="tqec.position.Position2D"><span class="pre">Position2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><span class="pre">RectangularTemplate</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/layout.html#LayoutTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.layout.LayoutTemplate" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="tqec.templates.layout.LayoutTemplate.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.position.Position2D.html#tqec.position.Position2D" title="tqec.position.Position2D"><span class="pre">Position2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><span class="pre">RectangularTemplate</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/templates/layout.html#LayoutTemplate.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.layout.LayoutTemplate.__init__" title="Link to this definition"></a></dt>
+<dd><p>A template representing a layout of other templates.</p>
+<p>Each element template in the layout is placed at a specific position in
+the 2D grid.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The provided template positions have only one restriction: two
+templates should not be at the same position.
+In particular, this class does not require that the provided
+template are spatially connected or entirely cover a rectangular
+portion of the 2 spatial dimensions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element_layout</strong> – a dictionary with the position of the element
+templates in the layout as keys and the templates as values.</p></li>
+<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
+<li><p><strong>default_increments</strong> – default increments between two plaquettes. Defaults
+to <cite>Displacement(2, 2)</cite> when <cite>None</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.__init__" title="tqec.templates.layout.LayoutTemplate.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(element_layout[, k, default_increments])</p></td>
+<td><p>A template representing a layout of other templates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_increments</span></code>()</p></td>
+<td><p>Get the default increments of the template.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indices_map_for_instantiation</span></code>([...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_midline_plaquettes</span></code>([orientation])</p></td>
+<td><p>Returns the default observable qubits for the template.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_plaquette_indices_on_sides</span></code>(_)</p></td>
+<td><p>Get the indices of plaquettes that are located on the provided sides.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spatially_distinct_subtemplates</span></code>([...])</p></td>
+<td><p>Returns a representation of all the distinct sub-templates of the provided manhattan radius.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantiate</span></code>([plaquette_indices])</p></td>
+<td><p>Generate the numpy array representing the template.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_to</span></code>(k)</p></td>
+<td><p>Scales self to the given scale k.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_shape</span></code></p></td>
+<td><p>Return the uniform shape of the element templates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expected_plaquettes_number</span></code></p></td>
+<td><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin_shift</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalable_shape</span></code></p></td>
+<td><p>Returns a scalable version of the template shape.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></p></td>
+<td><p>Returns the current template shape.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.templates.layout.html" class="btn btn-neutral float-left" title="tqec.templates.layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.templates.qubit.html" class="btn btn-neutral float-right" title="tqec.templates.qubit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

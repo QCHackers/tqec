@@ -1,0 +1,44 @@
+tqec.noise\_models
+==================
+
+.. automodule:: tqec.noise_models
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   after_clifford_depolarization
+
+   after_reset_flip
+
+   base
+
+   before_measure_flip
+
+   before_round_data_depolarization
+
+   idle_qubits
+
+   multi_qubit_gates
+

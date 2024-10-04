@@ -1,0 +1,6 @@
+tqec.circuit.operations.transformer.transform\_to\_stimcirq\_compatible
+=======================================================================
+
+.. currentmodule:: tqec.circuit.operations.transformer
+
+.. autofunction:: transform_to_stimcirq_compatible

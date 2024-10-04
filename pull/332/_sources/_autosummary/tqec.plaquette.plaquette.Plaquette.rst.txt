@@ -1,0 +1,32 @@
+tqec.plaquette.plaquette.Plaquette
+==================================
+
+.. currentmodule:: tqec.plaquette.plaquette
+
+.. autoclass:: Plaquette
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Plaquette.__init__
+      ~Plaquette.get_mergeable_tag
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Plaquette.circuit
+      ~Plaquette.measurements
+      ~Plaquette.origin
+      ~Plaquette.qubits
+   
+   

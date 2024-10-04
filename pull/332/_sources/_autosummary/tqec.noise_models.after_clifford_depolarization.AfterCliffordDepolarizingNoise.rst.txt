@@ -1,0 +1,35 @@
+tqec.noise\_models.after\_clifford\_depolarization.AfterCliffordDepolarizingNoise
+=================================================================================
+
+.. currentmodule:: tqec.noise_models.after_clifford_depolarization
+
+.. autoclass:: AfterCliffordDepolarizingNoise
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AfterCliffordDepolarizingNoise.__init__
+      ~AfterCliffordDepolarizingNoise.from_noise_model_like
+      ~AfterCliffordDepolarizingNoise.is_in_effect
+      ~AfterCliffordDepolarizingNoise.is_virtual_moment
+      ~AfterCliffordDepolarizingNoise.noisy_moment
+      ~AfterCliffordDepolarizingNoise.noisy_moments
+      ~AfterCliffordDepolarizingNoise.noisy_operation
+      ~AfterCliffordDepolarizingNoise.recurse_in_operation_if_circuit_operation
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~AfterCliffordDepolarizingNoise.prob
+   
+   

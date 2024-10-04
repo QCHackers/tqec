@@ -1,0 +1,41 @@
+tqec.circuit.operations.operation.MeasurementsRecord
+====================================================
+
+.. currentmodule:: tqec.circuit.operations.operation
+
+.. autoclass:: MeasurementsRecord
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MeasurementsRecord.__init__
+      ~MeasurementsRecord.controlled_by
+      ~MeasurementsRecord.transform_qubits
+      ~MeasurementsRecord.validate_args
+      ~MeasurementsRecord.with_classical_controls
+      ~MeasurementsRecord.with_probability
+      ~MeasurementsRecord.with_qubits
+      ~MeasurementsRecord.with_tags
+      ~MeasurementsRecord.without_classical_controls
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MeasurementsRecord.classical_controls
+      ~MeasurementsRecord.gate
+      ~MeasurementsRecord.measurement_data
+      ~MeasurementsRecord.qubits
+      ~MeasurementsRecord.tags
+      ~MeasurementsRecord.untagged
+   
+   

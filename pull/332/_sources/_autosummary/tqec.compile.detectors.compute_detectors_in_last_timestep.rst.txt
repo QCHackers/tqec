@@ -1,0 +1,6 @@
+tqec.compile.detectors.compute\_detectors\_in\_last\_timestep
+=============================================================
+
+.. currentmodule:: tqec.compile.detectors
+
+.. autofunction:: compute_detectors_in_last_timestep

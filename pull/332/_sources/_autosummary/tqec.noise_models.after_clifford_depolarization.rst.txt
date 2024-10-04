@@ -1,0 +1,37 @@
+tqec.noise\_models.after\_clifford\_depolarization
+==================================================
+
+.. automodule:: tqec.noise_models.after_clifford_depolarization
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      is_clifford
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      AfterCliffordDepolarizingNoise
+   
+   
+
+   
+   
+   
+
+
+
