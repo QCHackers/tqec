@@ -1,6 +1,0 @@
-tqec.circuit.operations.operation.make\_detector
-================================================
-
-.. currentmodule:: tqec.circuit.operations.operation
-
-.. autofunction:: make_detector
