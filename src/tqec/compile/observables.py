@@ -1,6 +1,3 @@
-import stim
-
-from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException

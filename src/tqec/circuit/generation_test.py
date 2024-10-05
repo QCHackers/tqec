@@ -9,7 +9,6 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library import zz_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
-from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.templates._testing import FixedTemplate
 from tqec.templates.base import Template
 

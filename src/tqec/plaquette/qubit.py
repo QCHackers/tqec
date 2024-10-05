@@ -6,7 +6,6 @@ from fractions import Fraction
 
 from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
-from tqec.position import Position2D
 from tqec.templates.enums import TemplateOrientation
 
 

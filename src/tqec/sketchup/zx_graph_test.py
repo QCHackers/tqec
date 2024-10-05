@@ -2,12 +2,7 @@ import pytest
 
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
-from tqec.sketchup.zx_graph import (
-    NodeType,
-    ZXEdge,
-    ZXGraph,
-    ZXNode,
-)
+from tqec.sketchup.zx_graph import NodeType, ZXEdge, ZXGraph, ZXNode
 
 
 def test_zx_graph_construction() -> None:

@@ -2,7 +2,6 @@ from copy import deepcopy
 
 import pytest
 
-from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.plaquette.qubit import (
     PlaquetteQubit,

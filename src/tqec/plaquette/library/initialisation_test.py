@@ -1,5 +1,3 @@
-import stim
-
 from tqec.circuit.schedule import Schedule
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.initialisation import (

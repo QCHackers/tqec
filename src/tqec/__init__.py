@@ -1,11 +1,6 @@
 from tqec.compile import compile_block_graph
 
-from . import (
-    circuit,
-    noise_models,
-    plaquette,
-    templates,
-)
+from . import circuit, noise_models, plaquette, templates
 from ._version import __version__
 from .circuit import (
     ScheduledCircuit,
@@ -23,16 +18,8 @@ from .plaquette import (
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
-from .plaquette.enums import (
-    PlaquetteOrientation,
-)
-from .position import (
-    Direction3D,
-    Displacement,
-    Position2D,
-    Position3D,
-    Shape2D,
-)
+from .plaquette.enums import PlaquetteOrientation
+from .position import Direction3D, Displacement, Position2D, Position3D, Shape2D
 from .sketchup import (
     BlockGraph,
     BlockType,
