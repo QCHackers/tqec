@@ -300,11 +300,11 @@ class ScheduledCircuit:
                     if not target.is_qubit_target:
                         mapped_targets.append(target)
                         continue
-                    if target.is_inverted_result_target:
-                        raise TQECException("Inverted qubit targets are not supported.")
                     target_qubit = ty.cast(int, target.qubit_value)
                     mapped_targets.append(
                         stim.GateTarget(qubit_index_map[target_qubit])
+                        if not target.is_inverted_result_target
+                        else stim.GateTarget(-qubit_index_map[target_qubit])
                     )
                 mapped_moment_circuit.append(
                     instr.name, mapped_targets, instr.gate_args_copy()
