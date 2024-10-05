@@ -181,3 +181,16 @@ def test_intervals_intersection() -> None:
     assert a.intersection(a) == a
     assert a.intersection(b) == ab
     assert b.intersection(a) == ab
+
+
+def test_interval_iter_integers() -> None:
+    assert list(Interval(0.5, 10.5).iter_integers()) == list(range(1, 11))
+    assert list(Interval(0, 10, end_excluded=True).iter_integers()) == list(
+        range(0, 10)
+    )
+    assert list(Interval(-10, 10, end_excluded=False).iter_integers()) == list(
+        range(-10, 11)
+    )
+    assert list(
+        Interval(-10, 0, start_excluded=True, end_excluded=True).iter_integers()
+    ) == list(range(-9, 0))
