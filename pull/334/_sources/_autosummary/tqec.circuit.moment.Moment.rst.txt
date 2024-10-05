@@ -30,6 +30,7 @@ tqec.circuit.moment.Moment
    
       ~Moment.circuit
       ~Moment.instructions
+      ~Moment.num_measurements
       ~Moment.qubits_indices
    
    

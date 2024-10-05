@@ -221,7 +221,11 @@
 
     <span class="k">def</span> <span class="nf">operates_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">qindices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits_indices</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">q</span> <span class="ow">in</span> <span class="n">qindices</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">q</span> <span class="ow">in</span> <span class="n">qindices</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">num_measurements</span></div>
 
 
 
