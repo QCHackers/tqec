@@ -1,3 +1,5 @@
+import stim
+
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
@@ -140,29 +142,91 @@ def inplace_add_observables(
         for pipe in observable.bottom_regions:
             z = pipe.u.position.z
             template = template_slices[z]
-            _stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
+            stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
                 pipe, template.element_shape, template.get_increments()
             )
-            # TODO: Need a MeasurementMap here to get the correct global offsets
-            #       for qubits in `_stabilizer_qubits` (to be renamed `stabilizer_qubits`)
-            circuits[z][0].append_observable(i, [])
+            measurement_records = _get_measurement_records_from_scheduled_circuit(
+                circuits[z][0]
+            )
+            circuits[z][0].append_observable(
+                i,
+                [
+                    stim.target_rec(measurement_records[q][-1])
+                    for q in stabilizer_qubits
+                ],
+            )
 
         # Add the line measurements to the end of the last layer of circuits at z.
         for cube_or_pipe in observable.top_lines:
             if isinstance(cube_or_pipe, Cube):
                 z = cube_or_pipe.position.z
                 template = template_slices[z]
-                _qubits = get_midline_qubits_for_cube(
+                qubits = get_midline_qubits_for_cube(
                     cube_or_pipe, template.element_shape, template.get_increments()
                 )
             else:
                 z = cube_or_pipe.u.position.z
                 template = template_slices[z]
-                _qubits = [
+                qubits = [
                     get_center_qubit_at_horizontal_pipe(
                         cube_or_pipe, template.element_shape, template.get_increments()
                     )
                 ]
-            # TODO: Need a MeasurementMap here to get the correct global offsets
-            #       for qubits in `_qubits` (to be renamed `qubits`)
-            circuits[z][-1].append_observable(i, [])
+            measurement_records = _get_measurement_records_from_scheduled_circuit(
+                circuits[z][-1]
+            )
+            circuits[z][-1].append_observable(
+                i,
+                [stim.target_rec(measurement_records[q][-1]) for q in qubits],
+            )
+
+
+_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
+    [
+        # Collapsing Gates
+        "M",
+        "MR",
+        "MRX",
+        "MRY",
+        "MRZ",
+        "MX",
+        "MY",
+        "MZ",
+    ]
+)
+_NOT_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
+    [
+        # Pair Measurement Gates
+        "MXX",
+        "MYY",
+        "MZZ",
+        # Generalized Pauli Product Gates
+        "MPP",
+    ]
+)
+
+
+def _get_measurement_records_from_scheduled_circuit(
+    circuit: ScheduledCircuit,
+) -> dict[GridQubit, list[int]]:
+    # Get the global qubit map
+    i2q: dict[int, GridQubit] = {i: q for q, i in circuit.q2i.items()}
+    # Build the local measurement map.
+    current_measurement_record = -circuit.num_measurements
+    measurement_records: dict[GridQubit, list[int]] = {}
+    for moment in circuit.moments:
+        for instruction in moment.instructions:
+            assert not isinstance(instruction, stim.CircuitRepeatBlock)
+            if instruction.name in _NOT_SUPPORTED_MEASUREMENT_GATE_NAMES:
+                raise TQECException(
+                    f"Found a non-supported measurement instruction: {instruction}"
+                )
+            if instruction.name in _SUPPORTED_MEASUREMENT_GATE_NAMES:
+                for (qi,) in instruction.target_groups():
+                    qubit = i2q[qi.value]
+                    measurement_records.setdefault(qubit, []).append(
+                        current_measurement_record
+                    )
+                    current_measurement_record += 1
+    assert current_measurement_record == 0, "Sanity check"
+    return measurement_records
