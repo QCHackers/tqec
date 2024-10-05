@@ -1,7 +1,7 @@
 import pytest
 
-from tqec.position import Position2D, Shape2D, Position3D, Direction3D
 from tqec.exceptions import TQECException
+from tqec.position import Direction3D, Position2D, Position3D, Shape2D
 
 
 def test_position() -> None:

@@ -1,10 +1,11 @@
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Literal, Protocol
-from copy import deepcopy
 
-import cirq
+import stim
 
+from tqec.circuit.moment import Moment
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs import CubeSpec
 from tqec.exceptions import TQECException
@@ -157,7 +158,7 @@ def _substitute_on_the_border(
     # 2. Add resets/measurements on the middle of the border
     for i in substitution.keys():
         _inplace_add_operation_on_data_qubits(
-            block.layers[0][i], plaquette_side, ResetBasis(basis), 1
+            block.layers[0][i], plaquette_side, ResetBasis(basis), 0
         )
         _inplace_add_operation_on_data_qubits(
             block.layers[-1][i], plaquette_side, MeasurementBasis(basis), -1
@@ -171,15 +172,15 @@ def _inplace_add_operation_on_data_qubits(
     operation_basis: ResetBasis | MeasurementBasis,
     moment_schedule: int,
 ) -> None:
+    # TODO: Remove that and make Plaquette frozen.
     qubits = plaquette.qubits.get_qubits_on_side(side)
     # Do not add resets on qubits that have already be reset
     moment = plaquette.circuit.moment_at_schedule(moment_schedule)
-    operation_to_add = []
+    q2i = plaquette.circuit.q2i
+
+    operations_to_add = stim.Circuit()
     for q in qubits:
-        gq = q.to_grid_qubit()
-        if moment.operates_on([gq]):
+        if moment.operates_on([q2i[q]]):
             continue
-        operation_to_add.append(operation_basis(gq))
-    plaquette.circuit.add_to_schedule_index(
-        moment_schedule, cirq.Moment(*operation_to_add)
-    )
+        operations_to_add.append(operation_basis.instruction_name, [q2i[q]], [])
+    plaquette.circuit.add_to_schedule_index(moment_schedule, Moment(operations_to_add))

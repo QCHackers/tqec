@@ -16,7 +16,7 @@ _QUBIT_INDICES = {
 def cnot_pauli_schedule(
     pauli_string: typing.Literal["xx", "zz"],
     plaquette_orientation: PlaquetteOrientation,
-    starting_index: int = 3,
+    starting_index: int = 2,
 ) -> list[int]:
     """Return the schedule of the 2 CNOTs in the provided plaquette.
 
@@ -26,16 +26,16 @@ def cnot_pauli_schedule(
         plaquette_orientation: orientation of the plaquette, used to compute
             which CNOT are used, and in consequence when they should be scheduled.
         starting_index: scheduling index at which the first CNOT can be executed.
-            Defaults to 3 because 1 is associated to reset and 2 is associated to
+            Defaults to 2 because 0 is associated to reset and 1 is associated to
             a potential Hadamard gate to measure X Pauli string stabilizers.
 
     Raises:
         TQECException: if the provided `pauli_string` is not "xx" nor "zz".
 
     Returns:
-        a list with two entries within [starting_index, starting_index + 3]
-        representing the time at which the CNOTs implementing the plaquette should
-        be scheduled.
+        a :class:`Schedule` instance with two entries within
+        `[starting_index, starting_index + 3]` representing the time at which
+        the CNOTs implementing the plaquette should be scheduled.
     """
     if pauli_string not in {"xx", "zz"}:
         raise TQECException(

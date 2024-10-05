@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import html
 import base64
+import html
 import pathlib
 import typing as ty
 from dataclasses import dataclass
@@ -14,18 +14,18 @@ import numpy as np
 import numpy.typing as npt
 
 from tqec.exceptions import TQECException
+from tqec.position import Position3D
+from tqec.sketchup.block_graph import (
+    BlockGraph,
+    BlockType,
+    CubeType,
+    PipeType,
+)
 from tqec.sketchup.geometry import (
     Face,
     FaceType,
     load_library_block_geometries,
     parse_block_type_from_str,
-)
-from tqec.position import Position3D
-from tqec.sketchup.block_graph import (
-    CubeType,
-    PipeType,
-    BlockType,
-    BlockGraph,
 )
 
 _RGBA = tuple[float, float, float, float]

@@ -3,10 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 
-import cirq
-import cirq.circuits
-
-from tqec.circuit.circuit import generate_circuit
+from tqec.circuit.generation import generate_circuit
+from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
@@ -128,8 +126,8 @@ class BlockLayout:
     def num_layers(self) -> int:
         return len(self._layers)
 
-    def instantiate_layer(self, layer_index: int) -> cirq.Circuit:
-        """Instantiates the specified layer into a `cirq.Circuit`.
+    def instantiate_layer(self, layer_index: int) -> ScheduledCircuit:
+        """Instantiates the specified layer into a `ScheduledCircuit`.
 
         Note that this method does not shift the circuits based on the
         layout template. And the circuits are not repeated based on the

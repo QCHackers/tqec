@@ -1,25 +1,22 @@
-from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Literal
-import cirq
-import stim
-import stimcirq
 
-from tqec.circuit.operations.transformer import transform_to_stimcirq_compatible
+import stim
+
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.compile.block import BlockLayout, CompiledBlock
+from tqec.compile.observables import inplace_add_observables
+from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
 from tqec.compile.substitute import (
+    DEFAULT_SUBSTITUTION_RULES,
     SubstitutionKey,
     SubstitutionRule,
-    DEFAULT_SUBSTITUTION_RULES,
 )
 from tqec.exceptions import TQECException, TQECWarning
-from tqec.noise_models.base import BaseNoiseModel
+from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
-from tqec.position import Direction3D, Position3D
+from tqec.position import Direction3D, Displacement, Position3D
 from tqec.sketchup.block_graph import AbstractObservable, BlockGraph
-from tqec.compile.block import CompiledBlock, BlockLayout
-from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
-from tqec.compile.observables import inplace_add_observables
 from tqec.templates.scale import round_or_fail
 
 
@@ -56,7 +53,7 @@ class CompiledGraph:
     def generate_stim_circuit(
         self,
         k: int,
-        noise_models: Iterable[BaseNoiseModel] = (),
+        noise_model: NoiseModel | None = None,
     ) -> stim.Circuit:
         """Generate the stim circuit from the compiled graph.
 
@@ -66,27 +63,9 @@ class CompiledGraph:
 
             A compiled stim circuit.
         """
-        cirq_circuit = self.generate_cirq_circuit(k, noise_models)
-        cirq_circuit = transform_to_stimcirq_compatible(cirq_circuit)
-        return stimcirq.cirq_circuit_to_stim_circuit(cirq_circuit)
-
-    def generate_cirq_circuit(
-        self,
-        k: int,
-        noise_models: Iterable[BaseNoiseModel] = (),
-    ) -> cirq.Circuit:
-        """Generate the cirq circuit from the compiled graph.
-
-        Args:
-            k: The scale factor of the templates.
-            noise_models: The noise models to be applied to the circuit.
-
-        Returns:
-            A compiled cirq circuit.
-        """
         self.scale_to(k)
         # assemble circuits time slice by time slice, layer by layer.
-        circuits: list[list[cirq.Circuit]] = []
+        circuits: list[list[ScheduledCircuit]] = []
         for layout in self.layout_slices:
             circuits.append(
                 [layout.instantiate_layer(i) for i in range(layout.num_layers)]
@@ -100,49 +79,82 @@ class CompiledGraph:
         # shift and merge circuits
         circuit = self._shift_and_merge_circuits(circuits)
         # apply noise models
-        for noise_model in noise_models:
-            circuit = circuit.with_noise(noise_model)
+        if noise_model is not None:
+            circuit = noise_model.noisy_circuit(circuit)
         return circuit
 
     def _shift_and_merge_circuits(
-        self, circuits: list[list[cirq.Circuit]]
-    ) -> cirq.Circuit:
-        circuits_by_time = []
+        self, circuits: list[list[ScheduledCircuit]]
+    ) -> stim.Circuit:
+        """
+
+        Warning:
+            Modify in-place the provided `circuits`.
+
+        Args:
+            circuits:
+
+        Returns:
+
+        """
+        # First, shift all the circuits to make sure that they are each applied
+        # on the correct qubits
+        self._shift_all_circuits_inplace(circuits)
+        # Then, get a global qubit index map to remap the circuit indices on the
+        # fly.
+        needed_qubits = frozenset.union(
+            *[c.qubits for clayer in circuits for c in clayer]
+        )
+        global_q2i = {q: i for i, q in enumerate(sorted(needed_qubits))}
+        # Add the QUBIT_COORDS instructions at the beginning of the circuit
+        final_circuit = stim.Circuit()
+        for q, i in global_q2i.items():
+            final_circuit.append(q.to_qubit_coords_instruction(i))
+        # Merge all the circuits, constructing a REPEAT block when needed.
         for t, layout in enumerate(self.layout_slices):
-            circuits_at_t = []
+            for i in range(layout.num_layers):
+                # Remap the circuit qubit indices to be sure that there will be
+                # no index clash.
+                circuit = circuits[t][i]
+                local_indices_to_global_indices = {
+                    local_index: global_q2i[q] for q, local_index in circuit.q2i.items()
+                }
+                circuit.map_qubit_indices(local_indices_to_global_indices, inplace=True)
+
+                # Append either the full circuit or a REPEAT block.
+                layer = layout.layers[i]
+                if isinstance(layer, RepeatedPlaquettes):
+                    final_circuit += circuits[t][i].get_repeated_circuit(
+                        round_or_fail(layer.repetitions(layout.template.k)),
+                        include_qubit_coords=False,
+                    )
+                else:
+                    final_circuit += circuits[t][i].get_circuit(
+                        include_qubit_coords=False
+                    )
+                # Do not forget to append a TICK here
+                final_circuit.append("TICK", [], [])
+        # We appended one extra TICK at the end, remove it and return the result.
+        return final_circuit[:-1]
+
+    def _shift_all_circuits_inplace(
+        self, circuits: list[list[ScheduledCircuit]]
+    ) -> None:
+        for t, layout in enumerate(self.layout_slices):
             # We need to shift the circuit based on the shift of the layout template.
             origin_shift = layout.template.origin_shift
             element_shape = layout.template.element_shape
             increment = layout.template.get_increments()
             for i in range(layout.num_layers):
-                circuit_before_shift = circuits[t][i]
-                # Need to use `qubit_map` on `ScheduledCircuit` instead of
-                # `transform_qubits` on `cirq.Circuit` to map the MeasurementKey correctly.
-                scheduled = ScheduledCircuit(circuit_before_shift)
                 qubit_map = {
                     q: q
-                    + (
-                        origin_shift.y * element_shape.y * increment.y,
+                    + Displacement(
                         origin_shift.x * element_shape.x * increment.x,
+                        origin_shift.y * element_shape.y * increment.y,
                     )
-                    for q in scheduled.qubits
+                    for q in circuits[t][i].qubits
                 }
-                shifted_circuit = scheduled.map_to_qubits(
-                    qubit_map, inplace=True
-                ).raw_circuit
-                layer = layout.layers[i]
-                if isinstance(layer, RepeatedPlaquettes):
-                    shifted_circuit = cirq.Circuit(
-                        cirq.CircuitOperation(
-                            shifted_circuit.freeze(),
-                            repetitions=round_or_fail(
-                                layer.repetitions(layout.template.k)
-                            ),
-                        )
-                    )
-                circuits_at_t.append(shifted_circuit)
-            circuits_by_time.append(sum(circuits_at_t, cirq.Circuit()))
-        return sum(circuits_by_time, cirq.Circuit())
+                circuits[t][i].map_to_qubits(qubit_map, inplace=True)
 
 
 def compile_block_graph(

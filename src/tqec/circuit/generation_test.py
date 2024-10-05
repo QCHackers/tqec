@@ -1,9 +1,10 @@
 from collections import defaultdict
 
-import cirq
 import pytest
+import stim
 
-from tqec.circuit.circuit import generate_circuit
+from tqec.circuit.generation import generate_circuit
+from tqec.circuit.schedule import Schedule
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library import zz_memory_plaquette
@@ -15,7 +16,9 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def plaquette() -> Plaquette:
-    return zz_memory_plaquette(PlaquetteOrientation.LEFT, [1, 5, 6, 8])
+    return zz_memory_plaquette(
+        PlaquetteOrientation.LEFT, Schedule.from_offsets([0, 4, 5, 7])
+    )
 
 
 @pytest.fixture
@@ -23,21 +26,30 @@ def one_by_one_template() -> Template:
     return FixedTemplate([[0]])
 
 
-def _expected_circuit(qubits: PlaquetteQubits) -> cirq.Circuit:
-    (syndrome_qubit,) = qubits.get_syndrome_qubits_cirq()
-    return cirq.Circuit(
-        cirq.Moment(cirq.R(syndrome_qubit).with_tags(Plaquette.get_mergeable_tag())),
-        cirq.Moment(cirq.CNOT(qubits.data_qubits[0].to_grid_qubit(), syndrome_qubit)),
-        cirq.Moment(cirq.CNOT(qubits.data_qubits[1].to_grid_qubit(), syndrome_qubit)),
-        cirq.Moment(cirq.M(syndrome_qubit).with_tags(Plaquette.get_mergeable_tag())),
-    )
+def _expected_circuit() -> stim.Circuit:
+    return stim.Circuit("""
+    QUBIT_COORDS(0, 0) 0
+    QUBIT_COORDS(1, -1) 1
+    QUBIT_COORDS(1, 1) 2
+    R 0
+    TICK
+    TICK
+    TICK
+    TICK
+    CX 1 0
+    TICK
+    CX 2 0
+    TICK
+    TICK
+    M 0
+""")
 
 
 def test_generate_circuit_dict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(one_by_one_template, Plaquettes({1: plaquette}))
-    assert circuit == _expected_circuit(plaquette.qubits)
+    assert circuit.get_circuit == _expected_circuit()
 
 
 def test_generate_circuit_defaultdict(
@@ -46,7 +58,7 @@ def test_generate_circuit_defaultdict(
     circuit = generate_circuit(
         one_by_one_template, Plaquettes(defaultdict(lambda: plaquette))
     )
-    assert circuit == _expected_circuit(plaquette.qubits)
+    assert circuit.get_circuit == _expected_circuit()
 
 
 def test_generate_circuit_dict_0_indexed(

@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import typing as ty
 from dataclasses import dataclass
+from fractions import Fraction
 
-import cirq
-
+from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.position import Position2D
 from tqec.templates.enums import TemplateOrientation
 
 
-@dataclass(frozen=True)
-class PlaquetteQubit:
+class PlaquetteQubit(GridQubit):
     """Defines a qubit in the plaquette coordinate system.
 
     This class initially had more attributes, which ended-up being
@@ -20,11 +19,7 @@ class PlaquetteQubit:
     and implements an helper method to get a cirq.GridQubit instance.
     """
 
-    position: Position2D
-
-    def to_grid_qubit(self) -> cirq.GridQubit:
-        # GridQubit are indexed as (row, col)
-        return cirq.GridQubit(self.position.y, self.position.x)
+    pass
 
 
 @dataclass(frozen=True)
@@ -38,19 +33,12 @@ class PlaquetteQubits:
     def get_syndrome_qubits(self) -> list[PlaquetteQubit]:
         return self.syndrome_qubits
 
-    def get_data_qubits_cirq(self) -> list[cirq.GridQubit]:
-        return [q.to_grid_qubit() for q in self.get_data_qubits()]
-
-    def get_syndrome_qubits_cirq(self) -> list[cirq.GridQubit]:
-        return [q.to_grid_qubit() for q in self.get_syndrome_qubits()]
-
     def __iter__(self) -> ty.Iterator[PlaquetteQubit]:
         yield from self.data_qubits
         yield from self.syndrome_qubits
 
-    def to_grid_qubit(self) -> list[cirq.GridQubit]:
-        # GridQubit are indexed as (row, col)
-        return [q.to_grid_qubit() for q in self]
+    def to_grid_qubit(self) -> list[GridQubit]:
+        return list(self)
 
     def permute_data_qubits(self, permutation: ty.Sequence[int]) -> PlaquetteQubits:
         return PlaquetteQubits(
@@ -71,12 +59,8 @@ class PlaquetteQubits:
             list[PlaquetteQubit]: The qubits on the edge of the plaquette.
         """
 
-        def _get_relevant_value(qubit: PlaquetteQubit) -> int:
-            return (
-                qubit.position.y
-                if orientation == TemplateOrientation.HORIZONTAL
-                else qubit.position.x
-            )
+        def _get_relevant_value(qubit: PlaquetteQubit) -> Fraction:
+            return qubit.y if orientation == TemplateOrientation.HORIZONTAL else qubit.x
 
         max_index = max(_get_relevant_value(q) for q in self.data_qubits)
         return [
@@ -99,38 +83,38 @@ class PlaquetteQubits:
             list[PlaquetteQubit]: The qubits on the edge of the plaquette.
         """
         if side == PlaquetteSide.LEFT:
-            min_x = min(q.position.x for q in self)
-            return [q for q in self if q.position.x == min_x]
+            min_x = min(q.x for q in self)
+            return [q for q in self if q.x == min_x]
         elif side == PlaquetteSide.RIGHT:
-            max_x = max(q.position.x for q in self)
-            return [q for q in self if q.position.x == max_x]
+            max_x = max(q.x for q in self)
+            return [q for q in self if q.x == max_x]
         elif side == PlaquetteSide.UP:
-            min_y = min(q.position.y for q in self)
-            return [q for q in self if q.position.y == min_y]
+            min_y = min(q.y for q in self)
+            return [q for q in self if q.y == min_y]
         else:  # if orientation == PlaquetteSide.DOWN:
-            max_y = max(q.position.y for q in self)
-            return [q for q in self if q.position.y == max_y]
+            max_y = max(q.y for q in self)
+            return [q for q in self if q.y == max_y]
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
         super().__init__(
             [
-                PlaquetteQubit(Position2D(-1, -1)),
-                PlaquetteQubit(Position2D(1, -1)),
-                PlaquetteQubit(Position2D(-1, 1)),
-                PlaquetteQubit(Position2D(1, 1)),
+                PlaquetteQubit(-1, -1),
+                PlaquetteQubit(1, -1),
+                PlaquetteQubit(-1, 1),
+                PlaquetteQubit(1, 1),
             ],
-            [PlaquetteQubit(Position2D(0, 0))],
+            [PlaquetteQubit(0, 0)],
         )
 
 
 class RoundedPlaquetteQubits(PlaquetteQubits):
     _POTENTIAL_DATA_QUBITS: ty.Final[list[PlaquetteQubit]] = [
-        PlaquetteQubit(Position2D(-1, -1)),
-        PlaquetteQubit(Position2D(1, -1)),
-        PlaquetteQubit(Position2D(-1, 1)),
-        PlaquetteQubit(Position2D(1, 1)),
+        PlaquetteQubit(-1, -1),
+        PlaquetteQubit(1, -1),
+        PlaquetteQubit(-1, 1),
+        PlaquetteQubit(1, 1),
     ]
 
     @staticmethod
@@ -149,5 +133,5 @@ class RoundedPlaquetteQubits(PlaquetteQubits):
     def __init__(self, orientation: PlaquetteOrientation):
         super().__init__(
             RoundedPlaquetteQubits._get_qubits_on_side(orientation.to_plaquette_side()),
-            [PlaquetteQubit(Position2D(0, 0))],
+            [PlaquetteQubit(0, 0)],
         )

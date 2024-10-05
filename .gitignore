@@ -185,3 +185,7 @@ docs/_autosummary
 .python-version
 requirements.lock
 requirements-dev.lock
+
+
+# tqec specific
+benchmarks/data/

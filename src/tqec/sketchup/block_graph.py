@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import pathlib
 import typing as ty
+from copy import deepcopy
 from dataclasses import astuple, dataclass
 from enum import Enum
 from io import BytesIO
