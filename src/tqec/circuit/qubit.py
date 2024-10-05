@@ -58,6 +58,8 @@ class GridQubit:
         return self._y
 
     def to_qubit_coords_instruction(self, index: int) -> stim.CircuitInstruction:
+        """Return the `QUBIT_COORDS` `stim.CircuitInstruction` needed to define
+        `self` in a `stim.Circuit`."""
         # TODO: check ordering here.
         return stim.CircuitInstruction(
             "QUBIT_COORDS", [index], [float(self.x), float(self.y)]
@@ -70,6 +72,9 @@ class GridQubit:
         return GridQubit(self.x - other.x, self.y - other.y)
 
     def __mul__(self, other: float) -> GridQubit:
+        return GridQubit(other * self.x, other * self.y)
+
+    def __rmul__(self, other: float) -> GridQubit:
         return GridQubit(other * self.x, other * self.y)
 
     def __hash__(self) -> int:
@@ -118,6 +123,11 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
     """Count the number of times a given qubit is used by an instruction that
     is not an annotation.
 
+    Note:
+        If a `REPEAT` instruction is found, each qubit access within the
+        repeated block will be multiplied by the number of time the block is
+        repeated.
+
     Args:
         circuit: circuit containing the gates.
 
@@ -129,7 +139,7 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
     for instruction in circuit:
         if isinstance(instruction, stim.CircuitRepeatBlock):
             for qi, count in count_qubit_accesses(instruction.body_copy()).items():
-                counter[qi] += count
+                counter[qi] += count * instruction.repeat_count
         else:
             if instruction.name in NON_COMPUTATION_INSTRUCTIONS:
                 continue
