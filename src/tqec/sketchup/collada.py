@@ -166,7 +166,7 @@ def write_block_graph_to_dae_file(
         if cube.is_virtual:
             continue
         scaled_position = scale_position(cube.position.as_tuple())
-        matrix = np.eye(4, dtype=np.float_)
+        matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position
         base.add_instance_node(instance_id, matrix, cube.cube_type)
         instance_id += 1
@@ -174,7 +174,7 @@ def write_block_graph_to_dae_file(
         src_pos = scale_position(pipe.u.position.as_tuple())
         pipe_pos = list(src_pos)
         pipe_pos[pipe.direction.axis_index] += 1.0
-        matrix = np.eye(4, dtype=np.float_)
+        matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = pipe_pos
         scales = [1.0, 1.0, 1.0]
         # We divide the scaling by 2.0 because the pipe's default length is 2.0.
@@ -201,7 +201,7 @@ class _BaseColladaData:
     def add_instance_node(
         self,
         instance_id: int,
-        transform_matrix: npt.NDArray[np.float_],
+        transform_matrix: npt.NDArray[np.float32],
         block_type: BlockType,
     ) -> None:
         """Add an instance node to the root node."""
@@ -351,13 +351,13 @@ class Transformation:
         affine_matrix: The 4x4 affine matrix composed of the translation, scaling, and rotation.
     """
 
-    translation: npt.NDArray[np.float_]
-    scale: npt.NDArray[np.float_]
-    rotation: npt.NDArray[np.float_]
-    affine_matrix: npt.NDArray[np.float_]
+    translation: npt.NDArray[np.float32]
+    scale: npt.NDArray[np.float32]
+    rotation: npt.NDArray[np.float32]
+    affine_matrix: npt.NDArray[np.float32]
 
     @staticmethod
-    def from_4d_affine_matrix(mat: npt.NDArray[np.float_]) -> Transformation:
+    def from_4d_affine_matrix(mat: npt.NDArray[np.float32]) -> Transformation:
         translation = mat[:3, 3]
         scale = np.linalg.norm(mat[:3, :3], axis=1)
         rotation = mat[:3, :3] / scale[:, None]
