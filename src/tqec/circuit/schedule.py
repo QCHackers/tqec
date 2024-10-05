@@ -461,6 +461,10 @@ class ScheduledCircuit:
             )
         self._moments[-1].append("OBSERVABLE_INCLUDE", targets, [index])
 
+    @property
+    def num_measurements(self) -> int:
+        return sum(m.num_measurements for m in self._moments)
+
 
 class _ScheduledCircuits:
     def __init__(self, circuits: list[ScheduledCircuit]) -> None:

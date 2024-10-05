@@ -133,6 +133,10 @@ class Moment:
         qindices = self.qubits_indices
         return all(q in qindices for q in qubits)
 
+    @property
+    def num_measurements(self) -> int:
+        return self._circuit.num_measurements
+
 
 def iter_stim_circuit_without_repeat_by_moments(
     circuit: stim.Circuit, collected_before_use: bool = True
