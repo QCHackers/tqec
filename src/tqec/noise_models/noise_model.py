@@ -11,7 +11,7 @@
 # 2. Fixing typing issues and adapting a few imports to personal taste
 
 from collections import Counter, defaultdict
-from typing import AbstractSet, Any, Iterator
+from typing import AbstractSet, Iterator
 
 import stim
 
@@ -139,7 +139,7 @@ class NoiseRule:
         *,
         split_op: stim.CircuitInstruction,
         out_during_moment: stim.Circuit,
-        after_moments: defaultdict[Any, stim.Circuit],
+        after_moments: defaultdict[tuple[str, float], stim.Circuit],
         immune_qubits: AbstractSet[int],
     ) -> None:
         targets = split_op.targets_copy()
@@ -293,8 +293,8 @@ class NoiseModel:
         system_qubits: AbstractSet[int],
         immune_qubits: AbstractSet[int],
     ) -> None:
-        collapse_qubits = []
-        clifford_qubits = []
+        collapse_qubits: list[int] = []
+        clifford_qubits: list[int] = []
         for split_op in moment_split_ops:
             if occurs_in_classical_control_system(split_op):
                 continue
@@ -346,7 +346,7 @@ class NoiseModel:
         system_qubits: AbstractSet[int],
         immune_qubits: AbstractSet[int],
     ) -> None:
-        after = defaultdict(stim.Circuit)
+        after: defaultdict[tuple[str, float], stim.Circuit] = defaultdict(stim.Circuit)
         for split_op in moment_split_ops:
             rule = self._noise_rule_for_split_operation(split_op=split_op)
             if rule is None:
@@ -521,7 +521,7 @@ def _iter_split_op_moments(
 
         (A moment is the time between two TICKs.)
     """
-    cur_moment = []
+    cur_moment: list[stim.CircuitInstruction] = []
 
     for op in circuit:
         if isinstance(op, stim.CircuitRepeatBlock):
