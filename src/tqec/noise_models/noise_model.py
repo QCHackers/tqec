@@ -1,14 +1,19 @@
-# This file has been recovered from https://zenodo.org/records/7487893
-# and is under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/legalcode)
-# It is part of the code from the paper
-#
-#     Gidney, C. (2022). Data for "Inplace Access to the Surface Code Y Basis".
-#     https://doi.org/10.5281/zenodo.7487893
-#
-#
-# Modifications to the original code:
-# 1. Formatting with ruff.
-# 2. Fixing typing issues and adapting a few imports to personal taste
+"""Implementation of different noise models for Stim.
+
+# Important note:
+
+This file has been recovered from https://zenodo.org/records/7487893
+and is under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/legalcode)
+It is part of the code from the paper
+
+    Gidney, C. (2022). Data for "Inplace Access to the Surface Code Y Basis".
+    https://doi.org/10.5281/zenodo.7487893
+
+
+Modifications to the original code:
+1. Formatting with ruff.
+2. Fixing typing issues and adapting a few imports to personal taste
+"""
 
 from collections import Counter, defaultdict
 from typing import AbstractSet, Iterator
