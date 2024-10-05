@@ -39,9 +39,7 @@ tqec.circuit.schedule
    .. autosummary::
       :toctree:
    
-      ScheduleCannotBeAppliedToCircuitException
       ScheduleException
-      ScheduleWithNonIntegerEntriesException
    
    
 

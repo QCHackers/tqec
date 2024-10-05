@@ -71,9 +71,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.remove_duplicate_instructions.html">tqec.circuit.schedule.remove_duplicate_instructions</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.schedule.Schedule</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html">tqec.circuit.schedule.ScheduledCircuit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException.html">tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleException.html">tqec.circuit.schedule.ScheduleException</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException.html">tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException</a></li>
 </ul>
 </li>
 </ul>
@@ -120,8 +118,12 @@
 <h1>tqec.circuit.schedule.Schedule<a class="headerlink" href="#tqec-circuit-schedule-schedule" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.Schedule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule:</span> <span class="pre">'list[int]'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#Schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.Schedule" title="Link to this definition"></a></dt>
-<dd><dl class="py method">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#Schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.Schedule" title="Link to this definition"></a></dt>
+<dd><p>Thin wrapper around <cite>list[int]</cite> to represent a schedule.</p>
+<p>This class ensures that the list of integers provided is a valid
+schedule by checking that all entries are positive integers, that
+the list is sorted and that it does not contain any duplicate.</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.Schedule.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.circuit.schedule.Schedule.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -146,10 +148,7 @@
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INITIAL_SCHEDULE</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

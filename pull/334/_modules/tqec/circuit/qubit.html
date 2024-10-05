@@ -214,12 +214,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        circuit: circuit containing the gates.</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if any instruction in the provided `circuit` (and</span>
-<span class="sd">            recursively in the `stim.CircuitRepeatBlock` instances in the</span>
-<span class="sd">            provided circuit) is applied on something else that a</span>
-<span class="sd">            regular, non-inverted, qubit target.</span>
-
 <span class="sd">    Returns:</span>
 <span class="sd">        a mapping from qubit indices (as keys) to the number of non-annotation</span>
 <span class="sd">        instructions that have this qubit index as target (as values).</span>
@@ -233,10 +227,9 @@
             <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_NON_COMPUTATION_INSTRUCTIONS</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">targets_copy</span><span class="p">():</span>
+                <span class="c1"># Ignore targets that are not qubit targets.</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_qubit_target</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Non-qubit targets are not supported.&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">is_inverted_result_target</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Inverted result targets are not supported.&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="n">qi</span> <span class="o">=</span> <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">qubit_value</span><span class="p">)</span>
                 <span class="n">counter</span><span class="p">[</span><span class="n">qi</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">counter</span></div>

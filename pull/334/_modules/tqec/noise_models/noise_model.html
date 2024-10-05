@@ -83,17 +83,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.noise_models.noise_model</h1><div class="highlight"><pre>
-<span></span><span class="c1"># This file has been recovered from https://zenodo.org/records/7487893</span>
-<span class="c1"># and is under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/legalcode)</span>
-<span class="c1"># It is part of the code from the paper</span>
-<span class="c1">#</span>
-<span class="c1">#     Gidney, C. (2022). Data for &quot;Inplace Access to the Surface Code Y Basis&quot;.</span>
-<span class="c1">#     https://doi.org/10.5281/zenodo.7487893</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1"># Modifications to the original code:</span>
-<span class="c1"># 1. Formatting with ruff.</span>
-<span class="c1"># 2. Fixing typing issues and adapting a few imports to personal taste</span>
+<span></span><span class="sd">&quot;&quot;&quot;Implementation of different noise models for Stim.</span>
+
+<span class="sd"># Important note:</span>
+
+<span class="sd">This file has been recovered from https://zenodo.org/records/7487893</span>
+<span class="sd">and is under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/legalcode)</span>
+<span class="sd">It is part of the code from the paper</span>
+
+<span class="sd">    Gidney, C. (2022). Data for &quot;Inplace Access to the Surface Code Y Basis&quot;.</span>
+<span class="sd">    https://doi.org/10.5281/zenodo.7487893</span>
+
+
+<span class="sd">Modifications to the original code:</span>
+<span class="sd">1. Formatting with ruff.</span>
+<span class="sd">2. Fixing typing issues and adapting a few imports to personal taste</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AbstractSet</span><span class="p">,</span> <span class="n">Iterator</span>

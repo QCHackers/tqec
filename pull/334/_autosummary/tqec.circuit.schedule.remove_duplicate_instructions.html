@@ -71,9 +71,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.schedule.remove_duplicate_instructions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.Schedule.html">tqec.circuit.schedule.Schedule</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html">tqec.circuit.schedule.ScheduledCircuit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException.html">tqec.circuit.schedule.ScheduleCannotBeAppliedToCircuitException</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleException.html">tqec.circuit.schedule.ScheduleException</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException.html">tqec.circuit.schedule.ScheduleWithNonIntegerEntriesException</a></li>
 </ul>
 </li>
 </ul>
@@ -122,6 +120,18 @@
 <dt class="sig sig-object py" id="tqec.circuit.schedule.remove_duplicate_instructions">
 <span class="sig-name descname"><span class="pre">remove_duplicate_instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instructions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">CircuitInstruction</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mergeable_instruction_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">CircuitInstruction</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#remove_duplicate_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.remove_duplicate_instructions" title="Link to this definition"></a></dt>
 <dd><p>Removes all the duplicate instructions from the given list.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>this function <strong>does not keep instruction ordering</strong>. It is intended to
+be used with input <cite>instructions</cite> that, once de-duplication has been
+applied, form a valid moment, which means that each instruction can be
+executed in parallel, and so their order in the returned list does not
+matter.</p>
+<p>If that is not your case, take extra care to the output of this
+function as it will likely introduce hard-to-debug issues. To prevent
+such potential misuse, this function checks for such cases and outputs
+a warning if it happens.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a list containing a copy of the stim.CircuitInstruction instances from

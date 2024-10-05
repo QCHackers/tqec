@@ -123,14 +123,8 @@ is not an annotation.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>circuit</strong> – circuit containing the gates.</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any instruction in the provided <cite>circuit</cite> (and
-    recursively in the <cite>stim.CircuitRepeatBlock</cite> instances in the
-    provided circuit) is applied on something else that a
-    regular, non-inverted, qubit target.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a mapping from qubit indices (as keys) to the number of non-annotation
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a mapping from qubit indices (as keys) to the number of non-annotation
 instructions that have this qubit index as target (as values).</p>
 </dd>
 </dl>

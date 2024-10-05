@@ -26,7 +26,6 @@ tqec.circuit.schedule.Schedule
 
    .. autosummary::
    
-      ~Schedule.INITIAL_SCHEDULE
       ~Schedule.schedule
    
    
