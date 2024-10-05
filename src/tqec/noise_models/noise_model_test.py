@@ -25,7 +25,7 @@ from tqec.noise_models.noise_model import (
 )
 
 
-def test_measure_basis():
+def test_measure_basis() -> None:
     def f(code: str) -> str | None:
         first_instruction = stim.Circuit(code)[0]
         assert isinstance(first_instruction, stim.CircuitInstruction)
@@ -48,7 +48,7 @@ def test_measure_basis():
     assert f("MPP Y0*Z2*X3") == "YZX"
 
 
-def test_iter_split_op_moments():
+def test_iter_split_op_moments() -> None:
     assert (
         list(
             _iter_split_op_moments(
@@ -127,7 +127,7 @@ def test_iter_split_op_moments():
     ]
 
 
-def test_occurs_in_classical_control_system():
+def test_occurs_in_classical_control_system() -> None:
     assert not occurs_in_classical_control_system(op=stim.CircuitInstruction("H", [0]))
     assert not occurs_in_classical_control_system(
         op=stim.CircuitInstruction("CX", [0, 1, 2, 3])
@@ -148,7 +148,7 @@ def test_occurs_in_classical_control_system():
     )
 
 
-def test_si_1000():
+def test_si_1000() -> None:
     model = NoiseModel.si1000(1e-3)
     assert model.noisy_circuit(
         stim.Circuit("""
@@ -187,7 +187,7 @@ def test_si_1000():
 ###############################################################################
 
 
-def test_si_1000_repeat_block():
+def test_si_1000_repeat_block() -> None:
     model = NoiseModel.si1000(1e-3)
     assert model.noisy_circuit(
         stim.Circuit("""
