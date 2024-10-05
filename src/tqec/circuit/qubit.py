@@ -88,7 +88,7 @@ class GridQubit:
 
 
 """Names of the `stim` instructions that are considered as annotations."""
-_NON_COMPUTATION_INSTRUCTIONS: frozenset[str] = frozenset(
+NON_COMPUTATION_INSTRUCTIONS: frozenset[str] = frozenset(
     [
         # Noise channels
         "CORRELATED_ERROR",
@@ -131,7 +131,7 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
             for qi, count in count_qubit_accesses(instruction.body_copy()).items():
                 counter[qi] += count
         else:
-            if instruction.name in _NON_COMPUTATION_INSTRUCTIONS:
+            if instruction.name in NON_COMPUTATION_INSTRUCTIONS:
                 continue
             for target in instruction.targets_copy():
                 # Ignore targets that are not qubit targets.
