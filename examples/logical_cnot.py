@@ -1,19 +1,21 @@
 """This is an example of compiling a logical CNOT `.dae` model to
 `stim.Circuit`."""
 
+import itertools
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Iterable
 
 import matplotlib.pyplot as plt
-import stim
 import sinter
+import stim
 
 from tqec import (
     BlockGraph,
-    compile_block_graph,
-    annotate_detectors_automatically,
-    ZXGraph,
     Position3D,
+    ZXGraph,
+    annotate_detectors_automatically,
+    compile_block_graph,
 )
 from tqec.compile.compile import CompiledGraph
 from tqec.noise_models import (
@@ -70,6 +72,16 @@ def generate_stim_circuit(
     return annotate_detectors_automatically(circuit_without_detectors)
 
 
+def get_sinter_task(
+    compiled_graph: CompiledGraph, tup: tuple[int, float]
+) -> sinter.Task:
+    k, p = tup
+    return sinter.Task(
+        circuit=generate_stim_circuit(compiled_graph, k, p),
+        json_metadata={"d": 2 * k + 1, "r": 2 * k + 1, "p": p},
+    )
+
+
 def main() -> None:
     # 1 Create `BlockGraph` representing the computation
     block_graph = create_block_graph(from_scratch=False)
@@ -84,17 +96,22 @@ def main() -> None:
         observables=[observables[1]],
     )
 
+    _MAX_WORKERS: int = 16
+
     # 4. Generate `stim.Circuit`s from the compiled graph and run the simulation
     def gen_tasks() -> Iterable[sinter.Task]:
-        for k in range(1, 4):  # d=3,5,7
-            for p in [0.0005, 0.001, 0.004, 0.008, 0.01, 0.012, 0.014, 0.018]:
-                yield sinter.Task(
-                    circuit=generate_stim_circuit(compiled_graph, k, p),
-                    json_metadata={"d": 2 * k + 1, "r": 2 * k + 1, "p": p},
-                )
+        with ProcessPoolExecutor(max_workers=_MAX_WORKERS) as p:
+            yield from p.map(
+                get_sinter_task,
+                itertools.repeat(compiled_graph),
+                itertools.product(
+                    range(1, 6),
+                    [0.0005, 0.001, 0.004, 0.008, 0.01, 0.012, 0.014, 0.018],
+                ),
+            )
 
     stats = sinter.collect(
-        num_workers=16,
+        num_workers=_MAX_WORKERS,
         tasks=gen_tasks(),
         max_errors=5000,
         max_shots=100_000_000,
