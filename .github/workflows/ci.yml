@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies and tqec package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install '.[test]'
+          python -m pip install -e '.[test]'
       - name: Compute code coverage
         run: |
           python -m pytest --cov=tqec --cov-report=xml:coverage.xml ./
