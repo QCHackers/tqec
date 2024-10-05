@@ -121,12 +121,6 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
     Args:
         circuit: circuit containing the gates.
 
-    Raises:
-        TQECException: if any instruction in the provided `circuit` (and
-            recursively in the `stim.CircuitRepeatBlock` instances in the
-            provided circuit) is applied on something else that a
-            regular, non-inverted, qubit target.
-
     Returns:
         a mapping from qubit indices (as keys) to the number of non-annotation
         instructions that have this qubit index as target (as values).
@@ -140,10 +134,9 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
             if instruction.name in _NON_COMPUTATION_INSTRUCTIONS:
                 continue
             for target in instruction.targets_copy():
+                # Ignore targets that are not qubit targets.
                 if not target.is_qubit_target:
-                    raise TQECException("Non-qubit targets are not supported.")
-                if target.is_inverted_result_target:
-                    raise TQECException("Inverted result targets are not supported.")
+                    continue
                 qi = ty.cast(int, target.qubit_value)
                 counter[qi] += 1
     return counter
