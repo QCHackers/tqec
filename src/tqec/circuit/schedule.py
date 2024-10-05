@@ -1,7 +1,34 @@
+"""Implements the :class:`ScheduledCircuit` class.
+
+This module is central to the `tqec` library because it implements one of the
+most used class of the library: :class:`ScheduledCircuit`.
+
+A :class:`ScheduledCircuit` is "simply" a `stim.Circuit` that have all its
+moments (portions of computation between two `TICK` instructions) assigned to
+a unique positive integer representing the time slice at which the moment should
+be scheduled.
+
+Alongside :class:`ScheduledCircuit`, this module defines:
+
+- :class:`Schedule` that is a thin wrapper around `list[int]` to represent a
+  schedule (a sorted list of non-duplicated positive integers).
+- :func:`remove_duplicate_instructions` to remove some instructions appearing
+  twice in a single moment (most of the time due to data qubit
+  reset/measurements that are defined by each plaquette, even on qubits shared
+  with other plaquettes, leading to duplicates).
+- :func:`merge_scheduled_circuits` that merge several :class:`ScheduledCircuit`
+  instances into one.
+- :func:`relabel_circuits_qubit_indices` to prepare several
+  :class:`ScheduledCircuit` before merging them. This function is called
+  internally by :func:`merge_scheduled_circuits` but might be useful at other
+  places and so is kept public.
+"""
+
 from __future__ import annotations
 
 import bisect
 import typing as ty
+import warnings
 from copy import deepcopy
 from dataclasses import dataclass, field
 
@@ -9,40 +36,25 @@ import stim
 
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit, get_final_qubits
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 
 
 class ScheduleException(TQECException):
     pass
 
 
-class ScheduleWithNonIntegerEntriesException(ScheduleException):
-    def __init__(self, schedule: list[int], non_integer_type: type) -> None:
-        super().__init__(
-            f"Found a non-integer entry of type {non_integer_type.__name__} in "
-            f"the provided schedule {schedule}. Entries should all be integers."
-        )
-
-
-class ScheduleCannotBeAppliedToCircuitException(ScheduleException):
-    def __init__(
-        self,
-        circuit: stim.Circuit,
-        schedule: list[int],
-        number_of_moments: int,
-    ) -> None:
-        super().__init__(
-            f"The provided schedule contains {len(schedule)} entries, but "
-            f"{number_of_moments} moments have been found in the "
-            f"provided circuit:\n{circuit}"
-        )
-
-
 @dataclass
 class Schedule:
+    """Thin wrapper around `list[int]` to represent a schedule.
+
+    This class ensures that the list of integers provided is a valid
+    schedule by checking that all entries are positive integers, that
+    the list is sorted and that it does not contain any duplicate.
+    """
+
     schedule: list[int] = field(default_factory=list)
 
-    INITIAL_SCHEDULE: ty.ClassVar[int] = 0
+    _INITIAL_SCHEDULE: ty.ClassVar[int] = 0
 
     def __post_init__(self) -> None:
         Schedule._check_schedule(self.schedule)
@@ -52,21 +64,24 @@ class Schedule:
         """Get a valid schedule from offsets.
 
         This method should be used to avoid any dependency on
-        `Schedule.INITIAL_SCHEDULE` in user code.
+        `Schedule._INITIAL_SCHEDULE` in user code.
         """
-        return Schedule([Schedule.INITIAL_SCHEDULE + s for s in schedule_offsets])
+        return Schedule([Schedule._INITIAL_SCHEDULE + s for s in schedule_offsets])
 
     @staticmethod
     def _check_schedule(schedule: list[int]) -> None:
         # Check that all entries in the provided schedule are integers.
         for entry in schedule:
             if not isinstance(entry, int):
-                raise ScheduleWithNonIntegerEntriesException(schedule, type(entry))
+                raise ScheduleException(
+                    f"Found a non-integer entry of type {type(entry).__name__} in "
+                    f"the provided schedule {schedule}. Entries should all be integers."
+                )
 
         # Check that the schedule is sorted and positive
         if schedule and (
             not all(schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1))
-            or schedule[0] < Schedule.INITIAL_SCHEDULE
+            or schedule[0] < Schedule._INITIAL_SCHEDULE
         ):
             raise ScheduleException(
                 f"The provided schedule {schedule} is not a sorted list of positive "
@@ -99,8 +114,8 @@ class ScheduledCircuit:
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
 
-        This class aims at representing a Circuit instance that has all its moments
-        scheduled, i.e., associated with a time slice.
+        This class aims at representing a `stim.Circuit` instance that has all
+        its moments scheduled, i.e., associated with a time slice.
 
         This class explicitly does not support `stim.CircuitRepeatBlock` (i.e.,
         `REPEAT` instruction). It will raise an exception if such an instruction is
@@ -108,11 +123,11 @@ class ScheduledCircuit:
 
         Args:
             moments: moments representing the computation that is scheduled.
-            schedule: a sorted list of positive integers or a positive integer. If a
-                list is given, it should contain as many values as there are moments
-                in the provided `stim.Circuit` instance. If an integer is provided,
-                each moment of the provided `stim.Circuit` is scheduled sequentially,
-                starting by the provided schedule.
+            schedule: schedule of the provided `moments`. If an integer is
+                provided, each moment of the provided `stim.Circuit` is
+                scheduled sequentially, starting by the provided integer.
+            final_qubits: a map from indices to qubits that is used to re-create
+                `QUBIT_COORDS` instructions when generating a `stim.Circuit`.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -148,7 +163,8 @@ class ScheduledCircuit:
     def from_circuit(
         circuit: stim.Circuit, schedule: Schedule | list[int] | int = 0
     ) -> ScheduledCircuit:
-        """Build a `ScheduledCircuit` instance from a circuit and a schedule.
+        """Build a :class:`ScheduledCircuit` instance from a circuit and a
+        schedule.
 
         Args:
             circuit: the instance of Circuit that is scheduled. Should not contain
@@ -214,7 +230,7 @@ class ScheduledCircuit:
         """Build and return the `stim.Circuit` instance represented by self.
 
         Warning:
-            The circuit is re-built at each call! Use that property wisely.
+            The circuit is re-built at each call! Use that function wisely.
 
         Returns:
             `stim.Circuit` instance represented by self.
@@ -243,6 +259,16 @@ class ScheduledCircuit:
     def get_repeated_circuit(
         self, repetitions: int, include_qubit_coords: bool = True
     ) -> stim.Circuit:
+        """Build and return the `stim.Circuit` instance represented by self
+        encapsulated in a `REPEAT` block.
+
+        Warning:
+            The circuit is re-built at each call! Use that function wisely.
+
+        Returns:
+            `stim.Circuit` instance represented by self encapsulated in a
+            `REPEAT` block.
+        """
         ret = stim.Circuit()
         # Appending the QUBIT_COORDS instructions first.
         if include_qubit_coords:
@@ -290,8 +316,8 @@ class ScheduledCircuit:
                 independently of the value provided here.
 
         Returns:
-            a modified instance of `ScheduledCircuit` (a copy if inplace is True,
-            else self).
+            a modified instance of `ScheduledCircuit` (a copy if inplace is
+            `True`, else `self`).
         """
         mapped_final_qubits = {
             qubit_index_map[qi]: q for qi, q in self._final_qubits.items()
@@ -302,9 +328,11 @@ class ScheduledCircuit:
             for instr in moment.instructions:
                 mapped_targets: list[stim.GateTarget] = []
                 for target in instr.targets_copy():
+                    # Non qubit targets are left untouched.
                     if not target.is_qubit_target:
                         mapped_targets.append(target)
                         continue
+                    # Qubit targets are mapped using `qubit_index_map`
                     target_qubit = ty.cast(int, target.qubit_value)
                     mapped_targets.append(
                         stim.GateTarget(qubit_index_map[target_qubit])
@@ -455,11 +483,18 @@ class ScheduledCircuit:
 
     @property
     def q2i(self) -> dict[GridQubit, int]:
+        """Return the map from qubits used in `self` their index."""
         return {q: i for i, q in self._final_qubits.items()}
 
     def append_observable(
         self, index: int, targets: ty.Sequence[stim.GateTarget]
     ) -> None:
+        """Append an `OBSERVABLE_INCLUDE` instruction to the last moment.
+
+        Args:
+            index: index of the observable to append measurement records to.
+            targets: measurement records forming (part of) the observable.
+        """
         if any(not t.is_measurement_record_target for t in targets):
             raise TQECException(
                 "Cannot create an observable with targets that are not measurement "
@@ -572,6 +607,18 @@ def remove_duplicate_instructions(
 ) -> list[stim.CircuitInstruction]:
     """Removes all the duplicate instructions from the given list.
 
+    Warning:
+        this function **does not keep instruction ordering**. It is intended to
+        be used with input `instructions` that, once de-duplication has been
+        applied, form a valid moment, which means that each instruction can be
+        executed in parallel, and so their order in the returned list does not
+        matter.
+
+        If that is not your case, take extra care to the output of this
+        function as it will likely introduce hard-to-debug issues. To prevent
+        such potential misuse, this function checks for such cases and outputs
+        a warning if it happens.
+
     Returns:
         a list containing a copy of the stim.CircuitInstruction instances from
         the given instructions but without any duplicate.
@@ -595,6 +642,22 @@ def remove_duplicate_instructions(
         stim.CircuitInstruction(name, sum(targets, start=()), args)
         for (name, args), targets in mergeable_operations.items()
     )
+    # Warn if the output instructions do not form a valid moment, as this is
+    # likely a misuse of this function.
+    try:
+        circuit = stim.Circuit()
+        for instr in final_operations:
+            circuit.append(instr)
+        Moment.check_is_valid_moment(circuit)
+    except TQECException:
+        warnings.warn(
+            "The instructions obtained at the end of the "
+            "`remove_duplicate_instructions` function do not form a valid "
+            "moment. You are likely misusing the function. Final instructions "
+            "obtained and gathered into a single stim.Circuit: "
+            f"\n{circuit}",
+            TQECWarning,
+        )
     return final_operations
 
 
