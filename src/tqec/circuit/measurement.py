@@ -107,11 +107,6 @@ class Measurement(AbstractMeasurement):
     def map_qubit(self, qubit_map: typing.Mapping[GridQubit, GridQubit]) -> Measurement:
         return Measurement(qubit_map[self.qubit], self.offset)
 
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, Measurement):
-            raise NotImplementedError(f"Cannot compare {type(self)} < {type(other)}.")
-        return (self.offset, self.qubit) < (other.offset, other.qubit)
-
 
 @dataclass(frozen=True)
 class RepeatedMeasurement(AbstractMeasurement):
