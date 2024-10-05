@@ -41,14 +41,12 @@ class Moment:
     """
 
     def __init__(self, circuit: stim.Circuit, copy_circuit: bool = False) -> None:
+        Moment.check_is_valid_moment(circuit)
         self._circuit: stim.Circuit = circuit.copy() if copy_circuit else circuit
 
     @property
     def circuit(self) -> stim.Circuit:
         return self._circuit
-
-    def __post_init__(self) -> None:
-        Moment.check_is_valid_moment(self._circuit)
 
     @staticmethod
     def check_is_valid_moment(circuit: stim.Circuit) -> None:
@@ -71,14 +69,27 @@ class Moment:
 
     @property
     def qubits_indices(self) -> frozenset[int]:
+        """Return the qubit indices this moment operates on.
+
+        Note:
+            Some instructions are considered annotations (e.g., `QUBIT_COORDS`,
+            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an exhaustive
+            list). These instructions are ignored by this property, meaning that the
+            qubits they operate on will only be returned by this property iff another
+            non-annotation instruction is applied on said qubits.
+        """
         return get_used_qubit_indices(self._circuit)
 
     def contains_instruction(self, instruction_name: str) -> bool:
+        """Return `True` if `self` contains at least one operation with the
+        provided name."""
         return any(instr.name == instruction_name for instr in self._circuit)
 
     def remove_all_instructions_inplace(
         self, instructions_to_remove: frozenset[str]
     ) -> None:
+        """Remove in-place all the instructions that have their name in the
+        provided `instructions_to_remove`."""
         new_circuit = stim.Circuit()
         for inst in self._circuit:
             if inst.name in instructions_to_remove:
@@ -87,6 +98,7 @@ class Moment:
         self._circuit = new_circuit
 
     def __iadd__(self, other: Moment | stim.Circuit) -> Moment:
+        """Add instructions in-place in `self`."""
         if isinstance(other, stim.Circuit):
             other = Moment(other)
         self_used_qubits = get_used_qubit_indices(self._circuit)
@@ -101,23 +113,18 @@ class Moment:
 
     def append(
         self,
-        inst: str,
-        targets: ty.Iterable[stim.GateTarget],
-        arg: float | ty.Iterable[float],
+        name: str,
+        targets: int | stim.GateTarget | ty.Iterable[int | stim.GateTarget],
+        args: float | ty.Iterable[float],
     ) -> None:
-        self_used_qubits = get_used_qubit_indices(self._circuit)
-        instruction_used_qubits = frozenset(
-            ty.cast(int, t.qubit_value) for t in targets if t.is_qubit_target
-        )
-        both_sides_used_qubits = self_used_qubits.intersection(instruction_used_qubits)
-        if both_sides_used_qubits:
-            raise TQECException(
-                "Trying to add an overlapping instruction to a Moment instance."
-            )
-        self._circuit.append(inst, targets, arg)
+        """Append an instruction to the :class:`Moment`."""
+        circuit_to_add = stim.Circuit()
+        circuit_to_add.append(name, targets, args)
+        self += circuit_to_add
 
     @property
     def instructions(self) -> ty.Iterator[stim.CircuitInstruction]:
+        """Iterator over all the instructions contained in the moment."""
         # We can ignore the type error below because:
         # 1. if a Moment instance is created with a stim.CircuitRepeatBlock
         #    instance, it will raise an exception.
@@ -130,11 +137,15 @@ class Moment:
         yield from self._circuit  # type: ignore
 
     def operates_on(self, qubits: ty.Sequence[int]) -> bool:
+        """Returns `True` if `self` contains non-annotation operations that are
+        applied on each of the provided qubit indices."""
         qindices = self.qubits_indices
         return all(q in qindices for q in qubits)
 
     @property
     def num_measurements(self) -> int:
+        """Return the number of measurements in the :class:`Moment`
+        instance."""
         # Mypy is showing an error here:
         # error: Returning Any from function declared to return "int"
         # I do not understand why, but it probably has to do with Stim typing
