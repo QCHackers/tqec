@@ -95,7 +95,6 @@
 <span class="kn">from</span> <span class="nn">tqec.circuit.moment</span> <span class="kn">import</span> <span class="n">Moment</span><span class="p">,</span> <span class="n">iter_stim_circuit_without_repeat_by_moments</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span><span class="p">,</span> <span class="n">get_final_qubits</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 
 
 <div class="viewcode-block" id="ScheduleException">
@@ -110,10 +109,8 @@
 <span class="k">class</span> <span class="nc">ScheduleWithNonIntegerEntriesException</span><span class="p">(</span><span class="n">ScheduleException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">non_integer_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Found a non-integer entry of type </span><span class="si">{</span>
-<span class="w">                </span><span class="n">non_integer_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> in &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;the provided schedule </span><span class="si">{</span>
-<span class="w">                </span><span class="n">schedule</span><span class="si">}</span><span class="s2">. Entries should all be integers.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Found a non-integer entry of type </span><span class="si">{</span><span class="n">non_integer_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> in &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;the provided schedule </span><span class="si">{</span><span class="n">schedule</span><span class="si">}</span><span class="s2">. Entries should all be integers.&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -496,8 +493,8 @@
         <span class="n">schedule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">schedule</span> <span class="k">if</span> <span class="n">schedule</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">schedule</span>
         <span class="k">if</span> <span class="n">schedule</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Trying to get the index of a Moment instance with a negative schedule </span><span class="si">{</span>
-<span class="w">                    </span><span class="n">schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;Trying to get the index of a Moment instance with a negative &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;schedule </span><span class="si">{</span><span class="n">schedule</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="n">moment_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
             <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sched</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">)</span> <span class="k">if</span> <span class="n">sched</span> <span class="o">==</span> <span class="n">schedule</span><span class="p">),</span> <span class="kc">None</span>
