@@ -44,7 +44,13 @@ Issues = "https://github.com/QCHackers/tqec/issues"
 
 [project.optional-dependencies]
 test = ["pytest", "mypy", "pytest-cov"]
-dev = ["sinter", "pymatching", "jupyterlab", "tqec[test, doc]", "pre-commit"]
+dev = [
+    "sinter",
+    "pymatching",
+    "jupyterlab",
+    "tqec[test, doc, bench]",
+    "pre-commit",
+]
 doc = ["sphinx", "myst-parser", "sphinx-rtd-theme", "nbsphinx", "pandoc"]
 bench = ["pyinstrument"]
 all = ["tqec[test, dev, doc, bench]"]
