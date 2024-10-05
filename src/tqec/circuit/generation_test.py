@@ -49,7 +49,7 @@ def test_generate_circuit_dict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(one_by_one_template, Plaquettes({1: plaquette}))
-    assert circuit.get_circuit == _expected_circuit()
+    assert circuit.get_circuit() == _expected_circuit()
 
 
 def test_generate_circuit_defaultdict(
@@ -58,7 +58,7 @@ def test_generate_circuit_defaultdict(
     circuit = generate_circuit(
         one_by_one_template, Plaquettes(defaultdict(lambda: plaquette))
     )
-    assert circuit.get_circuit == _expected_circuit()
+    assert circuit.get_circuit() == _expected_circuit()
 
 
 def test_generate_circuit_dict_0_indexed(

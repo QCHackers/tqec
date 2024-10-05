@@ -10,7 +10,6 @@ import stim
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit, get_final_qubits
 from tqec.exceptions import TQECException
-from tqec.templates.scale import LinearFunction
 
 
 class ScheduleException(TQECException):
@@ -20,10 +19,8 @@ class ScheduleException(TQECException):
 class ScheduleWithNonIntegerEntriesException(ScheduleException):
     def __init__(self, schedule: list[int], non_integer_type: type) -> None:
         super().__init__(
-            f"Found a non-integer entry of type {
-                non_integer_type.__name__} in "
-            f"the provided schedule {
-                schedule}. Entries should all be integers."
+            f"Found a non-integer entry of type {non_integer_type.__name__} in "
+            f"the provided schedule {schedule}. Entries should all be integers."
         )
 
 
@@ -394,8 +391,8 @@ class ScheduledCircuit:
         schedule = self._schedule[-1] + 1 + schedule if schedule < 0 else schedule
         if schedule < 0:
             raise TQECException(
-                f"Trying to get the index of a Moment instance with a negative schedule {
-                    schedule}."
+                "Trying to get the index of a Moment instance with a negative "
+                f"schedule {schedule}."
             )
         moment_index = next(
             (i for i, sched in enumerate(self._schedule) if sched == schedule), None
