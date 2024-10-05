@@ -298,7 +298,8 @@ class ScheduledCircuit:
                 mapped_targets: list[stim.GateTarget] = []
                 for target in instr.targets_copy():
                     if not target.is_qubit_target:
-                        raise TQECException("Only qubit targets are supported.")
+                        mapped_targets.append(target)
+                        continue
                     if target.is_inverted_result_target:
                         raise TQECException("Inverted qubit targets are not supported.")
                     target_qubit = ty.cast(int, target.qubit_value)
