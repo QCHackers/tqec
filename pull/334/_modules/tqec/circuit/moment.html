@@ -130,7 +130,7 @@
 <div class="viewcode-block" id="Moment.__init__">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">copy_circuit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy_circuit</span> <span class="k">else</span> <span class="n">circuit</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy_circuit</span> <span class="k">else</span> <span class="n">circuit</span></div>
 
 
     <span class="nd">@property</span>
@@ -225,7 +225,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">num_measurements</span></div>
+        <span class="c1"># Mypy is showing an error here:</span>
+        <span class="c1"># error: Returning Any from function declared to return &quot;int&quot;</span>
+        <span class="c1"># I do not understand why, but it probably has to do with Stim typing</span>
+        <span class="c1"># so let&#39;s ignore it for the moment.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">num_measurements</span>  <span class="c1"># type: ignore</span></div>
 
 
 
