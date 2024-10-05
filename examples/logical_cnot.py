@@ -18,10 +18,7 @@ from tqec import (
     compile_block_graph,
 )
 from tqec.compile.compile import CompiledGraph
-from tqec.noise_models import (
-    AfterCliffordDepolarizingNoise,
-    DepolarizingNoiseOnIdlingQubit,
-)
+from tqec.noise_models import NoiseModel
 
 EXAMPLE_FOLDER = Path(__file__).parent
 TQEC_FOLDER = EXAMPLE_FOLDER.parent
@@ -63,10 +60,7 @@ def generate_stim_circuit(
 ) -> stim.Circuit:
     circuit_without_detectors = compiled_graph.generate_stim_circuit(
         k,
-        noise_models=[
-            AfterCliffordDepolarizingNoise(p),
-            DepolarizingNoiseOnIdlingQubit(p),
-        ],
+        noise_model=NoiseModel.uniform_depolarizing(p),
     )
     # For now, we annotate the detectors as post-processing step
     return annotate_detectors_automatically(circuit_without_detectors)
