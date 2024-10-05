@@ -96,7 +96,7 @@
 <span class="c1"># 2. Fixing typing issues and adapting a few imports to personal taste</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AbstractSet</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AbstractSet</span><span class="p">,</span> <span class="n">Iterator</span>
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
@@ -229,7 +229,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">split_op</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">,</span>
         <span class="n">out_during_moment</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span>
-        <span class="n">after_moments</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">],</span>
+        <span class="n">after_moments</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">],</span>
         <span class="n">immune_qubits</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">targets</span> <span class="o">=</span> <span class="n">split_op</span><span class="o">.</span><span class="n">targets_copy</span><span class="p">()</span>
@@ -389,8 +389,8 @@
         <span class="n">system_qubits</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">immune_qubits</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">collapse_qubits</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">clifford_qubits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">collapse_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">clifford_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">split_op</span> <span class="ow">in</span> <span class="n">moment_split_ops</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">occurs_in_classical_control_system</span><span class="p">(</span><span class="n">split_op</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -442,7 +442,7 @@
         <span class="n">system_qubits</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">immune_qubits</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">after</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span>
+        <span class="n">after</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">split_op</span> <span class="ow">in</span> <span class="n">moment_split_ops</span><span class="p">:</span>
             <span class="n">rule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_noise_rule_for_split_operation</span><span class="p">(</span><span class="n">split_op</span><span class="o">=</span><span class="n">split_op</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -621,7 +621,7 @@
 
 <span class="sd">        (A moment is the time between two TICKs.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cur_moment</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cur_moment</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">circuit</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitRepeatBlock</span><span class="p">):</span>
