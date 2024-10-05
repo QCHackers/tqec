@@ -12,7 +12,7 @@ from tqec.compile.substitute import (
     SubstitutionKey,
     SubstitutionRule,
 )
-from tqec.exceptions import TQECException, TQECWarning
+from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
@@ -43,7 +43,7 @@ class CompiledGraph:
                 "but got an empty layout_slices."
             )
         if len(self.observables) == 0:
-            raise TQECWarning("The compiled graph includes no observable.")
+            raise TQECException("The compiled graph includes no observable.")
 
     def scale_to(self, k: int) -> None:
         """Scale the compiled graph to the given scale `k`."""
