@@ -249,6 +249,11 @@ class ScheduledCircuit:
             for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
                 ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
         # Appending the repeated version of self
+        # TODO: Should we add a TICK at the end of the repeat block? Stim does it
+        #       (see noise_model.py) and that seems to make sense conceptually
+        #       as nothing tells us that the end of a REPEAT block is the end
+        #       of a Moment (eventhough that is the current behaviour of the
+        #       code).
         repeated_instruction = stim.CircuitRepeatBlock(
             repetitions, self.get_circuit(include_qubit_coords=False)
         )
