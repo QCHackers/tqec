@@ -41,7 +41,7 @@ class Moment:
     """
 
     def __init__(self, circuit: stim.Circuit, copy_circuit: bool = False) -> None:
-        self._circuit = circuit.copy() if copy_circuit else circuit
+        self._circuit: stim.Circuit = circuit.copy() if copy_circuit else circuit
 
     @property
     def circuit(self) -> stim.Circuit:
@@ -135,7 +135,11 @@ class Moment:
 
     @property
     def num_measurements(self) -> int:
-        return self._circuit.num_measurements
+        # Mypy is showing an error here:
+        # error: Returning Any from function declared to return "int"
+        # I do not understand why, but it probably has to do with Stim typing
+        # so let's ignore it for the moment.
+        return self._circuit.num_measurements  # type: ignore
 
 
 def iter_stim_circuit_without_repeat_by_moments(
