@@ -1,0 +1,30 @@
+tqec.plaquette.qubit.PlaquetteQubit
+===================================
+
+.. currentmodule:: tqec.plaquette.qubit
+
+.. autoclass:: PlaquetteQubit
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PlaquetteQubit.__init__
+      ~PlaquetteQubit.to_qubit_coords_instruction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PlaquetteQubit.x
+      ~PlaquetteQubit.y
+   
+   

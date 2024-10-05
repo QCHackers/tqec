@@ -1,0 +1,35 @@
+tqec.circuit.moment.Moment
+==========================
+
+.. currentmodule:: tqec.circuit.moment
+
+.. autoclass:: Moment
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Moment.__init__
+      ~Moment.append
+      ~Moment.check_is_valid_moment
+      ~Moment.contains_instruction
+      ~Moment.operates_on
+      ~Moment.remove_all_instructions_inplace
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Moment.circuit
+      ~Moment.instructions
+      ~Moment.qubits_indices
+   
+   
