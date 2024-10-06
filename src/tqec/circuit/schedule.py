@@ -306,6 +306,25 @@ class ScheduledCircuit:
         Warning:
             The circuit is re-built at each call! Use that function wisely.
 
+        Warning:
+            An extra `TICK` instruction is appended by default at the end of the
+            body of the `REPEAT` block to mimic `stim` way of doing. You can
+            control that behaviour with the `include_additional_tick_in_body`
+            parameter.
+
+        Args:
+            repetitions: argument to the enclosing `REPEAT` block representing
+                the number of repetitions that should be used in the returned
+                circuit.
+            include_qubit_coords: if `True`, `QUBIT_COORDS` instructions are
+                inserted at the beginning of the returned circuit (before the
+                `REPEAT` block).
+            include_additional_tick_in_body: if `True`, an additional `TICK`
+                instruction is appended to the **body** (i.e., the circuit
+                inside the `REPEAT` block) of the returned circuit. This is the
+                default behaviour as `stim` does that in its code and adding
+                the `TICK` here makes more sense than after the `REPEAT` block.
+
         Returns:
             `stim.Circuit` instance represented by self encapsulated in a
             `REPEAT` block.
@@ -476,6 +495,9 @@ class ScheduledCircuit:
                 If the schedule is negative, it is considered as an index from
                 the end. For example, -1 is the last schedule and -2 is the
                 last schedule - 1 (which might not be the second to last schedule).
+
+        Raises:
+            TQECException if no moment exist at the provided schedule.
         """
         moment_index = self._get_moment_index_by_schedule(schedule)
         if moment_index is None:
@@ -657,6 +679,19 @@ def remove_duplicate_instructions(
     mergeable_instruction_names: frozenset[str],
 ) -> list[stim.CircuitInstruction]:
     """Removes all the duplicate instructions from the given list.
+
+    Note:
+        This function guarantees the following post-conditions on the returned
+        results:
+
+        - Instructions with a name that is not in `mergeable_instruction_names`
+          are returned at the front of the returned list, in the same relative
+          ordering as provided in `instructions` input.
+        - Instructions with a name that is in `mergeable_instruction_names` will
+          be returned after all the instructions with a name that does not
+          appear in `mergeable_instruction_names`. The order in which these
+          instructions are returned is not guaranteed and can change between
+          executions.
 
     Warning:
         this function **does not keep instruction ordering**. It is intended to
