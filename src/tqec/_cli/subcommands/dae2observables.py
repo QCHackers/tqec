@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
+from typing import cast
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 from typing_extensions import override
 
 from tqec._cli.subcommands.base import TQECSubCommand
@@ -58,7 +60,8 @@ def save_correlation_surfaces_to(
 ) -> None:
     for i, correlation_surface in enumerate(correlation_surfaces):
         fig = plt.figure(figsize=(5, 6))
-        ax = zx_graph.draw_as_zx_graph_on(fig)
+        ax = cast(Axes3D, fig.add_subplot(111, projection="3d"))
+        zx_graph.draw_as_zx_graph_on(ax)
         correlation_surface.draw_as_correlation_surface_on(ax)
         fig.tight_layout()
         save_path = (out_dir / f"{i}.png").resolve()

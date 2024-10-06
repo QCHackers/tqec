@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, cast
 import networkx as nx
 import numpy as np
 import numpy.typing as npt
-from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 from tqec.exceptions import TQECException
@@ -215,26 +214,20 @@ class ZXGraph:
 
     def draw_as_zx_graph_on(
         self,
-        fig: Figure,
+        ax: Axes3D,
         *,
         node_size: int = 400,
         hadamard_size: int = 200,
         edge_width: int = 1,
-    ) -> Axes3D:
+    ):
         """Draw the 3D graph using matplotlib on the provided figure.
 
         Args:
-            fig: The figure to draw on.
+            ax: a 3-dimensional ax to draw on.
             node_size: The size of the node. Default is 400.
             hadamard_size: The size of the Hadamard transition. Default is 200.
             edge_width: The width of the edge. Default is 1.
-
-        Returns:
-            a 3 dimension Axes3D instance that has been used to draw the ZX graph
-            on the provided Figure.
         """
-        ax = cast(Axes3D, fig.add_subplot(111, projection="3d"))
-
         non_virtual_nodes = [n for n in self.nodes if not n.is_virtual]
         non_virtual_nodes_array = _positions_array(
             *[n.position for n in non_virtual_nodes]
@@ -272,7 +265,7 @@ class ZXGraph:
         ax.grid(False)
         for dim in (ax.xaxis, ax.yaxis, ax.zaxis):
             dim.set_ticks([])
-        x_limits, y_limits, z_limits = ax.get_xlim3d(), ax.get_ylim3d(), ax.get_zlim3d()
+        x_limits, y_limits, z_limits = ax.get_xlim3d(), ax.get_ylim3d(), ax.get_zlim3d()  # type: ignore
 
         plot_radius = 0.5 * max(
             abs(limits[1] - limits[0]) for limits in [x_limits, y_limits, z_limits]
@@ -342,8 +335,10 @@ class ZXGraph:
         import matplotlib.pyplot as plt
 
         fig = plt.figure(figsize=figsize)
-        ax = self.draw_as_zx_graph_on(
-            fig, node_size=node_size, hadamard_size=hadamard_size, edge_width=edge_width
+        ax = cast(Axes3D, fig.add_subplot(111, projection="3d"))
+
+        self.draw_as_zx_graph_on(
+            ax, node_size=node_size, hadamard_size=hadamard_size, edge_width=edge_width
         )
 
         if show_correlation_subgraph_index is not None:
