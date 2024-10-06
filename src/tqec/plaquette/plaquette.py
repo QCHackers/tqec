@@ -64,6 +64,18 @@ CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
 @dataclass(frozen=True)
 class Plaquettes:
+    """Represent a collection of plaquettes that might be applied to a
+    :class:`Template` instance.
+
+    The goal of this class is to abstract away how a "collection of plaquettes"
+    is represented and to provide a unique interface in order to retrieve
+    plaquettes when building a quantum circuit from a template and plaquettes.
+
+    It also checks that the represented collection is valid, which means that it
+    does not include any plaquette associated with index 0 (that is internally
+    and conventionally reserved for the empty plaquette).
+    """
+
     collection: CollectionType
 
     def __post_init__(self) -> None:

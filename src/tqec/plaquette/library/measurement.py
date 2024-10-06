@@ -1,3 +1,5 @@
+"""Defines regular plaquettes with measurements applied on data qubits."""
+
 from __future__ import annotations
 
 from tqec.circuit.schedule import Schedule

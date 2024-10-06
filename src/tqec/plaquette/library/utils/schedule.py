@@ -1,3 +1,14 @@
+"""Defines :func:`cnot_pauli_schedule` to abstract away some gate scheduling details.
+
+Defining the right schedule for all the possible orientation of rounded
+plaquettes (plaquettes at the side of logical qubits) is tedious to do by
+hard-coding the schedules and easy to screw up when doing it generically.
+
+This module takes the easy to screw up path and defines :func:`cnot_pauli_schedule`
+that returns the schedule for 2-qubit gates in a rounded plaquette in a generic
+manner. It has been checked several times, and should be correct.
+"""
+
 from __future__ import annotations
 
 import typing

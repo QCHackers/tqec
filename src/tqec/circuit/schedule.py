@@ -1,4 +1,4 @@
-"""Implements the :class:`ScheduledCircuit` class.
+"""Defines the :class:`ScheduledCircuit` class.
 
 This module is central to the `tqec` library because it implements one of the
 most used class of the library: :class:`ScheduledCircuit`.

@@ -1,3 +1,5 @@
+"""Defines empty plaquettes with an empry circuit."""
+
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.plaquette import Plaquette

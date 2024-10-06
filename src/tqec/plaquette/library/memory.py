@@ -1,3 +1,5 @@
+"""Defines regular plaquettes."""
+
 from __future__ import annotations
 
 from tqec.circuit.schedule import Schedule
