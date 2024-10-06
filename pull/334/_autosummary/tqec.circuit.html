@@ -106,6 +106,22 @@
              
   <section id="module-tqec.circuit">
 <span id="tqec-circuit"></span><h1>tqec.circuit<a class="headerlink" href="#module-tqec.circuit" title="Link to this heading"></a></h1>
+<p>Defines core classes and functions to represent and manipulate quantum circuits.</p>
+<p>This package defines the core class <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> that is used to
+represent a quantum circuit in the <cite>tqec</cite> library. It also defines a few core
+functions:</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">annotate_detectors_automatically()</span></code> that takes a quantum circuit implementing
+a complete QEC circuit and adds <cite>DETECTOR</cite> annotations.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_circuit()</span></code> that takes a <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instance and a description
+of plaquettes via a <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquettes</span></code> instance and generates a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instance that corresponds to the circuit described.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code> that is a function that helps merging several
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instances containing gates that are potentially scheduled
+at the same time (but not on the same qubits).</p></li>
+</ul>
+<p>Functions from this package are really the backbone of the <cite>tqec</cite> library and are
+re-used in higher-level packages (such as <cite>tqec.compile</cite>).</p>
 <p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -125,7 +141,7 @@
 <td><p>Defines <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code> and helper functions to manage qubits.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.schedule.html#module-tqec.circuit.schedule" title="tqec.circuit.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
-<td><p>Implements the <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> class.</p></td>
+<td><p>Defines the <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> class.</p></td>
 </tr>
 </tbody>
 </table>

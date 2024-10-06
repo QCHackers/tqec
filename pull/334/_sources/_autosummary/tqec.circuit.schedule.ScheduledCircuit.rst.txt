@@ -20,6 +20,7 @@ tqec.circuit.schedule.ScheduledCircuit
       ~ScheduledCircuit.empty
       ~ScheduledCircuit.from_circuit
       ~ScheduledCircuit.get_circuit
+      ~ScheduledCircuit.get_qubit_coords_definition_preamble
       ~ScheduledCircuit.get_repeated_circuit
       ~ScheduledCircuit.map_qubit_indices
       ~ScheduledCircuit.map_to_qubits

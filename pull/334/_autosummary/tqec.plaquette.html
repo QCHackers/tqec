@@ -104,6 +104,15 @@
              
   <section id="module-tqec.plaquette">
 <span id="tqec-plaquette"></span><h1>tqec.plaquette<a class="headerlink" href="#module-tqec.plaquette" title="Link to this heading"></a></h1>
+<p>Defines all the necessary data-structures to represent a plaquette.</p>
+<p>This package defines one of the core class of the <cite>tqec</cite> library: <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code>.
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code> class represents what is commonly called a “plaquette” in
+quantum error correction and is basically a <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instance
+representing the computation defining the plaquette.</p>
+<p>Because we do not have a module to perform simple geometry operations on qubits
+(yet), the <a class="reference internal" href="tqec.plaquette.qubit.html#module-tqec.plaquette.qubit" title="tqec.plaquette.qubit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec.plaquette.qubit</span></code></a> module is providing classes to represent
+the qubits a plaquette is applied to and perform some operations on them (e.g.,
+get the qubits on a specific side of the plaquette).</p>
 <p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -111,7 +120,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library" title="tqec.plaquette.library"><code class="xref py py-obj docutils literal notranslate"><span class="pre">library</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Defines several widely used plaquettes for re-use.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.plaquette.plaquette.html#module-tqec.plaquette.plaquette" title="tqec.plaquette.plaquette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plaquette</span></code></a></p></td>
 <td><p></p></td>

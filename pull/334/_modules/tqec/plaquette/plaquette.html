@@ -121,10 +121,8 @@
 <span class="sd">                the plaquette should represent.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the provided circuit uses qubits not in the list of</span>
-<span class="sd">                PlaquetteQubit.</span>
-
-<span class="sd">        TODO: does it make sense to keep the `qubits` parameter (and attribute)?</span>
+<span class="sd">            TQECException: if the provided circuit uses qubits not listed in</span>
+<span class="sd">                `qubits`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plaquette_qubits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
         <span class="n">circuit_qubits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
@@ -132,7 +130,7 @@
             <span class="n">wrong_qubits</span> <span class="o">=</span> <span class="n">circuit_qubits</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">plaquette_qubits</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The following qubits (</span><span class="si">{</span><span class="n">wrong_qubits</span><span class="si">}</span><span class="s2">) are in the provided circuit &quot;</span>
-                <span class="s2">&quot;but not in the list of PlaquetteQubit.&quot;</span>
+                <span class="s2">&quot;but not in the provided list of qubits.&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span> <span class="o">=</span> <span class="n">qubits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span> <span class="o">=</span> <span class="n">circuit</span></div>
@@ -159,6 +157,18 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Plaquettes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a collection of plaquettes that might be applied to a</span>
+<span class="sd">    :class:`Template` instance.</span>
+
+<span class="sd">    The goal of this class is to abstract away how a &quot;collection of plaquettes&quot;</span>
+<span class="sd">    is represented and to provide a unique interface in order to retrieve</span>
+<span class="sd">    plaquettes when building a quantum circuit from a template and plaquettes.</span>
+
+<span class="sd">    It also checks that the represented collection is valid, which means that it</span>
+<span class="sd">    does not include any plaquette associated with index 0 (that is internally</span>
+<span class="sd">    and conventionally reserved for the empty plaquette).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">collection</span><span class="p">:</span> <span class="n">CollectionType</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
