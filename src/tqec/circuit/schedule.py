@@ -454,6 +454,9 @@ class ScheduledCircuit:
         Raises:
             TQECException: if the provided calculated schedule is negative.
         """
+        if not self._schedule:
+            return None
+
         schedule = self._schedule[-1] + 1 + schedule if schedule < 0 else schedule
         if schedule < 0:
             raise TQECException(
@@ -488,7 +491,14 @@ class ScheduledCircuit:
         Args:
             moment: the moment to schedule.
         """
-        self.add_to_schedule_index(self._schedule[-1] + 1, moment)
+        # By default, we cannot assume that self._schedule contains an entry, so
+        # we insert at the first moment.
+        schedule = Schedule._INITIAL_SCHEDULE
+        # If it turns out that we have at least one scheduled moment, then
+        # insert just after.
+        if self._schedule:
+            schedule = self._schedule[-1] + 1
+        self.add_to_schedule_index(schedule, moment)
 
     def add_to_schedule_index(self, schedule: int, moment: Moment) -> None:
         """Add the operations contained in the provided moment at the provided
