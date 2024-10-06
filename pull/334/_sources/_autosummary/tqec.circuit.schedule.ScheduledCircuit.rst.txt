@@ -33,7 +33,6 @@ tqec.circuit.schedule.ScheduledCircuit
 
    .. autosummary::
    
-      ~ScheduledCircuit.mappable_qubits
       ~ScheduledCircuit.moments
       ~ScheduledCircuit.num_measurements
       ~ScheduledCircuit.q2i
