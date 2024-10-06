@@ -257,6 +257,13 @@ class ScheduledCircuit:
     def schedule(self) -> Schedule:
         return self._schedule
 
+    def get_qubit_coords_definition_preamble(self) -> stim.Circuit:
+        """Get a circuit with only `QUBIT_COORDS` instructions."""
+        ret = stim.Circuit()
+        for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
+            ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
+        return ret
+
     def get_circuit(self, include_qubit_coords: bool = True) -> stim.Circuit:
         """Build and return the `stim.Circuit` instance represented by self.
 
@@ -272,8 +279,8 @@ class ScheduledCircuit:
 
         # Appending the QUBIT_COORDS instructions first.
         if include_qubit_coords:
-            for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
-                ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
+            ret += self.get_qubit_coords_definition_preamble()
+
         # Building the actual circuit.
         current_schedule: int = 0
         last_schedule: int = self._schedule[-1]
@@ -303,8 +310,8 @@ class ScheduledCircuit:
         ret = stim.Circuit()
         # Appending the QUBIT_COORDS instructions first.
         if include_qubit_coords:
-            for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
-                ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
+            ret += self.get_qubit_coords_definition_preamble()
+
         # Appending the repeated version of self
         # TODO: Should we add a TICK at the end of the repeat block? Stim does it
         #       (see noise_model.py) and that seems to make sense conceptually
