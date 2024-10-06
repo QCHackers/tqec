@@ -758,8 +758,11 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
     """Merge several ScheduledCircuit instances into one instance.
 
     This function takes several scheduled circuits as input and merge them,
-    respecting their schedules, into a unique stim.Circuit instance that will
-    then be returned to the caller.
+    respecting their schedules, into a unique `ScheduledCircuit` instance that
+    will then be returned to the caller.
+
+    KeyError: if any of the provided circuit contains a qubit target that is
+            not defined by a `QUBIT_COORDS` instruction.
 
     Returns:
         a circuit representing the merged scheduled circuits given as input.
@@ -807,12 +810,27 @@ def relabel_circuits_qubit_indices(
     This function takes a sequence of circuits and relabel their qubits to avoid
     such collisions.
 
+    Warning:
+        all the qubit targets used in each of the provided circuits should have
+        a corresponding `QUBIT_COORDS([coordinates]) [qubit target]` for this
+        function to work correctly. If that is not the case, a KeyError will be
+        raised.
+
+    Raises:
+        KeyError: if any of the provided circuit contains a qubit target that is
+            not defined by a `QUBIT_COORDS` instruction.
+
     Args:
         circuits: circuit instances to remap.
 
     Returns:
         the same circuits with update qubit indices as well as the global qubit
-        indices map that has been used.
+        indices map that has been used. Qubits in the returned global qubit map
+        are assigned to an index such that:
+
+        1. the sequence of indices is `range(0, len(qubit_map))`.
+        2. the list `[qubit_map[q] for q in sorted(qubit_map)]` is exactly
+           `list(range(len(qubit_map)))`.
     """
     # First, get a global qubit index map.
     needed_qubits = frozenset.union(*[c.qubits for c in circuits])

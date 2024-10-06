@@ -10,6 +10,8 @@ from tqec.circuit.schedule import (
     Schedule,
     ScheduledCircuit,
     ScheduleException,
+    merge_scheduled_circuits,
+    relabel_circuits_qubit_indices,
     remove_duplicate_instructions,
 )
 from tqec.exceptions import TQECException, TQECWarning
@@ -329,3 +331,68 @@ def test_remove_duplicate_instructions() -> None:
     assert set(
         remove_duplicate_instructions(instructions, frozenset(["H", "M"]))
     ) == set(iter(stim.Circuit("H 0 1 2 3\nM 4 5 6")))
+
+
+def test_relabel_circuits_qubit_indices() -> None:
+    # Any qubit target not defined by a QUBIT_COORDS instruction should raise
+    # an exception.
+    with pytest.raises(KeyError):
+        relabel_circuits_qubit_indices(
+            [
+                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
+                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
+            ]
+        )
+    with pytest.raises(KeyError):
+        relabel_circuits_qubit_indices(
+            [
+                ScheduledCircuit.from_circuit(
+                    stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+                ),
+                ScheduledCircuit.from_circuit(stim.Circuit("H 0")),
+            ]
+        )
+    circuits, q2i = relabel_circuits_qubit_indices(
+        [
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0")),
+        ]
+    )
+    assert q2i == {GridQubit(0, 0): 0, GridQubit(1, 1): 1}
+    assert len(circuits) == 2
+    assert circuits[0].get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+    assert circuits[1].get_circuit() == stim.Circuit("QUBIT_COORDS(1, 1) 1\nX 1")
+
+
+def test_merge_scheduled_circuits() -> None:
+    # Any qubit target not defined by a QUBIT_COORDS instruction should raise
+    # an exception.
+    with pytest.raises(KeyError):
+        merge_scheduled_circuits(
+            [
+                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
+                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
+            ]
+        )
+
+    circuit = merge_scheduled_circuits(
+        [
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0")),
+        ]
+    )
+    assert circuit.get_circuit() == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 1) 1\nH 0\nX 1"
+    )
+
+    circuit = merge_scheduled_circuits(
+        [
+            ScheduledCircuit.from_circuit(
+                stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0\nTICK\nM 0"), [0, 2]
+            ),
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0"), 1),
+        ]
+    )
+    assert circuit.get_circuit() == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 1) 1\nH 0\nTICK\nX 1\nTICK\nM 0"
+    )
