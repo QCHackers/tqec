@@ -70,14 +70,6 @@ class Schedule:
 
     @staticmethod
     def _check_schedule(schedule: list[int]) -> None:
-        # Check that all entries in the provided schedule are integers.
-        for entry in schedule:
-            if not isinstance(entry, int):
-                raise ScheduleException(
-                    f"Found a non-integer entry of type {type(entry).__name__} in "
-                    f"the provided schedule {schedule}. Entries should all be integers."
-                )
-
         # Check that the schedule is sorted and positive
         if schedule and (
             not all(schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1))
@@ -99,17 +91,54 @@ class Schedule:
         return iter(self.schedule)
 
     def insert(self, i: int, value: int) -> None:
+        """Insert an integer to the schedule.
+
+        If inserting the integer results in an invalid schedule, the schedule is
+        brought back to its (valid) original state before calling this function
+        and a `ScheduleException` is raised.
+
+        Args:
+            i: index at which the provided value should be inserted.
+            value: value to insert.
+
+        Raises:
+            ScheduleException: if the inserted integer makes the schedule
+                invalid.
+        """
         self.schedule.insert(i, value)
+        try:
+            Schedule._check_schedule(self.schedule)
+        except ScheduleException as e:
+            self.schedule.pop(i)
+            raise e
 
     def append(self, value: int) -> None:
+        """Append an integer to the schedule.
+
+        If appending the integer results in an invalid schedule, the schedule is
+        brought back to its (valid) original state before calling this function
+        and a `ScheduleException` is raised.
+
+        Args:
+            value: value to insert.
+
+        Raises:
+            ScheduleException: if the inserted integer makes the schedule
+                invalid.
+        """
         self.schedule.append(value)
+        try:
+            Schedule._check_schedule(self.schedule)
+        except ScheduleException as e:
+            self.schedule.pop(-1)
+            raise e
 
 
 class ScheduledCircuit:
     def __init__(
         self,
         moments: list[Moment],
-        schedule: Schedule | int,
+        schedule: Schedule | list[int] | int,
         final_qubits: dict[int, GridQubit],
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
@@ -138,15 +167,17 @@ class ScheduledCircuit:
         """
 
         if isinstance(schedule, int):
-            schedule = Schedule(list(range(schedule, schedule + len(moments))))
+            schedule = list(range(schedule, schedule + len(moments)))
+        if isinstance(schedule, list):
+            schedule = Schedule(schedule)
 
         if len(moments) != len(schedule):
-            raise TQECException(
+            raise ScheduleException(
                 "ScheduledCircuit expects all the provided moments to be scheduled. "
                 f"Got {len(moments)} moments but {len(schedule)} schedules."
             )
         if any(m.contains_instruction("QUBIT_COORDS") for m in moments[1:]):
-            raise TQECException(
+            raise ScheduleException(
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
@@ -184,7 +215,7 @@ class ScheduledCircuit:
         """
 
         if isinstance(schedule, int):
-            schedule = list(range(schedule, schedule + circuit.num_ticks))
+            schedule = list(range(schedule, schedule + circuit.num_ticks + 1))
         if isinstance(schedule, list):
             schedule = Schedule(schedule)
 
@@ -199,7 +230,7 @@ class ScheduledCircuit:
             return ScheduledCircuit.empty()
 
         if any(m.contains_instruction("QUBIT_COORDS") for m in moments[1:]):
-            raise TQECException(
+            raise ScheduleException(
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
@@ -217,7 +248,7 @@ class ScheduledCircuit:
         # Ensure that the provided circuit does not contain any
         # `stim.CircuitRepeatBlock` instance.
         if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in circuit):
-            raise TQECException(
+            raise ScheduleException(
                 "stim.CircuitRepeatBlock instances are not supported in "
                 "a ScheduledCircuit instance."
             )
@@ -285,13 +316,6 @@ class ScheduledCircuit:
         )
         ret.append(repeated_instruction)
         return ret
-
-    @property
-    def mappable_qubits(self) -> frozenset[GridQubit]:
-        """Return the set of qubits involved in the circuit that can be mapped,
-        which is the union of the qubits of all the operations performed on and
-        the origin of all the detectors."""
-        return frozenset(self.qubits)
 
     def map_qubit_indices(
         self, qubit_index_map: dict[int, int], inplace: bool = False

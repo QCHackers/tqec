@@ -166,6 +166,6 @@ def _create_mapping(
     origin = plaquette.origin
     qubit_map = {
         qubit: qubit + Displacement(offset.x + origin.x, offset.y + origin.y)
-        for qubit in scheduled_circuit.mappable_qubits
+        for qubit in scheduled_circuit.qubits
     }
     return qubit_map
