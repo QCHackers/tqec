@@ -1,3 +1,5 @@
+import stim
+
 from tqec.circuit.schedule import Schedule
 from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library.initialisation import (
@@ -19,14 +21,22 @@ def test_xx_initialisation_plaquette() -> None:
         (sq,) = plaquette.qubits.get_syndrome_qubits()
         dq1, dq2 = plaquette.qubits.get_data_qubits()
         assert plaquette.circuit.schedule == Schedule.from_offsets([0, 1, 4, 5, 6, 7])
-        # assert plaquette.circuit.circuit == cirq.Circuit(
-        #     cirq.Moment(cirq.R(sq), reset_basis(dq1), reset_basis(dq2)),
-        #     cirq.Moment(cirq.H(sq)),
-        #     cirq.Moment(cirq.CX(sq, dq1)),
-        #     cirq.Moment(cirq.CX(sq, dq2)),
-        #     cirq.Moment(cirq.H(sq)),
-        #     cirq.Moment(cirq.M(sq)),
-        # ).map_operations(_untag)
+
+        q2i = plaquette.circuit.q2i
+        sqi = q2i[sq]
+        dqi1, dqi2 = q2i[dq1], q2i[dq2]
+        assert plaquette.circuit.get_circuit(
+            include_qubit_coords=False
+        ) == stim.Circuit(f"""
+            R  {sqi}
+            {reset_basis.instruction_name} {dqi1} {dqi2}\nTICK
+            H  {sqi}          \nTICK
+                                TICK
+                                TICK
+            CX {sqi} {dqi1}   \nTICK
+            CX {sqi} {dqi2}   \nTICK
+            H  {sqi}          \nTICK
+            M  {sqi}""")
 
 
 def test_zz_initialisation_plaquette() -> None:
@@ -38,13 +48,22 @@ def test_zz_initialisation_plaquette() -> None:
         (sq,) = plaquette.qubits.get_syndrome_qubits()
         dq1, dq2 = plaquette.qubits.get_data_qubits()
         assert plaquette.circuit.schedule == Schedule.from_offsets([0, 3, 5, 7])
-        # circuit = plaquette.circuit.circuit.map_operations(lambda op: op.untagged)
-        # assert circuit == cirq.Circuit(
-        #     cirq.Moment(cirq.R(sq), reset_basis(dq1), reset_basis(dq2)),
-        #     cirq.Moment(cirq.CX(dq1, sq)),
-        #     cirq.Moment(cirq.CX(dq2, sq)),
-        #     cirq.Moment(cirq.M(sq)),
-        # ).map_operations(_untag)
+
+        q2i = plaquette.circuit.q2i
+        sqi = q2i[sq]
+        dqi1, dqi2 = q2i[dq1], q2i[dq2]
+        assert plaquette.circuit.get_circuit(
+            include_qubit_coords=False
+        ) == stim.Circuit(f"""
+            R  {sqi}
+            {reset_basis.instruction_name} {dqi1} {dqi2}\nTICK
+                                TICK
+                                TICK
+            CX {dqi1} {sqi}   \nTICK
+                                TICK
+            CX {dqi2} {sqi}   \nTICK
+                                TICK
+            M  {sqi}""")
 
 
 def test_xxxx_initialisation_plaquette() -> None:
@@ -56,23 +75,22 @@ def test_xxxx_initialisation_plaquette() -> None:
         assert plaquette.circuit.schedule == Schedule.from_offsets(
             [0, 1, 2, 3, 4, 5, 6, 7]
         )
-        # circuit = plaquette.circuit.circuit.map_operations(lambda op: op.untagged)
-        # assert circuit == cirq.Circuit(
-        #     cirq.Moment(
-        #         cirq.R(sq),
-        #         reset_basis(dq1),
-        #         reset_basis(dq2),
-        #         reset_basis(dq3),
-        #         reset_basis(dq4),
-        #     ),
-        #     cirq.Moment(cirq.H(sq)),
-        #     cirq.Moment(cirq.CX(sq, dq1)),
-        #     cirq.Moment(cirq.CX(sq, dq2)),
-        #     cirq.Moment(cirq.CX(sq, dq3)),
-        #     cirq.Moment(cirq.CX(sq, dq4)),
-        #     cirq.Moment(cirq.H(sq)),
-        #     cirq.Moment(cirq.M(sq)),
-        # ).map_operations(_untag)
+
+        q2i = plaquette.circuit.q2i
+        sqi = q2i[sq]
+        dqi1, dqi2, dqi3, dqi4 = q2i[dq1], q2i[dq2], q2i[dq3], q2i[dq4]
+        assert plaquette.circuit.get_circuit(
+            include_qubit_coords=False
+        ) == stim.Circuit(f"""
+            R  {sqi}
+            {reset_basis.instruction_name} {dqi1} {dqi2} {dqi3} {dqi4}\nTICK
+            H  {sqi}          \nTICK
+            CX {sqi} {dqi1}   \nTICK
+            CX {sqi} {dqi2}   \nTICK
+            CX {sqi} {dqi3}   \nTICK
+            CX {sqi} {dqi4}   \nTICK
+            H  {sqi}          \nTICK
+            M  {sqi}""")
 
 
 def test_zzzz_initialisation_plaquette() -> None:
@@ -84,18 +102,19 @@ def test_zzzz_initialisation_plaquette() -> None:
         (sq,) = plaquette.qubits.get_syndrome_qubits()
         dq1, dq2, dq3, dq4 = plaquette.qubits.get_data_qubits()
         assert plaquette.circuit.schedule == Schedule.from_offsets([0, 2, 3, 4, 5, 7])
-        # circuit = plaquette.circuit.circuit.map_operations(lambda op: op.untagged)
-        # assert circuit == cirq.Circuit(
-        #     cirq.Moment(
-        #         cirq.R(sq),
-        #         reset_basis(dq1),
-        #         reset_basis(dq2),
-        #         reset_basis(dq3),
-        #         reset_basis(dq4),
-        #     ),
-        #     cirq.Moment(cirq.CX(dq1, sq)),
-        #     cirq.Moment(cirq.CX(dq2, sq)),
-        #     cirq.Moment(cirq.CX(dq3, sq)),
-        #     cirq.Moment(cirq.CX(dq4, sq)),
-        #     cirq.Moment(cirq.M(sq)),
-        # ).map_operations(_untag)
+
+        q2i = plaquette.circuit.q2i
+        sqi = q2i[sq]
+        dqi1, dqi2, dqi3, dqi4 = q2i[dq1], q2i[dq2], q2i[dq3], q2i[dq4]
+        assert plaquette.circuit.get_circuit(
+            include_qubit_coords=False
+        ) == stim.Circuit(f"""
+            R  {sqi}
+            {reset_basis.instruction_name} {dqi1} {dqi2} {dqi3} {dqi4}\nTICK
+                                TICK
+            CX {dqi1} {sqi}   \nTICK
+            CX {dqi2} {sqi}   \nTICK
+            CX {dqi3} {sqi}   \nTICK
+            CX {dqi4} {sqi}   \nTICK
+                                TICK
+            M  {sqi}""")
