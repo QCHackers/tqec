@@ -295,7 +295,10 @@ class ScheduledCircuit:
         return ret
 
     def get_repeated_circuit(
-        self, repetitions: int, include_qubit_coords: bool = True
+        self,
+        repetitions: int,
+        include_qubit_coords: bool = True,
+        include_additional_tick_in_body: bool = True,
     ) -> stim.Circuit:
         """Build and return the `stim.Circuit` instance represented by self
         encapsulated in a `REPEAT` block.
@@ -313,14 +316,12 @@ class ScheduledCircuit:
             ret += self.get_qubit_coords_definition_preamble()
 
         # Appending the repeated version of self
-        # TODO: Should we add a TICK at the end of the repeat block? Stim does it
-        #       (see noise_model.py) and that seems to make sense conceptually
-        #       as nothing tells us that the end of a REPEAT block is the end
-        #       of a Moment (eventhough that is the current behaviour of the
-        #       code).
-        repeated_instruction = stim.CircuitRepeatBlock(
-            repetitions, self.get_circuit(include_qubit_coords=False)
-        )
+        body = self.get_circuit(include_qubit_coords=False)
+        # A `TICK` instruction is appended before repeating the code block. This
+        # is to mimic internal `stim` ways of doing.
+        if include_additional_tick_in_body:
+            body.append("TICK", [], [])
+        repeated_instruction = stim.CircuitRepeatBlock(repetitions, body)
         ret.append(repeated_instruction)
         return ret
 
