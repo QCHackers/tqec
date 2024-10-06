@@ -6,7 +6,13 @@ import stim
 
 from tqec.circuit.moment import Moment
 from tqec.circuit.qubit import GridQubit
-from tqec.circuit.schedule import Schedule, ScheduledCircuit, ScheduleException
+from tqec.circuit.schedule import (
+    Schedule,
+    ScheduledCircuit,
+    ScheduleException,
+    remove_duplicate_instructions,
+)
+from tqec.exceptions import TQECException, TQECWarning
 
 _VALID_SCHEDULED_CIRCUITS = [
     stim.Circuit(""),
@@ -161,6 +167,40 @@ def test_scheduled_circuit_get_circuit(circuit: stim.Circuit) -> None:
     assert ScheduledCircuit.from_circuit(circuit).get_circuit() == circuit
 
 
+def test_scheduled_circuit_get_qubit_coords_definition_preamble() -> None:
+    assert ScheduledCircuit.from_circuit(
+        stim.Circuit("H 0 1")
+    ).get_qubit_coords_definition_preamble() == stim.Circuit("")
+    assert ScheduledCircuit.from_circuit(
+        stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0 1")
+    ).get_qubit_coords_definition_preamble() == stim.Circuit("QUBIT_COORDS(0, 0) 0")
+    assert ScheduledCircuit.from_circuit(
+        stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(-2345, 3456) 1\nH 0 1")
+    ).get_qubit_coords_definition_preamble() == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(-2345, 3456) 1"
+    )
+
+
+@pytest.mark.parametrize("circuit", _VALID_SCHEDULED_CIRCUITS)
+def test_scheduled_circuit_get_repeated_circuit(circuit: stim.Circuit) -> None:
+    for repetitions in [2, 6, 1345]:
+        scheduled_circuit = ScheduledCircuit.from_circuit(circuit)
+        coords_preamble = scheduled_circuit.get_qubit_coords_definition_preamble()
+        body_without_coords = scheduled_circuit.get_circuit(include_qubit_coords=False)
+        expected_circuit = stim.Circuit(
+            f"REPEAT {repetitions} {{\n{body_without_coords}\nTICK\n}}"
+        )
+        assert (
+            ScheduledCircuit.from_circuit(circuit).get_repeated_circuit(
+                repetitions, include_qubit_coords=False
+            )
+            == expected_circuit
+        )
+        assert ScheduledCircuit.from_circuit(circuit).get_repeated_circuit(
+            repetitions
+        ) == (coords_preamble + expected_circuit)
+
+
 def test_scheduled_circuit_get_circuit_with_schedule() -> None:
     circuit = ScheduledCircuit.from_circuit(
         stim.Circuit("H 0 1 2\nTICK\nH 0 1 2"), [0, 3]
@@ -223,3 +263,69 @@ def test_scheduled_circuit_map_to_qubits() -> None:
     )
     circuit.map_to_qubits(qubit_map, inplace=True)
     assert circuit.get_circuit() == mapped_circuit.get_circuit()
+
+
+def test_scheduled_circuit_moment_at_schedule() -> None:
+    circuit = ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2\nTICK\nH 2 1 0"))
+    assert circuit.moment_at_schedule(0).circuit == stim.Circuit("H 0 1 2")
+    assert circuit.moment_at_schedule(1).circuit == stim.Circuit("H 2 1 0")
+    assert circuit.moment_at_schedule(-1).circuit == stim.Circuit("H 2 1 0")
+    assert circuit.moment_at_schedule(-2).circuit == stim.Circuit("H 0 1 2")
+    with pytest.raises(TQECException):
+        circuit.moment_at_schedule(2)
+    with pytest.raises(TQECException):
+        circuit.moment_at_schedule(-3)
+
+
+def test_scheduled_circuit_modification() -> None:
+    circuit = ScheduledCircuit.empty()
+    circuit.append_new_moment(Moment(stim.Circuit("H 0 1 2")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit("H 0 1 2")
+    circuit.add_to_schedule_index(0, Moment(stim.Circuit("H 3")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit("H 0 1 2 3")
+    circuit.add_to_schedule_index(4, Moment(stim.Circuit("CX 0 1 2 3")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit(
+        "H 0 1 2 3\nTICK\nTICK\nTICK\nTICK\nCX 0 1 2 3"
+    )
+    circuit.add_to_schedule_index(2, Moment(stim.Circuit("CX 0 1 2 3")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit(
+        "H 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3"
+    )
+    circuit.append_new_moment(Moment(stim.Circuit("H 2 1 0")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit(
+        "H 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3\nTICK\nH 2 1 0"
+    )
+    circuit.add_to_schedule_index(-1, Moment(stim.Circuit("H 3")))
+    assert circuit.get_circuit(include_qubit_coords=False) == stim.Circuit(
+        "H 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3\nTICK\nTICK\nCX 0 1 2 3\nTICK\nH 2 1 0 3"
+    )
+
+
+def test_remove_duplicate_instructions() -> None:
+    instructions: list[stim.CircuitInstruction] = list(
+        iter(stim.Circuit("H 0 0 0 2 0 0 0 0 1 1 2 2 0 0 0 3"))
+    )  # type: ignore
+    expected_instructions = set(iter(stim.Circuit("H 0 1 2 3")))  # type: ignore
+    assert (
+        set(remove_duplicate_instructions(instructions, frozenset(["H"])))
+        == expected_instructions
+    )
+    with pytest.warns(TQECWarning):
+        # Several H gates are overlapping, which means that the returned instruction
+        # list is not a valid Moment, which should raise a warning.
+        assert remove_duplicate_instructions(instructions, frozenset()) == instructions
+
+    instructions: list[stim.CircuitInstruction] = list(
+        iter(stim.Circuit("H 0 1 2 3 0 1 2 3\nM 4 5 6 4 5 6 4 5 6"))
+    )  # type: ignore
+    with pytest.warns(TQECWarning):
+        assert set(
+            remove_duplicate_instructions(instructions, frozenset(["M"]))
+        ) == set(iter(stim.Circuit("H 0 1 2 3 0 1 2 3\nM 4 5 6")))
+    with pytest.warns(TQECWarning):
+        assert set(
+            remove_duplicate_instructions(instructions, frozenset(["H"]))
+        ) == set(iter(stim.Circuit("H 0 1 2 3\nM 4 5 6 4 5 6 4 5 6")))
+    assert set(
+        remove_duplicate_instructions(instructions, frozenset(["H", "M"]))
+    ) == set(iter(stim.Circuit("H 0 1 2 3\nM 4 5 6")))
