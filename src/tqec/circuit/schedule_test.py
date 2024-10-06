@@ -317,9 +317,7 @@ def test_remove_duplicate_instructions() -> None:
         # list is not a valid Moment, which should raise a warning.
         assert remove_duplicate_instructions(instructions, frozenset()) == instructions
 
-    instructions: list[stim.CircuitInstruction] = list(
-        iter(stim.Circuit("H 0 1 2 3 0 1 2 3\nM 4 5 6 4 5 6 4 5 6"))
-    )  # type: ignore
+    instructions = list(iter(stim.Circuit("H 0 1 2 3 0 1 2 3\nM 4 5 6 4 5 6 4 5 6")))  # type: ignore
     with pytest.warns(TQECWarning):
         assert set(
             remove_duplicate_instructions(instructions, frozenset(["M"]))
