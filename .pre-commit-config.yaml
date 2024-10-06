@@ -28,7 +28,8 @@ repos:
     rev: v8.20.0
     hooks:
       - id: gitleaks
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
-    hooks:
-      - id: docformatter
+  # TODO: re-enable when https://github.com/PyCQA/docformatter/issues/289 is fixed
+  # - repo: https://github.com/PyCQA/docformatter
+  #   rev: v1.7.5
+  #   hooks:
+  #     - id: docformatter
