@@ -32,10 +32,8 @@ class Plaquette:
                 the plaquette should represent.
 
         Raises:
-            TQECException: if the provided circuit uses qubits not in the list of
-                PlaquetteQubit.
-
-        TODO: does it make sense to keep the `qubits` parameter (and attribute)?
+            TQECException: if the provided circuit uses qubits not listed in
+                `qubits`.
         """
         plaquette_qubits = set(qubits)
         circuit_qubits = set(circuit.qubits)
@@ -43,7 +41,7 @@ class Plaquette:
             wrong_qubits = circuit_qubits.difference(plaquette_qubits)
             raise TQECException(
                 f"The following qubits ({wrong_qubits}) are in the provided circuit "
-                "but not in the list of PlaquetteQubit."
+                "but not in the provided list of qubits."
             )
         self._qubits = qubits
         self._circuit = circuit

@@ -13,7 +13,6 @@ from .exceptions import TQECException
 from .noise_models import NoiseModel
 from .plaquette import (
     Plaquette,
-    PlaquetteQubit,
     PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,

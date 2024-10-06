@@ -9,30 +9,18 @@ from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 from tqec.templates.enums import TemplateOrientation
 
 
-class PlaquetteQubit(GridQubit):
-    """Defines a qubit in the plaquette coordinate system.
-
-    This class initially had more attributes, which ended-up being
-    flagged as superfluous and so have been removed. For now, it only
-    stores the position of the qubit in the plaquette coordinate system
-    and implements an helper method to get a cirq.GridQubit instance.
-    """
-
-    pass
-
-
 @dataclass(frozen=True)
 class PlaquetteQubits:
-    data_qubits: list[PlaquetteQubit]
-    syndrome_qubits: list[PlaquetteQubit]
+    data_qubits: list[GridQubit]
+    syndrome_qubits: list[GridQubit]
 
-    def get_data_qubits(self) -> list[PlaquetteQubit]:
+    def get_data_qubits(self) -> list[GridQubit]:
         return self.data_qubits
 
-    def get_syndrome_qubits(self) -> list[PlaquetteQubit]:
+    def get_syndrome_qubits(self) -> list[GridQubit]:
         return self.syndrome_qubits
 
-    def __iter__(self) -> ty.Iterator[PlaquetteQubit]:
+    def __iter__(self) -> ty.Iterator[GridQubit]:
         yield from self.data_qubits
         yield from self.syndrome_qubits
 
@@ -47,7 +35,7 @@ class PlaquetteQubits:
     def get_edge_qubits(
         self,
         orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
-    ) -> list[PlaquetteQubit]:
+    ) -> list[GridQubit]:
         """Return the data qubits on the edge of the plaquette. By convention,
         the edge is the one with the highest index in the relevant axis.
 
@@ -55,10 +43,10 @@ class PlaquetteQubits:
             orientation (TemplateOrientation, optional): Whether to use horizontal or
                 vertical orientation as the axis. Defaults to horizontal.
         Returns:
-            list[PlaquetteQubit]: The qubits on the edge of the plaquette.
+            The qubits on the edge of the plaquette.
         """
 
-        def _get_relevant_value(qubit: PlaquetteQubit) -> Fraction:
+        def _get_relevant_value(qubit: GridQubit) -> Fraction:
             return qubit.y if orientation == TemplateOrientation.HORIZONTAL else qubit.x
 
         max_index = max(_get_relevant_value(q) for q in self.data_qubits)
@@ -68,7 +56,7 @@ class PlaquetteQubits:
             if (_get_relevant_value(qubit) == max_index)
         ]
 
-    def get_qubits_on_side(self, side: PlaquetteSide) -> list[PlaquetteQubit]:
+    def get_qubits_on_side(self, side: PlaquetteSide) -> list[GridQubit]:
         """Return the qubits one the provided side of the instance.
 
         A qubit is on the left-side if there is no other qubit in the instance
@@ -79,7 +67,7 @@ class PlaquetteQubits:
         Args:
             side: the side to find qubits on.
         Returns:
-            list[PlaquetteQubit]: The qubits on the edge of the plaquette.
+            The qubits on the edge of the plaquette.
         """
         if side == PlaquetteSide.LEFT:
             min_x = min(q.x for q in self)
@@ -98,26 +86,21 @@ class PlaquetteQubits:
 class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
         super().__init__(
-            [
-                PlaquetteQubit(-1, -1),
-                PlaquetteQubit(1, -1),
-                PlaquetteQubit(-1, 1),
-                PlaquetteQubit(1, 1),
-            ],
-            [PlaquetteQubit(0, 0)],
+            [GridQubit(-1, -1), GridQubit(1, -1), GridQubit(-1, 1), GridQubit(1, 1)],
+            [GridQubit(0, 0)],
         )
 
 
 class RoundedPlaquetteQubits(PlaquetteQubits):
-    _POTENTIAL_DATA_QUBITS: ty.Final[list[PlaquetteQubit]] = [
-        PlaquetteQubit(-1, -1),
-        PlaquetteQubit(1, -1),
-        PlaquetteQubit(-1, 1),
-        PlaquetteQubit(1, 1),
+    _POTENTIAL_DATA_QUBITS: ty.Final[list[GridQubit]] = [
+        GridQubit(-1, -1),
+        GridQubit(1, -1),
+        GridQubit(-1, 1),
+        GridQubit(1, 1),
     ]
 
     @staticmethod
-    def _get_qubits_on_side(side: PlaquetteSide) -> list[PlaquetteQubit]:
+    def _get_qubits_on_side(side: PlaquetteSide) -> list[GridQubit]:
         data_indices: tuple[int, int]
         if side == PlaquetteSide.LEFT:
             data_indices = (0, 2)
@@ -132,5 +115,5 @@ class RoundedPlaquetteQubits(PlaquetteQubits):
     def __init__(self, orientation: PlaquetteOrientation):
         super().__init__(
             RoundedPlaquetteQubits._get_qubits_on_side(orientation.to_plaquette_side()),
-            [PlaquetteQubit(0, 0)],
+            [GridQubit(0, 0)],
         )

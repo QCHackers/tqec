@@ -5,11 +5,12 @@ from enum import Enum
 
 import stim
 
+from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import Schedule, ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteSide
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.qubit import PlaquetteQubit, PlaquetteQubits
+from tqec.plaquette.qubit import PlaquetteQubits
 
 
 class ResetBasis(Enum):
@@ -33,7 +34,7 @@ class MeasurementBasis(Enum):
 def _append_operation_inplace(
     circuit: stim.Circuit,
     qubits: PlaquetteQubits,
-    q2i: dict[PlaquetteQubit, int],
+    q2i: dict[GridQubit, int],
     syndrome_qubit_operation_name: typing.Literal["R", "M"],
     data_qubit_operation_basis: ResetBasis | MeasurementBasis | None = None,
     plaquette_side: PlaquetteSide | None = None,
@@ -108,7 +109,7 @@ def _make_pauli_syndrome_measurement_circuit(
 
     # Start the built quantum circuit by defining the correct qubit coordinates.
     circuit = stim.Circuit()
-    q2i: dict[PlaquetteQubit, int] = {sq: 0} | {dq: i + 1 for i, dq in enumerate(dqs)}
+    q2i: dict[GridQubit, int] = {sq: 0} | {dq: i + 1 for i, dq in enumerate(dqs)}
     for qubit, qubit_index in q2i.items():
         circuit.append(qubit.to_qubit_coords_instruction(qubit_index))
 

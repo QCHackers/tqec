@@ -2,28 +2,25 @@ from copy import deepcopy
 
 import pytest
 
+from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
-from tqec.plaquette.qubit import (
-    PlaquetteQubit,
-    RoundedPlaquetteQubits,
-    SquarePlaquetteQubits,
-)
+from tqec.plaquette.qubit import RoundedPlaquetteQubits, SquarePlaquetteQubits
 from tqec.templates.enums import TemplateOrientation
 
 
 def test_creation() -> None:
-    PlaquetteQubit(0, 0)
-    PlaquetteQubit(100000, -2398467235)
-    PlaquetteQubit(-234897659345, 349578)
+    GridQubit(0, 0)
+    GridQubit(100000, -2398467235)
+    GridQubit(-234897659345, 349578)
 
 
 def test_square_plaquette_qubits() -> None:
     qubits = SquarePlaquetteQubits()
-    top_left = PlaquetteQubit(-1, -1)
-    top_right = PlaquetteQubit(1, -1)
-    bot_left = PlaquetteQubit(-1, 1)
-    bot_right = PlaquetteQubit(1, 1)
-    center = PlaquetteQubit(0, 0)
+    top_left = GridQubit(-1, -1)
+    top_right = GridQubit(1, -1)
+    bot_left = GridQubit(-1, 1)
+    bot_right = GridQubit(1, 1)
+    center = GridQubit(0, 0)
     assert set(qubits.data_qubits) == {top_left, top_right, bot_left, bot_right}
     assert set(qubits.syndrome_qubits) == {center}
     assert set(qubits.get_qubits_on_side(PlaquetteSide.LEFT)) == {top_left, bot_left}
@@ -57,9 +54,9 @@ def test_square_plaquette_qubits() -> None:
 
 def test_rounded_plaquette_qubits() -> None:
     qubits = RoundedPlaquetteQubits(PlaquetteOrientation.UP)
-    bot_left = PlaquetteQubit(-1, 1)
-    bot_right = PlaquetteQubit(1, 1)
-    center = PlaquetteQubit(0, 0)
+    bot_left = GridQubit(-1, 1)
+    bot_right = GridQubit(1, 1)
+    center = GridQubit(0, 0)
     assert set(qubits.data_qubits) == {bot_left, bot_right}
     assert set(qubits.syndrome_qubits) == {center}
     assert set(qubits.get_qubits_on_side(PlaquetteSide.LEFT)) == {bot_left}
