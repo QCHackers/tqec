@@ -643,6 +643,15 @@ class _ScheduledCircuits:
         return self._global_q2i
 
 
+def _sort_target_groups(
+    targets: ty.Iterable[list[stim.GateTarget]],
+) -> list[list[stim.GateTarget]]:
+    def _sort_key(target_group: ty.Iterable[stim.GateTarget]) -> tuple[int, ...]:
+        return tuple(t.value for t in target_group)
+
+    return sorted(targets, key=_sort_key)
+
+
 def remove_duplicate_instructions(
     instructions: list[stim.CircuitInstruction],
     mergeable_instruction_names: frozenset[str],
@@ -681,7 +690,9 @@ def remove_duplicate_instructions(
             final_operations.append(inst)
     # Add the merged operations into the final ones
     final_operations.extend(
-        stim.CircuitInstruction(name, sum(targets, start=()), args)
+        stim.CircuitInstruction(
+            name, sum(_sort_target_groups([list(t) for t in targets]), start=[]), args
+        )
         for (name, args), targets in mergeable_operations.items()
     )
     # Warn if the output instructions do not form a valid moment, as this is
@@ -738,13 +749,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         for inst in deduplicated_instructions:
             circuit.append(
                 inst.name,
-                sum(
-                    sorted(
-                        inst.target_groups(),
-                        key=lambda ts: tuple(t.qubit_value for t in ts),
-                    ),
-                    start=[],
-                ),
+                sum(_sort_target_groups(inst.target_groups()), start=[]),
                 inst.gate_args_copy(),
             )
         all_moments.append(Moment(circuit))
