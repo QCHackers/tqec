@@ -1,5 +1,4 @@
 import random
-from tkinter import Grid
 
 import pytest
 import stim
