@@ -244,26 +244,6 @@ class NoiseModel:
             },
         )
 
-    @staticmethod
-    def depolarizing_two_body_measurement_noise(p: float) -> "NoiseModel":
-        return NoiseModel(
-            idle_depolarization=p,
-            any_clifford_1q_rule=NoiseRule(after={"DEPOLARIZE1": p}),
-            measure_rules={
-                "XX": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
-                "YY": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
-                "ZZ": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
-                "X": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-                "Y": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-                "Z": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-            },
-            gate_rules={
-                "RX": NoiseRule(after={"Z_ERROR": p}),
-                "RY": NoiseRule(after={"X_ERROR": p}),
-                "R": NoiseRule(after={"X_ERROR": p}),
-            },
-        )
-
     def _noise_rule_for_split_operation(
         self, *, split_op: stim.CircuitInstruction
     ) -> NoiseRule | None:
