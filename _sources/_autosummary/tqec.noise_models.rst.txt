@@ -28,17 +28,6 @@ tqec.noise\_models
    :recursive:
 
 
-   after_clifford_depolarization
+   noise_model
 
-   after_reset_flip
-
-   base
-
-   before_measure_flip
-
-   before_round_data_depolarization
-
-   idle_qubits
-
-   multi_qubit_gates
 

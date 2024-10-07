@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -5,19 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.compile.compile &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -83,28 +81,25 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.compile.compile</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
-<span class="kn">import</span> <span class="nn">cirq</span>
-<span class="kn">import</span> <span class="nn">stim</span>
-<span class="kn">import</span> <span class="nn">stimcirq</span>
 
-<span class="kn">from</span> <span class="nn">tqec.circuit.operations.transformer</span> <span class="kn">import</span> <span class="n">transform_to_stimcirq_compatible</span>
+<span class="kn">import</span> <span class="nn">stim</span>
+
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.block</span> <span class="kn">import</span> <span class="n">BlockLayout</span><span class="p">,</span> <span class="n">CompiledBlock</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.observables</span> <span class="kn">import</span> <span class="n">inplace_add_observables</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.specs</span> <span class="kn">import</span> <span class="n">DEFAULT_SPEC_RULES</span><span class="p">,</span> <span class="n">CubeSpec</span><span class="p">,</span> <span class="n">SpecRule</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.substitute</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_SUBSTITUTION_RULES</span><span class="p">,</span>
     <span class="n">SubstitutionKey</span><span class="p">,</span>
     <span class="n">SubstitutionRule</span><span class="p">,</span>
-    <span class="n">DEFAULT_SUBSTITUTION_RULES</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span><span class="p">,</span> <span class="n">TQECWarning</span>
-<span class="kn">from</span> <span class="nn">tqec.noise_models.base</span> <span class="kn">import</span> <span class="n">BaseNoiseModel</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">RepeatedPlaquettes</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Position3D</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position3D</span>
 <span class="kn">from</span> <span class="nn">tqec.sketchup.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">BlockGraph</span>
-<span class="kn">from</span> <span class="nn">tqec.compile.block</span> <span class="kn">import</span> <span class="n">CompiledBlock</span><span class="p">,</span> <span class="n">BlockLayout</span>
-<span class="kn">from</span> <span class="nn">tqec.compile.specs</span> <span class="kn">import</span> <span class="n">DEFAULT_SPEC_RULES</span><span class="p">,</span> <span class="n">CubeSpec</span><span class="p">,</span> <span class="n">SpecRule</span>
-<span class="kn">from</span> <span class="nn">tqec.compile.observables</span> <span class="kn">import</span> <span class="n">inplace_add_observables</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
 
 
@@ -133,7 +128,7 @@
                 <span class="s2">&quot;but got an empty layout_slices.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECWarning</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Scale the compiled graph to the given scale `k`.&quot;&quot;&quot;</span>
@@ -143,7 +138,7 @@
     <span class="k">def</span> <span class="nf">generate_stim_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">noise_models</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">BaseNoiseModel</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">noise_model</span><span class="p">:</span> <span class="n">NoiseModel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the stim circuit from the compiled graph.</span>
 
@@ -153,27 +148,9 @@
 
 <span class="sd">            A compiled stim circuit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cirq_circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_cirq_circuit</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">noise_models</span><span class="p">)</span>
-        <span class="n">cirq_circuit</span> <span class="o">=</span> <span class="n">transform_to_stimcirq_compatible</span><span class="p">(</span><span class="n">cirq_circuit</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">stimcirq</span><span class="o">.</span><span class="n">cirq_circuit_to_stim_circuit</span><span class="p">(</span><span class="n">cirq_circuit</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">generate_cirq_circuit</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">noise_models</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">BaseNoiseModel</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the cirq circuit from the compiled graph.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            k: The scale factor of the templates.</span>
-<span class="sd">            noise_models: The noise models to be applied to the circuit.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A compiled cirq circuit.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="c1"># assemble circuits time slice by time slice, layer by layer.</span>
-        <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">:</span>
             <span class="n">circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">instantiate_layer</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">)]</span>
@@ -187,49 +164,82 @@
         <span class="c1"># shift and merge circuits</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift_and_merge_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
         <span class="c1"># apply noise models</span>
-        <span class="k">for</span> <span class="n">noise_model</span> <span class="ow">in</span> <span class="n">noise_models</span><span class="p">:</span>
-            <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">with_noise</span><span class="p">(</span><span class="n">noise_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">noise_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">circuit</span> <span class="o">=</span> <span class="n">noise_model</span><span class="o">.</span><span class="n">noisy_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">circuit</span>
 
     <span class="k">def</span> <span class="nf">_shift_and_merge_circuits</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-        <span class="n">circuits_by_time</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            Modify in-place the provided `circuits`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuits:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First, shift all the circuits to make sure that they are each applied</span>
+        <span class="c1"># on the correct qubits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shift_all_circuits_inplace</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+        <span class="c1"># Then, get a global qubit index map to remap the circuit indices on the</span>
+        <span class="c1"># fly.</span>
+        <span class="n">needed_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">qubits</span> <span class="k">for</span> <span class="n">clayer</span> <span class="ow">in</span> <span class="n">circuits</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">clayer</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">global_q2i</span> <span class="o">=</span> <span class="p">{</span><span class="n">q</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">needed_qubits</span><span class="p">))}</span>
+        <span class="c1"># Add the QUBIT_COORDS instructions at the beginning of the circuit</span>
+        <span class="n">final_circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">global_q2i</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">final_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">to_qubit_coords_instruction</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="c1"># Merge all the circuits, constructing a REPEAT block when needed.</span>
         <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">layout</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">):</span>
-            <span class="n">circuits_at_t</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+                <span class="c1"># Remap the circuit qubit indices to be sure that there will be</span>
+                <span class="c1"># no index clash.</span>
+                <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">local_indices_to_global_indices</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">local_index</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">q2i</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Append either the full circuit or a REPEAT block.</span>
+                <span class="n">layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span><span class="p">):</span>
+                    <span class="n">final_circuit</span> <span class="o">+=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_repeated_circuit</span><span class="p">(</span>
+                        <span class="n">round_or_fail</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">k</span><span class="p">)),</span>
+                        <span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">final_circuit</span> <span class="o">+=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span>
+                        <span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+                <span class="c1"># Do not forget to append a TICK here</span>
+                <span class="n">final_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+        <span class="c1"># We appended one extra TICK at the end, remove it and return the result.</span>
+        <span class="k">return</span> <span class="n">final_circuit</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_shift_all_circuits_inplace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">layout</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">):</span>
             <span class="c1"># We need to shift the circuit based on the shift of the layout template.</span>
             <span class="n">origin_shift</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">origin_shift</span>
             <span class="n">element_shape</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">element_shape</span>
             <span class="n">increment</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
-                <span class="n">circuit_before_shift</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                <span class="c1"># Need to use `qubit_map` on `ScheduledCircuit` instead of</span>
-                <span class="c1"># `transform_qubits` on `cirq.Circuit` to map the MeasurementKey correctly.</span>
-                <span class="n">scheduled</span> <span class="o">=</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">circuit_before_shift</span><span class="p">)</span>
                 <span class="n">qubit_map</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="n">q</span><span class="p">:</span> <span class="n">q</span>
-                    <span class="o">+</span> <span class="p">(</span>
-                        <span class="n">origin_shift</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">element_shape</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">increment</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                    <span class="o">+</span> <span class="n">Displacement</span><span class="p">(</span>
                         <span class="n">origin_shift</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">element_shape</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">increment</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">origin_shift</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">element_shape</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">increment</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">scheduled</span><span class="o">.</span><span class="n">qubits</span>
+                    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">qubits</span>
                 <span class="p">}</span>
-                <span class="n">shifted_circuit</span> <span class="o">=</span> <span class="n">scheduled</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span>
-                    <span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">raw_circuit</span>
-                <span class="n">layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span><span class="p">):</span>
-                    <span class="n">shifted_circuit</span> <span class="o">=</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">(</span>
-                        <span class="n">cirq</span><span class="o">.</span><span class="n">CircuitOperation</span><span class="p">(</span>
-                            <span class="n">shifted_circuit</span><span class="o">.</span><span class="n">freeze</span><span class="p">(),</span>
-                            <span class="n">repetitions</span><span class="o">=</span><span class="n">round_or_fail</span><span class="p">(</span>
-                                <span class="n">layer</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
-                            <span class="p">),</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="n">circuits_at_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shifted_circuit</span><span class="p">)</span>
-            <span class="n">circuits_by_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">circuits_at_t</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()))</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">circuits_by_time</span><span class="p">,</span> <span class="n">cirq</span><span class="o">.</span><span class="n">Circuit</span><span class="p">())</span></div>
+                <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 

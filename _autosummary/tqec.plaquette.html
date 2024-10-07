@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,24 +8,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.plaquette &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tqec.plaquette.enums" href="tqec.plaquette.enums.html" />
-    <link rel="prev" title="tqec.noise_models.multi_qubit_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate" href="tqec.noise_models.multi_qubit_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate.html" /> 
+    <link rel="prev" title="tqec.noise_models.noise_model.NoiseRule" href="tqec.noise_models.noise_model.NoiseRule.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -104,6 +102,15 @@
              
   <section id="module-tqec.plaquette">
 <span id="tqec-plaquette"></span><h1>tqec.plaquette<a class="headerlink" href="#module-tqec.plaquette" title="Link to this heading"></a></h1>
+<p>Defines all the necessary data-structures to represent a plaquette.</p>
+<p>This package defines one of the core class of the <cite>tqec</cite> library: <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code>.
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code> class represents what is commonly called a “plaquette” in
+quantum error correction and is basically a <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instance
+representing the computation defining the plaquette.</p>
+<p>Because we do not have a module to perform simple geometry operations on qubits
+(yet), the <a class="reference internal" href="tqec.plaquette.qubit.html#module-tqec.plaquette.qubit" title="tqec.plaquette.qubit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec.plaquette.qubit</span></code></a> module is providing classes to represent
+the qubits a plaquette is applied to and perform some operations on them (e.g.,
+get the qubits on a specific side of the plaquette).</p>
 <p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -111,7 +118,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.plaquette.library.html#module-tqec.plaquette.library" title="tqec.plaquette.library"><code class="xref py py-obj docutils literal notranslate"><span class="pre">library</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Defines several widely used plaquettes for re-use.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.plaquette.plaquette.html#module-tqec.plaquette.plaquette" title="tqec.plaquette.plaquette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plaquette</span></code></a></p></td>
 <td><p></p></td>
@@ -127,7 +134,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.noise_models.multi_qubit_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate.html" class="btn btn-neutral float-left" title="tqec.noise_models.multi_qubit_gates.MultiQubitDepolarizingNoiseAfterMultiQubitGate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.noise_models.noise_model.NoiseRule.html" class="btn btn-neutral float-left" title="tqec.noise_models.noise_model.NoiseRule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tqec.plaquette.enums.html" class="btn btn-neutral float-right" title="tqec.plaquette.enums" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

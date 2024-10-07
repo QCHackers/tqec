@@ -28,13 +28,21 @@ tqec.circuit
    :recursive:
 
 
-   circuit
+   generation
+
+
+   measurement
+
+
+   moment
 
 
    observable_qubits
 
 
-   operations
+   qubit
+
 
    schedule
+
 

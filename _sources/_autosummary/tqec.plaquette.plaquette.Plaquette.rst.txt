@@ -14,7 +14,6 @@ tqec.plaquette.plaquette.Plaquette
    .. autosummary::
    
       ~Plaquette.__init__
-      ~Plaquette.get_mergeable_tag
    
    
 
@@ -25,7 +24,6 @@ tqec.plaquette.plaquette.Plaquette
    .. autosummary::
    
       ~Plaquette.circuit
-      ~Plaquette.measurements
       ~Plaquette.origin
       ~Plaquette.qubits
    

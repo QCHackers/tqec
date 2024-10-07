@@ -17,6 +17,7 @@ tqec.plaquette.library.pauli.MeasurementBasis
 
    .. autosummary::
    
+      ~MeasurementBasis.instruction_name
       ~MeasurementBasis.X
       ~MeasurementBasis.Z
    

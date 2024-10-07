@@ -17,6 +17,7 @@ tqec.plaquette.library.pauli.ResetBasis
 
    .. autosummary::
    
+      ~ResetBasis.instruction_name
       ~ResetBasis.X
       ~ResetBasis.Z
    

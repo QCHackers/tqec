@@ -15,7 +15,8 @@ tqec.circuit.schedule
       :toctree:
    
       merge_scheduled_circuits
-      remove_duplicate_operations
+      relabel_circuits_qubit_indices
+      remove_duplicate_instructions
    
    
 
@@ -26,8 +27,8 @@ tqec.circuit.schedule
    .. autosummary::
       :toctree:
    
+      Schedule
       ScheduledCircuit
-      ScheduledCircuits
    
    
 
@@ -38,10 +39,7 @@ tqec.circuit.schedule
    .. autosummary::
       :toctree:
    
-      ScheduleCannotBeAppliedToCircuitException
-      ScheduleEntryTooLowException
       ScheduleException
-      ScheduleWithNonIntegerEntriesException
    
    
 

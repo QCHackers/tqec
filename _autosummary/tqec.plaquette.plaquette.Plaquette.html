@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,19 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.plaquette.plaquette.Plaquette &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -118,10 +116,11 @@
 <dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.qubit.PlaquetteQubits.html#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.__init__" title="Link to this definition"></a></dt>
 <dd><p>Represents a QEC plaquette.</p>
-<p>This class stores qubits in the plaquette local coordinate system and a scheduled
-circuit that should be applied on those qubits to perform the QEC experiment.</p>
-<p>By convention, the local plaquette coordinate system is composed of a X-axis pointing
-to the right and a Y-axis pointing down.</p>
+<p>This class stores qubits in the plaquette local coordinate system and a
+scheduled circuit that should be applied on those qubits to perform the
+QEC experiment.</p>
+<p>By convention, the local plaquette coordinate system is composed of a
+X-axis pointing to the right and a Y-axis pointing down.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -132,8 +131,8 @@ the plaquette should represent.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit uses qubits not in the list of
-    PlaquetteQubit.</p>
+<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit uses qubits not listed in
+    <cite>qubits</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -144,9 +143,6 @@ the plaquette should represent.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.__init__" title="tqec.plaquette.plaquette.Plaquette.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(qubits, circuit)</p></td>
 <td><p>Represents a QEC plaquette.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mergeable_tag</span></code>()</p></td>
-<td><p></p></td>
-</tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
@@ -155,13 +151,10 @@ the plaquette should represent.</p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">circuit</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurements</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
