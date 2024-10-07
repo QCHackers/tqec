@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals
+from tqec.interval import EMPTY_INTERVAL, Interval, Intervals
 
 
 def test_interval_creation() -> None:

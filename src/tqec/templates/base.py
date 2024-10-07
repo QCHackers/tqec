@@ -7,8 +7,8 @@ from typing_extensions import override
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Shape2D
+from tqec.scale import Scalable2D, round_or_fail
 from tqec.templates.enums import TemplateOrientation, TemplateSide
-from tqec.templates.scale import Scalable2D, round_or_fail
 from tqec.templates.subtemplates import (
     UniqueSubTemplates,
     get_spatially_distinct_subtemplates,

@@ -7,9 +7,9 @@ from typing_extensions import override
 
 from tqec.exceptions import TQECException
 from tqec.position import Displacement
+from tqec.scale import Scalable2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
-from tqec.templates.scale import Scalable2D
 
 
 class GridTemplate(RectangularTemplate):

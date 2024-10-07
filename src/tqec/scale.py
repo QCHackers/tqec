@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from math import floor
 
 from tqec.exceptions import TQECException
+from tqec.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
 from tqec.position import Shape2D
-from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
 
 
 @dataclass(frozen=True)
