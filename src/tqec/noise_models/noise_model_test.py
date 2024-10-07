@@ -13,6 +13,9 @@ It is part of the code from the paper
 Modifications to the original code:
 1. Formatting with ruff.
 2. Fixing typing issues and adapting a few imports to personal taste
+3. Removing the line "DEPOLARIZE1(0.001) 0 1 2 3" from test_si_1000 and
+   test_si_1000_repeat_block due to the removal of that noise from the main
+   noise_model.py file.
 """
 
 import stim
@@ -174,7 +177,6 @@ def test_si_1000() -> None:
         DEPOLARIZE1(0.0001) 4 5 6 7 0 1 2 3
         TICK
         M(0.005) 0 1 2 3
-        DEPOLARIZE1(0.001) 0 1 2 3
         DEPOLARIZE1(0.0001) 4 5 6 7
         DEPOLARIZE1(0.002) 4 5 6 7
     """)
@@ -216,7 +218,6 @@ def test_si_1000_repeat_block() -> None:
             DEPOLARIZE1(0.0001) 4 5 6 7 0 1 2 3
             TICK
             M(0.005) 0 1 2 3
-            DEPOLARIZE1(0.001) 0 1 2 3
             DEPOLARIZE1(0.0001) 4 5 6 7
             DEPOLARIZE1(0.002) 4 5 6 7
             TICK
