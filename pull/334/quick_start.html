@@ -144,16 +144,11 @@ specific example, the command line</p>
 </pre></div>
 </div>
 <p>From this compiled computation, the final <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance can be generated.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">,</span> <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 
 <span class="n">circuit</span> <span class="o">=</span> <span class="n">compiled_computation</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">noise_models</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
-        <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
-    <span class="p">],</span>
+    <span class="n">noise_model</span><span class="o">=</span><span class="n">NoiseModel</span><span class="o">.</span><span class="n">uniform_depolarizing</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
 <span class="p">)</span>
 </pre></div>
 </div>
