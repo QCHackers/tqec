@@ -18,7 +18,8 @@ class PlaquetteQubits:
         yield from self.data_qubits
         yield from self.syndrome_qubits
 
-    def to_grid_qubit(self) -> list[GridQubit]:
+    @property
+    def all_qubits(self) -> list[GridQubit]:
         return list(self)
 
     def permute_data_qubits(self, permutation: ty.Sequence[int]) -> PlaquetteQubits:
