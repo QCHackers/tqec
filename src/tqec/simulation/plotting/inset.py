@@ -4,6 +4,7 @@
 from matplotlib.axes import Axes
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
+from tqec.sketchup.plot import draw_as_correlation_surface_on, draw_zx_graph_on
 from tqec.sketchup.zx_graph import ZXGraph
 
 
@@ -37,6 +38,6 @@ def plot_observable_as_inset(
             draw.
     """
     inset_ax = add_inset_axes3d(ax_target, bounds)
-    zx_graph.draw_as_zx_graph_on(inset_ax, node_size=50)
-    correlation_surface.draw_as_correlation_surface_on(inset_ax)
+    draw_zx_graph_on(zx_graph, inset_ax, node_size=50)
+    draw_as_correlation_surface_on(correlation_surface, inset_ax)
     inset_ax.set_facecolor((0.0, 0.0, 0.0, 0.0))
