@@ -232,7 +232,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">],</span>
         <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">final_qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">],</span>
+        <span class="n">i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent a quantum circuit with scheduled moments.</span>
 
@@ -248,7 +248,7 @@
 <span class="sd">            schedule: schedule of the provided `moments`. If an integer is</span>
 <span class="sd">                provided, each moment of the provided `stim.Circuit` is</span>
 <span class="sd">                scheduled sequentially, starting by the provided integer.</span>
-<span class="sd">            final_qubits: a map from indices to qubits that is used to re-create</span>
+<span class="sd">            i2q: a map from indices to qubits that is used to re-create</span>
 <span class="sd">                `QUBIT_COORDS` instructions when generating a `stim.Circuit`.</span>
 
 <span class="sd">        Raises:</span>
@@ -276,7 +276,7 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_final_qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_qubits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_final_qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="n">i2q</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">=</span> <span class="n">schedule</span></div>
 
 
@@ -717,7 +717,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_moments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;Trying to pop a Moment instance from a ScheduledCircuit with &quot;</span>
                 <span class="s2">&quot;all its moments already collected.&quot;</span>
             <span class="p">)</span>
