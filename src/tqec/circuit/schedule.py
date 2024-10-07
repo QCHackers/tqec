@@ -622,7 +622,7 @@ class _ScheduledCircuits:
         """
         ret = self._current_moments[index]
         if ret is None:
-            raise RuntimeError(
+            raise TQECException(
                 "Trying to pop a Moment instance from a ScheduledCircuit with "
                 "all its moments already collected."
             )
