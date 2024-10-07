@@ -93,7 +93,7 @@ class GridQubit:
 
 
 """Names of the `stim` instructions that are considered as annotations."""
-NON_COMPUTATION_INSTRUCTIONS: frozenset[str] = frozenset(
+ANNOTATION_INSTRUCTIONS: frozenset[str] = frozenset(
     [
         # Noise channels
         "CORRELATED_ERROR",

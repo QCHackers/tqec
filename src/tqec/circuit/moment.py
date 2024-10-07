@@ -25,13 +25,13 @@ class Moment:
     can all be executed in parallel. That means that it maintains the following
     invariant:
 
-    For each instruction `I` contained in any instance of this class, exactly
+    For each instruction contained in any instance of this class, exactly
     one of the following assertions is true:
 
-    1. `I` is an annotation (e.g., `QUBIT_COORDS`, `DETECTOR`, ...),
-    2. `I` is the only instruction of the `Moment` instance to be applied
-        on its targets. In other words, no other gate in the `Moment`
-        instance can be applied on the targets `I` is applied to.
+    1. The instruction is an annotation (e.g., `QUBIT_COORDS`, `DETECTOR`, ...),
+    2. It is the only instruction of the `Moment` instance to be applied
+        on its targets. In other words, no other instructions in the `Moment`
+        instance can be applied on the targets this instruction is applied to.
 
     In practice, that means that this class match closely the definition of
     [`cirq.Moment`](https://quantumai.google/reference/python/cirq/Moment).
