@@ -14,12 +14,6 @@ class PlaquetteQubits:
     data_qubits: list[GridQubit]
     syndrome_qubits: list[GridQubit]
 
-    def get_data_qubits(self) -> list[GridQubit]:
-        return self.data_qubits
-
-    def get_syndrome_qubits(self) -> list[GridQubit]:
-        return self.syndrome_qubits
-
     def __iter__(self) -> ty.Iterator[GridQubit]:
         yield from self.data_qubits
         yield from self.syndrome_qubits

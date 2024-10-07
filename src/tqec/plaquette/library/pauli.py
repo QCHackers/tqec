@@ -40,8 +40,8 @@ def _append_operation_inplace(
     plaquette_side: PlaquetteSide | None = None,
     add_tick: bool = True,
 ) -> None:
-    (syndrome_qubit,) = qubits.get_syndrome_qubits()
-    data_qubits = qubits.get_data_qubits()
+    (syndrome_qubit,) = qubits.syndrome_qubits
+    data_qubits = qubits.data_qubits
 
     # Apply the operation on the syndrome qubit
     circuit.append(syndrome_qubit_operation_name, [q2i[syndrome_qubit]], [])
@@ -99,8 +99,8 @@ def _make_pauli_syndrome_measurement_circuit(
         TQECException: if `len(pauli_string) != len(data_qubits)` or
             if `any(p not in _SUPPORTED_PAULI for p in pauli_string)`.
     """
-    (sq,) = qubits.get_syndrome_qubits()
-    dqs = qubits.get_data_qubits()
+    (sq,) = qubits.syndrome_qubits
+    dqs = qubits.data_qubits
     if len(pauli_string) != len(dqs):
         raise TQECException(
             f"The number of Pauli characters provided ({len(pauli_string)}) "

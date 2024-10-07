@@ -14,8 +14,8 @@ from tqec.plaquette.qubit import RoundedPlaquetteQubits, SquarePlaquetteQubits
 def test_xx_memory_plaquette() -> None:
     plaquette = xx_memory_plaquette(PlaquetteOrientation.UP)
     assert plaquette.qubits == RoundedPlaquetteQubits(PlaquetteOrientation.UP)
-    (sq,) = plaquette.qubits.get_syndrome_qubits()
-    dq1, dq2 = plaquette.qubits.get_data_qubits()
+    (sq,) = plaquette.qubits.syndrome_qubits
+    dq1, dq2 = plaquette.qubits.data_qubits
     assert plaquette.circuit.schedule == Schedule.from_offsets([0, 1, 4, 5, 6, 7])
 
     q2i = plaquette.circuit.q2i
@@ -35,8 +35,8 @@ def test_xx_memory_plaquette() -> None:
 def test_zz_memory_plaquette() -> None:
     plaquette = zz_memory_plaquette(PlaquetteOrientation.UP)
     assert plaquette.qubits == RoundedPlaquetteQubits(PlaquetteOrientation.UP)
-    (sq,) = plaquette.qubits.get_syndrome_qubits()
-    dq1, dq2 = plaquette.qubits.get_data_qubits()
+    (sq,) = plaquette.qubits.syndrome_qubits
+    dq1, dq2 = plaquette.qubits.data_qubits
     assert plaquette.circuit.schedule == Schedule.from_offsets([0, 3, 5, 7])
 
     q2i = plaquette.circuit.q2i
@@ -56,8 +56,8 @@ def test_zz_memory_plaquette() -> None:
 def test_xxxx_memory_plaquette() -> None:
     plaquette = xxxx_memory_plaquette()
     assert plaquette.qubits == SquarePlaquetteQubits()
-    (sq,) = plaquette.qubits.get_syndrome_qubits()
-    dq1, dq2, dq3, dq4 = plaquette.qubits.get_data_qubits()
+    (sq,) = plaquette.qubits.syndrome_qubits
+    dq1, dq2, dq3, dq4 = plaquette.qubits.data_qubits
     assert plaquette.circuit.schedule == Schedule.from_offsets([0, 1, 2, 3, 4, 5, 6, 7])
 
     q2i = plaquette.circuit.q2i
@@ -77,8 +77,8 @@ def test_xxxx_memory_plaquette() -> None:
 def test_zzzz_memory_plaquette() -> None:
     plaquette = zzzz_memory_plaquette()
     assert plaquette.qubits == SquarePlaquetteQubits().permute_data_qubits([0, 2, 1, 3])
-    (sq,) = plaquette.qubits.get_syndrome_qubits()
-    dq1, dq2, dq3, dq4 = plaquette.qubits.get_data_qubits()
+    (sq,) = plaquette.qubits.syndrome_qubits
+    dq1, dq2, dq3, dq4 = plaquette.qubits.data_qubits
     assert plaquette.circuit.schedule == Schedule.from_offsets([0, 2, 3, 4, 5, 7])
 
     q2i = plaquette.circuit.q2i
