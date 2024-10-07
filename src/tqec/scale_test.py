@@ -1,7 +1,7 @@
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.interval import Interval, Intervals, R_intervals
+from tqec.interval import Interval
 from tqec.position import Shape2D
 from tqec.scale import (
     LinearFunction,

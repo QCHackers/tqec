@@ -10,7 +10,7 @@ from .circuit import (
     merge_scheduled_circuits,
 )
 from .exceptions import TQECException
-from .interval import Interval, Intervals
+from .interval import Interval
 from .noise_models import NoiseModel
 from .plaquette import (
     Plaquette,
