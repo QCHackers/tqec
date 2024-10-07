@@ -69,21 +69,6 @@ def test_scalable_interval_is_empty() -> None:
     assert sint.is_empty()
 
 
-def test_scalable_interval_non_empty_on_colinear() -> None:
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(2, 2))
-    assert sint.non_empty_on() == R_intervals
-
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(2))
-    assert sint.non_empty_on() == Intervals([])
-
-
-def test_scalable_interval_non_empty_on() -> None:
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(3))
-    assert sint.non_empty_on() == Intervals(
-        [Interval(0, float("inf"), start_excluded=True, end_excluded=True)]
-    )
-
-
 def test_scalable_2d_creation() -> None:
     Scalable2D(LinearFunction(0, 0), LinearFunction(1, 0))
     Scalable2D(LinearFunction(-1903, 23), LinearFunction(0, -10932784))

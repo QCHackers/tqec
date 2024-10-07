@@ -197,6 +197,3 @@ class ScalableInterval:
 
     def is_empty(self) -> bool:
         return not (self.width < 0).is_empty()
-
-    def non_empty_on(self) -> Intervals:
-        return (self.width <= 0).complement()
