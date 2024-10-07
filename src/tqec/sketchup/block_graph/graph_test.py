@@ -1,7 +1,8 @@
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.sketchup.block_graph import BlockGraph, CubeType, PipeType
+from tqec.sketchup.block_graph.enums import CubeType, PipeType
+from tqec.sketchup.block_graph.graph import BlockGraph
 from tqec.sketchup.zx_graph import Position3D, ZXGraph
 
 
