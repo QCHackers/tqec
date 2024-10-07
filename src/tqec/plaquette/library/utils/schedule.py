@@ -44,9 +44,9 @@ def cnot_pauli_schedule(
         TQECException: if the provided `pauli_string` is not "xx" nor "zz".
 
     Returns:
-        a :class:`Schedule` instance with two entries within
-        `[starting_index, starting_index + 3]` representing the time at which
-        the CNOTs implementing the plaquette should be scheduled.
+        a list of integers representing a partial schedule with two entries
+        within `[starting_index, starting_index + 3]` representing the time at
+        which the CNOTs implementing the plaquette should be scheduled.
     """
     if pauli_string not in {"xx", "zz"}:
         raise TQECException(
