@@ -4,6 +4,7 @@ import typing as ty
 
 import numpy
 import stim
+
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
 
@@ -336,9 +337,7 @@ def _offset_detectors(
 ) -> list[stim.CircuitInstruction]:
     offset_detectors: list[stim.CircuitInstruction] = []
     for detector in detectors:
-        targets: list[object] = [
-            stim.target_rec(t.value - offset) for t in detector.targets_copy()
-        ]
+        targets = [stim.target_rec(t.value - offset) for t in detector.targets_copy()]
         offset_detectors.append(
             stim.CircuitInstruction("DETECTOR", targets, detector.gate_args_copy())
         )

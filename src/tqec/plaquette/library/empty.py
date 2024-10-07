@@ -1,4 +1,4 @@
-import cirq
+"""Defines empty plaquettes with an empty circuit."""
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.plaquette.enums import PlaquetteOrientation
@@ -11,7 +11,7 @@ from tqec.plaquette.qubit import (
 
 
 def empty_plaquette(qubits: PlaquetteQubits) -> Plaquette:
-    return Plaquette(qubits, ScheduledCircuit(cirq.Circuit()))
+    return Plaquette(qubits, ScheduledCircuit.empty())
 
 
 def empty_square_plaquette() -> Plaquette:

@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-import typing
-from typing_extensions import override
 import itertools
+import typing
 from collections import defaultdict
 from dataclasses import dataclass
 
-from tqec.circuit.operations.measurement import (
-    Measurement,
-    get_measurements_from_circuit,
-)
+from typing_extensions import override
+
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
@@ -18,24 +15,15 @@ from tqec.templates.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:
-    _MERGEABLE_TAG: str = "tqec_can_be_merged"
-
-    @staticmethod
-    def get_mergeable_tag() -> str:
-        return Plaquette._MERGEABLE_TAG
-
-    def __init__(
-        self,
-        qubits: PlaquetteQubits,
-        circuit: ScheduledCircuit,
-    ) -> None:
+    def __init__(self, qubits: PlaquetteQubits, circuit: ScheduledCircuit) -> None:
         """Represents a QEC plaquette.
 
-        This class stores qubits in the plaquette local coordinate system and a scheduled
-        circuit that should be applied on those qubits to perform the QEC experiment.
+        This class stores qubits in the plaquette local coordinate system and a
+        scheduled circuit that should be applied on those qubits to perform the
+        QEC experiment.
 
-        By convention, the local plaquette coordinate system is composed of a X-axis pointing
-        to the right and a Y-axis pointing down.
+        By convention, the local plaquette coordinate system is composed of a
+        X-axis pointing to the right and a Y-axis pointing down.
 
         Args:
             qubits: qubits used by the plaquette circuit, given in the local
@@ -44,20 +32,19 @@ class Plaquette:
                 the plaquette should represent.
 
         Raises:
-            TQECException: if the provided circuit uses qubits not in the list of
-                PlaquetteQubit.
+            TQECException: if the provided circuit uses qubits not listed in
+                `qubits`.
         """
-        plaquette_qubits = {qubit.to_grid_qubit() for qubit in qubits}
-        circuit_qubits = set(circuit.raw_circuit.all_qubits())
+        plaquette_qubits = set(qubits)
+        circuit_qubits = set(circuit.qubits)
         if not circuit_qubits.issubset(plaquette_qubits):
             wrong_qubits = circuit_qubits.difference(plaquette_qubits)
             raise TQECException(
                 f"The following qubits ({wrong_qubits}) are in the provided circuit "
-                "but not in the list of PlaquetteQubit."
+                "but not in the provided list of qubits."
             )
         self._qubits = qubits
         self._circuit = circuit
-        self._measurements = get_measurements_from_circuit(circuit.raw_circuit)
 
     @property
     def origin(self) -> Position2D:
@@ -71,16 +58,24 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
-    @property
-    def measurements(self) -> list[Measurement]:
-        return self._measurements
-
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
 
 @dataclass(frozen=True)
 class Plaquettes:
+    """Represent a collection of plaquettes that might be applied to a
+    :class:`Template` instance.
+
+    The goal of this class is to abstract away how a "collection of plaquettes"
+    is represented and to provide a unique interface in order to retrieve
+    plaquettes when building a quantum circuit from a template and plaquettes.
+
+    It also checks that the represented collection is valid, which means that it
+    does not include any plaquette associated with index 0 (that is internally
+    and conventionally reserved for the empty plaquette).
+    """
+
     collection: CollectionType
 
     def __post_init__(self) -> None:

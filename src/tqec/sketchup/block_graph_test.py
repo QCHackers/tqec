@@ -1,8 +1,8 @@
 import pytest
 
-from tqec.sketchup.zx_graph import Position3D, ZXGraph
-from tqec.sketchup.block_graph import BlockGraph, CubeType, PipeType
 from tqec.exceptions import TQECException
+from tqec.sketchup.block_graph import BlockGraph, CubeType, PipeType
+from tqec.sketchup.zx_graph import Position3D, ZXGraph
 
 
 def test_block_graph_construction() -> None:

@@ -1,17 +1,69 @@
+"""Defines two classes to represent measurements in a quantum circuit.
+
+This module defines :class:`Measurement` to represent a unique measurement in
+a quantum circuit and :class:`RepeatedMeasurement` to represent a unique
+measurement within a `REPEAT` instruction in a quantum circuit.
+"""
+
 from __future__ import annotations
 
 import typing
-from collections import defaultdict
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-import cirq
+from typing_extensions import override
 
+from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
+from tqec.position import Displacement
 from tqec.templates.interval import Interval, Rplus_interval
 
 
+class AbstractMeasurement(ABC):
+    @abstractmethod
+    def offset_spatially_by(self, x: int, y: int) -> AbstractMeasurement:
+        """Returns a new instance offset by the provided spatial coordinates.
+
+        Args:
+            x: first spatial dimension offset.
+            y: second spatial dimension offset.
+
+        Returns:
+            a new instance with the specified offset from `self`.
+        """
+
+    @abstractmethod
+    def offset_temporally_by(self, t: int) -> AbstractMeasurement:
+        """Returns a new instance offset by the provided temporal coordinates.
+
+        Args:
+            t: temporal offset.
+
+        Returns:
+            a new instance with the specified offset from `self`.
+        """
+
+    @abstractmethod
+    def __repr__(self) -> str:
+        """Python magic method to represent an instance as a string."""
+
+    @abstractmethod
+    def map_qubit(
+        self, qubit_map: typing.Mapping[GridQubit, GridQubit]
+    ) -> AbstractMeasurement:
+        """Returns a new instance representing a measurement on the qubit
+        obtained from `self.qubit` and the provided `qubit_map`.
+
+        Args:
+            qubit_map: a correspondence map for qubits.
+
+        Returns:
+            a new measurement instance with the mapped qubit.
+        """
+
+
 @dataclass(frozen=True)
-class Measurement:
+class Measurement(AbstractMeasurement):
     """A unique representation for each measurement in a quantum circuit.
 
     This class aims at being able to represent measurements in a quantum circuit
@@ -32,35 +84,32 @@ class Measurement:
         TQECException: if the provided `offset` is not strictly negative.
     """
 
-    qubit: cirq.GridQubit
+    qubit: GridQubit
     offset: int
 
     def __post_init__(self) -> None:
         if self.offset >= 0:
             raise TQECException("Measurement.offset should be negative.")
 
+    @override
     def offset_spatially_by(self, x: int, y: int) -> Measurement:
-        return Measurement(self.qubit + (y, x), self.offset)
+        return Measurement(self.qubit + Displacement(x, y), self.offset)
 
+    @override
     def offset_temporally_by(self, t: int) -> Measurement:
         return Measurement(self.qubit, self.offset + t)
 
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, Measurement):
-            raise NotImplementedError(f"Cannot compare {type(self)} < {type(other)}.")
-        return (self.offset, self.qubit) < (other.offset, other.qubit)
-
+    @override
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.qubit}, {self.offset})"
 
-    def map_qubit(
-        self, qubit_map: typing.Mapping[cirq.GridQubit, cirq.GridQubit]
-    ) -> Measurement:
+    @override
+    def map_qubit(self, qubit_map: typing.Mapping[GridQubit, GridQubit]) -> Measurement:
         return Measurement(qubit_map[self.qubit], self.offset)
 
 
 @dataclass(frozen=True)
-class RepeatedMeasurement:
+class RepeatedMeasurement(AbstractMeasurement):
     """A unique representation for a repeated measurement in a quantum circuit.
 
     This class aims at being able to represent a repeated measurement in a
@@ -84,7 +133,7 @@ class RepeatedMeasurement:
         TQECException: if the provided `offsetd` contains positive entries.
     """
 
-    qubit: cirq.GridQubit
+    qubit: GridQubit
     offsets: Interval
 
     def __post_init__(self) -> None:
@@ -94,46 +143,25 @@ class RepeatedMeasurement:
                 "containing only strictly negative values."
             )
 
+    @override
     def offset_spatially_by(self, x: int, y: int) -> RepeatedMeasurement:
-        return RepeatedMeasurement(self.qubit + (y, x), self.offsets)
+        return RepeatedMeasurement(self.qubit + Displacement(x, y), self.offsets)
 
+    @override
     def offset_temporally_by(self, t: int) -> RepeatedMeasurement:
         return RepeatedMeasurement(self.qubit, self.offsets + t)
+
+    @override
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.qubit}, {self.offsets})"
+
+    @override
+    def map_qubit(
+        self, qubit_map: typing.Mapping[GridQubit, GridQubit]
+    ) -> RepeatedMeasurement:
+        return RepeatedMeasurement(qubit_map[self.qubit], self.offsets)
 
     def measurements(self) -> list[Measurement]:
         return [
             Measurement(self.qubit, offset) for offset in self.offsets.iter_integers()
         ]
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.qubit}, {self.offsets})"
-
-
-def get_measurements_from_circuit(
-    circuit: cirq.AbstractCircuit,
-) -> list[Measurement]:
-    ordered_measured_qubits: list[cirq.GridQubit] = []
-    for moment in circuit.moments:
-        for op in moment:
-            if isinstance(op, cirq.CircuitOperation):
-                raise TQECException(
-                    "Found an instance of cirq.CircuitOperation in a function "
-                    "expecting a flat quantum circuit."
-                )
-            if cirq.is_measurement(op):
-                qubits = op.qubits
-                if len(qubits) != 1:
-                    raise TQECException("Found a measurement on multiple qubits.")
-                (qubit,) = qubits
-                if not isinstance(qubit, cirq.GridQubit):
-                    raise TQECException(
-                        "Found a qubit that is not an instance of cirq.GridQubit."
-                    )
-                ordered_measured_qubits.append(qubit)
-    measured_qubit_offset: defaultdict[cirq.GridQubit, int] = defaultdict(lambda: -1)
-    measurements: list[Measurement] = []
-    for mqubit in ordered_measured_qubits[::-1]:
-        index = measured_qubit_offset[mqubit]
-        measured_qubit_offset[mqubit] = index - 1
-        measurements.append(Measurement(mqubit, index))
-    return measurements[::-1]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import Enum, auto
 
 
@@ -7,7 +9,7 @@ class PlaquetteOrientation(Enum):
     DOWN = auto()
     UP = auto()
 
-    def to_plaquette_side(self) -> "PlaquetteSide":
+    def to_plaquette_side(self) -> PlaquetteSide:
         if self == PlaquetteOrientation.RIGHT:
             return PlaquetteSide.LEFT
         elif self == PlaquetteOrientation.LEFT:
@@ -24,7 +26,7 @@ class PlaquetteSide(Enum):
     DOWN = auto()
     UP = auto()
 
-    def opposite(self) -> "PlaquetteSide":
+    def opposite(self) -> PlaquetteSide:
         if self == PlaquetteSide.RIGHT:
             return PlaquetteSide.LEFT
         elif self == PlaquetteSide.LEFT:

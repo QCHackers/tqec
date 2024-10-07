@@ -1,11 +1,30 @@
+"""Defines :meth:`generate_circuit`, one of the core method of the `tqec`
+package.
+
+This module defines two of core methods of the `tqec` package:
+
+- :meth:`generate_circuit` that is the most convenient method for external users.
+- :meth:`generate_circuit_from_instantiation` that gives more freedom to the
+  user (and is used internally by :meth:`generate_circuit`) at the expense of
+  often less convenient inputs.
+
+Both of these methods are used to generate the `stim.Circuit` instance
+representing **one** time slice (often equivalent to "one QEC round"). Users are
+expected to call these methods several times and concatenate the output
+`stim.Circuit` instances in time to obtain a full QEC implementation.
+
+Note that these methods do not work with `REPEAT` instructions.
+"""
+
 from __future__ import annotations
 
 from copy import deepcopy
 
-import cirq
 import numpy
 import numpy.typing as npt
+import stim
 
+from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
@@ -13,39 +32,37 @@ from tqec.position import Displacement
 from tqec.templates.base import Template
 
 
-def generate_circuit(
-    template: Template,
-    plaquettes: Plaquettes,
-) -> cirq.Circuit:
+def generate_circuit(template: Template, plaquettes: Plaquettes) -> ScheduledCircuit:
     """Generate a quantum circuit from a template and its plaquettes.
 
-    This is one of the core methods of the `tqec` package. It generates a quantum circuit
-    from the description of the template that should be implemented as well as the plaquettes
-    that should be used to instantiate the provided template.
+    This is one of the core methods of the `tqec` package. It generates a
+    quantum circuit from the description of the template that should be
+    implemented as well as the plaquettes that should be used to instantiate the
+    provided template.
 
     This function requires that a few pre-conditions on the inputs are met:
-    1. the number of plaquettes provided should match the number of plaquettes required by
-    the provided template.
-    2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
-    If any of the above pre-conditions is not met, the inputs are considered invalid, in which
-    case this function **might** raise an error.
+    1. the number of plaquettes provided should match the number of plaquettes
+       required by the provided template.
+    2. all the provided plaquettes should be implemented on :class:`GridQubit`
+       instances **only**.
+
+    If any of the above pre-conditions is not met, the inputs are considered
+    invalid, in which case this function **might** raise an error.
 
     Args:
         template: spatial description of the quantum error correction experiment
             we want to implement.
         plaquettes: description of the computation that should happen at
             different time-slices of the quantum error correction experiment (or
-            at least part of it). If provided as a dictionary, plaquettes should be
-            1-indexed (i.e., ``0 not in plaquettes`` should be ``True``).
+            at least part of it).
 
     Returns:
-        a cirq.Circuit instance implementing the (part of) quantum error
+        a `ScheduledCircuit` instance implementing the (part of) quantum error
         correction experiment represented by the provided inputs.
 
     Raises:
-        TQECException: if ``len(plaquettes) != template.expected_plaquettes_number`` or
-            if plaquettes is provided as a dictionary and ``0 in plaquettes``.
+        TQECException: if `len(plaquettes) != template.expected_plaquettes_number`.
     """
     # Check that the user gave enough plaquettes.
     if (
@@ -72,39 +89,39 @@ def generate_circuit_from_instantiation(
     plaquette_array: npt.NDArray[numpy.int_],
     plaquettes: Plaquettes,
     increments: Displacement,
-) -> cirq.Circuit:
+) -> ScheduledCircuit:
     """Generate a quantum circuit from an array of plaquette indices and the
     associated plaquettes.
 
-    This is one of the core methods of the `tqec` package. It generates a quantum circuit
-    from a spatial description of where the plaquettes should be located as well as the
-    actual plaquettes used.
+    This is one of the core methods of the `tqec` package. It generates a
+    quantum circuit from a spatial description of where the plaquettes should be
+    located as well as the actual plaquettes used.
 
     This function requires that a few pre-conditions on the inputs are met:
-    1. the number of plaquettes provided should match the number of plaquettes required by
-    the provided template.
-    2. all the provided plaquettes should be implemented on cirq.GridQubit instances **only**.
 
-    If any of the above pre-conditions is not met, the inputs are considered invalid, in which
-    case this function **might** raise an error.
+    1. the number of plaquettes provided should match the number of plaquettes
+       required by the provided template.
+    2. all the provided plaquettes should be implemented on :class:`GridQubit`
+       instances **only**.
+
+    If any of the above pre-conditions is not met, the inputs are considered
+    invalid, in which case this function **might** raise an error.
 
     Args:
-        plaquette_array: an array of indices referencing Plaquette instances in the
-            `plaquettes` argument.
+        plaquette_array: an array of indices referencing Plaquette instances in
+            the `plaquettes` argument.
         plaquettes: description of the computation that should happen at
             different time-slices of the quantum error correction experiment (or
-            at least part of it). If provided as a dictionary, plaquettes should be
-            1-indexed (i.e., ``0 not in plaquettes`` should be ``True``).
+            at least part of it).
         increments: the displacement between each plaquette origin.
 
     Returns:
-        a cirq.Circuit instance implementing the (part of) quantum error
+        a `ScheduledCircuit` instance implementing the (part of) quantum error
         correction experiment represented by the provided inputs.
 
     Raises:
-        TQECException: if any index in `plaquette_array` is not correctly associated to a
-            plaquette in `plaquettes` or if `plaquettes` is provided as a dictionary and
-            `0 in plaquettes`.
+        TQECException: if any index in `plaquette_array` is not correctly
+            associated to a plaquette in `plaquettes`.
     """
     # Check that the user gave enough plaquettes.
     indices = numpy.unique(plaquette_array)
@@ -120,7 +137,7 @@ def generate_circuit_from_instantiation(
 
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.
-    plaquette_circuits = {0: ScheduledCircuit(cirq.Circuit())} | {
+    plaquette_circuits = {0: ScheduledCircuit.empty()} | {
         i: plaquettes[i].circuit for i in indices
     }
 
@@ -145,13 +162,10 @@ def generate_circuit_from_instantiation(
 
 def _create_mapping(
     plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: Displacement
-) -> dict[cirq.GridQubit, cirq.GridQubit]:
+) -> dict[GridQubit, GridQubit]:
     origin = plaquette.origin
-
     qubit_map = {
-        # GridQubit are indexed as (row, col), so (y, x)
-        # Qubits are given relative to an origin, so we need to add the offset
-        qubit: qubit + (offset.y, offset.x) + (origin.y, origin.x)
-        for qubit in scheduled_circuit.mappable_qubits
+        qubit: qubit + Displacement(offset.x + origin.x, offset.y + origin.y)
+        for qubit in scheduled_circuit.qubits
     }
     return qubit_map

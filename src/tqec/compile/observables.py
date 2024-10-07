@@ -1,7 +1,7 @@
-import cirq
+import stim
 
-from tqec.circuit.operations.measurement import Measurement
-from tqec.circuit.operations.operation import make_observable
+from tqec.circuit.qubit import GridQubit
+from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Displacement, Shape2D
 from tqec.sketchup.block_graph import AbstractObservable, Cube, Pipe
@@ -11,7 +11,7 @@ from tqec.templates.scale import round_or_fail
 
 def get_center_qubit_at_horizontal_pipe(
     pipe: Pipe, block_shape: Shape2D, template_increments: Displacement
-) -> cirq.GridQubit:
+) -> GridQubit:
     """Get the single center qubit of a horizontal pipe."""
     if pipe.direction == Direction3D.Z:
         raise TQECException("Can only get center qubit for horizontal pipes.")
@@ -22,20 +22,19 @@ def get_center_qubit_at_horizontal_pipe(
     half_increment_y = template_increments.y // 2
     u_pos = pipe.u.position
     if pipe.direction == Direction3D.X:
-        return cirq.GridQubit(
-            round_or_fail((0.5 + u_pos.y) * height) - half_increment_y,
+        return GridQubit(
             (1 + u_pos.x) * width - half_increment_x,
+            round_or_fail((0.5 + u_pos.y) * height) - half_increment_y,
         )
     else:
-        return cirq.GridQubit(
-            (1 + u_pos.y) * height - 1,
-            round_or_fail((0.5 + u_pos.x) * width) - 1,
+        return GridQubit(
+            round_or_fail((0.5 + u_pos.x) * width) - 1, (1 + u_pos.y) * height - 1
         )
 
 
 def get_midline_qubits_for_cube(
     cube: Cube, block_shape: Shape2D, template_increments: Displacement
-) -> list[cirq.GridQubit]:
+) -> list[GridQubit]:
     """Get the midline qubits for a cube."""
     if cube.cube_type.is_spatial_junction or cube.is_virtual:
         raise TQECException(
@@ -55,10 +54,7 @@ def get_midline_qubits_for_cube(
     pos = cube.position
     if midline_orientation == Direction3D.X:
         return [
-            cirq.GridQubit(
-                round_or_fail((0.5 + pos.y) * height) - half_increment_y,
-                col,
-            )
+            GridQubit(col, round_or_fail((0.5 + pos.y) * height) - half_increment_y)
             for col in range(
                 pos.x * width + half_increment_x,
                 (pos.x + 1) * width - half_increment_x,
@@ -67,10 +63,7 @@ def get_midline_qubits_for_cube(
         ]
     else:
         return [
-            cirq.GridQubit(
-                row,
-                round_or_fail((0.5 + pos.x) * width) - half_increment_x,
-            )
+            GridQubit(round_or_fail((0.5 + pos.x) * width) - half_increment_x, row)
             for row in range(
                 pos.y * height + half_increment_y,
                 (pos.y + 1) * height - half_increment_y,
@@ -83,8 +76,8 @@ def get_stabilizer_region_qubits_for_pipe(
     pipe: Pipe,
     block_shape: Shape2D,
     template_increments: Displacement,
-) -> list[cirq.GridQubit]:
-    stabilizer_qubits: list[cirq.GridQubit] = []
+) -> list[GridQubit]:
+    stabilizer_qubits: list[GridQubit] = []
     if pipe.pipe_type.direction == Direction3D.Z:
         raise TQECException(
             "Can only get stabilizer region qubits for horizontal pipes."
@@ -111,8 +104,8 @@ def get_stabilizer_region_qubits_for_pipe(
                     + 2 * template_increments.y * j
                     + u_pos.y * height
                 )
-                stabilizer_qubits.append(cirq.GridQubit(y1, x1))
-                stabilizer_qubits.append(cirq.GridQubit(y2, x2))
+                stabilizer_qubits.append(GridQubit(x1, y1))
+                stabilizer_qubits.append(GridQubit(x2, y2))
     else:
         block_border_y = (u_pos.y + 1) * height - 1
         for j in range(block_shape.y // 2):
@@ -129,13 +122,13 @@ def get_stabilizer_region_qubits_for_pipe(
                     + 2 * template_increments.x * i
                     + u_pos.x * width
                 )
-                stabilizer_qubits.append(cirq.GridQubit(y1, x1))
-                stabilizer_qubits.append(cirq.GridQubit(y2, x2))
+                stabilizer_qubits.append(GridQubit(x1, y1))
+                stabilizer_qubits.append(GridQubit(x2, y2))
     return stabilizer_qubits
 
 
 def inplace_add_observables(
-    circuits: list[list[cirq.Circuit]],
+    circuits: list[list[ScheduledCircuit]],
     template_slices: list[LayoutTemplate],
     abstract_observables: list[AbstractObservable],
 ) -> None:
@@ -152,13 +145,17 @@ def inplace_add_observables(
             stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
                 pipe, template.element_shape, template.get_increments()
             )
-            observables = [
-                make_observable(
-                    measurements=[Measurement(q, -1) for q in stabilizer_qubits],
-                    observable_index=i,
-                )
-            ]
-            circuits[z][0].append(observables, cirq.InsertStrategy.INLINE)
+            measurement_records = _get_measurement_records_from_scheduled_circuit(
+                circuits[z][0]
+            )
+            circuits[z][0].append_observable(
+                i,
+                [
+                    stim.target_rec(measurement_records[q][-1])
+                    for q in stabilizer_qubits
+                ],
+            )
+
         # Add the line measurements to the end of the last layer of circuits at z.
         for cube_or_pipe in observable.top_lines:
             if isinstance(cube_or_pipe, Cube):
@@ -175,10 +172,61 @@ def inplace_add_observables(
                         cube_or_pipe, template.element_shape, template.get_increments()
                     )
                 ]
-            observables = [
-                make_observable(
-                    measurements=[Measurement(q, -1) for q in qubits],
-                    observable_index=i,
+            measurement_records = _get_measurement_records_from_scheduled_circuit(
+                circuits[z][-1]
+            )
+            circuits[z][-1].append_observable(
+                i,
+                [stim.target_rec(measurement_records[q][-1]) for q in qubits],
+            )
+
+
+_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
+    [
+        # Collapsing Gates
+        "M",
+        "MR",
+        "MRX",
+        "MRY",
+        "MRZ",
+        "MX",
+        "MY",
+        "MZ",
+    ]
+)
+_NOT_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
+    [
+        # Pair Measurement Gates
+        "MXX",
+        "MYY",
+        "MZZ",
+        # Generalized Pauli Product Gates
+        "MPP",
+    ]
+)
+
+
+def _get_measurement_records_from_scheduled_circuit(
+    circuit: ScheduledCircuit,
+) -> dict[GridQubit, list[int]]:
+    # Get the global qubit map
+    i2q: dict[int, GridQubit] = {i: q for q, i in circuit.q2i.items()}
+    # Build the local measurement map.
+    current_measurement_record = -circuit.num_measurements
+    measurement_records: dict[GridQubit, list[int]] = {}
+    for moment in circuit.moments:
+        for instruction in moment.instructions:
+            assert not isinstance(instruction, stim.CircuitRepeatBlock)
+            if instruction.name in _NOT_SUPPORTED_MEASUREMENT_GATE_NAMES:
+                raise TQECException(
+                    f"Found a non-supported measurement instruction: {instruction}"
                 )
-            ]
-            circuits[z][-1].append(observables, cirq.InsertStrategy.INLINE)
+            if instruction.name in _SUPPORTED_MEASUREMENT_GATE_NAMES:
+                for (qi,) in instruction.target_groups():
+                    qubit = i2q[qi.value]
+                    measurement_records.setdefault(qubit, []).append(
+                        current_measurement_record
+                    )
+                    current_measurement_record += 1
+    assert current_measurement_record == 0, "Sanity check"
+    return measurement_records

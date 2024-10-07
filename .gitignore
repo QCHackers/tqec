@@ -185,3 +185,9 @@ docs/_autosummary
 .python-version
 requirements.lock
 requirements-dev.lock
+
+# Ruff
+.ruff_cache
+
+# tqec specific
+benchmarks/data/

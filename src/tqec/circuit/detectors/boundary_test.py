@@ -1,5 +1,6 @@
 import numpy
 import pytest
+
 from tqec.circuit.detectors.boundary import BoundaryStabilizer, manhattan_distance
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.circuit.detectors.pauli import PauliString

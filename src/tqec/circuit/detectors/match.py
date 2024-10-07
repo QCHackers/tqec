@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 import numpy
 import stim
+
 from tqec.circuit.detectors.boundary import BoundaryStabilizer
 from tqec.circuit.detectors.flow import FragmentFlows, FragmentLoopFlows
 from tqec.circuit.detectors.match_utils.cover import find_exact_cover_sat
@@ -32,7 +33,7 @@ class MatchedDetector:
         return numpy.allclose(self.coords, other.coords)
 
     def to_instruction(self) -> stim.CircuitInstruction:
-        targets: list[object] = [
+        targets = [
             stim.target_rec(m.offset)
             for m in sorted(
                 self.measurements, key=lambda measurement: -measurement.offset

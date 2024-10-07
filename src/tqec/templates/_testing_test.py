@@ -1,5 +1,4 @@
 import numpy
-import pytest
 
 from tqec.position import Shape2D
 from tqec.templates._testing import FixedTemplate

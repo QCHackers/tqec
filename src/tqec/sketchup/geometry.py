@@ -57,7 +57,7 @@ class Face:
     def get_triangle_indices() -> npt.NDArray[np.int_]:
         return np.array([0, 0, 2, 2, 1, 1, 2, 2, 0, 0, 3, 3], dtype=np.int_)
 
-    def get_vertices(self) -> npt.NDArray[np.float_]:
+    def get_vertices(self) -> npt.NDArray[np.float64]:
         ax3_index = self.normal_direction.axis_index
         ax1_index = (ax3_index + 1) % 3
         ax2_index = (ax3_index + 2) % 3
@@ -69,7 +69,7 @@ class Face:
                 [self.width, self.height, 0],
                 [0, self.height, 0],
             ],
-            dtype=np.float_,
+            dtype=np.float64,
         )
         # permute the axes
         permutation = [0, 1, 2]
@@ -78,11 +78,11 @@ class Face:
         permutation[ax2_index] = 1
         vertices_position = vertices_position[:, permutation]
         # translate the rectangle
-        vertices_position += np.asarray(self.translation, dtype=np.float_)
+        vertices_position += np.asarray(self.translation, dtype=np.float64)
         return vertices_position.flatten()
 
-    def get_normal_vectors(self) -> npt.NDArray[np.float_]:
-        normal = np.zeros(3, dtype=np.float_)
+    def get_normal_vectors(self) -> npt.NDArray[np.float64]:
+        normal = np.zeros(3, dtype=np.float64)
         ax3_index = self.normal_direction.axis_index
         normal[ax3_index] = 1 if self.positive_facing else -1
         return np.tile(normal, 4)

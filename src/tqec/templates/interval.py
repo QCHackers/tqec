@@ -180,11 +180,11 @@ class Interval:
 
     def iter_integers(self) -> typing.Iterable[int]:
         inclusive_start_int = int(math.ceil(self.start))
-        if self.start_excluded and abs(self.start - inclusive_start_int) < 1e-8:
+        if self.start_excluded and abs(self.start - round(self.start)) < 1e-30:
             inclusive_start_int += 1
-        exclusive_end_int = int(math.floor(self.end)) + 1
-        if self.end_excluded and abs(self.end - exclusive_end_int) < 1e-8:
-            exclusive_end_int -= 1
+        exclusive_end_int = int(math.ceil(self.end))
+        if not self.end_excluded and abs(self.end - round(self.end)) < 1e-30:
+            exclusive_end_int += 1
         return range(inclusive_start_int, exclusive_end_int)
 
 

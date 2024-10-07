@@ -74,16 +74,11 @@ From this compiled computation, the final ``stim.Circuit`` instance can be gener
 
 .. code-block:: python
 
-    from tqec.noise_models import (
-        AfterCliffordDepolarizingNoise, DepolarizingNoiseOnIdlingQubit,
-    )
+    from tqec.noise_models import NoiseModel
 
     circuit = compiled_computation.generate_stim_circuit(
         k=2,
-        noise_models=[
-            AfterCliffordDepolarizingNoise(0.001),
-            DepolarizingNoiseOnIdlingQubit(0.001),
-        ],
+        noise_model=NoiseModel.uniform_depolarizing(0.001),
     )
 
 5. Annotate the circuit with detectors

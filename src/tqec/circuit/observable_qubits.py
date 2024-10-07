@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
-import cirq
-
+from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.qubit import PlaquetteQubit
+from tqec.position import Displacement
 from tqec.templates.base import Template
 from tqec.templates.enums import TemplateOrientation
 
@@ -15,7 +14,7 @@ def observable_qubits_from_template(
     template: Template,
     plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
     orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
-) -> Sequence[tuple[cirq.GridQubit, int]]:
+) -> Sequence[tuple[GridQubit, int]]:
     """Return the default observable qubits for the given template and its
     plaquettes.
 
@@ -66,12 +65,12 @@ def observable_qubits_from_template(
             continue
         plaquette = plaquettes[plaquette_index]
         # GridQubits are indexed as (row, col), so (y, x)
-        offset = (
-            row_index * increments.y + plaquette.origin.y,
+        offset = Displacement(
             column_index * increments.x + plaquette.origin.x,
+            row_index * increments.y + plaquette.origin.y,
         )
         observable_qubits += [
-            (qubit.to_grid_qubit() + offset, 0)
+            (qubit + offset, 0)
             for qubit in plaquette.qubits.get_edge_qubits(orientation)
         ]
     return sorted(set(observable_qubits))

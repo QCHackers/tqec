@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Exit on error of any of the following lines.
 set -e
@@ -18,7 +18,6 @@ if [ $# -ne 1 ]
 fi
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-
 PYTHON_EXEC_NAME="cnot_all_observables"
 SCALING_FACTOR="$1"
 BENCH_DIRECTORY="${PARENT_PATH}/data/${PYTHON_EXEC_NAME}_k=${SCALING_FACTOR}_$(date '+%F_%H-%M-%S')"

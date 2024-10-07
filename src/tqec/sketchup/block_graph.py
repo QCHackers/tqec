@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import pathlib
 import typing as ty
+from copy import deepcopy
 from dataclasses import astuple, dataclass
 from enum import Enum
 from io import BytesIO
@@ -13,11 +13,7 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.sketchup.zx_graph import (
-    NodeType,
-    ZXGraph,
-    ZXNode,
-)
+from tqec.sketchup.zx_graph import NodeType, ZXGraph, ZXNode
 
 if ty.TYPE_CHECKING:
     from tqec.sketchup.collada import ColladaDisplayHelper
