@@ -232,7 +232,7 @@
             <span class="k">for</span> <span class="n">qi</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">count_qubit_accesses</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">body_copy</span><span class="p">())</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">counter</span><span class="p">[</span><span class="n">qi</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span> <span class="o">*</span> <span class="n">instruction</span><span class="o">.</span><span class="n">repeat_count</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">NON_COMPUTATION_INSTRUCTIONS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">ANNOTATION_INSTRUCTIONS</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">targets_copy</span><span class="p">():</span>
                 <span class="c1"># Ignore targets that are not qubit targets.</span>
