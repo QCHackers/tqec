@@ -1,0 +1,31 @@
+tqec.compile.compile.CompiledGraph
+==================================
+
+.. currentmodule:: tqec.compile.compile
+
+.. autoclass:: CompiledGraph
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CompiledGraph.__init__
+      ~CompiledGraph.generate_stim_circuit
+      ~CompiledGraph.scale_to
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CompiledGraph.layout_slices
+      ~CompiledGraph.observables
+   
+   

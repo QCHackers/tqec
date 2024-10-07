@@ -1,0 +1,6 @@
+tqec.plaquette.library.memory.xxxx\_memory\_plaquette
+=====================================================
+
+.. currentmodule:: tqec.plaquette.library.memory
+
+.. autofunction:: xxxx_memory_plaquette
