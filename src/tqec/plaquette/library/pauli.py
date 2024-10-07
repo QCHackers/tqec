@@ -31,35 +31,6 @@ class MeasurementBasis(Enum):
         return f"M{self.value}"
 
 
-def _append_operation_inplace(
-    circuit: stim.Circuit,
-    qubits: PlaquetteQubits,
-    q2i: dict[GridQubit, int],
-    syndrome_qubit_operation_basis: ResetBasis | MeasurementBasis,
-    data_qubit_operation_basis: ResetBasis | MeasurementBasis | None = None,
-    plaquette_side: PlaquetteSide | None = None,
-    add_tick: bool = True,
-) -> None:
-    (syndrome_qubit,) = qubits.syndrome_qubits
-    data_qubits = qubits.data_qubits
-
-    # Apply the operation on the syndrome qubit
-    circuit.append(
-        syndrome_qubit_operation_basis.instruction_name, [q2i[syndrome_qubit]], []
-    )
-    # Apply the operation on the data qubits in the appropriate basis if asked to
-    if data_qubit_operation_basis is not None:
-        qubits_to_apply_operation_to = data_qubits
-        if plaquette_side is not None:
-            qubits_to_apply_operation_to = qubits.get_qubits_on_side(plaquette_side)
-        for data_qubit in qubits_to_apply_operation_to:
-            circuit.append(
-                data_qubit_operation_basis.instruction_name, [q2i[data_qubit]], []
-            )
-    if add_tick:
-        circuit.append("TICK", [], [])
-
-
 def _make_pauli_syndrome_measurement_circuit(
     qubits: PlaquetteQubits,
     pauli_string: Literal["xx", "zz", "xxxx", "zzzz"],
@@ -106,15 +77,10 @@ def _make_pauli_syndrome_measurement_circuit(
             f"The number of Pauli characters provided ({len(pauli_string)}) "
             f"does not correspond to the number of data qubits ({len(dqs)})."
         )
-    syndrome_qubit_reset_basis: ResetBasis
-    syndrome_qubit_measurement_basis: MeasurementBasis
-    match pauli_string:
-        case "xx" | "xxxx":
-            syndrome_qubit_reset_basis = ResetBasis.X
-            syndrome_qubit_measurement_basis = MeasurementBasis.X
-        case "zz" | "zzzz":
-            syndrome_qubit_reset_basis = ResetBasis.Z
-            syndrome_qubit_measurement_basis = MeasurementBasis.Z
+
+    data_qubits_to_reset_measure: list[GridQubit] = dqs
+    if plaquette_side is not None:
+        data_qubits_to_reset_measure = qubits.get_qubits_on_side(plaquette_side)
 
     # Start the built quantum circuit by defining the correct qubit coordinates.
     circuit = stim.Circuit()
@@ -122,35 +88,37 @@ def _make_pauli_syndrome_measurement_circuit(
     for qubit, qubit_index in q2i.items():
         circuit.append(qubit.to_qubit_coords_instruction(qubit_index))
 
-    _append_operation_inplace(
-        circuit,
-        qubits,
-        q2i,
-        syndrome_qubit_reset_basis,
-        data_qubit_reset_basis,
-        plaquette_side,
-    )
+    # Insert the appropriate reset gate (with a potential basis change for
+    # syndrome qubit if needed).
+    circuit.append("RX" if pauli_string in ["xx", "xxxx"] else "R", [q2i[sq]], [])
+    if data_qubit_reset_basis is not None:
+        circuit.append(
+            data_qubit_reset_basis.instruction_name,
+            [q2i[q] for q in data_qubits_to_reset_measure],
+            [],
+        )
+    circuit.append("TICK", [], [])
 
     for i, pauli in enumerate(pauli_string.lower()):
         match pauli:
             case "z":
                 circuit.append("CX", [q2i[dqs[i]], q2i[sq]], [])
-                circuit.append("TICK", [], [])
             case "x":
                 circuit.append("CX", [q2i[sq], q2i[dqs[i]]], [])
-                circuit.append("TICK", [], [])
             case _:
                 raise TQECException(f"Unsupported Pauli operation: {pauli}.")
+        circuit.append("TICK", [], [])
 
-    _append_operation_inplace(
-        circuit,
-        qubits,
-        q2i,
-        syndrome_qubit_measurement_basis,
-        data_qubit_measurement_basis,
-        plaquette_side,
-        add_tick=False,
-    )
+    # Insert the appropriate measurement gate (with a potential basis change for
+    # syndrome qubit if needed).
+    circuit.append("MX" if pauli_string in ["xx", "xxxx"] else "M", [q2i[sq]], [])
+    if data_qubit_measurement_basis is not None:
+        circuit.append(
+            data_qubit_measurement_basis.instruction_name,
+            [q2i[q] for q in data_qubits_to_reset_measure],
+            [],
+        )
+
     return circuit
 
 
