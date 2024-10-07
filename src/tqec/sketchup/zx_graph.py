@@ -126,12 +126,15 @@ class ZXGraph:
     @property
     def leaf_nodes(self) -> list[ZXNode]:
         """Get the leaf nodes of the graph."""
-        return [node for node in self.nodes if self._graph.degree(node.position) == 1]
+        return [node for node in self.nodes if self._node_degree(node) == 1]
 
     @property
     def isolated_nodes(self) -> list[ZXNode]:
         """Get the isolated nodes of the graph."""
-        return [node for node in self.nodes if self._graph.degree(node.position) == 0]
+        return [node for node in self.nodes if self._node_degree(node) == 0]
+
+    def _node_degree(self, node: ZXNode) -> int:
+        return self._graph.degree(node.position)  # type: ignore
 
     def add_node(
         self,
