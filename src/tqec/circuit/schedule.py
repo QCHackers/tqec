@@ -139,7 +139,7 @@ class ScheduledCircuit:
         self,
         moments: list[Moment],
         schedule: Schedule | list[int] | int,
-        final_qubits: dict[int, GridQubit],
+        i2q: dict[int, GridQubit],
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
 
@@ -155,7 +155,7 @@ class ScheduledCircuit:
             schedule: schedule of the provided `moments`. If an integer is
                 provided, each moment of the provided `stim.Circuit` is
                 scheduled sequentially, starting by the provided integer.
-            final_qubits: a map from indices to qubits that is used to re-create
+            i2q: a map from indices to qubits that is used to re-create
                 `QUBIT_COORDS` instructions when generating a `stim.Circuit`.
 
         Raises:
@@ -183,7 +183,7 @@ class ScheduledCircuit:
             )
 
         self._moments: list[Moment] = moments
-        self._final_qubits: dict[int, GridQubit] = final_qubits
+        self._final_qubits: dict[int, GridQubit] = i2q
         self._schedule: Schedule = schedule
 
     @staticmethod
