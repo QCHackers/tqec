@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,19 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.circuit.moment.Moment &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -119,13 +117,13 @@
 <p>This class is a collection of <cite>stim.CircuitInstruction</cite> instances that
 can all be executed in parallel. That means that it maintains the following
 invariant:</p>
-<p>For each instruction <cite>I</cite> contained in any instance of this class, exactly
+<p>For each instruction contained in any instance of this class, exactly
 one of the following assertions is true:</p>
 <ol class="arabic simple">
-<li><p><cite>I</cite> is an annotation (e.g., <cite>QUBIT_COORDS</cite>, <cite>DETECTOR</cite>, …),</p></li>
+<li><p>The instruction is an annotation (e.g., <cite>QUBIT_COORDS</cite>, <cite>DETECTOR</cite>, …),</p></li>
 <li><dl class="simple">
-<dt><cite>I</cite> is the only instruction of the <cite>Moment</cite> instance to be applied</dt><dd><p>on its targets. In other words, no other gate in the <cite>Moment</cite>
-instance can be applied on the targets <cite>I</cite> is applied to.</p>
+<dt>It is the only instruction of the <cite>Moment</cite> instance to be applied</dt><dd><p>on its targets. In other words, no other instructions in the <cite>Moment</cite>
+instance can be applied on the targets this instruction is applied to.</p>
 </dd>
 </dl>
 </li>
