@@ -14,7 +14,6 @@ tqec.noise\_models.noise\_model.NoiseModel
    .. autosummary::
    
       ~NoiseModel.__init__
-      ~NoiseModel.depolarizing_two_body_measurement_noise
       ~NoiseModel.noisy_circuit
       ~NoiseModel.si1000
       ~NoiseModel.uniform_depolarizing

@@ -104,9 +104,7 @@
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">compile_block_graph</span><span class="p">,</span> <span class="n">annotate_detectors_automatically</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">,</span> <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 
 <span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;clean_exportable_cnot.dae&quot;</span><span class="p">)</span>
 <span class="n">observables</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
@@ -117,10 +115,7 @@
     <span class="c1"># take a lot of time.</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="c1"># The noise applied and noise levels can be changed.</span>
-    <span class="n">noise_models</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">AfterCliffordDepolarizingNoise</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
-        <span class="n">DepolarizingNoiseOnIdlingQubit</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
-    <span class="p">],</span>
+    <span class="n">noise_model</span><span class="o">=</span><span class="n">NoiseModel</span><span class="o">.</span><span class="n">uniform_depolarizing</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">circuit_with_detectors</span> <span class="o">=</span> <span class="n">annotate_detectors_automatically</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">circuit_with_detectors</span><span class="p">)</span>
