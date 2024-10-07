@@ -3,6 +3,7 @@ import itertools
 from concurrent.futures import ProcessPoolExecutor
 from typing import Callable, Iterable, Iterator
 
+import sinter
 import stim
 
 from tqec.circuit.detectors.construction import annotate_detectors_automatically
@@ -76,3 +77,40 @@ def generate_stim_circuits_with_detectors(
             ),
             itertools.product(ks, ps),
         )
+
+
+def generate_sinter_tasks(
+    compiled_graph: CompiledGraph,
+    ks: Iterable[int],
+    ps: Iterable[float],
+    noise_model_factory: Callable[[float], NoiseModel],
+    max_workers: int | None = None,
+) -> Iterator[sinter.Task]:
+    """Generate `sinter.Task` instances from the provided parameters.
+
+    This function generate the `sinter.Task` instances for all the combinations
+    of the given `ks` and `ps` with a noise model that depends on `p` and
+    computed with `noise_model_factory`.
+
+    Args:
+        compiled_graph: computation to export to `stim.Circuit` instances.
+        ks: values of `k` to consider.
+        ps: values of `p`, the noise strength, to consider.
+        noise_model_factory: a callable that builds a noise model from an input
+            strength `p`.
+        max_workers: The maximum number of processes that can be used to
+            execute the given calls. If None or not given then as many
+            worker processes will be created as the machine has processors.
+
+    Yields:
+        tasks to be collected by a call to `sinter.collect`.
+    """
+    yield from (
+        sinter.Task(
+            circuit=circuit,
+            json_metadata={"d": 2 * k + 1, "r": 2 * k + 1, "p": p},
+        )
+        for circuit, k, p in generate_stim_circuits_with_detectors(
+            compiled_graph, ks, ps, noise_model_factory, max_workers
+        )
+    )
