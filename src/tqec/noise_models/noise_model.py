@@ -12,7 +12,12 @@ It is part of the code from the paper
 
 Modifications to the original code:
 1. Formatting with ruff.
-2. Fixing typing issues and adapting a few imports to personal taste
+2. Fixing typing issues and adapting a few imports to personal taste.
+3. A minor adjustment to the measurement noise rules of `uniform_depolarizing` 
+and `si1000` noise models: the depolarizing error on the measured qubits after 
+measurement is removed because, in our library, all measurements are immediately
+followed by resets. As a result, the depolarizing error has no effect.
+4. Remove the `depolarizing_two_body_measurement_noise` noise model.
 """
 
 from collections import Counter, defaultdict
@@ -195,9 +200,7 @@ class NoiseModel:
         As defined in "A Fault-Tolerant Honeycomb Memory":
         https://arxiv.org/abs/2108.10457
 
-        Small tweak when measurements aren't immediately followed by a reset: the measurement result
-        is probabilistically flipped instead of the input qubit. The input qubit is depolarized after
-        the measurement.
+        Small tweak from the paper: The measurement result is probabilistically flipped instead of the input qubit.
         """
         return NoiseModel(
             idle_depolarization=p / 10,
@@ -205,7 +208,7 @@ class NoiseModel:
             any_clifford_1q_rule=NoiseRule(after={"DEPOLARIZE1": p / 10}),
             any_clifford_2q_rule=NoiseRule(after={"DEPOLARIZE2": p}),
             measure_rules={
-                "Z": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p * 5),
+                "Z": NoiseRule(after={}, flip_result=p * 5),
             },
             gate_rules={
                 "R": NoiseRule(after={"X_ERROR": p * 2}),
@@ -222,20 +225,19 @@ class NoiseModel:
         probabilistically bit flipped (or phase flipped if appropriate).
 
         Non-demolition measurement is treated a bit unusually in that it
-        is the result that is flipped instead of the input qubit. The
-        input qubit is depolarized.
+        is the result that is flipped instead of the input qubit.
         """
         return NoiseModel(
             idle_depolarization=p,
             any_clifford_1q_rule=NoiseRule(after={"DEPOLARIZE1": p}),
             any_clifford_2q_rule=NoiseRule(after={"DEPOLARIZE2": p}),
             measure_rules={
-                "X": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-                "Y": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-                "Z": NoiseRule(after={"DEPOLARIZE1": p}, flip_result=p),
-                "XX": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
-                "YY": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
-                "ZZ": NoiseRule(after={"DEPOLARIZE2": p}, flip_result=p),
+                "X": NoiseRule(after={}, flip_result=p),
+                "Y": NoiseRule(after={}, flip_result=p),
+                "Z": NoiseRule(after={}, flip_result=p),
+                "XX": NoiseRule(after={}, flip_result=p),
+                "YY": NoiseRule(after={}, flip_result=p),
+                "ZZ": NoiseRule(after={}, flip_result=p),
             },
             gate_rules={
                 "RX": NoiseRule(after={"Z_ERROR": p}),
