@@ -23,9 +23,7 @@ You can generate `stim.Circuit` instances representing that computation using
 from tqec import (
     BlockGraph, compile_block_graph, annotate_detectors_automatically,
 )
-from tqec.noise_models import (
-    AfterCliffordDepolarizingNoise, DepolarizingNoiseOnIdlingQubit,
-)
+from tqec.noise_models import NoiseModel
 
 block_graph = BlockGraph.from_dae_file("clean_exportable_cnot.dae")
 observables = block_graph.get_abstract_observables()
@@ -36,10 +34,7 @@ circuit = compiled_computation.generate_stim_circuit(
     # take a lot of time.
     k=2,
     # The noise applied and noise levels can be changed.
-    noise_models=[
-        AfterCliffordDepolarizingNoise(0.001),
-        DepolarizingNoiseOnIdlingQubit(0.001),
-    ],
+    noise_model=NoiseModel.uniform_depolarizing(0.001),
 )
 circuit_with_detectors = annotate_detectors_automatically(circuit)
 print(circuit_with_detectors)
