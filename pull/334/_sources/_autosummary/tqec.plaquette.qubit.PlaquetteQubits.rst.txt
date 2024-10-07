@@ -17,7 +17,6 @@ tqec.plaquette.qubit.PlaquetteQubits
       ~PlaquetteQubits.get_edge_qubits
       ~PlaquetteQubits.get_qubits_on_side
       ~PlaquetteQubits.permute_data_qubits
-      ~PlaquetteQubits.to_grid_qubit
    
    
 
@@ -27,6 +26,7 @@ tqec.plaquette.qubit.PlaquetteQubits
 
    .. autosummary::
    
+      ~PlaquetteQubits.all_qubits
       ~PlaquetteQubits.data_qubits
       ~PlaquetteQubits.syndrome_qubits
    
