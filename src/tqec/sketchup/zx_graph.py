@@ -219,7 +219,7 @@ class ZXGraph:
         node_size: int = 400,
         hadamard_size: int = 200,
         edge_width: int = 1,
-    ):
+    ) -> None:
         """Draw the 3D graph using matplotlib on the provided figure.
 
         Args:
@@ -280,7 +280,6 @@ class ZXGraph:
         ax.set_zlim3d(
             [np.mean(z_limits) - plot_radius, np.mean(z_limits) + plot_radius]
         )
-        return ax
 
     def draw_as_correlation_surface_on(
         self,
