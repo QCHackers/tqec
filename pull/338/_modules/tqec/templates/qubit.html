@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.templates.qubit &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.templates.qubit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.templates.qubit</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
+
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECWarning</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">RectangularTemplate</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateSide</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">Scalable2D</span>
+
+
+<div class="viewcode-block" id="QubitTemplate">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitTemplate.html#tqec.templates.qubit.QubitTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">QubitTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit.</span>
+
+<span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
+
+<span class="sd">        1  5  6  5  6  2</span>
+<span class="sd">        7  9 10  9 10 11</span>
+<span class="sd">        8 10  9 10  9 12</span>
+<span class="sd">        7  9 10  9 10 11</span>
+<span class="sd">        8 10  9 10  9 12</span>
+<span class="sd">        3 13 14 13 14  4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+
+        <span class="c1"># The four corners</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># The up side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="c1"># The left side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+        <span class="c1"># The center</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="c1"># The right side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+        <span class="c1"># The bottom side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">14</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
+            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span></div>
+
+
+
+<div class="viewcode-block" id="QubitVerticalBorders">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitVerticalBorders.html#tqec.templates.qubit.QubitVerticalBorders">[docs]</a>
+<span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Two vertical sides of neighbouring error-corrected qubits glued</span>
+<span class="sd">    together.</span>
+
+<span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
+
+<span class="sd">        1 2</span>
+<span class="sd">        5 7</span>
+<span class="sd">        6 8</span>
+<span class="sd">        5 7</span>
+<span class="sd">        6 8</span>
+<span class="sd">        3 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+
+        <span class="c1"># The four corners</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># The left side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="c1"># The right side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">8</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
+            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">indices</span></div>
+
+
+
+<div class="viewcode-block" id="QubitHorizontalBorders">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitHorizontalBorders.html#tqec.templates.qubit.QubitHorizontalBorders">[docs]</a>
+<span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Two horizontal sides of neighbouring error-corrected qubits glued</span>
+<span class="sd">    together.</span>
+
+<span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
+
+<span class="sd">        1 5 6 5 6 2</span>
+<span class="sd">        3 7 8 7 8 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+
+        <span class="c1"># The four corners</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># The up side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="c1"># The bottom side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">8</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
+            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span></div>
+
+
+
+<div class="viewcode-block" id="Qubit4WayJunctionTemplate">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.Qubit4WayJunctionTemplate.html#tqec.templates.qubit.Qubit4WayJunctionTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">Qubit4WayJunctionTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit that is making a 4-way junction with other</span>
+<span class="sd">    logical qubits.</span>
+
+<span class="sd">    The below text represents this template for an input ``k == 4`` ::</span>
+
+<span class="sd">        1  5  6  5  6  5  6  5  6  2</span>
+<span class="sd">        7 10 11 10 11 10 11 10 11 12</span>
+<span class="sd">        8 11 10 11 10 11 10 11  9 13</span>
+<span class="sd">        7  9 11 10 11 10 11  9 11 12</span>
+<span class="sd">        8 11  9 11 10 11  9 11  9 13</span>
+<span class="sd">        7  9 11  9 11 10 11  9 11 12</span>
+<span class="sd">        8 11  9 11 10 11 10 11  9 13</span>
+<span class="sd">        7  9 11 10 11 10 11 10 11 12</span>
+<span class="sd">        8 11 10 11 10 11 10 11 10 13</span>
+<span class="sd">        3 14 15 14 15 14 15 14 15  4</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">        For `k == 1`, this template does not include any of the plaquette</span>
+<span class="sd">        indexed `9` and so its instantiation has a &quot;hole&quot; in the plaquette</span>
+<span class="sd">        indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Instantiating Qubit4WayJunctionTemplate with k=1. The &quot;</span>
+                <span class="s2">&quot;instantiation array returned will not have any plaquette indexed &quot;</span>
+                <span class="s2">&quot;9, which might break other parts of the library.&quot;</span><span class="p">,</span>
+                <span class="n">TQECWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="c1"># The four corners</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># The up side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="c1"># The left side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+        <span class="c1"># The center, which is the complex part.</span>
+        <span class="c1"># Start by plaquette_indices[10] which is the plaquette that is</span>
+        <span class="c1"># uniformly spread on the template</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="c1"># Now initialize the other plaquettes</span>
+        <span class="c1"># Start by writing plaquette_indices[9] everywhere and</span>
+        <span class="c1"># override with plaquette_indices[8] where needed.</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># We want (i + j) to be even, because that are the only places where</span>
+            <span class="c1"># plaquette_indices[8] *might* be encountered. We do that directly</span>
+            <span class="c1"># in the range expression.</span>
+            <span class="c1"># We need to avoid 0 here because it is the border of the template.</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="c1"># If the cell represented by (i, j) is:</span>
+                <span class="c1"># - below the main diagonal and above the anti-diagonal</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">j</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+
+        <span class="c1"># The right side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+        <span class="c1"># The bottom side</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">15</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
+            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
+                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
+                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
