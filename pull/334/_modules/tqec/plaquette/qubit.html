@@ -99,12 +99,6 @@
     <span class="n">data_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]</span>
     <span class="n">syndrome_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">get_data_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span>
-
-    <span class="k">def</span> <span class="nf">get_syndrome_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span>
-
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span>

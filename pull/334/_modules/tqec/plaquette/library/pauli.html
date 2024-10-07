@@ -129,8 +129,8 @@
     <span class="n">plaquette_side</span><span class="p">:</span> <span class="n">PlaquetteSide</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">add_tick</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="p">(</span><span class="n">syndrome_qubit</span><span class="p">,)</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">get_syndrome_qubits</span><span class="p">()</span>
-    <span class="n">data_qubits</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">get_data_qubits</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">syndrome_qubit</span><span class="p">,)</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span>
+    <span class="n">data_qubits</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">data_qubits</span>
 
     <span class="c1"># Apply the operation on the syndrome qubit</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">syndrome_qubit_operation_name</span><span class="p">,</span> <span class="p">[</span><span class="n">q2i</span><span class="p">[</span><span class="n">syndrome_qubit</span><span class="p">]],</span> <span class="p">[])</span>
@@ -188,8 +188,8 @@
 <span class="sd">        TQECException: if `len(pauli_string) != len(data_qubits)` or</span>
 <span class="sd">            if `any(p not in _SUPPORTED_PAULI for p in pauli_string)`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="p">(</span><span class="n">sq</span><span class="p">,)</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">get_syndrome_qubits</span><span class="p">()</span>
-    <span class="n">dqs</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">get_data_qubits</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">sq</span><span class="p">,)</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span>
+    <span class="n">dqs</span> <span class="o">=</span> <span class="n">qubits</span><span class="o">.</span><span class="n">data_qubits</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pauli_string</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dqs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;The number of Pauli characters provided (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pauli_string</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>

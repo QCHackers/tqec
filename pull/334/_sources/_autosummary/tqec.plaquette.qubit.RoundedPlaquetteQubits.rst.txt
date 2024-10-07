@@ -14,10 +14,8 @@ tqec.plaquette.qubit.RoundedPlaquetteQubits
    .. autosummary::
    
       ~RoundedPlaquetteQubits.__init__
-      ~RoundedPlaquetteQubits.get_data_qubits
       ~RoundedPlaquetteQubits.get_edge_qubits
       ~RoundedPlaquetteQubits.get_qubits_on_side
-      ~RoundedPlaquetteQubits.get_syndrome_qubits
       ~RoundedPlaquetteQubits.permute_data_qubits
       ~RoundedPlaquetteQubits.to_grid_qubit
    
