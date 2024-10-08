@@ -12,6 +12,7 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
 from tqec.templates.scale import LinearFunction, round_or_fail
+from tqec.plaquette.enums import PlaquetteSide
 
 
 class Plaquette:
@@ -57,6 +58,16 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    def project_on_side(self, plaquette_side: PlaquetteSide) -> Plaquette:
+        kept_data_qubits = self.qubits.get_qubits_on_side(plaquette_side)
+        new_plaquette_qubits = PlaquetteQubits(
+            kept_data_qubits, self.qubits.syndrome_qubits
+        )
+        new_scheduled_circuit = self.circuit.filter_by_qubits(
+            new_plaquette_qubits.all_qubits
+        )
+        return Plaquette(new_plaquette_qubits, new_scheduled_circuit)
 
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
