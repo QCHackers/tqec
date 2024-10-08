@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from attr import dataclass
+from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
