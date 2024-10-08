@@ -1,0 +1,33 @@
+tqec.templates.interval.Intervals
+=================================
+
+.. currentmodule:: tqec.templates.interval
+
+.. autoclass:: Intervals
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Intervals.__init__
+      ~Intervals.complement
+      ~Intervals.contains
+      ~Intervals.intersection
+      ~Intervals.is_empty
+      ~Intervals.union
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Intervals.intervals
+   
+   

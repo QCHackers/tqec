@@ -1,0 +1,31 @@
+tqec.circuit.schedule.Schedule
+==============================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autoclass:: Schedule
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Schedule.__init__
+      ~Schedule.append
+      ~Schedule.from_offsets
+      ~Schedule.insert
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Schedule.schedule
+   
+   

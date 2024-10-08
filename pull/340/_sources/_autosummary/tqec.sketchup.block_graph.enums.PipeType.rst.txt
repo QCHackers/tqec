@@ -1,0 +1,44 @@
+tqec.sketchup.block\_graph.enums.PipeType
+=========================================
+
+.. currentmodule:: tqec.sketchup.block_graph.enums
+
+.. autoclass:: PipeType
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PipeType.get_color_at_side
+      ~PipeType.from_color_at_side
+      ~PipeType.infer_cube_type_at_side
+      ~PipeType.temporal_basis
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PipeType.has_hadamard
+      ~PipeType.direction
+      ~PipeType.OZX
+      ~PipeType.OXZ
+      ~PipeType.XOZ
+      ~PipeType.ZOX
+      ~PipeType.XZO
+      ~PipeType.ZXO
+      ~PipeType.OZXH
+      ~PipeType.OXZH
+      ~PipeType.ZOXH
+      ~PipeType.XOZH
+      ~PipeType.ZXOH
+      ~PipeType.XZOH
+   
+   

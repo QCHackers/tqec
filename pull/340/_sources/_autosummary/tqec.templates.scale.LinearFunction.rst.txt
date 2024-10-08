@@ -1,0 +1,30 @@
+tqec.templates.scale.LinearFunction
+===================================
+
+.. currentmodule:: tqec.templates.scale
+
+.. autoclass:: LinearFunction
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LinearFunction.__init__
+      ~LinearFunction.intersection
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LinearFunction.offset
+      ~LinearFunction.slope
+   
+   
