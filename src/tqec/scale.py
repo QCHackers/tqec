@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from math import floor
 
 from tqec.exceptions import TQECException
+from tqec.interval import EMPTY_INTERVAL, Interval, R_interval
 from tqec.position import Shape2D
-from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals, R_interval
 
 
 @dataclass(frozen=True)
@@ -197,6 +197,3 @@ class ScalableInterval:
 
     def is_empty(self) -> bool:
         return not (self.width < 0).is_empty()
-
-    def non_empty_on(self) -> Intervals:
-        return (self.width <= 0).complement()

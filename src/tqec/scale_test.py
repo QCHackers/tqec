@@ -1,9 +1,9 @@
 import pytest
 
 from tqec.exceptions import TQECException
+from tqec.interval import Interval
 from tqec.position import Shape2D
-from tqec.templates.interval import Interval, Intervals, R_intervals
-from tqec.templates.scale import (
+from tqec.scale import (
     LinearFunction,
     Scalable2D,
     ScalableInterval,
@@ -67,21 +67,6 @@ def test_scalable_interval_creation() -> None:
 def test_scalable_interval_is_empty() -> None:
     sint = ScalableInterval(LinearFunction(2, 2), LinearFunction(2))
     assert sint.is_empty()
-
-
-def test_scalable_interval_non_empty_on_colinear() -> None:
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(2, 2))
-    assert sint.non_empty_on() == R_intervals
-
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(2))
-    assert sint.non_empty_on() == Intervals([])
-
-
-def test_scalable_interval_non_empty_on() -> None:
-    sint = ScalableInterval(LinearFunction(2), LinearFunction(3))
-    assert sint.non_empty_on() == Intervals(
-        [Interval(0, float("inf"), start_excluded=True, end_excluded=True)]
-    )
 
 
 def test_scalable_2d_creation() -> None:

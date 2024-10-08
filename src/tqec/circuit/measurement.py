@@ -15,8 +15,8 @@ from typing_extensions import override
 
 from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
+from tqec.interval import Interval, Rplus_interval
 from tqec.position import Displacement
-from tqec.templates.interval import Interval, Rplus_interval
 
 
 class AbstractMeasurement(ABC):
