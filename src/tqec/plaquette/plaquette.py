@@ -59,8 +59,23 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
-    def project_on_side(self, plaquette_side: PlaquetteSide) -> Plaquette:
-        kept_data_qubits = self.qubits.get_qubits_on_side(plaquette_side.opposite())
+    def cutoff_on_side(self, cutoff_side: PlaquetteSide) -> Plaquette:
+        """Cut off the plaquette on the given side and return a new plaquette
+        with the remaining qubits and circuit.
+
+        This method is useful for deriving a boundary plaquette from a integral
+        plaquette.
+
+        Args:
+            cutoff_side: side on which to cut off the plaquette. The qubits
+                on the opposite side will be kept.
+
+        Returns:
+            A new plaquette with the qubits on the opposite side of `cutoff_side`.
+            The circuit is also updated to only use the kept qubits and empty
+            moments with the corresponding schedules are removed.
+        """
+        kept_data_qubits = self.qubits.get_qubits_on_side(cutoff_side.opposite())
         new_plaquette_qubits = PlaquetteQubits(
             kept_data_qubits, self.qubits.syndrome_qubits
         )

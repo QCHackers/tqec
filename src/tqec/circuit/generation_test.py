@@ -14,7 +14,7 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def plaquette() -> Plaquette:
-    return make_css_surface_code_plaquette("Z").project_on_side(PlaquetteSide.LEFT)
+    return make_css_surface_code_plaquette("Z").cutoff_on_side(PlaquetteSide.LEFT)
 
 
 @pytest.fixture

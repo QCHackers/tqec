@@ -113,39 +113,37 @@ def _usual_block(
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1, reset_basis).project_on_side(PlaquetteSide.UP),
-            7: factory(b2, reset_basis).project_on_side(PlaquetteSide.LEFT),
+            6: factory(b1, reset_basis).cutoff_on_side(PlaquetteSide.UP),
+            7: factory(b2, reset_basis).cutoff_on_side(PlaquetteSide.LEFT),
             9: factory(b1, reset_basis),
             10: factory(b2, reset_basis),
-            12: factory(b2, reset_basis).project_on_side(PlaquetteSide.RIGHT),
-            13: factory(b1, reset_basis).project_on_side(PlaquetteSide.DOWN),
+            12: factory(b2, reset_basis).cutoff_on_side(PlaquetteSide.RIGHT),
+            13: factory(b1, reset_basis).cutoff_on_side(PlaquetteSide.DOWN),
         }
     )
     repeating_plaquettes = RepeatedPlaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1).project_on_side(PlaquetteSide.UP),
-            7: factory(b2).project_on_side(PlaquetteSide.LEFT),
+            6: factory(b1).cutoff_on_side(PlaquetteSide.UP),
+            7: factory(b2).cutoff_on_side(PlaquetteSide.LEFT),
             9: factory(b1),
             10: factory(b2),
-            12: factory(b2).project_on_side(PlaquetteSide.RIGHT),
-            13: factory(b1).project_on_side(PlaquetteSide.DOWN),
+            12: factory(b2).cutoff_on_side(PlaquetteSide.RIGHT),
+            13: factory(b1).cutoff_on_side(PlaquetteSide.DOWN),
         },
         _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1, None, measurement_basis).project_on_side(PlaquetteSide.UP),
-            7: factory(b2, None, measurement_basis).project_on_side(PlaquetteSide.LEFT),
+            6: factory(b1, None, measurement_basis).cutoff_on_side(PlaquetteSide.UP),
+            7: factory(b2, None, measurement_basis).cutoff_on_side(PlaquetteSide.LEFT),
             9: factory(b1, None, measurement_basis),
             10: factory(b2, None, measurement_basis),
-            12: factory(b2, None, measurement_basis).project_on_side(
+            12: factory(b2, None, measurement_basis).cutoff_on_side(
                 PlaquetteSide.RIGHT
             ),
-            13: factory(b1, None, measurement_basis).project_on_side(
-                PlaquetteSide.DOWN
-            ),
+            13: factory(b1, None, measurement_basis).cutoff_on_side(PlaquetteSide.DOWN),
         }
     )
     return CompiledBlock(
@@ -160,7 +158,7 @@ def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
         raise NotImplementedError("Spatial junctions are not implemented yet.")
     cube_type = spec.cube_type.value
     x_boundary_orientation = "VERTICAL" if cube_type[0] == "z" else "HORIZONTAL"
-    time_basis = cube_type[3].upper()
+    time_basis = cube_type[2].upper()
     return _usual_block(
         cast(Literal["X", "Z"], time_basis),
         cast(Literal["VERTICAL", "HORIZONTAL"], x_boundary_orientation),
