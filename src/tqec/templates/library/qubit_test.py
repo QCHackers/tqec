@@ -4,7 +4,7 @@ import pytest
 from tqec.exceptions import TQECException, TQECWarning
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.enums import TemplateSide
-from tqec.templates.qubit import (
+from tqec.templates.library.qubit import (
     Qubit4WayJunctionTemplate,
     QubitHorizontalBorders,
     QubitTemplate,
