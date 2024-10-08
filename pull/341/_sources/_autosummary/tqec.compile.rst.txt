@@ -1,0 +1,40 @@
+tqec.compile
+============
+
+.. automodule:: tqec.compile
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   block
+
+   compile
+
+   observables
+
+   specs
+
+   substitute
+

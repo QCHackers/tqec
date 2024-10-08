@@ -1,0 +1,25 @@
+tqec.noise\_models.noise\_model.NoiseModel
+==========================================
+
+.. currentmodule:: tqec.noise_models.noise_model
+
+.. autoclass:: NoiseModel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NoiseModel.__init__
+      ~NoiseModel.noisy_circuit
+      ~NoiseModel.si1000
+      ~NoiseModel.uniform_depolarizing
+   
+   
+
+   
+   
+   

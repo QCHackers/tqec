@@ -1,0 +1,32 @@
+tqec.sketchup.collada.Transformation
+====================================
+
+.. currentmodule:: tqec.sketchup.collada
+
+.. autoclass:: Transformation
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Transformation.__init__
+      ~Transformation.from_4d_affine_matrix
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Transformation.translation
+      ~Transformation.scale
+      ~Transformation.rotation
+      ~Transformation.affine_matrix
+   
+   
