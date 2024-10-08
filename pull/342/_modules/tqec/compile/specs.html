@@ -201,6 +201,8 @@
         <span class="n">x_boundary_orientation</span><span class="o">=</span><span class="n">x_boundary_orientation</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_boundary_orientation</span> <span class="o">==</span> <span class="s2">&quot;VERTICAL&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">b1</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">b2</span><span class="p">)</span>
 
     <span class="n">initial_plaquettes</span> <span class="o">=</span> <span class="n">Plaquettes</span><span class="p">(</span>
         <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>

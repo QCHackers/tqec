@@ -90,7 +90,6 @@
 <span class="kn">import</span> <span class="nn">stim</span>
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
-<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">ResetBasis</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.qubit</span> <span class="kn">import</span> <span class="n">SquarePlaquetteQubits</span>
@@ -99,7 +98,7 @@
 <div class="viewcode-block" id="make_css_surface_code_plaquette">
 <a class="viewcode-back" href="../../../../_autosummary/tqec.plaquette.library.css.make_css_surface_code_plaquette.html#tqec.plaquette.library.css.make_css_surface_code_plaquette">[docs]</a>
 <span class="k">def</span> <span class="nf">make_css_surface_code_plaquette</span><span class="p">(</span>
-    <span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span>
     <span class="n">data_qubits_initialization</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_qubits_measurement</span><span class="p">:</span> <span class="n">MeasurementBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_boundary_orientation</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;HORIZONTAL&quot;</span><span class="p">,</span> <span class="s2">&quot;VERTICAL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;VERTICAL&quot;</span><span class="p">,</span>
@@ -117,8 +116,6 @@
 <span class="sd">            CNOT order in the plaquette together with the basis to prevent hook</span>
 <span class="sd">            error from decreasing the code distance. Default is &quot;HORIZONTAL&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">basis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid basis: </span><span class="si">{</span><span class="n">basis</span><span class="si">}</span><span class="s2">, only &#39;X&#39; and &#39;Z&#39; are allowed.&quot;</span><span class="p">)</span>
     <span class="n">qubits</span> <span class="o">=</span> <span class="n">SquarePlaquetteQubits</span><span class="p">()</span>
     <span class="n">sq</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1"># data qubits ordered as &quot;Z&quot; shape</span>
