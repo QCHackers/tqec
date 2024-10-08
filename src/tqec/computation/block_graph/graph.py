@@ -11,14 +11,14 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.sketchup.block_graph.cube import Cube
-from tqec.sketchup.block_graph.enums import CubeType, PipeType
-from tqec.sketchup.block_graph.observable import AbstractObservable
-from tqec.sketchup.block_graph.pipe import Pipe
-from tqec.sketchup.zx_graph import NodeType, ZXGraph, ZXNode
+from tqec.computation.block_graph.cube import Cube
+from tqec.computation.block_graph.enums import CubeType, PipeType
+from tqec.computation.block_graph.observable import AbstractObservable
+from tqec.computation.block_graph.pipe import Pipe
+from tqec.computation.zx_graph import NodeType, ZXGraph, ZXNode
 
 if ty.TYPE_CHECKING:
-    from tqec.sketchup.collada import ColladaDisplayHelper
+    from tqec.computation.collada import ColladaDisplayHelper
 
 
 _CUBE_DATA_KEY = "tqec_block_cube_data"
@@ -325,14 +325,14 @@ class BlockGraph:
         self, filename: str | pathlib.Path, pipe_length: float = 2.0
     ) -> None:
         """Export the block graph to a DAE file."""
-        from tqec.sketchup.collada import write_block_graph_to_dae_file
+        from tqec.computation.collada import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
         """Construct a block graph from a DAE file."""
-        from tqec.sketchup.collada import read_block_graph_from_dae_file
+        from tqec.computation.collada import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
@@ -342,7 +342,7 @@ class BlockGraph:
         pipe_length: float = 2.0,
     ) -> ColladaDisplayHelper:
         """Display the block graph in 3D."""
-        from tqec.sketchup.collada import (
+        from tqec.computation.collada import (
             display_collada_model,
             write_block_graph_to_dae_file,
         )

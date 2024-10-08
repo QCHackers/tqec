@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
-from tqec.sketchup.zx_graph import NodeType, ZXGraph
+from tqec.computation.zx_graph import NodeType, ZXGraph
 
 CORRELATION_COLOR: dict[NodeType, str] = {
     NodeType.X: "#ff0000",

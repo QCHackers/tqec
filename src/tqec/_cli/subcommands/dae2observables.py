@@ -10,9 +10,9 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 from typing_extensions import override
 
 from tqec._cli.subcommands.base import TQECSubCommand
-from tqec.sketchup.block_graph import BlockGraph
-from tqec.sketchup.plot import draw_as_correlation_surface_on, draw_zx_graph_on
-from tqec.sketchup.zx_graph import ZXGraph
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.plot import draw_as_correlation_surface_on, draw_zx_graph_on
+from tqec.computation.zx_graph import ZXGraph
 
 
 class Dae2ObservablesTQECSubCommand(TQECSubCommand):

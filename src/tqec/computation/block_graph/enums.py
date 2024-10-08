@@ -6,8 +6,8 @@ from typing import Literal, cast
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.sketchup.block_graph.color import Color, Color3D
-from tqec.sketchup.zx_graph import NodeType
+from tqec.computation.block_graph.color import Color, Color3D
+from tqec.computation.zx_graph import NodeType
 
 
 class CubeType(Enum):

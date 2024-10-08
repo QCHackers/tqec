@@ -13,7 +13,7 @@ from tqec.plaquette.enums import PlaquetteSide
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Direction3D
-from tqec.sketchup.block_graph import PipeType
+from tqec.computation.block_graph import PipeType
 
 
 @dataclass(frozen=True)

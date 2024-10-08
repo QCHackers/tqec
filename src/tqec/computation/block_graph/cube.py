@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from tqec.position import Position3D
-from tqec.sketchup.block_graph.enums import CubeType, PipeType
+from tqec.computation.block_graph.enums import CubeType, PipeType
 
 BlockType = Union[CubeType, PipeType]
 """Valid block types in the library."""

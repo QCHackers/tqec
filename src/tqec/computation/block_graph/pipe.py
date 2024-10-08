@@ -4,8 +4,8 @@ from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.sketchup.block_graph.cube import Cube
-from tqec.sketchup.block_graph.enums import PipeType
+from tqec.computation.block_graph.cube import Cube
+from tqec.computation.block_graph.enums import PipeType
 
 
 @dataclass(frozen=True)

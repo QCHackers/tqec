@@ -4,8 +4,8 @@
 from matplotlib.axes import Axes
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
-from tqec.sketchup.plot import draw_as_correlation_surface_on, draw_zx_graph_on
-from tqec.sketchup.zx_graph import ZXGraph
+from tqec.computation.plot import draw_as_correlation_surface_on, draw_zx_graph_on
+from tqec.computation.zx_graph import ZXGraph
 
 
 def add_inset_axes3d(

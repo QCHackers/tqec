@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from tqec.sketchup.block_graph.cube import Cube
-from tqec.sketchup.block_graph.pipe import Pipe
+from tqec.computation.block_graph.cube import Cube
+from tqec.computation.block_graph.pipe import Pipe
 
 
 @dataclass(frozen=True)

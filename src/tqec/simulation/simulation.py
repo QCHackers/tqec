@@ -6,7 +6,7 @@ import sinter
 from tqec.compile.compile import compile_block_graph
 from tqec.noise_models.noise_model import NoiseModel
 from tqec.simulation.generation import generate_sinter_tasks
-from tqec.sketchup.block_graph import AbstractObservable, BlockGraph
+from tqec.computation.block_graph import AbstractObservable, BlockGraph
 
 
 def start_simulation_using_sinter(

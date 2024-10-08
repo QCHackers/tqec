@@ -14,7 +14,7 @@ from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
 if TYPE_CHECKING:
-    from tqec.sketchup.block_graph import BlockGraph
+    from tqec.computation.block_graph import BlockGraph
 
 
 class NodeType(Enum):
@@ -220,7 +220,7 @@ class ZXGraph:
         Returns:
             The constructed block graph.
         """
-        from tqec.sketchup.block_graph import BlockGraph
+        from tqec.computation.block_graph import BlockGraph
 
         return BlockGraph.from_zx_graph(self, name=name)
 
