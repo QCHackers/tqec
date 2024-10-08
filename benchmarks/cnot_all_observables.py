@@ -7,8 +7,8 @@ from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph, compile_block_graph
 from tqec.noise_models import NoiseModel
 from tqec.position import Position3D
-from tqec.sketchup.block_graph import BlockGraph
-from tqec.sketchup.zx_graph import ZXGraph
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.zx_graph import ZXGraph
 
 BENCHMARK_FOLDER = Path(__file__).resolve().parent
 TQEC_FOLDER = BENCHMARK_FOLDER.parent

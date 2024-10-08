@@ -17,7 +17,7 @@ from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
 from tqec.scale import round_or_fail
-from tqec.sketchup.block_graph import AbstractObservable, BlockGraph
+from tqec.computation.block_graph import AbstractObservable, BlockGraph
 
 
 @dataclass

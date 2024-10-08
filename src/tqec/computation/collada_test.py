@@ -3,8 +3,8 @@ import tempfile
 
 import pytest
 
-from tqec.sketchup.block_graph import BlockGraph
-from tqec.sketchup.zx_graph import NodeType, Position3D, ZXGraph
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.zx_graph import NodeType, Position3D, ZXGraph
 
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])

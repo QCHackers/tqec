@@ -6,7 +6,7 @@ from typing_extensions import override
 
 from tqec._cli.subcommands.base import TQECSubCommand
 from tqec._cli.subcommands.dae2observables import save_correlation_surfaces_to
-from tqec.sketchup.block_graph import BlockGraph
+from tqec.computation.block_graph import BlockGraph
 from tqec.compile.compile import compile_block_graph
 from tqec import annotate_detectors_automatically
 
