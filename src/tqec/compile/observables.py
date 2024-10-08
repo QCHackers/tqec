@@ -4,9 +4,9 @@ from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Displacement, Shape2D
+from tqec.scale import round_or_fail
 from tqec.sketchup.block_graph import AbstractObservable, Cube, Pipe
 from tqec.templates.layout import LayoutTemplate
-from tqec.templates.scale import round_or_fail
 
 
 def get_center_qubit_at_horizontal_pipe(

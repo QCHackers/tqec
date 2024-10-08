@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from tqec.exceptions import TQECException
-from tqec.templates.interval import EMPTY_INTERVAL, Interval, Intervals
+from tqec.interval import EMPTY_INTERVAL, Interval
 
 
 def test_interval_creation() -> None:
@@ -82,7 +82,6 @@ def test_interval_overlaps() -> None:
     assert not a.is_disjoint(b)
     assert not b.is_disjoint(a)
     assert a.intersection(b) == b.intersection(a) == Interval(1, 2)
-    assert a.union(b) == b.union(a) == Intervals([Interval(0, 3)])
 
     for start_excluded, end_excluded in itertools.product((True, False), (True, False)):
         a = Interval(0, 1, start_excluded=False, end_excluded=end_excluded)
@@ -103,7 +102,6 @@ def test_interval_not_overlapping() -> None:
     assert b.is_disjoint(a)
     assert a.intersection(b).is_empty()
     assert b.intersection(a).is_empty()
-    assert a.union(b) == b.union(a) == Intervals([Interval(0, 3)])
 
 
 def test_interval_included() -> None:
@@ -113,74 +111,6 @@ def test_interval_included() -> None:
     assert not a.is_disjoint(b)
     assert not b.is_disjoint(a)
     assert a.intersection(b) == b
-    assert a.union(b) == Intervals([a])
-
-
-def test_intervals_creation() -> None:
-    Intervals([])
-    Intervals([Interval(float("-inf"), float("inf"))])
-    Intervals([Interval(0, float("inf"))])
-    Intervals([Interval(0, 1)])
-    Intervals([Interval(i, i + 1) for i in range(10)])
-
-    with pytest.raises(
-        TQECException,
-        match=r"Cannot build an Intervals instance with overlapping intervals\.",
-    ):
-        Intervals([Interval(0, 3), Interval(2, 4)])
-    with pytest.raises(
-        TQECException,
-        match=r"Cannot build an Intervals instance with overlapping intervals\.",
-    ):
-        Intervals([Interval(0, 3), Interval(-2, 4)])
-
-    # (False, False) results in overlapping intervals, which does not satisfy the
-    # Intervals pre-conditions.
-    for start_excluded, end_excluded in [(True, True), (True, False), (False, True)]:
-        intervals = Intervals(
-            [
-                Interval(
-                    i, i + 1, start_excluded=start_excluded, end_excluded=end_excluded
-                )
-                for i in range(10)
-            ]
-        )
-        can_be_merged = not (start_excluded and end_excluded)
-        expected_intervals = 1 if can_be_merged else 10
-        assert len(intervals.intervals) == expected_intervals
-
-
-def test_intervals_contains() -> None:
-    intervals = Intervals([Interval(3, 5), Interval(0, 2)])
-    for value, should_contain in [
-        (0, True),
-        (1, True),
-        (2, False),
-        (2.5, False),
-        (3, True),
-        (4, True),
-        (5, False),
-        (38924, False),
-        (float("inf"), False),
-        (float("nan"), False),
-    ]:
-        assert intervals.contains(value) == should_contain
-
-
-def test_intervals_is_empty() -> None:
-    assert Intervals([]).is_empty()
-    assert Intervals([Interval(0, 0)]).is_empty()
-    assert Intervals([Interval(i, i) for i in [-1, 0, float("inf"), float("-inf")]])
-
-
-def test_intervals_intersection() -> None:
-    a = Intervals([Interval(0, 1), Interval(2, 3), Interval(4, 5)])
-    b = Intervals([Interval(0, 1), Interval(2.5, 3.5)])
-    ab = Intervals([Interval(0, 1), Interval(2.5, 3)])
-
-    assert a.intersection(a) == a
-    assert a.intersection(b) == ab
-    assert b.intersection(a) == ab
 
 
 def test_interval_iter_integers() -> None:
