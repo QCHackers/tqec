@@ -44,9 +44,9 @@ def make_css_surface_code_plaquette(
 
     circuit = stim.Circuit()
     # 1. Initialization
+    circuit.append(f"R{basis}", [sq], [])
     if data_qubits_initialization:
         circuit.append(data_qubits_initialization.instruction_name, dqs, [])
-    circuit.append(f"R{basis}", [sq], [])
     circuit.append("TICK", [], [])
 
     # 2. CNOTs
@@ -61,8 +61,8 @@ def make_css_surface_code_plaquette(
         circuit.append("TICK", [], [])
 
     # 3. Measurement
+    circuit.append(f"M{basis}", [sq], [])
     if data_qubits_measurement:
         circuit.append(data_qubits_measurement.instruction_name, dqs, [])
-    circuit.append(f"M{basis}", [sq], [])
 
     return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit, i2q=i2q))

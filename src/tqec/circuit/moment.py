@@ -162,7 +162,7 @@ class Moment:
             for target_group in instruction.target_groups():
                 qubit_targets = [
                     ty.cast(int, t.qubit_value)
-                    for t in instruction.targets_copy()
+                    for t in target_group
                     if t.is_qubit_target
                 ]
                 if any(q not in qubits for q in qubit_targets):

@@ -599,7 +599,12 @@ class ScheduledCircuit:
             filtered_moments.append(filtered_moment)
             filtered_schedule.append(schedule)
         i2q = {i: q for i, q in self._i2q.items() if i in qubits_indices_to_keep}
-        return ScheduledCircuit(filtered_moments, Schedule(filtered_schedule), i2q)
+        filtered_circuit = ScheduledCircuit(
+            filtered_moments, Schedule(filtered_schedule), i2q
+        )
+        # The qubit indices may not be contiguous anymore, so we need to remap them.
+        indices_map = {oi: ni for ni, oi in enumerate(i2q.keys())}
+        return filtered_circuit.map_qubit_indices(indices_map)
 
 
 class _ScheduledCircuits:
