@@ -5,7 +5,7 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Displacement, Shape2D
 from tqec.scale import round_or_fail
-from tqec.sketchup.block_graph import AbstractObservable, Cube, Pipe
+from tqec.computation.block_graph import AbstractObservable, Cube, Pipe
 from tqec.templates.layout import LayoutTemplate
 
 
