@@ -5,7 +5,7 @@ import stim
 
 from tqec.circuit.generation import generate_circuit
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import PlaquetteSide
+from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.library import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates._testing import FixedTemplate
@@ -14,7 +14,9 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def plaquette() -> Plaquette:
-    return make_css_surface_code_plaquette("Z").cutoff_on_side(PlaquetteSide.LEFT)
+    return make_css_surface_code_plaquette("Z").project_on_boundary(
+        PlaquetteOrientation.LEFT
+    )
 
 
 @pytest.fixture

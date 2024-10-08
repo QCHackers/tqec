@@ -9,7 +9,7 @@ from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.compile.block import CompiledBlock
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import (
-    PlaquetteSide,
+    PlaquetteOrientation,
     ResetBasis,
     MeasurementBasis,
 )
@@ -113,37 +113,45 @@ def _usual_block(
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1, reset_basis).cutoff_on_side(PlaquetteSide.UP),
-            7: factory(b2, reset_basis).cutoff_on_side(PlaquetteSide.LEFT),
+            6: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.UP),
+            7: factory(b2, reset_basis).project_on_boundary(PlaquetteOrientation.LEFT),
             9: factory(b1, reset_basis),
             10: factory(b2, reset_basis),
-            12: factory(b2, reset_basis).cutoff_on_side(PlaquetteSide.RIGHT),
-            13: factory(b1, reset_basis).cutoff_on_side(PlaquetteSide.DOWN),
+            12: factory(b2, reset_basis).project_on_boundary(
+                PlaquetteOrientation.RIGHT
+            ),
+            13: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.DOWN),
         }
     )
     repeating_plaquettes = RepeatedPlaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1).cutoff_on_side(PlaquetteSide.UP),
-            7: factory(b2).cutoff_on_side(PlaquetteSide.LEFT),
+            6: factory(b1).project_on_boundary(PlaquetteOrientation.UP),
+            7: factory(b2).project_on_boundary(PlaquetteOrientation.LEFT),
             9: factory(b1),
             10: factory(b2),
-            12: factory(b2).cutoff_on_side(PlaquetteSide.RIGHT),
-            13: factory(b1).cutoff_on_side(PlaquetteSide.DOWN),
+            12: factory(b2).project_on_boundary(PlaquetteOrientation.RIGHT),
+            13: factory(b1).project_on_boundary(PlaquetteOrientation.DOWN),
         },
         _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: factory(b1, None, measurement_basis).cutoff_on_side(PlaquetteSide.UP),
-            7: factory(b2, None, measurement_basis).cutoff_on_side(PlaquetteSide.LEFT),
+            6: factory(b1, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.UP
+            ),
+            7: factory(b2, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.LEFT
+            ),
             9: factory(b1, None, measurement_basis),
             10: factory(b2, None, measurement_basis),
-            12: factory(b2, None, measurement_basis).cutoff_on_side(
-                PlaquetteSide.RIGHT
+            12: factory(b2, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.RIGHT
             ),
-            13: factory(b1, None, measurement_basis).cutoff_on_side(PlaquetteSide.DOWN),
+            13: factory(b1, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.DOWN
+            ),
         }
     )
     return CompiledBlock(

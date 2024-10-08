@@ -12,7 +12,7 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
 from tqec.templates.scale import LinearFunction, round_or_fail
-from tqec.plaquette.enums import PlaquetteSide
+from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
 
 
 class Plaquette:
@@ -59,23 +59,29 @@ class Plaquette:
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
 
-    def cutoff_on_side(self, cutoff_side: PlaquetteSide) -> Plaquette:
-        """Cut off the plaquette on the given side and return a new plaquette
-        with the remaining qubits and circuit.
+    def project_on_boundary(
+        self, plaquette_orientation: PlaquetteOrientation
+    ) -> Plaquette:
+        """Project the plaquette on boundary and return a new plaquette with the
+        remaining qubits and circuit.
 
         This method is useful for deriving a boundary plaquette from a integral
         plaquette.
 
         Args:
-            cutoff_side: side on which to cut off the plaquette. The qubits
-                on the opposite side will be kept.
+            plaquette_orientation: the orientation of the plaquette after the
+                projection.
 
         Returns:
-            A new plaquette with the qubits on the opposite side of `cutoff_side`.
-            The circuit is also updated to only use the kept qubits and empty
-            moments with the corresponding schedules are removed.
+            A new plaquette with projected qubits and circuit. The qubits are
+            updated to only keep the qubits on the side complementary to the
+            provided orientation. The circuit is also updated to only use the
+            kept qubits and empty moments with the corresponding schedules are
+            removed.
         """
-        kept_data_qubits = self.qubits.get_qubits_on_side(cutoff_side.opposite())
+        kept_data_qubits = self.qubits.get_qubits_on_side(
+            plaquette_orientation.to_plaquette_side()
+        )
         new_plaquette_qubits = PlaquetteQubits(
             kept_data_qubits, self.qubits.syndrome_qubits
         )
