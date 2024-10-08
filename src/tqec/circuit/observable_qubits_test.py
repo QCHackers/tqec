@@ -11,8 +11,8 @@ from tqec.templates._testing import FixedTemplate
 @pytest.fixture
 def plaquettes() -> list[Plaquette]:
     return [
-        xxxx_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5, 6, 7])),
-        zzzz_memory_plaquette(Schedule.from_offsets([0, 2, 3, 4, 5, 7])),
+        xxxx_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5])),
+        zzzz_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5])),
     ]
 
 
