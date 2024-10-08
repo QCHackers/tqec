@@ -112,6 +112,7 @@ warn_return_any = true
 [[tool.mypy.overrides]]
 module = [
     "stim",
+    "sinter",
     "pysat",
     "pysat.solvers",
     "collada",

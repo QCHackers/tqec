@@ -1,24 +1,16 @@
 """This is an example of compiling a logical CNOT `.dae` model to
 `stim.Circuit`."""
 
-import itertools
-from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from typing import Iterable
 
 import matplotlib.pyplot as plt
+import numpy
 import sinter
-import stim
 
-from tqec import (
-    BlockGraph,
-    Position3D,
-    ZXGraph,
-    annotate_detectors_automatically,
-    compile_block_graph,
-)
-from tqec.compile.compile import CompiledGraph
+from tqec import BlockGraph, Position3D, ZXGraph
 from tqec.noise_models import NoiseModel
+from tqec.simulation.plotting.inset import plot_observable_as_inset
+from tqec.simulation.simulation import start_simulation_using_sinter
 
 EXAMPLE_FOLDER = Path(__file__).parent
 TQEC_FOLDER = EXAMPLE_FOLDER.parent
@@ -55,75 +47,44 @@ def create_block_graph(from_scratch: bool = False) -> BlockGraph:
     return cnot_zx.to_block_graph("Logical CNOT Block Graph")
 
 
-def generate_stim_circuit(
-    compiled_graph: CompiledGraph, k: int, p: float
-) -> stim.Circuit:
-    circuit_without_detectors = compiled_graph.generate_stim_circuit(
-        k,
-        noise_model=NoiseModel.uniform_depolarizing(p),
-    )
-    # For now, we annotate the detectors as post-processing step
-    return annotate_detectors_automatically(circuit_without_detectors)
-
-
-def get_sinter_task(
-    compiled_graph: CompiledGraph, tup: tuple[int, float]
-) -> sinter.Task:
-    k, p = tup
-    return sinter.Task(
-        circuit=generate_stim_circuit(compiled_graph, k, p),
-        json_metadata={"d": 2 * k + 1, "r": 2 * k + 1, "p": p},
-    )
-
-
 def main() -> None:
     # 1 Create `BlockGraph` representing the computation
     block_graph = create_block_graph(from_scratch=False)
+    zx_graph = block_graph.to_zx_graph("Logical CNOT")
+    correlation_surfaces = zx_graph.find_correlation_subgraphs()
 
-    # 2. (Optional) Find and choose the logical observables
+    # 2. Find and choose the logical observables
     observables = block_graph.get_abstract_observables()
+    # Optional: filter observables here
+    observables = [observables[0]]
 
-    # 3. Compile the `BlockGraph`
-    # NOTE:that the scalable detector automation approach is still work in process.
-    compiled_graph = compile_block_graph(
+    stats = start_simulation_using_sinter(
         block_graph,
-        observables=[observables[1]],
-    )
-
-    _MAX_WORKERS: int = 16
-
-    # 4. Generate `stim.Circuit`s from the compiled graph and run the simulation
-    def gen_tasks() -> Iterable[sinter.Task]:
-        with ProcessPoolExecutor(max_workers=_MAX_WORKERS) as p:
-            yield from p.map(
-                get_sinter_task,
-                itertools.repeat(compiled_graph),
-                itertools.product(
-                    range(1, 6),
-                    [0.0005, 0.001, 0.004, 0.008, 0.01, 0.012, 0.014, 0.018],
-                ),
-            )
-
-    stats = sinter.collect(
-        num_workers=_MAX_WORKERS,
-        tasks=gen_tasks(),
-        max_errors=5000,
+        range(1, 5),
+        list(numpy.logspace(-5, -1, 10)),
+        NoiseModel.uniform_depolarizing,
+        observables=observables,
+        num_workers=16,
         max_shots=100_000_000,
+        max_errors=5_000,
         decoders=["pymatching"],
         print_progress=True,
     )
-    fig, ax = plt.subplots()
-    sinter.plot_error_rate(
-        ax=ax,
-        stats=stats,
-        x_func=lambda stat: stat.json_metadata["p"],
-        group_func=lambda stat: stat.json_metadata["d"],
-    )
-    ax.grid(axis="both")
-    ax.legend()
-    ax.loglog()
-    ax.set_title("Logical CNOT Error Rate")
-    fig.savefig(ASSETS_FOLDER / "logical_cnot_result.png")
+
+    for i, stat in enumerate(stats):
+        fig, ax = plt.subplots()
+        sinter.plot_error_rate(
+            ax=ax,
+            stats=stat,
+            x_func=lambda stat: stat.json_metadata["p"],
+            group_func=lambda stat: stat.json_metadata["d"],
+        )
+        plot_observable_as_inset(ax, zx_graph, correlation_surfaces[i])
+        ax.grid(axis="both")
+        ax.legend()
+        ax.loglog()
+        ax.set_title("Logical CNOT Error Rate")
+        fig.savefig(ASSETS_FOLDER / f"logical_cnot_result_observable_{i}.png")
 
 
 if __name__ == "__main__":
