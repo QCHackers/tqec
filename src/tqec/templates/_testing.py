@@ -5,9 +5,9 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.position import Displacement
+from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.enums import TemplateSide
-from tqec.templates.scale import LinearFunction, Scalable2D
 
 
 class FixedTemplate(RectangularTemplate):
