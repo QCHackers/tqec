@@ -1,6 +1,0 @@
-tqec.sketchup.geometry.parse\_block\_type\_from\_str
-====================================================
-
-.. currentmodule:: tqec.sketchup.geometry
-
-.. autofunction:: parse_block_type_from_str
