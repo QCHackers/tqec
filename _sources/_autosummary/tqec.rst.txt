@@ -47,6 +47,8 @@
    scale
 
 
+   simulation
+
    sketchup
 
    templates

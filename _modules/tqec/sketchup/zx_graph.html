@@ -94,7 +94,6 @@
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
@@ -312,26 +311,20 @@
 
     <span class="k">def</span> <span class="nf">draw_as_zx_graph_on</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">fig</span><span class="p">:</span> <span class="n">Figure</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">Axes3D</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">node_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
         <span class="n">hadamard_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
         <span class="n">edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes3D</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib on the provided figure.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            fig: The figure to draw on.</span>
+<span class="sd">            ax: a 3-dimensional ax to draw on.</span>
 <span class="sd">            node_size: The size of the node. Default is 400.</span>
 <span class="sd">            hadamard_size: The size of the Hadamard transition. Default is 200.</span>
 <span class="sd">            edge_width: The width of the edge. Default is 1.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a 3 dimension Axes3D instance that has been used to draw the ZX graph</span>
-<span class="sd">            on the provided Figure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Axes3D</span><span class="p">,</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">))</span>
-
         <span class="n">non_virtual_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">]</span>
         <span class="n">non_virtual_nodes_array</span> <span class="o">=</span> <span class="n">_positions_array</span><span class="p">(</span>
             <span class="o">*</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">non_virtual_nodes</span><span class="p">]</span>
@@ -369,7 +362,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="p">):</span>
             <span class="n">dim</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
-        <span class="n">x_limits</span><span class="p">,</span> <span class="n">y_limits</span><span class="p">,</span> <span class="n">z_limits</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlim3d</span><span class="p">()</span>
+        <span class="n">x_limits</span><span class="p">,</span> <span class="n">y_limits</span><span class="p">,</span> <span class="n">z_limits</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim3d</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlim3d</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 
         <span class="n">plot_radius</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span>
             <span class="nb">abs</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">limits</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x_limits</span><span class="p">,</span> <span class="n">y_limits</span><span class="p">,</span> <span class="n">z_limits</span><span class="p">]</span>
@@ -384,7 +377,6 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">-</span> <span class="n">plot_radius</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z_limits</span><span class="p">)</span> <span class="o">+</span> <span class="n">plot_radius</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ax</span>
 
     <span class="k">def</span> <span class="nf">draw_as_correlation_surface_on</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -439,8 +431,10 @@
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_as_zx_graph_on</span><span class="p">(</span>
-            <span class="n">fig</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="n">node_size</span><span class="p">,</span> <span class="n">hadamard_size</span><span class="o">=</span><span class="n">hadamard_size</span><span class="p">,</span> <span class="n">edge_width</span><span class="o">=</span><span class="n">edge_width</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Axes3D</span><span class="p">,</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_as_zx_graph_on</span><span class="p">(</span>
+            <span class="n">ax</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="n">node_size</span><span class="p">,</span> <span class="n">hadamard_size</span><span class="o">=</span><span class="n">hadamard_size</span><span class="p">,</span> <span class="n">edge_width</span><span class="o">=</span><span class="n">edge_width</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">show_correlation_subgraph_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
