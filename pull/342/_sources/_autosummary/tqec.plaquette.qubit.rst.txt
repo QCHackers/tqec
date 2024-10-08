@@ -19,7 +19,6 @@ tqec.plaquette.qubit
       :toctree:
    
       PlaquetteQubits
-      RoundedPlaquetteQubits
       SquarePlaquetteQubits
    
    

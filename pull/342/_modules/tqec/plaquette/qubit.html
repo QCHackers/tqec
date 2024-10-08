@@ -88,7 +88,7 @@
 <span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">PlaquetteOrientation</span><span class="p">,</span> <span class="n">PlaquetteSide</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">PlaquetteSide</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 
 
@@ -106,11 +106,6 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">permute_data_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permutation</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PlaquetteQubits</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PlaquetteQubits</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">permutation</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span>
-        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_edge_qubits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -172,40 +167,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="p">[</span><span class="n">GridQubit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">GridQubit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">GridQubit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">GridQubit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
-            <span class="p">[</span><span class="n">GridQubit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-        <span class="p">)</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="RoundedPlaquetteQubits">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.qubit.RoundedPlaquetteQubits.html#tqec.plaquette.qubit.RoundedPlaquetteQubits">[docs]</a>
-<span class="k">class</span> <span class="nc">RoundedPlaquetteQubits</span><span class="p">(</span><span class="n">PlaquetteQubits</span><span class="p">):</span>
-    <span class="n">_POTENTIAL_DATA_QUBITS</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">GridQubit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-        <span class="n">GridQubit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-        <span class="n">GridQubit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="n">GridQubit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_qubits_on_side</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">PlaquetteSide</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
-        <span class="n">data_indices</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-            <span class="n">data_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-            <span class="n">data_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span><span class="p">:</span>
-            <span class="n">data_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if orientation == PlaquetteSide.DOWN:</span>
-            <span class="n">data_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">RoundedPlaquetteQubits</span><span class="o">.</span><span class="n">_POTENTIAL_DATA_QUBITS</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data_indices</span><span class="p">]</span>
-
-<div class="viewcode-block" id="RoundedPlaquetteQubits.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.qubit.RoundedPlaquetteQubits.html#tqec.plaquette.qubit.RoundedPlaquetteQubits.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">PlaquetteOrientation</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">RoundedPlaquetteQubits</span><span class="o">.</span><span class="n">_get_qubits_on_side</span><span class="p">(</span><span class="n">orientation</span><span class="o">.</span><span class="n">to_plaquette_side</span><span class="p">()),</span>
             <span class="p">[</span><span class="n">GridQubit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
         <span class="p">)</span></div>
 </div>

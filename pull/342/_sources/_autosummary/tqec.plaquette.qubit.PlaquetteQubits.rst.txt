@@ -16,7 +16,6 @@ tqec.plaquette.qubit.PlaquetteQubits
       ~PlaquetteQubits.__init__
       ~PlaquetteQubits.get_edge_qubits
       ~PlaquetteQubits.get_qubits_on_side
-      ~PlaquetteQubits.permute_data_qubits
    
    
 
