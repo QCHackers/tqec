@@ -34,3 +34,6 @@ tqec.plaquette.library
    empty
 
 
+   zxxz
+
+
