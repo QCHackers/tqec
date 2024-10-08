@@ -1,0 +1,6 @@
+tqec.plaquette.library.initialisation.zzzz\_initialisation\_plaquette
+=====================================================================
+
+.. currentmodule:: tqec.plaquette.library.initialisation
+
+.. autofunction:: zzzz_initialisation_plaquette

@@ -1,0 +1,39 @@
+tqec.sketchup.geometry
+======================
+
+.. automodule:: tqec.sketchup.geometry
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      load_library_block_geometries
+      parse_block_type_from_str
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Face
+      FaceType
+   
+   
+
+   
+   
+   
+
+
+
