@@ -1,0 +1,31 @@
+tqec.sketchup.block\_graph.Pipe
+===============================
+
+.. currentmodule:: tqec.sketchup.block_graph
+
+.. autoclass:: Pipe
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Pipe.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Pipe.direction
+      ~Pipe.u
+      ~Pipe.v
+      ~Pipe.pipe_type
+   
+   
