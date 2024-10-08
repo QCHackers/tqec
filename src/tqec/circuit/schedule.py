@@ -570,6 +570,36 @@ class ScheduledCircuit:
     def num_measurements(self) -> int:
         return sum(m.num_measurements for m in self._moments)
 
+    def filter_by_qubits(
+        self, qubits_to_keep: ty.Iterable[GridQubit]
+    ) -> ScheduledCircuit:
+        """Filter the circuit to keep only the instructions that are applied on the
+        provided qubits. If an instruction is applied on a qubit that is not in the
+        provided list, it is removed.
+
+        After filtering, the empty moments as well as the corresponding schedules are
+        removed.
+
+        Args:
+            qubits_to_keep: the qubits to keep in the circuit.
+
+        Returns:
+            a new instance of `ScheduledCircuit` with the filtered circuit and
+            schedules.
+        """
+        qubits_indices_to_keep = frozenset(self.q2i[q] for q in qubits_to_keep)
+        filtered_moments: list[Moment] = []
+        filtered_schedule: list[int] = []
+        for schedule, moment in self.scheduled_moments:
+            filtered_moment = moment.filter_by_qubits(qubits_indices_to_keep)
+            if filtered_moment.is_empty:
+                continue
+            filtered_moments.append(filtered_moment)
+            filtered_schedule.append(schedule)
+        return ScheduledCircuit(
+            filtered_moments, Schedule(filtered_schedule), self._final_qubits
+        )
+
 
 class _ScheduledCircuits:
     def __init__(self, circuits: list[ScheduledCircuit]) -> None:
