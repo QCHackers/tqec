@@ -81,12 +81,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.compile.specs</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Literal</span>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Protocol</span>
 
-<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.block</span> <span class="kn">import</span> <span class="n">CompiledBlock</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">PlaquetteOrientation</span>
@@ -110,9 +109,10 @@
     <span class="n">zzzz_memory_plaquette</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.library.pauli</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">ResetBasis</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span>
+<span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 <span class="kn">from</span> <span class="nn">tqec.sketchup.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">CubeType</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.qubit</span> <span class="kn">import</span> <span class="n">QubitTemplate</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 
 <span class="n">_DEFAULT_BLOCK_REPETITIONS</span> <span class="o">=</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 

@@ -34,11 +34,17 @@
 
    exceptions
 
+   interval
+
+
    noise_models
 
    plaquette
 
    position
+
+
+   scale
 
 
    sketchup

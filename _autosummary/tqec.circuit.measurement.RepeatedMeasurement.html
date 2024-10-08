@@ -73,9 +73,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.sketchup.html">tqec.sketchup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
 </ul>
@@ -113,7 +115,7 @@
 <h1>tqec.circuit.measurement.RepeatedMeasurement<a class="headerlink" href="#tqec-circuit-measurement-repeatedmeasurement" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.measurement.RepeatedMeasurement">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RepeatedMeasurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.interval.Interval.html#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/measurement.html#RepeatedMeasurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement.RepeatedMeasurement" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RepeatedMeasurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.interval.Interval.html#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/measurement.html#RepeatedMeasurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement.RepeatedMeasurement" title="Link to this definition"></a></dt>
 <dd><p>A unique representation for a repeated measurement in a quantum circuit.</p>
 <p>This class aims at being able to represent a repeated measurement in a
 quantum circuit in a unique and easily usable way.
@@ -145,7 +147,7 @@ A value of <cite>-1</cite> means that the represented measurement is the
 last one applied on <cite>qubit</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="tqec.templates.interval.Interval.html#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval">tqec.templates.interval.Interval</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.interval.Interval.html#tqec.interval.Interval" title="tqec.interval.Interval">tqec.interval.Interval</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -157,7 +159,7 @@ last one applied on <cite>qubit</cite>.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.measurement.RepeatedMeasurement.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.interval.Interval.html#tqec.templates.interval.Interval" title="tqec.templates.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.circuit.measurement.RepeatedMeasurement.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.interval.Interval.html#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.circuit.measurement.RepeatedMeasurement.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>

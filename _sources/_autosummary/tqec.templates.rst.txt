@@ -34,17 +34,9 @@ tqec.templates
 
    enums
 
-   grid
-
-   interval
-
-
    layout
 
    qubit
-
-
-   scale
 
 
    subtemplates

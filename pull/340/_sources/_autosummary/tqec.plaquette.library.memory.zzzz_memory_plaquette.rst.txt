@@ -1,6 +1,0 @@
-tqec.plaquette.library.memory.zzzz\_memory\_plaquette
-=====================================================
-
-.. currentmodule:: tqec.plaquette.library.memory
-
-.. autofunction:: zzzz_memory_plaquette
