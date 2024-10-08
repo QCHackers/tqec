@@ -9,8 +9,7 @@ from tqec.circuit.moment import Moment
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs import CubeSpec
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import PlaquetteSide
-from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
+from tqec.plaquette.enums import PlaquetteSide, MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Direction3D
 from tqec.sketchup.block_graph import PipeType
