@@ -74,6 +74,7 @@ class UniqueSubTemplates:
     Raises:
         TQECException: if any index in `self.subtemplate_indices` is
             not present in `self.subtemplates.keys()`.
+        TQECException: if `0` is present in `self.subtemplates.keys()`.
         TQECException: if any of the sub-template shapes is non-square
             or of even width or length.
         TQECException: if not all the sub-template shapes in
@@ -91,6 +92,8 @@ class UniqueSubTemplates:
                 "Found an index in subtemplate_indices that does "
                 "not correspond to a valid subtemplate."
             )
+        if 0 in self.subtemplates:
+            raise TQECException("There should be no subtemplate for the 0 index.")
         shape = next(iter(self.subtemplates.values())).shape
         if shape[0] != shape[1]:
             raise TQECException(
@@ -113,6 +116,20 @@ class UniqueSubTemplates:
     @property
     def manhattan_radius(self) -> int:
         return next(iter(self.subtemplates.values())).shape[0] // 2
+
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, UniqueSubTemplates):
+            return False
+        if numpy.any(self.subtemplate_indices != value.subtemplate_indices):
+            return False
+        if frozenset(self.subtemplates.keys()) != frozenset(value.subtemplates.keys()):
+            return False
+        if any(
+            numpy.any(self.subtemplates[i] != value.subtemplates[i])
+            for i in self.subtemplates.keys()
+        ):
+            return False
+        return True
 
 
 def get_spatially_distinct_subtemplates(
