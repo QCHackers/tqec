@@ -11,3 +11,4 @@ from .empty import (
 )
 
 from .css import make_css_surface_code_plaquette
+from .zxxz import make_zxxz_surface_code_plaquette

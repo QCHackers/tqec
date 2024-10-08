@@ -786,7 +786,7 @@ def remove_duplicate_instructions(
 
 
 _MERGEABLE_INSTRUCTION_NAMES = frozenset(
-    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ"]
+    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ", "H"]
 )
 
 
