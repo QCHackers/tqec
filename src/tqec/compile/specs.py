@@ -1,9 +1,8 @@
-from enum import Flag, auto
-from typing import Protocol, Literal
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
+from enum import Flag, auto
+from typing import Literal, Protocol
 
-from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.compile.block import CompiledBlock
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
@@ -27,9 +26,10 @@ from tqec.plaquette.library.memory import (
     zzzz_memory_plaquette,
 )
 from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
+from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
+from tqec.scale import LinearFunction
 from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
-from tqec.templates.scale import LinearFunction
 
 _DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, -1)
 

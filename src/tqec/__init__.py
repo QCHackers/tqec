@@ -10,6 +10,7 @@ from .circuit import (
     merge_scheduled_circuits,
 )
 from .exceptions import TQECException
+from .interval import Interval
 from .noise_models import NoiseModel
 from .plaquette import (
     Plaquette,
@@ -19,6 +20,7 @@ from .plaquette import (
 )
 from .plaquette.enums import PlaquetteOrientation
 from .position import Direction3D, Displacement, Position2D, Position3D, Shape2D
+from .scale import LinearFunction, Scalable2D, ScalableInterval, round_or_fail
 from .sketchup import (
     BlockGraph,
     BlockType,
@@ -35,7 +37,7 @@ from .sketchup import (
     read_block_graph_from_dae_file,
     write_block_graph_to_dae_file,
 )
-from .templates import LinearFunction, Template
+from .templates import Template
 from .templates.enums import (
     CornerPositionEnum,
     TemplateOrientation,

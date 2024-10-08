@@ -11,7 +11,7 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
-from tqec.templates.scale import LinearFunction, round_or_fail
+from tqec.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:

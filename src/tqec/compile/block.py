@@ -9,9 +9,9 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
 from tqec.position import Position2D
+from tqec.scale import LinearFunction
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.layout import LayoutTemplate
-from tqec.templates.scale import LinearFunction
 
 
 @dataclass
