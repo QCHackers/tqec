@@ -19,7 +19,7 @@ def start_simulation_using_sinter(
     progress_callback: Callable[[sinter.Progress], None] | None = None,
     max_shots: int | None = None,
     max_errors: int | None = None,
-    decoders: Iterable[str] | None = None,
+    decoders: Iterable[str] = ("pymatching",),
     print_progress: bool = False,
     custom_decoders: dict[str, sinter.Decoder | sinter.Sampler] | None = None,
 ) -> list[list[sinter.TaskStats]]:
