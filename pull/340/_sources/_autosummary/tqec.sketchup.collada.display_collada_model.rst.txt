@@ -1,6 +1,0 @@
-tqec.sketchup.collada.display\_collada\_model
-=============================================
-
-.. currentmodule:: tqec.sketchup.collada
-
-.. autofunction:: display_collada_model

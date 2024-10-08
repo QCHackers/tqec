@@ -1,0 +1,30 @@
+tqec.computation.block\_graph.cube.Cube
+=======================================
+
+.. currentmodule:: tqec.computation.block_graph.cube
+
+.. autoclass:: Cube
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Cube.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Cube.is_virtual
+      ~Cube.position
+      ~Cube.cube_type
+   
+   

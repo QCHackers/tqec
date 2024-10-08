@@ -1,6 +1,0 @@
-tqec.sketchup.plot.draw\_zx\_graph\_on
-======================================
-
-.. currentmodule:: tqec.sketchup.plot
-
-.. autofunction:: draw_zx_graph_on

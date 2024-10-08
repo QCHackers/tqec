@@ -72,6 +72,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.compile.substitute.html">tqec.compile.substitute</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
@@ -79,7 +80,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.simulation.html">tqec.simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tqec.sketchup.html">tqec.sketchup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
 </ul>
 </li>
@@ -116,7 +116,7 @@
 <h1>tqec.compile.specs.CubeSpec<a class="headerlink" href="#tqec-compile-specs-cubespec" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.compile.specs.CubeSpec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CubeSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_type:</span> <span class="pre">~tqec.sketchup.block_graph.enums.CubeType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_arms:</span> <span class="pre">~tqec.compile.specs.JunctionArms</span> <span class="pre">=</span> <span class="pre">&lt;JunctionArms.NONE:</span> <span class="pre">0&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/compile/specs.html#CubeSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.specs.CubeSpec" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CubeSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_type:</span> <span class="pre">~tqec.computation.block_graph.enums.CubeType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_arms:</span> <span class="pre">~tqec.compile.specs.JunctionArms</span> <span class="pre">=</span> <span class="pre">&lt;JunctionArms.NONE:</span> <span class="pre">0&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/compile/specs.html#CubeSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.specs.CubeSpec" title="Link to this definition"></a></dt>
 <dd><p>Specification of a cube in a block graph.</p>
 <p>The template of the <cite>CompiledBlock</cite> will be determined based on the specification.
 This class can be used as a key to look up the corresponding <cite>CompiledBlock</cite> before
@@ -127,7 +127,7 @@ applying the substitution rules.</p>
 <dd><p>Type of the cube.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="tqec.sketchup.block_graph.enums.CubeType.html#tqec.sketchup.block_graph.enums.CubeType" title="tqec.sketchup.block_graph.enums.CubeType">tqec.sketchup.block_graph.enums.CubeType</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.computation.block_graph.enums.CubeType.html#tqec.computation.block_graph.enums.CubeType" title="tqec.computation.block_graph.enums.CubeType">tqec.computation.block_graph.enums.CubeType</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -147,7 +147,7 @@ the arms can determine the template used to implement the cube.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.compile.specs.CubeSpec.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_type:</span> <span class="pre">~tqec.sketchup.block_graph.enums.CubeType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_arms:</span> <span class="pre">~tqec.compile.specs.JunctionArms</span> <span class="pre">=</span> <span class="pre">&lt;JunctionArms.NONE:</span> <span class="pre">0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.compile.specs.CubeSpec.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_type:</span> <span class="pre">~tqec.computation.block_graph.enums.CubeType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_arms:</span> <span class="pre">~tqec.compile.specs.JunctionArms</span> <span class="pre">=</span> <span class="pre">&lt;JunctionArms.NONE:</span> <span class="pre">0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.compile.specs.CubeSpec.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
