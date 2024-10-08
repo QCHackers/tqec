@@ -1,0 +1,30 @@
+tqec.compile.substitute.SubstitutionKey
+=======================================
+
+.. currentmodule:: tqec.compile.substitute
+
+.. autoclass:: SubstitutionKey
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SubstitutionKey.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SubstitutionKey.spec1
+      ~SubstitutionKey.spec2
+      ~SubstitutionKey.pipe_type
+   
+   
