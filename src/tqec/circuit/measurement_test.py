@@ -3,8 +3,8 @@ import pytest
 from tqec.circuit.measurement import Measurement, RepeatedMeasurement
 from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
+from tqec.interval import Interval
 from tqec.position import Displacement
-from tqec.templates.interval import Interval
 
 _grid_qubits: list[GridQubit] = [
     GridQubit(*init) for init in ((0, 0), (-1, -1), (0.5, 9), (-5.5, 10), (1.1, 18))

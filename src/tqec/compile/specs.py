@@ -1,8 +1,8 @@
-from enum import Flag, auto
 from functools import partial
-from typing import Protocol, Literal, cast
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
+from enum import Flag, auto
+from typing import Protocol, Literal, cast
 
 from tqec.plaquette.library.css import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
@@ -14,9 +14,9 @@ from tqec.plaquette.enums import (
     MeasurementBasis,
 )
 from tqec.plaquette.library.empty import empty_square_plaquette
+from tqec.scale import LinearFunction
 from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
-from tqec.templates.scale import LinearFunction
 
 _DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, -1)
 

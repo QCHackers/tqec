@@ -10,4 +10,4 @@ from .empty import (
     empty_square_plaquette,
 )
 
-from .css_plaquette import make_css_surface_code_plaquette
+from .css import make_css_surface_code_plaquette

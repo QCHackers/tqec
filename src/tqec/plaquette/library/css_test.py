@@ -6,7 +6,7 @@ from tqec.plaquette.enums import (
     PlaquetteSide,
     ResetBasis,
 )
-from tqec.plaquette.library.css_plaquette import make_css_surface_code_plaquette
+from tqec.plaquette.library.css import make_css_surface_code_plaquette
 from tqec.plaquette.qubit import PlaquetteQubits, SquarePlaquetteQubits
 
 
