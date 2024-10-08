@@ -12,12 +12,12 @@ from tqec.compile.substitute import (
     SubstitutionKey,
     SubstitutionRule,
 )
+from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
 from tqec.scale import round_or_fail
-from tqec.computation.block_graph import AbstractObservable, BlockGraph
 
 
 @dataclass
@@ -45,11 +45,6 @@ class CompiledGraph:
         if len(self.observables) == 0:
             raise TQECException("The compiled graph includes no observable.")
 
-    def scale_to(self, k: int) -> None:
-        """Scale the compiled graph to the given scale `k`."""
-        for layout in self.layout_slices:
-            layout.scale_to(k)
-
     def generate_stim_circuit(
         self,
         k: int,
@@ -63,28 +58,28 @@ class CompiledGraph:
 
             A compiled stim circuit.
         """
-        self.scale_to(k)
         # assemble circuits time slice by time slice, layer by layer.
         circuits: list[list[ScheduledCircuit]] = []
         for layout in self.layout_slices:
             circuits.append(
-                [layout.instantiate_layer(i) for i in range(layout.num_layers)]
+                [layout.instantiate_layer(i, k) for i in range(layout.num_layers)]
             )
         # construct observables
         inplace_add_observables(
             circuits,
             [layout.template for layout in self.layout_slices],
             self.observables,
+            k,
         )
         # shift and merge circuits
-        circuit = self._shift_and_merge_circuits(circuits)
+        circuit = self._shift_and_merge_circuits(circuits, k)
         # apply noise models
         if noise_model is not None:
             circuit = noise_model.noisy_circuit(circuit)
         return circuit
 
     def _shift_and_merge_circuits(
-        self, circuits: list[list[ScheduledCircuit]]
+        self, circuits: list[list[ScheduledCircuit]], k: int
     ) -> stim.Circuit:
         """
 
@@ -99,7 +94,7 @@ class CompiledGraph:
         """
         # First, shift all the circuits to make sure that they are each applied
         # on the correct qubits
-        self._shift_all_circuits_inplace(circuits)
+        self._shift_all_circuits_inplace(circuits, k)
         # Then, get a global qubit index map to remap the circuit indices on the
         # fly.
         needed_qubits = frozenset.union(
@@ -125,7 +120,7 @@ class CompiledGraph:
                 layer = layout.layers[i]
                 if isinstance(layer, RepeatedPlaquettes):
                     final_circuit += circuits[t][i].get_repeated_circuit(
-                        round_or_fail(layer.repetitions(layout.template.k)),
+                        round_or_fail(layer.repetitions(k)),
                         include_qubit_coords=False,
                     )
                 else:
@@ -138,12 +133,12 @@ class CompiledGraph:
         return final_circuit[:-1]
 
     def _shift_all_circuits_inplace(
-        self, circuits: list[list[ScheduledCircuit]]
+        self, circuits: list[list[ScheduledCircuit]], k: int
     ) -> None:
         for t, layout in enumerate(self.layout_slices):
             # We need to shift the circuit based on the shift of the layout template.
             origin_shift = layout.template.origin_shift
-            element_shape = layout.template.element_shape
+            element_shape = layout.template.element_shape(k)
             increment = layout.template.get_increments()
             for i in range(layout.num_layers):
                 qubit_map = {

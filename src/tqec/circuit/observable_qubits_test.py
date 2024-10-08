@@ -26,7 +26,7 @@ def test_raw_rectangle_default_observable_qubits(plaquettes: list[Plaquette]) ->
         ]
     )
 
-    obs = observable_qubits_from_template(template, plaquettes)
+    obs = observable_qubits_from_template(template, 1, plaquettes)
     result = [
         (GridQubit(-1, 3), 0),
         (GridQubit(1, 3), 0),

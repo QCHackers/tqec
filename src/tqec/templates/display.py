@@ -9,7 +9,7 @@ from tqec.templates.base import Template
 
 
 def display_template(
-    template: Template, plaquette_indices: ty.Sequence[int] | None = None
+    template: Template, k: int, plaquette_indices: ty.Sequence[int] | None = None
 ) -> None:
     """Display a template instance with ASCII output.
 
@@ -21,7 +21,7 @@ def display_template(
     """
     if plaquette_indices is None:
         plaquette_indices = tuple(range(1, template.expected_plaquettes_number + 1))
-    display_template_from_instantiation(template.instantiate(plaquette_indices))
+    display_template_from_instantiation(template.instantiate(k, plaquette_indices))
 
 
 def display_template_from_instantiation(instantiation: npt.NDArray[numpy.int_]) -> None:

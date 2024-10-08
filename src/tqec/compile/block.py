@@ -118,19 +118,15 @@ class BlockLayout:
             merged_layers.append(plaquettes)
         return merged_layers
 
-    def scale_to(self, k: int) -> None:
-        """Scales all the blocks in the layout to the given factor."""
-        self._template.scale_to(k)
-
     @property
     def num_layers(self) -> int:
         return len(self._layers)
 
-    def instantiate_layer(self, layer_index: int) -> ScheduledCircuit:
+    def instantiate_layer(self, layer_index: int, k: int) -> ScheduledCircuit:
         """Instantiates the specified layer into a `ScheduledCircuit`.
 
         Note that this method does not shift the circuits based on the
         layout template. And the circuits are not repeated based on the
         repetitions in the layer.
         """
-        return generate_circuit(self._template, self._layers[layer_index])
+        return generate_circuit(self._template, k, self._layers[layer_index])

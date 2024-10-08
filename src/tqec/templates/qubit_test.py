@@ -12,22 +12,11 @@ from tqec.templates.qubit import (
 )
 
 
-@pytest.mark.parametrize(
-    "tested_class",
-    [
-        QubitTemplate,
-        QubitHorizontalBorders,
-        QubitVerticalBorders,
-        Qubit4WayJunctionTemplate,
-    ],
-)
-def test_creation(tested_class: type) -> None:
-    tested_class()
-    tested_class(k=10000)
-    with pytest.raises(
-        TQECException, match=r"^Cannot have a negative scaling parameter. Got -1.$"
-    ):
-        tested_class(k=-1)
+def test_creation() -> None:
+    QubitTemplate()
+    QubitHorizontalBorders()
+    QubitVerticalBorders()
+    Qubit4WayJunctionTemplate()
 
 
 def test_expected_plaquettes_number() -> None:
@@ -53,9 +42,9 @@ def test_scalable_shape() -> None:
 
 
 def test_qubit_template_instantiation() -> None:
-    template = QubitTemplate(k=2)
+    template = QubitTemplate()
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(2),
         [
             [1, 5, 6, 5, 6, 2],
             [7, 9, 10, 9, 10, 11],
@@ -65,9 +54,8 @@ def test_qubit_template_instantiation() -> None:
             [3, 13, 14, 13, 14, 4],
         ],
     )
-    template.scale_to(4)
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(4),
         [
             [1, 5, 6, 5, 6, 5, 6, 5, 6, 2],
             [7, 9, 10, 9, 10, 9, 10, 9, 10, 11],
@@ -84,9 +72,9 @@ def test_qubit_template_instantiation() -> None:
 
 
 def test_qubit_vertical_borders_template_instantiation() -> None:
-    template = QubitVerticalBorders(k=2)
+    template = QubitVerticalBorders()
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(2),
         [
             [1, 2],
             [5, 7],
@@ -96,9 +84,8 @@ def test_qubit_vertical_borders_template_instantiation() -> None:
             [3, 4],
         ],
     )
-    template.scale_to(4)
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(4),
         [
             [1, 2],
             [5, 7],
@@ -115,17 +102,16 @@ def test_qubit_vertical_borders_template_instantiation() -> None:
 
 
 def test_qubit_horizontal_borders_template_instantiation() -> None:
-    template = QubitHorizontalBorders(k=2)
+    template = QubitHorizontalBorders()
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(2),
         [
             [1, 5, 6, 5, 6, 2],
             [3, 7, 8, 7, 8, 4],
         ],
     )
-    template.scale_to(4)
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(4),
         [
             [1, 5, 6, 5, 6, 5, 6, 5, 6, 2],
             [3, 7, 8, 7, 8, 7, 8, 7, 8, 4],
@@ -134,7 +120,7 @@ def test_qubit_horizontal_borders_template_instantiation() -> None:
 
 
 def test_qubit_4_way_junction_template_instantiation() -> None:
-    template = Qubit4WayJunctionTemplate(k=1)
+    template = Qubit4WayJunctionTemplate()
 
     expected_warning_message = (
         "Instantiating Qubit4WayJunctionTemplate with k=1. The "
@@ -143,7 +129,7 @@ def test_qubit_4_way_junction_template_instantiation() -> None:
     )
     with pytest.warns(TQECWarning, match=expected_warning_message):
         numpy.testing.assert_array_equal(
-            template.instantiate(),
+            template.instantiate(1),
             [
                 [1, 5, 6, 2],
                 [7, 10, 11, 12],
@@ -151,9 +137,8 @@ def test_qubit_4_way_junction_template_instantiation() -> None:
                 [3, 14, 15, 4],
             ],
         )
-    template.scale_to(2)
     numpy.testing.assert_array_equal(
-        template.instantiate(),
+        template.instantiate(2),
         [
             [1, 5, 6, 5, 6, 2],
             [7, 10, 11, 10, 11, 12],
