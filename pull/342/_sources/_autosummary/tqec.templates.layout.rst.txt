@@ -1,0 +1,30 @@
+tqec.templates.layout
+=====================
+
+.. automodule:: tqec.templates.layout
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      LayoutTemplate
+   
+   
+
+   
+   
+   
+
+
+
