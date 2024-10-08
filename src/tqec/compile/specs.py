@@ -109,6 +109,8 @@ def _usual_block(
         x_boundary_orientation=x_boundary_orientation,
     )
     b1, b2 = ("X", "Z") if x_boundary_orientation == "VERTICAL" else ("Z", "X")
+    b1 = cast(Literal["X", "Z"], b1)
+    b2 = cast(Literal["X", "Z"], b2)
 
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
