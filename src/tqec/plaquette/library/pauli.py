@@ -1,113 +1,168 @@
-import cirq
+from __future__ import annotations
 
-from tqec.circuit.schedule import ScheduledCircuit
+from enum import Enum
+from typing import Literal
+
+import stim
+
+from tqec.circuit.qubit import GridQubit
+from tqec.circuit.schedule import Schedule, ScheduledCircuit
 from tqec.exceptions import TQECException
+from tqec.plaquette.enums import PlaquetteSide
 from tqec.plaquette.plaquette import Plaquette
-from tqec.plaquette.qubit import PlaquetteQubit, PlaquetteQubits
+from tqec.plaquette.qubit import PlaquetteQubits
 
-_SUPPORTED_PAULI: set[str] = set("xz")
+
+class ResetBasis(Enum):
+    X = "X"
+    Z = "Z"
+
+    @property
+    def instruction_name(self) -> str:
+        return f"R{self.value}"
+
+
+class MeasurementBasis(Enum):
+    X = "X"
+    Z = "Z"
+
+    @property
+    def instruction_name(self) -> str:
+        return f"M{self.value}"
 
 
 def _make_pauli_syndrome_measurement_circuit(
-    syndrome_qubit: PlaquetteQubit,
-    data_qubits: list[PlaquetteQubit],
-    pauli_string: str,
-    reset_syndrome_qubit: bool = True,
-) -> cirq.Circuit:
-    """Build and return a quantum circuit measuring the provided Pauli syndrome.
+    qubits: PlaquetteQubits,
+    pauli_string: Literal["xx", "zz", "xxxx", "zzzz"],
+    data_qubit_reset_basis: ResetBasis | None = None,
+    data_qubit_measurement_basis: MeasurementBasis | None = None,
+    plaquette_side: PlaquetteSide | None = None,
+) -> stim.Circuit:
+    """Build and return a quantum circuit measuring the provided Pauli
+    syndrome.
 
     This function builds a quantum circuit measuring the Pauli observable
-    provided in ``pauli_string`` on the provided ``data_qubits``, using
-    ``syndrome_qubit`` as an ancilla.
+    provided in `pauli_string` on the provided `data_qubits`, using
+    `syndrome_qubit` as an ancilla.
 
     Args:
-        syndrome_qubit: the ``PlaquetteQubit`` instance used to measure the
-            syndrome. Will be reset at the beginning of the returned circuit
-            if ``reset_syndrome_qubit`` is ``True``.
-        data_qubits: the qubits we should measure the Pauli observable on.
-            There should be as many ``PlaquetteQubit`` instances in
-            ``data_qubits`` as there are Pauli characters in the provided
-            ``pauli_string``.
-        pauli_string: a string of case-independent characters, each
-            representing a Pauli matrix. Each charater should be present in
-            _SUPPORTED_PAULI and the string should have as many characters as
-            there are qubits in ``data_qubits``.
-        reset_syndrome_qubit: insert a reset gate on the syndrome qubit at the
-            beginning of the circuit if True.
+        qubits: qubits on which the provided Pauli string will be measured.
+            Includes the syndrome(s) qubit(s).
+        pauli_string: a string representing the Pauli syndrome to measure. The
+            string should have as many characters as there are qubits in
+            `data_qubits`.
+        data_qubit_reset_basis: if `None`, data qubits are not touched before
+            measuring the provided Pauli operator. Else, data qubits are reset
+            in the provided basis at the same time slice as the syndrome qubit
+            (the first). Defaults to None.
+        data_qubit_measurement_basis: if `None`, data qubits are not touched
+            after measuring the provided Pauli operator. Else, data qubits are
+            measured in the provided basis at the same time slice as the
+            syndrome qubit (the last). Defaults to None.
+        plaquette_side: if not `None`, data qubit reset/measurements are only
+            added on the provided plaquette side. Else, they are added on all
+            the qubits.
 
     Returns:
-        a cirq.Circuit instance measuring the provided Pauli string on the
+        a stim.Circuit instance measuring the provided Pauli string on the
         provided syndrome_qubit.
 
     Raises:
-        TQECException: if ``len(pauli_string) != len(data_qubits)`` or
-            if ``any(p not in _SUPPORTED_PAULI for p in pauli_string)``.
+        TQECException: if `len(pauli_string) != len(data_qubits)`.
     """
-    if len(pauli_string) != len(data_qubits):
+    (sq,) = qubits.syndrome_qubits
+    dqs = qubits.data_qubits
+    if len(pauli_string) != len(dqs):
         raise TQECException(
             f"The number of Pauli characters provided ({len(pauli_string)}) "
-            f"does not correspond to the number of data qubits ({len(data_qubits)})."
+            f"does not correspond to the number of data qubits ({len(dqs)})."
         )
 
-    sq = syndrome_qubit.to_grid_qubit()
-    dqs = [dq.to_grid_qubit() for dq in data_qubits]
+    data_qubits_to_reset_measure: list[GridQubit] = dqs
+    if plaquette_side is not None:
+        data_qubits_to_reset_measure = qubits.get_qubits_on_side(plaquette_side)
 
-    circuit = cirq.Circuit()
-    if reset_syndrome_qubit:
-        circuit.append(cirq.Moment(cirq.R(sq).with_tags(Plaquette._MERGEABLE_TAG)))
+    # Start the built quantum circuit by defining the correct qubit coordinates.
+    circuit = stim.Circuit()
+    q2i: dict[GridQubit, int] = {sq: 0} | {dq: i + 1 for i, dq in enumerate(dqs)}
+    for qubit, qubit_index in q2i.items():
+        circuit.append(qubit.to_qubit_coords_instruction(qubit_index))
 
-    is_in_X_basis: bool = False
+    # Insert the appropriate reset gate (with a potential basis change for
+    # syndrome qubit if needed).
+    circuit.append("RX" if pauli_string in ["xx", "xxxx"] else "R", [q2i[sq]], [])
+    if data_qubit_reset_basis is not None:
+        circuit.append(
+            data_qubit_reset_basis.instruction_name,
+            [q2i[q] for q in data_qubits_to_reset_measure],
+            [],
+        )
+    circuit.append("TICK", [], [])
+
     for i, pauli in enumerate(pauli_string.lower()):
-        if pauli not in _SUPPORTED_PAULI:
-            raise TQECException(f"Unsupported Pauli operation: {pauli}.")
-        if pauli == "z":
-            if is_in_X_basis:
-                circuit.append(cirq.Moment(cirq.H(sq)))
-                is_in_X_basis = False
-            circuit.append(cirq.Moment(cirq.CX(dqs[i], sq)))
-        if pauli == "x":
-            if not is_in_X_basis:
-                circuit.append(cirq.Moment(cirq.H(sq)))
-                is_in_X_basis = True
-            circuit.append(cirq.Moment(cirq.CX(sq, dqs[i])))
+        match pauli:
+            case "z":
+                circuit.append("CX", [q2i[dqs[i]], q2i[sq]], [])
+            case "x":
+                circuit.append("CX", [q2i[sq], q2i[dqs[i]]], [])
+            case _:
+                raise TQECException(f"Unsupported Pauli operation: {pauli}.")
+        circuit.append("TICK", [], [])
 
-    if is_in_X_basis:
-        circuit.append(cirq.Moment(cirq.H(sq)))
+    # Insert the appropriate measurement gate (with a potential basis change for
+    # syndrome qubit if needed).
+    circuit.append("MX" if pauli_string in ["xx", "xxxx"] else "M", [q2i[sq]], [])
+    if data_qubit_measurement_basis is not None:
+        circuit.append(
+            data_qubit_measurement_basis.instruction_name,
+            [q2i[q] for q in data_qubits_to_reset_measure],
+            [],
+        )
 
-    circuit.append(cirq.Moment(cirq.M(sq)))
     return circuit
 
 
 def pauli_memory_plaquette(
     qubits: PlaquetteQubits,
-    pauli_string: str,
-    schedule: list[int],
-    include_initial_data_resets: bool = False,
-    include_final_data_measurements: bool = False,
+    pauli_string: Literal["xx", "zz", "xxxx", "zzzz"],
+    schedule: Schedule,
+    data_qubit_reset_basis: ResetBasis | None = None,
+    data_qubit_measurement_basis: MeasurementBasis | None = None,
+    plaquette_side: PlaquetteSide | None = None,
 ) -> Plaquette:
-    (syndrome_qubit,) = qubits.get_syndrome_qubits()
-    data_qubits = qubits.get_data_qubits()
+    """Generic function to create a :class:`Plaquette` instance measuring a
+    given Pauli string.
 
-    if len(pauli_string) != len(data_qubits):
-        raise TQECException(
-            f"pauli_memory_plaquette requires the exact same "
-            f"number of data qubits and Pauli terms. Got {len(pauli_string)} "
-            f"pauli terms and {len(data_qubits)} data qubits."
-        )
+    Args:
+        qubits: qubits on which the provided Pauli string will be measured.
+            Includes the syndrome(s) qubit(s).
+        pauli_string: the Pauli string to measure on data qubit(s).
+        schedule: scheduling of each time slice of the resulting circuit.
+        data_qubit_reset_basis: if `None`, data qubits are not touched before
+            measuring the provided Pauli operator. Else, data qubits are reset
+            in the provided basis at the same time slice as the syndrome qubit
+            (the first). Defaults to None.
+        data_qubit_measurement_basis: if `None`, data qubits are not touched
+            after measuring the provided Pauli operator. Else, data qubits are
+            measured in the provided basis at the same time slice as the
+            syndrome qubit (the last). Defaults to None.
+        plaquette_side: if not `None`, data qubit reset/measurements are only
+            added on the provided plaquette side. Else, they are added on all
+            the qubits.
+    Raises:
+        TQECException: if the number of data qubits and the length of the
+            provided Pauli string are not exactly equal.
+        TQECException: if the provided schedule is incorrect.
 
+    Returns:
+        a `Plaquette` instance measuring the provided Pauli string.
+    """
     circuit = _make_pauli_syndrome_measurement_circuit(
-        syndrome_qubit, data_qubits, pauli_string
+        qubits,
+        pauli_string,
+        data_qubit_reset_basis,
+        data_qubit_measurement_basis,
+        plaquette_side,
     )
 
-    if include_initial_data_resets:
-        circuit[0] += [
-            cirq.R(q).with_tags(Plaquette._MERGEABLE_TAG)
-            for q in qubits.get_data_qubits_cirq()
-        ]
-    if include_final_data_measurements:
-        circuit[-1] += [
-            cirq.M(q).with_tags(Plaquette._MERGEABLE_TAG)
-            for q in qubits.get_data_qubits_cirq()
-        ]
-
-    return Plaquette(qubits, ScheduledCircuit(circuit, schedule))
+    return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit, schedule))

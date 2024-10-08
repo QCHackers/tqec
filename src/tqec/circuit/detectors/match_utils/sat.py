@@ -150,7 +150,7 @@ def encode_pauli_string_commuting_cover_sat_problem_in_solver(
     `available_pauli_strings`.
 
     Also note that the problem defined above includes a trivial solution: do not include
-    any Pauli string. This lead to an identity Pauli string, that will necessarilly commute
+    any Pauli string. This lead to an identity Pauli string, that will necessarily commute
     with the provided target. A specific clause is added to the SAT problem to avoid that
     particular trivial solution.
 

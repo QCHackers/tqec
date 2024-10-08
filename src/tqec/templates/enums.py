@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from tqec.position import Position
+from tqec.position import Position2D
 
 
 class CornerPositionEnum(Enum):
@@ -12,24 +12,25 @@ class CornerPositionEnum(Enum):
     - the Y-axis that goes from the origin to the lower-left corner
     """
 
-    LOWER_LEFT = Position(0, 1)
-    LOWER_RIGHT = Position(1, 1)
-    UPPER_LEFT = Position(0, 0)
-    UPPER_RIGHT = Position(1, 0)
+    LOWER_LEFT = Position2D(0, 1)
+    LOWER_RIGHT = Position2D(1, 1)
+    UPPER_LEFT = Position2D(0, 0)
+    UPPER_RIGHT = Position2D(1, 0)
 
 
 class TemplateRelativePositionEnum(Enum):
     """Represent a relative position between two Template instances.
 
-    Template relative positions are stored as the relative displacement needed to
-    encode the position. For example, LEFT_OF is encoded as (-1, 0) as a template
-    on the left is one unit backwards on the X-axis.
+    Template relative positions are stored as the relative displacement
+    needed to encode the position. For example, LEFT_OF is encoded as
+    (-1, 0) as a template on the left is one unit backwards on the
+    X-axis.
     """
 
-    LEFT_OF = Position(-1, 0)
-    RIGHT_OF = Position(1, 0)
-    ABOVE_OF = Position(0, -1)
-    BELOW_OF = Position(0, 1)
+    LEFT_OF = Position2D(-1, 0)
+    RIGHT_OF = Position2D(1, 0)
+    ABOVE_OF = Position2D(0, -1)
+    BELOW_OF = Position2D(0, 1)
 
 
 LEFT_OF = TemplateRelativePositionEnum.LEFT_OF
@@ -45,6 +46,12 @@ class TemplateOrientation(Enum):
     VERTICAL = auto()
 
 
-class Axis(Enum):
-    X = auto()
-    Y = auto()
+class TemplateSide(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+    TOP = auto()
+    BOTTOM = auto()
+    TOP_LEFT = auto()
+    TOP_RIGHT = auto()
+    BOTTOM_LEFT = auto()
+    BOTTOM_RIGHT = auto()

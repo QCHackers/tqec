@@ -5,78 +5,54 @@
 
 Design automation software tools for Topological Quantum Error Correction
 
-Live endpoint: https://tqec.app
-
 ## Installation
 
-### Backend (Python package)
-
-In order to install the `tqec` package, you can follow the following
-instructions.
-
-First, clone this repository on your computer and go in the newly created
-folder:
-
 ```sh
-git clone https://github.com/QCHackers/tqec.git
-cd tqec
+python -m pip install git+https://github.com/QCHackers/tqec.git
 ```
 
-If not already done, create a clean Python virtual environment to avoid any
-version clash between packages. You can use the default Python package `venv` to
-do that:
+For a more in-depth explanation, see the [installation procedure](https://qchackers.github.io/tqec/installation.html).
 
-```sh
-python -m venv venv        # Create a "venv" directory in the current directory.
-source venv/bin/activate   # On Unix. For Windows users, use activate.bat
+## Quick start
+
+Download the example file [clean_exportable_cnot.dae](https://github.com/QCHackers/tqec/tree/main/docs/media/quick_start/clean_exportable_cnot.dae).
+
+You can generate `stim.Circuit` instances representing that computation using
+
+```py
+from tqec import (
+    BlockGraph, compile_block_graph, annotate_detectors_automatically,
+)
+from tqec.noise_models import NoiseModel
+
+block_graph = BlockGraph.from_dae_file("clean_exportable_cnot.dae")
+observables = block_graph.get_abstract_observables()
+compiled_computation = compile_block_graph(block_graph, [observables[1]])
+
+circuit = compiled_computation.generate_stim_circuit(
+    # Can be changed to whatever value you want. Large values will
+    # take a lot of time.
+    k=2,
+    # The noise applied and noise levels can be changed.
+    noise_model=NoiseModel.uniform_depolarizing(0.001),
+)
+circuit_with_detectors = annotate_detectors_automatically(circuit)
+print(circuit_with_detectors)
 ```
 
-You might see a `(venv)` appearing on your terminal prompt, showing that the
-virtual environment has been activated.
+See the [quick start tutorial](https://qchackers.github.io/tqec/quick_start.html) for a
+more in-depth explanation.
 
-The next step is to install the package and its dependencies using
+## Contributing
 
-```sh
-python -m pip install "."
-```
+Pull requests and issues are more than welcomed!
 
-If you want to run the
-[`logical_qubit_memory_experiment.ipynb`](https://github.com/QCHackers/tqec/blob/main/notebooks/logical_qubit_memory_experiment.ipynb)
-notebook, you will also have to install a few other packages:
-
-```sh
-python -m pip install ".[dev]"
-```
-
-If no errors happen, the package is installed! You can try to launch a jupyter
-lab server
-
-```sh
-python -m jupyter lab
-```
-
-and to run some of the notebooks in the [`notebooks`](https://github.com/QCHackers/tqec/tree/main/notebooks) directory.
-
-### Frontend
-
-Refer to [this folder](https://github.com/QCHackers/tqec/tree/main/frontend) for instructions.
-
-## Architecture
-
-Refer to [this wiki page](https://github.com/QCHackers/tqec/wiki/TQEC-Architecture) for more information.
+See the [contributing page](https://qchackers.github.io/tqec/contributing.html) for specific instructions to start contributing.
 
 ## Helpful Links
 
 1. [Google group](https://groups.google.com/g/tqec-design-automation)
-2. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
-3. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
-4. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)
-5. [Developer documentation for the `tqec` project](https://qchackers.github.io/tqec/)
-
-## Before you commit
-
-`nbdime` is a great tool for looking at the git diff for jupyter notebooks.
-
-For jupyterlab there is a market place extension which you need to enable first
-and that will let you search and install extensions from within jupyter lab. You
-can enable the marketplace extension with the following code:
+2. [Developer documentation for the `tqec` project](https://qchackers.github.io/tqec/)
+3. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
+4. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
+5. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)

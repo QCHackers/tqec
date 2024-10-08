@@ -71,7 +71,7 @@ export default function TqecCode() {
 	const infoButton = button('Library of plaquettes', libraryTopLeftCorners[0][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
-    // Select the qubits that are part of a plaquette 
+    // Select the qubits that are part of a plaquette
 	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(importPlaquettesButton);
 	let codePlaquettes = [];
@@ -146,13 +146,13 @@ export default function TqecCode() {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button to de-select all qubits 
+	// Create a button to de-select all qubits
 	const downloadCodeButton = button('Download QEC code', gridSize, 21*gridSize, 'white', 'black');
 	workspace.addChild(downloadCodeButton);
 
 	downloadCodeButton.on('click', (_e) => {
 		if (codePlaquettes.length === 0) return;
-	
+
 		let message = '';
 		// Add info on cell size
 		message += 'This is the complete QEC code.\n'

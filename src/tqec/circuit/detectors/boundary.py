@@ -17,8 +17,8 @@ class BoundaryStabilizer:
         reset_qubits: frozenset[int],
         forward: bool,
     ):
-        """Represents a stabilizer that has been propagated and is now at the boundary
-        of a Fragment.
+        """Represents a stabilizer that has been propagated and is now at the
+        boundary of a Fragment.
 
         Raises:
             TQECException: if `source_qubits` is empty.
@@ -51,8 +51,8 @@ class BoundaryStabilizer:
 
     @property
     def has_anticommuting_operations(self) -> bool:
-        """Check if the instance represents a stabilizer that anti-commutes with at
-        least one of its collapsing operations.
+        """Check if the instance represents a stabilizer that anti-commutes
+        with at least one of its collapsing operations.
 
         Returns:
             `True` if at least one collapsing operation anti-commutes with the stabilizer,
@@ -62,7 +62,8 @@ class BoundaryStabilizer:
 
     @property
     def after_collapse(self) -> PauliString:
-        """Compute the stabilizer obtained after applying the collapsing operations.
+        """Compute the stabilizer obtained after applying the collapsing
+        operations.
 
         Raises:
             TQECException: If any of the collapsing operation anti-commutes with the
@@ -80,7 +81,8 @@ class BoundaryStabilizer:
 
     @property
     def before_collapse(self) -> PauliString:
-        """Return the stabilizer obtained before applying the collapsing operations.
+        """Return the stabilizer obtained before applying the collapsing
+        operations.
 
         Returns:
             The Pauli string that goes out of the Fragment, before applying any
@@ -91,8 +93,7 @@ class BoundaryStabilizer:
     @property
     def collapsing_operations(self) -> ty.Iterable[PauliString]:
         """Iterator on all the collapsing operations defining the boundary this
-        stabilizer is applied to.
-        """
+        stabilizer is applied to."""
         return self._collapsing_operations
 
     @property
@@ -118,7 +119,7 @@ class BoundaryStabilizer:
                 collapsing operations.
 
         Returns:
-            the merged boudary stabilizer, defined on the same set of collapsing
+            the merged boundary stabilizer, defined on the same set of collapsing
             operations (i.e., the same boundary), but with the two pre-collapsing
             stabilizers multiplied together.
         """

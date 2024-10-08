@@ -1,22 +1,23 @@
-import cirq
 import pytest
 
 from tqec.circuit.observable_qubits import observable_qubits_from_template
+from tqec.circuit.qubit import GridQubit
+from tqec.circuit.schedule import Schedule
 from tqec.plaquette.library import xxxx_memory_plaquette, zzzz_memory_plaquette
 from tqec.plaquette.plaquette import Plaquette
-from tqec.templates import RawRectangleTemplate
+from tqec.templates._testing import FixedTemplate
 
 
 @pytest.fixture
 def plaquettes() -> list[Plaquette]:
     return [
-        xxxx_memory_plaquette([1, 2, 3, 4, 5, 6, 7, 8]),
-        zzzz_memory_plaquette([1, 3, 4, 5, 6, 8]),
+        xxxx_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5])),
+        zzzz_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5])),
     ]
 
 
-def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]) -> None:
-    template = RawRectangleTemplate(
+def test_raw_rectangle_default_observable_qubits(plaquettes: list[Plaquette]) -> None:
+    template = FixedTemplate(
         [
             [0, 1, 0, 1],
             [1, 0, 1, 0],
@@ -27,10 +28,10 @@ def test_raw_rectangle_default_obserevable_qubits(plaquettes: list[Plaquette]) -
 
     obs = observable_qubits_from_template(template, plaquettes)
     result = [
-        (cirq.GridQubit(3, -1), 0),
-        (cirq.GridQubit(3, 1), 0),
-        (cirq.GridQubit(3, 3), 0),
-        (cirq.GridQubit(3, 5), 0),
-        (cirq.GridQubit(3, 7), 0),
+        (GridQubit(-1, 3), 0),
+        (GridQubit(1, 3), 0),
+        (GridQubit(3, 3), 0),
+        (GridQubit(5, 3), 0),
+        (GridQubit(7, 3), 0),
     ]
-    assert sorted(obs, key=lambda t: t[0].col) == result
+    assert sorted(obs, key=lambda t: t[0].x) == result

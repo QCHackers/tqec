@@ -1,56 +1,43 @@
-from . import (
-    circuit,
-    noise_models,
-    plaquette,
-    templates,
-)
+from tqec.compile import compile_block_graph
+
+from . import circuit, noise_models, plaquette, templates
 from ._version import __version__
 from .circuit import (
     ScheduledCircuit,
     ScheduleException,
+    annotate_detectors_automatically,
     generate_circuit,
     merge_scheduled_circuits,
 )
 from .exceptions import TQECException
-from .noise_models import (
-    AfterCliffordDepolarizingNoise,
-    AfterResetFlipNoise,
-    BaseNoiseModel,
-    BeforeMeasurementFlipNoise,
-    BeforeRoundDataDepolarizationNoise,
-    DepolarizingNoiseOnIdlingQubit,
-    MultiQubitDepolarizingNoiseAfterMultiQubitGate,
-)
+from .interval import Interval
+from .noise_models import NoiseModel
 from .plaquette import (
     Plaquette,
-    PlaquetteQubit,
     PlaquetteQubits,
     RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
-from .plaquette.enums import (
-    PlaquetteOrientation,
+from .plaquette.enums import PlaquetteOrientation
+from .position import Direction3D, Displacement, Position2D, Position3D, Shape2D
+from .scale import LinearFunction, Scalable2D, ScalableInterval, round_or_fail
+from .computation import (
+    BlockGraph,
+    BlockType,
+    Color3D,
+    Cube,
+    CubeType,
+    NodeType,
+    Pipe,
+    PipeType,
+    ZXEdge,
+    ZXGraph,
+    ZXNode,
+    display_collada_model,
+    read_block_graph_from_dae_file,
+    write_block_graph_to_dae_file,
 )
-from .position import (
-    Displacement,
-    Position,
-    Shape2D,
-)
-from .templates import (
-    AlternatingCornerSquareTemplate,
-    AlternatingRectangleTemplate,
-    AlternatingSquareTemplate,
-    ComposedTemplate,
-    LinearFunction,
-    QubitRectangleTemplate,
-    QubitSquareTemplate,
-    RawRectangleTemplate,
-    ScalableCorner,
-    Template,
-    TemplateWithIndices,
-    display_template,
-    display_templates_svg,
-)
+from .templates import Template
 from .templates.enums import (
     CornerPositionEnum,
     TemplateOrientation,

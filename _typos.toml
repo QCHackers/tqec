@@ -1,0 +1,5 @@
+[default]
+extend-ignore-identifiers-re = [
+    # Corrected to "and" but always mean "ancilla".
+    "anc_.*",
+]

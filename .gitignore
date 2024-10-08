@@ -179,4 +179,15 @@ pyvenv.cfg
 
 # Sphinx
 docs/_build
-docs/source
+docs/_autosummary
+
+# Rye
+.python-version
+requirements.lock
+requirements-dev.lock
+
+# Ruff
+.ruff_cache
+
+# tqec specific
+benchmarks/data/

@@ -3,20 +3,20 @@ import { QUBIT_ROLES } from '../constants'
 
 /**
  * Create the circuit as ASCII art.
- * 
+ *
  * Two forms of circuits are possible:
- * 
+ *
  * [] "cnot"
  *    - Hadamard on the data qubits
  *    - only CNOT as 2q gates
  *    - every CNOT is controlled by a data qubit and targets the ancilla
- * 
+ *
  * [] "univ"
  *    - Hadamard on the ancilla qubit
  *    - both CNOT and CZ as 2q gates
  *    - every CNOT/CZ is controlled by the ancilla and targets a data qubit
  */
-export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, form='univ') {
+export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time = true, form = 'univ') {
 	if (form !== 'cnot') form = 'univ'; // Failsafe case of an unknown form option.
 	let lines = [];
 	// Add lines for every data qubit.
@@ -25,32 +25,32 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 		let line = `${qubit.name}: ----`
 		// Local change of basis
 		if (form === 'cnot') {
-		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
-		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
+			if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
+			if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
 		} else if (form === 'univ') {
-		    line += '----';
+			line += '----';
 		}
 		// Previous CNOTs
-		for (let i = 0; i<idx; i++) {
+		for (let i = 0; i < idx; i++) {
 			line += '-|--';
 		}
 		// Current CNOT
 		if (form === 'cnot') {
 			line += '-*--'
 		} else if (form === 'univ') {
-		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-X--';
-		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '-*--';
+			if (qubit.role === QUBIT_ROLES.XDATA) line += '-X--';
+			if (qubit.role === QUBIT_ROLES.ZDATA) line += '-*--';
 		}
 		// Next CNOTs
-		for (let i = idx+1; i<data_qubits.length; i++) {
+		for (let i = idx + 1; i < data_qubits.length; i++) {
 			line += '----';
 		}
 		// Change of basis
 		if (form === 'cnot') {
-		    if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
-		    if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
+			if (qubit.role === QUBIT_ROLES.XDATA) line += '-H--';
+			if (qubit.role === QUBIT_ROLES.ZDATA) line += '----';
 		} else if (form === 'univ') {
-		    line += '----';
+			line += '----';
 		}
 		// End
 		line += '----';
@@ -61,11 +61,11 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 		line = '              ';
 		line += '    ';
 		// Previous CNOTs and current one
-		for (let i = 0; i<idx+1; i++) {
+		for (let i = 0; i < idx + 1; i++) {
 			line += ' |  ';
 		}
 		// Next CNOTs
-		for (let i = idx+1; i<data_qubits.length; i++) {
+		for (let i = idx + 1; i < data_qubits.length; i++) {
 			line += '    ';
 		}
 		line += '        '
@@ -79,7 +79,7 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 	} else if (form === 'univ') {
 		line += '-H--';
 	}
-	for (let i = 0; i<data_qubits.length; i++) {
+	for (let i = 0; i < data_qubits.length; i++) {
 		if (form === 'cnot') {
 			line += '-X--';
 		} else if (form === 'univ') {
@@ -94,10 +94,10 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 	lines.push(line);
 	// Add time ruler.
 	if (with_time) {
-		//      Q(__,__): 
+		//      Q(__,__):
 		line = '          ';
 		let line2 = 'time ruler';
-		for (let i = 0; i<data_qubits.length+4; i++) {
+		for (let i = 0; i < data_qubits.length + 4; i++) {
 			line += '___ ';
 			line2 += ' ' + i + '  ';
 		}
@@ -106,10 +106,10 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 	}
 	// Create the message
 	let art = '';
-	lines.slice(0,-1).forEach(line => {
+	lines.slice(0, -1).forEach(line => {
 		art = art + line + '\n';
 	});
-	art += lines[lines.length-1];
+	art += lines[lines.length - 1];
 	return art;
 }
 
@@ -117,9 +117,9 @@ export function createCircuitAsciiArt(data_qubits, anc_qubit, with_time=true, fo
 
 /**
  * Create the circuit as stim code snippet.
- * 
+ *
  * For simplicity, a single form of circuits is available:
- * 
+ *
  * [] "univ"
  *    - Hadamard on the ancilla qubit
  *    - both CNOT and CZ as 2q gates
@@ -135,7 +135,7 @@ export function createCircuitStimCode(data_qubits, anc_qubit) {
 		q += 1;
 		lines.push(line);
 	});
-	const id_ancilla = `${data_qubits.length+1}`;
+	const id_ancilla = `${data_qubits.length + 1}`;
 	line = 'QUBIT_COORDS' + anc_qubit.name.slice(1) + ' ' + id_ancilla;
 	lines.push(line)
 	// In the first time step, reset the ancilla qubit.
@@ -146,7 +146,7 @@ export function createCircuitStimCode(data_qubits, anc_qubit) {
 	line = 'H ' + id_ancilla;
 	lines.push(line);
 	lines.push('TICK')
-	// Then apply one CNOt or CZ at a time, everyone controlled by the ancilla and acting on a different data qubit.
+	// Then apply one CNot or CZ at a time, everyone controlled by the ancilla and acting on a different data qubit.
 	q = 1;
 	data_qubits.forEach(qubit => {
 		if (qubit.role === QUBIT_ROLES.XDATA) line = 'CX ';
@@ -167,10 +167,10 @@ export function createCircuitStimCode(data_qubits, anc_qubit) {
 
 	// Create the message
 	let stim = '';
-	lines.slice(0,-1).forEach(line => {
+	lines.slice(0, -1).forEach(line => {
 		stim = stim + line + '\n';
 	});
-	stim += lines[lines.length-1];
+	stim += lines[lines.length - 1];
 	return stim;
 }
 
@@ -238,15 +238,15 @@ export default class Circuit extends Container {
 	_createCircuit(message) {
 		if (message === '' || message === 'ascii' || message === 'stim') {
 			const warning = 'Plaquette is not compliant.\n\n'
-						  + 'Requirements:\n'
-						  + '- there is a unique ancilla qubit\n'
-						  + '- all other qubits are associated with either X- or Z-stabilizers\n'
-						  + '- all data qubits are assumed physically connected to the ancilla qubit';
+				+ 'Requirements:\n'
+				+ '- there is a unique ancilla qubit\n'
+				+ '- all other qubits are associated with either X- or Z-stabilizers\n'
+				+ '- all data qubits are assumed physically connected to the ancilla qubit';
 			if (this.isCompatible === false) {
 				message = warning;
 			} else {
 				message = (message === 'ascii') ? createCircuitAsciiArt(this.data_qubits, this.anc_qubit, true, 'univ')
-												: createCircuitStimCode(this.data_qubits, this.anc_qubit);
+					: createCircuitStimCode(this.data_qubits, this.anc_qubit);
 			}
 		}
 		// Create the graphics
@@ -275,7 +275,7 @@ export default class Circuit extends Container {
 		const dy = this.art.getBounds().height + 30;
 		// Create a rectangle
 		artBackground.beginFill(Circuit.color_background);
-		artBackground.drawRoundedRect(this.globalX-15, this.globalY-15, dx, dy);
+		artBackground.drawRoundedRect(this.globalX - 15, this.globalY - 15, dx, dy);
 		artBackground.endFill();
 
 		// Add effects

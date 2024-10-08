@@ -83,7 +83,7 @@ export default function TqecLibrary() {
 	const infoButton = button('Library of plaquettes', libraryTopLeftCorners[0][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
-    // Select the qubits that are part of a plaquette 
+    // Select the qubits that are part of a plaquette
 	const createPlaquetteButton = button('Create plaquette', gridSize, 1*gridSize, 'white', 'black');
 	workspace.addChild(createPlaquetteButton);
     let selectedQubits = [];
@@ -119,7 +119,7 @@ export default function TqecLibrary() {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button to allow for printing the plaquette's qubits 
+	// Create a button to allow for printing the plaquette's qubits
 	const printQubitsButton = button('Print qubit names', gridSize, 2*gridSize, 'white', 'black');
 	workspace.addChild(printQubitsButton);
 	let qubitsButton;
@@ -130,14 +130,14 @@ export default function TqecLibrary() {
 		let message = '';
 		selectedQubits.forEach(qubit => {
 			message = message + `${qubit.name} `;
-		}); 
+		});
 		qubitsButton = button(message, gridSize, 3*gridSize, 'grey', 'black');
 		workspace.addChild(qubitsButton);
 	});
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button for printing the plaquette's circuit 
+	// Create a button for printing the plaquette's circuit
 	const printAsciiCircuitButton = button('ASCII circuit', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(printAsciiCircuitButton);
 	const printStimCircuitButton = button(' STIM circuit', 3.5*gridSize, 4*gridSize, 'white', 'black');
@@ -181,7 +181,7 @@ export default function TqecLibrary() {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button for printing the plaquette's circuit 
+	// Create a button for printing the plaquette's circuit
 	const confirmCircuitButton = button('Confirm circuit', gridSize, 13*gridSize, 'white', 'black');
 	workspace.addChild(confirmCircuitButton);
 
@@ -195,7 +195,7 @@ export default function TqecLibrary() {
 		plaquette.on('click', (_e) => {
 			plaquette.showCircuit()
 		});
-		
+
 	});
 
 /////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ export default function TqecLibrary() {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button to de-select all qubits 
+	// Create a button to de-select all qubits
 	const clearPlaquetteButton = button('Clear plaquette', gridSize, 15*gridSize, 'white', 'black');
 	workspace.addChild(clearPlaquetteButton);
 
@@ -256,13 +256,13 @@ export default function TqecLibrary() {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button to de-select all qubits 
+	// Create a button to de-select all qubits
 	const downloadLibraryButton = button('Download plaquette library', gridSize, 17*gridSize, 'white', 'black');
 	workspace.addChild(downloadLibraryButton);
 
 	downloadLibraryButton.on('click', (_e) => {
 		if (savedPlaquettes.length === 0) return;
-	
+
 		let message = '';
 		// Add info on cell size
 		message += `cell size [width x height]: ${plaquetteDx} x ${plaquetteDy}\n\n`

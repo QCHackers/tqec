@@ -223,7 +223,7 @@ class FragmentLoopFlows:
 
 
 def build_flows_from_fragments(
-    fragments: list[Fragment | FragmentLoop],
+    fragments: ty.Sequence[Fragment | FragmentLoop],
 ) -> list[FragmentFlows | FragmentLoopFlows]:
     """Compute and return the stabilizer flows of the provided fragments.
 

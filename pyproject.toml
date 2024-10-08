@@ -12,7 +12,7 @@ description = "A design automation framework for Topological Quantum Error Corre
 readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["topological quantum error correction", "qec"]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -24,7 +24,6 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Programming Language :: JavaScript",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -45,9 +44,19 @@ Issues = "https://github.com/QCHackers/tqec/issues"
 
 [project.optional-dependencies]
 test = ["pytest", "mypy", "pytest-cov"]
-dev = ["sinter", "pymatching", "jupyterlab", "tqec[test]"]
-doc = ["sphinx", "myst-parser", "sphinx-rtd-theme"]
-all = ["tqec[test, dev, doc]"]
+dev = [
+    "sinter",
+    "pymatching",
+    "jupyterlab",
+    "tqec[test, doc, bench]",
+    "pre-commit",
+]
+doc = ["sphinx", "myst-parser", "sphinx-rtd-theme", "nbsphinx", "pandoc"]
+bench = ["pyinstrument"]
+all = ["tqec[test, dev, doc, bench]"]
+
+[project.scripts]
+tqec = "tqec._cli.tqec:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -103,6 +112,7 @@ warn_return_any = true
 [[tool.mypy.overrides]]
 module = [
     "stim",
+    "sinter",
     "pysat",
     "pysat.solvers",
     "collada",
@@ -111,5 +121,25 @@ module = [
     "stimcirq",
     # Added due to missing stubs for last version (1.13.1)
     "sympy",
+    "mpl_toolkits.mplot3d.axes3d",
 ]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+omit = ["*/*_test.py"]
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]

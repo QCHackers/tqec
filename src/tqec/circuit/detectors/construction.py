@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import stim
+
 from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import (
     Fragment,
@@ -51,7 +52,7 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
 
     This is the main user-facing function to automatically insert detectors into
     a quantum circuit composed of Clifford operations. The provided circuit should
-    check some pre-conditions to be accepted, which are detailled in details below.
+    check some pre-conditions to be accepted, which are detailed in details below.
 
     First and foremost, the provided circuit should check the pre-conditions listed
     in the documentation of :func:`split_stim_circuit_into_fragments`.
@@ -65,7 +66,7 @@ def annotate_detectors_automatically(circuit: stim.Circuit) -> stim.Circuit:
     potential_error_reason = is_valid_input_circuit(circuit)
     if potential_error_reason is not None:
         raise TQECException(potential_error_reason)
-    
+
     fragments = split_stim_circuit_into_fragments(circuit)
     qubit_coords_map: dict[int, tuple[float, ...]] = {
         q: tuple(coords) for q, coords in circuit.get_final_qubit_coordinates().items()
