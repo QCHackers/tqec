@@ -1,0 +1,6 @@
+tqec.templates.display.display\_template\_from\_instantiation
+=============================================================
+
+.. currentmodule:: tqec.templates.display
+
+.. autofunction:: display_template_from_instantiation

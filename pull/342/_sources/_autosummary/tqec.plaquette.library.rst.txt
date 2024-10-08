@@ -1,0 +1,36 @@
+tqec.plaquette.library
+======================
+
+.. automodule:: tqec.plaquette.library
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   css
+
+
+   empty
+
+

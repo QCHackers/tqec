@@ -1,0 +1,31 @@
+tqec.scale.Scalable2D
+=====================
+
+.. currentmodule:: tqec.scale
+
+.. autoclass:: Scalable2D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Scalable2D.__init__
+      ~Scalable2D.to_numpy_shape
+      ~Scalable2D.to_shape_2d
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Scalable2D.x
+      ~Scalable2D.y
+   
+   
