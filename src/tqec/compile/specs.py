@@ -4,7 +4,7 @@ from typing import Protocol, Literal, cast
 from dataclasses import dataclass
 from collections import defaultdict
 
-from tqec.plaquette.library.css_plaquette import make_css_surface_code_plaquette
+from tqec.plaquette.library.css import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.compile.block import CompiledBlock
 from tqec.exceptions import TQECException
