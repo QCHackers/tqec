@@ -14,6 +14,5 @@ get the qubits on a specific side of the plaquette).
 from .plaquette import Plaquette
 from .qubit import (
     PlaquetteQubits,
-    RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )

@@ -589,7 +589,9 @@ class ScheduledCircuit:
             a new instance of `ScheduledCircuit` with the filtered circuit and
             schedules.
         """
-        qubits_indices_to_keep = frozenset(self.q2i[q] for q in qubits_to_keep)
+        qubits_indices_to_keep = frozenset(
+            self.q2i[q] for q in qubits_to_keep if q in self.qubits
+        )
         filtered_moments: list[Moment] = []
         filtered_schedule: list[int] = []
         for schedule, moment in self.scheduled_moments:

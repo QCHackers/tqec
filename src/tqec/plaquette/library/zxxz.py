@@ -7,14 +7,13 @@ from typing import Literal
 import stim
 
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.exceptions import TQECException
 from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 
 
 def make_zxxz_surface_code_plaquette(
-    basis: Literal["X", "Z"] | str,
+    basis: Literal["X", "Z"],
     data_qubits_initialization: ResetBasis | None = None,
     data_qubits_measurement: MeasurementBasis | None = None,
     x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
@@ -35,8 +34,6 @@ def make_zxxz_surface_code_plaquette(
             CNOT order in the plaquette together with the basis to prevent hook
             error from decreasing the code distance. Default is "HORIZONTAL".
     """
-    if basis not in ["X", "Z"]:
-        raise TQECException(f"Invalid basis: {basis}, only 'X' and 'Z' are allowed.")
     qubits = SquarePlaquetteQubits()
     sq = 0
     # data qubits ordered as "Z" shape
