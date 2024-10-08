@@ -1,0 +1,38 @@
+tqec.noise\_models.noise\_model
+===============================
+
+.. automodule:: tqec.noise_models.noise_model
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      occurs_in_classical_control_system
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      NoiseModel
+      NoiseRule
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,30 @@
+tqec.position.Position2D
+========================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: Position2D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Position2D.__init__
+      ~Position2D.to_grid_qubit
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Position2D.x
+      ~Position2D.y
+   
+   

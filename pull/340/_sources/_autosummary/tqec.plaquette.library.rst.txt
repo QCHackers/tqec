@@ -1,0 +1,44 @@
+tqec.plaquette.library
+======================
+
+.. automodule:: tqec.plaquette.library
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   empty
+
+
+   initialisation
+
+
+   measurement
+
+
+   memory
+
+
+   pauli
+

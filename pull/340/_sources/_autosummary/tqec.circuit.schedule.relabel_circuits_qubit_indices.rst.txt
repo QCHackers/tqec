@@ -1,0 +1,6 @@
+tqec.circuit.schedule.relabel\_circuits\_qubit\_indices
+=======================================================
+
+.. currentmodule:: tqec.circuit.schedule
+
+.. autofunction:: relabel_circuits_qubit_indices
