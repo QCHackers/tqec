@@ -183,7 +183,7 @@ class ScheduledCircuit:
             )
 
         self._moments: list[Moment] = moments
-        self._final_qubits: dict[int, GridQubit] = i2q
+        self._i2q: dict[int, GridQubit] = i2q
         self._schedule: Schedule = schedule
 
     @staticmethod
@@ -192,7 +192,9 @@ class ScheduledCircuit:
 
     @staticmethod
     def from_circuit(
-        circuit: stim.Circuit, schedule: Schedule | list[int] | int = 0
+        circuit: stim.Circuit,
+        schedule: Schedule | list[int] | int = 0,
+        i2q: dict[int, GridQubit] | None = None,
     ) -> ScheduledCircuit:
         """Build a :class:`ScheduledCircuit` instance from a circuit and a
         schedule.
@@ -205,6 +207,9 @@ class ScheduledCircuit:
                 in the provided `stim.Circuit` instance. If an integer is provided,
                 each moment of the provided `stim.Circuit` is scheduled sequentially,
                 starting by the provided schedule.
+            i2q: a map from indices to qubits. If None, this function will try to
+                extract the qubit coordinates from the `QUBIT_COORDS` instructions
+                found in the provided `circuit`. Else, the provided map will be used.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -234,14 +239,15 @@ class ScheduledCircuit:
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
-        # Here, we know for sure that no qubit is (re)defined in another place
-        # than the first moment, so we can directly get qubit coordinates from
-        # that moment.
-        final_qubits: dict[int, GridQubit] = get_final_qubits(moments[0].circuit)
+        if i2q is None:
+            # Here, we know for sure that no qubit is (re)defined in another place
+            # than the first moment, so we can directly get qubit coordinates from
+            # that moment.
+            i2q = get_final_qubits(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(moments, schedule, final_qubits)
+        return ScheduledCircuit(moments, schedule, i2q)
 
     @staticmethod
     def _check_input_circuit(circuit: stim.Circuit) -> None:
@@ -260,7 +266,7 @@ class ScheduledCircuit:
     def get_qubit_coords_definition_preamble(self) -> stim.Circuit:
         """Get a circuit with only `QUBIT_COORDS` instructions."""
         ret = stim.Circuit()
-        for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
+        for qi, qubit in sorted(self._i2q.items(), key=lambda t: t[0]):
             ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
         return ret
 
@@ -370,9 +376,7 @@ class ScheduledCircuit:
             a modified instance of `ScheduledCircuit` (a copy if inplace is
             `True`, else `self`).
         """
-        mapped_final_qubits = {
-            qubit_index_map[qi]: q for qi, q in self._final_qubits.items()
-        }
+        mapped_final_qubits = {qubit_index_map[qi]: q for qi, q in self._i2q.items()}
         mapped_moments: list[Moment] = []
         for moment in self._moments:
             mapped_moment_circuit = stim.Circuit()
@@ -395,7 +399,7 @@ class ScheduledCircuit:
                 )
             mapped_moments.append(Moment(mapped_moment_circuit))
         if inplace:
-            self._final_qubits = mapped_final_qubits
+            self._i2q = mapped_final_qubits
             self._moments = mapped_moments
             return self
         else:
@@ -422,19 +426,17 @@ class ScheduledCircuit:
             else self).
         """
         operand = self if inplace else deepcopy(self)
-        operand._final_qubits = {
-            qi: qubit_map[q] for qi, q in operand._final_qubits.items()
-        }
+        operand._i2q = {qi: qubit_map[q] for qi, q in operand._i2q.items()}
         return operand
 
     def __copy__(self) -> ScheduledCircuit:
-        return ScheduledCircuit(self._moments, self._schedule, self._final_qubits)
+        return ScheduledCircuit(self._moments, self._schedule, self._i2q)
 
     def __deepcopy__(self, memo: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._moments, memo=memo),
             deepcopy(self._schedule, memo=memo),
-            deepcopy(self._final_qubits, memo=memo),
+            deepcopy(self._i2q, memo=memo),
         )
 
     @property
@@ -454,7 +456,7 @@ class ScheduledCircuit:
 
     @property
     def qubits(self) -> frozenset[GridQubit]:
-        return frozenset(self._final_qubits.values())
+        return frozenset(self._i2q.values())
 
     def _get_moment_index_by_schedule(self, schedule: int) -> int | None:
         """Get the index of the moment scheduled at the provided schedule.
@@ -548,7 +550,7 @@ class ScheduledCircuit:
     @property
     def q2i(self) -> dict[GridQubit, int]:
         """Return the map from qubits used in `self` their index."""
-        return {q: i for i, q in self._final_qubits.items()}
+        return {q: i for i, q in self._i2q.items()}
 
     def append_observable(
         self, index: int, targets: ty.Sequence[stim.GateTarget]
@@ -596,9 +598,8 @@ class ScheduledCircuit:
                 continue
             filtered_moments.append(filtered_moment)
             filtered_schedule.append(schedule)
-        return ScheduledCircuit(
-            filtered_moments, Schedule(filtered_schedule), self._final_qubits
-        )
+        i2q = {i: q for i, q in self._i2q.items() if i in qubits_indices_to_keep}
+        return ScheduledCircuit(filtered_moments, Schedule(filtered_schedule), i2q)
 
 
 class _ScheduledCircuits:

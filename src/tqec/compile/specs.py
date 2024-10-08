@@ -160,8 +160,11 @@ def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
         raise NotImplementedError("Spatial junctions are not implemented yet.")
     cube_type = spec.cube_type.value
     x_boundary_orientation = "VERTICAL" if cube_type[0] == "z" else "HORIZONTAL"
-    time_basis = cast(Literal["X", "Z"], cube_type[3].upper())
-    return _usual_block(time_basis, x_boundary_orientation)
+    time_basis = cube_type[3].upper()
+    return _usual_block(
+        cast(Literal["X", "Z"], time_basis),
+        cast(Literal["VERTICAL", "HORIZONTAL"], x_boundary_orientation),
+    )
 
 
 DEFAULT_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(

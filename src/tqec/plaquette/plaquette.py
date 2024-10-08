@@ -60,7 +60,7 @@ class Plaquette:
         return self._circuit
 
     def project_on_side(self, plaquette_side: PlaquetteSide) -> Plaquette:
-        kept_data_qubits = self.qubits.get_qubits_on_side(plaquette_side)
+        kept_data_qubits = self.qubits.get_qubits_on_side(plaquette_side.opposite())
         new_plaquette_qubits = PlaquetteQubits(
             kept_data_qubits, self.qubits.syndrome_qubits
         )

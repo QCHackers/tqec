@@ -2,18 +2,14 @@ import pytest
 
 from tqec.circuit.observable_qubits import observable_qubits_from_template
 from tqec.circuit.qubit import GridQubit
-from tqec.circuit.schedule import Schedule
-from tqec.plaquette.library import xxxx_memory_plaquette, zzzz_memory_plaquette
+from tqec.plaquette.library import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquette
 from tqec.templates._testing import FixedTemplate
 
 
 @pytest.fixture
 def plaquettes() -> list[Plaquette]:
-    return [
-        xxxx_memory_plaquette(Schedule.from_offsets([0, 1, 2, 3, 4, 5, 6, 7])),
-        zzzz_memory_plaquette(Schedule.from_offsets([0, 2, 3, 4, 5, 7])),
-    ]
+    return [make_css_surface_code_plaquette("X"), make_css_surface_code_plaquette("Z")]
 
 
 def test_raw_rectangle_default_observable_qubits(plaquettes: list[Plaquette]) -> None:

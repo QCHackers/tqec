@@ -7,21 +7,40 @@ from typing import Literal
 import stim
 
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.exceptions import TQECException
 from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 
 
 def make_css_surface_code_plaquette(
-    basis: Literal["X", "Z"],
+    basis: Literal["X", "Z"] | str,
     data_qubits_initialization: ResetBasis | None = None,
     data_qubits_measurement: MeasurementBasis | None = None,
-    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
+    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
 ) -> Plaquette:
+    """Create a CSS-type surface code plaquette.
+
+    Args:
+        basis: The basis of the plaquette, either "X" or "Z".
+        data_qubits_initialization: Initialization basis for the data qubits.
+            If None, no initialization is performed.
+        data_qubits_measurement: Measurement basis for the data qubits.
+            If None, no measurement is performed.
+        x_boundary_orientation: The orientation of the X boundary of the surface
+            code block. Either "HORIZONTAL" or "VERTICAL". This determines the
+            CNOT order in the plaquette together with the basis to prevent hook
+            error from decreasing the code distance. Default is "HORIZONTAL".
+    """
+    if basis not in ["X", "Z"]:
+        raise TQECException(f"Invalid basis: {basis}, only 'X' and 'Z' are allowed.")
     qubits = SquarePlaquetteQubits()
     sq = 0
     # data qubits ordered as "Z" shape
     dqs = range(1, 5)
+    i2q = {0: qubits.syndrome_qubits[0]} | {
+        i + 1: q for i, q in enumerate(qubits.data_qubits)
+    }
 
     circuit = stim.Circuit()
     # 1. Initialization
@@ -46,4 +65,4 @@ def make_css_surface_code_plaquette(
         circuit.append(data_qubits_measurement.instruction_name, dqs, [])
     circuit.append(f"M{basis}", [sq], [])
 
-    return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit))
+    return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit, i2q=i2q))
