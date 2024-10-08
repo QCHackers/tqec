@@ -32,6 +32,8 @@
 
    compile
 
+   computation
+
    exceptions
 
    interval
@@ -48,8 +50,6 @@
 
 
    simulation
-
-   sketchup
 
    templates
 

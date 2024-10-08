@@ -1,6 +1,0 @@
-tqec.sketchup.collada.write\_block\_graph\_to\_dae\_file
-========================================================
-
-.. currentmodule:: tqec.sketchup.collada
-
-.. autofunction:: write_block_graph_to_dae_file
