@@ -14,6 +14,7 @@ tqec.plaquette.plaquette.Plaquette
    .. autosummary::
    
       ~Plaquette.__init__
+      ~Plaquette.project_on_boundary
    
    
 
@@ -24,6 +25,7 @@ tqec.plaquette.plaquette.Plaquette
    .. autosummary::
    
       ~Plaquette.circuit
+      ~Plaquette.mergeable_instructions
       ~Plaquette.origin
       ~Plaquette.qubits
    

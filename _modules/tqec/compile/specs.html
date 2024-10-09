@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.compile.specs &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -81,35 +81,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.compile.specs</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Protocol</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">cast</span>
 
+<span class="kn">from</span> <span class="nn">tqec.plaquette.library.css</span> <span class="kn">import</span> <span class="n">make_css_surface_code_plaquette</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.block</span> <span class="kn">import</span> <span class="n">CompiledBlock</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">PlaquetteOrientation</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PlaquetteOrientation</span><span class="p">,</span>
+    <span class="n">ResetBasis</span><span class="p">,</span>
+    <span class="n">MeasurementBasis</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.library.empty</span> <span class="kn">import</span> <span class="n">empty_square_plaquette</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.library.initialisation</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">xx_initialisation_plaquette</span><span class="p">,</span>
-    <span class="n">xxxx_initialisation_plaquette</span><span class="p">,</span>
-    <span class="n">zz_initialisation_plaquette</span><span class="p">,</span>
-    <span class="n">zzzz_initialisation_plaquette</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.library.measurement</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">xx_measurement_plaquette</span><span class="p">,</span>
-    <span class="n">xxxx_measurement_plaquette</span><span class="p">,</span>
-    <span class="n">zz_measurement_plaquette</span><span class="p">,</span>
-    <span class="n">zzzz_measurement_plaquette</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.library.memory</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">xx_memory_plaquette</span><span class="p">,</span>
-    <span class="n">xxxx_memory_plaquette</span><span class="p">,</span>
-    <span class="n">zz_memory_plaquette</span><span class="p">,</span>
-    <span class="n">zzzz_memory_plaquette</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.library.pauli</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">ResetBasis</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">CubeType</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.qubit</span> <span class="kn">import</span> <span class="n">QubitTemplate</span>
@@ -204,131 +191,60 @@
 
 
 
-<span class="k">def</span> <span class="nf">_zxB_block</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompiledBlock</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_usual_block</span><span class="p">(</span>
+    <span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">x_boundary_orientation</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;VERTICAL&quot;</span><span class="p">,</span> <span class="s2">&quot;HORIZONTAL&quot;</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompiledBlock</span><span class="p">:</span>
     <span class="n">reset_basis</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ResetBasis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
     <span class="n">measurement_basis</span><span class="p">:</span> <span class="n">MeasurementBasis</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    <span class="n">factory</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">make_css_surface_code_plaquette</span><span class="p">,</span>
+        <span class="n">x_boundary_orientation</span><span class="o">=</span><span class="n">x_boundary_orientation</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x_boundary_orientation</span> <span class="o">==</span> <span class="s2">&quot;VERTICAL&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">b1</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">b2</span><span class="p">)</span>
 
     <span class="n">initial_plaquettes</span> <span class="o">=</span> <span class="n">Plaquettes</span><span class="p">(</span>
         <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
         <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">xx_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">),</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">),</span>
+            <span class="mi">9</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">),</span>
+            <span class="mi">10</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">),</span>
+            <span class="mi">12</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span>
+                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span>
             <span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">zz_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">xxxx_initialisation_plaquette</span><span class="p">(</span><span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span><span class="p">),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">zzzz_initialisation_plaquette</span><span class="p">(</span><span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span><span class="p">),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">zz_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">xx_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
+            <span class="mi">13</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">reset_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">),</span>
         <span class="p">}</span>
     <span class="p">)</span>
     <span class="n">repeating_plaquettes</span> <span class="o">=</span> <span class="n">RepeatedPlaquettes</span><span class="p">(</span>
         <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
         <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">xx_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">zz_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">xxxx_memory_plaquette</span><span class="p">(),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">zzzz_memory_plaquette</span><span class="p">(),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">zz_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">xx_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">),</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">),</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">),</span>
+            <span class="mi">9</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">),</span>
+            <span class="mi">10</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">),</span>
+            <span class="mi">12</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">),</span>
+            <span class="mi">13</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">),</span>
         <span class="p">},</span>
         <span class="n">_DEFAULT_BLOCK_REPETITIONS</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">final_plaquettes</span> <span class="o">=</span> <span class="n">Plaquettes</span><span class="p">(</span>
         <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
         <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">xx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">,</span> <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span>
+                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span>
             <span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">zz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span>
+                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span>
             <span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">xxxx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
+            <span class="mi">9</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">),</span>
+            <span class="mi">10</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">),</span>
+            <span class="mi">12</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span>
+                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span>
             <span class="p">),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">zzzz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
-            <span class="p">),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">zz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">xx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">CompiledBlock</span><span class="p">(</span>
-        <span class="n">template</span><span class="o">=</span><span class="n">QubitTemplate</span><span class="p">(),</span>
-        <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="n">initial_plaquettes</span><span class="p">,</span> <span class="n">repeating_plaquettes</span><span class="p">,</span> <span class="n">final_plaquettes</span><span class="p">],</span>
-    <span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_xzB_block</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompiledBlock</span><span class="p">:</span>
-    <span class="n">reset_basis</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ResetBasis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-    <span class="n">measurement_basis</span><span class="p">:</span> <span class="n">MeasurementBasis</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-    <span class="n">initial_plaquettes</span> <span class="o">=</span> <span class="n">Plaquettes</span><span class="p">(</span>
-        <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
-        <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">zz_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">xx_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">zzzz_initialisation_plaquette</span><span class="p">(</span><span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span><span class="p">),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">xxxx_initialisation_plaquette</span><span class="p">(</span><span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span><span class="p">),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">xx_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">zz_initialisation_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">,</span> <span class="n">data_qubit_reset_basis</span><span class="o">=</span><span class="n">reset_basis</span>
-            <span class="p">),</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-    <span class="n">repeating_plaquettes</span> <span class="o">=</span> <span class="n">RepeatedPlaquettes</span><span class="p">(</span>
-        <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
-        <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">zz_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">xx_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">zzzz_memory_plaquette</span><span class="p">(),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">xxxx_memory_plaquette</span><span class="p">(),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">xx_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">zz_memory_plaquette</span><span class="p">(</span><span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">),</span>
-        <span class="p">},</span>
-        <span class="n">_DEFAULT_BLOCK_REPETITIONS</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">final_plaquettes</span> <span class="o">=</span> <span class="n">Plaquettes</span><span class="p">(</span>
-        <span class="n">defaultdict</span><span class="p">(</span><span class="n">empty_square_plaquette</span><span class="p">)</span>
-        <span class="o">|</span> <span class="p">{</span>
-            <span class="mi">6</span><span class="p">:</span> <span class="n">zz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">UP</span><span class="p">,</span> <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
-            <span class="p">),</span>
-            <span class="mi">7</span><span class="p">:</span> <span class="n">xx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="mi">9</span><span class="p">:</span> <span class="n">zzzz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
-            <span class="p">),</span>
-            <span class="mi">10</span><span class="p">:</span> <span class="n">xxxx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span>
-            <span class="p">),</span>
-            <span class="mi">12</span><span class="p">:</span> <span class="n">xx_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="mi">13</span><span class="p">:</span> <span class="n">zz_measurement_plaquette</span><span class="p">(</span>
-                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span><span class="p">,</span>
-                <span class="n">data_qubit_measurement_basis</span><span class="o">=</span><span class="n">measurement_basis</span><span class="p">,</span>
+            <span class="mi">13</span><span class="p">:</span> <span class="n">factory</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement_basis</span><span class="p">)</span><span class="o">.</span><span class="n">project_on_boundary</span><span class="p">(</span>
+                <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">DOWN</span>
             <span class="p">),</span>
         <span class="p">}</span>
     <span class="p">)</span>
@@ -342,19 +258,15 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.compile.specs.default_spec_rule.html#tqec.compile.specs.default_spec_rule">[docs]</a>
 <span class="k">def</span> <span class="nf">default_spec_rule</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">CubeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompiledBlock</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Default rule for generating a `CompiledBlock` based on a `CubeSpec`.&quot;&quot;&quot;</span>
-    <span class="k">match</span> <span class="n">spec</span><span class="o">.</span><span class="n">cube_type</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">junction_arms</span><span class="p">:</span>
-        <span class="k">case</span><span class="w"> </span><span class="n">CubeType</span><span class="o">.</span><span class="n">ZXZ</span><span class="p">,</span> <span class="k">_</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_zxB_block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-        <span class="k">case</span><span class="w"> </span><span class="n">CubeType</span><span class="o">.</span><span class="n">ZXX</span><span class="p">,</span> <span class="k">_</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_zxB_block</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
-        <span class="k">case</span><span class="w"> </span><span class="n">CubeType</span><span class="o">.</span><span class="n">XZZ</span><span class="p">,</span> <span class="k">_</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_xzB_block</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-        <span class="k">case</span><span class="w"> </span><span class="n">CubeType</span><span class="o">.</span><span class="n">XZX</span><span class="p">,</span> <span class="k">_</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_xzB_block</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
-        <span class="k">case</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">ZZX</span> <span class="o">|</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">XXZ</span><span class="p">,</span> <span class="n">_arm_flags</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Spatial junctions are not implemented yet.&quot;</span><span class="p">)</span>
-        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported cube spec: </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_spatial_junction</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Spatial junctions are not implemented yet.&quot;</span><span class="p">)</span>
+    <span class="n">cube_type</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">cube_type</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">x_boundary_orientation</span> <span class="o">=</span> <span class="s2">&quot;VERTICAL&quot;</span> <span class="k">if</span> <span class="n">cube_type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span> <span class="k">else</span> <span class="s2">&quot;HORIZONTAL&quot;</span>
+    <span class="n">time_basis</span> <span class="o">=</span> <span class="n">cube_type</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_usual_block</span><span class="p">(</span>
+        <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="n">time_basis</span><span class="p">),</span>
+        <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;VERTICAL&quot;</span><span class="p">,</span> <span class="s2">&quot;HORIZONTAL&quot;</span><span class="p">],</span> <span class="n">x_boundary_orientation</span><span class="p">),</span>
+    <span class="p">)</span></div>
 
 
 

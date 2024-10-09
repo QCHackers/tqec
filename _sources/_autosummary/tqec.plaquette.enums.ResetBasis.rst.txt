@@ -1,7 +1,7 @@
-tqec.plaquette.library.pauli.ResetBasis
-=======================================
+tqec.plaquette.enums.ResetBasis
+===============================
 
-.. currentmodule:: tqec.plaquette.library.pauli
+.. currentmodule:: tqec.plaquette.enums
 
 .. autoclass:: ResetBasis
 

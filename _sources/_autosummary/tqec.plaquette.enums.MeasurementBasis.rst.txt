@@ -1,7 +1,7 @@
-tqec.plaquette.library.pauli.MeasurementBasis
-=============================================
+tqec.plaquette.enums.MeasurementBasis
+=====================================
 
-.. currentmodule:: tqec.plaquette.library.pauli
+.. currentmodule:: tqec.plaquette.enums
 
 .. autoclass:: MeasurementBasis
 

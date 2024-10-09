@@ -6,9 +6,9 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette &mdash; TQEC  documentation</title>
+  <title>tqec.plaquette.library.zxxz &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.plaquette.library.measurement" href="tqec.plaquette.library.measurement.html" />
-    <link rel="prev" title="tqec.plaquette.library.initialisation.zz_initialisation_plaquette" href="tqec.plaquette.library.initialisation.zz_initialisation_plaquette.html" /> 
+    <link rel="next" title="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette" href="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette.html" />
+    <link rel="prev" title="tqec.plaquette.library.empty.empty_square_plaquette" href="tqec.plaquette.library.empty.empty_square_plaquette.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,11 +66,9 @@
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.enums.html">tqec.plaquette.enums</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="tqec.plaquette.library.html">tqec.plaquette.library</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.css.html">tqec.plaquette.library.css</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.empty.html">tqec.plaquette.library.empty</a></li>
-<li class="toctree-l4 current"><a class="reference internal" href="tqec.plaquette.library.initialisation.html">tqec.plaquette.library.initialisation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.measurement.html">tqec.plaquette.library.measurement</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.memory.html">tqec.plaquette.library.memory</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.plaquette.library.pauli.html">tqec.plaquette.library.pauli</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.plaquette.library.zxxz</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.plaquette.html">tqec.plaquette.plaquette</a></li>
@@ -102,10 +100,9 @@
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.plaquette.html">tqec.plaquette</a></li>
           <li class="breadcrumb-item"><a href="tqec.plaquette.library.html">tqec.plaquette.library</a></li>
-          <li class="breadcrumb-item"><a href="tqec.plaquette.library.initialisation.html">tqec.plaquette.library.initialisation</a></li>
-      <li class="breadcrumb-item active">tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette</li>
+      <li class="breadcrumb-item active">tqec.plaquette.library.zxxz</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.plaquette.library.zxxz.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -113,22 +110,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-plaquette-library-initialisation-zzzz-initialisation-plaquette">
-<h1>tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette<a class="headerlink" href="#tqec-plaquette-library-initialisation-zzzz-initialisation-plaquette" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette">
-<span class="sig-name descname"><span class="pre">zzzz_initialisation_plaquette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.Schedule.html#tqec.circuit.schedule.Schedule" title="tqec.circuit.schedule.Schedule"><span class="pre">Schedule</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_qubit_reset_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.library.pauli.ResetBasis.html#tqec.plaquette.library.pauli.ResetBasis" title="tqec.plaquette.library.pauli.ResetBasis"><span class="pre">ResetBasis</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ResetBasis.Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plaquette_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.enums.PlaquetteSide.html#tqec.plaquette.enums.PlaquetteSide" title="tqec.plaquette.enums.PlaquetteSide"><span class="pre">PlaquetteSide</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.plaquette.plaquette.Plaquette.html#tqec.plaquette.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><span class="pre">Plaquette</span></a></span></span><a class="reference internal" href="../_modules/tqec/plaquette/library/initialisation.html#zzzz_initialisation_plaquette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.library.initialisation.zzzz_initialisation_plaquette" title="Link to this definition"></a></dt>
-<dd><p>R - CX - CX - CX - CX - M</p>
-</dd></dl>
-
+  <section id="module-tqec.plaquette.library.zxxz">
+<span id="tqec-plaquette-library-zxxz"></span><h1>tqec.plaquette.library.zxxz<a class="headerlink" href="#module-tqec.plaquette.library.zxxz" title="Link to this heading"></a></h1>
+<p>Define the ZXXZ-type surface code plaquettes.</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette.html#tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette" title="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_zxxz_surface_code_plaquette</span></code></a>(basis[, ...])</p></td>
+<td><p>Create a ZXXZ-type surface code plaquette.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.plaquette.library.initialisation.zz_initialisation_plaquette.html" class="btn btn-neutral float-left" title="tqec.plaquette.library.initialisation.zz_initialisation_plaquette" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.plaquette.library.measurement.html" class="btn btn-neutral float-right" title="tqec.plaquette.library.measurement" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.plaquette.library.empty.empty_square_plaquette.html" class="btn btn-neutral float-left" title="tqec.plaquette.library.empty.empty_square_plaquette" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette.html" class="btn btn-neutral float-right" title="tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

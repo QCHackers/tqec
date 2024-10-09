@@ -28,17 +28,12 @@ tqec.plaquette.library
    :recursive:
 
 
+   css
+
+
    empty
 
 
-   initialisation
+   zxxz
 
-
-   measurement
-
-
-   memory
-
-
-   pauli
 

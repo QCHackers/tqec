@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.plaquette.enums &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -123,6 +123,30 @@
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span></div>
+
+
+
+<div class="viewcode-block" id="ResetBasis">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.ResetBasis.html#tqec.plaquette.enums.ResetBasis">[docs]</a>
+<span class="k">class</span> <span class="nc">ResetBasis</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">instruction_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="MeasurementBasis">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.MeasurementBasis.html#tqec.plaquette.enums.MeasurementBasis">[docs]</a>
+<span class="k">class</span> <span class="nc">MeasurementBasis</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">instruction_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;M</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 </pre></div>
 

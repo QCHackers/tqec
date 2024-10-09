@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.circuit.generation &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -105,7 +105,6 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-<span class="kn">import</span> <span class="nn">stim</span>
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span><span class="p">,</span> <span class="n">merge_scheduled_circuits</span>
@@ -235,6 +234,7 @@
     <span class="c1"># Generate the ScheduledCircuit instances for each plaquette instantiation</span>
     <span class="n">all_scheduled_circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">plaquette_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">additional_mergeable_instructions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plaquette_array</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">column_index</span><span class="p">,</span> <span class="n">plaquette_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">plaquette_index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -246,9 +246,12 @@
                 <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">_create_mapping</span><span class="p">(</span><span class="n">plaquette</span><span class="p">,</span> <span class="n">scheduled_circuit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
                 <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">all_scheduled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scheduled_circuit</span><span class="p">)</span>
+                <span class="n">additional_mergeable_instructions</span> <span class="o">|=</span> <span class="n">plaquette</span><span class="o">.</span><span class="n">mergeable_instructions</span>
 
     <span class="c1"># Merge everything!</span>
-    <span class="k">return</span> <span class="n">merge_scheduled_circuits</span><span class="p">(</span><span class="n">all_scheduled_circuits</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">merge_scheduled_circuits</span><span class="p">(</span>
+        <span class="n">all_scheduled_circuits</span><span class="p">,</span> <span class="n">additional_mergeable_instructions</span>
+    <span class="p">)</span></div>
 
 
 

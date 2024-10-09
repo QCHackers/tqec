@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How to automatically find detectors? &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
@@ -257,27 +257,27 @@ Fragment(circuit=stim.Circuit(&#39;&#39;&#39;
 ================================================================================
 Flow(
   creation = [
-    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[Z1, Z3], measurements=[], resets={0}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[Z1, Z3], measurements=[], resets={2}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[Z1, Z3], measurements=[], resets={4}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[Z3, Z1], measurements=[], resets={0}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[Z3, Z1], measurements=[], resets={2}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[Z3, Z1], measurements=[], resets={4}, is_forward=True)
   ],
   destruction = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z4, Z0, Z1, Z2, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={0, 1, 2}, is_forward=False)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z4, Z0, Z1, Z2, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={2, 3, 4}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z2, Z3, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={0, 1, 2}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z2, Z3, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={2, 3, 4}, is_forward=False)
   ],
 total_number_of_measurements = 2
 )
 ================================================================================
 Flow(
   creation = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
   ],
   destruction = [
-    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=False)
-    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=False)
   ],
 total_number_of_measurements = 2
 )

@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.circuit.moment &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -238,7 +238,34 @@
         <span class="c1"># error: Returning Any from function declared to return &quot;int&quot;</span>
         <span class="c1"># I do not understand why, but it probably has to do with Stim typing</span>
         <span class="c1"># so let&#39;s ignore it for the moment.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">num_measurements</span>  <span class="c1"># type: ignore</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">num_measurements</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span> <span class="nf">filter_by_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubits_to_keep</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :class:`Moment` instance containing only the</span>
+<span class="sd">        instructions that are applied on the provided qubits.&quot;&quot;&quot;</span>
+        <span class="n">qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">qubits_to_keep</span><span class="p">)</span>
+        <span class="n">new_circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
+            <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">target_group</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
+                <span class="n">qubit_targets</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">qubit_value</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">target_group</span>
+                    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_qubit_target</span>
+                <span class="p">]</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">q</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">qubits</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubit_targets</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">targets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">target_group</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">targets</span><span class="p">:</span>
+                <span class="n">new_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">instruction</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">gate_args_copy</span><span class="p">()</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Moment</span><span class="p">(</span><span class="n">new_circuit</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return `True` if the :class:`Moment` instance is empty.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
 
 

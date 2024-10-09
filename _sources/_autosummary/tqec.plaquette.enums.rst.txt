@@ -18,8 +18,10 @@ tqec.plaquette.enums
    .. autosummary::
       :toctree:
    
+      MeasurementBasis
       PlaquetteOrientation
       PlaquetteSide
+      ResetBasis
    
    
 

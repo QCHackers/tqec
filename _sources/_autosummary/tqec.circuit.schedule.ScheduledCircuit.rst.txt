@@ -18,6 +18,7 @@ tqec.circuit.schedule.ScheduledCircuit
       ~ScheduledCircuit.append_new_moment
       ~ScheduledCircuit.append_observable
       ~ScheduledCircuit.empty
+      ~ScheduledCircuit.filter_by_qubits
       ~ScheduledCircuit.from_circuit
       ~ScheduledCircuit.get_circuit
       ~ScheduledCircuit.get_qubit_coords_definition_preamble

@@ -15,7 +15,6 @@ tqec.plaquette.library.empty
       :toctree:
    
       empty_plaquette
-      empty_rounded_plaquette
       empty_square_plaquette
    
    

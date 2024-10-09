@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.circuit.moment.Moment &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -156,10 +156,13 @@ moment, even though the annotation is never executed in hardware).</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_instruction</span></code>(instruction_name)</p></td>
 <td><p>Return <cite>True</cite> if <cite>self</cite> contains at least one operation with the provided name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operates_on</span></code>(qubits)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code>(qubits_to_keep)</p></td>
+<td><p>Return a new <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance containing only the instructions that are applied on the provided qubits.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operates_on</span></code>(qubits)</p></td>
 <td><p>Returns <cite>True</cite> if <cite>self</cite> contains non-annotation operations that are applied on each of the provided qubit indices.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_all_instructions_inplace</span></code>(...)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_all_instructions_inplace</span></code>(...)</p></td>
 <td><p>Remove in-place all the instructions that have their name in the provided <cite>instructions_to_remove</cite>.</p></td>
 </tr>
 </tbody>
@@ -173,10 +176,13 @@ moment, even though the annotation is never executed in hardware).</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instructions</span></code></p></td>
 <td><p>Iterator over all the instructions contained in the moment.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_measurements</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></p></td>
+<td><p>Return <cite>True</cite> if the <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance is empty.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_measurements</span></code></p></td>
 <td><p>Return the number of measurements in the <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits_indices</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits_indices</span></code></p></td>
 <td><p>Return the qubit indices this moment operates on.</p></td>
 </tr>
 </tbody>

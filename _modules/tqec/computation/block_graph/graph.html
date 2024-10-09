@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tqec.computation.block_graph.graph &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=7ab3649f" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
@@ -464,16 +464,20 @@
             <span class="n">top_lines</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Cube</span> <span class="o">|</span> <span class="n">Pipe</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="n">bottom_regions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Pipe</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+                <span class="n">correlation_type_at_src</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">node_type</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">correlation_type_at_dst</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">node_type</span><span class="o">.</span><span class="n">value</span>
                 <span class="n">pipe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipe</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="p">(</span>
                     <span class="n">pipe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> is in the graph and should be associated with a Pipe instance.&quot;</span>
                 <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">v</span>
                 <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">is_measured</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">is_measured</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">cube_type</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">correlation_type_at_dst</span>
+                    <span class="p">):</span>
                         <span class="n">top_lines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
                     <span class="k">continue</span>
-                <span class="n">correlation_type_at_src</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">node_type</span><span class="o">.</span><span class="n">value</span>
                 <span class="c1"># The direction for which the correlation surface of that type</span>
                 <span class="c1"># can be attached to the pipe</span>
                 <span class="n">correlation_type_direction</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span>
