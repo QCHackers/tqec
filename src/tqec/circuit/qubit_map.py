@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import functools
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Iterable
 
@@ -13,6 +14,16 @@ from tqec.exceptions import TQECException
 @dataclass(frozen=True)
 class QubitMap:
     i2q: dict[int, GridQubit] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        qubit_counter = Counter(self.i2q.values())
+        if len(qubit_counter) != len(self.i2q):
+            duplicated_qubits = frozenset(
+                q for q in qubit_counter if qubit_counter[q] > 1
+            )
+            raise TQECException(
+                f"Found qubit(s) with more than one index: {duplicated_qubits}."
+            )
 
     @staticmethod
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
