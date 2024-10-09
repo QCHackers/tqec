@@ -39,4 +39,3 @@ export function getExample(url, templateName = '2x2k') {
     })
     .catch((err) => { console.log(err); });
 }
-

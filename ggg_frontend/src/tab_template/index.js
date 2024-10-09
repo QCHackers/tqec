@@ -106,7 +106,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 				for (let i = 0; i < instantiation.length; i++) {
 					// Get the current inner array
 					const innerArray = instantiation[i];
-				
+
 					// Iterate through the inner array
 					for (let j = 0; j < innerArray.length; j++) {
 						// Add workspace guidelines according to the dimensions in the received json data.
@@ -120,7 +120,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 						digit.y = y0*gridSize;
 						if (!topLeftCornersOfPlaquettesInTemplateByLabel.hasOwnProperty(label)) {
 						    topLeftCornersOfPlaquettesInTemplateByLabel[label] = []; // Initialize with an empty array
-						} 
+						}
 						topLeftCornersOfPlaquettesInTemplateByLabel[label].push({x: x0 - guideTopLeftCorner.x, y: y0 - guideTopLeftCorner.y});
 						outline.addChild(digit);
 					}
@@ -167,7 +167,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 	const infoButton = button('Library of plaquettes', libraryTopLeftCorners[0][0]*gridSize, 1*gridSize, 'orange', 'black');
 	workspace.addChild(infoButton);
 
-    // Select the qubits that are part of a plaquette 
+    // Select the qubits that are part of a plaquette
 	const importPlaquettesButton = button('Import plaquettes from composer', gridSize, 4*gridSize, 'white', 'black');
 	workspace.addChild(importPlaquettesButton);
 
@@ -269,7 +269,7 @@ export default function TqecTemplates({ selectedTemplate }) {
 
 /////////////////////////////////////////////////////////////
 
-	// Create a button to de-select all qubits 
+	// Create a button to de-select all qubits
 	const postButton = button('POST the filled template to backend', gridSize, 17*gridSize, 'white', 'black');
 	workspace.addChild(postButton);
 
