@@ -90,6 +90,4 @@ def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
     )
 
 
-DEFAULT_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(
-    lambda: default_spec_rule
-)
+CSS_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(lambda: default_spec_rule)
