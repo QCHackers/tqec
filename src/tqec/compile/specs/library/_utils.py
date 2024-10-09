@@ -80,7 +80,7 @@ def regular_block(
 
 
 def default_spec_rule(
-    plaquette_builder: PlaquetteBuilder, spec: CubeSpec
+    spec: CubeSpec, *, plaquette_builder: PlaquetteBuilder
 ) -> CompiledBlock:
     """Default rule for generating a `CompiledBlock` based on a `CubeSpec`."""
     if spec.is_spatial_junction:

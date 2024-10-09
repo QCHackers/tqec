@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy
 import sinter
 
-from tqec import BlockGraph, Position3D, ZXGraph
+from tqec import Position3D, ZXGraph
 from tqec.compile.specs.library.css import CSS_SPEC_RULES
 from tqec.noise_models import NoiseModel
 from tqec.simulation.plotting.inset import plot_observable_as_inset
@@ -16,25 +16,29 @@ from tqec.simulation.simulation import start_simulation_using_sinter
 EXAMPLE_FOLDER = Path(__file__).parent
 TQEC_FOLDER = EXAMPLE_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
-CNOT_DAE_FILE = ASSETS_FOLDER / "logical_cnot.dae"
 
 
-def create_block_graph(from_scratch: bool = False) -> BlockGraph:
-    if not from_scratch:
-        return BlockGraph.from_dae_file(CNOT_DAE_FILE)
+def create_zx_graph(z_basis: bool = True) -> ZXGraph:
+    basis_str = "Z" if z_basis else "X"
+    cnot_zx = ZXGraph(f"Logical CNOT in {basis_str} basis")
 
-    cnot_zx = ZXGraph("Logical CNOT ZX Graph")
+    if z_basis:
+        cnot_zx.add_z_node(Position3D(0, 0, 0))
+        cnot_zx.add_z_node(Position3D(1, 1, 0))
+        cnot_zx.add_z_node(Position3D(0, 0, 3))
+        cnot_zx.add_z_node(Position3D(1, 1, 3))
+    else:
+        cnot_zx.add_x_node(Position3D(0, 0, 0))
+        cnot_zx.add_x_node(Position3D(1, 1, 0))
+        cnot_zx.add_x_node(Position3D(0, 0, 3))
+        cnot_zx.add_x_node(Position3D(1, 1, 3))
 
-    cnot_zx.add_z_node(Position3D(0, 0, 0))
     cnot_zx.add_x_node(Position3D(0, 0, 1))
     cnot_zx.add_z_node(Position3D(0, 0, 2))
-    cnot_zx.add_z_node(Position3D(0, 0, 3))
     cnot_zx.add_x_node(Position3D(0, 1, 1))
     cnot_zx.add_z_node(Position3D(0, 1, 2))
-    cnot_zx.add_z_node(Position3D(1, 1, 0))
     cnot_zx.add_z_node(Position3D(1, 1, 1))
     cnot_zx.add_z_node(Position3D(1, 1, 2))
-    cnot_zx.add_z_node(Position3D(1, 1, 3))
 
     cnot_zx.add_edge(Position3D(0, 0, 0), Position3D(0, 0, 1))
     cnot_zx.add_edge(Position3D(0, 0, 1), Position3D(0, 0, 2))
@@ -45,19 +49,19 @@ def create_block_graph(from_scratch: bool = False) -> BlockGraph:
     cnot_zx.add_edge(Position3D(1, 1, 0), Position3D(1, 1, 1))
     cnot_zx.add_edge(Position3D(1, 1, 1), Position3D(1, 1, 2))
     cnot_zx.add_edge(Position3D(1, 1, 2), Position3D(1, 1, 3))
-    return cnot_zx.to_block_graph("Logical CNOT Block Graph")
+    return cnot_zx
 
 
-def main() -> None:
+def generate_graphs(z_basis: bool) -> None:
     # 1 Create `BlockGraph` representing the computation
-    block_graph = create_block_graph(from_scratch=False)
-    zx_graph = block_graph.to_zx_graph("Logical CNOT")
+    zx_graph = create_zx_graph(z_basis=z_basis)
+    block_graph = zx_graph.to_block_graph()
     correlation_surfaces = zx_graph.find_correlation_subgraphs()
 
     # 2. Find and choose the logical observables
     observables = block_graph.get_abstract_observables()
     # Optional: filter observables here
-    observables = [observables[0]]
+    # observables = [observables[0]]
 
     stats = start_simulation_using_sinter(
         block_graph,
@@ -86,7 +90,15 @@ def main() -> None:
         ax.legend()
         ax.loglog()
         ax.set_title("Logical CNOT Error Rate")
-        fig.savefig(ASSETS_FOLDER / f"logical_cnot_result_observable_{i}.png")
+        basis_str = "Z" if z_basis else "X"
+        fig.savefig(
+            ASSETS_FOLDER / f"logical_cnot_result_{basis_str}_observable_{i}.png"
+        )
+
+
+def main():
+    generate_graphs(True)
+    generate_graphs(False)
 
 
 if __name__ == "__main__":
