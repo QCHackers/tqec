@@ -19,7 +19,7 @@ tqec.templates.qubit.QubitTemplate
       ~QubitTemplate.get_plaquette_indices_on_sides
       ~QubitTemplate.get_spatially_distinct_subtemplates
       ~QubitTemplate.instantiate
-      ~QubitTemplate.scale_to
+      ~QubitTemplate.shape
    
    
 
@@ -30,8 +30,6 @@ tqec.templates.qubit.QubitTemplate
    .. autosummary::
    
       ~QubitTemplate.expected_plaquettes_number
-      ~QubitTemplate.k
       ~QubitTemplate.scalable_shape
-      ~QubitTemplate.shape
    
    

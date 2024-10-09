@@ -19,7 +19,7 @@ tqec.templates.base.Template
       ~Template.get_plaquette_indices_on_sides
       ~Template.get_spatially_distinct_subtemplates
       ~Template.instantiate
-      ~Template.scale_to
+      ~Template.shape
    
    
 
@@ -30,8 +30,6 @@ tqec.templates.base.Template
    .. autosummary::
    
       ~Template.expected_plaquettes_number
-      ~Template.k
       ~Template.scalable_shape
-      ~Template.shape
    
    

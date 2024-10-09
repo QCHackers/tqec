@@ -19,7 +19,7 @@ tqec.templates.qubit.QubitVerticalBorders
       ~QubitVerticalBorders.get_plaquette_indices_on_sides
       ~QubitVerticalBorders.get_spatially_distinct_subtemplates
       ~QubitVerticalBorders.instantiate
-      ~QubitVerticalBorders.scale_to
+      ~QubitVerticalBorders.shape
    
    
 
@@ -30,8 +30,6 @@ tqec.templates.qubit.QubitVerticalBorders
    .. autosummary::
    
       ~QubitVerticalBorders.expected_plaquettes_number
-      ~QubitVerticalBorders.k
       ~QubitVerticalBorders.scalable_shape
-      ~QubitVerticalBorders.shape
    
    

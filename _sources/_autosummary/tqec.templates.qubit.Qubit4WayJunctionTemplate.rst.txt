@@ -19,7 +19,7 @@ tqec.templates.qubit.Qubit4WayJunctionTemplate
       ~Qubit4WayJunctionTemplate.get_plaquette_indices_on_sides
       ~Qubit4WayJunctionTemplate.get_spatially_distinct_subtemplates
       ~Qubit4WayJunctionTemplate.instantiate
-      ~Qubit4WayJunctionTemplate.scale_to
+      ~Qubit4WayJunctionTemplate.shape
    
    
 
@@ -30,8 +30,6 @@ tqec.templates.qubit.Qubit4WayJunctionTemplate
    .. autosummary::
    
       ~Qubit4WayJunctionTemplate.expected_plaquettes_number
-      ~Qubit4WayJunctionTemplate.k
       ~Qubit4WayJunctionTemplate.scalable_shape
-      ~Qubit4WayJunctionTemplate.shape
    
    

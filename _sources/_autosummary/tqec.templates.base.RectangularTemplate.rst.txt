@@ -19,7 +19,7 @@ tqec.templates.base.RectangularTemplate
       ~RectangularTemplate.get_plaquette_indices_on_sides
       ~RectangularTemplate.get_spatially_distinct_subtemplates
       ~RectangularTemplate.instantiate
-      ~RectangularTemplate.scale_to
+      ~RectangularTemplate.shape
    
    
 
@@ -30,8 +30,6 @@ tqec.templates.base.RectangularTemplate
    .. autosummary::
    
       ~RectangularTemplate.expected_plaquettes_number
-      ~RectangularTemplate.k
       ~RectangularTemplate.scalable_shape
-      ~RectangularTemplate.shape
    
    

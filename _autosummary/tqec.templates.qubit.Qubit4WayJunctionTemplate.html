@@ -117,7 +117,7 @@
 <h1>tqec.templates.qubit.Qubit4WayJunctionTemplate<a class="headerlink" href="#tqec-templates-qubit-qubit4wayjunctiontemplate" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.templates.qubit.Qubit4WayJunctionTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Qubit4WayJunctionTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/qubit.html#Qubit4WayJunctionTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Qubit4WayJunctionTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/qubit.html#Qubit4WayJunctionTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate" title="Link to this definition"></a></dt>
 <dd><p>An error-corrected qubit that is making a 4-way junction with other
 logical qubits.</p>
 <p>The below text represents this template for an input <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">==</span> <span class="pre">4</span></code></p>
@@ -141,17 +141,14 @@ indices.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_increments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><span class="pre">Displacement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__" title="Link to this definition"></a></dt>
 <dd><p>Base class for all the templates.</p>
 <p>This class is the base of all templates and provide the necessary interface
 that all templates should implement to be usable by the library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> – initial value for the scaling parameter.</p></li>
-<li><p><strong>default_increments</strong> – default increments between two plaquettes. Defaults
-to <cite>Displacement(2, 2)</cite> when <cite>None</cite></p></li>
-</ul>
+<dd class="field-odd"><p><strong>default_increments</strong> – default increments between two plaquettes. Defaults
+to <cite>Displacement(2, 2)</cite> when <cite>None</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -159,26 +156,26 @@ to <cite>Displacement(2, 2)</cite> when <cite>None</cite></p></li>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__" title="tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([k, default_increments])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__" title="tqec.templates.qubit.Qubit4WayJunctionTemplate.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([default_increments])</p></td>
 <td><p>Base class for all the templates.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_increments</span></code>()</p></td>
 <td><p>Get the default increments of the template.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_midline_plaquettes</span></code>([orientation])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_midline_plaquettes</span></code>(k[, orientation])</p></td>
 <td><p>Returns the default observable qubits for the template.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_plaquette_indices_on_sides</span></code>(sides)</p></td>
 <td><p>Get the indices of plaquettes that are located on the provided sides.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spatially_distinct_subtemplates</span></code>([...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spatially_distinct_subtemplates</span></code>(k[, ...])</p></td>
 <td><p>Returns a representation of all the distinct sub-templates of the provided manhattan radius.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantiate</span></code>([plaquette_indices])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">instantiate</span></code>(k[, plaquette_indices])</p></td>
 <td><p>Generate the numpy array representing the template.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_to</span></code>(k)</p></td>
-<td><p>Scales self to the given scale k.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code>(k)</p></td>
+<td><p>Returns the current template shape.</p></td>
 </tr>
 </tbody>
 </table>
@@ -188,14 +185,8 @@ to <cite>Displacement(2, 2)</cite> when <cite>None</cite></p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">expected_plaquettes_number</span></code></p></td>
 <td><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalable_shape</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalable_shape</span></code></p></td>
 <td><p>Returns a scalable version of the template shape.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></p></td>
-<td><p>Returns the current template shape.</p></td>
 </tr>
 </tbody>
 </table>

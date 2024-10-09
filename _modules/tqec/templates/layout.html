@@ -103,7 +103,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">element_layout</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position2D</span><span class="p">,</span> <span class="n">RectangularTemplate</span><span class="p">],</span>
-        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">default_increments</span><span class="p">:</span> <span class="n">Displacement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A template representing a layout of other templates.</span>
@@ -121,11 +120,10 @@
 <span class="sd">        Args:</span>
 <span class="sd">            element_layout: a dictionary with the position of the element</span>
 <span class="sd">                templates in the layout as keys and the templates as values.</span>
-<span class="sd">            k: initial value for the scaling parameter.</span>
 <span class="sd">            default_increments: default increments between two plaquettes. Defaults</span>
 <span class="sd">                to `Displacement(2, 2)` when `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">default_increments</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">default_increments</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">element_layout</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot create a layout with an empty template map.&quot;</span><span class="p">)</span>
 
@@ -148,8 +146,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">=</span> <span class="n">max_x</span> <span class="o">-</span> <span class="n">min_x</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">-</span> <span class="n">min_y</span> <span class="o">+</span> <span class="mi">1</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">element_layout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">element_layout</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">get_indices_map_for_instantiation</span><span class="p">(</span>
@@ -172,12 +169,6 @@
     <span class="k">def</span> <span class="nf">origin_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Displacement</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin_shift</span>
 
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">template</span><span class="o">.</span><span class="n">scale_to</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
@@ -187,10 +178,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">element_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">element_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the uniform shape of the element templates.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -220,11 +210,12 @@
 
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the numpy array representing the template.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            k: scaling parameter used to instantiate the template.</span>
 <span class="sd">            plaquette_indices: the plaquette indices that will be forwarded to</span>
 <span class="sd">                the underlying Template instance&#39;s instantiate method. Defaults</span>
 <span class="sd">                to `range(1, self.expected_plaquettes_number + 1)` if `None`.</span>
@@ -235,14 +226,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_indices_map_for_instantiation</span><span class="p">(</span><span class="n">plaquette_indices</span><span class="p">)</span>
 
-        <span class="n">element_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+        <span class="n">element_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">imap</span> <span class="o">=</span> <span class="n">indices_map</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">imap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="n">element_instantiation</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+            <span class="n">element_instantiation</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
             <span class="n">shifted_pos</span> <span class="o">=</span> <span class="n">Position2D</span><span class="p">(</span>
                 <span class="n">pos</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_shift</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_shift</span><span class="o">.</span><span class="n">y</span>
             <span class="p">)</span>

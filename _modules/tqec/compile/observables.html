@@ -85,10 +85,10 @@
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
-<span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.layout</span> <span class="kn">import</span> <span class="n">LayoutTemplate</span>
 
 
@@ -225,6 +225,7 @@
     <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]],</span>
     <span class="n">template_slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LayoutTemplate</span><span class="p">],</span>
     <span class="n">abstract_observables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">],</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inplace add the observable components to the circuits.</span>
 
@@ -237,7 +238,7 @@
             <span class="n">z</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span>
             <span class="n">template</span> <span class="o">=</span> <span class="n">template_slices</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
             <span class="n">stabilizer_qubits</span> <span class="o">=</span> <span class="n">get_stabilizer_region_qubits_for_pipe</span><span class="p">(</span>
-                <span class="n">pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+                <span class="n">pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">_get_measurement_records_from_scheduled_circuit</span><span class="p">(</span>
                 <span class="n">circuits</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -256,14 +257,16 @@
                 <span class="n">z</span> <span class="o">=</span> <span class="n">cube_or_pipe</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span>
                 <span class="n">template</span> <span class="o">=</span> <span class="n">template_slices</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
                 <span class="n">qubits</span> <span class="o">=</span> <span class="n">get_midline_qubits_for_cube</span><span class="p">(</span>
-                    <span class="n">cube_or_pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+                    <span class="n">cube_or_pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">z</span> <span class="o">=</span> <span class="n">cube_or_pipe</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span>
                 <span class="n">template</span> <span class="o">=</span> <span class="n">template_slices</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
                 <span class="n">qubits</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">get_center_qubit_at_horizontal_pipe</span><span class="p">(</span>
-                        <span class="n">cube_or_pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
+                        <span class="n">cube_or_pipe</span><span class="p">,</span>
+                        <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">(</span><span class="n">k</span><span class="p">),</span>
+                        <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">(),</span>
                     <span class="p">)</span>
                 <span class="p">]</span>
             <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">_get_measurement_records_from_scheduled_circuit</span><span class="p">(</span>

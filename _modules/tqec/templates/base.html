@@ -103,33 +103,28 @@
 <span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <div class="viewcode-block" id="Template.__init__">
 <a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">default_increments</span><span class="p">:</span> <span class="n">Displacement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_increments</span><span class="p">:</span> <span class="n">Displacement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Base class for all the templates.</span>
 
 <span class="sd">        This class is the base of all templates and provide the necessary interface</span>
 <span class="sd">        that all templates should implement to be usable by the library.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            k: initial value for the scaling parameter.</span>
 <span class="sd">            default_increments: default increments between two plaquettes. Defaults</span>
 <span class="sd">                to `Displacement(2, 2)` when `None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot have a negative scaling parameter. Got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span> <span class="o">=</span> <span class="n">default_increments</span> <span class="ow">or</span> <span class="n">Displacement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the numpy array representing the template.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            k: scaling parameter used to instantiate the template.</span>
 <span class="sd">            plaquette_indices: the plaquette indices that will be forwarded to</span>
 <span class="sd">                the underlying Shape instance&#39;s instantiate method. Defaults</span>
 <span class="sd">                to `range(1, self.expected_plaquettes_number + 1)` if `None`.</span>
@@ -139,29 +134,10 @@
 <span class="sd">            the underlying shape of the template.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales self to the given scale k.</span>
-
-<span class="sd">        Note that this function scales the template instance INLINE.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            k: the new scale of the template.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot have a negative scaling parameter. Got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">k</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current template shape.&quot;&quot;&quot;</span>
         <span class="n">sshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalable_shape</span>
-        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span>
-            <span class="n">round_or_fail</span><span class="p">(</span><span class="n">sshape</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">sshape</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="n">sshape</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">sshape</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abstractmethod</span>
@@ -169,7 +145,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the default observable qubits for the template.</span>
 
@@ -187,7 +163,8 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            TQECException: If the midline is not uniquely defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">y</span>
         <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;Midline is not defined for odd &quot;</span>
@@ -229,7 +206,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_spatially_distinct_subtemplates</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UniqueSubTemplates</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of all the distinct sub-templates of the</span>
 <span class="sd">        provided manhattan radius.</span>
@@ -242,6 +219,7 @@
 <span class="sd">            algorithm (or hard-coded values) to speed things up.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            k: scaling parameter used to instantiate the template.</span>
 <span class="sd">            manhattan_radius: radius of the considered ball using the Manhattan</span>
 <span class="sd">                distance. Only squares with sides of `2*manhattan_radius+1`</span>
 <span class="sd">                plaquettes will be considered.</span>
@@ -253,7 +231,7 @@
 <span class="sd">            a representation of all the sub-templates found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_spatially_distinct_subtemplates</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(),</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span>
         <span class="p">)</span></div>
 
 
@@ -263,9 +241,10 @@
 <span class="k">class</span> <span class="nc">RectangularTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">midline_shape</span><span class="p">,</span> <span class="n">iteration_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">y</span>
         <span class="k">if</span> <span class="n">midline_shape</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;Midline is not defined for odd &quot;</span>

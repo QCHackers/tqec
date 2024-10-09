@@ -15,7 +15,6 @@ tqec.compile.block.BlockLayout
    
       ~BlockLayout.__init__
       ~BlockLayout.instantiate_layer
-      ~BlockLayout.scale_to
    
    
 

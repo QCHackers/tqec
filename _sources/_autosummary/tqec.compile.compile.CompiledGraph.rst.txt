@@ -15,7 +15,6 @@ tqec.compile.compile.CompiledGraph
    
       ~CompiledGraph.__init__
       ~CompiledGraph.generate_stim_circuit
-      ~CompiledGraph.scale_to
    
    
 
