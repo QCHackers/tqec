@@ -15,7 +15,7 @@ from tqec.plaquette.enums import (
 )
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.scale import LinearFunction
-from tqec.sketchup.block_graph import BlockGraph, Cube, CubeType
+from tqec.computation.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
 
 _DEFAULT_BLOCK_REPETITIONS = LinearFunction(2, -1)

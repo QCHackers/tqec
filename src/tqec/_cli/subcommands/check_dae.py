@@ -6,7 +6,7 @@ from pathlib import Path
 from typing_extensions import override
 
 from tqec._cli.subcommands.base import TQECSubCommand
-from tqec.sketchup.block_graph import BlockGraph
+from tqec.computation.block_graph import BlockGraph
 
 
 class CheckDaeTQECSubCommand(TQECSubCommand):

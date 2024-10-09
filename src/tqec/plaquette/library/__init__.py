@@ -6,7 +6,6 @@ in order to avoid each user the hassle of re-defining their own plaquettes.
 
 from .empty import (
     empty_plaquette,
-    empty_rounded_plaquette,
     empty_square_plaquette,
 )
 

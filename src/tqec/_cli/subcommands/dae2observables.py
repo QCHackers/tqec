@@ -10,8 +10,9 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 from typing_extensions import override
 
 from tqec._cli.subcommands.base import TQECSubCommand
-from tqec.sketchup.block_graph import BlockGraph
-from tqec.sketchup.zx_graph import ZXGraph
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.plot import draw_as_correlation_surface_on, draw_zx_graph_on
+from tqec.computation.zx_graph import ZXGraph
 
 
 class Dae2ObservablesTQECSubCommand(TQECSubCommand):
@@ -61,8 +62,8 @@ def save_correlation_surfaces_to(
     for i, correlation_surface in enumerate(correlation_surfaces):
         fig = plt.figure(figsize=(5, 6))
         ax = cast(Axes3D, fig.add_subplot(111, projection="3d"))
-        zx_graph.draw_as_zx_graph_on(ax)
-        correlation_surface.draw_as_correlation_surface_on(ax)
+        draw_zx_graph_on(zx_graph, ax)
+        draw_as_correlation_surface_on(correlation_surface, ax)
         fig.tight_layout()
         save_path = (out_dir / f"{i}.png").resolve()
         print(f"Saving correlation surface number {i} to '{save_path}'.")
