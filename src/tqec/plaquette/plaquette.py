@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 import itertools
-import typing
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import Iterable, Iterator, Literal, Protocol
 
 from typing_extensions import override
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
+from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
-from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.scale import LinearFunction, round_or_fail
 
 
@@ -20,7 +20,7 @@ class Plaquette:
         self,
         qubits: PlaquetteQubits,
         circuit: ScheduledCircuit,
-        mergeable_instructions: typing.Iterable[str] = (),
+        mergeable_instructions: Iterable[str] = (),
     ) -> None:
         """Represents a QEC plaquette.
 
@@ -140,7 +140,7 @@ class Plaquettes:
     def __getitem__(self, index: int) -> Plaquette:
         return self.collection[index]
 
-    def __iter__(self) -> typing.Iterator[Plaquette]:
+    def __iter__(self) -> Iterator[Plaquette]:
         if (
             isinstance(self.collection, defaultdict)
             and self.collection.default_factory is not None
@@ -188,3 +188,15 @@ class RepeatedPlaquettes(Plaquettes):
             self.collection | plaquettes_to_update,
             repetitions=self.repetitions,
         )
+
+
+class PlaquetteBuilder(Protocol):
+    """Protocol for functions building a `Plaquette`."""
+
+    def __call__(
+        self,
+        basis: Literal["X", "Z"],
+        data_qubits_initialization: ResetBasis | None = None,
+        data_qubits_measurement: MeasurementBasis | None = None,
+        x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
+    ) -> Plaquette: ...
