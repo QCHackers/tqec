@@ -13,6 +13,16 @@ from tqec.exceptions import TQECException
 
 @dataclass(frozen=True)
 class QubitMap:
+    """Represent a bijection between :class:`GridQubit` instances and indices.
+
+    This class aims at representing a bidirectional mapping (hence the
+    "bijection") between qubits and their associated indices.
+
+    Raises:
+        TQECException: if the provided mapping from indices to qubits is not a
+            bijection (i.e., if at least to values represent the same qubit).
+    """
+
     i2q: dict[int, GridQubit] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -42,6 +52,19 @@ class QubitMap:
         return self.i2q.values()
 
     def with_mapped_qubits(self, qubit_map: dict[GridQubit, GridQubit]) -> QubitMap:
+        """Change the qubits involved in `self` without changing the associated indices.
+
+        Args:
+            qubit_map: a map from qubits to qubits that should associate a qubit
+                to each of the qubits represented by `self`.
+
+        Raises:
+            KeyError: if any qubit in `self.qubits` is not present in the keys of
+                the provided `qubit_map`.
+
+        Returns:
+            a new instance representing the updated mapping.
+        """
         return QubitMap({i: qubit_map[q] for i, q in self.i2q.items()})
 
     def items(self) -> Iterable[tuple[int, GridQubit]]:
