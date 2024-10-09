@@ -125,9 +125,7 @@
 <span class="sd">                the plaquette should represent.</span>
 <span class="sd">            mergeable_instructions: a set of instructions that can</span>
 <span class="sd">                be merged. This is useful when merging several plaquettes&#39;</span>
-<span class="sd">                circuits together. The instructions in this set will be added to</span>
-<span class="sd">                `_DEFAULT_MERGEABLE_INSTRUCTIONS` to form the final set of</span>
-<span class="sd">                mergeable instructions.</span>
+<span class="sd">                circuits together to remove duplicate instructions.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TQECException: if the provided circuit uses qubits not listed in</span>

@@ -895,16 +895,11 @@
 
 
 
-<span class="n">_DEFAULT_MERGEABLE_INSTRUCTIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MR&quot;</span><span class="p">,</span> <span class="s2">&quot;MRX&quot;</span><span class="p">,</span> <span class="s2">&quot;MRY&quot;</span><span class="p">,</span> <span class="s2">&quot;MRZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="s2">&quot;MY&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;RX&quot;</span><span class="p">,</span> <span class="s2">&quot;RY&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ&quot;</span><span class="p">]</span>
-<span class="p">)</span>
-
-
 <div class="viewcode-block" id="merge_scheduled_circuits">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.merge_scheduled_circuits.html#tqec.circuit.schedule.merge_scheduled_circuits">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_scheduled_circuits</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
-    <span class="n">additional_mergeable_instructions</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="n">mergeable_instructions</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge several ScheduledCircuit instances into one instance.</span>
 
@@ -917,11 +912,9 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuits: the circuits to merge.</span>
-<span class="sd">        additional_mergeable_instructions: additional instructions that can</span>
-<span class="sd">            be merged. By default, the following instructions are</span>
-<span class="sd">            considered mergeable: `{&quot;M&quot;, &quot;MR&quot;, &quot;MRX&quot;, &quot;MRY&quot;, &quot;MRZ&quot;, &quot;MX&quot;,</span>
-<span class="sd">            &quot;MY&quot;, &quot;MZ&quot;, &quot;R&quot;, &quot;RX&quot;, &quot;RY&quot;, &quot;RZ&quot;}`. This set is unioned with</span>
-<span class="sd">            the provided `additional_mergeable_instructions`.</span>
+<span class="sd">        mergeable_instructions: a list of instruction names that are considered</span>
+<span class="sd">            mergeable. Duplicate instructions with a name in this list will be</span>
+<span class="sd">            merged into a single instruction.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        a circuit representing the merged scheduled circuits given as input.</span>
@@ -932,9 +925,6 @@
     <span class="n">all_schedules</span> <span class="o">=</span> <span class="n">Schedule</span><span class="p">()</span>
     <span class="n">global_i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">scheduled_circuits</span><span class="o">.</span><span class="n">q2i</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="n">mergeable_instructions</span> <span class="o">=</span> <span class="n">_DEFAULT_MERGEABLE_INSTRUCTIONS</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
-        <span class="n">additional_mergeable_instructions</span>
-    <span class="p">)</span>
     <span class="k">while</span> <span class="n">scheduled_circuits</span><span class="o">.</span><span class="n">has_pending_moment</span><span class="p">():</span>
         <span class="n">schedule</span><span class="p">,</span> <span class="n">moments</span> <span class="o">=</span> <span class="n">scheduled_circuits</span><span class="o">.</span><span class="n">collect_moments_at_minimum_schedule</span><span class="p">()</span>
         <span class="c1"># Flatten the moments into a list of operations to perform some modifications</span>
@@ -944,7 +934,7 @@
         <span class="c1"># is considered equal (and has the mergeable tag).</span>
         <span class="n">deduplicated_instructions</span> <span class="o">=</span> <span class="n">remove_duplicate_instructions</span><span class="p">(</span>
             <span class="n">instructions</span><span class="p">,</span>
-            <span class="n">mergeable_instruction_names</span><span class="o">=</span><span class="n">mergeable_instructions</span><span class="p">,</span>
+            <span class="n">mergeable_instruction_names</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">mergeable_instructions</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">deduplicated_instructions</span><span class="p">:</span>
