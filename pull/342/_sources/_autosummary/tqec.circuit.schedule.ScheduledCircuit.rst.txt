@@ -35,6 +35,7 @@ tqec.circuit.schedule.ScheduledCircuit
 
    .. autosummary::
    
+      ~ScheduledCircuit.deduplicable_instructions
       ~ScheduledCircuit.moments
       ~ScheduledCircuit.num_measurements
       ~ScheduledCircuit.q2i

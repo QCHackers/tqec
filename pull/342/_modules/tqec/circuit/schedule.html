@@ -223,6 +223,11 @@
 
 
 
+<span class="n">_DEFAULT_DEDUPLICABLE_INSTRUCTIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MR&quot;</span><span class="p">,</span> <span class="s2">&quot;MRX&quot;</span><span class="p">,</span> <span class="s2">&quot;MRY&quot;</span><span class="p">,</span> <span class="s2">&quot;MRZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="s2">&quot;MY&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;RX&quot;</span><span class="p">,</span> <span class="s2">&quot;RY&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+
 <div class="viewcode-block" id="ScheduledCircuit">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduledCircuit</span><span class="p">:</span>
@@ -233,6 +238,7 @@
         <span class="n">moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">],</span>
         <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">],</span>
+        <span class="n">additional_deduplicable_instructions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent a quantum circuit with scheduled moments.</span>
 
@@ -250,6 +256,11 @@
 <span class="sd">                scheduled sequentially, starting by the provided integer.</span>
 <span class="sd">            i2q: a map from indices to qubits that is used to re-create</span>
 <span class="sd">                `QUBIT_COORDS` instructions when generating a `stim.Circuit`.</span>
+<span class="sd">            additional_deduplicable_instructions: a set of instructions that can</span>
+<span class="sd">                be deduplicated. This is useful when merging several instances of</span>
+<span class="sd">                `ScheduledCircuit` together. The instructions in this set will</span>
+<span class="sd">                be added to `_DEFAULT_DEDUPLICABLE_INSTRUCTIONS` to form the</span>
+<span class="sd">                final set of deduplicable instructions.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ScheduleError: if the provided schedule is invalid.</span>
@@ -277,8 +288,15 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="n">i2q</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">=</span> <span class="n">schedule</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">=</span> <span class="n">schedule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deduplicable_instructions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_DEFAULT_DEDUPLICABLE_INSTRUCTIONS</span> <span class="o">|</span> <span class="n">additional_deduplicable_instructions</span>
+        <span class="p">)</span></div>
 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deduplicable_instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deduplicable_instructions</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">empty</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
@@ -289,6 +307,7 @@
         <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span>
         <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">additional_deduplicable_instructions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`ScheduledCircuit` instance from a circuit and a</span>
 <span class="sd">        schedule.</span>
@@ -341,7 +360,9 @@
         <span class="c1"># And because we want the cleanest possible moments, we can remove the</span>
         <span class="c1"># `QUBIT_COORDS` instructions from the first moment.</span>
         <span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_all_instructions_inplace</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">moments</span><span class="p">,</span> <span class="n">schedule</span><span class="p">,</span> <span class="n">i2q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span>
+            <span class="n">moments</span><span class="p">,</span> <span class="n">schedule</span><span class="p">,</span> <span class="n">i2q</span><span class="p">,</span> <span class="n">additional_deduplicable_instructions</span>
+        <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_input_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -727,6 +748,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_q2i</span> <span class="o">=</span> <span class="n">relabel_circuits_qubit_indices</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iterators</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">scheduled_moments</span> <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_moments</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterators</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deduplicable_instructions</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="n">instruction</span>
+            <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span>
+            <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">deduplicable_instructions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deduplicable_instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deduplicable_instructions</span>
 
     <span class="k">def</span> <span class="nf">has_pending_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if any of the managed instances has a pending moment.</span>
@@ -885,11 +915,6 @@
 
 
 
-<span class="n">_MERGEABLE_INSTRUCTION_NAMES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MR&quot;</span><span class="p">,</span> <span class="s2">&quot;MRX&quot;</span><span class="p">,</span> <span class="s2">&quot;MRY&quot;</span><span class="p">,</span> <span class="s2">&quot;MRZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="s2">&quot;MY&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;RX&quot;</span><span class="p">,</span> <span class="s2">&quot;RY&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ&quot;</span><span class="p">]</span>
-<span class="p">)</span>
-
-
 <div class="viewcode-block" id="merge_scheduled_circuits">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.schedule.merge_scheduled_circuits.html#tqec.circuit.schedule.merge_scheduled_circuits">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_scheduled_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
@@ -919,7 +944,8 @@
         <span class="c1"># is considered mergeable, and can be removed if another operation in the list</span>
         <span class="c1"># is considered equal (and has the mergeable tag).</span>
         <span class="n">deduplicated_instructions</span> <span class="o">=</span> <span class="n">remove_duplicate_instructions</span><span class="p">(</span>
-            <span class="n">instructions</span><span class="p">,</span> <span class="n">mergeable_instruction_names</span><span class="o">=</span><span class="n">_MERGEABLE_INSTRUCTION_NAMES</span>
+            <span class="n">instructions</span><span class="p">,</span>
+            <span class="n">mergeable_instruction_names</span><span class="o">=</span><span class="n">scheduled_circuits</span><span class="o">.</span><span class="n">deduplicable_instructions</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">deduplicated_instructions</span><span class="p">:</span>
