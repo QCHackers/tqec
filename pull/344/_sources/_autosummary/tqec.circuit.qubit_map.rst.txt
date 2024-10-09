@@ -1,0 +1,37 @@
+tqec.circuit.qubit\_map
+=======================
+
+.. automodule:: tqec.circuit.qubit_map
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_final_qubits
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      QubitMap
+   
+   
+
+   
+   
+   
+
+
+
