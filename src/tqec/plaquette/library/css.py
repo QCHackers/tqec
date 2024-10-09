@@ -62,4 +62,8 @@ def make_css_surface_code_plaquette(
     if data_qubits_measurement:
         circuit.append(data_qubits_measurement.instruction_name, dqs, [])
 
-    return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit, i2q=i2q))
+    return Plaquette(
+        qubits,
+        ScheduledCircuit.from_circuit(circuit, i2q=i2q),
+        mergeable_instructions={"M", "MZ", "MX", "R", "RZ", "RX"},
+    )

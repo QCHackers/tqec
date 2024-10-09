@@ -797,14 +797,9 @@ def remove_duplicate_instructions(
     return final_operations
 
 
-_DEFAULT_MERGEABLE_INSTRUCTIONS = frozenset(
-    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ"]
-)
-
-
 def merge_scheduled_circuits(
     circuits: list[ScheduledCircuit],
-    additional_mergeable_instructions: ty.Iterable[str] = (),
+    mergeable_instructions: ty.Iterable[str] = (),
 ) -> ScheduledCircuit:
     """Merge several ScheduledCircuit instances into one instance.
 
@@ -817,11 +812,9 @@ def merge_scheduled_circuits(
 
     Args:
         circuits: the circuits to merge.
-        additional_mergeable_instructions: additional instructions that can
-            be merged. By default, the following instructions are
-            considered mergeable: `{"M", "MR", "MRX", "MRY", "MRZ", "MX",
-            "MY", "MZ", "R", "RX", "RY", "RZ"}`. This set is unioned with
-            the provided `additional_mergeable_instructions`.
+        mergeable_instructions: a list of instruction names that are considered
+            mergeable. Duplicate instructions with a name in this list will be
+            merged into a single instruction.
 
     Returns:
         a circuit representing the merged scheduled circuits given as input.
@@ -832,9 +825,6 @@ def merge_scheduled_circuits(
     all_schedules = Schedule()
     global_i2q: dict[int, GridQubit] = {i: q for q, i in scheduled_circuits.q2i.items()}
 
-    mergeable_instructions = _DEFAULT_MERGEABLE_INSTRUCTIONS.union(
-        additional_mergeable_instructions
-    )
     while scheduled_circuits.has_pending_moment():
         schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
         # Flatten the moments into a list of operations to perform some modifications
@@ -844,7 +834,7 @@ def merge_scheduled_circuits(
         # is considered equal (and has the mergeable tag).
         deduplicated_instructions = remove_duplicate_instructions(
             instructions,
-            mergeable_instruction_names=mergeable_instructions,
+            mergeable_instruction_names=frozenset(mergeable_instructions),
         )
         circuit = stim.Circuit()
         for inst in deduplicated_instructions:

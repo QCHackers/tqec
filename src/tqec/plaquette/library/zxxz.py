@@ -97,5 +97,5 @@ H {sq}
     return Plaquette(
         qubits,
         ScheduledCircuit.from_circuit(circuit, i2q=i2q),
-        mergeable_instructions={"H"},
+        mergeable_instructions={"H", "R", "RZ", "M", "MZ"},
     )

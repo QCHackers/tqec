@@ -38,9 +38,7 @@ class Plaquette:
                 the plaquette should represent.
             mergeable_instructions: a set of instructions that can
                 be merged. This is useful when merging several plaquettes'
-                circuits together. The instructions in this set will be added to
-                `_DEFAULT_MERGEABLE_INSTRUCTIONS` to form the final set of
-                mergeable instructions.
+                circuits together to remove duplicate instructions.
 
         Raises:
             TQECException: if the provided circuit uses qubits not listed in
