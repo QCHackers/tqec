@@ -1,6 +1,0 @@
-tqec.plaquette.library.measurement.xxxx\_measurement\_plaquette
-===============================================================
-
-.. currentmodule:: tqec.plaquette.library.measurement
-
-.. autofunction:: xxxx_measurement_plaquette
