@@ -16,7 +16,6 @@ class LayoutTemplate(RectangularTemplate):
     def __init__(
         self,
         element_layout: dict[Position2D, RectangularTemplate],
-        k: int = 2,
         default_increments: Displacement | None = None,
     ) -> None:
         """A template representing a layout of other templates.
@@ -34,11 +33,10 @@ class LayoutTemplate(RectangularTemplate):
         Args:
             element_layout: a dictionary with the position of the element
                 templates in the layout as keys and the templates as values.
-            k: initial value for the scaling parameter.
             default_increments: default increments between two plaquettes. Defaults
                 to `Displacement(2, 2)` when `None`.
         """
-        super().__init__(k, default_increments)
+        super().__init__(default_increments)
         if not element_layout:
             raise TQECException("Cannot create a layout with an empty template map.")
 
@@ -62,7 +60,6 @@ class LayoutTemplate(RectangularTemplate):
         self._ny = max_y - min_y + 1
 
         self._layout = deepcopy(element_layout)
-        self.scale_to(k)
 
     def get_indices_map_for_instantiation(
         self,
@@ -84,12 +81,6 @@ class LayoutTemplate(RectangularTemplate):
     def origin_shift(self) -> Displacement:
         return self._origin_shift
 
-    @override
-    def scale_to(self, k: int) -> None:
-        super().scale_to(k)
-        for template in self._layout.values():
-            template.scale_to(k)
-
     @property
     @override
     def scalable_shape(self) -> Scalable2D:
@@ -99,10 +90,9 @@ class LayoutTemplate(RectangularTemplate):
             self._ny * self._element_scalable_shape.y,
         )
 
-    @property
-    def element_shape(self) -> Shape2D:
+    def element_shape(self, k: int) -> Shape2D:
         """Return the uniform shape of the element templates."""
-        return self._element_scalable_shape.to_shape_2d(self._k)
+        return self._element_scalable_shape.to_shape_2d(k)
 
     @property
     @override
@@ -132,11 +122,12 @@ class LayoutTemplate(RectangularTemplate):
 
     @override
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         """Generate the numpy array representing the template.
 
         Args:
+            k: scaling parameter used to instantiate the template.
             plaquette_indices: the plaquette indices that will be forwarded to
                 the underlying Template instance's instantiate method. Defaults
                 to `range(1, self.expected_plaquettes_number + 1)` if `None`.
@@ -147,14 +138,14 @@ class LayoutTemplate(RectangularTemplate):
         """
         indices_map = self.get_indices_map_for_instantiation(plaquette_indices)
 
-        element_shape = self._element_scalable_shape.to_numpy_shape(self.k)
-        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
+        element_shape = self._element_scalable_shape.to_numpy_shape(k)
+        ret = numpy.zeros(self.shape(k).to_numpy_shape(), dtype=numpy.int_)
         for pos, element in self._layout.items():
             imap = indices_map[pos]
             indices = [
                 imap[i] for i in range(1, element.expected_plaquettes_number + 1)
             ]
-            element_instantiation = element.instantiate(indices)
+            element_instantiation = element.instantiate(k, indices)
             shifted_pos = Position2D(
                 pos.x - self.origin_shift.x, pos.y - self.origin_shift.y
             )

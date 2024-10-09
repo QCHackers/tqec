@@ -16,32 +16,27 @@ from tqec.templates.subtemplates import (
 
 
 class Template(ABC):
-    def __init__(
-        self, k: int = 2, default_increments: Displacement | None = None
-    ) -> None:
+    def __init__(self, default_increments: Displacement | None = None) -> None:
         """Base class for all the templates.
 
         This class is the base of all templates and provide the necessary interface
         that all templates should implement to be usable by the library.
 
         Args:
-            k: initial value for the scaling parameter.
             default_increments: default increments between two plaquettes. Defaults
                 to `Displacement(2, 2)` when `None`
         """
         super().__init__()
-        if k < 0:
-            raise TQECException(f"Cannot have a negative scaling parameter. Got {k}.")
-        self._k = k
         self._default_increments = default_increments or Displacement(2, 2)
 
     @abstractmethod
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         """Generate the numpy array representing the template.
 
         Args:
+            k: scaling parameter used to instantiate the template.
             plaquette_indices: the plaquette indices that will be forwarded to
                 the underlying Shape instance's instantiate method. Defaults
                 to `range(1, self.expected_plaquettes_number + 1)` if `None`.
@@ -51,29 +46,10 @@ class Template(ABC):
             the underlying shape of the template.
         """
 
-    def scale_to(self, k: int) -> None:
-        """Scales self to the given scale k.
-
-        Note that this function scales the template instance INLINE.
-
-        Args:
-            k: the new scale of the template.
-        """
-        if k < 0:
-            raise TQECException(f"Cannot have a negative scaling parameter. Got {k}.")
-        self._k = k
-
-    @property
-    def k(self) -> int:
-        return self._k
-
-    @property
-    def shape(self) -> Shape2D:
+    def shape(self, k: int) -> Shape2D:
         """Returns the current template shape."""
         sshape = self.scalable_shape
-        return Shape2D(
-            round_or_fail(sshape.x(self._k)), round_or_fail(sshape.y(self._k))
-        )
+        return Shape2D(round_or_fail(sshape.x(k)), round_or_fail(sshape.y(k)))
 
     @property
     @abstractmethod
@@ -81,7 +57,7 @@ class Template(ABC):
         """Returns a scalable version of the template shape."""
 
     def get_midline_plaquettes(
-        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, k: int, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         """Returns the default observable qubits for the template.
 
@@ -99,7 +75,8 @@ class Template(ABC):
         Raises:
             TQECException: If the midline is not uniquely defined.
         """
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        shape = self.shape(k)
+        midline_shape, iteration_shape = shape.x, shape.y
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "
@@ -141,7 +118,7 @@ class Template(ABC):
         """
 
     def get_spatially_distinct_subtemplates(
-        self, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True
+        self, k: int, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True
     ) -> UniqueSubTemplates:
         """Returns a representation of all the distinct sub-templates of the
         provided manhattan radius.
@@ -154,6 +131,7 @@ class Template(ABC):
             algorithm (or hard-coded values) to speed things up.
 
         Args:
+            k: scaling parameter used to instantiate the template.
             manhattan_radius: radius of the considered ball using the Manhattan
                 distance. Only squares with sides of `2*manhattan_radius+1`
                 plaquettes will be considered.
@@ -165,16 +143,17 @@ class Template(ABC):
             a representation of all the sub-templates found.
         """
         return get_spatially_distinct_subtemplates(
-            self.instantiate(), manhattan_radius, avoid_zero_plaquettes
+            self.instantiate(k), manhattan_radius, avoid_zero_plaquettes
         )
 
 
 class RectangularTemplate(Template):
     @override
     def get_midline_plaquettes(
-        self, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, k: int, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
-        midline_shape, iteration_shape = self.shape.x, self.shape.y
+        shape = self.shape(k)
+        midline_shape, iteration_shape = shape.x, shape.y
         if midline_shape % 2 == 1:
             raise TQECException(
                 "Midline is not defined for odd "

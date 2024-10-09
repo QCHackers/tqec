@@ -2,10 +2,10 @@ import stim
 
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
+from tqec.computation.block_graph import AbstractObservable, Cube, Pipe
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Displacement, Shape2D
 from tqec.scale import round_or_fail
-from tqec.computation.block_graph import AbstractObservable, Cube, Pipe
 from tqec.templates.layout import LayoutTemplate
 
 
@@ -131,6 +131,7 @@ def inplace_add_observables(
     circuits: list[list[ScheduledCircuit]],
     template_slices: list[LayoutTemplate],
     abstract_observables: list[AbstractObservable],
+    k: int,
 ) -> None:
     """Inplace add the observable components to the circuits.
 
@@ -143,7 +144,7 @@ def inplace_add_observables(
             z = pipe.u.position.z
             template = template_slices[z]
             stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
-                pipe, template.element_shape, template.get_increments()
+                pipe, template.element_shape(k), template.get_increments()
             )
             measurement_records = _get_measurement_records_from_scheduled_circuit(
                 circuits[z][0]
@@ -162,14 +163,16 @@ def inplace_add_observables(
                 z = cube_or_pipe.position.z
                 template = template_slices[z]
                 qubits = get_midline_qubits_for_cube(
-                    cube_or_pipe, template.element_shape, template.get_increments()
+                    cube_or_pipe, template.element_shape(k), template.get_increments()
                 )
             else:
                 z = cube_or_pipe.u.position.z
                 template = template_slices[z]
                 qubits = [
                     get_center_qubit_at_horizontal_pipe(
-                        cube_or_pipe, template.element_shape, template.get_increments()
+                        cube_or_pipe,
+                        template.element_shape(k),
+                        template.get_increments(),
                     )
                 ]
             measurement_records = _get_measurement_records_from_scheduled_circuit(

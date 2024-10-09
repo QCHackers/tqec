@@ -26,12 +26,12 @@ class QubitTemplate(RectangularTemplate):
 
     @override
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))
 
-        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
+        ret = numpy.zeros(self.shape(k).to_numpy_shape(), dtype=numpy.int_)
 
         # The four corners
         ret[0, 0] = plaquette_indices[0]
@@ -108,12 +108,12 @@ class QubitVerticalBorders(RectangularTemplate):
 
     @override
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))
 
-        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
+        ret = numpy.zeros(self.shape(k).to_numpy_shape(), dtype=numpy.int_)
 
         # The four corners
         ret[0, 0] = plaquette_indices[0]
@@ -176,12 +176,12 @@ class QubitHorizontalBorders(RectangularTemplate):
 
     @override
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))
 
-        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
+        ret = numpy.zeros(self.shape(k).to_numpy_shape(), dtype=numpy.int_)
 
         # The four corners
         ret[0, 0] = plaquette_indices[0]
@@ -256,12 +256,12 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
 
     @override
     def instantiate(
-        self, plaquette_indices: Sequence[int] | None = None
+        self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))
 
-        if self.k == 1:
+        if k == 1:
             warnings.warn(
                 "Instantiating Qubit4WayJunctionTemplate with k=1. The "
                 "instantiation array returned will not have any plaquette indexed "
@@ -269,8 +269,9 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
                 TQECWarning,
             )
 
-        ret = numpy.zeros(self.shape.to_numpy_shape(), dtype=numpy.int_)
-        size = self.shape.x
+        shape = self.shape(k)
+        ret = numpy.zeros(shape.to_numpy_shape(), dtype=numpy.int_)
+        size = shape.x
 
         # The four corners
         ret[0, 0] = plaquette_indices[0]
