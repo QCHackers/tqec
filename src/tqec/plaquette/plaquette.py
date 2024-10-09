@@ -16,7 +16,12 @@ from tqec.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:
-    def __init__(self, qubits: PlaquetteQubits, circuit: ScheduledCircuit) -> None:
+    def __init__(
+        self,
+        qubits: PlaquetteQubits,
+        circuit: ScheduledCircuit,
+        mergeable_instructions: typing.Iterable[str] = (),
+    ) -> None:
         """Represents a QEC plaquette.
 
         This class stores qubits in the plaquette local coordinate system and a
@@ -31,6 +36,11 @@ class Plaquette:
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
+            mergeable_instructions: a set of instructions that can
+                be merged. This is useful when merging several plaquettes'
+                circuits together. The instructions in this set will be added to
+                `_DEFAULT_MERGEABLE_INSTRUCTIONS` to form the final set of
+                mergeable instructions.
 
         Raises:
             TQECException: if the provided circuit uses qubits not listed in
@@ -46,6 +56,7 @@ class Plaquette:
             )
         self._qubits = qubits
         self._circuit = circuit
+        self._mergeable_instructions = frozenset(mergeable_instructions)
 
     @property
     def origin(self) -> Position2D:
@@ -58,6 +69,10 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    @property
+    def mergeable_instructions(self) -> frozenset[str]:
+        return self._mergeable_instructions
 
     def project_on_boundary(
         self, plaquette_orientation: PlaquetteOrientation
@@ -88,7 +103,9 @@ class Plaquette:
         new_scheduled_circuit = self.circuit.filter_by_qubits(
             new_plaquette_qubits.all_qubits
         )
-        return Plaquette(new_plaquette_qubits, new_scheduled_circuit)
+        return Plaquette(
+            new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
+        )
 
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]

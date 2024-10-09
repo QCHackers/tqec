@@ -13,7 +13,7 @@ from tqec.plaquette.qubit import PlaquetteQubits, SquarePlaquetteQubits
 def test_zxxz_surface_code_memory_plaquette() -> None:
     x_plaquette = make_zxxz_surface_code_plaquette("X")
     assert x_plaquette.qubits == SquarePlaquetteQubits()
-    assert "H" in x_plaquette.circuit.deduplicable_instructions
+    assert "H" in x_plaquette.mergeable_instructions
     assert x_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1

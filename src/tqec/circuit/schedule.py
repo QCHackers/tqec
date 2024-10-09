@@ -134,18 +134,12 @@ class Schedule:
             raise e
 
 
-_DEFAULT_DEDUPLICABLE_INSTRUCTIONS = frozenset(
-    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ"]
-)
-
-
 class ScheduledCircuit:
     def __init__(
         self,
         moments: list[Moment],
         schedule: Schedule | list[int] | int,
         i2q: dict[int, GridQubit],
-        additional_deduplicable_instructions: frozenset[str] = frozenset(),
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
 
@@ -163,11 +157,6 @@ class ScheduledCircuit:
                 scheduled sequentially, starting by the provided integer.
             i2q: a map from indices to qubits that is used to re-create
                 `QUBIT_COORDS` instructions when generating a `stim.Circuit`.
-            additional_deduplicable_instructions: a set of instructions that can
-                be deduplicated. This is useful when merging several instances of
-                `ScheduledCircuit` together. The instructions in this set will
-                be added to `_DEFAULT_DEDUPLICABLE_INSTRUCTIONS` to form the
-                final set of deduplicable instructions.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -196,16 +185,6 @@ class ScheduledCircuit:
         self._moments: list[Moment] = moments
         self._i2q: dict[int, GridQubit] = i2q
         self._schedule: Schedule = schedule
-        self._additional_deduplicable_instructions: frozenset[str] = (
-            additional_deduplicable_instructions
-        )
-
-    @property
-    def deduplicable_instructions(self) -> frozenset[str]:
-        return frozenset(
-            _DEFAULT_DEDUPLICABLE_INSTRUCTIONS
-            | self._additional_deduplicable_instructions
-        )
 
     @staticmethod
     def empty() -> ScheduledCircuit:
@@ -216,7 +195,6 @@ class ScheduledCircuit:
         circuit: stim.Circuit,
         schedule: Schedule | list[int] | int = 0,
         i2q: dict[int, GridQubit] | None = None,
-        additional_deduplicable_instructions: frozenset[str] = frozenset(),
     ) -> ScheduledCircuit:
         """Build a :class:`ScheduledCircuit` instance from a circuit and a
         schedule.
@@ -269,9 +247,7 @@ class ScheduledCircuit:
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(
-            moments, schedule, i2q, additional_deduplicable_instructions
-        )
+        return ScheduledCircuit(moments, schedule, i2q)
 
     @staticmethod
     def _check_input_circuit(circuit: stim.Circuit) -> None:
@@ -431,7 +407,6 @@ class ScheduledCircuit:
                 mapped_moments,
                 self._schedule,
                 mapped_final_qubits,
-                self._additional_deduplicable_instructions,
             )
 
     def map_to_qubits(
@@ -463,7 +438,6 @@ class ScheduledCircuit:
             self._moments,
             self._schedule,
             self._i2q,
-            self._additional_deduplicable_instructions,
         )
 
     def __deepcopy__(self, memo: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
@@ -471,7 +445,6 @@ class ScheduledCircuit:
             deepcopy(self._moments, memo=memo),
             deepcopy(self._schedule, memo=memo),
             deepcopy(self._i2q, memo=memo),
-            self._additional_deduplicable_instructions,
         )
 
     @property
@@ -640,7 +613,6 @@ class ScheduledCircuit:
             filtered_moments,
             Schedule(filtered_schedule),
             i2q,
-            self._additional_deduplicable_instructions,
         )
         # The qubit indices may not be contiguous anymore, so we need to remap them.
         indices_map = {oi: ni for ni, oi in enumerate(i2q.keys())}
@@ -670,15 +642,6 @@ class _ScheduledCircuits:
         self._circuits, self._global_q2i = relabel_circuits_qubit_indices(circuits)
         self._iterators = [circuit.scheduled_moments for circuit in self._circuits]
         self._current_moments = [next(it, None) for it in self._iterators]
-        self._deduplicable_instructions = frozenset(
-            instruction
-            for circuit in self._circuits
-            for instruction in circuit.deduplicable_instructions
-        )
-
-    @property
-    def deduplicable_instructions(self) -> frozenset[str]:
-        return self._deduplicable_instructions
 
     def has_pending_moment(self) -> bool:
         """Checks if any of the managed instances has a pending moment.
@@ -834,7 +797,15 @@ def remove_duplicate_instructions(
     return final_operations
 
 
-def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircuit:
+_DEFAULT_MERGEABLE_INSTRUCTIONS = frozenset(
+    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ"]
+)
+
+
+def merge_scheduled_circuits(
+    circuits: list[ScheduledCircuit],
+    additional_mergeable_instructions: ty.Iterable[str] = (),
+) -> ScheduledCircuit:
     """Merge several ScheduledCircuit instances into one instance.
 
     This function takes several scheduled circuits as input and merge them,
@@ -843,6 +814,14 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
 
     KeyError: if any of the provided circuit contains a qubit target that is
             not defined by a `QUBIT_COORDS` instruction.
+
+    Args:
+        circuits: the circuits to merge.
+        additional_mergeable_instructions: additional instructions that can
+            be merged. By default, the following instructions are
+            considered mergeable: `{"M", "MR", "MRX", "MRY", "MRZ", "MX",
+            "MY", "MZ", "R", "RX", "RY", "RZ"}`. This set is unioned with
+            the provided `additional_mergeable_instructions`.
 
     Returns:
         a circuit representing the merged scheduled circuits given as input.
@@ -853,6 +832,9 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
     all_schedules = Schedule()
     global_i2q: dict[int, GridQubit] = {i: q for q, i in scheduled_circuits.q2i.items()}
 
+    mergeable_instructions = _DEFAULT_MERGEABLE_INSTRUCTIONS.union(
+        additional_mergeable_instructions
+    )
     while scheduled_circuits.has_pending_moment():
         schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
         # Flatten the moments into a list of operations to perform some modifications
@@ -862,7 +844,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         # is considered equal (and has the mergeable tag).
         deduplicated_instructions = remove_duplicate_instructions(
             instructions,
-            mergeable_instruction_names=scheduled_circuits.deduplicable_instructions,
+            mergeable_instruction_names=mergeable_instructions,
         )
         circuit = stim.Circuit()
         for inst in deduplicated_instructions:
@@ -878,7 +860,6 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         all_moments,
         all_schedules,
         global_i2q,
-        scheduled_circuits.deduplicable_instructions,
     )
 
 
