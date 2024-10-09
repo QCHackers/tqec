@@ -6,6 +6,7 @@ from typing import Literal
 
 import stim
 
+from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
@@ -38,9 +39,10 @@ def make_zxxz_surface_code_plaquette(
     sq = 0
     # data qubits ordered as "Z" shape
     dqs = list(range(1, 5))
-    i2q = {0: qubits.syndrome_qubits[0]} | {
-        i + 1: q for i, q in enumerate(qubits.data_qubits)
-    }
+    i2q = QubitMap(
+        {0: qubits.syndrome_qubits[0]}
+        | {i + 1: q for i, q in enumerate(qubits.data_qubits)}
+    )
 
     circuit = stim.Circuit()
     # 1. Initialization
