@@ -22,7 +22,6 @@ from copy import deepcopy
 
 import numpy
 import numpy.typing as npt
-import stim
 
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits

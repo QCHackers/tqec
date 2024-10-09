@@ -35,7 +35,8 @@ from dataclasses import dataclass, field
 import stim
 
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
-from tqec.circuit.qubit import GridQubit, get_final_qubits
+from tqec.circuit.qubit import GridQubit
+from tqec.circuit.qubit_map import QubitMap, get_final_qubits
 from tqec.exceptions import TQECException, TQECWarning
 
 
@@ -139,7 +140,7 @@ class ScheduledCircuit:
         self,
         moments: list[Moment],
         schedule: Schedule | list[int] | int,
-        i2q: dict[int, GridQubit],
+        qubit_map: QubitMap,
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
 
@@ -155,7 +156,7 @@ class ScheduledCircuit:
             schedule: schedule of the provided `moments`. If an integer is
                 provided, each moment of the provided `stim.Circuit` is
                 scheduled sequentially, starting by the provided integer.
-            i2q: a map from indices to qubits that is used to re-create
+            qubit_map: a map from indices to qubits that is used to re-create
                 `QUBIT_COORDS` instructions when generating a `stim.Circuit`.
 
         Raises:
@@ -183,12 +184,12 @@ class ScheduledCircuit:
             )
 
         self._moments: list[Moment] = moments
-        self._final_qubits: dict[int, GridQubit] = i2q
+        self._qubit_map: QubitMap = qubit_map
         self._schedule: Schedule = schedule
 
     @staticmethod
     def empty() -> ScheduledCircuit:
-        return ScheduledCircuit([], Schedule(), {})
+        return ScheduledCircuit([], Schedule(), QubitMap())
 
     @staticmethod
     def from_circuit(
@@ -237,7 +238,7 @@ class ScheduledCircuit:
         # Here, we know for sure that no qubit is (re)defined in another place
         # than the first moment, so we can directly get qubit coordinates from
         # that moment.
-        final_qubits: dict[int, GridQubit] = get_final_qubits(moments[0].circuit)
+        final_qubits = get_final_qubits(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
@@ -260,7 +261,7 @@ class ScheduledCircuit:
     def get_qubit_coords_definition_preamble(self) -> stim.Circuit:
         """Get a circuit with only `QUBIT_COORDS` instructions."""
         ret = stim.Circuit()
-        for qi, qubit in sorted(self._final_qubits.items(), key=lambda t: t[0]):
+        for qi, qubit in sorted(self._qubit_map.items(), key=lambda t: t[0]):
             ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
         return ret
 
@@ -370,9 +371,9 @@ class ScheduledCircuit:
             a modified instance of `ScheduledCircuit` (a copy if inplace is
             `True`, else `self`).
         """
-        mapped_final_qubits = {
-            qubit_index_map[qi]: q for qi, q in self._final_qubits.items()
-        }
+        mapped_final_qubits = QubitMap(
+            {qubit_index_map[qi]: q for qi, q in self._qubit_map.items()}
+        )
         mapped_moments: list[Moment] = []
         for moment in self._moments:
             mapped_moment_circuit = stim.Circuit()
@@ -395,7 +396,7 @@ class ScheduledCircuit:
                 )
             mapped_moments.append(Moment(mapped_moment_circuit))
         if inplace:
-            self._final_qubits = mapped_final_qubits
+            self._qubit_map = mapped_final_qubits
             self._moments = mapped_moments
             return self
         else:
@@ -422,19 +423,17 @@ class ScheduledCircuit:
             else self).
         """
         operand = self if inplace else deepcopy(self)
-        operand._final_qubits = {
-            qi: qubit_map[q] for qi, q in operand._final_qubits.items()
-        }
+        operand._qubit_map = operand._qubit_map.with_mapped_qubits(qubit_map)
         return operand
 
     def __copy__(self) -> ScheduledCircuit:
-        return ScheduledCircuit(self._moments, self._schedule, self._final_qubits)
+        return ScheduledCircuit(self._moments, self._schedule, self._qubit_map)
 
     def __deepcopy__(self, memo: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._moments, memo=memo),
             deepcopy(self._schedule, memo=memo),
-            deepcopy(self._final_qubits, memo=memo),
+            deepcopy(self._qubit_map, memo=memo),
         )
 
     @property
@@ -454,7 +453,7 @@ class ScheduledCircuit:
 
     @property
     def qubits(self) -> frozenset[GridQubit]:
-        return frozenset(self._final_qubits.values())
+        return frozenset(self._qubit_map.qubits)
 
     def _get_moment_index_by_schedule(self, schedule: int) -> int | None:
         """Get the index of the moment scheduled at the provided schedule.
@@ -548,7 +547,7 @@ class ScheduledCircuit:
     @property
     def q2i(self) -> dict[GridQubit, int]:
         """Return the map from qubits used in `self` their index."""
-        return {q: i for i, q in self._final_qubits.items()}
+        return {q: i for i, q in self._qubit_map.items()}
 
     def append_observable(
         self, index: int, targets: ty.Sequence[stim.GateTarget]
@@ -591,7 +590,7 @@ class _ScheduledCircuits:
         """
         # We might need to remap qubits to avoid index collision on several
         # circuits.
-        self._circuits, self._global_q2i = relabel_circuits_qubit_indices(circuits)
+        self._circuits, self._qubit_map = relabel_circuits_qubit_indices(circuits)
         self._iterators = [circuit.scheduled_moments for circuit in self._circuits]
         self._current_moments = [next(it, None) for it in self._iterators]
 
@@ -662,7 +661,7 @@ class _ScheduledCircuits:
 
     @property
     def q2i(self) -> dict[GridQubit, int]:
-        return self._global_q2i
+        return self._qubit_map.q2i
 
 
 def _sort_target_groups(
@@ -771,7 +770,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
 
     all_moments: list[Moment] = []
     all_schedules = Schedule()
-    global_i2q: dict[int, GridQubit] = {i: q for q, i in scheduled_circuits.q2i.items()}
+    global_i2q = QubitMap({i: q for q, i in scheduled_circuits.q2i.items()})
 
     while scheduled_circuits.has_pending_moment():
         schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
@@ -798,7 +797,7 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
 
 def relabel_circuits_qubit_indices(
     circuits: ty.Sequence[ScheduledCircuit],
-) -> tuple[list[ScheduledCircuit], dict[GridQubit, int]]:
+) -> tuple[list[ScheduledCircuit], QubitMap]:
     """Relabel the qubit indices of the provided circuits to avoid collision.
 
     When several :class:`ScheduledCircuit` are constructed without a global
@@ -829,12 +828,12 @@ def relabel_circuits_qubit_indices(
         are assigned to an index such that:
 
         1. the sequence of indices is `range(0, len(qubit_map))`.
-        2. the list `[qubit_map[q] for q in sorted(qubit_map)]` is exactly
-           `list(range(len(qubit_map)))`.
+        2. the returned qubit map
     """
     # First, get a global qubit index map.
     needed_qubits = frozenset.union(*[c.qubits for c in circuits])
-    global_q2i = {q: i for i, q in enumerate(sorted(needed_qubits))}
+    qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
+    q2i = qubit_map.q2i
     # Then, get the remapped circuits. Note that map_qubit_indices should
     # have approximately the same runtime cost whatever the value of inplace
     # so we ask for a new instance to avoid keeping a reference to the given
@@ -842,9 +841,9 @@ def relabel_circuits_qubit_indices(
     relabeled_circuits: list[ScheduledCircuit] = []
     for circuit in circuits:
         local_indices_to_global_indices = {
-            local_index: global_q2i[q] for q, local_index in circuit.q2i.items()
+            local_index: q2i[q] for q, local_index in circuit.q2i.items()
         }
         relabeled_circuits.append(
             circuit.map_qubit_indices(local_indices_to_global_indices, inplace=False)
         )
-    return relabeled_circuits, global_q2i
+    return relabeled_circuits, qubit_map
