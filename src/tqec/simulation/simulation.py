@@ -1,5 +1,5 @@
 import multiprocessing
-from typing import Callable, Iterable, Mapping, Sequence
+from typing import Callable, Iterable, Iterator, Mapping, Sequence
 
 import sinter
 
@@ -30,7 +30,7 @@ def start_simulation_using_sinter(
     decoders: Iterable[str] = ("pymatching",),
     print_progress: bool = False,
     custom_decoders: dict[str, sinter.Decoder | sinter.Sampler] | None = None,
-) -> list[list[sinter.TaskStats]]:
+) -> Iterator[list[sinter.TaskStats]]:
     """Helper to run `stim` simulations using `sinter`.
 
     This function is the preferred entry-point to run `sinter` computations using
@@ -86,7 +86,6 @@ def start_simulation_using_sinter(
     if substitution_rules is None:
         substitution_rules = DEFAULT_SUBSTITUTION_RULES
 
-    statistics: list[list[sinter.TaskStats]] = []
     for i, observable in enumerate(observables):
         if print_progress:
             print(
@@ -112,5 +111,4 @@ def start_simulation_using_sinter(
             custom_decoders=custom_decoders,
             hint_num_tasks=len(ks) * len(ps),
         )
-        statistics.append(stats)
-    return statistics
+        yield stats
