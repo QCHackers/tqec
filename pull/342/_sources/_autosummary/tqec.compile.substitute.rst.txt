@@ -1,0 +1,38 @@
+tqec.compile.substitute
+=======================
+
+.. automodule:: tqec.compile.substitute
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      default_substitution_rule
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      SubstitutionKey
+      SubstitutionRule
+   
+   
+
+   
+   
+   
+
+
+

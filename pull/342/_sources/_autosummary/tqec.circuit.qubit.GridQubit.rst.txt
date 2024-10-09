@@ -1,0 +1,30 @@
+tqec.circuit.qubit.GridQubit
+============================
+
+.. currentmodule:: tqec.circuit.qubit
+
+.. autoclass:: GridQubit
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GridQubit.__init__
+      ~GridQubit.to_qubit_coords_instruction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GridQubit.x
+      ~GridQubit.y
+   
+   
