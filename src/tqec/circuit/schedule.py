@@ -196,13 +196,16 @@ class ScheduledCircuit:
         self._moments: list[Moment] = moments
         self._i2q: dict[int, GridQubit] = i2q
         self._schedule: Schedule = schedule
-        self._deduplicable_instructions: frozenset[str] = (
-            _DEFAULT_DEDUPLICABLE_INSTRUCTIONS | additional_deduplicable_instructions
+        self._additional_deduplicable_instructions: frozenset[str] = (
+            additional_deduplicable_instructions
         )
 
     @property
     def deduplicable_instructions(self) -> frozenset[str]:
-        return self._deduplicable_instructions
+        return frozenset(
+            _DEFAULT_DEDUPLICABLE_INSTRUCTIONS
+            | self._additional_deduplicable_instructions
+        )
 
     @staticmethod
     def empty() -> ScheduledCircuit:
@@ -424,7 +427,12 @@ class ScheduledCircuit:
             self._moments = mapped_moments
             return self
         else:
-            return ScheduledCircuit(mapped_moments, self._schedule, mapped_final_qubits)
+            return ScheduledCircuit(
+                mapped_moments,
+                self._schedule,
+                mapped_final_qubits,
+                self._additional_deduplicable_instructions,
+            )
 
     def map_to_qubits(
         self, qubit_map: dict[GridQubit, GridQubit], inplace: bool = False
@@ -451,13 +459,19 @@ class ScheduledCircuit:
         return operand
 
     def __copy__(self) -> ScheduledCircuit:
-        return ScheduledCircuit(self._moments, self._schedule, self._i2q)
+        return ScheduledCircuit(
+            self._moments,
+            self._schedule,
+            self._i2q,
+            self._additional_deduplicable_instructions,
+        )
 
     def __deepcopy__(self, memo: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._moments, memo=memo),
             deepcopy(self._schedule, memo=memo),
             deepcopy(self._i2q, memo=memo),
+            self._additional_deduplicable_instructions,
         )
 
     @property
@@ -623,7 +637,10 @@ class ScheduledCircuit:
             filtered_schedule.append(schedule)
         i2q = {i: q for i, q in self._i2q.items() if i in qubits_indices_to_keep}
         filtered_circuit = ScheduledCircuit(
-            filtered_moments, Schedule(filtered_schedule), i2q
+            filtered_moments,
+            Schedule(filtered_schedule),
+            i2q,
+            self._additional_deduplicable_instructions,
         )
         # The qubit indices may not be contiguous anymore, so we need to remap them.
         indices_map = {oi: ni for ni, oi in enumerate(i2q.keys())}
@@ -857,7 +874,12 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         all_moments.append(Moment(circuit))
         all_schedules.append(schedule)
 
-    return ScheduledCircuit(all_moments, all_schedules, global_i2q)
+    return ScheduledCircuit(
+        all_moments,
+        all_schedules,
+        global_i2q,
+        scheduled_circuits.deduplicable_instructions,
+    )
 
 
 def relabel_circuits_qubit_indices(
