@@ -1,12 +1,18 @@
 import multiprocessing
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Iterable, Mapping, Sequence
 
 import sinter
 
 from tqec.compile.compile import compile_block_graph
+from tqec.compile.specs.base import CubeSpec, SpecRule
+from tqec.compile.substitute import (
+    DEFAULT_SUBSTITUTION_RULES,
+    SubstitutionKey,
+    SubstitutionRule,
+)
+from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.noise_models.noise_model import NoiseModel
 from tqec.simulation.generation import generate_sinter_tasks
-from tqec.computation.block_graph import AbstractObservable, BlockGraph
 
 
 def start_simulation_using_sinter(
@@ -14,6 +20,8 @@ def start_simulation_using_sinter(
     ks: Sequence[int],
     ps: Sequence[float],
     noise_model_factory: Callable[[float], NoiseModel],
+    cube_specifications: Mapping[CubeSpec, SpecRule],
+    substitution_rules: Mapping[SubstitutionKey, SubstitutionRule] | None = None,
     observables: list[AbstractObservable] | None = None,
     num_workers: int = multiprocessing.cpu_count(),
     progress_callback: Callable[[sinter.Progress], None] | None = None,
@@ -42,6 +50,10 @@ def start_simulation_using_sinter(
             model using the provided `noise_model_factory`.
         noise_model_factory: a callable that is used to instantiate a noise
             model from each of the noise parameters in `ps`.
+        cube_specification: a description of the different cubes that are
+            used by the provided `block_graph`.
+        substitution_rules: a description of the rules that should be applied
+            to connect two cubes with a pipe.
         observables: a list of observables to generate statistics for. If
             `None`, all the observables of the provided computation are used.
         num_workers: The number of worker processes to use.
@@ -71,6 +83,8 @@ def start_simulation_using_sinter(
     """
     if observables is None:
         observables = block_graph.get_abstract_observables()
+    if substitution_rules is None:
+        substitution_rules = DEFAULT_SUBSTITUTION_RULES
 
     statistics: list[list[sinter.TaskStats]] = []
     for i, observable in enumerate(observables):
@@ -79,7 +93,12 @@ def start_simulation_using_sinter(
                 f"Generating statistics for observable {i+1}/{len(observables)}",
                 end="\r",
             )
-        compiled_graph = compile_block_graph(block_graph, observables=[observable])
+        compiled_graph = compile_block_graph(
+            block_graph,
+            spec_rules=cube_specifications,
+            substitute_rules=substitution_rules,
+            observables=[observable],
+        )
         stats = sinter.collect(
             num_workers=num_workers,
             tasks=generate_sinter_tasks(
