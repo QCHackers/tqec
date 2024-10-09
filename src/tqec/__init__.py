@@ -15,7 +15,6 @@ from .noise_models import NoiseModel
 from .plaquette import (
     Plaquette,
     PlaquetteQubits,
-    RoundedPlaquetteQubits,
     SquarePlaquetteQubits,
 )
 from .plaquette.enums import PlaquetteOrientation

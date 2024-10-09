@@ -376,16 +376,20 @@ class BlockGraph:
             top_lines: set[Cube | Pipe] = set()
             bottom_regions: set[Pipe] = set()
             for edge in g.edges:
+                correlation_type_at_src = edge.u.node_type.value
+                correlation_type_at_dst = edge.v.node_type.value
                 pipe = self.get_pipe(edge.u.position, edge.v.position)
                 assert (
                     pipe is not None
                 ), f"{edge} is in the graph and should be associated with a Pipe instance."
                 u, v = pipe.u, pipe.v
                 if pipe.direction == Direction3D.Z:
-                    if is_measured(v):
+                    if (
+                        is_measured(v)
+                        and v.cube_type.value[2] == correlation_type_at_dst
+                    ):
                         top_lines.add(v)
                     continue
-                correlation_type_at_src = edge.u.node_type.value
                 # The direction for which the correlation surface of that type
                 # can be attached to the pipe
                 correlation_type_direction = Direction3D.from_axis_index(

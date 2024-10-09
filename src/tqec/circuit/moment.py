@@ -152,6 +152,33 @@ class Moment:
         # so let's ignore it for the moment.
         return self._circuit.num_measurements  # type: ignore
 
+    def filter_by_qubits(self, qubits_to_keep: ty.Iterable[int]) -> Moment:
+        """Return a new :class:`Moment` instance containing only the
+        instructions that are applied on the provided qubits."""
+        qubits = frozenset(qubits_to_keep)
+        new_circuit = stim.Circuit()
+        for instruction in self.instructions:
+            targets: list[stim.GateTarget] = []
+            for target_group in instruction.target_groups():
+                qubit_targets = [
+                    ty.cast(int, t.qubit_value)
+                    for t in target_group
+                    if t.is_qubit_target
+                ]
+                if any(q not in qubits for q in qubit_targets):
+                    continue
+                targets.extend(target_group)
+            if targets:
+                new_circuit.append(
+                    instruction.name, targets, instruction.gate_args_copy()
+                )
+        return Moment(new_circuit)
+
+    @property
+    def is_empty(self) -> bool:
+        """Return `True` if the :class:`Moment` instance is empty."""
+        return len(self._circuit) == 0
+
 
 def iter_stim_circuit_without_repeat_by_moments(
     circuit: stim.Circuit, collected_before_use: bool = True

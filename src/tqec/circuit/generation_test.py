@@ -4,10 +4,9 @@ import pytest
 import stim
 
 from tqec.circuit.generation import generate_circuit
-from tqec.circuit.schedule import Schedule
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
-from tqec.plaquette.library import zz_memory_plaquette
+from tqec.plaquette.library import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates._testing import FixedTemplate
 from tqec.templates.base import Template
@@ -15,8 +14,8 @@ from tqec.templates.base import Template
 
 @pytest.fixture
 def plaquette() -> Plaquette:
-    return zz_memory_plaquette(
-        PlaquetteOrientation.LEFT, Schedule.from_offsets([0, 4, 5, 7])
+    return make_css_surface_code_plaquette("Z").project_on_boundary(
+        PlaquetteOrientation.LEFT
     )
 
 
@@ -34,11 +33,9 @@ def _expected_circuit() -> stim.Circuit:
     TICK
     TICK
     TICK
-    TICK
     CX 1 0
     TICK
     CX 2 0
-    TICK
     TICK
     M 0
 """)

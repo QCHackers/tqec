@@ -22,7 +22,6 @@ from copy import deepcopy
 
 import numpy
 import numpy.typing as npt
-import stim
 
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
@@ -147,6 +146,7 @@ def generate_circuit_from_instantiation(
     # Generate the ScheduledCircuit instances for each plaquette instantiation
     all_scheduled_circuits: list[ScheduledCircuit] = []
     plaquette_index: int
+    additional_mergeable_instructions: set[str] = set()
     for row_index, line in enumerate(plaquette_array):
         for column_index, plaquette_index in enumerate(line):
             if plaquette_index != 0:
@@ -158,9 +158,12 @@ def generate_circuit_from_instantiation(
                 qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
                 scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
                 all_scheduled_circuits.append(scheduled_circuit)
+                additional_mergeable_instructions |= plaquette.mergeable_instructions
 
     # Merge everything!
-    return merge_scheduled_circuits(all_scheduled_circuits)
+    return merge_scheduled_circuits(
+        all_scheduled_circuits, additional_mergeable_instructions
+    )
 
 
 def _create_mapping(

@@ -384,6 +384,15 @@ def test_merge_scheduled_circuits() -> None:
 
     circuit = merge_scheduled_circuits(
         [
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
+            ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
+        ],
+        mergeable_instructions=["H"],
+    )
+    assert circuit.get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+
+    circuit = merge_scheduled_circuits(
+        [
             ScheduledCircuit.from_circuit(
                 stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0\nTICK\nM 0"), [0, 2]
             ),
