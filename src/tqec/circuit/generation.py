@@ -32,7 +32,9 @@ from tqec.position import Displacement
 from tqec.templates.base import Template
 
 
-def generate_circuit(template: Template, plaquettes: Plaquettes) -> ScheduledCircuit:
+def generate_circuit(
+    template: Template, k: int, plaquettes: Plaquettes
+) -> ScheduledCircuit:
     """Generate a quantum circuit from a template and its plaquettes.
 
     This is one of the core methods of the `tqec` package. It generates a
@@ -53,6 +55,7 @@ def generate_circuit(template: Template, plaquettes: Plaquettes) -> ScheduledCir
     Args:
         template: spatial description of the quantum error correction experiment
             we want to implement.
+        k: scaling parameter used to instantiate the provided `template`.
         plaquettes: description of the computation that should happen at
             different time-slices of the quantum error correction experiment (or
             at least part of it).
@@ -77,7 +80,7 @@ def generate_circuit(template: Template, plaquettes: Plaquettes) -> ScheduledCir
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, template.expected_plaquettes_number + 1))
-    template_plaquettes = template.instantiate(_indices)
+    template_plaquettes = template.instantiate(k, _indices)
     increments = template.get_increments()
 
     return generate_circuit_from_instantiation(

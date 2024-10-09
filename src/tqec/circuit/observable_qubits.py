@@ -12,6 +12,7 @@ from tqec.templates.enums import TemplateOrientation
 
 def observable_qubits_from_template(
     template: Template,
+    k: int,
     plaquettes: Sequence[Plaquette] | Mapping[int, Plaquette],
     orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
 ) -> Sequence[tuple[GridQubit, int]]:
@@ -20,6 +21,7 @@ def observable_qubits_from_template(
 
     Args:
         template: The template to get the default observable qubits from.
+        k: scaling parameter used to instantiate the provided template.
         plaquettes: The plaquettes to use to get the accurate positions of the observable qubits.
         orientation: Whether to get the observable qubits from
             the horizontal or vertical midline. Defaults to horizontal.
@@ -47,11 +49,11 @@ def observable_qubits_from_template(
         plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
 
     _indices = list(range(1, len(plaquettes) + 1))
-    template_plaquettes = template.instantiate(_indices)
+    template_plaquettes = template.instantiate(k, _indices)
     increments = template.get_increments()
 
     try:
-        midline_indices = template.get_midline_plaquettes(orientation)
+        midline_indices = template.get_midline_plaquettes(k, orientation)
     except TQECException as e:
         raise TQECException(
             "The template does not have a midline. "

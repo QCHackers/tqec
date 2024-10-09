@@ -47,7 +47,7 @@ def _expected_circuit() -> stim.Circuit:
 def test_generate_circuit_dict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
-    circuit = generate_circuit(one_by_one_template, Plaquettes({1: plaquette}))
+    circuit = generate_circuit(one_by_one_template, 2, Plaquettes({1: plaquette}))
     assert circuit.get_circuit() == _expected_circuit()
 
 
@@ -55,7 +55,7 @@ def test_generate_circuit_defaultdict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(
-        one_by_one_template, Plaquettes(defaultdict(lambda: plaquette))
+        one_by_one_template, 2, Plaquettes(defaultdict(lambda: plaquette))
     )
     assert circuit.get_circuit() == _expected_circuit()
 
@@ -64,13 +64,15 @@ def test_generate_circuit_dict_0_indexed(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     with pytest.raises(TQECException):
-        generate_circuit(one_by_one_template, Plaquettes({0: plaquette}))
+        generate_circuit(one_by_one_template, 2, Plaquettes({0: plaquette}))
 
 
 def test_generate_circuit_wrong_number_of_plaquettes(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     with pytest.raises(TQECException):
-        generate_circuit(one_by_one_template, Plaquettes({1: plaquette, 2: plaquette}))
+        generate_circuit(
+            one_by_one_template, 2, Plaquettes({1: plaquette, 2: plaquette})
+        )
     with pytest.raises(TQECException):
-        generate_circuit(one_by_one_template, Plaquettes({}))
+        generate_circuit(one_by_one_template, 2, Plaquettes({}))
