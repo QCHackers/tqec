@@ -8,6 +8,7 @@ import numpy
 import sinter
 
 from tqec import BlockGraph, Position3D, ZXGraph
+from tqec.compile.specs.library.css import CSS_SPEC_RULES
 from tqec.noise_models import NoiseModel
 from tqec.simulation.plotting.inset import plot_observable_as_inset
 from tqec.simulation.simulation import start_simulation_using_sinter
@@ -63,6 +64,7 @@ def main() -> None:
         range(1, 5),
         list(numpy.logspace(-5, -1, 10)),
         NoiseModel.uniform_depolarizing,
+        cube_specifications=CSS_SPEC_RULES,
         observables=observables,
         num_workers=16,
         max_shots=100_000_000,
