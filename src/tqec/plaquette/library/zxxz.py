@@ -97,4 +97,9 @@ H {sq}
     if data_qubits_measurement:
         circuit.append("M", dqs, [])
 
-    return Plaquette(qubits, ScheduledCircuit.from_circuit(circuit, i2q=i2q))
+    return Plaquette(
+        qubits,
+        ScheduledCircuit.from_circuit(
+            circuit, i2q=i2q, additional_deduplicable_instructions=frozenset({"H"})
+        ),
+    )
