@@ -1,0 +1,6 @@
+tqec.circuit.qubit.get\_final\_qubits
+=====================================
+
+.. currentmodule:: tqec.circuit.qubit
+
+.. autofunction:: get_final_qubits

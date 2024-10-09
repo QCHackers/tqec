@@ -1,0 +1,6 @@
+tqec.scale.round\_or\_fail
+==========================
+
+.. currentmodule:: tqec.scale
+
+.. autofunction:: round_or_fail

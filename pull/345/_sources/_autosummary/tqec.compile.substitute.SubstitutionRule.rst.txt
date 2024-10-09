@@ -1,0 +1,22 @@
+tqec.compile.substitute.SubstitutionRule
+========================================
+
+.. currentmodule:: tqec.compile.substitute
+
+.. autoclass:: SubstitutionRule
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SubstitutionRule.__init__
+   
+   
+
+   
+   
+   
