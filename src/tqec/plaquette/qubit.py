@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 
 from tqec.circuit.qubit import GridQubit
-from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
+from tqec.plaquette.enums import PlaquetteSide
 from tqec.templates.enums import TemplateOrientation
 
 
@@ -21,11 +21,6 @@ class PlaquetteQubits:
     @property
     def all_qubits(self) -> list[GridQubit]:
         return list(self)
-
-    def permute_data_qubits(self, permutation: ty.Sequence[int]) -> PlaquetteQubits:
-        return PlaquetteQubits(
-            [self.data_qubits[i] for i in permutation], self.syndrome_qubits
-        )
 
     def get_edge_qubits(
         self,
@@ -82,33 +77,5 @@ class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
         super().__init__(
             [GridQubit(-1, -1), GridQubit(1, -1), GridQubit(-1, 1), GridQubit(1, 1)],
-            [GridQubit(0, 0)],
-        )
-
-
-class RoundedPlaquetteQubits(PlaquetteQubits):
-    _POTENTIAL_DATA_QUBITS: ty.Final[list[GridQubit]] = [
-        GridQubit(-1, -1),
-        GridQubit(1, -1),
-        GridQubit(-1, 1),
-        GridQubit(1, 1),
-    ]
-
-    @staticmethod
-    def _get_qubits_on_side(side: PlaquetteSide) -> list[GridQubit]:
-        data_indices: tuple[int, int]
-        if side == PlaquetteSide.LEFT:
-            data_indices = (0, 2)
-        elif side == PlaquetteSide.RIGHT:
-            data_indices = (1, 3)
-        elif side == PlaquetteSide.UP:
-            data_indices = (0, 1)
-        else:  # if orientation == PlaquetteSide.DOWN:
-            data_indices = (2, 3)
-        return [RoundedPlaquetteQubits._POTENTIAL_DATA_QUBITS[i] for i in data_indices]
-
-    def __init__(self, orientation: PlaquetteOrientation):
-        super().__init__(
-            RoundedPlaquetteQubits._get_qubits_on_side(orientation.to_plaquette_side()),
             [GridQubit(0, 0)],
         )

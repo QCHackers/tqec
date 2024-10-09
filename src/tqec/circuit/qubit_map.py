@@ -36,6 +36,20 @@ class QubitMap:
     def items(self) -> Iterable[tuple[int, GridQubit]]:
         return self.i2q.items()
 
+    def filter_by_qubits(self, qubits_to_keep: Iterable[GridQubit]) -> QubitMap:
+        """Filter the qubit map to only keep qubits present in the provided
+        `qubits_to_keep`.
+
+        Args:
+            qubits_to_keep: the qubits to keep in the circuit.
+
+        Returns:
+            a copy of `self` for which the assertion
+            `set(return_value.qubits).issubset(qubits_to_keep)` is `True`.
+        """
+        kept_qubits = frozenset(qubits_to_keep)
+        return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
+
 
 def get_final_qubits(circuit: stim.Circuit) -> QubitMap:
     """Returns the existing qubits and their coordinates at the end of the

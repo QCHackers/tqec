@@ -1,32 +1,19 @@
+from functools import partial
 from collections import defaultdict
 from dataclasses import dataclass
 from enum import Flag, auto
-from typing import Literal, Protocol
+from typing import Protocol, Literal, cast
 
+from tqec.plaquette.library.css import make_css_surface_code_plaquette
+from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.compile.block import CompiledBlock
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import PlaquetteOrientation
+from tqec.plaquette.enums import (
+    PlaquetteOrientation,
+    ResetBasis,
+    MeasurementBasis,
+)
 from tqec.plaquette.library.empty import empty_square_plaquette
-from tqec.plaquette.library.initialisation import (
-    xx_initialisation_plaquette,
-    xxxx_initialisation_plaquette,
-    zz_initialisation_plaquette,
-    zzzz_initialisation_plaquette,
-)
-from tqec.plaquette.library.measurement import (
-    xx_measurement_plaquette,
-    xxxx_measurement_plaquette,
-    zz_measurement_plaquette,
-    zzzz_measurement_plaquette,
-)
-from tqec.plaquette.library.memory import (
-    xx_memory_plaquette,
-    xxxx_memory_plaquette,
-    zz_memory_plaquette,
-    zzzz_memory_plaquette,
-)
-from tqec.plaquette.library.pauli import MeasurementBasis, ResetBasis
-from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.scale import LinearFunction
 from tqec.computation.block_graph import BlockGraph, Cube, CubeType
 from tqec.templates.qubit import QubitTemplate
@@ -112,131 +99,60 @@ class SpecRule(Protocol):
         ...
 
 
-def _zxB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
+def _usual_block(
+    basis: Literal["X", "Z"], x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"]
+) -> CompiledBlock:
     reset_basis: ResetBasis = getattr(ResetBasis, basis)
     measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
+    factory = partial(
+        make_css_surface_code_plaquette,
+        x_boundary_orientation=x_boundary_orientation,
+    )
+    b1, b2 = ("X", "Z") if x_boundary_orientation == "VERTICAL" else ("Z", "X")
+    b1 = cast(Literal["X", "Z"], b1)
+    b2 = cast(Literal["X", "Z"], b2)
 
     initial_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: xx_initialisation_plaquette(
-                PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
+            6: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.UP),
+            7: factory(b2, reset_basis).project_on_boundary(PlaquetteOrientation.LEFT),
+            9: factory(b1, reset_basis),
+            10: factory(b2, reset_basis),
+            12: factory(b2, reset_basis).project_on_boundary(
+                PlaquetteOrientation.RIGHT
             ),
-            7: zz_initialisation_plaquette(
-                PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
-            ),
-            9: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-            10: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-            12: zz_initialisation_plaquette(
-                PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
-            ),
-            13: xx_initialisation_plaquette(
-                PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
-            ),
+            13: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.DOWN),
         }
     )
     repeating_plaquettes = RepeatedPlaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: xx_memory_plaquette(PlaquetteOrientation.UP),
-            7: zz_memory_plaquette(PlaquetteOrientation.LEFT),
-            9: xxxx_memory_plaquette(),
-            10: zzzz_memory_plaquette(),
-            12: zz_memory_plaquette(PlaquetteOrientation.RIGHT),
-            13: xx_memory_plaquette(PlaquetteOrientation.DOWN),
+            6: factory(b1).project_on_boundary(PlaquetteOrientation.UP),
+            7: factory(b2).project_on_boundary(PlaquetteOrientation.LEFT),
+            9: factory(b1),
+            10: factory(b2),
+            12: factory(b2).project_on_boundary(PlaquetteOrientation.RIGHT),
+            13: factory(b1).project_on_boundary(PlaquetteOrientation.DOWN),
         },
         _DEFAULT_BLOCK_REPETITIONS,
     )
     final_plaquettes = Plaquettes(
         defaultdict(empty_square_plaquette)
         | {
-            6: xx_measurement_plaquette(
-                PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
+            6: factory(b1, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.UP
             ),
-            7: zz_measurement_plaquette(
-                PlaquetteOrientation.LEFT,
-                data_qubit_measurement_basis=measurement_basis,
+            7: factory(b2, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.LEFT
             ),
-            9: xxxx_measurement_plaquette(
-                data_qubit_measurement_basis=measurement_basis
+            9: factory(b1, None, measurement_basis),
+            10: factory(b2, None, measurement_basis),
+            12: factory(b2, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.RIGHT
             ),
-            10: zzzz_measurement_plaquette(
-                data_qubit_measurement_basis=measurement_basis
-            ),
-            12: zz_measurement_plaquette(
-                PlaquetteOrientation.RIGHT,
-                data_qubit_measurement_basis=measurement_basis,
-            ),
-            13: xx_measurement_plaquette(
-                PlaquetteOrientation.DOWN,
-                data_qubit_measurement_basis=measurement_basis,
-            ),
-        }
-    )
-    return CompiledBlock(
-        template=QubitTemplate(),
-        layers=[initial_plaquettes, repeating_plaquettes, final_plaquettes],
-    )
-
-
-def _xzB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
-    reset_basis: ResetBasis = getattr(ResetBasis, basis)
-    measurement_basis: MeasurementBasis = getattr(MeasurementBasis, basis)
-
-    initial_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: zz_initialisation_plaquette(
-                PlaquetteOrientation.UP, data_qubit_reset_basis=reset_basis
-            ),
-            7: xx_initialisation_plaquette(
-                PlaquetteOrientation.LEFT, data_qubit_reset_basis=reset_basis
-            ),
-            9: zzzz_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-            10: xxxx_initialisation_plaquette(data_qubit_reset_basis=reset_basis),
-            12: xx_initialisation_plaquette(
-                PlaquetteOrientation.RIGHT, data_qubit_reset_basis=reset_basis
-            ),
-            13: zz_initialisation_plaquette(
-                PlaquetteOrientation.DOWN, data_qubit_reset_basis=reset_basis
-            ),
-        }
-    )
-    repeating_plaquettes = RepeatedPlaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: zz_memory_plaquette(PlaquetteOrientation.UP),
-            7: xx_memory_plaquette(PlaquetteOrientation.LEFT),
-            9: zzzz_memory_plaquette(),
-            10: xxxx_memory_plaquette(),
-            12: xx_memory_plaquette(PlaquetteOrientation.RIGHT),
-            13: zz_memory_plaquette(PlaquetteOrientation.DOWN),
-        },
-        _DEFAULT_BLOCK_REPETITIONS,
-    )
-    final_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: zz_measurement_plaquette(
-                PlaquetteOrientation.UP, data_qubit_measurement_basis=measurement_basis
-            ),
-            7: xx_measurement_plaquette(
-                PlaquetteOrientation.LEFT,
-                data_qubit_measurement_basis=measurement_basis,
-            ),
-            9: zzzz_measurement_plaquette(
-                data_qubit_measurement_basis=measurement_basis
-            ),
-            10: xxxx_measurement_plaquette(
-                data_qubit_measurement_basis=measurement_basis
-            ),
-            12: xx_measurement_plaquette(
-                PlaquetteOrientation.RIGHT,
-                data_qubit_measurement_basis=measurement_basis,
-            ),
-            13: zz_measurement_plaquette(
-                PlaquetteOrientation.DOWN,
-                data_qubit_measurement_basis=measurement_basis,
+            13: factory(b1, None, measurement_basis).project_on_boundary(
+                PlaquetteOrientation.DOWN
             ),
         }
     )
@@ -248,19 +164,15 @@ def _xzB_block(basis: Literal["X", "Z"]) -> CompiledBlock:
 
 def default_spec_rule(spec: CubeSpec) -> CompiledBlock:
     """Default rule for generating a `CompiledBlock` based on a `CubeSpec`."""
-    match spec.cube_type, spec.junction_arms:
-        case CubeType.ZXZ, _:
-            return _zxB_block("Z")
-        case CubeType.ZXX, _:
-            return _zxB_block("X")
-        case CubeType.XZZ, _:
-            return _xzB_block("Z")
-        case CubeType.XZX, _:
-            return _xzB_block("X")
-        case CubeType.ZZX | CubeType.XXZ, _arm_flags:
-            raise NotImplementedError("Spatial junctions are not implemented yet.")
-        case _:
-            raise TQECException(f"Unsupported cube spec: {spec}")
+    if spec.is_spatial_junction:
+        raise NotImplementedError("Spatial junctions are not implemented yet.")
+    cube_type = spec.cube_type.value
+    x_boundary_orientation = "VERTICAL" if cube_type[0] == "z" else "HORIZONTAL"
+    time_basis = cube_type[2].upper()
+    return _usual_block(
+        cast(Literal["X", "Z"], time_basis),
+        cast(Literal["VERTICAL", "HORIZONTAL"], x_boundary_orientation),
+    )
 
 
 DEFAULT_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(

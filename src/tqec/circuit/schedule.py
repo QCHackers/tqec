@@ -193,7 +193,9 @@ class ScheduledCircuit:
 
     @staticmethod
     def from_circuit(
-        circuit: stim.Circuit, schedule: Schedule | list[int] | int = 0
+        circuit: stim.Circuit,
+        schedule: Schedule | list[int] | int = 0,
+        i2q: QubitMap | None = None,
     ) -> ScheduledCircuit:
         """Build a :class:`ScheduledCircuit` instance from a circuit and a
         schedule.
@@ -206,6 +208,9 @@ class ScheduledCircuit:
                 in the provided `stim.Circuit` instance. If an integer is provided,
                 each moment of the provided `stim.Circuit` is scheduled sequentially,
                 starting by the provided schedule.
+            i2q: a map from indices to qubits. If None, this function will try to
+                extract the qubit coordinates from the `QUBIT_COORDS` instructions
+                found in the provided `circuit`. Else, the provided map will be used.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -235,14 +240,15 @@ class ScheduledCircuit:
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
-        # Here, we know for sure that no qubit is (re)defined in another place
-        # than the first moment, so we can directly get qubit coordinates from
-        # that moment.
-        final_qubits = get_final_qubits(moments[0].circuit)
+        if i2q is None:
+            # Here, we know for sure that no qubit is (re)defined in another place
+            # than the first moment, so we can directly get qubit coordinates from
+            # that moment.
+            i2q = get_final_qubits(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(moments, schedule, final_qubits)
+        return ScheduledCircuit(moments, schedule, i2q)
 
     @staticmethod
     def _check_input_circuit(circuit: stim.Circuit) -> None:
@@ -400,7 +406,11 @@ class ScheduledCircuit:
             self._moments = mapped_moments
             return self
         else:
-            return ScheduledCircuit(mapped_moments, self._schedule, mapped_final_qubits)
+            return ScheduledCircuit(
+                mapped_moments,
+                self._schedule,
+                mapped_final_qubits,
+            )
 
     def map_to_qubits(
         self, qubit_map: dict[GridQubit, GridQubit], inplace: bool = False
@@ -568,6 +578,42 @@ class ScheduledCircuit:
     @property
     def num_measurements(self) -> int:
         return sum(m.num_measurements for m in self._moments)
+
+    def filter_by_qubits(
+        self, qubits_to_keep: ty.Iterable[GridQubit]
+    ) -> ScheduledCircuit:
+        """Filter the circuit to keep only the instructions that are applied on the
+        provided qubits. If an instruction is applied on a qubit that is not in the
+        provided list, it is removed.
+
+        After filtering, the empty moments as well as the corresponding schedules are
+        removed.
+
+        Args:
+            qubits_to_keep: the qubits to keep in the circuit.
+
+        Returns:
+            a new instance of `ScheduledCircuit` with the filtered circuit and
+            schedules.
+        """
+        qubits_indices_to_keep = frozenset(
+            self.q2i[q] for q in qubits_to_keep if q in self.qubits
+        )
+        filtered_moments: list[Moment] = []
+        filtered_schedule: list[int] = []
+        for schedule, moment in self.scheduled_moments:
+            filtered_moment = moment.filter_by_qubits(qubits_indices_to_keep)
+            if filtered_moment.is_empty:
+                continue
+            filtered_moments.append(filtered_moment)
+            filtered_schedule.append(schedule)
+        qubit_map = self._qubit_map.filter_by_qubits(qubits_to_keep)
+        filtered_circuit = ScheduledCircuit(
+            filtered_moments, Schedule(filtered_schedule), qubit_map
+        )
+        # The qubit indices may not be contiguous anymore, so we need to remap them.
+        indices_map = {oi: ni for ni, oi in enumerate(qubit_map.indices)}
+        return filtered_circuit.map_qubit_indices(indices_map)
 
 
 class _ScheduledCircuits:
@@ -748,12 +794,10 @@ def remove_duplicate_instructions(
     return final_operations
 
 
-_MERGEABLE_INSTRUCTION_NAMES = frozenset(
-    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ", "R", "RX", "RY", "RZ"]
-)
-
-
-def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircuit:
+def merge_scheduled_circuits(
+    circuits: list[ScheduledCircuit],
+    mergeable_instructions: ty.Iterable[str] = (),
+) -> ScheduledCircuit:
     """Merge several ScheduledCircuit instances into one instance.
 
     This function takes several scheduled circuits as input and merge them,
@@ -762,6 +806,12 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
 
     KeyError: if any of the provided circuit contains a qubit target that is
             not defined by a `QUBIT_COORDS` instruction.
+
+    Args:
+        circuits: the circuits to merge.
+        mergeable_instructions: a list of instruction names that are considered
+            mergeable. Duplicate instructions with a name in this list will be
+            merged into a single instruction.
 
     Returns:
         a circuit representing the merged scheduled circuits given as input.
@@ -780,7 +830,8 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         # is considered mergeable, and can be removed if another operation in the list
         # is considered equal (and has the mergeable tag).
         deduplicated_instructions = remove_duplicate_instructions(
-            instructions, mergeable_instruction_names=_MERGEABLE_INSTRUCTION_NAMES
+            instructions,
+            mergeable_instruction_names=frozenset(mergeable_instructions),
         )
         circuit = stim.Circuit()
         for inst in deduplicated_instructions:
@@ -792,7 +843,11 @@ def merge_scheduled_circuits(circuits: list[ScheduledCircuit]) -> ScheduledCircu
         all_moments.append(Moment(circuit))
         all_schedules.append(schedule)
 
-    return ScheduledCircuit(all_moments, all_schedules, global_i2q)
+    return ScheduledCircuit(
+        all_moments,
+        all_schedules,
+        global_i2q,
+    )
 
 
 def relabel_circuits_qubit_indices(

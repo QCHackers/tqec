@@ -11,11 +11,17 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
+from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.scale import LinearFunction, round_or_fail
 
 
 class Plaquette:
-    def __init__(self, qubits: PlaquetteQubits, circuit: ScheduledCircuit) -> None:
+    def __init__(
+        self,
+        qubits: PlaquetteQubits,
+        circuit: ScheduledCircuit,
+        mergeable_instructions: typing.Iterable[str] = (),
+    ) -> None:
         """Represents a QEC plaquette.
 
         This class stores qubits in the plaquette local coordinate system and a
@@ -30,6 +36,9 @@ class Plaquette:
                 plaquette coordinate system.
             circuit: scheduled quantum circuit implementing the computation that
                 the plaquette should represent.
+            mergeable_instructions: a set of instructions that can
+                be merged. This is useful when merging several plaquettes'
+                circuits together to remove duplicate instructions.
 
         Raises:
             TQECException: if the provided circuit uses qubits not listed in
@@ -45,6 +54,7 @@ class Plaquette:
             )
         self._qubits = qubits
         self._circuit = circuit
+        self._mergeable_instructions = frozenset(mergeable_instructions)
 
     @property
     def origin(self) -> Position2D:
@@ -57,6 +67,43 @@ class Plaquette:
     @property
     def circuit(self) -> ScheduledCircuit:
         return self._circuit
+
+    @property
+    def mergeable_instructions(self) -> frozenset[str]:
+        return self._mergeable_instructions
+
+    def project_on_boundary(
+        self, plaquette_orientation: PlaquetteOrientation
+    ) -> Plaquette:
+        """Project the plaquette on boundary and return a new plaquette with the
+        remaining qubits and circuit.
+
+        This method is useful for deriving a boundary plaquette from a integral
+        plaquette.
+
+        Args:
+            plaquette_orientation: the orientation of the plaquette after the
+                projection.
+
+        Returns:
+            A new plaquette with projected qubits and circuit. The qubits are
+            updated to only keep the qubits on the side complementary to the
+            provided orientation. The circuit is also updated to only use the
+            kept qubits and empty moments with the corresponding schedules are
+            removed.
+        """
+        kept_data_qubits = self.qubits.get_qubits_on_side(
+            plaquette_orientation.to_plaquette_side()
+        )
+        new_plaquette_qubits = PlaquetteQubits(
+            kept_data_qubits, self.qubits.syndrome_qubits
+        )
+        new_scheduled_circuit = self.circuit.filter_by_qubits(
+            new_plaquette_qubits.all_qubits
+        )
+        return Plaquette(
+            new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
+        )
 
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
