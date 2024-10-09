@@ -560,7 +560,7 @@ def _match_by_disjoint_cover(
     # and the temporary list created above should be updated.
     for i in sorted(right_reduced_indices_to_remove, reverse=True):
         right_boundary_stabilizers.pop(i)
-        right_flows.remove_destruction(right_reduced_indices_to_remove[i])
+        right_flows.remove_destruction(right_boundary_indices_map[i])
 
     # Return all the detectors that have been found.
     return forward_detectors + backward_detectors
