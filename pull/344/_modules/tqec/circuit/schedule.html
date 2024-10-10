@@ -119,7 +119,7 @@
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.moment</span> <span class="kn">import</span> <span class="n">Moment</span><span class="p">,</span> <span class="n">iter_stim_circuit_without_repeat_by_moments</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
-<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span><span class="p">,</span> <span class="n">get_final_qubits</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span><span class="p">,</span> <span class="n">get_qubit_map</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span><span class="p">,</span> <span class="n">TQECWarning</span>
 
 
@@ -338,7 +338,7 @@
             <span class="c1"># Here, we know for sure that no qubit is (re)defined in another place</span>
             <span class="c1"># than the first moment, so we can directly get qubit coordinates from</span>
             <span class="c1"># that moment.</span>
-            <span class="n">i2q</span> <span class="o">=</span> <span class="n">get_final_qubits</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>
+            <span class="n">i2q</span> <span class="o">=</span> <span class="n">get_qubit_map</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>
         <span class="c1"># And because we want the cleanest possible moments, we can remove the</span>
         <span class="c1"># `QUBIT_COORDS` instructions from the first moment.</span>
         <span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_all_instructions_inplace</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">]))</span>

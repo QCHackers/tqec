@@ -14,7 +14,7 @@ tqec.circuit.qubit\_map
    .. autosummary::
       :toctree:
    
-      get_final_qubits
+      get_qubit_map
    
    
 

@@ -1,6 +1,0 @@
-tqec.circuit.qubit\_map.get\_final\_qubits
-==========================================
-
-.. currentmodule:: tqec.circuit.qubit_map
-
-.. autofunction:: get_final_qubits
