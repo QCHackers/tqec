@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import typing as ty
 from copy import deepcopy
 from dataclasses import dataclass
+from typing import Iterator, Mapping
 
 import numpy
 import stim
@@ -118,7 +118,7 @@ def match_detectors_from_flows_shallow(
 
 def match_detectors_within_fragment(
     flows: FragmentFlows | FragmentLoopFlows,
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
     """Match all the detectors that can be resolved without considering
     neighbouring fragments.
@@ -158,7 +158,7 @@ def match_detectors_within_fragment(
 
 def _match_non_propagating_non_trivial_flows_inline(
     boundary_stabilizers: list[BoundaryStabilizer],
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
     """Match all the detectors that can be trivially resolved and remove the
     matched boundary stabilizers from the provided list.
@@ -225,7 +225,7 @@ def _match_non_propagating_non_trivial_flows_inline(
 
 def _find_non_propagating_non_trivial_flows(
     boundary_stabilizers: list[BoundaryStabilizer],
-) -> ty.Iterator[int]:
+) -> Iterator[int]:
     """Find all the boundary stabilizers that do not have any anti-commuting
     collapsing operations and that are fully collapsed by the commuting
     operations.
@@ -250,7 +250,7 @@ def _find_non_propagating_non_trivial_flows(
 def match_boundary_stabilizers(
     left_flows: FragmentFlows | FragmentLoopFlows,
     right_flows: FragmentFlows | FragmentLoopFlows,
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
     perform_sanity_check: bool = True,
 ) -> list[MatchedDetector]:
     """Match detectors using the boundary stabilizers between the two given
@@ -347,7 +347,7 @@ def match_boundary_stabilizers(
 def _match_commute_stabilizers(
     left_flows: FragmentFlows | FragmentLoopFlows,
     right_flows: FragmentFlows | FragmentLoopFlows,
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
     """Take stabilizers from two contiguous fragments and try to match them.
 
@@ -420,7 +420,7 @@ def _match_commute_stabilizers(
 def _match_boundary_stabilizers_by_disjoint_cover(
     target_stabilizers: list[BoundaryStabilizer],
     covering_stabilizers: list[BoundaryStabilizer],
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
     target_is_creation: bool,
 ) -> tuple[list[MatchedDetector], list[int]]:
     """Try to match stabilizers by finding a cover.
@@ -491,7 +491,7 @@ def _match_boundary_stabilizers_by_disjoint_cover(
 def _match_by_disjoint_cover(
     left_flows: FragmentFlows | FragmentLoopFlows,
     right_flows: FragmentFlows | FragmentLoopFlows,
-    qubit_coordinates: dict[int, tuple[float, ...]],
+    qubit_coordinates: Mapping[int, tuple[float, ...]],
 ) -> list[MatchedDetector]:
     """Try to match stabilizers by finding a cover.
 
