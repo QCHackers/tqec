@@ -1,0 +1,23 @@
+tqec.noise\_models.noise\_model.NoiseRule
+=========================================
+
+.. currentmodule:: tqec.noise_models.noise_model
+
+.. autoclass:: NoiseRule
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NoiseRule.__init__
+      ~NoiseRule.append_noisy_version_of
+   
+   
+
+   
+   
+   
