@@ -112,7 +112,11 @@ class UniqueSubTemplates:
 
     @property
     def manhattan_radius(self) -> int:
-        return next(iter(self.subtemplates.values())).shape[0] // 2
+        any_subtemplate = next(iter(self.subtemplates.values()))
+        height: int = any_subtemplate.shape[0]
+        # height should be `2 * manhattan_radius + 1` so `height // 2` is
+        # the Manhattan radius.
+        return height // 2
 
 
 def get_spatially_distinct_subtemplates(
