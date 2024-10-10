@@ -11,9 +11,11 @@ import typing
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+import stim
 from typing_extensions import override
 
 from tqec.circuit.qubit import GridQubit
+from tqec.circuit.qubit_map import QubitMap
 from tqec.exceptions import TQECException
 from tqec.interval import Interval, Rplus_interval
 from tqec.position import Displacement
@@ -165,3 +167,42 @@ class RepeatedMeasurement(AbstractMeasurement):
         return [
             Measurement(self.qubit, offset) for offset in self.offsets.iter_integers()
         ]
+
+
+_SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
+    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ"]
+)
+_MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
+    ["MXX", "MYY", "MZZ", "MPP"]
+)
+
+
+def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
+    qubit_map = QubitMap.from_circuit(circuit)
+    num_measurements: dict[GridQubit, int] = {}
+    for instruction in circuit:
+        if isinstance(instruction, stim.CircuitRepeatBlock):
+            raise TQECException(
+                "Found a REPEAT block in get_measurements_from_circuit. This "
+                "is not supported."
+            )
+        if instruction.name in _MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            raise TQECException(
+                f"Got a multi-qubit measurement instruction ({instruction.name}) "
+                "but multi-qubit measurements are not supported yet."
+            )
+        if instruction.name in _SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            for (target,) in instruction.target_groups():
+                if not target.is_qubit_target:
+                    raise TQECException(
+                        "Found a measurement instruction with a target that is "
+                        f"not a qubit target: {instruction}."
+                    )
+                qi: int = typing.cast(int, target.qubit_value)
+                qubit = qubit_map.i2q[qi]
+                num_measurements[qubit] = num_measurements.get(qubit, 0) + 1
+    return [
+        Measurement(q, -i)
+        for q, num_measurement in num_measurements.items()
+        for i in range(1, num_measurement + 1)
+    ]
