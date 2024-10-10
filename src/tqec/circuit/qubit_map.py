@@ -85,7 +85,7 @@ class QubitMap:
         return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
 
 
-def get_final_qubits(circuit: stim.Circuit) -> QubitMap:
+def get_qubit_map(circuit: stim.Circuit) -> QubitMap:
     """Returns the existing qubits and their coordinates at the end of the
     provided `circuit`.
 

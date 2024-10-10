@@ -4,7 +4,7 @@ import pytest
 import stim
 
 from tqec.circuit.qubit import GridQubit
-from tqec.circuit.qubit_map import QubitMap, get_final_qubits
+from tqec.circuit.qubit_map import QubitMap, get_qubit_map
 from tqec.exceptions import TQECException
 
 
@@ -67,19 +67,19 @@ def test_qubit_map_filter_by_qubits() -> None:
 
 
 def test_get_final_qubits() -> None:
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0) 0")) == QubitMap(
+    assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0) 0")) == QubitMap(
         {0: GridQubit(0, 0)}
     )
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0.5) 0")) == QubitMap(
+    assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0.5) 0")) == QubitMap(
         {0: GridQubit(0, 0.5)}
     )
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0) 1")) == QubitMap(
+    assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0) 1")) == QubitMap(
         {1: GridQubit(0, 0)}
     )
     # assert get_final_qubits(
     #     stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 4) 0")
     # ) == {0: GridQubit(1, 4)}
-    assert get_final_qubits(
+    assert get_qubit_map(
         stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 4) 1")
     ) == QubitMap({0: GridQubit(0, 0), 1: GridQubit(1, 4)})
 
@@ -90,4 +90,4 @@ def test_get_final_qubits() -> None:
             f"Found {0} -> [0.0, 0.0, 1.0] defined on 3 spatial dimensions."
         ),
     ):
-        get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0, 1) 0"))
+        get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0, 1) 0"))

@@ -36,7 +36,7 @@ import stim
 
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit
-from tqec.circuit.qubit_map import QubitMap, get_final_qubits
+from tqec.circuit.qubit_map import QubitMap, get_qubit_map
 from tqec.exceptions import TQECException, TQECWarning
 
 
@@ -244,7 +244,7 @@ class ScheduledCircuit:
             # Here, we know for sure that no qubit is (re)defined in another place
             # than the first moment, so we can directly get qubit coordinates from
             # that moment.
-            i2q = get_final_qubits(moments[0].circuit)
+            i2q = get_qubit_map(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
