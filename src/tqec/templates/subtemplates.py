@@ -60,7 +60,6 @@ class UniqueSubTemplates:
     This dataclass efficiently stores all the sub-templates of a given
     `Template` instantiation and of a given `radius`.
 
-
     Attributes:
         subtemplate_indices: an array that has the same shape as the
             original `Template` instantiation but stores sub-template
@@ -112,7 +111,11 @@ class UniqueSubTemplates:
 
     @property
     def manhattan_radius(self) -> int:
-        return next(iter(self.subtemplates.values())).shape[0] // 2
+        any_subtemplate = next(iter(self.subtemplates.values()))
+        height: int = any_subtemplate.shape[0]
+        # height should be `2 * manhattan_radius + 1` so `height // 2` is
+        # the Manhattan radius.
+        return height // 2
 
 
 def get_spatially_distinct_subtemplates(
@@ -124,11 +127,52 @@ def get_spatially_distinct_subtemplates(
     provided manhattan radius.
 
     Note:
-        This method will likely be inefficient for large templates (i.e., large
-        values of `k`) or for large Manhattan radiuses, both in terms of memory
-        used and computation time.
+        This function will likely be inefficient for large templates (i.e.,
+        large values of `k`) or for large Manhattan radiuses, both in terms of
+        memory used and computation time.
+
+        Right now, with
+
+        - `n` the width of the provided `instantiation` array,
+        - `m` the height of the provided `instantiation` array,
+        - `r` the provided Manhattan radius,
+
+        it takes of the order of `n*m*(2*r+1)²` memory and has to sort an
+        array of `n*m` elements of size `(2*r+1)²` in lexicographic order so
+        require, in the worst case, `O(n*m*log(n*m)*(2*r+1)²)` runtime.
+
         Subclasses are invited to reimplement that method using a specialized
         algorithm (or hard-coded values) to speed things up.
+
+        Some timings obtained on an AMD Ryzen 9 5950X:
+
+        ```
+        k = 10
+        ----------------------------------------------------------------------
+        radius   =         0 |         1 |         2 |         3 |         4
+        time (s) =  0.000776 |  0.000992 |   0.00151 |   0.00227 |   0.00321
+        ----------------------------------------------------------------------
+        k = 20
+        ----------------------------------------------------------------------
+        radius   =         0 |         1 |         2 |         3 |         4
+        time (s) =   0.00202 |   0.00356 |   0.00672 |    0.0116 |    0.0173
+        ----------------------------------------------------------------------
+        k = 40
+        ----------------------------------------------------------------------
+        radius   =         0 |         1 |         2 |         3 |         4
+        time (s) =   0.00778 |    0.0156 |    0.0326 |    0.0574 |    0.0889
+        ----------------------------------------------------------------------
+        k = 80
+        ----------------------------------------------------------------------
+        radius   =         0 |         1 |         2 |         3 |         4
+        time (s) =    0.0318 |    0.0706 |     0.147 |      0.27 |     0.426
+        ----------------------------------------------------------------------
+        k = 160
+        ----------------------------------------------------------------------
+        radius   =         0 |         1 |         2 |         3 |         4
+        time (s) =     0.139 |     0.309 |     0.651 |      1.25 |      1.98
+        ----------------------------------------------------------------------
+        ```
 
     Args:
         instantiation: a 2-dimensional array representing the instantiated
@@ -169,6 +213,9 @@ def get_spatially_distinct_subtemplates(
                     j - manhattan_radius : j + manhattan_radius + 1,
                 ]
             )
+    # Shape of the array provided to numpy.unique:
+    #    (x * y, 2 * manhattan_radius + 1, 2 * manhattan_radius + 1)
+    # Calling numpy.unique
     unique_situations, inverse_indices = numpy.unique(
         all_possible_subarrays, axis=0, return_inverse=True
     )
