@@ -28,10 +28,20 @@ class Detector:
     def to_instruction(
         self, measurement_records_map: MeasurementRecordsMap
     ) -> stim.CircuitInstruction:
+        measurement_records: list[stim.GateTarget] = []
+        for measurement in self.measurements:
+            if measurement.qubit not in measurement_records_map:
+                raise TQECException(
+                    f"Trying to get measurement record for {measurement.qubit} "
+                    "but qubit is not in the measurement record map."
+                )
+            measurement_records.append(
+                stim.target_rec(
+                    measurement_records_map[measurement.qubit][measurement.offset]
+                )
+            )
         return stim.CircuitInstruction(
-            "DETECTOR",
-            [measurement_records_map[m.qubit][m.offset] for m in self.measurements],
-            self.coordinates,
+            "DETECTOR", measurement_records, self.coordinates
         )
 
     def offset_spatially_by(self, x: int, y: int) -> Detector:
