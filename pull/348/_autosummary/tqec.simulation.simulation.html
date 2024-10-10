@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.simulation.plotting.inset.plot_observable_as_inset &mdash; TQEC  documentation</title>
+  <title>tqec.simulation.simulation &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.simulation.simulation" href="tqec.simulation.simulation.html" />
-    <link rel="prev" title="tqec.simulation.plotting.inset.add_inset_axes3d" href="tqec.simulation.plotting.inset.add_inset_axes3d.html" /> 
+    <link rel="next" title="tqec.simulation.simulation.start_simulation_using_sinter" href="tqec.simulation.simulation.start_simulation_using_sinter.html" />
+    <link rel="prev" title="tqec.simulation.plotting.inset.plot_observable_as_inset" href="tqec.simulation.plotting.inset.plot_observable_as_inset.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -68,11 +68,11 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.simulation.html">tqec.simulation</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tqec.simulation.generation.html">tqec.simulation.generation</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.simulation.plotting.html">tqec.simulation.plotting</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="tqec.simulation.plotting.inset.html">tqec.simulation.plotting.inset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.simulation.plotting.html">tqec.simulation.plotting</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.simulation.simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.simulation.simulation.start_simulation_using_sinter.html">tqec.simulation.simulation.start_simulation_using_sinter</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.simulation.simulation.html">tqec.simulation.simulation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
@@ -96,11 +96,9 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.simulation.html">tqec.simulation</a></li>
-          <li class="breadcrumb-item"><a href="tqec.simulation.plotting.html">tqec.simulation.plotting</a></li>
-          <li class="breadcrumb-item"><a href="tqec.simulation.plotting.inset.html">tqec.simulation.plotting.inset</a></li>
-      <li class="breadcrumb-item active">tqec.simulation.plotting.inset.plot_observable_as_inset</li>
+      <li class="breadcrumb-item active">tqec.simulation.simulation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.simulation.plotting.inset.plot_observable_as_inset.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.simulation.simulation.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -108,36 +106,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-simulation-plotting-inset-plot-observable-as-inset">
-<h1>tqec.simulation.plotting.inset.plot_observable_as_inset<a class="headerlink" href="#tqec-simulation-plotting-inset-plot-observable-as-inset" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tqec.simulation.plotting.inset.plot_observable_as_inset">
-<span class="sig-name descname"><span class="pre">plot_observable_as_inset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.0,</span> <span class="pre">0.5,</span> <span class="pre">0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/simulation/plotting/inset.html#plot_observable_as_inset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.simulation.plotting.inset.plot_observable_as_inset" title="Link to this definition"></a></dt>
-<dd><p>Plot the provided observable as an inset in the provided ax.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ax_target</strong> – the ax to insert an inset in to plot the correlation surface.</p></li>
-<li><p><strong>bounds</strong> – (x0, y0, width, height) where (x0, y0) is the position of the
-lower-left corner of the inset. All coordinates are normalized to
-[0, 1] meaning that an input of (0, 0, 1, 1) will span the whole
-<cite>ax_target</cite>.</p></li>
-<li><p><strong>zx_graph</strong> – ZX graph used.</p></li>
-<li><p><strong>correlation_surface</strong> – correlation surface over the provided <cite>zx_graph</cite> to
-draw.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="module-tqec.simulation.simulation">
+<span id="tqec-simulation-simulation"></span><h1>tqec.simulation.simulation<a class="headerlink" href="#module-tqec.simulation.simulation" title="Link to this heading"></a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.simulation.simulation.start_simulation_using_sinter.html#tqec.simulation.simulation.start_simulation_using_sinter" title="tqec.simulation.simulation.start_simulation_using_sinter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_simulation_using_sinter</span></code></a>(block_graph, ...)</p></td>
+<td><p>Helper to run <cite>stim</cite> simulations using <cite>sinter</cite>.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.simulation.plotting.inset.add_inset_axes3d.html" class="btn btn-neutral float-left" title="tqec.simulation.plotting.inset.add_inset_axes3d" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.simulation.simulation.html" class="btn btn-neutral float-right" title="tqec.simulation.simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.simulation.plotting.inset.plot_observable_as_inset.html" class="btn btn-neutral float-left" title="tqec.simulation.plotting.inset.plot_observable_as_inset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.simulation.simulation.start_simulation_using_sinter.html" class="btn btn-neutral float-right" title="tqec.simulation.simulation.start_simulation_using_sinter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
