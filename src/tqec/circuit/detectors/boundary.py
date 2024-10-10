@@ -207,7 +207,9 @@ class BoundaryStabilizer:
         measurement_coordinates = [
             qubit_coordinates[source] for source in self.source_qubits
         ]
-        return tuple(numpy.mean(measurement_coordinates, axis=0))
+        # Avoid returning numpy.float64 type returned by numpy.mean by
+        # explicitly calling float() on it.
+        return tuple(float(c) for c in numpy.mean(measurement_coordinates, axis=0))
 
     def with_measurement_offset(self, offset: int) -> BoundaryStabilizer:
         return BoundaryStabilizer(
