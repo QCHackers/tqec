@@ -1,6 +1,0 @@
-tqec.computation.collada.write\_block\_graph\_to\_dae\_file
-===========================================================
-
-.. currentmodule:: tqec.computation.collada
-
-.. autofunction:: write_block_graph_to_dae_file

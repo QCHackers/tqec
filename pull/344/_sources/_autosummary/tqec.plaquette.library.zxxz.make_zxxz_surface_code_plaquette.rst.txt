@@ -1,6 +1,0 @@
-tqec.plaquette.library.zxxz.make\_zxxz\_surface\_code\_plaquette
-================================================================
-
-.. currentmodule:: tqec.plaquette.library.zxxz
-
-.. autofunction:: make_zxxz_surface_code_plaquette
