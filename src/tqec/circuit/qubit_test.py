@@ -1,16 +1,9 @@
-import re
 from fractions import Fraction
 
 import pytest
 import stim
 
-from tqec.circuit.qubit import (
-    GridQubit,
-    count_qubit_accesses,
-    get_final_qubits,
-    get_used_qubit_indices,
-)
-from tqec.exceptions import TQECException
+from tqec.circuit.qubit import GridQubit, count_qubit_accesses, get_used_qubit_indices
 from tqec.position import Displacement, Position2D
 
 
@@ -109,30 +102,3 @@ def test_used_qubit_indices() -> None:
     assert get_used_qubit_indices(
         stim.Circuit("REPEAT 34{\nH 0 1 2 3\nTICK\nH 0 1 2 3\n}")
     ) == frozenset(range(4))
-
-
-def test_get_final_qubits() -> None:
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0) 0")) == {
-        0: GridQubit(0, 0)
-    }
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0.5) 0")) == {
-        0: GridQubit(0, 0.5)
-    }
-    assert get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0) 1")) == {
-        1: GridQubit(0, 0)
-    }
-    # assert get_final_qubits(
-    #     stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 4) 0")
-    # ) == {0: GridQubit(1, 4)}
-    assert get_final_qubits(
-        stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 4) 1")
-    ) == {0: GridQubit(0, 0), 1: GridQubit(1, 4)}
-
-    with pytest.raises(
-        TQECException,
-        match=re.escape(
-            "Qubits should be defined on exactly 2 spatial dimensions. "
-            f"Found {0} -> [0.0, 0.0, 1.0] defined on 3 spatial dimensions."
-        ),
-    ):
-        get_final_qubits(stim.Circuit("QUBIT_COORDS(0, 0, 1) 0"))
