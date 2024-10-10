@@ -169,10 +169,10 @@ class RepeatedMeasurement(AbstractMeasurement):
         ]
 
 
-_SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
+SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
     ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ"]
 )
-_MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
+MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
     ["MXX", "MYY", "MZZ", "MPP"]
 )
 
@@ -186,12 +186,12 @@ def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
                 "Found a REPEAT block in get_measurements_from_circuit. This "
                 "is not supported."
             )
-        if instruction.name in _MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+        if instruction.name in MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
             raise TQECException(
                 f"Got a multi-qubit measurement instruction ({instruction.name}) "
                 "but multi-qubit measurements are not supported yet."
             )
-        if instruction.name in _SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+        if instruction.name in SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
             for (target,) in instruction.target_groups():
                 if not target.is_qubit_target:
                     raise TQECException(
