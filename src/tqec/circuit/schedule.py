@@ -551,11 +551,6 @@ class ScheduledCircuit:
             # operations overlap.
             self._moments[moment_index] += moment
 
-    @property
-    def q2i(self) -> dict[GridQubit, int]:
-        """Return the map from qubits used in `self` their index."""
-        return {q: i for i, q in self._qubit_map.items()}
-
     def append_observable(
         self, index: int, targets: ty.Sequence[stim.GateTarget]
     ) -> None:
@@ -594,7 +589,7 @@ class ScheduledCircuit:
             schedules.
         """
         qubits_indices_to_keep = frozenset(
-            self.q2i[q] for q in qubits_to_keep if q in self.qubits
+            self._qubit_map.q2i[q] for q in qubits_to_keep if q in self.qubits
         )
         filtered_moments: list[Moment] = []
         filtered_schedule: list[int] = []
@@ -611,6 +606,10 @@ class ScheduledCircuit:
         # The qubit indices may not be contiguous anymore, so we need to remap them.
         indices_map = {oi: ni for ni, oi in enumerate(qubit_map.indices)}
         return filtered_circuit.map_qubit_indices(indices_map)
+
+    @property
+    def qubit_map(self) -> QubitMap:
+        return self._qubit_map
 
 
 class _ScheduledCircuits:
@@ -884,8 +883,8 @@ def relabel_circuits_qubit_indices(
     """
     # First, get a global qubit index map.
     needed_qubits = frozenset.union(*[c.qubits for c in circuits])
-    qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
-    q2i = qubit_map.q2i
+    global_qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
+    global_q2i = global_qubit_map.q2i
     # Then, get the remapped circuits. Note that map_qubit_indices should
     # have approximately the same runtime cost whatever the value of inplace
     # so we ask for a new instance to avoid keeping a reference to the given
@@ -893,9 +892,9 @@ def relabel_circuits_qubit_indices(
     relabeled_circuits: list[ScheduledCircuit] = []
     for circuit in circuits:
         local_indices_to_global_indices = {
-            local_index: q2i[q] for q, local_index in circuit.q2i.items()
+            local_index: global_q2i[q] for local_index, q in circuit.qubit_map.items()
         }
         relabeled_circuits.append(
             circuit.map_qubit_indices(local_indices_to_global_indices, inplace=False)
         )
-    return relabeled_circuits, qubit_map
+    return relabeled_circuits, global_qubit_map
