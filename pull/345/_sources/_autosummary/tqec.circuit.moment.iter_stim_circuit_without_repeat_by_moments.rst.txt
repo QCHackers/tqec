@@ -1,6 +1,0 @@
-tqec.circuit.moment.iter\_stim\_circuit\_without\_repeat\_by\_moments
-=====================================================================
-
-.. currentmodule:: tqec.circuit.moment
-
-.. autofunction:: iter_stim_circuit_without_repeat_by_moments

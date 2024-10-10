@@ -19,6 +19,7 @@ tqec.plaquette.plaquette
       :toctree:
    
       Plaquette
+      PlaquetteBuilder
       Plaquettes
       RepeatedPlaquettes
    

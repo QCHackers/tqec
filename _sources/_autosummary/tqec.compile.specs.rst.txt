@@ -9,25 +9,9 @@ tqec.compile.specs
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-   
-      default_spec_rule
-   
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-   
-      CubeSpec
-      JunctionArms
-      SpecRule
    
    
 
@@ -36,4 +20,17 @@ tqec.compile.specs
    
 
 
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   base
+
+   enums
+
+   library
 

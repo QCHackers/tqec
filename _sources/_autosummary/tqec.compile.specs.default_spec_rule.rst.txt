@@ -1,6 +1,0 @@
-tqec.compile.specs.default\_spec\_rule
-======================================
-
-.. currentmodule:: tqec.compile.specs
-
-.. autofunction:: default_spec_rule
