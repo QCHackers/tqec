@@ -82,7 +82,7 @@ class DetectorDatabaseKey:
     def __hash__(self) -> int:
         return hash(
             (
-                tuple(st.shape() for st in self.subtemplates),
+                tuple(st.shape for st in self.subtemplates),
                 tuple(_NUMPY_ARRAY_HASHER(st.tobytes()) for st in self.subtemplates),
                 tuple(self.plaquettes_by_timestep),
             )
