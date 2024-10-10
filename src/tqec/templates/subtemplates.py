@@ -60,7 +60,6 @@ class UniqueSubTemplates:
     This dataclass efficiently stores all the sub-templates of a given
     `Template` instantiation and of a given `radius`.
 
-
     Attributes:
         subtemplate_indices: an array that has the same shape as the
             original `Template` instantiation but stores sub-template
@@ -128,9 +127,20 @@ def get_spatially_distinct_subtemplates(
     provided manhattan radius.
 
     Note:
-        This method will likely be inefficient for large templates (i.e., large
-        values of `k`) or for large Manhattan radiuses, both in terms of memory
-        used and computation time.
+        This function will likely be inefficient for large templates (i.e.,
+        large values of `k`) or for large Manhattan radiuses, both in terms of
+        memory used and computation time.
+
+        Right now, with
+
+        - `n` the width of the provided `instantiation` array,
+        - `m` the height of the provided `instantiation` array,
+        - `r` the provided Manhattan radius,
+
+        it takes of the order of `n*m*(2*r+1)²` memory and has to sort an
+        array of `n*m` elements of size `(2*r+1)²` in lexicographic order so
+        require, in the worst case, `O(n*m*log(n*m)*(2*r+1)²)` runtime.
+
         Subclasses are invited to reimplement that method using a specialized
         algorithm (or hard-coded values) to speed things up.
 
@@ -173,6 +183,9 @@ def get_spatially_distinct_subtemplates(
                     j - manhattan_radius : j + manhattan_radius + 1,
                 ]
             )
+    # Shape of the array provided to numpy.unique:
+    #    (x * y, 2 * manhattan_radius + 1, 2 * manhattan_radius + 1)
+    # Calling numpy.unique
     unique_situations, inverse_indices = numpy.unique(
         all_possible_subarrays, axis=0, return_inverse=True
     )
