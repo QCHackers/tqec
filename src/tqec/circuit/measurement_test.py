@@ -1,7 +1,14 @@
 import pytest
+import stim
 
-from tqec.circuit.measurement import Measurement, RepeatedMeasurement
+from tqec.circuit.measurement import (
+    Measurement,
+    RepeatedMeasurement,
+    get_measurements_from_circuit,
+)
 from tqec.circuit.qubit import GridQubit
+from tqec.circuit.qubit_map import QubitMap
+from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.interval import Interval
 from tqec.position import Displacement
@@ -121,3 +128,21 @@ def test_repeated_measurement_measurements() -> None:
     assert RepeatedMeasurement(qubit, interval).measurements() == [
         Measurement(qubit, i) for i in range(-10, 0)
     ]
+
+
+def test_get_measurements_from_circuit() -> None:
+    circuit = ScheduledCircuit.from_circuit(
+        stim.Circuit("H 0\nM 1 2\nTICK\nMX 2 3"),
+        i2q=QubitMap({i: GridQubit(i, i) for i in range(4)}),
+    )
+    measurements = get_measurements_from_circuit(
+        circuit.get_circuit(include_qubit_coords=True)
+    )
+    assert frozenset(measurements) == frozenset(
+        [
+            Measurement(GridQubit(1, 1), -1),
+            Measurement(GridQubit(2, 2), -2),
+            Measurement(GridQubit(2, 2), -1),
+            Measurement(GridQubit(3, 3), -1),
+        ]
+    )

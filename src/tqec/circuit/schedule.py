@@ -266,10 +266,7 @@ class ScheduledCircuit:
 
     def get_qubit_coords_definition_preamble(self) -> stim.Circuit:
         """Get a circuit with only `QUBIT_COORDS` instructions."""
-        ret = stim.Circuit()
-        for qi, qubit in sorted(self._qubit_map.items(), key=lambda t: t[0]):
-            ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
-        return ret
+        return self._qubit_map.to_circuit()
 
     def get_circuit(self, include_qubit_coords: bool = True) -> stim.Circuit:
         """Build and return the `stim.Circuit` instance represented by self.
