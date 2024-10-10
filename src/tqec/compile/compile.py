@@ -1,17 +1,13 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Mapping
 
 import stim
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.observables import inplace_add_observables
-from tqec.compile.specs import DEFAULT_SPEC_RULES, CubeSpec, SpecRule
-from tqec.compile.substitute import (
-    DEFAULT_SUBSTITUTION_RULES,
-    SubstitutionKey,
-    SubstitutionRule,
-)
+from tqec.compile.specs import CubeSpec, SpecRule
+from tqec.compile.substitute import SubstitutionKey, SubstitutionRule
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
@@ -154,30 +150,29 @@ class CompiledGraph:
 
 def compile_block_graph(
     block_graph: BlockGraph,
+    spec_rules: Mapping[CubeSpec, SpecRule],
+    substitute_rules: Mapping[SubstitutionKey, SubstitutionRule],
     observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
-    custom_spec_rules: dict[CubeSpec, SpecRule] | None = None,
-    custom_substitute_rules: dict[SubstitutionKey, SubstitutionRule] | None = None,
 ) -> CompiledGraph:
     """Compile a block graph.
 
     Args:
         block_graph: The block graph to compile.
+        spec_rules: Custom specification rules for the cube specs. This is a dict
+            mapping the cube specs to the corresponding spec rules. Spec rules
+            determine how to compile a cube spec into a compiled block, i.e
+            which template to use and the specific plaquettes to use in the
+            template.
+        substitute_rules: Custom substitution rules for the compiled blocks. This
+            is a dict mapping the substitution keys to the corresponding substitution
+            rules. Substitution rules determine how to substitute plaquettes in
+            the two compiled blocks connected by a pipe.
         observables: The abstract observables to be included in the compiled
             circuit.
             If set to "auto", the observables will be automatically determined from
             the block graph. If a list of abstract observables is provided, only
             those observables will be included in the compiled circuit. If set to
             None, no observables will be included in the compiled circuit.
-        custom_spec_rules: Custom specification rules for the cube specs. This is a dict
-            mapping the cube specs to the corresponding spec rules. If not provided, the
-            default spec rules will be used. Spec rules determine how to compile a cube
-            spec into a compiled block, i.e which template to use and the specific
-            plaquettes to use in the template.
-        custom_substitute_rules: Custom substitution rules for the compiled blocks. This
-            is a dict mapping the substitution keys to the corresponding substitution
-            rules. If not provided, the default substitution rules will be used.
-            Substitution rules determine how to substitute plaquettes in the two
-            compiled blocks connected by a pipe.
 
     Returns:
         A `CompiledGraph` object that can be used to generate a cirq/stim circuit and
@@ -187,8 +182,6 @@ def compile_block_graph(
         raise TQECException(
             "Can not compile a block graph with open ports into circuits."
         )
-    spec_rules = DEFAULT_SPEC_RULES | (custom_spec_rules or {})
-    substitute_rules = DEFAULT_SUBSTITUTION_RULES | (custom_substitute_rules or {})
     cube_specs = {
         cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.cubes
     }

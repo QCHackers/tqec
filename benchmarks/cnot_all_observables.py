@@ -5,10 +5,12 @@ import stim
 
 from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph, compile_block_graph
-from tqec.noise_models import NoiseModel
-from tqec.position import Position3D
+from tqec.compile.specs.library.css import CSS_SPEC_RULES
+from tqec.compile.substitute import DEFAULT_SUBSTITUTION_RULES
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.zx_graph import ZXGraph
+from tqec.noise_models import NoiseModel
+from tqec.position import Position3D
 
 BENCHMARK_FOLDER = Path(__file__).resolve().parent
 TQEC_FOLDER = BENCHMARK_FOLDER.parent
@@ -65,6 +67,8 @@ def generate_cnot_circuits(*ks: int):
     # 3. Compile the `BlockGraph`
     compiled_graph = compile_block_graph(
         block_graph,
+        spec_rules=CSS_SPEC_RULES,
+        substitute_rules=DEFAULT_SUBSTITUTION_RULES,
         observables=[observables[1]],
     )
 

@@ -7,12 +7,12 @@ import stim
 
 from tqec.circuit.moment import Moment
 from tqec.compile.block import CompiledBlock
-from tqec.compile.specs import CubeSpec
+from tqec.compile.specs.base import CubeSpec
+from tqec.computation.block_graph import PipeType
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import PlaquetteSide, MeasurementBasis, ResetBasis
+from tqec.plaquette.enums import MeasurementBasis, PlaquetteSide, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Direction3D
-from tqec.computation.block_graph import PipeType
 
 
 @dataclass(frozen=True)
