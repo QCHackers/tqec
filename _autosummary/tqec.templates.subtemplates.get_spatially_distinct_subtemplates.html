@@ -120,11 +120,48 @@
 provided manhattan radius.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method will likely be inefficient for large templates (i.e., large
-values of <cite>k</cite>) or for large Manhattan radiuses, both in terms of memory
-used and computation time.
-Subclasses are invited to reimplement that method using a specialized
+<p>This function will likely be inefficient for large templates (i.e.,
+large values of <cite>k</cite>) or for large Manhattan radiuses, both in terms of
+memory used and computation time.</p>
+<p>Right now, with</p>
+<ul class="simple">
+<li><p><cite>n</cite> the width of the provided <cite>instantiation</cite> array,</p></li>
+<li><p><cite>m</cite> the height of the provided <cite>instantiation</cite> array,</p></li>
+<li><p><cite>r</cite> the provided Manhattan radius,</p></li>
+</ul>
+<p>it takes of the order of <cite>n*m*(2*r+1)²</cite> memory and has to sort an
+array of <cite>n*m</cite> elements of size <cite>(2*r+1)²</cite> in lexicographic order so
+require, in the worst case, <cite>O(n*m*log(n*m)*(2*r+1)²)</cite> runtime.</p>
+<p>Subclasses are invited to reimplement that method using a specialized
 algorithm (or hard-coded values) to speed things up.</p>
+<p>Some timings obtained on an AMD Ryzen 9 5950X:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">k</span> <span class="pre">=</span> <span class="pre">10</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
+<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160; <span class="pre">0.000776</span> <span class="pre">|</span>&#160; <span class="pre">0.000992</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00151</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00227</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00321</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">k</span> <span class="pre">=</span> <span class="pre">20</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
+<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160; <span class="pre">0.00202</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00356</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00672</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0116</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0173</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">k</span> <span class="pre">=</span> <span class="pre">40</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
+<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160; <span class="pre">0.00778</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0156</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0326</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0574</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0889</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">k</span> <span class="pre">=</span> <span class="pre">80</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
+<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160;&#160; <span class="pre">0.0318</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0706</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.147</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">0.27</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.426</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">k</span> <span class="pre">=</span> <span class="pre">160</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
+<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160;&#160;&#160; <span class="pre">0.139</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.309</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.651</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">1.25</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">1.98</span>
+<span class="pre">----------------------------------------------------------------------</span>
+<span class="pre">`</span></code></p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
