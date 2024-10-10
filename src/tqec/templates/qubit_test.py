@@ -1,7 +1,7 @@
 import numpy
 import pytest
 
-from tqec.exceptions import TQECException, TQECWarning
+from tqec.exceptions import TQECWarning
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.enums import TemplateSide
 from tqec.templates.qubit import (
