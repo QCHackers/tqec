@@ -13,7 +13,6 @@ from fractions import Fraction
 
 import stim
 
-from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position2D
 
 NumericType = int | float | Fraction
@@ -164,34 +163,3 @@ def get_used_qubit_indices(circuit: stim.Circuit) -> frozenset[int]:
         instruction.
     """
     return frozenset(count_qubit_accesses(circuit).keys())
-
-
-def get_final_qubits(circuit: stim.Circuit) -> dict[int, GridQubit]:
-    """Returns the existing qubits and their coordinates at the end of the
-    provided `circuit`.
-
-    Warning:
-        This function, just like
-        [`stim.Circuit.get_final_qubit_coordinates`](https://github.com/quantumlib/Stim/blob/main/doc/python_api_reference_vDev.md#stim.Circuit.get_final_qubit_coordinates),
-        returns the qubit coordinates **at the end** of the provided `circuit`.
-
-    Args:
-        circuit: instance to get qubit coordinates from.
-
-    Raises:
-        TQECException: if any of the final qubits is not defined with exactly 2
-            coordinates (we only consider qubits on a 2-dimensional grid).
-
-    Returns:
-        a mapping from qubit indices (keys) to qubit coordinates (values).
-    """
-    qubit_coordinates = circuit.get_final_qubit_coordinates()
-    qubits: dict[int, GridQubit] = {}
-    for qi, coords in qubit_coordinates.items():
-        if len(coords) != 2:
-            raise TQECException(
-                "Qubits should be defined on exactly 2 spatial dimensions. "
-                f"Found {qi} -> {coords} defined on {len(coords)} spatial dimensions."
-            )
-        qubits[qi] = GridQubit(*coords)
-    return qubits

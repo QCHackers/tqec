@@ -5,6 +5,7 @@ import stim
 
 from tqec.circuit.moment import Moment
 from tqec.circuit.qubit import GridQubit
+from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import (
     Schedule,
     ScheduledCircuit,
@@ -125,9 +126,9 @@ def test_scheduled_circuit_construction() -> None:
     with pytest.raises(ScheduleException):
         ScheduledCircuit.from_circuit(stim.Circuit("REPEAT 10{\nH 0 1 2\n}"), [1])
 
-    ScheduledCircuit([], 0, {})
+    ScheduledCircuit([], 0, QubitMap())
     moments = [Moment(stim.Circuit("H 0 1 2")), Moment(stim.Circuit("H 0 1 2"))]
-    i2q = {i: GridQubit(i, i) for i in range(3)}
+    i2q = QubitMap({i: GridQubit(i, i) for i in range(3)})
     ScheduledCircuit(moments, 0, i2q)
     ScheduledCircuit(moments, [0, 1], i2q)
     ScheduledCircuit(moments, Schedule.from_offsets([0, 1]), i2q)
@@ -159,7 +160,7 @@ def test_scheduled_circuit_schedule_property() -> None:
         stim.Circuit("H 0 1 2\nTICK\nH 0 1 2"), [4, 56]
     ).schedule.schedule == [4, 56]
     moments = [Moment(stim.Circuit("H 0 1 2")), Moment(stim.Circuit("H 0 1 2"))]
-    i2q = {i: GridQubit(i, i) for i in range(3)}
+    i2q = QubitMap({i: GridQubit(i, i) for i in range(3)})
     assert ScheduledCircuit(moments, 0, i2q).schedule.schedule == [0, 1]
 
 
@@ -355,7 +356,7 @@ def test_relabel_circuits_qubit_indices() -> None:
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0")),
         ]
     )
-    assert q2i == {GridQubit(0, 0): 0, GridQubit(1, 1): 1}
+    assert q2i == QubitMap({0: GridQubit(0, 0), 1: GridQubit(1, 1)})
     assert len(circuits) == 2
     assert circuits[0].get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
     assert circuits[1].get_circuit() == stim.Circuit("QUBIT_COORDS(1, 1) 1\nX 1")
