@@ -133,7 +133,7 @@ def test_repeated_measurement_measurements() -> None:
 def test_get_measurements_from_circuit() -> None:
     circuit = ScheduledCircuit.from_circuit(
         stim.Circuit("H 0\nM 1 2\nTICK\nMX 2 3"),
-        i2q=QubitMap({i: GridQubit(i, i) for i in range(4)}),
+        qubit_map=QubitMap({i: GridQubit(i, i) for i in range(4)}),
     )
     measurements = get_measurements_from_circuit(
         circuit.get_circuit(include_qubit_coords=True)

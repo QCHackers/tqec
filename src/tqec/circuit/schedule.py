@@ -201,7 +201,7 @@ class ScheduledCircuit:
     def from_circuit(
         circuit: stim.Circuit,
         schedule: Schedule | list[int] | int = 0,
-        i2q: QubitMap | None = None,
+        qubit_map: QubitMap | None = None,
     ) -> ScheduledCircuit:
         """Build a :class:`ScheduledCircuit` instance from a circuit and a
         schedule.
@@ -214,7 +214,7 @@ class ScheduledCircuit:
                 in the provided `stim.Circuit` instance. If an integer is provided,
                 each moment of the provided `stim.Circuit` is scheduled sequentially,
                 starting by the provided schedule.
-            i2q: a map from indices to qubits. If None, this function will try to
+            qubit_map: a map from indices to qubits. If None, this function will try to
                 extract the qubit coordinates from the `QUBIT_COORDS` instructions
                 found in the provided `circuit`. Else, the provided map will be used.
 
@@ -246,15 +246,15 @@ class ScheduledCircuit:
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
-        if i2q is None:
+        if qubit_map is None:
             # Here, we know for sure that no qubit is (re)defined in another place
             # than the first moment, so we can directly get qubit coordinates from
             # that moment.
-            i2q = get_qubit_map(moments[0].circuit)
+            qubit_map = get_qubit_map(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(moments, schedule, i2q)
+        return ScheduledCircuit(moments, schedule, qubit_map)
 
     @staticmethod
     def _check_input_circuit(circuit: stim.Circuit) -> None:
