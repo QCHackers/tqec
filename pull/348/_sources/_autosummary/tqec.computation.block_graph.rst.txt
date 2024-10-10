@@ -1,0 +1,43 @@
+tqec.computation.block\_graph
+=============================
+
+.. automodule:: tqec.computation.block_graph
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   color
+
+   cube
+
+   enums
+
+   graph
+
+
+   observable
+
+   pipe
+

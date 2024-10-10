@@ -1,0 +1,32 @@
+tqec.compile.specs.enums.JunctionArms
+=====================================
+
+.. currentmodule:: tqec.compile.specs.enums
+
+.. autoclass:: JunctionArms
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~JunctionArms.get_map_from_arm_to_shift
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~JunctionArms.NONE
+      ~JunctionArms.UP
+      ~JunctionArms.RIGHT
+      ~JunctionArms.DOWN
+      ~JunctionArms.LEFT
+   
+   
