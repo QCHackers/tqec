@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from typing import Sequence
 
 import numpy
-import numpy.typing as npt
 
 from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement_map import MeasurementRecordsMap
@@ -17,6 +16,7 @@ from tqec.compile.detectors.detector import Detector
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
+from tqec.templates.subtemplates import SubTemplateType
 
 _NUMPY_ARRAY_HASHER = hashlib.md5
 
@@ -31,12 +31,12 @@ class DetectorDatabaseKey:
     as a `dict` key.
 
     Attributes:
-        subtemplate: a 2-dimensional array of integers representing a
-            sub-template.
+        subtemplate: a sequence of 2-dimensional arrays of integers representing
+            the sub-template(s). Each entry corresponds to one QEC round.
         plaquettes_by_timestep: a list of :class:`Plaquettes`, each
             :class:`Plaquettes` entry storing enough :class:`Plaquette`
-            instances to generate a circuit from `self.subtemplate` and
-            corresponding to one QEC round.
+            instances to generate a circuit from corresponding entry in
+            `self.subtemplates` and corresponding to one QEC round.
 
     ## Implementation details
 
@@ -65,7 +65,7 @@ class DetectorDatabaseKey:
     TODO: check assertion of last paragraph.
     """
 
-    subtemplates: Sequence[npt.NDArray[numpy.int_]]
+    subtemplates: Sequence[SubTemplateType]
     plaquettes_by_timestep: Sequence[Plaquettes]
 
     def __post_init__(self) -> None:
@@ -127,6 +127,7 @@ class DetectorDatabaseKey:
         return ScheduledCircuit(moments, schedule, qubit_map)
 
 
+@dataclass
 class DetectorDatabase:
     """Store a mapping from "situations" to the corresponding detectors.
 
@@ -145,10 +146,28 @@ class DetectorDatabase:
 
     def add_situation(
         self,
-        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        subtemplates: Sequence[SubTemplateType],
         plaquettes_by_timestep: Sequence[Plaquettes],
         detectors: frozenset[Detector] | Detector,
     ) -> None:
+        """Add a new situation to the database.
+
+        Args:
+            subtemplate: a sequence of 2-dimensional arrays of integers
+                representing the sub-template(s). Each entry corresponds to one
+                QEC round.
+            plaquettes_by_timestep: a list of :class:`Plaquettes`, each
+                :class:`Plaquettes` entry storing enough :class:`Plaquette`
+                instances to generate a circuit from corresponding entry in
+                `self.subtemplates` and corresponding to one QEC round.
+            detectors: computed detectors that should be stored in the database.
+                The coordinates used by the :class:`Measurement` instances stored
+                in each entry should be relative to the top-left qubit of the
+                top-left plaquette in the provided `subtemplates`.
+
+        Raises:
+            TQECException: if this method is called and `self.frozen`.
+        """
         if self.frozen:
             raise TQECException("Cannot add a situation to a frozen database.")
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
@@ -158,9 +177,23 @@ class DetectorDatabase:
 
     def remove_situation(
         self,
-        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        subtemplates: Sequence[SubTemplateType],
         plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> None:
+        """Remove an existing situation from the database.
+
+        Args:
+            subtemplate: a sequence of 2-dimensional arrays of integers
+                representing the sub-template(s). Each entry corresponds to one
+                QEC round.
+            plaquettes_by_timestep: a list of :class:`Plaquettes`, each
+                :class:`Plaquettes` entry storing enough :class:`Plaquette`
+                instances to generate a circuit from corresponding entry in
+                `self.subtemplates` and corresponding to one QEC round.
+
+        Raises:
+            TQECException: if this method is called and `self.frozen`.
+        """
         if self.frozen:
             raise TQECException("Cannot remove a situation to a frozen database.")
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
@@ -168,9 +201,26 @@ class DetectorDatabase:
 
     def get_detectors(
         self,
-        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        subtemplates: Sequence[SubTemplateType],
         plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> frozenset[Detector] | None:
+        """Return the detectors associated with the provided situation or `None`
+        if the situation is not in the database.
+
+        Args:
+            subtemplate: a sequence of 2-dimensional arrays of integers
+                representing the sub-template(s). Each entry corresponds to one
+                QEC round.
+            plaquettes_by_timestep: a list of :class:`Plaquettes`, each
+                :class:`Plaquettes` entry storing enough :class:`Plaquette`
+                instances to generate a circuit from corresponding entry in
+                `self.subtemplates` and corresponding to one QEC round.
+            detectors: computed detectors that should be stored in the database.
+
+        Returns:
+            detectors associated with the provided situation or `None` if the
+            situation is not in the database.
+        """
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         return self.mapping.get(key)
 
