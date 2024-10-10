@@ -1,5 +1,6 @@
 import hashlib
 from dataclasses import dataclass, field
+from typing import Sequence
 
 import numpy
 import numpy.typing as npt
@@ -64,8 +65,8 @@ class DetectorDatabaseKey:
     TODO: check assertion of last paragraph.
     """
 
-    subtemplates: list[npt.NDArray[numpy.int_]]
-    plaquettes_by_timestep: list[Plaquettes]
+    subtemplates: Sequence[npt.NDArray[numpy.int_]]
+    plaquettes_by_timestep: Sequence[Plaquettes]
 
     def __post_init__(self) -> None:
         if len(self.subtemplates) != len(self.plaquettes_by_timestep):
@@ -143,8 +144,8 @@ class DetectorDatabase:
 
     def add_situation(
         self,
-        subtemplates: list[npt.NDArray[numpy.int_]],
-        plaquettes_by_timestep: list[Plaquettes],
+        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        plaquettes_by_timestep: Sequence[Plaquettes],
         detectors: frozenset[Detector] | Detector,
     ) -> None:
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
@@ -154,16 +155,16 @@ class DetectorDatabase:
 
     def remove_situation(
         self,
-        subtemplates: list[npt.NDArray[numpy.int_]],
-        plaquettes_by_timestep: list[Plaquettes],
+        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> None:
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         del self.mapping[key]
 
     def get_detectors(
         self,
-        subtemplates: list[npt.NDArray[numpy.int_]],
-        plaquettes_by_timestep: list[Plaquettes],
+        subtemplates: Sequence[npt.NDArray[numpy.int_]],
+        plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> frozenset[Detector] | None:
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         return self.mapping.get(key)
