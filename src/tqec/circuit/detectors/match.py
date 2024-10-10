@@ -142,7 +142,6 @@ def match_detectors_within_fragment(
         the list of all the detectors found.
     """
     matched_detectors: list[MatchedDetector] = []
-
     matched_detectors.extend(
         _match_non_propagating_non_trivial_flows_inline(
             flows.creation, qubit_coordinates
