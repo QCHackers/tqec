@@ -1,5 +1,6 @@
 import stim
 
+from tqec.circuit.measurement_map import MeasurementRecordsMap
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.computation.block_graph import AbstractObservable, Cube, Pipe
@@ -146,7 +147,7 @@ def inplace_add_observables(
             stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
                 pipe, template.element_shape(k), template.get_increments()
             )
-            measurement_records = _get_measurement_records_from_scheduled_circuit(
+            measurement_records = MeasurementRecordsMap.from_scheduled_circuit(
                 circuits[z][0]
             )
             circuits[z][0].append_observable(
@@ -175,61 +176,10 @@ def inplace_add_observables(
                         template.get_increments(),
                     )
                 ]
-            measurement_records = _get_measurement_records_from_scheduled_circuit(
+            measurement_records = MeasurementRecordsMap.from_scheduled_circuit(
                 circuits[z][-1]
             )
             circuits[z][-1].append_observable(
                 i,
                 [stim.target_rec(measurement_records[q][-1]) for q in qubits],
             )
-
-
-_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
-    [
-        # Collapsing Gates
-        "M",
-        "MR",
-        "MRX",
-        "MRY",
-        "MRZ",
-        "MX",
-        "MY",
-        "MZ",
-    ]
-)
-_NOT_SUPPORTED_MEASUREMENT_GATE_NAMES: frozenset[str] = frozenset(
-    [
-        # Pair Measurement Gates
-        "MXX",
-        "MYY",
-        "MZZ",
-        # Generalized Pauli Product Gates
-        "MPP",
-    ]
-)
-
-
-def _get_measurement_records_from_scheduled_circuit(
-    circuit: ScheduledCircuit,
-) -> dict[GridQubit, list[int]]:
-    # Get the global qubit map
-    i2q: dict[int, GridQubit] = {i: q for q, i in circuit.q2i.items()}
-    # Build the local measurement map.
-    current_measurement_record = -circuit.num_measurements
-    measurement_records: dict[GridQubit, list[int]] = {}
-    for moment in circuit.moments:
-        for instruction in moment.instructions:
-            assert not isinstance(instruction, stim.CircuitRepeatBlock)
-            if instruction.name in _NOT_SUPPORTED_MEASUREMENT_GATE_NAMES:
-                raise TQECException(
-                    f"Found a non-supported measurement instruction: {instruction}"
-                )
-            if instruction.name in _SUPPORTED_MEASUREMENT_GATE_NAMES:
-                for (qi,) in instruction.target_groups():
-                    qubit = i2q[qi.value]
-                    measurement_records.setdefault(qubit, []).append(
-                        current_measurement_record
-                    )
-                    current_measurement_record += 1
-    assert current_measurement_record == 0, "Sanity check"
-    return measurement_records

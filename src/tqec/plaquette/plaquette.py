@@ -105,6 +105,20 @@ class Plaquette:
             new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
         )
 
+    def __eq__(self, rhs: object) -> bool:
+        # TODO: this implementation relies on pre-conditions that are unchecked
+        #       at the moment. Check that they hold eventually. See the documentation
+        #       of `tqec.compile.detectors.database.DetectorDatabaseKey` for a
+        #       more detailed explanation.
+        return isinstance(rhs, Plaquette) and id(self) == id(rhs)
+
+    def __hash__(self) -> int:
+        # TODO: this implementation relies on pre-conditions that are unchecked
+        #       at the moment. Check that they hold eventually. See the documentation
+        #       of `tqec.compile.detectors.database.DetectorDatabaseKey` for a
+        #       more detailed explanation.
+        return id(self)
+
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
@@ -169,6 +183,12 @@ class Plaquettes:
         self, plaquettes_to_update: dict[int, Plaquette]
     ) -> Plaquettes:
         return Plaquettes(self.collection | plaquettes_to_update)
+
+    def __eq__(self, rhs: object) -> bool:
+        return isinstance(rhs, Plaquettes) and self.collection == rhs.collection
+
+    def __hash__(self) -> int:
+        return hash(tuple(self.collection.items()))
 
 
 @dataclass(frozen=True)

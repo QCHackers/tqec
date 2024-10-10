@@ -39,6 +39,10 @@ class QubitMap:
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
         return QubitMap(dict(enumerate(qubits)))
 
+    @staticmethod
+    def from_circuit(circuit: stim.Circuit) -> QubitMap:
+        return get_qubit_map(circuit)
+
     @functools.cached_property
     def q2i(self) -> dict[GridQubit, int]:
         return {q: i for i, q in self.i2q.items()}
@@ -83,6 +87,13 @@ class QubitMap:
         """
         kept_qubits = frozenset(qubits_to_keep)
         return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
+
+    def to_circuit(self) -> stim.Circuit:
+        """Get a circuit with only `QUBIT_COORDS` instructions representing `self`."""
+        ret = stim.Circuit()
+        for qi, qubit in sorted(self.i2q.items(), key=lambda t: t[0]):
+            ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
+        return ret
 
 
 def get_qubit_map(circuit: stim.Circuit) -> QubitMap:
