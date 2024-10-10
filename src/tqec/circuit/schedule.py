@@ -566,12 +566,28 @@ class ScheduledCircuit:
             index: index of the observable to append measurement records to.
             targets: measurement records forming (part of) the observable.
         """
-        if any(not t.is_measurement_record_target for t in targets):
+        self.append_annotation(
+            stim.CircuitInstruction("OBSERVABLE_INCLUDE", targets, [index])
+        )
+
+    def append_annotation(self, instruction: stim.CircuitInstruction) -> None:
+        """Append an annotation to the last moment.
+
+        Args:
+            instruction: an annotation that will be added to the last moment of
+                `self`.
+
+        Raises:
+            TQECException: if the provided instruction is not an annotation.
+        """
+        if any(not t.is_measurement_record_target for t in instruction.targets_copy()):
             raise TQECException(
-                "Cannot create an observable with targets that are not measurement "
-                f"records. Got: {list(targets)}."
+                "The provided instruction contains a target that is not a measurement "
+                f"record (targets: {instruction.targets_copy()}). For this reason, "
+                "it is considered to not be an annotation, which is disallowed by "
+                "the append_annotation method."
             )
-        self._moments[-1].append("OBSERVABLE_INCLUDE", targets, [index])
+        self._moments[-1].append_instruction(instruction)
 
     @property
     def num_measurements(self) -> int:
