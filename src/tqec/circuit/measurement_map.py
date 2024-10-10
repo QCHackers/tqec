@@ -152,3 +152,6 @@ class MeasurementRecordsMap:
     # Explicitly returns a Sequence to show that the returned value is read-only.
     def __getitem__(self, qubit: GridQubit) -> Sequence[int]:
         return self.mapping[qubit]
+
+    def __contains__(self, qubit: GridQubit) -> bool:
+        return qubit in self.mapping
