@@ -42,6 +42,9 @@ tqec.circuit
 
    qubit
 
+   qubit_map
+
+
 
    schedule
 

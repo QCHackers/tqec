@@ -1,7 +1,7 @@
-tqec.circuit.qubit
-==================
+tqec.circuit.qubit\_map
+=======================
 
-.. automodule:: tqec.circuit.qubit
+.. automodule:: tqec.circuit.qubit_map
 
    
    
@@ -14,8 +14,7 @@ tqec.circuit.qubit
    .. autosummary::
       :toctree:
    
-      count_qubit_accesses
-      get_used_qubit_indices
+      get_qubit_map
    
    
 
@@ -26,7 +25,7 @@ tqec.circuit.qubit
    .. autosummary::
       :toctree:
    
-      GridQubit
+      QubitMap
    
    
 

@@ -96,7 +96,6 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
-<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position2D</span>
 
 <span class="n">NumericType</span> <span class="o">=</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span>
@@ -258,40 +257,6 @@
 <span class="sd">        instruction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">count_qubit_accesses</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
-
-
-
-<div class="viewcode-block" id="get_final_qubits">
-<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.qubit.get_final_qubits.html#tqec.circuit.qubit.get_final_qubits">[docs]</a>
-<span class="k">def</span> <span class="nf">get_final_qubits</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the existing qubits and their coordinates at the end of the</span>
-<span class="sd">    provided `circuit`.</span>
-
-<span class="sd">    Warning:</span>
-<span class="sd">        This function, just like</span>
-<span class="sd">        [`stim.Circuit.get_final_qubit_coordinates`](https://github.com/quantumlib/Stim/blob/main/doc/python_api_reference_vDev.md#stim.Circuit.get_final_qubit_coordinates),</span>
-<span class="sd">        returns the qubit coordinates **at the end** of the provided `circuit`.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        circuit: instance to get qubit coordinates from.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if any of the final qubits is not defined with exactly 2</span>
-<span class="sd">            coordinates (we only consider qubits on a 2-dimensional grid).</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        a mapping from qubit indices (keys) to qubit coordinates (values).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">qubit_coordinates</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">get_final_qubit_coordinates</span><span class="p">()</span>
-    <span class="n">qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">qi</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">qubit_coordinates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;Qubits should be defined on exactly 2 spatial dimensions. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">qi</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2"> defined on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> spatial dimensions.&quot;</span>
-            <span class="p">)</span>
-        <span class="n">qubits</span><span class="p">[</span><span class="n">qi</span><span class="p">]</span> <span class="o">=</span> <span class="n">GridQubit</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">qubits</span></div>
 
 </pre></div>
 

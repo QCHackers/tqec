@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.circuit.generation &mdash; TQEC  documentation</title>
+  <title>tqec.circuit.qubit_map.QubitMap &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.circuit.generation.generate_circuit" href="tqec.circuit.generation.generate_circuit.html" />
-    <link rel="prev" title="tqec.circuit" href="tqec.circuit.html" /> 
+    <link rel="next" title="tqec.circuit.schedule" href="tqec.circuit.schedule.html" />
+    <link rel="prev" title="tqec.circuit.qubit_map.get_qubit_map" href="tqec.circuit.qubit_map.get_qubit_map.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,16 +58,16 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.circuit.generation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement.html">tqec.circuit.measurement</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.moment.html">tqec.circuit.moment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.observable_qubits.html">tqec.circuit.observable_qubits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit.html">tqec.circuit.qubit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.qubit_map.get_qubit_map.html">tqec.circuit.qubit_map.get_qubit_map</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.qubit_map.QubitMap</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.schedule.html">tqec.circuit.schedule</a></li>
 </ul>
 </li>
@@ -101,9 +101,10 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.circuit.html">tqec.circuit</a></li>
-      <li class="breadcrumb-item active">tqec.circuit.generation</li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.qubit_map.QubitMap</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.circuit.generation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.circuit.qubit_map.QubitMap.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -111,41 +112,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-tqec.circuit.generation">
-<span id="tqec-circuit-generation"></span><h1>tqec.circuit.generation<a class="headerlink" href="#module-tqec.circuit.generation" title="Link to this heading"></a></h1>
-<p>Defines <a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a>, one of the core method of the <cite>tqec</cite>
-package.</p>
-<p>This module defines two of core methods of the <cite>tqec</cite> package:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a> that is the most convenient method for external users.</p></li>
-<li><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html#tqec.circuit.generation.generate_circuit_from_instantiation" title="tqec.circuit.generation.generate_circuit_from_instantiation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit_from_instantiation()</span></code></a> that gives more freedom to the
-user (and is used internally by <a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a>) at the expense of
-often less convenient inputs.</p></li>
-</ul>
-<p>Both of these methods are used to generate the <cite>stim.Circuit</cite> instance
-representing <strong>one</strong> time slice (often equivalent to “one QEC round”). Users are
-expected to call these methods several times and concatenate the output
-<cite>stim.Circuit</cite> instances in time to obtain a full QEC implementation.</p>
-<p>Note that these methods do not work with <cite>REPEAT</cite> instructions.</p>
-<p class="rubric">Functions</p>
+  <section id="tqec-circuit-qubit-map-qubitmap">
+<h1>tqec.circuit.qubit_map.QubitMap<a class="headerlink" href="#tqec-circuit-qubit-map-qubitmap" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i2q:</span> <span class="pre">dict[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~tqec.circuit.qubit.GridQubit]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap" title="Link to this definition"></a></dt>
+<dd><p>Represent a bijection between <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code> instances and indices.</p>
+<p>This class aims at representing a bidirectional mapping (hence the
+“bijection”) between qubits and their associated indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided mapping from indices to qubits is not a
+    bijection (i.e., if at least to values represent the same qubit).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i2q:</span> <span class="pre">dict[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~tqec.circuit.qubit.GridQubit]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_circuit</span></code></a>(template, k, plaquettes)</p></td>
-<td><p>Generate a quantum circuit from a template and its plaquettes.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.__init__" title="tqec.circuit.qubit_map.QubitMap.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([i2q])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html#tqec.circuit.generation.generate_circuit_from_instantiation" title="tqec.circuit.generation.generate_circuit_from_instantiation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_circuit_from_instantiation</span></code></a>(...)</p></td>
-<td><p>Generate a quantum circuit from an array of plaquette indices and the associated plaquettes.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code>(qubits_to_keep)</p></td>
+<td><p>Filter the qubit map to only keep qubits present in the provided <cite>qubits_to_keep</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_qubits</span></code>(qubits)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_mapped_qubits</span></code>(qubit_map)</p></td>
+<td><p>Change the qubits involved in <cite>self</cite> without changing the associated indices.</p></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">indices</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">q2i</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">i2q</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.circuit.html" class="btn btn-neutral float-left" title="tqec.circuit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.circuit.generation.generate_circuit.html" class="btn btn-neutral float-right" title="tqec.circuit.generation.generate_circuit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.circuit.qubit_map.get_qubit_map.html" class="btn btn-neutral float-left" title="tqec.circuit.qubit_map.get_qubit_map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.circuit.schedule.html" class="btn btn-neutral float-right" title="tqec.circuit.schedule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

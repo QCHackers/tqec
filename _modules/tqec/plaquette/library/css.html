@@ -89,6 +89,7 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">ResetBasis</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span>
@@ -120,9 +121,10 @@
     <span class="n">sq</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1"># data qubits ordered as &quot;Z&quot; shape</span>
     <span class="n">dqs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-    <span class="n">i2q</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span> <span class="o">|</span> <span class="p">{</span>
-        <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubits</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)</span>
-    <span class="p">}</span>
+    <span class="n">i2q</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="p">(</span>
+        <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+        <span class="o">|</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubits</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)}</span>
+    <span class="p">)</span>
 
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
     <span class="c1"># 1. Initialization</span>
