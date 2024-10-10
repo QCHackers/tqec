@@ -1,0 +1,36 @@
+tqec.computation.block\_graph.color.Color3D
+===========================================
+
+.. currentmodule:: tqec.computation.block_graph.color
+
+.. autoclass:: Color3D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Color3D.__init__
+      ~Color3D.from_string
+      ~Color3D.match
+      ~Color3D.null
+      ~Color3D.pop_color_at_direction
+      ~Color3D.push_color_at_direction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Color3D.is_null
+      ~Color3D.x
+      ~Color3D.y
+      ~Color3D.z
+   
+   

@@ -1,0 +1,33 @@
+tqec.noise\_models
+==================
+
+.. automodule:: tqec.noise_models
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   noise_model
+
+
