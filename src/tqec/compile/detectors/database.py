@@ -141,6 +141,7 @@ class DetectorDatabase:
     mapping: dict[DetectorDatabaseKey, frozenset[Detector]] = field(
         default_factory=dict
     )
+    frozen: bool = False
 
     def add_situation(
         self,
@@ -148,6 +149,8 @@ class DetectorDatabase:
         plaquettes_by_timestep: Sequence[Plaquettes],
         detectors: frozenset[Detector] | Detector,
     ) -> None:
+        if self.frozen:
+            raise TQECException("Cannot add a situation to a frozen database.")
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         self.mapping[key] = (
             frozenset([detectors]) if isinstance(detectors, Detector) else detectors
@@ -158,6 +161,8 @@ class DetectorDatabase:
         subtemplates: Sequence[npt.NDArray[numpy.int_]],
         plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> None:
+        if self.frozen:
+            raise TQECException("Cannot remove a situation to a frozen database.")
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         del self.mapping[key]
 
