@@ -141,9 +141,11 @@ class MeasurementRecordsMap:
                         current_measurement_record
                     )
                     current_measurement_record += 1
-        if current_measurement_record == 0:
+        if current_measurement_record != 0:
             raise TQECException(
-                "Failed post-condition check. Did we miss a measurement?"
+                "Failed post-condition check. Expected a final measurement record of "
+                f"-1 but got {current_measurement_record - 1}. Did we miss a "
+                f"measurement? Circuit:\n{circuit}"
             )
         return MeasurementRecordsMap(measurement_records)
 
