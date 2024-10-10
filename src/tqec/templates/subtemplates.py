@@ -7,6 +7,8 @@ import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 
+SubTemplateType = npt.NDArray[numpy.int_]
+
 
 @dataclass(frozen=True)
 class UniqueSubTemplates:
@@ -80,7 +82,7 @@ class UniqueSubTemplates:
     """
 
     subtemplate_indices: npt.NDArray[numpy.int_]
-    subtemplates: dict[int, npt.NDArray[numpy.int_]]
+    subtemplates: dict[int, SubTemplateType]
 
     def __post_init__(self) -> None:
         # We do not need a valid subtemplate for the 0 index.
@@ -192,7 +194,7 @@ def get_spatially_distinct_subtemplates(
         instantiation, manhattan_radius, "constant", constant_values=0
     )
 
-    all_possible_subarrays: list[npt.NDArray[numpy.int_]] = []
+    all_possible_subarrays: list[SubTemplateType] = []
     ignored_flattened_indices: list[int] = []
     considered_flattened_indices: list[int] = []
     for i in range(manhattan_radius, manhattan_radius + y):
