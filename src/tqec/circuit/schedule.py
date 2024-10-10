@@ -134,6 +134,12 @@ class Schedule:
             self.schedule.pop(-1)
             raise e
 
+    def append_schedule(self, schedule: Schedule) -> None:
+        starting_index = (
+            self.schedule[-1] + 1 if self.schedule else Schedule._INITIAL_SCHEDULE
+        )
+        self.schedule.extend(starting_index + s for s in schedule.schedule)
+
 
 class ScheduledCircuit:
     def __init__(
