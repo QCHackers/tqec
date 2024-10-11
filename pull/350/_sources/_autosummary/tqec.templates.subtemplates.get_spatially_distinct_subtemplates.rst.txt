@@ -1,6 +1,0 @@
-tqec.templates.subtemplates.get\_spatially\_distinct\_subtemplates
-==================================================================
-
-.. currentmodule:: tqec.templates.subtemplates
-
-.. autofunction:: get_spatially_distinct_subtemplates

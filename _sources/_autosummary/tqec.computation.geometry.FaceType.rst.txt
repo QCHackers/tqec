@@ -26,6 +26,7 @@ tqec.computation.geometry.FaceType
    
       ~FaceType.X
       ~FaceType.Z
+      ~FaceType.Y
       ~FaceType.H
    
    
