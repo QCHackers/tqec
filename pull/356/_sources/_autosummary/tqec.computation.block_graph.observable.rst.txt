@@ -1,0 +1,30 @@
+tqec.computation.block\_graph.observable
+========================================
+
+.. automodule:: tqec.computation.block_graph.observable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      AbstractObservable
+   
+   
+
+   
+   
+   
+
+
+

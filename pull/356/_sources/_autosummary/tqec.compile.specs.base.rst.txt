@@ -1,0 +1,31 @@
+tqec.compile.specs.base
+=======================
+
+.. automodule:: tqec.compile.specs.base
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      CubeSpec
+      SpecRule
+   
+   
+
+   
+   
+   
+
+
+

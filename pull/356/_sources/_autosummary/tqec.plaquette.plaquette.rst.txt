@@ -1,0 +1,33 @@
+tqec.plaquette.plaquette
+========================
+
+.. automodule:: tqec.plaquette.plaquette
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Plaquette
+      PlaquetteBuilder
+      Plaquettes
+      RepeatedPlaquettes
+   
+   
+
+   
+   
+   
+
+
+

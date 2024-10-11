@@ -1,0 +1,37 @@
+tqec.circuit.qubit\_map.QubitMap
+================================
+
+.. currentmodule:: tqec.circuit.qubit_map
+
+.. autoclass:: QubitMap
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~QubitMap.__init__
+      ~QubitMap.filter_by_qubits
+      ~QubitMap.from_circuit
+      ~QubitMap.from_qubits
+      ~QubitMap.items
+      ~QubitMap.to_circuit
+      ~QubitMap.with_mapped_qubits
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~QubitMap.indices
+      ~QubitMap.q2i
+      ~QubitMap.qubits
+      ~QubitMap.i2q
+   
+   
