@@ -154,7 +154,7 @@ def write_block_graph_to_dae_file(
         file: The output file path or file-like object that supports binary write.
         pipe_length: The length of the pipe blocks. Default is 2.0.
     """
-    base = _load_base_collada_data()
+    base = _BaseColladaData()
     instance_id = 0
 
     def scale_position(pos: tuple[int, int, int]) -> _FloatPosition:
@@ -184,17 +184,104 @@ def write_block_graph_to_dae_file(
 
 
 class _BaseColladaData:
-    def __init__(
-        self,
-        mesh: collada.Collada,
-        root_node: collada.scene.Node,
-        library_node_handles: dict[BlockType, collada.scene.Node],
-    ) -> None:
+    def __init__(self) -> None:
         """The base model template including the definition of all the library
         nodes and the necessary material, geometry definitions."""
-        self.mesh = mesh
-        self.root_node = root_node
-        self.library_node_handles = library_node_handles
+        self.mesh = collada.Collada()
+        self.library_geometry = load_library_block_geometries()
+        self.materials: dict[FaceType, collada.material.Material] = {}
+        self.geometry_nodes: dict[Face, collada.scene.GeometryNode] = {}
+        self.root_node = collada.scene.Node("SketchUp", name="SketchUp")
+        self.library_nodes: dict[BlockType, collada.scene.Node] = {}
+
+        self._create_scene()
+        self._add_asset_info()
+        self._add_materials()
+
+    def _create_scene(self) -> None:
+        scene = collada.scene.Scene("scene", [self.root_node])
+        self.mesh.scenes.append(scene)
+        self.mesh.scene = scene
+
+    def _add_asset_info(self) -> None:
+        if self.mesh.assetInfo is None:
+            return
+        self.mesh.assetInfo.contributors.append(
+            collada.asset.Contributor(
+                author=ASSET_AUTHOR, authoring_tool=ASSET_AUTHORING_TOOL_TQEC
+            ),
+        )
+        self.mesh.assetInfo.unitmeter = ASSET_UNIT_METER
+        self.mesh.assetInfo.unitname = ASSET_UNIT_NAME
+        self.mesh.assetInfo.upaxis = collada.asset.UP_AXIS.Z_UP
+
+    def _add_materials(self) -> None:
+        """Add all the materials for different faces."""
+        for face_type in FaceType:
+            rgba = _FACE_RGBA[face_type]
+            effect = collada.material.Effect(
+                f"{face_type.value}_effect",
+                [],
+                "lambert",
+                diffuse=rgba,
+                emission=None,
+                specular=None,
+                transparent=None,
+                ambient=None,
+                reflective=None,
+                double_sided=True,
+            )
+            self.mesh.effects.append(effect)
+
+            effect.transparency = None
+            material = collada.material.Material(
+                f"{face_type.value}_material", f"{face_type.value}_material", effect
+            )
+            self.mesh.materials.append(material)
+            self.materials[face_type] = material
+
+    def _add_face_geometry_node(self, face: Face) -> None:
+        if face in self.geometry_nodes:
+            return
+        # Create geometry
+        id_str = f"FaceID{len(self.geometry_nodes)}"
+        positions = collada.source.FloatSource(
+            id_str + "_positions", face.get_vertices(), ("X", "Y", "Z")
+        )
+        normals = collada.source.FloatSource(
+            id_str + "_normals", face.get_normal_vectors(), ("X", "Y", "Z")
+        )
+
+        geom = collada.geometry.Geometry(
+            self.mesh, id_str, id_str, [positions, normals]
+        )
+        input_list = collada.source.InputList()
+        input_list.addInput(0, "VERTEX", "#" + positions.id)
+        input_list.addInput(1, "NORMAL", "#" + normals.id)
+        triset = geom.createTriangleSet(
+            Face.get_triangle_indices(), input_list, MATERIAL_SYMBOL
+        )
+        geom.primitives.append(triset)
+        self.mesh.geometries.append(geom)
+        # Create geometry node
+        inputs = [("UVSET0", "TEXCOORD", "0")]
+        material = self.materials[face.face_type]
+        geom_node = collada.scene.GeometryNode(
+            geom, [collada.scene.MaterialNode(MATERIAL_SYMBOL, material, inputs)]
+        )
+        self.geometry_nodes[face] = geom_node
+
+    def _add_library_node(self, block_type: BlockType) -> None:
+        if block_type in self.library_nodes:
+            return
+        for face in self.library_geometry[block_type]:
+            self._add_face_geometry_node(face)
+        children = [
+            self.geometry_nodes[face] for face in self.library_geometry[block_type]
+        ]
+        node = collada.scene.Node(block_type.value, children, name=block_type.value)
+        self.mesh.nodes.append(node)
+        self.library_nodes[block_type] = node
 
     def add_instance_node(
         self,
@@ -203,120 +290,16 @@ class _BaseColladaData:
         block_type: BlockType,
     ) -> None:
         """Add an instance node to the root node."""
+        self._add_library_node(block_type)
         child_node = collada.scene.Node(
             f"ID{instance_id}",
             name=f"instance_{instance_id}",
             transforms=[collada.scene.MatrixTransform(transform_matrix.flatten())],
         )
-        point_to_node = self.library_node_handles[block_type]
+        point_to_node = self.library_nodes[block_type]
         instance_node = collada.scene.NodeNode(point_to_node)
         child_node.children.append(instance_node)
         self.root_node.children.append(child_node)
-
-
-def _add_material(
-    mesh: collada.Collada,
-    face_type: FaceType,
-) -> collada.material.Material:
-    rgba = _FACE_RGBA[face_type]
-    effect = collada.material.Effect(
-        f"{face_type.value}_effect",
-        [],
-        "lambert",
-        diffuse=rgba,
-        emission=None,
-        specular=None,
-        transparent=None,
-        ambient=None,
-        reflective=None,
-        double_sided=True,
-    )
-    mesh.effects.append(effect)
-
-    effect.transparency = None
-    material = collada.material.Material(
-        f"{face_type.value}_material", f"{face_type.value}_material", effect
-    )
-    mesh.materials.append(material)
-    return material
-
-
-def _add_asset_info(mesh: collada.Collada) -> None:
-    if mesh.assetInfo is None:
-        return
-    mesh.assetInfo.contributors.append(
-        collada.asset.Contributor(
-            author=ASSET_AUTHOR, authoring_tool=ASSET_AUTHORING_TOOL_TQEC
-        ),
-    )
-    mesh.assetInfo.unitmeter = ASSET_UNIT_METER
-    mesh.assetInfo.unitname = ASSET_UNIT_NAME
-    mesh.assetInfo.upaxis = collada.asset.UP_AXIS.Z_UP
-
-
-def _add_face_geometry_node(
-    mesh: collada.Collada,
-    face: Face,
-    materials: dict[FaceType, collada.material.Material],
-    geom_node_dict: dict[Face, collada.scene.GeometryNode],
-) -> None:
-    """Note: currently we completely ignore the normals."""
-    if face in geom_node_dict:
-        return
-    # Create geometry
-    id_str = f"FaceID{len(geom_node_dict)}"
-    positions = collada.source.FloatSource(
-        id_str + "_positions", face.get_vertices(), ("X", "Y", "Z")
-    )
-    normals = collada.source.FloatSource(
-        id_str + "_normals", face.get_normal_vectors(), ("X", "Y", "Z")
-    )
-
-    geom = collada.geometry.Geometry(mesh, id_str, id_str, [positions, normals])
-    input_list = collada.source.InputList()
-    input_list.addInput(0, "VERTEX", "#" + positions.id)
-    input_list.addInput(1, "NORMAL", "#" + normals.id)
-    triset = geom.createTriangleSet(
-        Face.get_triangle_indices(), input_list, MATERIAL_SYMBOL
-    )
-    geom.primitives.append(triset)
-    mesh.geometries.append(geom)
-    # Create geometry node
-    inputs = [("UVSET0", "TEXCOORD", "0")]
-    material = materials[face.face_type]
-    geom_node = collada.scene.GeometryNode(
-        geom, [collada.scene.MaterialNode(MATERIAL_SYMBOL, material, inputs)]
-    )
-    geom_node_dict[face] = geom_node
-
-
-def _load_base_collada_data() -> _BaseColladaData:
-    mesh = collada.Collada()
-    # Add asset info
-    _add_asset_info(mesh)
-    # Add materials
-    materials = {face_type: _add_material(mesh, face_type) for face_type in FaceType}
-    # Add geometries
-    geom_node_dict: dict[Face, collada.scene.GeometryNode] = {}
-    library_geometry = load_library_block_geometries()
-    for block_type, faces in library_geometry.items():
-        for face in faces:
-            _add_face_geometry_node(mesh, face, materials, geom_node_dict)
-    # Add library nodes
-    node_handles: dict[BlockType, collada.scene.Node] = {}
-    for block_type, faces in library_geometry.items():
-        children = [geom_node_dict[face] for face in faces]
-        name = block_type.value
-        node = collada.scene.Node(name, children, name=name)
-        mesh.nodes.append(node)
-        node_handles[block_type] = node
-
-    # Create scene
-    root_node = collada.scene.Node("SketchUp", name="SketchUp")
-    scene = collada.scene.Scene("scene", [root_node])
-    mesh.scenes.append(scene)
-    mesh.scene = scene
-    return _BaseColladaData(mesh, root_node, node_handles)
 
 
 @dataclass(frozen=True)
@@ -539,9 +522,6 @@ def display_collada_model(
         A helper class to display the 3D model, which implements the `_repr_html_` method and
         can be directly displayed in IPython compatible environments.
     """
-    if not isinstance(filepath_or_bytes, (str, pathlib.Path, bytes)):
-        raise TQECException("The input must be a file path or bytes.")
-
     helper = ColladaDisplayHelper(filepath_or_bytes)
 
     if write_html_filepath is not None:
