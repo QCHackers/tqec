@@ -242,7 +242,7 @@
 <span class="sd">        file: The output file path or file-like object that supports binary write.</span>
 <span class="sd">        pipe_length: The length of the pipe blocks. Default is 2.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base</span> <span class="o">=</span> <span class="n">_load_base_collada_data</span><span class="p">()</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">_BaseColladaData</span><span class="p">()</span>
     <span class="n">instance_id</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">scale_position</span><span class="p">(</span><span class="n">pos</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_FloatPosition</span><span class="p">:</span>
@@ -273,17 +273,104 @@
 
 
 <span class="k">class</span> <span class="nc">_BaseColladaData</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">,</span>
-        <span class="n">root_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span>
-        <span class="n">library_node_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library</span>
 <span class="sd">        nodes and the necessary material, geometry definitions.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="n">root_node</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">library_node_handles</span> <span class="o">=</span> <span class="n">library_node_handles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">library_geometry</span> <span class="o">=</span> <span class="n">load_library_block_geometries</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Face</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_scene</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_asset_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_materials</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_create_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="s2">&quot;scene&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
+
+    <span class="k">def</span> <span class="nf">_add_asset_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">contributors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">Contributor</span><span class="p">(</span>
+                <span class="n">author</span><span class="o">=</span><span class="n">ASSET_AUTHOR</span><span class="p">,</span> <span class="n">authoring_tool</span><span class="o">=</span><span class="n">ASSET_AUTHORING_TOOL_TQEC</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitmeter</span> <span class="o">=</span> <span class="n">ASSET_UNIT_METER</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitname</span> <span class="o">=</span> <span class="n">ASSET_UNIT_NAME</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">upaxis</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">UP_AXIS</span><span class="o">.</span><span class="n">Z_UP</span>
+
+    <span class="k">def</span> <span class="nf">_add_materials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all the materials for different faces.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="n">FaceType</span><span class="p">:</span>
+            <span class="n">rgba</span> <span class="o">=</span> <span class="n">_FACE_RGBA</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span>
+            <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_effect&quot;</span><span class="p">,</span>
+                <span class="p">[],</span>
+                <span class="s2">&quot;lambert&quot;</span><span class="p">,</span>
+                <span class="n">diffuse</span><span class="o">=</span><span class="n">rgba</span><span class="p">,</span>
+                <span class="n">emission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">specular</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">transparent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ambient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">reflective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">double_sided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">effect</span><span class="p">)</span>
+
+            <span class="n">effect</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="n">effect</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">material</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">material</span>
+
+    <span class="k">def</span> <span class="nf">_add_face_geometry_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">:</span> <span class="n">Face</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Create geometry</span>
+        <span class="n">id_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FaceID</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
+            <span class="n">id_str</span> <span class="o">+</span> <span class="s2">&quot;_positions&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">normals</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
+            <span class="n">id_str</span> <span class="o">+</span> <span class="s2">&quot;_normals&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">get_normal_vectors</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="p">[</span><span class="n">positions</span><span class="p">,</span> <span class="n">normals</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">input_list</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">InputList</span><span class="p">()</span>
+        <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;VERTEX&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">positions</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">normals</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">triset</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">createTriangleSet</span><span class="p">(</span>
+            <span class="n">Face</span><span class="o">.</span><span class="n">get_triangle_indices</span><span class="p">(),</span> <span class="n">input_list</span><span class="p">,</span> <span class="n">MATERIAL_SYMBOL</span>
+        <span class="p">)</span>
+        <span class="n">geom</span><span class="o">.</span><span class="n">primitives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="c1"># Create geometry node</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;UVSET0&quot;</span><span class="p">,</span> <span class="s2">&quot;TEXCOORD&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)]</span>
+        <span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">face_type</span><span class="p">]</span>
+        <span class="n">geom_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">(</span>
+            <span class="n">geom</span><span class="p">,</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MaterialNode</span><span class="p">(</span><span class="n">MATERIAL_SYMBOL</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_node</span>
+
+    <span class="k">def</span> <span class="nf">_add_library_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">block_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_geometry</span><span class="p">[</span><span class="n">block_type</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_geometry</span><span class="p">[</span><span class="n">block_type</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">block_type</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">[</span><span class="n">block_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
 
     <span class="k">def</span> <span class="nf">add_instance_node</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -292,120 +379,16 @@
         <span class="n">block_type</span><span class="p">:</span> <span class="n">BlockType</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an instance node to the root node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_library_node</span><span class="p">(</span><span class="n">block_type</span><span class="p">)</span>
         <span class="n">child_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;ID</span><span class="si">{</span><span class="n">instance_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;instance_</span><span class="si">{</span><span class="n">instance_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MatrixTransform</span><span class="p">(</span><span class="n">transform_matrix</span><span class="o">.</span><span class="n">flatten</span><span class="p">())],</span>
         <span class="p">)</span>
-        <span class="n">point_to_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_node_handles</span><span class="p">[</span><span class="n">block_type</span><span class="p">]</span>
+        <span class="n">point_to_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">[</span><span class="n">block_type</span><span class="p">]</span>
         <span class="n">instance_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">(</span><span class="n">point_to_node</span><span class="p">)</span>
         <span class="n">child_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_add_material</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">,</span>
-    <span class="n">face_type</span><span class="p">:</span> <span class="n">FaceType</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">:</span>
-    <span class="n">rgba</span> <span class="o">=</span> <span class="n">_FACE_RGBA</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span>
-    <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_effect&quot;</span><span class="p">,</span>
-        <span class="p">[],</span>
-        <span class="s2">&quot;lambert&quot;</span><span class="p">,</span>
-        <span class="n">diffuse</span><span class="o">=</span><span class="n">rgba</span><span class="p">,</span>
-        <span class="n">emission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">specular</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">transparent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">ambient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">reflective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">double_sided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">effect</span><span class="p">)</span>
-
-    <span class="n">effect</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="n">effect</span>
-    <span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">material</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">material</span>
-
-
-<span class="k">def</span> <span class="nf">_add_asset_info</span><span class="p">(</span><span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">contributors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">Contributor</span><span class="p">(</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">ASSET_AUTHOR</span><span class="p">,</span> <span class="n">authoring_tool</span><span class="o">=</span><span class="n">ASSET_AUTHORING_TOOL_TQEC</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitmeter</span> <span class="o">=</span> <span class="n">ASSET_UNIT_METER</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitname</span> <span class="o">=</span> <span class="n">ASSET_UNIT_NAME</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">upaxis</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">UP_AXIS</span><span class="o">.</span><span class="n">Z_UP</span>
-
-
-<span class="k">def</span> <span class="nf">_add_face_geometry_node</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">,</span>
-    <span class="n">face</span><span class="p">:</span> <span class="n">Face</span><span class="p">,</span>
-    <span class="n">materials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">],</span>
-    <span class="n">geom_node_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Face</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Note: currently we completely ignore the normals.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">geom_node_dict</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="c1"># Create geometry</span>
-    <span class="n">id_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FaceID</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geom_node_dict</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">positions</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
-        <span class="n">id_str</span> <span class="o">+</span> <span class="s2">&quot;_positions&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="n">normals</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
-        <span class="n">id_str</span> <span class="o">+</span> <span class="s2">&quot;_normals&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">get_normal_vectors</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-    <span class="p">)</span>
-
-    <span class="n">geom</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="n">id_str</span><span class="p">,</span> <span class="p">[</span><span class="n">positions</span><span class="p">,</span> <span class="n">normals</span><span class="p">])</span>
-    <span class="n">input_list</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">InputList</span><span class="p">()</span>
-    <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;VERTEX&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">positions</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-    <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">normals</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-    <span class="n">triset</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">createTriangleSet</span><span class="p">(</span>
-        <span class="n">Face</span><span class="o">.</span><span class="n">get_triangle_indices</span><span class="p">(),</span> <span class="n">input_list</span><span class="p">,</span> <span class="n">MATERIAL_SYMBOL</span>
-    <span class="p">)</span>
-    <span class="n">geom</span><span class="o">.</span><span class="n">primitives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triset</span><span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
-    <span class="c1"># Create geometry node</span>
-    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;UVSET0&quot;</span><span class="p">,</span> <span class="s2">&quot;TEXCOORD&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)]</span>
-    <span class="n">material</span> <span class="o">=</span> <span class="n">materials</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">face_type</span><span class="p">]</span>
-    <span class="n">geom_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">(</span>
-        <span class="n">geom</span><span class="p">,</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MaterialNode</span><span class="p">(</span><span class="n">MATERIAL_SYMBOL</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)]</span>
-    <span class="p">)</span>
-    <span class="n">geom_node_dict</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_node</span>
-
-
-<span class="k">def</span> <span class="nf">_load_base_collada_data</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">_BaseColladaData</span><span class="p">:</span>
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">()</span>
-    <span class="c1"># Add asset info</span>
-    <span class="n">_add_asset_info</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="c1"># Add materials</span>
-    <span class="n">materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">face_type</span><span class="p">:</span> <span class="n">_add_material</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="n">FaceType</span><span class="p">}</span>
-    <span class="c1"># Add geometries</span>
-    <span class="n">geom_node_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Face</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">library_geometry</span> <span class="o">=</span> <span class="n">load_library_block_geometries</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">block_type</span><span class="p">,</span> <span class="n">faces</span> <span class="ow">in</span> <span class="n">library_geometry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-            <span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">materials</span><span class="p">,</span> <span class="n">geom_node_dict</span><span class="p">)</span>
-    <span class="c1"># Add library nodes</span>
-    <span class="n">node_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockType</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">block_type</span><span class="p">,</span> <span class="n">faces</span> <span class="ow">in</span> <span class="n">library_geometry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">geom_node_dict</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">block_type</span><span class="o">.</span><span class="n">value</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="n">node_handles</span><span class="p">[</span><span class="n">block_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
-
-    <span class="c1"># Create scene</span>
-    <span class="n">root_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">)</span>
-    <span class="n">scene</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="s2">&quot;scene&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">root_node</span><span class="p">])</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
-    <span class="n">mesh</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
-    <span class="k">return</span> <span class="n">_BaseColladaData</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">root_node</span><span class="p">,</span> <span class="n">node_handles</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Transformation">
@@ -639,9 +622,6 @@
 <span class="sd">        A helper class to display the 3D model, which implements the `_repr_html_` method and</span>
 <span class="sd">        can be directly displayed in IPython compatible environments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_bytes</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The input must be a file path or bytes.&quot;</span><span class="p">)</span>
-
     <span class="n">helper</span> <span class="o">=</span> <span class="n">ColladaDisplayHelper</span><span class="p">(</span><span class="n">filepath_or_bytes</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">write_html_filepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
