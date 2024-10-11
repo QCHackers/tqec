@@ -360,6 +360,8 @@ def get_spatially_distinct_3d_subtemplates(
         (2 * manhattan_radius + 1, 2 * manhattan_radius + 1), dtype=numpy.int_
     )
     for indices in unique_3d_indices:
+        if all(i == 0 for i in indices):
+            continue
         # Get the list of subtemplates that should be stacked in the time dimension.
         subtemplates_2d_to_stack: list[npt.NDArray[numpy.int_]] = []
         for t, i in enumerate(indices):
