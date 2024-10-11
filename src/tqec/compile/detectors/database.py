@@ -231,3 +231,6 @@ class DetectorDatabase:
                 circuit.append_annotation(detector.to_instruction(rec_map))
             urls.append(circuit.get_circuit().to_crumble_url())
         return urls
+
+    def __len__(self) -> int:
+        return len(self.mapping)
