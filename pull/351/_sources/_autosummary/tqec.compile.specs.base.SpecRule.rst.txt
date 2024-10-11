@@ -1,0 +1,22 @@
+tqec.compile.specs.base.SpecRule
+================================
+
+.. currentmodule:: tqec.compile.specs.base
+
+.. autoclass:: SpecRule
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SpecRule.__init__
+   
+   
+
+   
+   
+   

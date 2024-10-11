@@ -1,0 +1,31 @@
+tqec.plaquette.plaquette.Plaquettes
+===================================
+
+.. currentmodule:: tqec.plaquette.plaquette
+
+.. autoclass:: Plaquettes
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Plaquettes.__init__
+      ~Plaquettes.repeat
+      ~Plaquettes.with_updated_plaquettes
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Plaquettes.has_default
+      ~Plaquettes.collection
+   
+   

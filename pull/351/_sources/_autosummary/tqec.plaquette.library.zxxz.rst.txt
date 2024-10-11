@@ -1,0 +1,30 @@
+tqec.plaquette.library.zxxz
+===========================
+
+.. automodule:: tqec.plaquette.library.zxxz
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      make_zxxz_surface_code_plaquette
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

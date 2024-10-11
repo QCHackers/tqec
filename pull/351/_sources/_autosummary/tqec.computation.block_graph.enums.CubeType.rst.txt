@@ -1,0 +1,40 @@
+tqec.computation.block\_graph.enums.CubeType
+============================================
+
+.. currentmodule:: tqec.computation.block_graph.enums
+
+.. autoclass:: CubeType
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CubeType.to_zx_node_type
+      ~CubeType.get_color
+      ~CubeType.from_color
+      ~CubeType.normal_direction_to_corner_plane
+      ~CubeType.infer_pipe_type_at_direction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CubeType.is_spatial_junction
+      ~CubeType.ZXX
+      ~CubeType.XZX
+      ~CubeType.XXZ
+      ~CubeType.XZZ
+      ~CubeType.ZXZ
+      ~CubeType.ZZX
+      ~CubeType.Y
+      ~CubeType.VIRTUAL
+   
+   

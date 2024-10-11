@@ -1,0 +1,219 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.plaquette.library.zxxz &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.plaquette.library.zxxz</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.plaquette.library.zxxz</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Define the ZXXZ-type surface code plaquettes.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">stim</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">ResetBasis</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.qubit</span> <span class="kn">import</span> <span class="n">SquarePlaquetteQubits</span>
+
+
+<div class="viewcode-block" id="make_zxxz_surface_code_plaquette">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette.html#tqec.plaquette.library.zxxz.make_zxxz_surface_code_plaquette">[docs]</a>
+<span class="k">def</span> <span class="nf">make_zxxz_surface_code_plaquette</span><span class="p">(</span>
+    <span class="n">basis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span>
+    <span class="n">data_qubits_initialization</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">data_qubits_measurement</span><span class="p">:</span> <span class="n">MeasurementBasis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">x_boundary_orientation</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;HORIZONTAL&quot;</span><span class="p">,</span> <span class="s2">&quot;VERTICAL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;VERTICAL&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plaquette</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a ZXXZ-type surface code plaquette. The circuit is adapted to</span>
+<span class="sd">    superconducting qubits architecture s.t. all CNOTs are compiled to the</span>
+<span class="sd">    CZ gates and additional Hadamard gates. Only Z basis reset and measurement</span>
+<span class="sd">    are supported.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        basis: The basis of the plaquette, either &quot;X&quot; or &quot;Z&quot;.</span>
+<span class="sd">        data_qubits_initialization: Initialization basis for the data qubits.</span>
+<span class="sd">            If None, no initialization is performed.</span>
+<span class="sd">        data_qubits_measurement: Measurement basis for the data qubits.</span>
+<span class="sd">            If None, no measurement is performed.</span>
+<span class="sd">        x_boundary_orientation: The orientation of the X boundary of the surface</span>
+<span class="sd">            code block. Either &quot;HORIZONTAL&quot; or &quot;VERTICAL&quot;. This determines the</span>
+<span class="sd">            CNOT order in the plaquette together with the basis to prevent hook</span>
+<span class="sd">            error from decreasing the code distance. Default is &quot;HORIZONTAL&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">qubits</span> <span class="o">=</span> <span class="n">SquarePlaquetteQubits</span><span class="p">()</span>
+    <span class="n">sq</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># data qubits ordered as &quot;Z&quot; shape</span>
+    <span class="n">dqs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">i2q</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="p">(</span>
+        <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+        <span class="o">|</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubits</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)}</span>
+    <span class="p">)</span>
+
+    <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
+    <span class="c1"># 1. Initialization</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">sq</span><span class="p">],</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">data_qubits_initialization</span><span class="p">:</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">dqs</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">sq</span><span class="p">],</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">data_qubits_initialization</span><span class="p">:</span>
+        <span class="k">match</span> <span class="n">basis</span><span class="p">,</span> <span class="n">data_qubits_initialization</span><span class="p">:</span>
+            <span class="k">case</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="o">.</span><span class="n">X</span><span class="p">):</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dqs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dqs</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[])</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dqs</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[])</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+
+    <span class="c1"># 2. CZ interactions</span>
+    <span class="c1"># adjust cz order to make the hook errors perpendicular to the boundary</span>
+    <span class="k">match</span> <span class="n">basis</span><span class="p">,</span> <span class="n">x_boundary_orientation</span><span class="p">:</span>
+        <span class="k">case</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;HORIZONTAL&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;VERTICAL&quot;</span><span class="p">):</span>
+            <span class="n">cz_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="n">cz_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">H_ON_ALL_DQS</span> <span class="o">=</span> <span class="s2">&quot;H &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">dqs</span><span class="p">))</span>
+    <span class="n">circuit</span> <span class="o">+=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">CZ </span><span class="si">{</span><span class="n">sq</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cz_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="si">{</span><span class="n">H_ON_ALL_DQS</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="s2">CZ </span><span class="si">{</span><span class="n">sq</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cz_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="s2">CZ </span><span class="si">{</span><span class="n">sq</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cz_order</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="si">{</span><span class="n">H_ON_ALL_DQS</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="s2">CZ </span><span class="si">{</span><span class="n">sq</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cz_order</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">TICK</span>
+<span class="s2">H </span><span class="si">{</span><span class="n">sq</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Measurement</span>
+    <span class="k">if</span> <span class="n">data_qubits_measurement</span><span class="p">:</span>
+        <span class="k">match</span> <span class="n">basis</span><span class="p">,</span> <span class="n">data_qubits_measurement</span><span class="p">:</span>
+            <span class="k">case</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="n">MeasurementBasis</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">MeasurementBasis</span><span class="o">.</span><span class="n">X</span><span class="p">):</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dqs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dqs</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[])</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dqs</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[])</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">sq</span><span class="p">],</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">data_qubits_measurement</span><span class="p">:</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">dqs</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">return</span> <span class="n">Plaquette</span><span class="p">(</span>
+        <span class="n">qubits</span><span class="p">,</span>
+        <span class="n">ScheduledCircuit</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">i2q</span><span class="o">=</span><span class="n">i2q</span><span class="p">),</span>
+        <span class="n">mergeable_instructions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
