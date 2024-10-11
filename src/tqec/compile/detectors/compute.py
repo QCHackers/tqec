@@ -94,9 +94,12 @@ def _compute_detectors_at_end_of_situation(
     coordless_subcircuits = [
         sc.get_circuit(include_qubit_coords=False) for sc in subcircuits
     ]
-    complete_circuit = global_qubit_map.to_circuit() + sum(
-        coordless_subcircuits, start=stim.Circuit()
-    )
+    complete_circuit = global_qubit_map.to_circuit()
+    for coordless_subcircuit in coordless_subcircuits[:-1]:
+        complete_circuit += coordless_subcircuit
+        complete_circuit.append("TICK", [], [])
+    complete_circuit += coordless_subcircuits[-1]
+
     # Construct the different mappings we will need during the computation
     measurements_by_offset = _get_measurement_offset_mapping(complete_circuit)
     coordinates_by_index = {
