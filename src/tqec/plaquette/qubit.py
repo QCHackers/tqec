@@ -72,6 +72,16 @@ class PlaquetteQubits:
             max_y = max(q.y for q in self)
             return [q for q in self if q.y == max_y]
 
+    def __hash__(self) -> int:
+        return hash((tuple(self.syndrome_qubits), tuple(self.data_qubits)))
+
+    def __eq__(self, rhs: object) -> bool:
+        return (
+            isinstance(rhs, PlaquetteQubits)
+            and self.data_qubits == rhs.data_qubits
+            and self.syndrome_qubits == rhs.syndrome_qubits
+        )
+
 
 class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
