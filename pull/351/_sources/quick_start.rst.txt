@@ -16,7 +16,7 @@ implementation that has been defined using SketchUp and available at
     .. raw:: html
 
         <iframe
-        src="_static/media/quick_start/cnot_sketchup.html"
+        src="_static/media/quick_start/logical_cnot.html"
         title="Interactive visualisation of an error-corrected topological CNOT implementation"
         width=100%
         height=500
@@ -50,7 +50,7 @@ specific example, the command line
 
 .. code-block:: bash
 
-    tqec dae2observables --out-dir observables/ clean_exportable_cnot.dae
+    tqec dae2observables --out-dir observables/ logical_cnot.dae
 
 should populate the ``observables`` directory with 3 ``.png`` images representing the
 3 valid observables found.
