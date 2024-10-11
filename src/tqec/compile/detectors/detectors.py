@@ -254,7 +254,7 @@ def compute_detectors_for_constant_template_and_fixed_radius(
                     d.coordinates[1] + plaquette_origin.x,
                     *d.coordinates[2:],
                 )
-                detectors_by_measurements[frozenset(offset_measurements)] = Detector(
+                detectors_by_measurements[offset_measurements] = Detector(
                     offset_measurements, coordinates
                 )
     return frozenset(detectors_by_measurements.values())
