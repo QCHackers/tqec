@@ -3,13 +3,14 @@ from __future__ import annotations
 import itertools
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Iterator, Literal, Protocol
+from typing import Iterator, Literal, Mapping, Protocol
 
 from typing_extensions import override
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
 from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
 from tqec.scale import LinearFunction, round_or_fail
@@ -119,7 +120,7 @@ class Plaquettes:
     and conventionally reserved for the empty plaquette).
     """
 
-    collection: CollectionType
+    collection: FrozenDefaultDict[int, Plaquette]
 
     def __post_init__(self) -> None:
         if not isinstance(self.collection, (dict, defaultdict)):
@@ -155,7 +156,7 @@ class Plaquettes:
         return RepeatedPlaquettes(self.collection, repetitions)
 
     def with_updated_plaquettes(
-        self, plaquettes_to_update: dict[int, Plaquette]
+        self, plaquettes_to_update: Mapping[int, Plaquette]
     ) -> Plaquettes:
         return Plaquettes(self.collection | plaquettes_to_update)
 

@@ -4,8 +4,8 @@ import pytest
 import stim
 
 from tqec.circuit.generation import generate_circuit
-from tqec.exceptions import TQECException
 from tqec.plaquette.enums import PlaquetteOrientation
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library import make_css_surface_code_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.templates._testing import FixedTemplate
@@ -41,35 +41,10 @@ def _expected_circuit() -> stim.Circuit:
 """)
 
 
-def test_generate_circuit_dict(
-    plaquette: Plaquette, one_by_one_template: Template
-) -> None:
-    circuit = generate_circuit(one_by_one_template, 2, Plaquettes({1: plaquette}))
-    assert circuit.get_circuit() == _expected_circuit()
-
-
 def test_generate_circuit_defaultdict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(
-        one_by_one_template, 2, Plaquettes(defaultdict(lambda: plaquette))
+        one_by_one_template, 2, Plaquettes(FrozenDefaultDict(lambda: plaquette))
     )
     assert circuit.get_circuit() == _expected_circuit()
-
-
-def test_generate_circuit_dict_0_indexed(
-    plaquette: Plaquette, one_by_one_template: Template
-) -> None:
-    with pytest.raises(TQECException):
-        generate_circuit(one_by_one_template, 2, Plaquettes({0: plaquette}))
-
-
-def test_generate_circuit_wrong_number_of_plaquettes(
-    plaquette: Plaquette, one_by_one_template: Template
-) -> None:
-    with pytest.raises(TQECException):
-        generate_circuit(
-            one_by_one_template, 2, Plaquettes({1: plaquette, 2: plaquette})
-        )
-    with pytest.raises(TQECException):
-        generate_circuit(one_by_one_template, 2, Plaquettes({}))
