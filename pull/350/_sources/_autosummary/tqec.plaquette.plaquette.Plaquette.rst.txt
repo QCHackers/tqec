@@ -24,9 +24,9 @@ tqec.plaquette.plaquette.Plaquette
 
    .. autosummary::
    
-      ~Plaquette.circuit
-      ~Plaquette.mergeable_instructions
       ~Plaquette.origin
       ~Plaquette.qubits
+      ~Plaquette.circuit
+      ~Plaquette.mergeable_instructions
    
    

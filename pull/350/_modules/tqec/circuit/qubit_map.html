@@ -92,6 +92,7 @@
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
 
 
 <div class="viewcode-block" id="QubitMap">
@@ -211,7 +212,9 @@
                 <span class="s2">&quot;Qubits should be defined on exactly 2 spatial dimensions. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">qi</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2"> defined on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2"> spatial dimensions.&quot;</span>
             <span class="p">)</span>
-        <span class="n">qubits</span><span class="p">[</span><span class="n">qi</span><span class="p">]</span> <span class="o">=</span> <span class="n">GridQubit</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">qubits</span><span class="p">[</span><span class="n">qi</span><span class="p">]</span> <span class="o">=</span> <span class="n">GridQubit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">QubitMap</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span></div>
 
 </pre></div>

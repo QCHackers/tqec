@@ -92,56 +92,30 @@
 
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position2D</span>
 
-<span class="n">NumericType</span> <span class="o">=</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span>
-
-
-<span class="k">def</span> <span class="nf">_to_fraction</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">NumericType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fraction</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Fraction</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">value</span>
-
 
 <div class="viewcode-block" id="GridQubit">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit">[docs]</a>
 <span class="k">class</span> <span class="nc">GridQubit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a qubit placed on a 2-dimensional grid.</span>
-
-<span class="sd">    Internally, this class represents the qubit coordinates as fractions. This</span>
-<span class="sd">    design choice has been made for several reasons:</span>
-
-<span class="sd">    - the :class:`fractions.Fraction` type is hashable (and its hash is usable,</span>
-<span class="sd">      which is not the case for `float` for example).</span>
-<span class="sd">    - most of the qubit coordinates we manipulated since the beginning are</span>
-<span class="sd">      integers and so can be exactly represented by an instance of</span>
-<span class="sd">      :class:`fractions.Fraction`.</span>
-<span class="sd">    - it might make sense to have some qubits on &quot;half-integer&quot; (e.g., `0.5` or</span>
-<span class="sd">      `4.5`) as some Crumble or Stim pre-built circuits use such coordinates.</span>
-
-<span class="sd">    This means that the `x` and `y` coordinates will be returned as `Fraction`</span>
-<span class="sd">    instances to the user.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a qubit placed on a 2-dimensional grid.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GridQubit.__init__">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">NumericType</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">NumericType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">_to_fraction</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">_to_fraction</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">y</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fraction</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fraction</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
 
     <span class="k">def</span> <span class="nf">to_qubit_coords_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">:</span>
@@ -158,10 +132,10 @@
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GridQubit</span> <span class="o">|</span> <span class="n">Position2D</span> <span class="o">|</span> <span class="n">Displacement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">GridQubit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">GridQubit</span><span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">GridQubit</span><span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -176,7 +150,10 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;GridQubit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;GridQubit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Q[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">]&quot;</span></div>
 
 
 
