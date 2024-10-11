@@ -3,6 +3,7 @@ from typing import Literal, Mapping
 
 import stim
 
+from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.observables import inplace_add_observables
@@ -93,14 +94,11 @@ class CompiledGraph:
         self._shift_all_circuits_inplace(circuits, k)
         # Then, get a global qubit index map to remap the circuit indices on the
         # fly.
-        needed_qubits = frozenset.union(
-            *[c.qubits for clayer in circuits for c in clayer]
+        global_q2i = QubitMap.from_qubits(
+            frozenset.union(*[c.qubits for clayer in circuits for c in clayer])
         )
-        global_q2i = {q: i for i, q in enumerate(sorted(needed_qubits))}
         # Add the QUBIT_COORDS instructions at the beginning of the circuit
-        final_circuit = stim.Circuit()
-        for q, i in global_q2i.items():
-            final_circuit.append(q.to_qubit_coords_instruction(i))
+        final_circuit = global_q2i.to_circuit()
         # Merge all the circuits, constructing a REPEAT block when needed.
         for t, layout in enumerate(self.layout_slices):
             for i in range(layout.num_layers):
@@ -108,7 +106,7 @@ class CompiledGraph:
                 # no index clash.
                 circuit = circuits[t][i]
                 local_indices_to_global_indices = {
-                    local_index: global_q2i[q]
+                    local_index: global_q2i.q2i[q]
                     for local_index, q in circuit.qubit_map.items()
                 }
                 circuit.map_qubit_indices(local_indices_to_global_indices, inplace=True)
