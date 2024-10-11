@@ -148,7 +148,7 @@ def _create_y_cube_geometry() -> Geometry:
     faces = []
     for normal_direction in Direction3D.all():
         if normal_direction == Direction3D.X:
-            width, height= 1.0, 0.5
+            width, height = 1.0, 0.5
         elif normal_direction == Direction3D.Y:
             width, height = 0.5, 1.0
         else:

@@ -36,7 +36,9 @@ class CubeType(Enum):
             return NodeType.Z
         if self.value.count("x") == 2:
             return NodeType.X
-        raise TQECException(f"Conversion from {self} to ZX node type is not supported yet.")
+        raise TQECException(
+            f"Conversion from {self} to ZX node type is not supported yet."
+        )
 
     def get_color(self) -> Color3D:
         """Get the color of the block."""
