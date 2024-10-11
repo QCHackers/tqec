@@ -29,7 +29,7 @@ def start_simulation_using_sinter(
     max_errors: int | None = None,
     decoders: Iterable[str] = ("pymatching",),
     print_progress: bool = False,
-    custom_decoders: dict[str, sinter.Decoder] | None = None,
+    custom_decoders: dict[str, sinter.Decoder | sinter.Sampler] | None = None,
 ) -> Iterator[list[sinter.TaskStats]]:
     """Helper to run `stim` simulations using `sinter`.
 
