@@ -1,3 +1,4 @@
+import numpy
 import stim
 
 from tqec.circuit.detectors.flow import build_flows_from_fragments
@@ -17,7 +18,10 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement, Position2D
 from tqec.templates.base import Template
-from tqec.templates.subtemplates import SubTemplateType
+from tqec.templates.subtemplates import (
+    SubTemplateType,
+    get_spatially_distinct_3d_subtemplates,
+)
 
 
 def _get_measurement_offset_mapping(circuit: stim.Circuit) -> dict[int, Measurement]:
@@ -75,12 +79,20 @@ def _matched_detectors_to_detectors(
 
 def _compute_detectors_at_end_of_situation(
     subtemplates: tuple[SubTemplateType] | tuple[SubTemplateType, SubTemplateType],
-    plaquettes_by_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
+    plaquettes_by_timesteps: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     increments: Displacement,
 ) -> frozenset[Detector]:
+    # Note: if `len(subtemplates) == 2`, the first entry **might** be full of zeros.
+    #       In this case, just consider the second entry.
+    assert len(plaquettes_by_timesteps) == len(subtemplates)
+    if len(subtemplates) == 2 and numpy.all(subtemplates[0] == 0):
+        assert len(plaquettes_by_timesteps) == 2
+        subtemplates = (subtemplates[1],)
+        plaquettes_by_timesteps = (plaquettes_by_timesteps[1],)
+
     # Build subcircuit for each Plaquettes layer
     subcircuits: list[ScheduledCircuit] = []
-    for subtemplate, plaquettes in zip(subtemplates, plaquettes_by_timestep):
+    for subtemplate, plaquettes in zip(subtemplates, plaquettes_by_timesteps):
         subcircuit = generate_circuit_from_instantiation(
             subtemplate, plaquettes, increments
         )
@@ -182,19 +194,20 @@ def compute_detectors_at_end_of_situation(
     return frozenset(d.offset_spatially_by(shift_x, shift_y) for d in detectors)
 
 
-def compute_detectors_for_constant_template_and_fixed_radius(
-    template: Template,
+def compute_detectors_for_fixed_radius(
+    template_at_timestep: tuple[Template] | tuple[Template, Template],
     k: int,
     plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     fixed_subtemplate_radius: int = 2,
     database: DetectorDatabase | None = None,
 ) -> frozenset[Detector]:
     """Returns detectors that should be added at the end of the circuit that would
-    be obtained from the provided `template` and `plaquettes_at_timestep`.
+    be obtained from the provided `template_at_timestep` and
+    `plaquettes_at_timestep`.
 
     Args:
-        template: constant Template that describes accurately the plaquette
-            arrangement on all the considered timesteps.
+        template_at_timestep: a tuple containing either one or two :class:`Template`
+            instance(s), each representing one QEC round.
         k: scaling factor to consider in order to instantiate the provided
             template.
         plaquettes_at_timestep: a tuple containing either one or two collection(s)
@@ -215,49 +228,41 @@ def compute_detectors_for_constant_template_and_fixed_radius(
 
     Returns:
         a collection of detectors that should be added at the end of the circuit
-        that would be obtained from the provided `template` and
+        that would be obtained from the provided `template_at_timestep` and
         `plaquettes_at_timestep`.
     """
-    unique_subtemplates = template.get_spatially_distinct_subtemplates(
-        k, fixed_subtemplate_radius, avoid_zero_plaquettes=True
+    all_increments = frozenset(t.get_increments() for t in template_at_timestep)
+    if len(all_increments) != 1:
+        raise TQECException(
+            "Expected all the provided templates to have the same increments. "
+            f"Found the following different increments: {all_increments}."
+        )
+    increments = next(iter(all_increments))
+
+    unique_3d_subtemplates = get_spatially_distinct_3d_subtemplates(
+        tuple(t.instantiate(k) for t in template_at_timestep),
+        manhattan_radius=fixed_subtemplate_radius,
+        avoid_zero_plaquettes=True,
     )
-    increments = template.get_increments()
+
     # Each detector in detectors_by_subtemplate is using a coordinate system
     # centered on the central plaquette origin.
-    detectors_by_subtemplate: dict[int, frozenset[Detector]] = {
-        i: compute_detectors_at_end_of_situation(
-            (subtemplate,)
-            if len(plaquettes_at_timestep) == 1
-            else (subtemplate, subtemplate),
+    detectors_by_subtemplate: dict[tuple[int, ...], frozenset[Detector]] = {
+        indices: compute_detectors_at_end_of_situation(
+            (s3d[:, :, 0], s3d[:, :, 1]),
             plaquettes_at_timestep,
             increments,
             database,
         )
-        for i, subtemplate in unique_subtemplates.subtemplates.items()
+        for indices, s3d in unique_3d_subtemplates.subtemplates.items()
     }
 
     detectors_by_measurements: dict[frozenset[Measurement], Detector] = dict()
-    for i, row in enumerate(unique_subtemplates.subtemplate_indices):
-        for j, subtemplate_index in enumerate(row):
-            if subtemplate_index == 0:
+    for i, row in enumerate(unique_3d_subtemplates.subtemplate_indices):
+        for j, subtemplate_indices in enumerate(row):
+            if all(subi == 0 for subi in subtemplate_indices):
                 continue
-            plaquette_origin = Position2D(j * increments.x, i * increments.y)
-            for d in detectors_by_subtemplate[subtemplate_index]:
-                offset_measurements = frozenset(
-                    m.offset_spatially_by(plaquette_origin.x, plaquette_origin.y)
-                    for m in d.measurements
-                )
-                # We use the convention of `cirq.GridQubit` where the first coordinate
-                # is the column and the second coordinate is the row. Note that the
-                # coordinates of detectors are derived from the qubits, which are
-                # already in the `GridQubit` convention. So we only need to swap the
-                # coordinates of the plaquette origin.
-                coordinates = (
-                    d.coordinates[0] + plaquette_origin.y,
-                    d.coordinates[1] + plaquette_origin.x,
-                    *d.coordinates[2:],
-                )
-                detectors_by_measurements[offset_measurements] = Detector(
-                    offset_measurements, coordinates
-                )
+            for d in detectors_by_subtemplate[tuple(subtemplate_indices)]:
+                d_offset = d.offset_spatially_by(j * increments.x, i * increments.y)
+                detectors_by_measurements[d_offset.measurements] = d_offset
     return frozenset(detectors_by_measurements.values())
