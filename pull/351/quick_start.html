@@ -97,7 +97,7 @@
 <p>The first step should be to define the error-corrected computation you want
 to implement. For the sake of simplicity, we will take an error-corrected CNOT
 implementation that has been defined using SketchUp and available at
-<a class="reference download internal" download="" href="_downloads/fcd0bb4733dfdae3092f2457e73d0c47/clean_exportable_cnot.dae"><code class="xref download docutils literal notranslate"><span class="pre">media/quick_start/clean_exportable_cnot.dae</span></code></a>.</p>
+<a class="reference download internal" download="" href="_downloads/2fa9368cec44f2347e23fe55e4e39b2f/logical_cnot.dae"><code class="xref download docutils literal notranslate"><span class="pre">media/quick_start/logical_cnot.dae</span></code></a>.</p>
 <p>You can also interactively visualise the CNOT implementation below.</p>
 <iframe
 src="_static/media/quick_start/cnot_sketchup.html"
@@ -111,7 +111,7 @@ height=500
 using <code class="docutils literal notranslate"><span class="pre">tqec.BlockGraph</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec</span> <span class="kn">import</span> <span class="n">BlockGraph</span>
 
-<span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;clean_exportable_cnot.dae&quot;</span><span class="p">)</span>
+<span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;logical_cnot.dae&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -140,7 +140,7 @@ specific example, the command line</p>
 <span class="c1"># block_graph.get_abstract_observables() and provide them here.</span>
 <span class="c1"># In this example, picking only the second observable for demonstration</span>
 <span class="c1"># purposes.</span>
-<span class="n">compiled_computation</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span><span class="n">block_graph</span><span class="p">,</span> <span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">compiled_computation</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span><span class="n">block_graph</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>From this compiled computation, the final <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance can be generated.</p>
@@ -165,7 +165,7 @@ generated.</p>
 <p>And that’s all! You now have a quantum circuit representing the topological
 error-corrected implementation of a CNOT gate shown at the beginning of this page.</p>
 <p>You can download the circuit in a <code class="docutils literal notranslate"><span class="pre">stim</span></code> format here:
-<a class="reference download internal" download="" href="_downloads/8f0c581b27b62513a419ef59ee159a0a/clean_exportable_cnot.stim"><code class="xref download docutils literal notranslate"><span class="pre">media/quick_start/clean_exportable_cnot.stim</span></code></a>.</p>
+<a class="reference download internal" download="" href="_downloads/8e453df8dbca573b43e529d035ccbe46/logical_cnot.stim"><code class="xref download docutils literal notranslate"><span class="pre">media/quick_start/logical_cnot.stim</span></code></a>.</p>
 </section>
 </section>
 
