@@ -121,7 +121,9 @@
             <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span>
-        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conversion from </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> to ZX node type is not supported yet.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Conversion from </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> to ZX node type is not supported yet.&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the color of the block.&quot;&quot;&quot;</span>
