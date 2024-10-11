@@ -9,6 +9,7 @@ import stim
 
 from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
+from tqec.scale import round_or_fail
 
 
 @dataclass(frozen=True)
@@ -123,5 +124,7 @@ def get_qubit_map(circuit: stim.Circuit) -> QubitMap:
                 "Qubits should be defined on exactly 2 spatial dimensions. "
                 f"Found {qi} -> {coords} defined on {len(coords)} spatial dimensions."
             )
-        qubits[qi] = GridQubit(*coords)
+        x = round_or_fail(coords[0])
+        y = round_or_fail(coords[1])
+        qubits[qi] = GridQubit(x, y)
     return QubitMap(qubits)
