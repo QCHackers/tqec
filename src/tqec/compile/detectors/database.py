@@ -1,8 +1,8 @@
-import hashlib
 from dataclasses import dataclass, field
 from typing import Sequence
 
 import numpy
+import numpy.typing as npt
 
 from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement_map import MeasurementRecordsMap
@@ -18,7 +18,9 @@ from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
 from tqec.templates.subtemplates import SubTemplateType
 
-_NUMPY_ARRAY_HASHER = hashlib.md5
+
+def _NUMPY_ARRAY_HASHER(arr: npt.NDArray[numpy.int_]) -> int:
+    return hash(arr.data.tobytes())
 
 
 @dataclass(frozen=True)
@@ -84,7 +86,7 @@ class DetectorDatabaseKey:
         return hash(
             (
                 tuple(st.shape for st in self.subtemplates),
-                tuple(_NUMPY_ARRAY_HASHER(st.tobytes()) for st in self.subtemplates),
+                tuple(_NUMPY_ARRAY_HASHER(st) for st in self.subtemplates),
                 tuple(self.plaquettes_by_timestep),
             )
         )
