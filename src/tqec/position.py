@@ -51,7 +51,7 @@ class Shape2D:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
