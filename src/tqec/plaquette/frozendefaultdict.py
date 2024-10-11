@@ -91,3 +91,9 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
 
     def has_default_factory(self) -> bool:
         return self._default_factory is not None
+
+    def map_keys(self, key_map: Mapping[K, K]) -> FrozenDefaultDict:
+        return FrozenDefaultDict(
+            {key_map[k]: v for k, v in self.items()},
+            default_factory=self._default_factory,
+        )
