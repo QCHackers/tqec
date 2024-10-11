@@ -200,7 +200,7 @@ def compute_detectors_for_fixed_radius(
     plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     fixed_subtemplate_radius: int = 2,
     database: DetectorDatabase | None = None,
-) -> frozenset[Detector]:
+) -> list[Detector]:
     """Returns detectors that should be added at the end of the circuit that would
     be obtained from the provided `template_at_timestep` and
     `plaquettes_at_timestep`.
@@ -260,9 +260,10 @@ def compute_detectors_for_fixed_radius(
     detectors_by_measurements: dict[frozenset[Measurement], Detector] = dict()
     for i, row in enumerate(unique_3d_subtemplates.subtemplate_indices):
         for j, subtemplate_indices in enumerate(row):
-            if all(subi == 0 for subi in subtemplate_indices):
+            if numpy.all(subtemplate_indices == 0):
                 continue
             for d in detectors_by_subtemplate[tuple(subtemplate_indices)]:
                 d_offset = d.offset_spatially_by(j * increments.x, i * increments.y)
                 detectors_by_measurements[d_offset.measurements] = d_offset
-    return frozenset(detectors_by_measurements.values())
+
+    return list(detectors_by_measurements.values())
