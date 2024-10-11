@@ -15,7 +15,7 @@ For a more in-depth explanation, see the [installation procedure](https://qchack
 
 ## Quick start
 
-Download the example file [clean_exportable_cnot.dae](https://github.com/QCHackers/tqec/tree/main/docs/media/quick_start/clean_exportable_cnot.dae).
+Download the example file [logical_cnot.dae](https://github.com/QCHackers/tqec/tree/main/docs/media/quick_start/logical_cnot.dae).
 
 You can generate `stim.Circuit` instances representing that computation using
 
@@ -25,9 +25,9 @@ from tqec import (
 )
 from tqec.noise_models import NoiseModel
 
-block_graph = BlockGraph.from_dae_file("clean_exportable_cnot.dae")
+block_graph = BlockGraph.from_dae_file("logical_cnot.dae")
 observables = block_graph.get_abstract_observables()
-compiled_computation = compile_block_graph(block_graph, [observables[1]])
+compiled_computation = compile_block_graph(block_graph, observables=[observables[1]])
 
 circuit = compiled_computation.generate_stim_circuit(
     # Can be changed to whatever value you want. Large values will
