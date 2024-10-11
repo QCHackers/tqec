@@ -52,19 +52,15 @@ class DetectorDatabaseKey:
       `stim.Circuit`. Hashing a quantum circuit cannot be performed in constant
       time.
 
-    For `self.subtemplate`, we hash the `shape` of the array as well as the MD5
+    For `self.subtemplate`, we hash the `shape` of the array as well as the
     hash of the array's data. This is a constant time operation, because
     we only consider spatially local detectors at the moment and that
     restriction makes sub-templates that are of constant size (w.r.t the number
     of qubits).
 
-    For `self.plaquettes_by_timestep`, we rely on the fact that
-    :class:`Plaquette` instances are immutable, which means that for each unique
-    plaquette we should only have one unique instance being used in the whole
-    code. This is tricky to ensure or check at the moment, and this assertion
-    will have to be checked later.
-
-    TODO: check assertion of last paragraph.
+    For `self.plaquettes_by_timestep`, we rely on the hash implementation of
+    :class:`Plaquettes`. It is up to :class:`Plaquettes` to implement hash
+    efficiently.
     """
 
     subtemplates: Sequence[SubTemplateType]
