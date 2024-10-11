@@ -7,7 +7,12 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs import CubeSpec, SpecRule
-from tqec.compile.substitute import SubstitutionKey, SubstitutionRule
+from tqec.compile.specs.library.css import CSS_SPEC_RULES
+from tqec.compile.substitute import (
+    SubstitutionKey,
+    SubstitutionRule,
+    DEFAULT_SUBSTITUTION_RULES,
+)
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
@@ -150,8 +155,10 @@ class CompiledGraph:
 
 def compile_block_graph(
     block_graph: BlockGraph,
-    spec_rules: Mapping[CubeSpec, SpecRule],
-    substitute_rules: Mapping[SubstitutionKey, SubstitutionRule],
+    spec_rules: Mapping[CubeSpec, SpecRule] = CSS_SPEC_RULES,
+    substitute_rules: Mapping[
+        SubstitutionKey, SubstitutionRule
+    ] = DEFAULT_SUBSTITUTION_RULES,
     observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
 ) -> CompiledGraph:
     """Compile a block graph.
@@ -162,7 +169,7 @@ def compile_block_graph(
             mapping the cube specs to the corresponding spec rules. Spec rules
             determine how to compile a cube spec into a compiled block, i.e
             which template to use and the specific plaquettes to use in the
-            template.
+            template. The default spec rules are the CSS surface code spec rules.
         substitute_rules: Custom substitution rules for the compiled blocks. This
             is a dict mapping the substitution keys to the corresponding substitution
             rules. Substitution rules determine how to substitute plaquettes in
