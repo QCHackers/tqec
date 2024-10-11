@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import typing as ty
 from collections import defaultdict
-from fractions import Fraction
 
 import stim
 
@@ -64,6 +63,9 @@ class GridQubit:
 
     def __repr__(self) -> str:
         return f"GridQubit({self.x}, {self.y})"
+
+    def __str__(self) -> str:
+        return f"Q[{self.x}, {self.y}]"
 
 
 """Names of the `stim` instructions that are considered as annotations."""

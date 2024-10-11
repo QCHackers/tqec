@@ -105,6 +105,9 @@ class Measurement(AbstractMeasurement):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.qubit}, {self.offset})"
 
+    def __str__(self) -> str:
+        return f"M[{self.qubit},{self.offset}]"
+
     @override
     def map_qubit(self, qubit_map: typing.Mapping[GridQubit, GridQubit]) -> Measurement:
         return Measurement(qubit_map[self.qubit], self.offset)

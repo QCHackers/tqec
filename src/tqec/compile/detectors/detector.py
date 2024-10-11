@@ -25,6 +25,11 @@ class Detector:
             and numpy.allclose(self.coordinates, rhs.coordinates)
         )
 
+    def __str__(self) -> str:
+        coordinates_str = "(" + ",".join(f"{c:.2f}" for c in self.coordinates) + ")"
+        measurements_str = "{" + ",".join(map(str, self.measurements)) + "}"
+        return f"D{coordinates_str}{measurements_str}"
+
     def to_instruction(
         self, measurement_records_map: MeasurementRecordsMap
     ) -> stim.CircuitInstruction:
