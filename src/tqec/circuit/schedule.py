@@ -138,7 +138,10 @@ class Schedule:
         starting_index = (
             self.schedule[-1] + 1 if self.schedule else Schedule._INITIAL_SCHEDULE
         )
-        self.schedule.extend(starting_index + s for s in schedule.schedule)
+        # Note: not using a generator here but explicitly constructing a list
+        #       because if `schedule == self` a generator would induce an
+        #       infinite loop.
+        self.schedule.extend([starting_index + s for s in schedule.schedule])
 
 
 class ScheduledCircuit:
