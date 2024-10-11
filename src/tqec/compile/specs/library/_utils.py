@@ -6,7 +6,7 @@ from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.base import CubeSpec
 from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
 from tqec.plaquette.library.empty import empty_square_plaquette
-from tqec.plaquette.plaquette import PlaquetteBuilder, Plaquettes, RepeatedPlaquettes
+from tqec.plaquette.plaquette import PlaquetteBuilder, Plaquettes
 from tqec.scale import LinearFunction
 from tqec.templates.qubit import QubitTemplate
 
@@ -29,50 +29,37 @@ def regular_block(
     b1 = cast(Literal["X", "Z"], b1)
     b2 = cast(Literal["X", "Z"], b2)
 
-    initial_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.UP),
-            7: factory(b2, reset_basis).project_on_boundary(PlaquetteOrientation.LEFT),
-            9: factory(b1, reset_basis),
-            10: factory(b2, reset_basis),
-            12: factory(b2, reset_basis).project_on_boundary(
-                PlaquetteOrientation.RIGHT
-            ),
-            13: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.DOWN),
-        }
-    )
-    repeating_plaquettes = RepeatedPlaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1).project_on_boundary(PlaquetteOrientation.UP),
-            7: factory(b2).project_on_boundary(PlaquetteOrientation.LEFT),
-            9: factory(b1),
-            10: factory(b2),
-            12: factory(b2).project_on_boundary(PlaquetteOrientation.RIGHT),
-            13: factory(b1).project_on_boundary(PlaquetteOrientation.DOWN),
-        },
-        number_of_repetitions,
-    )
-    final_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.UP
-            ),
-            7: factory(b2, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.LEFT
-            ),
-            9: factory(b1, None, measurement_basis),
-            10: factory(b2, None, measurement_basis),
-            12: factory(b2, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.RIGHT
-            ),
-            13: factory(b1, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.DOWN
-            ),
-        }
-    )
+    def make_plaquettes(
+        reset_basis: ResetBasis | None,
+        measurement_basis: MeasurementBasis | None,
+        repetitions: LinearFunction | None,
+    ) -> Plaquettes:
+        plaquettes = Plaquettes(
+            defaultdict(empty_square_plaquette)
+            | {
+                6: factory(b1, reset_basis, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.UP
+                ),
+                7: factory(b2, reset_basis, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.LEFT
+                ),
+                9: factory(b1, reset_basis, measurement_basis),
+                10: factory(b2, reset_basis, measurement_basis),
+                12: factory(b2, reset_basis, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.RIGHT
+                ),
+                13: factory(b1, reset_basis, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.DOWN
+                ),
+            }
+        )
+        if repetitions is not None:
+            plaquettes = plaquettes.repeat(repetitions)
+        return plaquettes
+
+    initial_plaquettes = make_plaquettes(reset_basis, None, None)
+    repeating_plaquettes = make_plaquettes(None, None, number_of_repetitions)
+    final_plaquettes = make_plaquettes(None, measurement_basis, None)
     return CompiledBlock(
         template=QubitTemplate(),
         layers=[initial_plaquettes, repeating_plaquettes, final_plaquettes],
