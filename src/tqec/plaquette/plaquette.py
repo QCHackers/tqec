@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import itertools
 from collections import defaultdict
-from dataclasses import dataclass
-from typing import Iterable, Iterator, Literal, Protocol
+from dataclasses import dataclass, field
+from typing import Iterator, Literal, Protocol
 
 from typing_extensions import override
 
@@ -15,62 +15,48 @@ from tqec.position import Position2D
 from tqec.scale import LinearFunction, round_or_fail
 
 
+@dataclass(frozen=True)
 class Plaquette:
-    def __init__(
-        self,
-        qubits: PlaquetteQubits,
-        circuit: ScheduledCircuit,
-        mergeable_instructions: Iterable[str] = (),
-    ) -> None:
-        """Represents a QEC plaquette.
+    """Represents a QEC plaquette.
 
-        This class stores qubits in the plaquette local coordinate system and a
-        scheduled circuit that should be applied on those qubits to perform the
-        QEC experiment.
+    This class stores qubits in the plaquette local coordinate system and a
+    scheduled circuit that should be applied on those qubits to perform the
+    QEC experiment.
 
-        By convention, the local plaquette coordinate system is composed of a
-        X-axis pointing to the right and a Y-axis pointing down.
+    By convention, the local plaquette coordinate system is composed of a
+    X-axis pointing to the right and a Y-axis pointing down.
 
-        Args:
-            qubits: qubits used by the plaquette circuit, given in the local
-                plaquette coordinate system.
-            circuit: scheduled quantum circuit implementing the computation that
-                the plaquette should represent.
-            mergeable_instructions: a set of instructions that can
-                be merged. This is useful when merging several plaquettes'
-                circuits together to remove duplicate instructions.
+    Attributes:
+        qubits: qubits used by the plaquette circuit, given in the local
+            plaquette coordinate system.
+        circuit: scheduled quantum circuit implementing the computation that
+            the plaquette should represent.
+        mergeable_instructions: a set of instructions that can
+            be merged. This is useful when merging several plaquettes'
+            circuits together to remove duplicate instructions.
 
-        Raises:
-            TQECException: if the provided circuit uses qubits not listed in
-                `qubits`.
-        """
-        plaquette_qubits = set(qubits)
-        circuit_qubits = set(circuit.qubits)
+    Raises:
+        TQECException: if the provided `circuit` uses qubits not listed in
+            `qubits`.
+    """
+
+    qubits: PlaquetteQubits
+    circuit: ScheduledCircuit
+    mergeable_instructions: frozenset[str] = field(default_factory=frozenset)
+
+    def __post_init__(self) -> None:
+        plaquette_qubits = set(self.qubits)
+        circuit_qubits = set(self.circuit.qubits)
         if not circuit_qubits.issubset(plaquette_qubits):
             wrong_qubits = circuit_qubits.difference(plaquette_qubits)
             raise TQECException(
                 f"The following qubits ({wrong_qubits}) are in the provided circuit "
                 "but not in the provided list of qubits."
             )
-        self._qubits = qubits
-        self._circuit = circuit
-        self._mergeable_instructions = frozenset(mergeable_instructions)
 
     @property
     def origin(self) -> Position2D:
         return Position2D(0, 0)
-
-    @property
-    def qubits(self) -> PlaquetteQubits:
-        return self._qubits
-
-    @property
-    def circuit(self) -> ScheduledCircuit:
-        return self._circuit
-
-    @property
-    def mergeable_instructions(self) -> frozenset[str]:
-        return self._mergeable_instructions
 
     def project_on_boundary(
         self, plaquette_orientation: PlaquetteOrientation
@@ -208,6 +194,16 @@ class RepeatedPlaquettes(Plaquettes):
             self.collection | plaquettes_to_update,
             repetitions=self.repetitions,
         )
+
+    def __eq__(self, rhs: object) -> bool:
+        return (
+            isinstance(rhs, RepeatedPlaquettes)
+            and self.repetitions == rhs.repetitions
+            and self.collection == rhs.collection
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.repetitions, super().__hash__()))
 
 
 class PlaquetteBuilder(Protocol):
