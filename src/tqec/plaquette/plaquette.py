@@ -155,13 +155,6 @@ class Plaquettes:
     def has_default(self) -> bool:
         return isinstance(self.collection, defaultdict)
 
-    def __len__(self) -> int:
-        if isinstance(self.collection, defaultdict):
-            raise TQECException(
-                "Cannot accurately get the length of a defaultdict instance."
-            )
-        return len(self.collection)
-
     def repeat(self, repetitions: LinearFunction) -> RepeatedPlaquettes:
         return RepeatedPlaquettes(self.collection, repetitions)
 
