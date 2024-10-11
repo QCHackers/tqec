@@ -92,18 +92,14 @@ class Plaquette:
         )
 
     def __eq__(self, rhs: object) -> bool:
-        # TODO: this implementation relies on pre-conditions that are unchecked
-        #       at the moment. Check that they hold eventually. See the documentation
-        #       of `tqec.compile.detectors.database.DetectorDatabaseKey` for a
-        #       more detailed explanation.
-        return isinstance(rhs, Plaquette) and id(self) == id(rhs)
+        return (
+            isinstance(rhs, Plaquette)
+            and self.qubits == rhs.qubits
+            and self.circuit == rhs.circuit
+        )
 
     def __hash__(self) -> int:
-        # TODO: this implementation relies on pre-conditions that are unchecked
-        #       at the moment. Check that they hold eventually. See the documentation
-        #       of `tqec.compile.detectors.database.DetectorDatabaseKey` for a
-        #       more detailed explanation.
-        return id(self)
+        return hash((self.qubits, self.circuit))
 
 
 CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
