@@ -36,7 +36,7 @@ class PlaquetteQubits:
             The qubits on the edge of the plaquette.
         """
 
-        def _get_relevant_value(qubit: GridQubit) -> Fraction:
+        def _get_relevant_value(qubit: GridQubit) -> int:
             return qubit.y if orientation == TemplateOrientation.HORIZONTAL else qubit.x
 
         max_index = max(_get_relevant_value(q) for q in self.data_qubits)
