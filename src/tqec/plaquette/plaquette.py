@@ -123,11 +123,6 @@ class Plaquettes:
     collection: FrozenDefaultDict[int, Plaquette]
 
     def __post_init__(self) -> None:
-        if not isinstance(self.collection, (dict, defaultdict)):
-            raise TQECException(
-                f"Plaquettes initialized with {type(self.collection)} but only"
-                "dict and defaultdict instances are allowed."
-            )
         if 0 in self.collection:
             raise TQECException(
                 "Found a Plaquette with index 0. This index is reserved to express "
@@ -136,17 +131,6 @@ class Plaquettes:
 
     def __getitem__(self, index: int) -> Plaquette:
         return self.collection[index]
-
-    def __iter__(self) -> Iterator[Plaquette]:
-        if (
-            isinstance(self.collection, defaultdict)
-            and self.collection.default_factory is not None
-        ):
-            default = self.collection.default_factory()
-            return itertools.chain(
-                self.collection.values(), [default] if default is not None else []
-            )
-        return iter(self.collection.values())
 
     @property
     def has_default(self) -> bool:
@@ -178,7 +162,7 @@ class RepeatedPlaquettes(Plaquettes):
 
     @override
     def with_updated_plaquettes(
-        self, plaquettes_to_update: dict[int, Plaquette]
+        self, plaquettes_to_update: Mapping[int, Plaquette]
     ) -> RepeatedPlaquettes:
         return RepeatedPlaquettes(
             self.collection | plaquettes_to_update,

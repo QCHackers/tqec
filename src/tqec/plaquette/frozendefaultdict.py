@@ -65,6 +65,10 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
     def __len__(self) -> int:
         return len(self._dict)
 
+    @override
+    def __contains__(self, key: object) -> bool:
+        return self._dict.__contains__(key)
+
     def __or__(self, other: Mapping[K, V]) -> FrozenDefaultDict[K, V]:
         mapping = deepcopy(self._dict)
         mapping.update(other)
@@ -84,3 +88,6 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
             )
             and self._dict == other._dict
         )
+
+    def has_default_factory(self) -> bool:
+        return self._default_factory is not None

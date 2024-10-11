@@ -45,6 +45,8 @@ def test_generate_circuit_defaultdict(
     plaquette: Plaquette, one_by_one_template: Template
 ) -> None:
     circuit = generate_circuit(
-        one_by_one_template, 2, Plaquettes(FrozenDefaultDict(lambda: plaquette))
+        one_by_one_template,
+        2,
+        Plaquettes(FrozenDefaultDict(default_factory=lambda: plaquette)),
     )
     assert circuit.get_circuit() == _expected_circuit()
