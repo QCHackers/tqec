@@ -148,7 +148,7 @@ class Plaquettes:
         return isinstance(rhs, Plaquettes) and self.collection == rhs.collection
 
     def __hash__(self) -> int:
-        return hash(tuple(self.collection.items()))
+        return hash(self.collection)
 
 
 @dataclass(frozen=True)
