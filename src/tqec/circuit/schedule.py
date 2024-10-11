@@ -27,6 +27,7 @@ Alongside :class:`ScheduledCircuit`, this module defines:
 from __future__ import annotations
 
 import bisect
+import itertools
 import typing as ty
 import warnings
 from copy import deepcopy
@@ -907,7 +908,10 @@ def relabel_circuits_qubit_indices(
         2. the returned qubit map
     """
     # First, get a global qubit index map.
-    needed_qubits = frozenset.union(*[c.qubits for c in circuits])
+    # Using itertools to avoid the edge case `len(circuits) == 0`
+    needed_qubits = frozenset(
+        itertools.chain.from_iterable([c.qubits for c in circuits])
+    )
     global_qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
     global_q2i = global_qubit_map.q2i
     # Then, get the remapped circuits. Note that map_qubit_indices should

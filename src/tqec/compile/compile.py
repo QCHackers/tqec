@@ -1,3 +1,4 @@
+import itertools
 from dataclasses import dataclass
 from typing import Literal, Mapping
 
@@ -95,7 +96,12 @@ class CompiledGraph:
         # Then, get a global qubit index map to remap the circuit indices on the
         # fly.
         global_q2i = QubitMap.from_qubits(
-            frozenset.union(*[c.qubits for clayer in circuits for c in clayer])
+            frozenset(
+                # Using itertools to avoid the edge case where there is no circuit
+                itertools.chain.from_iterable(
+                    [c.qubits for clayer in circuits for c in clayer]
+                )
+            )
         )
         # Add the QUBIT_COORDS instructions at the beginning of the circuit
         final_circuit = global_q2i.to_circuit()
