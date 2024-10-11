@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
-from typing import Callable, Generic, Iterator, TypeVar
+from typing import Callable, Generic, Iterable, Iterator, TypeVar
 
 from typing_extensions import override
 
@@ -36,10 +36,13 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
     """
 
     def __init__(
-        self, *args, default_factory: Callable[[], V] | None = None, **kwargs
+        self,
+        arg: Mapping[K, V] | Iterable[tuple[K, V]] | None = None,
+        *,
+        default_factory: Callable[[], V] | None = None,
     ) -> None:
         super().__init__()
-        self._dict: dict[K, V] = dict(*args, **kwargs)
+        self._dict: dict[K, V] = dict(arg) if arg is not None else dict()
         self._default_factory = default_factory
 
     def __missing__(self, key: K) -> V:
