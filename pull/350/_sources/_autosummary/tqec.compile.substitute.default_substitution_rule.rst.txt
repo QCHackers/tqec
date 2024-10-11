@@ -1,0 +1,6 @@
+tqec.compile.substitute.default\_substitution\_rule
+===================================================
+
+.. currentmodule:: tqec.compile.substitute
+
+.. autofunction:: default_substitution_rule

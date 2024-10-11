@@ -1,0 +1,25 @@
+tqec.circuit.measurement.AbstractMeasurement
+============================================
+
+.. currentmodule:: tqec.circuit.measurement
+
+.. autoclass:: AbstractMeasurement
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AbstractMeasurement.__init__
+      ~AbstractMeasurement.map_qubit
+      ~AbstractMeasurement.offset_spatially_by
+      ~AbstractMeasurement.offset_temporally_by
+   
+   
+
+   
+   
+   

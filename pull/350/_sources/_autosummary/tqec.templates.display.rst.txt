@@ -1,0 +1,31 @@
+tqec.templates.display
+======================
+
+.. automodule:: tqec.templates.display
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      display_template
+      display_template_from_instantiation
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
