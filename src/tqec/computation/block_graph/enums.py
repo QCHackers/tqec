@@ -19,6 +19,8 @@ class CubeType(Enum):
     XZZ = "xzz"
     ZXZ = "zxz"
     ZZX = "zzx"
+    # Y basis measurement
+    Y = "y"
     # Virtual cube for open port
     VIRTUAL = "virtual"
 
@@ -30,9 +32,11 @@ class CubeType(Enum):
         """Convert the cube type to a ZX node type."""
         if self == CubeType.VIRTUAL:
             return NodeType.V
-        elif self.value.count("z") == 2:
+        if self.value.count("z") == 2:
             return NodeType.Z
-        return NodeType.X
+        if self.value.count("x") == 2:
+            return NodeType.X
+        raise TQECException(f"Conversion from {self} to ZX node type is not supported yet.")
 
     def get_color(self) -> Color3D:
         """Get the color of the block."""

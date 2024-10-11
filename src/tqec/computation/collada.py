@@ -24,9 +24,12 @@ from tqec.computation.geometry import (
 )
 
 _RGBA = tuple[float, float, float, float]
-LIGHT_RGBA: _RGBA = (1.0, 1.0, 1.0, 1.0)
-DARK_RGBA: _RGBA = (0.1176470588235294, 0.1176470588235294, 0.1176470588235294, 1.0)
-YELLOW_RGBA: _RGBA = (1.0, 1.0, 0.396078431372549, 1.0)
+_FACE_RGBA: dict[FaceType, _RGBA] = {
+    FaceType.X: (1.0, 127 / 255, 127 / 255, 1.0),
+    FaceType.Y: (99 / 255, 198 / 255, 118 / 255, 1.0),
+    FaceType.Z: (115 / 255, 150 / 255, 1.0, 1.0),
+    FaceType.H: (1.0, 1.0, 101 / 255, 1.0),
+}
 
 ASSET_AUTHOR = "TQEC Community"
 ASSET_AUTHORING_TOOL_TQEC = "TQEC Python Package"
@@ -211,11 +214,13 @@ class _BaseColladaData:
         self.root_node.children.append(child_node)
 
 
-def _create_lambert_effect(
-    id_str: str, rgba: tuple[float, float, float, float]
-) -> collada.material.Effect:
+def _add_material(
+    mesh: collada.Collada,
+    face_type: FaceType,
+) -> collada.material.Material:
+    rgba = _FACE_RGBA[face_type]
     effect = collada.material.Effect(
-        id_str,
+        f"{face_type.value}_effect",
         [],
         "lambert",
         diffuse=rgba,
@@ -226,8 +231,14 @@ def _create_lambert_effect(
         reflective=None,
         double_sided=True,
     )
+    mesh.effects.append(effect)
+
     effect.transparency = None
-    return effect
+    material = collada.material.Material(
+        f"{face_type.value}_material", f"{face_type.value}_material", effect
+    )
+    mesh.materials.append(material)
+    return material
 
 
 def _add_asset_info(mesh: collada.Collada) -> None:
@@ -280,35 +291,11 @@ def _add_face_geometry_node(
 
 
 def _load_base_collada_data() -> _BaseColladaData:
-    face_colors = {
-        FaceType.X: DARK_RGBA,
-        FaceType.Z: LIGHT_RGBA,
-        FaceType.H: YELLOW_RGBA,
-    }
     mesh = collada.Collada()
     # Add asset info
     _add_asset_info(mesh)
-    # Add effects(light <--> Z, dark <--> X, yellow <--> H)
-    light_effect = _create_lambert_effect("light_effect", face_colors[FaceType.Z])
-    dark_effect = _create_lambert_effect("dark_effect", face_colors[FaceType.X])
-    yellow_effect = _create_lambert_effect("yellow_effect", face_colors[FaceType.H])
-    mesh.effects.extend([light_effect, dark_effect, yellow_effect])
     # Add materials
-    light_material = collada.material.Material(
-        "light_material", "light_material", light_effect
-    )
-    dark_material = collada.material.Material(
-        "dark_material", "dark_material", dark_effect
-    )
-    yellow_material = collada.material.Material(
-        "yellow_material", "yellow_material", yellow_effect
-    )
-    materials = {
-        FaceType.X: dark_material,
-        FaceType.Z: light_material,
-        FaceType.H: yellow_material,
-    }
-    mesh.materials.extend([light_material, dark_material, yellow_material])
+    materials = {face_type: _add_material(mesh, face_type) for face_type in FaceType}
     # Add geometries
     geom_node_dict: dict[Face, collada.scene.GeometryNode] = {}
     library_geometry = load_library_block_geometries()
