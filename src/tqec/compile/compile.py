@@ -135,15 +135,12 @@ class CompiledGraph:
             origin_shift = layout.template.origin_shift
             element_shape = layout.template.element_shape(k)
             increment = layout.template.get_increments()
+            offset = Displacement(
+                origin_shift.x * element_shape.x * increment.x,
+                origin_shift.y * element_shape.y * increment.y,
+            )
             for i in range(layout.num_layers):
-                qubit_map = {
-                    q: q
-                    + Displacement(
-                        origin_shift.x * element_shape.x * increment.x,
-                        origin_shift.y * element_shape.y * increment.y,
-                    )
-                    for q in circuits[t][i].qubits
-                }
+                qubit_map = {q: q + offset for q in circuits[t][i].qubits}
                 circuits[t][i].map_to_qubits(qubit_map, inplace=True)
 
 
