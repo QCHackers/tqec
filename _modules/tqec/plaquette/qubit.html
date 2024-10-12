@@ -121,7 +121,7 @@
 <span class="sd">            The qubits on the edge of the plaquette.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">_get_relevant_value</span><span class="p">(</span><span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fraction</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_get_relevant_value</span><span class="p">(</span><span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">qubit</span><span class="o">.</span><span class="n">y</span> <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span> <span class="k">else</span> <span class="n">qubit</span><span class="o">.</span><span class="n">x</span>
 
         <span class="n">max_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_get_relevant_value</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)</span>
@@ -155,7 +155,17 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">min_y</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># if orientation == PlaquetteSide.DOWN:</span>
             <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">y</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">max_y</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">max_y</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">PlaquetteQubits</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_qubits</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">data_qubits</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">syndrome_qubits</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">syndrome_qubits</span>
+        <span class="p">)</span></div>
 
 
 

@@ -198,7 +198,8 @@
                 <span class="c1"># no index clash.</span>
                 <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">local_indices_to_global_indices</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">local_index</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">q2i</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">local_index</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
                 <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 

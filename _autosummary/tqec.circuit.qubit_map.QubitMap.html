@@ -59,7 +59,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.instructions.html">tqec.circuit.instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement.html">tqec.circuit.measurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement_map.html">tqec.circuit.measurement_map</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.moment.html">tqec.circuit.moment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.observable_qubits.html">tqec.circuit.observable_qubits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit.html">tqec.circuit.qubit</a></li>
@@ -140,11 +142,17 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code>(qubits_to_keep)</p></td>
 <td><p>Filter the qubit map to only keep qubits present in the provided <cite>qubits_to_keep</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_qubits</span></code>(qubits)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_circuit</span></code>(circuit)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_qubits</span></code>(qubits)</p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_circuit</span></code>()</p></td>
+<td><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions representing <cite>self</cite>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_mapped_qubits</span></code>(qubit_map)</p></td>
 <td><p>Change the qubits involved in <cite>self</cite> without changing the associated indices.</p></td>

@@ -15,6 +15,7 @@ tqec.circuit.schedule.ScheduledCircuit
    
       ~ScheduledCircuit.__init__
       ~ScheduledCircuit.add_to_schedule_index
+      ~ScheduledCircuit.append_annotation
       ~ScheduledCircuit.append_new_moment
       ~ScheduledCircuit.append_observable
       ~ScheduledCircuit.empty
@@ -37,7 +38,7 @@ tqec.circuit.schedule.ScheduledCircuit
    
       ~ScheduledCircuit.moments
       ~ScheduledCircuit.num_measurements
-      ~ScheduledCircuit.q2i
+      ~ScheduledCircuit.qubit_map
       ~ScheduledCircuit.qubits
       ~ScheduledCircuit.schedule
       ~ScheduledCircuit.scheduled_moments

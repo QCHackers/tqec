@@ -9,6 +9,13 @@ tqec.circuit.measurement
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_measurements_from_circuit
+   
    
 
    

@@ -15,6 +15,7 @@ tqec.circuit.moment.Moment
    
       ~Moment.__init__
       ~Moment.append
+      ~Moment.append_instruction
       ~Moment.check_is_valid_moment
       ~Moment.contains_instruction
       ~Moment.filter_by_qubits

@@ -117,6 +117,7 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.instructions</span> <span class="kn">import</span> <span class="n">is_annotation_instruction</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.moment</span> <span class="kn">import</span> <span class="n">Moment</span><span class="p">,</span> <span class="n">iter_stim_circuit_without_repeat_by_moments</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span><span class="p">,</span> <span class="n">get_qubit_map</span>
@@ -220,7 +221,16 @@
             <span class="n">Schedule</span><span class="o">.</span><span class="n">_check_schedule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ScheduleException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">e</span></div>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">def</span> <span class="nf">append_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">starting_index</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="k">else</span> <span class="n">Schedule</span><span class="o">.</span><span class="n">_INITIAL_SCHEDULE</span>
+        <span class="p">)</span>
+        <span class="c1"># Note: not using a generator here but explicitly constructing a list</span>
+        <span class="c1">#       because if `schedule == self` a generator would induce an</span>
+        <span class="c1">#       infinite loop.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">starting_index</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">schedule</span><span class="o">.</span><span class="n">schedule</span><span class="p">])</span></div>
 
 
 
@@ -289,7 +299,7 @@
     <span class="k">def</span> <span class="nf">from_circuit</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span>
         <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">i2q</span><span class="p">:</span> <span class="n">QubitMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`ScheduledCircuit` instance from a circuit and a</span>
 <span class="sd">        schedule.</span>
@@ -302,7 +312,7 @@
 <span class="sd">                in the provided `stim.Circuit` instance. If an integer is provided,</span>
 <span class="sd">                each moment of the provided `stim.Circuit` is scheduled sequentially,</span>
 <span class="sd">                starting by the provided schedule.</span>
-<span class="sd">            i2q: a map from indices to qubits. If None, this function will try to</span>
+<span class="sd">            qubit_map: a map from indices to qubits. If None, this function will try to</span>
 <span class="sd">                extract the qubit coordinates from the `QUBIT_COORDS` instructions</span>
 <span class="sd">                found in the provided `circuit`. Else, the provided map will be used.</span>
 
@@ -334,15 +344,15 @@
                 <span class="s2">&quot;ScheduledCircuit instance expects the input `stim.Circuit` to &quot;</span>
                 <span class="s2">&quot;only contain QUBIT_COORDS instructions before the first TICK.&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">i2q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">qubit_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Here, we know for sure that no qubit is (re)defined in another place</span>
             <span class="c1"># than the first moment, so we can directly get qubit coordinates from</span>
             <span class="c1"># that moment.</span>
-            <span class="n">i2q</span> <span class="o">=</span> <span class="n">get_qubit_map</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>
+            <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">get_qubit_map</span><span class="p">(</span><span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>
         <span class="c1"># And because we want the cleanest possible moments, we can remove the</span>
         <span class="c1"># `QUBIT_COORDS` instructions from the first moment.</span>
         <span class="n">moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_all_instructions_inplace</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">moments</span><span class="p">,</span> <span class="n">schedule</span><span class="p">,</span> <span class="n">i2q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ScheduledCircuit</span><span class="p">(</span><span class="n">moments</span><span class="p">,</span> <span class="n">schedule</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_input_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -360,10 +370,7 @@
 
     <span class="k">def</span> <span class="nf">get_qubit_coords_definition_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a circuit with only `QUBIT_COORDS` instructions.&quot;&quot;&quot;</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">qi</span><span class="p">,</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span> <span class="n">qi</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span><span class="o">.</span><span class="n">to_circuit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_qubit_coords</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the `stim.Circuit` instance represented by self.</span>
@@ -648,11 +655,6 @@
             <span class="c1"># operations overlap.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">moment</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">q2i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the map from qubits used in `self` their index.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">q</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
     <span class="k">def</span> <span class="nf">append_observable</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -662,12 +664,26 @@
 <span class="sd">            index: index of the observable to append measurement records to.</span>
 <span class="sd">            targets: measurement records forming (part of) the observable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">is_measurement_record_target</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span>
+            <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span><span class="s2">&quot;OBSERVABLE_INCLUDE&quot;</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an annotation to the last moment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            instruction: an annotation that will be added to the last moment of</span>
+<span class="sd">                `self`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the provided instruction is not an annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_annotation_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot create an observable with targets that are not measurement &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;records. Got: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;The provided instruction is not an annotation, which is &quot;</span>
+                <span class="s2">&quot;disallowed by the append_annotation method.&quot;</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;OBSERVABLE_INCLUDE&quot;</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -691,7 +707,7 @@
 <span class="sd">            schedules.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qubits_indices_to_keep</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits_to_keep</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span><span class="o">.</span><span class="n">q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits_to_keep</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span>
         <span class="p">)</span>
         <span class="n">filtered_moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">filtered_schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -707,7 +723,11 @@
         <span class="p">)</span>
         <span class="c1"># The qubit indices may not be contiguous anymore, so we need to remap them.</span>
         <span class="n">indices_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">oi</span><span class="p">:</span> <span class="n">ni</span> <span class="k">for</span> <span class="n">ni</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubit_map</span><span class="o">.</span><span class="n">indices</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="n">filtered_circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">indices_map</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">filtered_circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">indices_map</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qubit_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QubitMap</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span></div>
 
 
 
@@ -990,8 +1010,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># First, get a global qubit index map.</span>
     <span class="n">needed_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">qubits</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">])</span>
-    <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_qubits</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">needed_qubits</span><span class="p">))</span>
-    <span class="n">q2i</span> <span class="o">=</span> <span class="n">qubit_map</span><span class="o">.</span><span class="n">q2i</span>
+    <span class="n">global_qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_qubits</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">needed_qubits</span><span class="p">))</span>
+    <span class="n">global_q2i</span> <span class="o">=</span> <span class="n">global_qubit_map</span><span class="o">.</span><span class="n">q2i</span>
     <span class="c1"># Then, get the remapped circuits. Note that map_qubit_indices should</span>
     <span class="c1"># have approximately the same runtime cost whatever the value of inplace</span>
     <span class="c1"># so we ask for a new instance to avoid keeping a reference to the given</span>
@@ -999,12 +1019,12 @@
     <span class="n">relabeled_circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">:</span>
         <span class="n">local_indices_to_global_indices</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">local_index</span><span class="p">:</span> <span class="n">q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">local_index</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">q2i</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">local_index</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
         <span class="n">relabeled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">qubit_map</span></div>
+    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">global_qubit_map</span></div>
 
 </pre></div>
 

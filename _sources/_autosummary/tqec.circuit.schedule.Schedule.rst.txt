@@ -15,6 +15,7 @@ tqec.circuit.schedule.Schedule
    
       ~Schedule.__init__
       ~Schedule.append
+      ~Schedule.append_schedule
       ~Schedule.from_offsets
       ~Schedule.insert
    

@@ -30,6 +30,8 @@ tqec.plaquette
 
    enums
 
+   frozendefaultdict
+
    library
 
    plaquette

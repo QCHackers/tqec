@@ -65,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.enums.html">tqec.plaquette.enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.frozendefaultdict.html">tqec.plaquette.frozendefaultdict</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.plaquette.library.html">tqec.plaquette.library</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="tqec.plaquette.plaquette.html">tqec.plaquette.plaquette</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.plaquette.plaquette.Plaquette</a></li>
@@ -115,40 +116,66 @@
 <h1>tqec.plaquette.plaquette.Plaquette<a class="headerlink" href="#tqec-plaquette-plaquette-plaquette" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plaquette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.qubit.PlaquetteQubits.html#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mergeable_instructions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette" title="Link to this definition"></a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.qubit.PlaquetteQubits.html#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits"><span class="pre">PlaquetteQubits</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mergeable_instructions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.__init__" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plaquette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits:</span> <span class="pre">~tqec.plaquette.qubit.PlaquetteQubits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit:</span> <span class="pre">~tqec.circuit.schedule.ScheduledCircuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mergeable_instructions:</span> <span class="pre">frozenset[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette" title="Link to this definition"></a></dt>
 <dd><p>Represents a QEC plaquette.</p>
 <p>This class stores qubits in the plaquette local coordinate system and a
 scheduled circuit that should be applied on those qubits to perform the
 QEC experiment.</p>
 <p>By convention, the local plaquette coordinate system is composed of a
 X-axis pointing to the right and a Y-axis pointing down.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.qubits">
+<span class="sig-name descname"><span class="pre">qubits</span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.qubits" title="Link to this definition"></a></dt>
+<dd><p>qubits used by the plaquette circuit, given in the local
+plaquette coordinate system.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>qubits</strong> – qubits used by the plaquette circuit, given in the local
-plaquette coordinate system.</p></li>
-<li><p><strong>circuit</strong> – scheduled quantum circuit implementing the computation that
-the plaquette should represent.</p></li>
-<li><p><strong>mergeable_instructions</strong> – a set of instructions that can
-be merged. This is useful when merging several plaquettes’
-circuits together to remove duplicate instructions.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit uses qubits not listed in
-    <cite>qubits</cite>.</p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.plaquette.qubit.PlaquetteQubits.html#tqec.plaquette.qubit.PlaquetteQubits" title="tqec.plaquette.qubit.PlaquetteQubits">tqec.plaquette.qubit.PlaquetteQubits</a></p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.circuit">
+<span class="sig-name descname"><span class="pre">circuit</span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.circuit" title="Link to this definition"></a></dt>
+<dd><p>scheduled quantum circuit implementing the computation that
+the plaquette should represent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit">tqec.circuit.schedule.ScheduledCircuit</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.mergeable_instructions">
+<span class="sig-name descname"><span class="pre">mergeable_instructions</span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.mergeable_instructions" title="Link to this definition"></a></dt>
+<dd><p>a set of instructions that can
+be merged. This is useful when merging several plaquettes’
+circuits together to remove duplicate instructions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>frozenset[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> uses qubits not listed in
+    <cite>qubits</cite>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits:</span> <span class="pre">~tqec.plaquette.qubit.PlaquetteQubits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit:</span> <span class="pre">~tqec.circuit.schedule.ScheduledCircuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mergeable_instructions:</span> <span class="pre">frozenset[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.__init__" title="tqec.plaquette.plaquette.Plaquette.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(qubits, circuit[, ...])</p></td>
-<td><p>Represents a QEC plaquette.</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_on_boundary</span></code>(plaquette_orientation)</p></td>
 <td><p>Project the plaquette on boundary and return a new plaquette with the remaining qubits and circuit.</p></td>
@@ -158,16 +185,16 @@ circuits together to remove duplicate instructions.</p></li>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">circuit</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mergeable_instructions</span></code></p></td>
-<td><p></p></td>
-</tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.qubits" title="tqec.plaquette.plaquette.Plaquette.qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.circuit" title="tqec.plaquette.plaquette.Plaquette.circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">circuit</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.mergeable_instructions" title="tqec.plaquette.plaquette.Plaquette.mergeable_instructions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mergeable_instructions</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

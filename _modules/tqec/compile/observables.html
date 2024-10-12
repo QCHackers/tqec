@@ -83,6 +83,7 @@
   <h1>Source code for tqec.compile.observables</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.measurement_map</span> <span class="kn">import</span> <span class="n">MeasurementRecordsMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span>
@@ -240,7 +241,7 @@
             <span class="n">stabilizer_qubits</span> <span class="o">=</span> <span class="n">get_stabilizer_region_qubits_for_pipe</span><span class="p">(</span>
                 <span class="n">pipe</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
             <span class="p">)</span>
-            <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">_get_measurement_records_from_scheduled_circuit</span><span class="p">(</span>
+            <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_scheduled_circuit</span><span class="p">(</span>
                 <span class="n">circuits</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">circuits</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append_observable</span><span class="p">(</span>
@@ -269,7 +270,7 @@
                         <span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">(),</span>
                     <span class="p">)</span>
                 <span class="p">]</span>
-            <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">_get_measurement_records_from_scheduled_circuit</span><span class="p">(</span>
+            <span class="n">measurement_records</span> <span class="o">=</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_scheduled_circuit</span><span class="p">(</span>
                 <span class="n">circuits</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">circuits</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append_observable</span><span class="p">(</span>
@@ -277,57 +278,6 @@
                 <span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">target_rec</span><span class="p">(</span><span class="n">measurement_records</span><span class="p">[</span><span class="n">q</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits</span><span class="p">],</span>
             <span class="p">)</span></div>
 
-
-
-<span class="n">_SUPPORTED_MEASUREMENT_GATE_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="c1"># Collapsing Gates</span>
-        <span class="s2">&quot;M&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MR&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MRX&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MRY&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MRZ&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MX&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MY&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MZ&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-<span class="n">_NOT_SUPPORTED_MEASUREMENT_GATE_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="c1"># Pair Measurement Gates</span>
-        <span class="s2">&quot;MXX&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MYY&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;MZZ&quot;</span><span class="p">,</span>
-        <span class="c1"># Generalized Pauli Product Gates</span>
-        <span class="s2">&quot;MPP&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_get_measurement_records_from_scheduled_circuit</span><span class="p">(</span>
-    <span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-    <span class="c1"># Get the global qubit map</span>
-    <span class="n">i2q</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">q2i</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="c1"># Build the local measurement map.</span>
-    <span class="n">current_measurement_record</span> <span class="o">=</span> <span class="o">-</span><span class="n">circuit</span><span class="o">.</span><span class="n">num_measurements</span>
-    <span class="n">measurement_records</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">moment</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">moments</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">moment</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instruction</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitRepeatBlock</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_NOT_SUPPORTED_MEASUREMENT_GATE_NAMES</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Found a non-supported measurement instruction: </span><span class="si">{</span><span class="n">instruction</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_SUPPORTED_MEASUREMENT_GATE_NAMES</span><span class="p">:</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">qi</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
-                    <span class="n">qubit</span> <span class="o">=</span> <span class="n">i2q</span><span class="p">[</span><span class="n">qi</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
-                    <span class="n">measurement_records</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">qubit</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">current_measurement_record</span>
-                    <span class="p">)</span>
-                    <span class="n">current_measurement_record</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">assert</span> <span class="n">current_measurement_record</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Sanity check&quot;</span>
-    <span class="k">return</span> <span class="n">measurement_records</span>
 </pre></div>
 
            </div>
