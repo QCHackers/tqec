@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import itertools
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Iterator, Literal, Mapping, Protocol
+from typing import Literal, Mapping, Protocol
 
 from typing_extensions import override
 
@@ -101,9 +100,6 @@ class Plaquette:
 
     def __hash__(self) -> int:
         return hash((self.qubits, self.circuit))
-
-
-CollectionType = dict[int, Plaquette] | defaultdict[int, Plaquette]
 
 
 @dataclass(frozen=True)
