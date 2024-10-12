@@ -83,6 +83,7 @@
   <h1>Source code for tqec.plaquette.frozendefaultdict</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">TypeVar</span>
@@ -171,7 +172,11 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FrozenDefaultDict</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_default_factory</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="ow">and</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

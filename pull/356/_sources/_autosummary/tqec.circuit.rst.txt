@@ -31,6 +31,8 @@ tqec.circuit
    generation
 
 
+   instructions
+
    measurement
 
    measurement_map
