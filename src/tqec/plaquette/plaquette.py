@@ -99,7 +99,7 @@ class Plaquette:
         )
 
     def __hash__(self) -> int:
-        return hash((self.qubits, self.circuit))
+        return hash((self.qubits, str(self.circuit.get_circuit())))
 
 
 @dataclass(frozen=True)
