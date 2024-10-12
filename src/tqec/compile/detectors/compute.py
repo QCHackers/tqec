@@ -111,7 +111,6 @@ def _filter_detectors(
     subtemplates: tuple[SubTemplateType] | tuple[SubTemplateType, SubTemplateType],
     plaquettes: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
     increments: Displacement,
-    circuit: stim.Circuit,
 ) -> frozenset[Detector]:
     # First, we want the detectors to be composed of at least one measurement
     # involving one of the syndrome qubits of the central plaquette in the last
@@ -195,9 +194,7 @@ def _compute_detectors_at_end_of_situation(
     )
 
     # Filter out detectors and return the left ones.
-    return _filter_detectors(
-        detectors, subtemplates, plaquettes, increments, complete_circuit
-    )
+    return _filter_detectors(detectors, subtemplates, plaquettes, increments)
 
 
 def compute_detectors_at_end_of_situation(
