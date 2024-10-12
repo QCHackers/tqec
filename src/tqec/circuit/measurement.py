@@ -192,7 +192,7 @@ def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
                 "but multi-qubit measurements are not supported yet."
             )
         if is_single_qubit_measurement_instruction(instruction):
-            for (target,) in instruction.target_groups():
+            for (target,) in reversed(instruction.target_groups()):
                 if not target.is_qubit_target:
                     raise TQECException(
                         "Found a measurement instruction with a target that is "
