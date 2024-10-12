@@ -286,7 +286,7 @@
                 <span class="s2">&quot;but multi-qubit measurements are not supported yet.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">is_single_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
-            <span class="k">for</span> <span class="p">(</span><span class="n">target</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">target</span><span class="p">,)</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">()):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_qubit_target</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                         <span class="s2">&quot;Found a measurement instruction with a target that is &quot;</span>
