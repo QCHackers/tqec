@@ -97,6 +97,10 @@
 <span class="kn">import</span> <span class="nn">stim</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.instructions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">,</span>
+    <span class="n">is_single_qubit_measurement_instruction</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
@@ -264,14 +268,6 @@
 
 
 
-<span class="n">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MR&quot;</span><span class="p">,</span> <span class="s2">&quot;MRX&quot;</span><span class="p">,</span> <span class="s2">&quot;MRY&quot;</span><span class="p">,</span> <span class="s2">&quot;MRZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="s2">&quot;MY&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="n">MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;MXX&quot;</span><span class="p">,</span> <span class="s2">&quot;MYY&quot;</span><span class="p">,</span> <span class="s2">&quot;MZZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MPP&quot;</span><span class="p">]</span>
-<span class="p">)</span>
-
-
 <div class="viewcode-block" id="get_measurements_from_circuit">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement.get_measurements_from_circuit.html#tqec.circuit.measurement.get_measurements_from_circuit">[docs]</a>
 <span class="k">def</span> <span class="nf">get_measurements_from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]:</span>
@@ -283,12 +279,12 @@
                 <span class="s2">&quot;Found a REPEAT block in get_measurements_from_circuit. This &quot;</span>
                 <span class="s2">&quot;is not supported.&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Got a multi-qubit measurement instruction (</span><span class="si">{</span><span class="n">instruction</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">) &quot;</span>
                 <span class="s2">&quot;but multi-qubit measurements are not supported yet.&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_single_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">target</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_qubit_target</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>

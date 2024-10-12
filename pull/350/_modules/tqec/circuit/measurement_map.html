@@ -89,9 +89,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">stim</span>
 
-<span class="kn">from</span> <span class="nn">tqec.circuit.measurement</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">,</span>
-    <span class="n">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.instructions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">,</span>
+    <span class="n">is_single_qubit_measurement_instruction</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
@@ -215,11 +215,11 @@
                 <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                     <span class="s2">&quot;Found a REPEAT instruction. This is not supported for the moment.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Found a non-supported measurement instruction: </span><span class="si">{</span><span class="n">instruction</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_single_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">qi</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
                     <span class="n">qubit</span> <span class="o">=</span> <span class="n">qubit_map</span><span class="o">.</span><span class="n">i2q</span><span class="p">[</span><span class="n">qi</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
                     <span class="n">measurement_records</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">qubit</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
