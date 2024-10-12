@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.computation.block_graph.enums &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.computation.block_graph.enums</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.computation.block_graph.enums</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.block_graph.color</span> <span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Color3D</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">NodeType</span>
+
+
+<div class="viewcode-block" id="CubeType">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.computation.block_graph.enums.CubeType.html#tqec.computation.block_graph.enums.CubeType">[docs]</a>
+<span class="k">class</span> <span class="nc">CubeType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid cube types in the library.&quot;&quot;&quot;</span>
+
+    <span class="n">ZXX</span> <span class="o">=</span> <span class="s2">&quot;zxx&quot;</span>
+    <span class="n">XZX</span> <span class="o">=</span> <span class="s2">&quot;xzx&quot;</span>
+    <span class="n">XXZ</span> <span class="o">=</span> <span class="s2">&quot;xxz&quot;</span>
+    <span class="n">XZZ</span> <span class="o">=</span> <span class="s2">&quot;xzz&quot;</span>
+    <span class="n">ZXZ</span> <span class="o">=</span> <span class="s2">&quot;zxz&quot;</span>
+    <span class="n">ZZX</span> <span class="o">=</span> <span class="s2">&quot;zzx&quot;</span>
+    <span class="c1"># Y basis measurement</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span>
+    <span class="c1"># Virtual cube for open port</span>
+    <span class="n">VIRTUAL</span> <span class="o">=</span> <span class="s2">&quot;virtual&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CubeType</span><span class="o">.</span><span class="n">ZZX</span><span class="p">,</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">XXZ</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">to_zx_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube type to a ZX node type.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">V</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">Z</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NodeType</span><span class="o">.</span><span class="n">X</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Conversion from </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> to ZX node type is not supported yet.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the color of the block.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Color3D</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_color</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="n">Color3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CubeType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the cube type from the color.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">is_null</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_null</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="n">color</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;All the color must be defined for a non-virtual cube.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CubeType</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="n">color</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">normal_direction_to_corner_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the cube is at a corner, return the normal direction to the</span>
+<span class="sd">        corner plane.</span>
+
+<span class="sd">        Due to the color match rule at the corner turn, the corner plane</span>
+<span class="sd">        can be inferred from the type of the cube.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer the corner plane for a virtual cube.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">infer_pipe_type_at_direction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">,</span>
+        <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe type connecting this cube at some direction with the</span>
+<span class="sd">        color match rule.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer the pipe type for a virtual cube.&quot;</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span><span class="o">.</span><span class="n">pop_color_at_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PipeType</span><span class="o">.</span><span class="n">from_color_at_side</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">src_side_if_h_pipe</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PipeType">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.computation.block_graph.enums.PipeType.html#tqec.computation.block_graph.enums.PipeType">[docs]</a>
+<span class="k">class</span> <span class="nc">PipeType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid pipe types in the library.&quot;&quot;&quot;</span>
+
+    <span class="c1"># pipes without H</span>
+    <span class="n">OZX</span> <span class="o">=</span> <span class="s2">&quot;ozx&quot;</span>
+    <span class="n">OXZ</span> <span class="o">=</span> <span class="s2">&quot;oxz&quot;</span>
+    <span class="n">XOZ</span> <span class="o">=</span> <span class="s2">&quot;xoz&quot;</span>
+    <span class="n">ZOX</span> <span class="o">=</span> <span class="s2">&quot;zox&quot;</span>
+    <span class="n">XZO</span> <span class="o">=</span> <span class="s2">&quot;xzo&quot;</span>
+    <span class="n">ZXO</span> <span class="o">=</span> <span class="s2">&quot;zxo&quot;</span>
+    <span class="c1"># pipes with H</span>
+    <span class="n">OZXH</span> <span class="o">=</span> <span class="s2">&quot;ozxh&quot;</span>
+    <span class="n">OXZH</span> <span class="o">=</span> <span class="s2">&quot;oxzh&quot;</span>
+    <span class="n">ZOXH</span> <span class="o">=</span> <span class="s2">&quot;zoxh&quot;</span>
+    <span class="n">XOZH</span> <span class="o">=</span> <span class="s2">&quot;xozh&quot;</span>
+    <span class="n">ZXOH</span> <span class="o">=</span> <span class="s2">&quot;zxoh&quot;</span>
+    <span class="n">XZOH</span> <span class="o">=</span> <span class="s2">&quot;xzoh&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_hadamard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the block type has a hadamard transition.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;h&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the direction of the pipe.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">all</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">get_color_at_side</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the color of the pipe at the given side.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_hadamard</span> <span class="ow">or</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Color3D</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Color3D</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">flip_xz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_color_at_side</span><span class="p">(</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">Color3D</span><span class="p">,</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the pipe type from the color at one side.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_null</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="n">color</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Exactly one color must be undefined for a pipe along the pipe direction.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">pipe_color</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_null</span><span class="p">:</span>
+                <span class="n">pipe_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">has_hadamard</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span>
+                <span class="n">pipe_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;x&quot;</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">Color</span><span class="o">.</span><span class="n">Z</span> <span class="k">else</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pipe_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
+            <span class="n">pipe_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PipeType</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipe_color</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">infer_cube_type_at_side</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">src_side_if_h_pipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_z_cube</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CubeType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the cube type at the side of the pipe.&quot;&quot;&quot;</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_color_at_side</span><span class="p">(</span><span class="n">src_side_if_h_pipe</span><span class="p">)</span><span class="o">.</span><span class="n">push_color_at_direction</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="n">Color</span><span class="o">.</span><span class="n">Z</span> <span class="k">if</span> <span class="n">is_z_cube</span> <span class="k">else</span> <span class="n">Color</span><span class="o">.</span><span class="n">X</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">from_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">temporal_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot get the temporal basis on a temporal pipe.&quot;</span><span class="p">)</span>
+        <span class="c1"># Because this is not a temporal pipe, we know for sure</span>
+        <span class="c1"># that there is no &quot;o&quot; in the Z direction. Also, &quot;h&quot; can</span>
+        <span class="c1"># not appear in the first 3 entries, so self.value[2] is</span>
+        <span class="c1"># either &quot;x&quot; or &quot;z&quot;.</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
