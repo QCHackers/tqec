@@ -421,7 +421,9 @@ class ScheduledCircuit:
             )
 
     def map_to_qubits(
-        self, qubit_map: dict[GridQubit, GridQubit], inplace: bool = False
+        self,
+        qubit_map: dict[GridQubit, GridQubit] | ty.Callable[[GridQubit], GridQubit],
+        inplace: bool = False,
     ) -> ScheduledCircuit:
         """Map the qubits the `ScheduledCircuit` instance is applied on.
 
@@ -441,7 +443,9 @@ class ScheduledCircuit:
             else self).
         """
         operand = self if inplace else deepcopy(self)
-        operand._qubit_map = operand._qubit_map.with_mapped_qubits(qubit_map)
+        operand._qubit_map = operand._qubit_map.with_mapped_qubits(
+            qubit_map if not isinstance(qubit_map, dict) else (lambda q: qubit_map[q])
+        )
         return operand
 
     def __copy__(self) -> ScheduledCircuit:

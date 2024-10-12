@@ -151,8 +151,7 @@ class CompiledGraph:
                 origin_shift.y * element_shape.y * increment.y,
             )
             for i in range(layout.num_layers):
-                qubit_map = {q: q + offset for q in circuits[t][i].qubits}
-                circuits[t][i].map_to_qubits(qubit_map, inplace=True)
+                circuits[t][i].map_to_qubits(lambda q: q + offset, inplace=True)
 
 
 def compile_block_graph(
