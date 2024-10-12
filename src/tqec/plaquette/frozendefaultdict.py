@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import operator
 from collections.abc import Mapping
 from copy import deepcopy
 from typing import Callable, Generic, Iterable, Iterator, TypeVar
@@ -80,7 +81,11 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
     def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, FrozenDefaultDict)
-            and (self._default_factory == other._default_factory)
+            and (
+                not operator.xor(
+                    self._default_factory is None, other._default_factory is None
+                )
+            )
             and (
                 self._default_factory is not None
                 and other._default_factory is not None
