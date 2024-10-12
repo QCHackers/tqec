@@ -125,13 +125,13 @@
         <span class="n">all_measurement_records_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">qubit</span><span class="p">,</span> <span class="n">measurement_record_offsets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># Check that the provided measurement record offsets are negative.</span>
-            <span class="n">positive_offsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">nonnegative_offsets</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">offset</span> <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="n">measurement_record_offsets</span> <span class="k">if</span> <span class="n">offset</span> <span class="o">&gt;=</span> <span class="mi">0</span>
             <span class="p">]</span>
-            <span class="k">if</span> <span class="n">positive_offsets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nonnegative_offsets</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                     <span class="s2">&quot;Invalid mapping from qubit offsets to measurement record &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;offsets. Found positive offsets (</span><span class="si">{</span><span class="n">positive_offsets</span><span class="si">}</span><span class="s2">) for &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;offsets. Found positive offsets (</span><span class="si">{</span><span class="n">nonnegative_offsets</span><span class="si">}</span><span class="s2">) for &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;qubit </span><span class="si">{</span><span class="n">qubit</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
             <span class="c1"># Check that measurement record offsets are sorted</span>
