@@ -11,9 +11,9 @@ from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs import CubeSpec, SpecRule
 from tqec.compile.specs.library.css import CSS_SPEC_RULES
 from tqec.compile.substitute import (
+    DEFAULT_SUBSTITUTION_RULES,
     SubstitutionKey,
     SubstitutionRule,
-    DEFAULT_SUBSTITUTION_RULES,
 )
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.exceptions import TQECException

@@ -15,7 +15,6 @@ from tqec.circuit.schedule import ScheduledCircuit, relabel_circuits_qubit_indic
 from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.detectors.detector import Detector
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import PlaquetteSide
 from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
 from tqec.templates.base import Template
