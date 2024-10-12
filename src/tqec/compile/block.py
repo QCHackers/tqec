@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import dataclass
+from typing import Mapping
 
 from tqec.circuit.generation import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
 from tqec.position import Position2D
@@ -35,7 +36,7 @@ class CompiledBlock:
 
     def with_updated_layer(
         self,
-        plaquettes_to_update: dict[int, Plaquette],
+        plaquettes_to_update: Mapping[int, Plaquette],
         layer_to_update: int,
     ) -> CompiledBlock:
         """Returns a new `CompiledBlock` with the specified layer updated.
@@ -93,9 +94,7 @@ class BlockLayout:
         indices_map = self._template.get_indices_map_for_instantiation()
         merged_layers: list[Plaquettes] = []
         for i in range(num_layers.pop()):
-            merged_plaquettes: defaultdict[int, Plaquette] = defaultdict(
-                empty_square_plaquette
-            )
+            merged_plaquettes: dict[int, Plaquette] = {}
             repetitions: LinearFunction | None = None
             for pos, layers in layers_layout.items():
                 layer = layers[i]
@@ -112,7 +111,11 @@ class BlockLayout:
                 merged_plaquettes.update(
                     {imap[i]: plaquette for i, plaquette in layer.collection.items()}
                 )
-            plaquettes = Plaquettes(merged_plaquettes)
+            plaquettes = Plaquettes(
+                FrozenDefaultDict(
+                    merged_plaquettes, default_factory=empty_square_plaquette
+                )
+            )
             if repetitions is not None:
                 plaquettes = plaquettes.repeat(repetitions)
             merged_layers.append(plaquettes)

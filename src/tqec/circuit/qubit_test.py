@@ -10,17 +10,6 @@ from tqec.position import Displacement, Position2D
 def test_grid_qubit_creation() -> None:
     GridQubit(0, 0)
     GridQubit(-1, 10)
-    GridQubit(0.5, 10)
-    GridQubit(1.5, -4.5)
-    GridQubit(Fraction(1, 9), Fraction(0, 2))
-    GridQubit(-Fraction(1, 9), -Fraction(0, 2))
-
-    with pytest.raises(Exception):
-        GridQubit(float("NaN"), 0.0)
-    with pytest.raises(Exception):
-        GridQubit(-float("inf"), 0.0)
-    with pytest.raises(Exception):
-        GridQubit(0.0, float("NaN"))
 
 
 def test_grid_qubit_coordinates() -> None:
@@ -28,10 +17,6 @@ def test_grid_qubit_coordinates() -> None:
     assert GridQubit(0, 0).y == 0
     assert GridQubit(-1, 10).x == -1
     assert GridQubit(-1, 10).y == 10
-    assert GridQubit(0.5, 10).x == 0.5
-    assert GridQubit(0.5, 10).y == 10
-    assert GridQubit(Fraction(1, 9), Fraction(0, 2)).x == Fraction(1, 9)
-    assert GridQubit(Fraction(1, 9), Fraction(0, 2)).y == 0
 
 
 def test_grid_qubit_operators() -> None:
@@ -49,7 +34,7 @@ def test_grid_qubit_operators() -> None:
     assert q + Position2D(1, 3) == GridQubit(1, 3)
     assert q + GridQubit(1, 3) == GridQubit(1, 3)
 
-    q = GridQubit(-1, 0.5)
+    q = GridQubit(-1, 0)
     assert q + Displacement(0, 0) == q
     assert q + q == 2 * q
     assert q - q == GridQubit(0, 0)
@@ -60,7 +45,7 @@ def test_grid_qubit_in_set() -> None:
     assert len(set(grid_qubits)) == len(grid_qubits)
     assert len(set(grid_qubits + grid_qubits)) == len(grid_qubits)
 
-    grid_qubits = [GridQubit(i / 3, 3 * j) for i in range(10) for j in range(10)]
+    grid_qubits = [GridQubit(i * (3 + i), 3 * j) for i in range(10) for j in range(10)]
     assert len(set(grid_qubits)) == len(grid_qubits)
     assert len(set(grid_qubits + grid_qubits)) == len(grid_qubits)
 

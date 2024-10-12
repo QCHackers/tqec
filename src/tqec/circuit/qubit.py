@@ -9,51 +9,25 @@ from __future__ import annotations
 
 import typing as ty
 from collections import defaultdict
-from fractions import Fraction
 
 import stim
 
 from tqec.position import Displacement, Position2D
 
-NumericType = int | float | Fraction
-
-
-def _to_fraction(value: NumericType) -> Fraction:
-    if isinstance(value, int):
-        return Fraction(value, 1)
-    elif isinstance(value, float):
-        return Fraction.from_float(value)
-    return value
-
 
 class GridQubit:
-    """Represent a qubit placed on a 2-dimensional grid.
+    """Represent a qubit placed on a 2-dimensional grid."""
 
-    Internally, this class represents the qubit coordinates as fractions. This
-    design choice has been made for several reasons:
-
-    - the :class:`fractions.Fraction` type is hashable (and its hash is usable,
-      which is not the case for `float` for example).
-    - most of the qubit coordinates we manipulated since the beginning are
-      integers and so can be exactly represented by an instance of
-      :class:`fractions.Fraction`.
-    - it might make sense to have some qubits on "half-integer" (e.g., `0.5` or
-      `4.5`) as some Crumble or Stim pre-built circuits use such coordinates.
-
-    This means that the `x` and `y` coordinates will be returned as `Fraction`
-    instances to the user.
-    """
-
-    def __init__(self, x: NumericType, y: NumericType) -> None:
-        self._x = _to_fraction(x)
-        self._y = _to_fraction(y)
+    def __init__(self, x: int, y: int) -> None:
+        self._x = x
+        self._y = y
 
     @property
-    def x(self) -> Fraction:
+    def x(self) -> int:
         return self._x
 
     @property
-    def y(self) -> Fraction:
+    def y(self) -> int:
         return self._y
 
     def to_qubit_coords_instruction(self, index: int) -> stim.CircuitInstruction:
@@ -70,10 +44,10 @@ class GridQubit:
     def __sub__(self, other: GridQubit | Position2D | Displacement) -> GridQubit:
         return GridQubit(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other: float) -> GridQubit:
+    def __mul__(self, other: int) -> GridQubit:
         return GridQubit(other * self.x, other * self.y)
 
-    def __rmul__(self, other: float) -> GridQubit:
+    def __rmul__(self, other: int) -> GridQubit:
         return GridQubit(other * self.x, other * self.y)
 
     def __hash__(self) -> int:
@@ -89,6 +63,9 @@ class GridQubit:
 
     def __repr__(self) -> str:
         return f"GridQubit({self.x}, {self.y})"
+
+    def __str__(self) -> str:
+        return f"Q[{self.x}, {self.y}]"
 
 
 """Names of the `stim` instructions that are considered as annotations."""

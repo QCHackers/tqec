@@ -11,9 +11,15 @@ import typing
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+import stim
 from typing_extensions import override
 
+from tqec.circuit.instructions import (
+    is_multi_qubit_measurement_instruction,
+    is_single_qubit_measurement_instruction,
+)
 from tqec.circuit.qubit import GridQubit
+from tqec.circuit.qubit_map import QubitMap
 from tqec.exceptions import TQECException
 from tqec.interval import Interval, Rplus_interval
 from tqec.position import Displacement
@@ -103,6 +109,9 @@ class Measurement(AbstractMeasurement):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.qubit}, {self.offset})"
 
+    def __str__(self) -> str:
+        return f"M[{self.qubit},{self.offset}]"
+
     @override
     def map_qubit(self, qubit_map: typing.Mapping[GridQubit, GridQubit]) -> Measurement:
         return Measurement(qubit_map[self.qubit], self.offset)
@@ -165,3 +174,34 @@ class RepeatedMeasurement(AbstractMeasurement):
         return [
             Measurement(self.qubit, offset) for offset in self.offsets.iter_integers()
         ]
+
+
+def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
+    qubit_map = QubitMap.from_circuit(circuit)
+    num_measurements: dict[GridQubit, int] = {}
+    for instruction in circuit:
+        if isinstance(instruction, stim.CircuitRepeatBlock):
+            raise TQECException(
+                "Found a REPEAT block in get_measurements_from_circuit. This "
+                "is not supported."
+            )
+        if is_multi_qubit_measurement_instruction(instruction):
+            raise TQECException(
+                f"Got a multi-qubit measurement instruction ({instruction.name}) "
+                "but multi-qubit measurements are not supported yet."
+            )
+        if is_single_qubit_measurement_instruction(instruction):
+            for (target,) in instruction.target_groups():
+                if not target.is_qubit_target:
+                    raise TQECException(
+                        "Found a measurement instruction with a target that is "
+                        f"not a qubit target: {instruction}."
+                    )
+                qi: int = typing.cast(int, target.qubit_value)
+                qubit = qubit_map.i2q[qi]
+                num_measurements[qubit] = num_measurements.get(qubit, 0) + 1
+    return [
+        Measurement(q, -i)
+        for q, num_measurement in num_measurements.items()
+        for i in range(1, num_measurement + 1)
+    ]

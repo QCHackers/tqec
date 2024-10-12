@@ -113,7 +113,8 @@ class CompiledGraph:
                 # no index clash.
                 circuit = circuits[t][i]
                 local_indices_to_global_indices = {
-                    local_index: global_q2i[q] for q, local_index in circuit.q2i.items()
+                    local_index: global_q2i[q]
+                    for local_index, q in circuit.qubit_map.items()
                 }
                 circuit.map_qubit_indices(local_indices_to_global_indices, inplace=True)
 

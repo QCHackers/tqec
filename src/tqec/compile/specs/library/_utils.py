@@ -1,10 +1,10 @@
-from collections import defaultdict
 from functools import partial
 from typing import Literal, cast
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.base import CubeSpec
 from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import PlaquetteBuilder, Plaquettes, RepeatedPlaquettes
 from tqec.scale import LinearFunction
@@ -30,48 +30,60 @@ def regular_block(
     b2 = cast(Literal["X", "Z"], b2)
 
     initial_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.UP),
-            7: factory(b2, reset_basis).project_on_boundary(PlaquetteOrientation.LEFT),
-            9: factory(b1, reset_basis),
-            10: factory(b2, reset_basis),
-            12: factory(b2, reset_basis).project_on_boundary(
-                PlaquetteOrientation.RIGHT
-            ),
-            13: factory(b1, reset_basis).project_on_boundary(PlaquetteOrientation.DOWN),
-        }
+        FrozenDefaultDict(
+            {
+                6: factory(b1, reset_basis).project_on_boundary(
+                    PlaquetteOrientation.UP
+                ),
+                7: factory(b2, reset_basis).project_on_boundary(
+                    PlaquetteOrientation.LEFT
+                ),
+                9: factory(b1, reset_basis),
+                10: factory(b2, reset_basis),
+                12: factory(b2, reset_basis).project_on_boundary(
+                    PlaquetteOrientation.RIGHT
+                ),
+                13: factory(b1, reset_basis).project_on_boundary(
+                    PlaquetteOrientation.DOWN
+                ),
+            },
+            default_factory=empty_square_plaquette,
+        )
     )
     repeating_plaquettes = RepeatedPlaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1).project_on_boundary(PlaquetteOrientation.UP),
-            7: factory(b2).project_on_boundary(PlaquetteOrientation.LEFT),
-            9: factory(b1),
-            10: factory(b2),
-            12: factory(b2).project_on_boundary(PlaquetteOrientation.RIGHT),
-            13: factory(b1).project_on_boundary(PlaquetteOrientation.DOWN),
-        },
+        FrozenDefaultDict(
+            {
+                6: factory(b1).project_on_boundary(PlaquetteOrientation.UP),
+                7: factory(b2).project_on_boundary(PlaquetteOrientation.LEFT),
+                9: factory(b1),
+                10: factory(b2),
+                12: factory(b2).project_on_boundary(PlaquetteOrientation.RIGHT),
+                13: factory(b1).project_on_boundary(PlaquetteOrientation.DOWN),
+            },
+            default_factory=empty_square_plaquette,
+        ),
         number_of_repetitions,
     )
     final_plaquettes = Plaquettes(
-        defaultdict(empty_square_plaquette)
-        | {
-            6: factory(b1, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.UP
-            ),
-            7: factory(b2, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.LEFT
-            ),
-            9: factory(b1, None, measurement_basis),
-            10: factory(b2, None, measurement_basis),
-            12: factory(b2, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.RIGHT
-            ),
-            13: factory(b1, None, measurement_basis).project_on_boundary(
-                PlaquetteOrientation.DOWN
-            ),
-        }
+        FrozenDefaultDict(
+            {
+                6: factory(b1, None, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.UP
+                ),
+                7: factory(b2, None, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.LEFT
+                ),
+                9: factory(b1, None, measurement_basis),
+                10: factory(b2, None, measurement_basis),
+                12: factory(b2, None, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.RIGHT
+                ),
+                13: factory(b1, None, measurement_basis).project_on_boundary(
+                    PlaquetteOrientation.DOWN
+                ),
+            },
+            default_factory=empty_square_plaquette,
+        )
     )
     return CompiledBlock(
         template=QubitTemplate(),

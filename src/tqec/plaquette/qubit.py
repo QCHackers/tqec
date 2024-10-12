@@ -36,7 +36,7 @@ class PlaquetteQubits:
             The qubits on the edge of the plaquette.
         """
 
-        def _get_relevant_value(qubit: GridQubit) -> Fraction:
+        def _get_relevant_value(qubit: GridQubit) -> int:
             return qubit.y if orientation == TemplateOrientation.HORIZONTAL else qubit.x
 
         max_index = max(_get_relevant_value(q) for q in self.data_qubits)
@@ -71,6 +71,16 @@ class PlaquetteQubits:
         else:  # if orientation == PlaquetteSide.DOWN:
             max_y = max(q.y for q in self)
             return [q for q in self if q.y == max_y]
+
+    def __hash__(self) -> int:
+        return hash((tuple(self.syndrome_qubits), tuple(self.data_qubits)))
+
+    def __eq__(self, rhs: object) -> bool:
+        return (
+            isinstance(rhs, PlaquetteQubits)
+            and self.data_qubits == rhs.data_qubits
+            and self.syndrome_qubits == rhs.syndrome_qubits
+        )
 
 
 class SquarePlaquetteQubits(PlaquetteQubits):

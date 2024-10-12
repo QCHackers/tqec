@@ -124,6 +124,25 @@ def test_moment_append() -> None:
         moment.append("H", [stim.GateTarget(0)], [])
 
 
+def test_moment_append_instruction() -> None:
+    moment = Moment(stim.Circuit("H 0"))
+    moment.append_instruction(stim.CircuitInstruction("H", [stim.GateTarget(1)], []))
+    moment.append_instruction(stim.CircuitInstruction("H", [stim.GateTarget(2)], []))
+    assert moment.circuit == stim.Circuit("H 0 1 2")
+    moment.append_instruction(
+        stim.CircuitInstruction("QUBIT_COORDS", [stim.GateTarget(0)], [0, 0])
+    )
+    assert moment.circuit == stim.Circuit("H 0 1 2\nQUBIT_COORDS(0, 0) 0")
+
+    with pytest.raises(
+        TQECException,
+        match="^Trying to add an overlapping quantum circuit to a Moment instance.$",
+    ):
+        moment.append_instruction(
+            stim.CircuitInstruction("H", [stim.GateTarget(0)], [])
+        )
+
+
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
 def test_moment_instructions_property(circuit: stim.Circuit) -> None:
     assert list(Moment(circuit).instructions) == list(iter(circuit))
@@ -152,6 +171,28 @@ def test_moment_num_measurements() -> None:
     assert Moment(stim.Circuit("CX 0 1 2 3 4 5")).num_measurements == 0
     assert Moment(stim.Circuit("H 0 3\nM 1 2 4")).num_measurements == 3
     assert Moment(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")).num_measurements == 0
+
+
+def test_moment_filter_by_qubits() -> None:
+    fqs = [0, 2, 4, 5, 6, 789345]
+    assert Moment(stim.Circuit("H 0 1 2 3")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("H 0 2")
+    assert Moment(stim.Circuit("M 1 4 6")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("M 4 6")
+    assert Moment(stim.Circuit("MX 1 4 6")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("MX 4 6")
+    assert Moment(stim.Circuit("CX 0 1 2 3 4 5")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("CX 4 5")
+    assert Moment(stim.Circuit("H 0 3\nM 1 2 4")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("H 0\nM 2 4")
+    assert Moment(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")).filter_by_qubits(
+        fqs
+    ).circuit == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
 
 
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
