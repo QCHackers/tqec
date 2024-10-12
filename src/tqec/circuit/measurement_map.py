@@ -6,9 +6,9 @@ from typing import Sequence
 import numpy
 import stim
 
-from tqec.circuit.measurement import (
-    MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES,
-    SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES,
+from tqec.circuit.instructions import (
+    is_multi_qubit_measurement_instruction,
+    is_single_qubit_measurement_instruction,
 )
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap
@@ -130,11 +130,11 @@ class MeasurementRecordsMap:
                 raise TQECException(
                     "Found a REPEAT instruction. This is not supported for the moment."
                 )
-            if instruction.name in MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            if is_multi_qubit_measurement_instruction(instruction):
                 raise TQECException(
                     f"Found a non-supported measurement instruction: {instruction}"
                 )
-            if instruction.name in SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            if is_single_qubit_measurement_instruction(instruction):
                 for (qi,) in instruction.target_groups():
                     qubit = qubit_map.i2q[qi.value]
                     measurement_records.setdefault(qubit, []).append(

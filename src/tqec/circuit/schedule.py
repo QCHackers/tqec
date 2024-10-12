@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 
 import stim
 
+from tqec.circuit.instructions import is_annotation_instruction
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap, get_qubit_map
@@ -583,12 +584,10 @@ class ScheduledCircuit:
         Raises:
             TQECException: if the provided instruction is not an annotation.
         """
-        if any(not t.is_measurement_record_target for t in instruction.targets_copy()):
+        if not is_annotation_instruction(instruction):
             raise TQECException(
-                "The provided instruction contains a target that is not a measurement "
-                f"record (targets: {instruction.targets_copy()}). For this reason, "
-                "it is considered to not be an annotation, which is disallowed by "
-                "the append_annotation method."
+                "The provided instruction is not an annotation, which is "
+                "disallowed by the append_annotation method."
             )
         self._moments[-1].append_instruction(instruction)
 
