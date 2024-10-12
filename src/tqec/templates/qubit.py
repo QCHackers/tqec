@@ -8,7 +8,6 @@ from typing_extensions import override
 from tqec.exceptions import TQECWarning
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.enums import TemplateSide
 
 
 class QubitTemplate(RectangularTemplate):
@@ -68,29 +67,6 @@ class QubitTemplate(RectangularTemplate):
     def expected_plaquettes_number(self) -> int:
         return 14
 
-    @override
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        indices: list[int] = []
-        for side in sides:
-            match side:
-                case TemplateSide.TOP_LEFT:
-                    indices.append(1)
-                case TemplateSide.TOP_RIGHT:
-                    indices.append(2)
-                case TemplateSide.BOTTOM_LEFT:
-                    indices.append(3)
-                case TemplateSide.BOTTOM_RIGHT:
-                    indices.append(4)
-                case TemplateSide.TOP:
-                    indices.extend((5, 6))
-                case TemplateSide.LEFT:
-                    indices.extend((7, 8))
-                case TemplateSide.RIGHT:
-                    indices.extend((11, 12))
-                case TemplateSide.BOTTOM:
-                    indices.extend((13, 14))
-        return indices
-
 
 class QubitVerticalBorders(RectangularTemplate):
     """Two vertical sides of neighbouring error-corrected qubits glued
@@ -140,29 +116,6 @@ class QubitVerticalBorders(RectangularTemplate):
     def expected_plaquettes_number(self) -> int:
         return 8
 
-    @override
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        indices: list[int] = []
-        for side in sides:
-            match side:
-                case TemplateSide.TOP_LEFT:
-                    indices.append(1)
-                case TemplateSide.TOP_RIGHT:
-                    indices.append(2)
-                case TemplateSide.BOTTOM_LEFT:
-                    indices.append(3)
-                case TemplateSide.BOTTOM_RIGHT:
-                    indices.append(4)
-                case TemplateSide.TOP:
-                    pass
-                case TemplateSide.LEFT:
-                    indices.extend((5, 6))
-                case TemplateSide.RIGHT:
-                    indices.extend((7, 8))
-                case TemplateSide.BOTTOM:
-                    pass
-        return indices
-
 
 class QubitHorizontalBorders(RectangularTemplate):
     """Two horizontal sides of neighbouring error-corrected qubits glued
@@ -206,29 +159,6 @@ class QubitHorizontalBorders(RectangularTemplate):
     @override
     def expected_plaquettes_number(self) -> int:
         return 8
-
-    @override
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        indices: list[int] = []
-        for side in sides:
-            match side:
-                case TemplateSide.TOP_LEFT:
-                    indices.append(1)
-                case TemplateSide.TOP_RIGHT:
-                    indices.append(2)
-                case TemplateSide.BOTTOM_LEFT:
-                    indices.append(3)
-                case TemplateSide.BOTTOM_RIGHT:
-                    indices.append(4)
-                case TemplateSide.TOP:
-                    indices.extend((5, 6))
-                case TemplateSide.LEFT:
-                    pass
-                case TemplateSide.RIGHT:
-                    pass
-                case TemplateSide.BOTTOM:
-                    indices.extend((7, 8))
-        return indices
 
 
 class Qubit4WayJunctionTemplate(RectangularTemplate):
@@ -325,26 +255,3 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
     @override
     def expected_plaquettes_number(self) -> int:
         return 15
-
-    @override
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        indices: list[int] = []
-        for side in sides:
-            match side:
-                case TemplateSide.TOP_LEFT:
-                    indices.append(1)
-                case TemplateSide.TOP_RIGHT:
-                    indices.append(2)
-                case TemplateSide.BOTTOM_LEFT:
-                    indices.append(3)
-                case TemplateSide.BOTTOM_RIGHT:
-                    indices.append(4)
-                case TemplateSide.TOP:
-                    indices.extend((5, 6))
-                case TemplateSide.LEFT:
-                    indices.extend((7, 8))
-                case TemplateSide.RIGHT:
-                    indices.extend((12, 13))
-                case TemplateSide.BOTTOM:
-                    indices.extend((14, 15))
-        return indices

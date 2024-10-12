@@ -7,7 +7,6 @@ from typing_extensions import override
 from tqec.position import Displacement
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.enums import TemplateSide
 
 
 class FixedTemplate(RectangularTemplate):
@@ -42,9 +41,3 @@ class FixedTemplate(RectangularTemplate):
     @override
     def expected_plaquettes_number(self) -> int:
         return max((max(line, default=0) for line in self._indices), default=0) + 1
-
-    @override
-    def get_plaquette_indices_on_sides(self, _: list[TemplateSide]) -> list[int]:
-        raise NotImplementedError(
-            "Cannot call FixedTemplate.get_plaquette_indices_on_sides."
-        )
