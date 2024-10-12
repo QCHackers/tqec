@@ -40,13 +40,13 @@ class MeasurementRecordsMap:
         all_measurement_records_indices: list[int] = []
         for qubit, measurement_record_offsets in self.mapping.items():
             # Check that the provided measurement record offsets are negative.
-            positive_offsets = [
+            nonnegative_offsets = [
                 offset for offset in measurement_record_offsets if offset >= 0
             ]
-            if positive_offsets:
+            if nonnegative_offsets:
                 raise TQECException(
                     "Invalid mapping from qubit offsets to measurement record "
-                    f"offsets. Found positive offsets ({positive_offsets}) for "
+                    f"offsets. Found positive offsets ({nonnegative_offsets}) for "
                     f"qubit {qubit}."
                 )
             # Check that measurement record offsets are sorted
