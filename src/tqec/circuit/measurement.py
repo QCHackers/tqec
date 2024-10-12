@@ -14,6 +14,10 @@ from typing import Mapping, cast
 import stim
 from typing_extensions import override
 
+from tqec.circuit.instructions import (
+    is_multi_qubit_measurement_instruction,
+    is_single_qubit_measurement_instruction,
+)
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap
 from tqec.exceptions import TQECException
@@ -172,14 +176,6 @@ class RepeatedMeasurement(AbstractMeasurement):
         ]
 
 
-SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
-    ["M", "MR", "MRX", "MRY", "MRZ", "MX", "MY", "MZ"]
-)
-MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES: frozenset[str] = frozenset(
-    ["MXX", "MYY", "MZZ", "MPP"]
-)
-
-
 def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
     qubit_map = QubitMap.from_circuit(circuit)
     num_measurements: dict[GridQubit, int] = {}
@@ -190,13 +186,13 @@ def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
                 "Found a REPEAT block in get_measurements_from_circuit. This "
                 "is not supported."
             )
-        if instruction.name in MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+        if is_multi_qubit_measurement_instruction(instruction):
             raise TQECException(
                 f"Got a multi-qubit measurement instruction ({instruction.name}) "
                 "but multi-qubit measurements are not supported yet."
             )
-        if instruction.name in SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
-            for (target,) in reversed(instruction.target_groups()):
+        if is_single_qubit_measurement_instruction(instruction):
+            for (target,) in instruction.target_groups():
                 if not target.is_qubit_target:
                     raise TQECException(
                         "Found a measurement instruction with a target that is "

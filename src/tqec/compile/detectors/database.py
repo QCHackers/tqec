@@ -33,7 +33,7 @@ class DetectorDatabaseKey:
     as a `dict` key.
 
     Attributes:
-        subtemplate: a sequence of 2-dimensional arrays of integers representing
+        subtemplates: a sequence of 2-dimensional arrays of integers representing
             the sub-template(s). Each entry corresponds to one QEC round.
         plaquettes_by_timestep: a list of :class:`Plaquettes`, each
             :class:`Plaquettes` entry storing enough :class:`Plaquette`
@@ -45,14 +45,14 @@ class DetectorDatabaseKey:
     This class stores data types that are not efficiently hashable (i.e., not in
     constant time) when considering their values:
 
-    - `self.subtemplate` is a raw array of integers without any guarantee on the
+    - `self.subtemplates` is a raw array of integers without any guarantee on the
       stored values except that they are positive.
     - `self.plaquettes_by_timestep` contains :class:`Plaquette` instances, each
       containing a class:`ScheduledCircuit` instance, ultimately containing a
       `stim.Circuit`. Hashing a quantum circuit cannot be performed in constant
       time.
 
-    For `self.subtemplate`, we hash the `shape` of the array as well as the
+    For `self.subtemplates`, we hash the `shape` of the array as well as the
     hash of the array's data. This is a constant time operation, because
     we only consider spatially local detectors at the moment and that
     restriction makes sub-templates that are of constant size (w.r.t the number

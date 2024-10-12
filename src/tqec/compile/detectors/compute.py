@@ -46,9 +46,8 @@ def _get_measurement_offset_mapping(circuit: stim.Circuit) -> dict[int, Measurem
             `cirq.GridQubit` instance.
 
     Returns:
-        a mapping qubit -> index for all the qubits appearing in the circuit
-        built from the provided `instantiation` and `plaquettes_at_timestep`.
-        Each qubit should be mapped to a different index.
+        a mapping from record offset to :class:`Measurement` for all the
+        measurements appearing in the provided `circuit`.
     """
     return {
         -i - 1: m

@@ -6,9 +6,9 @@ from typing import Sequence
 import numpy
 import stim
 
-from tqec.circuit.measurement import (
-    MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES,
-    SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES,
+from tqec.circuit.instructions import (
+    is_multi_qubit_measurement_instruction,
+    is_single_qubit_measurement_instruction,
 )
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap
@@ -40,13 +40,13 @@ class MeasurementRecordsMap:
         all_measurement_records_indices: list[int] = []
         for qubit, measurement_record_offsets in self.mapping.items():
             # Check that the provided measurement record offsets are negative.
-            positive_offsets = [
+            nonnegative_offsets = [
                 offset for offset in measurement_record_offsets if offset >= 0
             ]
-            if positive_offsets:
+            if nonnegative_offsets:
                 raise TQECException(
                     "Invalid mapping from qubit offsets to measurement record "
-                    f"offsets. Found positive offsets ({positive_offsets}) for "
+                    f"offsets. Found positive offsets ({nonnegative_offsets}) for "
                     f"qubit {qubit}."
                 )
             # Check that measurement record offsets are sorted
@@ -130,11 +130,11 @@ class MeasurementRecordsMap:
                 raise TQECException(
                     "Found a REPEAT instruction. This is not supported for the moment."
                 )
-            if instruction.name in MULTIPLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            if is_multi_qubit_measurement_instruction(instruction):
                 raise TQECException(
                     f"Found a non-supported measurement instruction: {instruction}"
                 )
-            if instruction.name in SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES:
+            if is_single_qubit_measurement_instruction(instruction):
                 for (qi,) in instruction.target_groups():
                     qubit = qubit_map.i2q[qi.value]
                     measurement_records.setdefault(qubit, []).append(
