@@ -1,3 +1,5 @@
+from typing import Sequence
+
 import numpy
 import stim
 
@@ -107,8 +109,8 @@ def _center_plaquette_syndrome_qubits(
 
 def _filter_detectors(
     detectors: list[Detector],
-    subtemplates: tuple[SubTemplateType] | tuple[SubTemplateType, SubTemplateType],
-    plaquettes: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
+    subtemplates: Sequence[SubTemplateType],
+    plaquettes: Sequence[Plaquettes],
     increments: Displacement,
 ) -> frozenset[Detector]:
     # First, we want the detectors to be composed of at least one measurement
@@ -131,8 +133,8 @@ def _filter_detectors(
 
 
 def _compute_detectors_at_end_of_situation(
-    subtemplates: tuple[SubTemplateType] | tuple[SubTemplateType, SubTemplateType],
-    plaquettes: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
+    subtemplates: Sequence[SubTemplateType],
+    plaquettes: Sequence[Plaquettes],
     increments: Displacement,
 ) -> frozenset[Detector]:
     if len(plaquettes) != len(subtemplates):
@@ -145,12 +147,12 @@ def _compute_detectors_at_end_of_situation(
     if numpy.all(subtemplates[-1] == 0):
         return frozenset()
 
-    # Note: if `len(subtemplates) == 2`, the first entry might be full of zeros.
-    #       In this case, just consider the second entry.
-    if len(subtemplates) == 2 and numpy.all(subtemplates[0] == 0):
-        assert len(plaquettes) == 2  # make type checkers happy
-        subtemplates = (subtemplates[1],)
-        plaquettes = (plaquettes[1],)
+    # Note: if there is more than 1 time slice, remove any initial time slice
+    #       that is empty.
+    while len(subtemplates) > 1 and numpy.all(subtemplates[0] == 0):
+        assert len(plaquettes) > 1  # make type checkers happy
+        subtemplates = subtemplates[1:]
+        plaquettes = plaquettes[1:]
 
     # Build subcircuit for each Plaquettes layer
     subcircuits: list[ScheduledCircuit] = []
@@ -173,7 +175,8 @@ def _compute_detectors_at_end_of_situation(
         complete_circuit.append("TICK", [], [])
     complete_circuit += coordless_subcircuits[-1]
 
-    # Use tqec.circuit.detectors module to match the detectors.
+    # Use tqec.circuit.detectors module to match the detectors. Note that, for
+    # the moment, only the last two time slices are taken into account.
     coordinates_by_index = {
         i: (float(q.x), float(q.y)) for i, q in global_qubit_map.items()
     }
@@ -197,8 +200,8 @@ def _compute_detectors_at_end_of_situation(
 
 
 def compute_detectors_at_end_of_situation(
-    subtemplates: tuple[SubTemplateType] | tuple[SubTemplateType, SubTemplateType],
-    plaquettes_by_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
+    subtemplates: Sequence[SubTemplateType],
+    plaquettes_by_timestep: Sequence[Plaquettes],
     increments: Displacement,
     database: DetectorDatabase | None = None,
 ) -> frozenset[Detector]:
@@ -257,9 +260,9 @@ def compute_detectors_at_end_of_situation(
 
 
 def compute_detectors_for_fixed_radius(
-    template_at_timestep: tuple[Template] | tuple[Template, Template],
+    templates: Sequence[Template],
     k: int,
-    plaquettes_at_timestep: tuple[Plaquettes] | tuple[Plaquettes, Plaquettes],
+    plaquettes: Sequence[Plaquettes],
     fixed_subtemplate_radius: int = 2,
     database: DetectorDatabase | None = None,
 ) -> list[Detector]:
@@ -268,12 +271,12 @@ def compute_detectors_for_fixed_radius(
     `plaquettes_at_timestep`.
 
     Args:
-        template_at_timestep: a tuple containing either one or two :class:`Template`
-            instance(s), each representing one QEC round.
+        templates: a sequence containing `t` :class:`Template` instance(s), each
+            representing one QEC round.
         k: scaling factor to consider in order to instantiate the provided
             template.
-        plaquettes_at_timestep: a tuple containing either one or two collection(s)
-            of plaquettes each representing one QEC round.
+        plaquettes: a sequence containing `t` collection(s) of plaquettes each
+            representing one QEC round.
         fixed_subtemplate_radius: Manhattan radius to consider when splitting the
             provided `template` into sub-templates. Should be large enough so
             that flows cancelling each other to form a detector are strictly
@@ -290,10 +293,9 @@ def compute_detectors_for_fixed_radius(
 
     Returns:
         a collection of detectors that should be added at the end of the circuit
-        that would be obtained from the provided `template_at_timestep` and
-        `plaquettes_at_timestep`.
+        that would be obtained from the provided `templates` and `plaquettes`.
     """
-    all_increments = frozenset(t.get_increments() for t in template_at_timestep)
+    all_increments = frozenset(t.get_increments() for t in templates)
     if len(all_increments) != 1:
         raise TQECException(
             "Expected all the provided templates to have the same increments. "
@@ -301,8 +303,13 @@ def compute_detectors_for_fixed_radius(
         )
     increments = next(iter(all_increments))
 
+    if len(templates) != len(plaquettes):
+        raise TQECException(
+            "Expecting the same number of entries in templates and plaquettes."
+        )
+
     unique_3d_subtemplates = get_spatially_distinct_3d_subtemplates(
-        tuple(t.instantiate(k) for t in template_at_timestep),
+        tuple(t.instantiate(k) for t in templates),
         manhattan_radius=fixed_subtemplate_radius,
         avoid_zero_plaquettes=True,
     )
@@ -311,13 +318,14 @@ def compute_detectors_for_fixed_radius(
     # centered on the central plaquette origin.
     detectors_by_subtemplate: dict[tuple[int, ...], frozenset[Detector]] = {
         indices: compute_detectors_at_end_of_situation(
-            (s3d[:, :, 0], s3d[:, :, 1]),
-            plaquettes_at_timestep,
+            [s3d[:, :, i] for i in range(s3d.shape[2])],
+            plaquettes,
             increments,
             database,
         )
         for indices, s3d in unique_3d_subtemplates.subtemplates.items()
     }
+
     # We know for sure that detectors in each subtemplate all involve a measurement
     # on at least one syndrome qubit of the central plaquette. That means that
     # detectors computed here are unique and we do not have to check for
