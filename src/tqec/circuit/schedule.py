@@ -900,7 +900,8 @@ def relabel_circuits_qubit_indices(
             not defined by a `QUBIT_COORDS` instruction.
 
     Args:
-        circuits: circuit instances to remap.
+        circuits: circuit instances to remap. This parameter is not mutated by
+            this function and is only used in read-only mode.
 
     Returns:
         the same circuits with update qubit indices as well as the global qubit
