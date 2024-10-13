@@ -70,3 +70,21 @@ def test_measurement_records_map_from_scheduled_circuit() -> None:
     assert rec_map[GridQubit(2, 2)][-2] == -5
     assert rec_map[GridQubit(1, 1)][-1] == -2
     assert rec_map[GridQubit(1, 1)][-2] == -4
+
+
+def test_with_added_measurements() -> None:
+    qubit_map = QubitMap({i: GridQubit(i, i) for i in range(3)})
+    rec_map = MeasurementRecordsMap.from_circuit(stim.Circuit("M 0 2 1"), qubit_map)
+    twice = rec_map.with_added_measurements(rec_map)
+    assert twice.mapping == {
+        GridQubit(0, 0): [-6, -3],
+        GridQubit(1, 1): [-4, -1],
+        GridQubit(2, 2): [-5, -2],
+    }
+
+    ten_times = rec_map.with_added_measurements(rec_map, repetitions=9)
+    assert ten_times.mapping == {
+        GridQubit(0, 0): [-30, -27, -24, -21, -18, -15, -12, -9, -6, -3],
+        GridQubit(1, 1): [-28, -25, -22, -19, -16, -13, -10, -7, -4, -1],
+        GridQubit(2, 2): [-29, -26, -23, -20, -17, -14, -11, -8, -5, -2],
+    }
