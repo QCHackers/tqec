@@ -1,3 +1,4 @@
+import pytest
 import stim
 
 from tqec.plaquette.enums import (
@@ -14,7 +15,10 @@ def test_zxxz_surface_code_memory_plaquette() -> None:
     x_plaquette = make_zxxz_surface_code_plaquette("X")
     assert x_plaquette.qubits == SquarePlaquetteQubits()
     assert "H" in x_plaquette.mergeable_instructions
-    assert x_plaquette.circuit.get_circuit() == stim.Circuit("""
+    circuit = x_plaquette.circuit.get_circuit()
+    assert circuit.has_flow(stim.Flow("_ZXXZ -> Z____"))
+    assert circuit.has_flow(stim.Flow("1 -> _ZXXZ xor rec[-1]"))
+    assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
@@ -28,9 +32,9 @@ CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 2
-TICK
 CZ 0 3
+TICK
+CZ 0 2
 TICK
 H 1 2 3 4
 TICK
@@ -40,9 +44,13 @@ H 0
 TICK
 M 0
 """)
+
     z_plaquette = make_zxxz_surface_code_plaquette("Z")
     assert z_plaquette.qubits == SquarePlaquetteQubits()
-    assert z_plaquette.circuit.get_circuit() == stim.Circuit("""
+    circuit = z_plaquette.circuit.get_circuit()
+    assert circuit.has_flow(stim.Flow("_ZXXZ -> Z____"))
+    assert circuit.has_flow(stim.Flow("1 -> _ZXXZ xor rec[-1]"))
+    assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
@@ -56,9 +64,9 @@ CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 3
-TICK
 CZ 0 2
+TICK
+CZ 0 3
 TICK
 H 1 2 3 4
 TICK
@@ -74,7 +82,11 @@ def test_zxxz_surface_code_init_meas_plaquette() -> None:
     x_init_meas_plaquette = make_zxxz_surface_code_plaquette(
         "X", ResetBasis.Z, MeasurementBasis.Z
     )
-    assert x_init_meas_plaquette.circuit.get_circuit() == stim.Circuit("""
+    circuit = x_init_meas_plaquette.circuit.get_circuit()
+    assert circuit.has_flow(
+        stim.Flow("1 -> 1 xor rec[-1] xor rec[-2] xor rec[-3] xor rec[-4]")
+    )
+    assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
@@ -88,9 +100,9 @@ CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 2
-TICK
 CZ 0 3
+TICK
+CZ 0 2
 TICK
 H 1 2 3 4
 TICK
@@ -117,9 +129,9 @@ CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 3
-TICK
 CZ 0 2
+TICK
+CZ 0 3
 TICK
 H 1 2 3 4
 TICK
@@ -150,8 +162,8 @@ TICK
 TICK
 H 1 2
 TICK
-TICK
 CZ 0 1
+TICK
 TICK
 H 1 2
 TICK
@@ -178,8 +190,8 @@ CZ 0 1
 TICK
 H 1 2
 TICK
-CZ 0 2
 TICK
+CZ 0 2
 TICK
 H 1 2
 TICK
@@ -204,8 +216,8 @@ TICK
 TICK
 H 1 2
 TICK
-CZ 0 1
 TICK
+CZ 0 1
 TICK
 H 1 2
 TICK
@@ -232,8 +244,8 @@ CZ 0 1
 TICK
 H 1 2
 TICK
-TICK
 CZ 0 2
+TICK
 TICK
 H 1 2
 TICK
@@ -244,9 +256,16 @@ M 0 1 2
 """)
 
 
-def test_zxxz_surface_code_plaquette_cnot_ordering() -> None:
+def test_zxxz_surface_code_vertical_x_boundary_flow() -> None:
+    plaquette = make_zxxz_surface_code_plaquette("X", x_boundary_orientation="VERTICAL")
+    circuit = plaquette.circuit.get_circuit()
+    assert circuit.has_flow(stim.Flow("_XZZX -> Z____"))
+    assert circuit.has_flow(stim.Flow("1 -> _XZZX xor rec[-1]"))
+
+
+def test_zxxz_surface_code_vertical_x_boundary_h_cancel() -> None:
     x_plaquette = make_zxxz_surface_code_plaquette(
-        "X", x_boundary_orientation="HORIZONTAL"
+        "X", ResetBasis.X, x_boundary_orientation="VERTICAL"
     )
     assert x_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -254,28 +273,30 @@ QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
 QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
-R 0
+R 0 1 2 3 4
 TICK
-H 0
+H 0 2 3
 TICK
 CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 3
-TICK
 CZ 0 2
+TICK
+CZ 0 3
 TICK
 H 1 2 3 4
 TICK
 CZ 0 4
 TICK
-H 0
+H 0 1 2 3 4
 TICK
 M 0
 """)
     z_plaquette = make_zxxz_surface_code_plaquette(
-        "Z", x_boundary_orientation="HORIZONTAL"
+        "Z",
+        data_qubits_measurement=MeasurementBasis.X,
+        x_boundary_orientation="VERTICAL",
     )
     assert z_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -285,21 +306,21 @@ QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
 R 0
 TICK
-H 0
+H 0 1 2 3 4
 TICK
 CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 2
-TICK
 CZ 0 3
+TICK
+CZ 0 2
 TICK
 H 1 2 3 4
 TICK
 CZ 0 4
 TICK
-H 0
+H 0 1 4
 TICK
-M 0
+M 0 1 2 3 4
 """)

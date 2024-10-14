@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, cast
 
 import stim
 
@@ -17,7 +17,7 @@ def make_zxxz_surface_code_plaquette(
     basis: Literal["X", "Z"],
     data_qubits_initialization: ResetBasis | None = None,
     data_qubits_measurement: MeasurementBasis | None = None,
-    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
+    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
 ) -> Plaquette:
     """Create a ZXXZ-type surface code plaquette. The circuit is adapted to
     superconducting qubits architecture s.t. all CNOTs are compiled to the
@@ -51,12 +51,12 @@ def make_zxxz_surface_code_plaquette(
         circuit.append("R", dqs, [])
     circuit.append("TICK", [], [])
     circuit.append("H", [sq], [])
-    if data_qubits_initialization:
-        match basis, data_qubits_initialization:
-            case ("Z", ResetBasis.Z) | ("X", ResetBasis.X):
-                circuit.append("H", [dqs[1], dqs[2]], [])
-            case _:
-                circuit.append("H", [dqs[0], dqs[3]], [])
+    dqs_to_apply_h = _h_after_init_or_before_meas(
+        basis,
+        data_qubits_initialization.value if data_qubits_initialization else None,
+        x_boundary_orientation,
+    )
+    circuit.append("H", dqs_to_apply_h, [])
     circuit.append("TICK", [], [])
 
     # 2. CZ interactions
@@ -85,12 +85,12 @@ H {sq}
 """)
 
     # 3. Measurement
-    if data_qubits_measurement:
-        match basis, data_qubits_measurement:
-            case ("Z", MeasurementBasis.Z) | ("X", MeasurementBasis.X):
-                circuit.append("H", [dqs[1], dqs[2]], [])
-            case _:
-                circuit.append("H", [dqs[0], dqs[3]], [])
+    dqs_to_apply_h = _h_after_init_or_before_meas(
+        basis,
+        data_qubits_measurement.value if data_qubits_measurement else None,
+        x_boundary_orientation,
+    )
+    circuit.append("H", dqs_to_apply_h, [])
     circuit.append("TICK", [], [])
     circuit.append("M", [sq], [])
     if data_qubits_measurement:
@@ -101,3 +101,24 @@ H {sq}
         ScheduledCircuit.from_circuit(circuit, qubit_map=i2q),
         mergeable_instructions=frozenset(("H", "R", "RZ", "M", "MZ")),
     )
+
+
+def _h_after_init_or_before_meas(
+    plaquette_basis: Literal["X", "Z"],
+    init_or_meas_basis: Literal["X", "Z"] | None,
+    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"],
+) -> list[int]:
+    dqs = list(range(1, 5))
+    match plaquette_basis, init_or_meas_basis, x_boundary_orientation:
+        # measure XZZX stabilizers instead of ZXXZ stabilizers
+        # we first apply transversal Hadamard gates to all the
+        # data qubits, then measure ZXXZ stabilizers, and finally
+        # apply Hadamard gates to the data qubits again.
+        case _, None, "VERTICAL":
+            return dqs
+        case _, None, "HORIZONTAL":
+            return []
+        case ("Z", "Z", _) | ("X", "X", _):
+            return [dqs[1], dqs[2]]
+        case _:
+            return [dqs[0], dqs[3]]

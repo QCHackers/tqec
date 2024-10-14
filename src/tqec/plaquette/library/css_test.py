@@ -23,9 +23,9 @@ RX 0
 TICK
 CX 0 1
 TICK
-CX 0 2
-TICK
 CX 0 3
+TICK
+CX 0 2
 TICK
 CX 0 4
 TICK
@@ -43,9 +43,9 @@ R 0
 TICK
 CX 1 0
 TICK
-CX 3 0
-TICK
 CX 2 0
+TICK
+CX 3 0
 TICK
 CX 4 0
 TICK
@@ -68,9 +68,9 @@ R 1 2 3 4
 TICK
 CX 0 1
 TICK
-CX 0 2
-TICK
 CX 0 3
+TICK
+CX 0 2
 TICK
 CX 0 4
 TICK
@@ -90,9 +90,9 @@ RX 0 1 2 3 4
 TICK
 CX 0 1
 TICK
-CX 0 2
-TICK
 CX 0 3
+TICK
+CX 0 2
 TICK
 CX 0 4
 TICK
@@ -115,8 +115,8 @@ QUBIT_COORDS(1, 1) 2
 RX 0 1 2
 TICK
 TICK
-TICK
 CX 0 1
+TICK
 TICK
 CX 0 2
 TICK
@@ -135,8 +135,8 @@ RX 0 1 2
 TICK
 CX 0 1
 TICK
-CX 0 2
 TICK
+CX 0 2
 TICK
 TICK
 MX 0 1 2
@@ -153,8 +153,8 @@ QUBIT_COORDS(1, 1) 2
 RX 0 1 2
 TICK
 TICK
-CX 0 1
 TICK
+CX 0 1
 TICK
 CX 0 2
 TICK
@@ -173,8 +173,8 @@ RX 0 1 2
 TICK
 CX 0 1
 TICK
-TICK
 CX 0 2
+TICK
 TICK
 TICK
 MX 0 1 2
@@ -183,7 +183,7 @@ MX 0 1 2
 
 def test_css_surface_code_plaquette_cnot_ordering() -> None:
     x_plaquette = make_css_surface_code_plaquette(
-        "X", x_boundary_orientation="HORIZONTAL"
+        "X", x_boundary_orientation="VERTICAL"
     )
     assert x_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -195,16 +195,16 @@ RX 0
 TICK
 CX 0 1
 TICK
-CX 0 3
-TICK
 CX 0 2
+TICK
+CX 0 3
 TICK
 CX 0 4
 TICK
 MX 0
 """)
     z_plaquette = make_css_surface_code_plaquette(
-        "Z", x_boundary_orientation="HORIZONTAL"
+        "Z", x_boundary_orientation="VERTICAL"
     )
     assert z_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -216,9 +216,9 @@ R 0
 TICK
 CX 1 0
 TICK
-CX 2 0
-TICK
 CX 3 0
+TICK
+CX 2 0
 TICK
 CX 4 0
 TICK

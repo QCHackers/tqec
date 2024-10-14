@@ -17,7 +17,7 @@ def make_css_surface_code_plaquette(
     basis: Literal["X", "Z"],
     data_qubits_initialization: ResetBasis | None = None,
     data_qubits_measurement: MeasurementBasis | None = None,
-    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
+    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
 ) -> Plaquette:
     """Create a CSS-type surface code plaquette.
 
