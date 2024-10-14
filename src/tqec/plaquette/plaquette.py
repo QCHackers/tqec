@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
+from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
@@ -57,39 +57,6 @@ class Plaquette:
     @property
     def origin(self) -> Position2D:
         return Position2D(0, 0)
-
-    def project_on_boundary(
-        self, plaquette_orientation: PlaquetteOrientation
-    ) -> Plaquette:
-        """Project the plaquette on boundary and return a new plaquette with the
-        remaining qubits and circuit.
-
-        This method is useful for deriving a boundary plaquette from a integral
-        plaquette.
-
-        Args:
-            plaquette_orientation: the orientation of the plaquette after the
-                projection.
-
-        Returns:
-            A new plaquette with projected qubits and circuit. The qubits are
-            updated to only keep the qubits on the side complementary to the
-            provided orientation. The circuit is also updated to only use the
-            kept qubits and empty moments with the corresponding schedules are
-            removed.
-        """
-        kept_data_qubits = self.qubits.get_qubits_on_side(
-            plaquette_orientation.to_plaquette_side()
-        )
-        new_plaquette_qubits = PlaquetteQubits(
-            kept_data_qubits, self.qubits.syndrome_qubits
-        )
-        new_scheduled_circuit = self.circuit.filter_by_qubits(
-            new_plaquette_qubits.all_qubits
-        )
-        return Plaquette(
-            new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
-        )
 
     def __eq__(self, rhs: object) -> bool:
         return (
