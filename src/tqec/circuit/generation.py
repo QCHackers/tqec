@@ -66,16 +66,6 @@ def generate_circuit(
     Raises:
         TQECException: if `len(plaquettes) != template.expected_plaquettes_number`.
     """
-    # Check that the user gave enough plaquettes.
-    if (
-        not plaquettes.has_default
-        and len(plaquettes) != template.expected_plaquettes_number
-    ):
-        raise TQECException(
-            f"{len(plaquettes)} plaquettes have been provided, but "
-            f"{template.expected_plaquettes_number} were expected."
-        )
-
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
     _indices = list(range(1, template.expected_plaquettes_number + 1))
@@ -130,12 +120,6 @@ def generate_circuit_from_instantiation(
     # Remove the first 0 entry in indices if present
     if indices[0] == 0:
         indices = indices[1:]
-    expected_plaquettes_number = len(indices)
-    if not plaquettes.has_default and len(plaquettes) != expected_plaquettes_number:
-        raise TQECException(
-            f"{len(plaquettes)} plaquettes have been provided, but "
-            f"{expected_plaquettes_number} were expected."
-        )
 
     # Plaquettes indices are starting at 1 in template_plaquettes. To avoid
     # offsets in the following code, we add an empty circuit at position 0.

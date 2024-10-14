@@ -175,7 +175,7 @@ def _inplace_add_operation_on_data_qubits(
     qubits = plaquette.qubits.get_qubits_on_side(side)
     # Do not add resets on qubits that have already be reset
     moment = plaquette.circuit.moment_at_schedule(moment_schedule)
-    q2i = plaquette.circuit.q2i
+    q2i = plaquette.circuit.qubit_map.q2i
 
     operations_to_add = stim.Circuit()
     for q in qubits:

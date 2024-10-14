@@ -122,6 +122,12 @@ class Moment:
         circuit_to_add.append(name, targets, args)
         self += circuit_to_add
 
+    def append_instruction(self, instruction: stim.CircuitInstruction) -> None:
+        """Append an instruction to the :class:`Moment`."""
+        circuit_to_add = stim.Circuit()
+        circuit_to_add.append(instruction)
+        self += circuit_to_add
+
     @property
     def instructions(self) -> ty.Iterator[stim.CircuitInstruction]:
         """Iterator over all the instructions contained in the moment."""

@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 
 import stim
 
+from tqec.circuit.instructions import is_annotation_instruction
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap, get_qubit_map
@@ -134,6 +135,15 @@ class Schedule:
             self.schedule.pop(-1)
             raise e
 
+    def append_schedule(self, schedule: Schedule) -> None:
+        starting_index = (
+            self.schedule[-1] + 1 if self.schedule else Schedule._INITIAL_SCHEDULE
+        )
+        # Note: not using a generator here but explicitly constructing a list
+        #       because if `schedule == self` a generator would induce an
+        #       infinite loop.
+        self.schedule.extend([starting_index + s for s in schedule.schedule])
+
 
 class ScheduledCircuit:
     def __init__(
@@ -195,7 +205,7 @@ class ScheduledCircuit:
     def from_circuit(
         circuit: stim.Circuit,
         schedule: Schedule | list[int] | int = 0,
-        i2q: QubitMap | None = None,
+        qubit_map: QubitMap | None = None,
     ) -> ScheduledCircuit:
         """Build a :class:`ScheduledCircuit` instance from a circuit and a
         schedule.
@@ -208,7 +218,7 @@ class ScheduledCircuit:
                 in the provided `stim.Circuit` instance. If an integer is provided,
                 each moment of the provided `stim.Circuit` is scheduled sequentially,
                 starting by the provided schedule.
-            i2q: a map from indices to qubits. If None, this function will try to
+            qubit_map: a map from indices to qubits. If None, this function will try to
                 extract the qubit coordinates from the `QUBIT_COORDS` instructions
                 found in the provided `circuit`. Else, the provided map will be used.
 
@@ -240,15 +250,15 @@ class ScheduledCircuit:
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
                 "only contain QUBIT_COORDS instructions before the first TICK."
             )
-        if i2q is None:
+        if qubit_map is None:
             # Here, we know for sure that no qubit is (re)defined in another place
             # than the first moment, so we can directly get qubit coordinates from
             # that moment.
-            i2q = get_qubit_map(moments[0].circuit)
+            qubit_map = get_qubit_map(moments[0].circuit)
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(moments, schedule, i2q)
+        return ScheduledCircuit(moments, schedule, qubit_map)
 
     @staticmethod
     def _check_input_circuit(circuit: stim.Circuit) -> None:
@@ -266,10 +276,7 @@ class ScheduledCircuit:
 
     def get_qubit_coords_definition_preamble(self) -> stim.Circuit:
         """Get a circuit with only `QUBIT_COORDS` instructions."""
-        ret = stim.Circuit()
-        for qi, qubit in sorted(self._qubit_map.items(), key=lambda t: t[0]):
-            ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
-        return ret
+        return self._qubit_map.to_circuit()
 
     def get_circuit(self, include_qubit_coords: bool = True) -> stim.Circuit:
         """Build and return the `stim.Circuit` instance represented by self.
@@ -554,11 +561,6 @@ class ScheduledCircuit:
             # operations overlap.
             self._moments[moment_index] += moment
 
-    @property
-    def q2i(self) -> dict[GridQubit, int]:
-        """Return the map from qubits used in `self` their index."""
-        return {q: i for i, q in self._qubit_map.items()}
-
     def append_observable(
         self, index: int, targets: ty.Sequence[stim.GateTarget]
     ) -> None:
@@ -568,12 +570,26 @@ class ScheduledCircuit:
             index: index of the observable to append measurement records to.
             targets: measurement records forming (part of) the observable.
         """
-        if any(not t.is_measurement_record_target for t in targets):
+        self.append_annotation(
+            stim.CircuitInstruction("OBSERVABLE_INCLUDE", targets, [index])
+        )
+
+    def append_annotation(self, instruction: stim.CircuitInstruction) -> None:
+        """Append an annotation to the last moment.
+
+        Args:
+            instruction: an annotation that will be added to the last moment of
+                `self`.
+
+        Raises:
+            TQECException: if the provided instruction is not an annotation.
+        """
+        if not is_annotation_instruction(instruction):
             raise TQECException(
-                "Cannot create an observable with targets that are not measurement "
-                f"records. Got: {list(targets)}."
+                "The provided instruction is not an annotation, which is "
+                "disallowed by the append_annotation method."
             )
-        self._moments[-1].append("OBSERVABLE_INCLUDE", targets, [index])
+        self._moments[-1].append_instruction(instruction)
 
     @property
     def num_measurements(self) -> int:
@@ -597,7 +613,7 @@ class ScheduledCircuit:
             schedules.
         """
         qubits_indices_to_keep = frozenset(
-            self.q2i[q] for q in qubits_to_keep if q in self.qubits
+            self._qubit_map.q2i[q] for q in qubits_to_keep if q in self.qubits
         )
         filtered_moments: list[Moment] = []
         filtered_schedule: list[int] = []
@@ -614,6 +630,10 @@ class ScheduledCircuit:
         # The qubit indices may not be contiguous anymore, so we need to remap them.
         indices_map = {oi: ni for ni, oi in enumerate(qubit_map.indices)}
         return filtered_circuit.map_qubit_indices(indices_map)
+
+    @property
+    def qubit_map(self) -> QubitMap:
+        return self._qubit_map
 
 
 class _ScheduledCircuits:
@@ -887,8 +907,8 @@ def relabel_circuits_qubit_indices(
     """
     # First, get a global qubit index map.
     needed_qubits = frozenset.union(*[c.qubits for c in circuits])
-    qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
-    q2i = qubit_map.q2i
+    global_qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
+    global_q2i = global_qubit_map.q2i
     # Then, get the remapped circuits. Note that map_qubit_indices should
     # have approximately the same runtime cost whatever the value of inplace
     # so we ask for a new instance to avoid keeping a reference to the given
@@ -896,9 +916,9 @@ def relabel_circuits_qubit_indices(
     relabeled_circuits: list[ScheduledCircuit] = []
     for circuit in circuits:
         local_indices_to_global_indices = {
-            local_index: q2i[q] for q, local_index in circuit.q2i.items()
+            local_index: global_q2i[q] for local_index, q in circuit.qubit_map.items()
         }
         relabeled_circuits.append(
             circuit.map_qubit_indices(local_indices_to_global_indices, inplace=False)
         )
-    return relabeled_circuits, qubit_map
+    return relabeled_circuits, global_qubit_map

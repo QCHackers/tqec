@@ -1,10 +1,10 @@
-from collections import defaultdict
 from functools import partial
 from typing import Literal, cast
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.base import CubeSpec
 from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import PlaquetteBuilder, Plaquettes
 from tqec.scale import LinearFunction
@@ -35,23 +35,25 @@ def regular_block(
         repetitions: LinearFunction | None,
     ) -> Plaquettes:
         plaquettes = Plaquettes(
-            defaultdict(empty_square_plaquette)
-            | {
-                6: factory(b1, reset_basis, measurement_basis).project_on_boundary(
-                    PlaquetteOrientation.UP
-                ),
-                7: factory(b2, reset_basis, measurement_basis).project_on_boundary(
-                    PlaquetteOrientation.LEFT
-                ),
-                9: factory(b1, reset_basis, measurement_basis),
-                10: factory(b2, reset_basis, measurement_basis),
-                12: factory(b2, reset_basis, measurement_basis).project_on_boundary(
-                    PlaquetteOrientation.RIGHT
-                ),
-                13: factory(b1, reset_basis, measurement_basis).project_on_boundary(
-                    PlaquetteOrientation.DOWN
-                ),
-            }
+            FrozenDefaultDict(
+                {
+                    6: factory(b1, reset_basis, measurement_basis).project_on_boundary(
+                        PlaquetteOrientation.UP
+                    ),
+                    7: factory(b2, reset_basis, measurement_basis).project_on_boundary(
+                        PlaquetteOrientation.LEFT
+                    ),
+                    9: factory(b1, reset_basis, measurement_basis),
+                    10: factory(b2, reset_basis, measurement_basis),
+                    12: factory(b2, reset_basis, measurement_basis).project_on_boundary(
+                        PlaquetteOrientation.RIGHT
+                    ),
+                    13: factory(b1, reset_basis, measurement_basis).project_on_boundary(
+                        PlaquetteOrientation.DOWN
+                    ),
+                },
+                default_factory=empty_square_plaquette,
+            )
         )
         if repetitions is not None:
             plaquettes = plaquettes.repeat(repetitions)

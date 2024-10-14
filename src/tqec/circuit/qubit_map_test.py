@@ -70,9 +70,6 @@ def test_get_final_qubits() -> None:
     assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0) 0")) == QubitMap(
         {0: GridQubit(0, 0)}
     )
-    assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0.5) 0")) == QubitMap(
-        {0: GridQubit(0, 0.5)}
-    )
     assert get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0) 1")) == QubitMap(
         {1: GridQubit(0, 0)}
     )

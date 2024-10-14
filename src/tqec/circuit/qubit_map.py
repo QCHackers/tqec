@@ -9,6 +9,7 @@ import stim
 
 from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
+from tqec.scale import round_or_fail
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,10 @@ class QubitMap:
     @staticmethod
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
         return QubitMap(dict(enumerate(qubits)))
+
+    @staticmethod
+    def from_circuit(circuit: stim.Circuit) -> QubitMap:
+        return get_qubit_map(circuit)
 
     @functools.cached_property
     def q2i(self) -> dict[GridQubit, int]:
@@ -84,6 +89,13 @@ class QubitMap:
         kept_qubits = frozenset(qubits_to_keep)
         return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
 
+    def to_circuit(self) -> stim.Circuit:
+        """Get a circuit with only `QUBIT_COORDS` instructions representing `self`."""
+        ret = stim.Circuit()
+        for qi, qubit in sorted(self.i2q.items(), key=lambda t: t[0]):
+            ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
+        return ret
+
 
 def get_qubit_map(circuit: stim.Circuit) -> QubitMap:
     """Returns the existing qubits and their coordinates at the end of the
@@ -112,5 +124,7 @@ def get_qubit_map(circuit: stim.Circuit) -> QubitMap:
                 "Qubits should be defined on exactly 2 spatial dimensions. "
                 f"Found {qi} -> {coords} defined on {len(coords)} spatial dimensions."
             )
-        qubits[qi] = GridQubit(*coords)
+        x = round_or_fail(coords[0])
+        y = round_or_fail(coords[1])
+        qubits[qi] = GridQubit(x, y)
     return QubitMap(qubits)

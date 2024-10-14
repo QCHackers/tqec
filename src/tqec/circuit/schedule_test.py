@@ -84,6 +84,12 @@ def test_schedule_iter() -> None:
     assert list(Schedule(list(range(100000)))) == list(range(100000))
 
 
+def test_schedule_append_schedule() -> None:
+    sched = Schedule(list(range(10)))
+    sched.append_schedule(sched)
+    assert sched.schedule == list(range(20))
+
+
 def test_schedule_insert() -> None:
     schedule = Schedule([0, 3])
     with pytest.raises(ScheduleException):

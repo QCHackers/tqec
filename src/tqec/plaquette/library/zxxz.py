@@ -98,6 +98,6 @@ H {sq}
 
     return Plaquette(
         qubits,
-        ScheduledCircuit.from_circuit(circuit, i2q=i2q),
-        mergeable_instructions={"H", "R", "RZ", "M", "MZ"},
+        ScheduledCircuit.from_circuit(circuit, qubit_map=i2q),
+        mergeable_instructions=frozenset(("H", "R", "RZ", "M", "MZ")),
     )
