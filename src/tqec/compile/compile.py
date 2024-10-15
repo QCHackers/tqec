@@ -7,7 +7,7 @@ from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs.base import (
-    CompiledBlockBuilder,
+    BlockBuilder,
     CubeSpec,
     PipeSpec,
     SubstitutionBuilder,
@@ -156,7 +156,7 @@ class CompiledGraph:
 
 def compile_block_graph(
     block_graph: BlockGraph,
-    compiled_block_builder: CompiledBlockBuilder = CSS_BLOCK_BUILDER,
+    block_builder: BlockBuilder = CSS_BLOCK_BUILDER,
     substitution_builder: SubstitutionBuilder = CSS_SUBSTITUTION_BUILDER,
     observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
 ) -> CompiledGraph:
@@ -164,6 +164,12 @@ def compile_block_graph(
 
     Args:
         block_graph: The block graph to compile.
+        block_builder: A callable that specifies how to build the `CompiledBlock` from
+            the specified `CubeSpecs`. Defaults to the block builder for the css type
+            surface code.
+        substitution_builder: A callable that specifies how to build the substitution
+            plaquettes from the specified `PipeSpec`. Defaults to the substitution
+            builder for the css type surface code.
         observables: The abstract observables to be included in the compiled
             circuit.
             If set to "auto", the observables will be automatically determined from
@@ -190,7 +196,7 @@ def compile_block_graph(
     blocks: dict[Position3D, CompiledBlock] = {}
     for cube in block_graph.cubes:
         spec = cube_specs[cube]
-        blocks[cube.position] = compiled_block_builder(spec)
+        blocks[cube.position] = block_builder(spec)
 
     # 2. Apply the substitution rules to the compiled blocks inplace.
     pipes = block_graph.pipes

@@ -1,4 +1,4 @@
-from .base import CubeSpec, PipeSpec, CompiledBlockBuilder, SubstitutionBuilder
+from .base import CubeSpec, PipeSpec, BlockBuilder, SubstitutionBuilder
 
 from .library import (
     CSS_BLOCK_BUILDER,

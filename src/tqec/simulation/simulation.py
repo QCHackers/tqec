@@ -4,7 +4,8 @@ from typing import Callable, Iterable, Iterator, Sequence
 import sinter
 
 from tqec.compile.compile import compile_block_graph
-from tqec.compile.specs.base import CompiledBlockBuilder, SubstitutionBuilder
+from tqec.compile.specs.base import BlockBuilder, SubstitutionBuilder
+from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.noise_models.noise_model import NoiseModel
 from tqec.simulation.generation import generate_sinter_tasks
@@ -15,8 +16,8 @@ def start_simulation_using_sinter(
     ks: Sequence[int],
     ps: Sequence[float],
     noise_model_factory: Callable[[float], NoiseModel],
-    compiled_block_builder: CompiledBlockBuilder,
-    substitution_builder: SubstitutionBuilder,
+    block_builder: BlockBuilder = CSS_BLOCK_BUILDER,
+    substitution_builder: SubstitutionBuilder = CSS_SUBSTITUTION_BUILDER,
     observables: list[AbstractObservable] | None = None,
     num_workers: int = multiprocessing.cpu_count(),
     progress_callback: Callable[[sinter.Progress], None] | None = None,
@@ -45,6 +46,12 @@ def start_simulation_using_sinter(
             model using the provided `noise_model_factory`.
         noise_model_factory: a callable that is used to instantiate a noise
             model from each of the noise parameters in `ps`.
+        block_builder: A callable that specifies how to build the `CompiledBlock` from
+            the specified `CubeSpecs`. Defaults to the block builder for the css type
+            surface code.
+        substitution_builder: A callable that specifies how to build the substitution
+            plaquettes from the specified `PipeSpec`. Defaults to the substitution
+            builder for the css type surface code.
         observables: a list of observables to generate statistics for. If
             `None`, all the observables of the provided computation are used.
         num_workers: The number of worker processes to use.
@@ -83,7 +90,7 @@ def start_simulation_using_sinter(
             )
         compiled_graph = compile_block_graph(
             block_graph,
-            compiled_block_builder,
+            block_builder,
             substitution_builder,
             observables=[observable],
         )

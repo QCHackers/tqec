@@ -54,7 +54,7 @@ class CubeSpec:
         return CubeSpec(cube.cube_type, junction_arms)
 
 
-class CompiledBlockBuilder(Protocol):
+class BlockBuilder(Protocol):
     """Protocol for building a `CompiledBlock` based on a `CubeSpec`."""
 
     def __call__(self, spec: CubeSpec) -> CompiledBlock:
@@ -73,6 +73,11 @@ class CompiledBlockBuilder(Protocol):
 class PipeSpec:
     """Specification of a pipe in a block graph.
 
+    The `PipeSpec` is used to determine the substitution rules between the two
+    `CompiledBlock`s connected by the pipe. The substitution rules are used to
+    update the layers of the `CompiledBlock`s based on the plaquettes in the
+    `Substitution`.
+
     Attributes:
         spec1: the cube specification of the first cube. By convention, the cube
             corresponding to `spec1` should have a smaller position than the cube
@@ -88,11 +93,11 @@ class PipeSpec:
 
 @dataclass(frozen=True)
 class Substitution:
-    """Specification of how to substitute plaquettes in the two `CompiledBlock`s
-    connected by a pipe.
+    """Collection of plaquettes categorized by the layer index.
 
-    When applying the substitution, the plaquettes in the map will be used to
-    update the corresponding layer in the `CompiledBlock`.
+    This specifies how to substitute plaquettes in the two `CompiledBlock`s
+    connected by a pipe. When applying the substitution, the plaquettes in
+    the map will be used to update the corresponding layer in the `CompiledBlock`.
 
     Both the source and destination maps are indexed by the layer index in the
     `CompiledBlock`. The index can be negative, which means the layer is counted
