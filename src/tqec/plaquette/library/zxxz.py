@@ -35,9 +35,9 @@ def make_zxxz_surface_code_plaquette(
     """
     builder = _ZXXZPlaquetteBuilder(basis, x_boundary_orientation)
     if data_initialization is not None:
-        builder.with_data_initialization(data_initialization, init_meas_only_on_side)
+        builder.add_data_init_or_meas(data_initialization, init_meas_only_on_side)
     if data_measurement is not None:
-        builder.with_data_measurement(data_measurement, init_meas_only_on_side)
+        builder.add_data_init_or_meas(data_measurement, init_meas_only_on_side)
     return builder.build()
 
 
@@ -69,35 +69,28 @@ class _ZXXZPlaquetteBuilder:
             mergeable_instructions=self.MERGEABLE_INSTRUCTIONS,
         )
 
-    def with_data_initialization(
-        self, init_basis: ResetBasis, only_on_side: PlaquetteSide | None = None
-    ) -> _ZXXZPlaquetteBuilder:
+    def add_data_init_or_meas(
+        self,
+        basis: ResetBasis | MeasurementBasis,
+        only_on_side: PlaquetteSide | None = None,
+    ) -> None:
         dqs_considered = self._get_data_qubits(only_on_side)
-        self._moments[0].append("R", dqs_considered, [])
-        basis_change_dqs = self._get_init_meas_basis_change_dqs(
-            init_basis.value, dqs_considered
-        )
-        h_cancel_out = {
-            i for i in self._moments[1].qubits_indices if i in dqs_considered
-        }
-        h_targets = {0} | basis_change_dqs ^ h_cancel_out
-        self._moments[1] = Moment(stim.Circuit(f"H {' '.join(map(str, h_targets))}"))
-        return self
+        if isinstance(basis, ResetBasis):
+            self._moments[0].append("R", dqs_considered, [])
+        else:
+            self._moments[-1].append("M", dqs_considered, [])
 
-    def with_data_measurement(
-        self, meas_basis: MeasurementBasis, only_on_side: PlaquetteSide | None = None
-    ) -> _ZXXZPlaquetteBuilder:
-        dqs_considered = self._get_data_qubits(only_on_side)
-        self._moments[-1].append("M", dqs_considered, [])
         basis_change_dqs = self._get_init_meas_basis_change_dqs(
-            meas_basis.value, dqs_considered
+            basis.value, dqs_considered
         )
+        moment_idx = 1 if isinstance(basis, ResetBasis) else -2
         h_cancel_out = {
-            i for i in self._moments[-2].qubits_indices if i in dqs_considered
+            i for i in self._moments[moment_idx].qubits_indices if i in dqs_considered
         }
         h_targets = {0} | basis_change_dqs ^ h_cancel_out
-        self._moments[-2] = Moment(stim.Circuit(f"H {' '.join(map(str, h_targets))}"))
-        return self
+        self._moments[moment_idx] = Moment(
+            stim.Circuit(f"H {' '.join(map(str, h_targets))}")
+        )
 
     def _build_memory_moments(self) -> list[Moment]:
         basis_changes: list[int] = [0]

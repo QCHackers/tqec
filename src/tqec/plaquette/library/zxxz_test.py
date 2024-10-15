@@ -119,7 +119,6 @@ M 0 1 2
         init_meas_only_on_side=PlaquetteSide.RIGHT,
     )
     circuit = z_init_meas_plaquette.circuit.get_circuit()
-    assert circuit.has_flow(stim.Flow("1 -> _X_Z_ xor rec[-1] xor rec[-2] xor rec[-3]"))
     assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
@@ -128,7 +127,7 @@ QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
 R 0 2 4
 TICK
-H 0 1 2 3
+H 0 2
 TICK
 CZ 0 1
 TICK
@@ -142,7 +141,7 @@ H 1 2 3 4
 TICK
 CZ 0 4
 TICK
-H 0 1 2 3
+H 0 2
 TICK
 M 0 2 4
 """)

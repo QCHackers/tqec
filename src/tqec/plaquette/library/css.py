@@ -35,9 +35,9 @@ def make_css_surface_code_plaquette(
     """
     builder = _CSSPlaquetteBuilder(basis, x_boundary_orientation)
     if data_initialization is not None:
-        builder.with_data_initialization(data_initialization, init_meas_only_on_side)
+        builder.add_data_init_or_meas(data_initialization, init_meas_only_on_side)
     if data_measurement is not None:
-        builder.with_data_measurement(data_measurement, init_meas_only_on_side)
+        builder.add_data_init_or_meas(data_measurement, init_meas_only_on_side)
     return builder.build()
 
 
@@ -69,21 +69,15 @@ class _CSSPlaquetteBuilder:
             mergeable_instructions=self.MERGEABLE_INSTRUCTIONS,
         )
 
-    def with_data_initialization(
-        self, init_basis: ResetBasis, only_on_side: PlaquetteSide | None = None
-    ) -> _CSSPlaquetteBuilder:
-        self._moments[0].append(
-            f"{init_basis.instruction_name}", self._get_data_qubits(only_on_side), []
+    def add_data_init_or_meas(
+        self,
+        basis: ResetBasis | MeasurementBasis,
+        only_on_side: PlaquetteSide | None = None,
+    ) -> None:
+        moment_index = 0 if isinstance(basis, ResetBasis) else -1
+        self._moments[moment_index].append(
+            f"{basis.instruction_name}", self._get_data_qubits(only_on_side), []
         )
-        return self
-
-    def with_data_measurement(
-        self, meas_basis: MeasurementBasis, only_on_side: PlaquetteSide | None = None
-    ) -> _CSSPlaquetteBuilder:
-        self._moments[-1].append(
-            f"{meas_basis.instruction_name}", self._get_data_qubits(only_on_side), []
-        )
-        return self
 
     def _build_memory_moments(self) -> list[Moment]:
         circuit = stim.Circuit()
