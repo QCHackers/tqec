@@ -97,6 +97,7 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.instructions</span> <span class="kn">import</span> <span class="n">is_annotation_instruction</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">count_qubit_accesses</span><span class="p">,</span> <span class="n">get_used_qubit_indices</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
@@ -129,7 +130,8 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">copy_circuit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Moment</span><span class="o">.</span><span class="n">check_is_valid_moment</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy_circuit</span> <span class="k">else</span> <span class="n">circuit</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy_circuit</span> <span class="k">else</span> <span class="n">circuit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_used_qubit_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -156,17 +158,18 @@
             <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">qubits_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">qubits_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the qubit indices this moment operates on.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Some instructions are considered annotations (e.g., `QUBIT_COORDS`,</span>
-<span class="sd">            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an exhaustive</span>
-<span class="sd">            list). These instructions are ignored by this property, meaning that the</span>
-<span class="sd">            qubits they operate on will only be returned by this property iff another</span>
-<span class="sd">            non-annotation instruction is applied on said qubits.</span>
+<span class="sd">            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an</span>
+<span class="sd">            exhaustive list). These instructions are ignored by this property,</span>
+<span class="sd">            meaning that the qubits they operate on will only be returned by</span>
+<span class="sd">            this property iff another non-annotation instruction is applied on</span>
+<span class="sd">            said qubits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">get_used_qubit_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span>
 
     <span class="k">def</span> <span class="nf">contains_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return `True` if `self` contains at least one operation with the</span>
@@ -188,10 +191,8 @@
     <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Moment</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add instructions in-place in `self`.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">):</span>
-            <span class="n">other</span> <span class="o">=</span> <span class="n">Moment</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="n">self_used_qubits</span> <span class="o">=</span> <span class="n">get_used_qubit_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span>
-        <span class="n">other_used_qubits</span> <span class="o">=</span> <span class="n">get_used_qubit_indices</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span>
-        <span class="n">both_sides_used_qubits</span> <span class="o">=</span> <span class="n">self_used_qubits</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other_used_qubits</span><span class="p">)</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">Moment</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">copy_circuit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">both_sides_used_qubits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_used_qubits</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">both_sides_used_qubits</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;Trying to add an overlapping quantum circuit to a Moment instance.&quot;</span>
@@ -199,22 +200,98 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">_circuit</span>
         <span class="k">return</span> <span class="bp">self</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_used_qubit_indices</span><span class="p">(</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">qubits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># isinstance(target, stim.GateTarget)</span>
+            <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">is_qubit_target</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">qubit_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>  <span class="c1"># type checker is happy</span>
+                <span class="n">qubits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">qubit_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qubits</span>
+
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">targets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span> <span class="o">|</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">],</span>
-        <span class="n">args</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">name_or_instr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an instruction to the :class:`Moment`.&quot;&quot;&quot;</span>
-        <span class="n">circuit_to_add</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
-        <span class="n">circuit_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span> <span class="o">+=</span> <span class="n">circuit_to_add</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an instruction to the :class:`Moment`.</span>
 
-    <span class="k">def</span> <span class="nf">append_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an instruction to the :class:`Moment`.&quot;&quot;&quot;</span>
-        <span class="n">circuit_to_add</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
-        <span class="n">circuit_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
-        <span class="bp">self</span> <span class="o">+=</span> <span class="n">circuit_to_add</span>
+<span class="sd">        Note:</span>
+<span class="sd">            if you append an annotation (e.g., `DETECTOR` or `QUBIT_COORDS`) then</span>
+<span class="sd">            you should use :meth:`append_annotation` that is more efficient.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name_or_instr: either the name of the instruction to append or the</span>
+<span class="sd">                actual instruction. If the name is provided, `targets` and `args`</span>
+<span class="sd">                are used to build the `stim.CircuitInstruction` instance that</span>
+<span class="sd">                will be appended. Else, they are not accessed.</span>
+<span class="sd">            targets: if `name_or_instr` is a string representing the instruction</span>
+<span class="sd">                name, this argument represent the targets the instruction should</span>
+<span class="sd">                be applied on. Else, it is not used.</span>
+<span class="sd">            args: if `name_or_instr` is a string representing the instruction</span>
+<span class="sd">                name, this argument represent the arguments the instruction</span>
+<span class="sd">                should be applied with. Else, it is not used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">targets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+        <span class="n">instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name_or_instr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span><span class="n">name_or_instr</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">name_or_instr</span>
+
+        <span class="k">if</span> <span class="n">is_annotation_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Checking Moment invariant</span>
+        <span class="n">instruction_qubits</span> <span class="o">=</span> <span class="n">Moment</span><span class="o">.</span><span class="n">_get_used_qubit_indices</span><span class="p">(</span>
+            <span class="n">targets</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name_or_instr</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">name_or_instr</span><span class="o">.</span><span class="n">targets_copy</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">overlapping_qubits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">instruction_qubits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overlapping_qubits</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot add </span><span class="si">{</span><span class="n">instruction</span><span class="si">}</span><span class="s2"> to the Moment due to qubit(s) &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">overlapping_qubits</span><span class="si">}</span><span class="s2"> being already in use.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">instruction_qubits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append_annotation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">annotation_instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an annotation instruction to the Moment.</span>
+
+<span class="sd">        This method is way more efficient than :meth:`append_instruction` to</span>
+<span class="sd">        append an annotation. This is thanks to the fact that annotations are</span>
+<span class="sd">        not using any qubit and so can be appended without checking that the</span>
+<span class="sd">        instruction does not apply on already used qubits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annotation_instruction: an annotation to append to the moment</span>
+<span class="sd">                represented by `self`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if `not is_annotation_instruction(annotation_instruction)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_annotation_instruction</span><span class="p">(</span><span class="n">annotation_instruction</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The method append_annotation only supports appending &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;annotations. Found instruction </span><span class="si">{</span><span class="n">annotation_instruction</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;That is not a valid annotation. Call append_instruction for &quot;</span>
+                <span class="s2">&quot;generic instructions.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annotation_instruction</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">]:</span>

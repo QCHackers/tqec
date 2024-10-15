@@ -234,16 +234,11 @@
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">database</span> <span class="o">=</span> <span class="n">DetectorDatabase</span><span class="p">()</span>
         <span class="c1"># Start with the first circuit, as this is a special case.</span>
         <span class="n">first_template</span> <span class="o">=</span> <span class="n">templates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">first_plaquettes</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">first_slice_detectors</span> <span class="o">=</span> <span class="n">compute_detectors_for_fixed_radius</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">first_template</span><span class="p">,),</span>
-            <span class="n">k</span><span class="p">,</span>
-            <span class="p">(</span><span class="n">first_plaquettes</span><span class="p">,),</span>
-            <span class="n">manhattan_radius</span><span class="p">,</span>
-            <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">first_template</span><span class="p">,),</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">first_plaquettes</span><span class="p">,),</span> <span class="n">manhattan_radius</span>
         <span class="p">)</span>
         <span class="c1"># Initialise the measurement records map with the first circuit.</span>
         <span class="n">mrecords_map</span> <span class="o">=</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_scheduled_circuit</span><span class="p">(</span><span class="n">circuits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -260,7 +255,6 @@
                 <span class="n">k</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">plaquettes</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
                 <span class="n">manhattan_radius</span><span class="p">,</span>
-                <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span>
