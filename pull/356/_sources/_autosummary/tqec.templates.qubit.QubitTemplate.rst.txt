@@ -19,6 +19,7 @@ tqec.templates.qubit.QubitTemplate
       ~QubitTemplate.get_plaquette_indices_on_sides
       ~QubitTemplate.get_spatially_distinct_subtemplates
       ~QubitTemplate.instantiate
+      ~QubitTemplate.instantiation_origin
       ~QubitTemplate.shape
    
    

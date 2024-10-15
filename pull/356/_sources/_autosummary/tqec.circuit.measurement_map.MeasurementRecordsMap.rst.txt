@@ -16,6 +16,7 @@ tqec.circuit.measurement\_map.MeasurementRecordsMap
       ~MeasurementRecordsMap.__init__
       ~MeasurementRecordsMap.from_circuit
       ~MeasurementRecordsMap.from_scheduled_circuit
+      ~MeasurementRecordsMap.with_added_measurements
    
    
 

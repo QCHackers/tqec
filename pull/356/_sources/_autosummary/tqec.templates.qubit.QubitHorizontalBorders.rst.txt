@@ -19,6 +19,7 @@ tqec.templates.qubit.QubitHorizontalBorders
       ~QubitHorizontalBorders.get_plaquette_indices_on_sides
       ~QubitHorizontalBorders.get_spatially_distinct_subtemplates
       ~QubitHorizontalBorders.instantiate
+      ~QubitHorizontalBorders.instantiation_origin
       ~QubitHorizontalBorders.shape
    
    

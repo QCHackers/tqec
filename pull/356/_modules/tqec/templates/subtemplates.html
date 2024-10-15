@@ -84,6 +84,7 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
@@ -427,7 +428,7 @@
 <div class="viewcode-block" id="get_spatially_distinct_3d_subtemplates">
 <a class="viewcode-back" href="../../../_autosummary/tqec.templates.subtemplates.get_spatially_distinct_3d_subtemplates.html#tqec.templates.subtemplates.get_spatially_distinct_3d_subtemplates">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spatially_distinct_3d_subtemplates</span><span class="p">(</span>
-    <span class="n">instantiations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+    <span class="n">instantiations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]],</span>
     <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Unique3DSubTemplates</span><span class="p">:</span>

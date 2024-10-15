@@ -89,7 +89,7 @@
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position2D</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">round_or_fail</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span><span class="p">,</span> <span class="n">TemplateSide</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.subtemplates</span> <span class="kn">import</span> <span class="p">(</span>
@@ -232,7 +232,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_spatially_distinct_subtemplates</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">instantiation_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coordinates of the top-left entry origin.</span>
+
+<span class="sd">        This property returns the coordinates of the origin of the plaquette</span>
+<span class="sd">        (:class:`Plaquette.origin`) that corresponds to the top-left entry of</span>
+<span class="sd">        the array returned by :meth:`Template.instantiate`.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            the returned coordinates are in plaquette coordinates. That means</span>
+<span class="sd">            that, if you want to get the coordinates of the top-left plaquette</span>
+<span class="sd">            origin (which is a qubit), you should multiply the coordinates</span>
+<span class="sd">            returned by this method by the tiling increments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: scaling parameter used to instantiate the template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the coordinates of the origin of the plaquette</span>
+<span class="sd">            (:class:`Plaquette.origin`) that corresponds to the top-left entry</span>
+<span class="sd">            of the array returned by :meth:`Template.instantiate`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
 

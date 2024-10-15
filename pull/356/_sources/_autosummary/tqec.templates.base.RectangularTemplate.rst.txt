@@ -19,6 +19,7 @@ tqec.templates.base.RectangularTemplate
       ~RectangularTemplate.get_plaquette_indices_on_sides
       ~RectangularTemplate.get_spatially_distinct_subtemplates
       ~RectangularTemplate.instantiate
+      ~RectangularTemplate.instantiation_origin
       ~RectangularTemplate.shape
    
    
