@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Sequence
 
 import numpy
 import numpy.typing as npt
@@ -333,7 +334,7 @@ class Unique3DSubTemplates:
 
 
 def get_spatially_distinct_3d_subtemplates(
-    instantiations: tuple[npt.NDArray[numpy.int_], ...],
+    instantiations: Sequence[npt.NDArray[numpy.int_]],
     manhattan_radius: int = 1,
     avoid_zero_plaquettes: bool = True,
 ) -> Unique3DSubTemplates:
