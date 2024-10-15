@@ -594,7 +594,7 @@ class ScheduledCircuit:
                 "The provided instruction is not an annotation, which is "
                 "disallowed by the append_annotation method."
             )
-        self._moments[-1].append_instruction(instruction)
+        self._moments[-1].append_annotation(instruction)
 
     @property
     def num_measurements(self) -> int:

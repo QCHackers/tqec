@@ -119,28 +119,24 @@ def test_moment_append() -> None:
 
     with pytest.raises(
         TQECException,
-        match="^Trying to add an overlapping quantum circuit to a Moment instance.$",
+        match=r"^Cannot add H 0 to the Moment due to qubit\(s\) \{0\} being already in use.$",
     ):
         moment.append("H", [stim.GateTarget(0)], [])
 
 
 def test_moment_append_instruction() -> None:
     moment = Moment(stim.Circuit("H 0"))
-    moment.append_instruction(stim.CircuitInstruction("H", [stim.GateTarget(1)], []))
-    moment.append_instruction(stim.CircuitInstruction("H", [stim.GateTarget(2)], []))
+    moment.append(stim.CircuitInstruction("H", [stim.GateTarget(1)], []))
+    moment.append(stim.CircuitInstruction("H", [stim.GateTarget(2)], []))
     assert moment.circuit == stim.Circuit("H 0 1 2")
-    moment.append_instruction(
-        stim.CircuitInstruction("QUBIT_COORDS", [stim.GateTarget(0)], [0, 0])
-    )
+    moment.append(stim.CircuitInstruction("QUBIT_COORDS", [stim.GateTarget(0)], [0, 0]))
     assert moment.circuit == stim.Circuit("H 0 1 2\nQUBIT_COORDS(0, 0) 0")
 
     with pytest.raises(
         TQECException,
-        match="^Trying to add an overlapping quantum circuit to a Moment instance.$",
+        match=r"^Cannot add H 0 to the Moment due to qubit\(s\) \{0\} being already in use.$",
     ):
-        moment.append_instruction(
-            stim.CircuitInstruction("H", [stim.GateTarget(0)], [])
-        )
+        moment.append(stim.CircuitInstruction("H", [stim.GateTarget(0)], []))
 
 
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
