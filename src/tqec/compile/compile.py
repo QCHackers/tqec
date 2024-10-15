@@ -149,16 +149,11 @@ class CompiledGraph:
         k: int,
         manhattan_radius: int = 2,
     ) -> None:
-        database = DetectorDatabase()
         # Start with the first circuit, as this is a special case.
         first_template = templates[0]
         first_plaquettes = plaquettes[0]
         first_slice_detectors = compute_detectors_for_fixed_radius(
-            (first_template,),
-            k,
-            (first_plaquettes,),
-            manhattan_radius,
-            database=database,
+            (first_template,), k, (first_plaquettes,), manhattan_radius
         )
         # Initialise the measurement records map with the first circuit.
         mrecords_map = MeasurementRecordsMap.from_scheduled_circuit(circuits[0])
@@ -175,7 +170,6 @@ class CompiledGraph:
                 k,
                 (plaquettes[i - 1], plaquettes[i]),
                 manhattan_radius,
-                database=database,
             )
             end = perf_counter()
             print(
