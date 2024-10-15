@@ -354,7 +354,9 @@ class BlockGraph:
             write_html_filepath=write_html_filepath,
         )
 
-    def get_abstract_observables(self) -> list[AbstractObservable]:
+    def get_abstract_observables(
+        self,
+    ) -> tuple[list[AbstractObservable], list[ZXGraph]]:
         """Get all the abstract observables from the block graph."""
         self.check_validity(allow_virtual_node=False)
         correlation_subgraphs = self.to_zx_graph().find_correlation_subgraphs()
@@ -406,7 +408,7 @@ class BlockGraph:
             abstract_observables.append(
                 AbstractObservable(frozenset(top_lines), frozenset(bottom_regions))
             )
-        return abstract_observables
+        return abstract_observables, correlation_subgraphs
 
     def with_zero_min_z(self) -> BlockGraph:
         """Shift the whole graph in the z direction to make the minimum z

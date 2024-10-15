@@ -226,7 +226,7 @@ def compile_block_graph(
     if observables is None:
         obs_included = []
     elif observables == "auto":
-        obs_included = block_graph.get_abstract_observables()
+        obs_included, _ = block_graph.get_abstract_observables()
     else:
         obs_included = observables
 

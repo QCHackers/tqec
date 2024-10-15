@@ -61,10 +61,9 @@ def generate_graphs(style: Literal["css", "zxxz"], z_basis: bool) -> None:
     # 1 Create `BlockGraph` representing the computation
     zx_graph = create_zx_graph(z_basis=z_basis)
     block_graph = zx_graph.to_block_graph()
-    correlation_surfaces = zx_graph.find_correlation_subgraphs()
 
     # 2. Find and choose the logical observables
-    observables = block_graph.get_abstract_observables()
+    observables, correlation_surfaces = block_graph.get_abstract_observables()
     # Optional: filter observables here
     # observables = [observables[0]]
 

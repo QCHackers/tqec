@@ -76,25 +76,26 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
 
         # Convert to ZX graph and find observables
         zx_graph = block_graph.to_zx_graph()
-        correlation_surfaces = zx_graph.find_correlation_subgraphs()
-        obs_indices: list[int] = args.obs_include
-        if not obs_indices:
-            obs_indices = list(range(len(correlation_surfaces)))
-        if max(obs_indices) >= len(correlation_surfaces):
-            raise ValueError(
-                f"Found {len(correlation_surfaces)} observables, but requested indices up to {max(obs_indices)}."
-            )
-
         # Save the plotted observables to a subdirectory
         observable_out_dir = out_dir / "observables"
         observable_out_dir.mkdir(exist_ok=True)
+        # TODO: avoid recomputing the observables
+        abstract_observables, correlation_surfaces = (
+            block_graph.get_abstract_observables()
+        )
+        obs_indices: list[int] = args.obs_include
+        if not obs_indices:
+            obs_indices = list(range(len(abstract_observables)))
+        if max(obs_indices) >= len(abstract_observables):
+            raise ValueError(
+                f"Found {len(abstract_observables)} observables, but requested indices up to {max(obs_indices)}."
+            )
+
         save_correlation_surfaces_to(
             zx_graph,
             observable_out_dir,
             [correlation_surfaces[i] for i in obs_indices],
         )
-        # TODO: avoid recomputing the observables
-        abstract_observables = block_graph.get_abstract_observables()
 
         # Compile the block graph and generate stim circuits
         circuits_out_dir = out_dir / "circuits"

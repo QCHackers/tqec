@@ -80,7 +80,7 @@ def start_simulation_using_sinter(
         `list[sinter.TaskStats]`) per provided observable in `observables`.
     """
     if observables is None:
-        observables = block_graph.get_abstract_observables()
+        observables, _ = block_graph.get_abstract_observables()
 
     for i, observable in enumerate(observables):
         if print_progress:
