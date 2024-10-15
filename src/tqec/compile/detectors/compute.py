@@ -1,6 +1,7 @@
 from typing import Sequence
 
 import numpy
+import numpy.typing as npt
 import stim
 
 from tqec.circuit.detectors.flow import build_flows_from_fragments
@@ -18,7 +19,7 @@ from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.detectors.detector import Detector
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
-from tqec.position import Displacement
+from tqec.position import Displacement, Position2D
 from tqec.templates.base import Template
 from tqec.templates.subtemplates import (
     SubTemplateType,
@@ -259,6 +260,76 @@ def compute_detectors_at_end_of_situation(
     return frozenset(d.offset_spatially_by(shift_x, shift_y) for d in detectors)
 
 
+def _get_or_default(
+    array: npt.NDArray[numpy.int_], slices: Sequence[tuple[int, int]], default: int = 0
+) -> npt.NDArray[numpy.int_]:
+    if any(start > stop for start, stop in slices):
+        raise TQECException("The provided slices should be non-empty.")
+    if len(slices) != len(array.shape):
+        raise TQECException(
+            f"Expected one slice per array dimension. Got {len(slices)} slices "
+            f"but {len(array.shape)} dimensions to the provided array."
+        )
+    slice_shape = tuple(stop - start for start, stop in slices)
+    ret = numpy.full(slice_shape, fill_value=default, dtype=numpy.int_)
+
+    # Now, fill ret with entries from the provided array. We should make sure that
+    # we do not try to access elements from `array` that do not exist (out of
+    # bounds).
+    ret_slices: list[slice] = []
+    array_slices: list[slice] = []
+    for (start_slice, stop_slice), array_bound in zip(slices, array.shape):
+        start_array, stop_array = 0, array_bound
+        if stop_slice <= start_array or start_slice >= stop_array:
+            # Nothing to take from `array`, so append an empty slice for this
+            # dimension.
+            ret_slices.append(slice(0, 0))
+            array_slices.append(slice(0, 0))
+        elif start_array <= start_slice <= stop_slice <= stop_array:
+            # The slice only contains valid indices for the array.
+            ret_slices.append(slice(0, stop_slice - start_slice))
+            array_slices.append(slice(start_slice, stop_slice))
+        elif start_array < stop_slice <= stop_array:
+            # The slice start is out of bound, but not the end.
+            ret_slices.append(
+                slice(start_array - start_slice, stop_slice - start_slice)
+            )
+            array_slices.append(slice(start_array, stop_slice))
+        else:
+            # The slice start is in bounds, but the end is not.
+            ret_slices.append(slice(0, stop_array - start_slice))
+            array_slices.append(slice(start_slice, stop_array))
+
+    ret[tuple(ret_slices)] = array[tuple(array_slices)]
+    return ret
+
+
+def _compute_superimposed_template_instantiations(
+    templates: Sequence[Template], k: int
+) -> list[npt.NDArray[numpy.int_]]:
+    origins = [t.instantiation_origin(k) for t in templates]
+    instantiations = [t.instantiate(k) for t in templates]
+
+    top_left = origins[-1]
+    n, m = instantiations[-1].shape
+    bottom_right = Position2D(top_left.x + m, top_left.y + n)
+
+    # Get the correct instantiations
+    ret: list[npt.NDArray[numpy.int_]] = []
+    for inst_origin, instantiation in zip(origins, instantiations):
+        ret.append(
+            _get_or_default(
+                instantiation,
+                slices=[
+                    (top_left.x - inst_origin.x, bottom_right.x - inst_origin.x),
+                    (top_left.y - inst_origin.x, bottom_right.y - inst_origin.x),
+                ],
+                default=0,
+            )
+        )
+    return ret
+
+
 def compute_detectors_for_fixed_radius(
     templates: Sequence[Template],
     k: int,
@@ -308,8 +379,11 @@ def compute_detectors_for_fixed_radius(
             "Expecting the same number of entries in templates and plaquettes."
         )
 
+    template_instantiations = _compute_superimposed_template_instantiations(
+        templates, k
+    )
     unique_3d_subtemplates = get_spatially_distinct_3d_subtemplates(
-        tuple(t.instantiate(k) for t in templates),
+        template_instantiations,
         manhattan_radius=fixed_subtemplate_radius,
         avoid_zero_plaquettes=True,
     )
@@ -325,7 +399,6 @@ def compute_detectors_for_fixed_radius(
         )
         for indices, s3d in unique_3d_subtemplates.subtemplates.items()
     }
-
     # We know for sure that detectors in each subtemplate all involve a measurement
     # on at least one syndrome qubit of the central plaquette. That means that
     # detectors computed here are unique and we do not have to check for
