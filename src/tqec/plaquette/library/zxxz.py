@@ -84,6 +84,8 @@ class _ZXXZPlaquetteBuilder:
             basis.value, dqs_considered
         )
         moment_idx = 1 if isinstance(basis, ResetBasis) else -2
+        # It's important to ignore the H gates on the data qubits that are not
+        # considered for initialization/measurement to avoid adding unneeded H.
         h_cancel_out = {
             i for i in self._moments[moment_idx].qubits_indices if i in dqs_considered
         }
