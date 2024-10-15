@@ -79,7 +79,6 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
         # Save the plotted observables to a subdirectory
         observable_out_dir = out_dir / "observables"
         observable_out_dir.mkdir(exist_ok=True)
-        # TODO: avoid recomputing the observables
         abstract_observables, correlation_surfaces = (
             block_graph.get_abstract_observables()
         )
