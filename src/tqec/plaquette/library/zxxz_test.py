@@ -1,4 +1,3 @@
-import pytest
 import stim
 
 from tqec.plaquette.enums import (
@@ -80,21 +79,21 @@ M 0
 
 def test_zxxz_surface_code_init_meas_plaquette() -> None:
     x_init_meas_plaquette = make_zxxz_surface_code_plaquette(
-        "X", ResetBasis.Z, MeasurementBasis.Z
+        "X",
+        ResetBasis.Z,
+        MeasurementBasis.Z,
+        init_meas_only_on_side=PlaquetteSide.UP,
     )
     circuit = x_init_meas_plaquette.circuit.get_circuit()
-    assert circuit.has_flow(
-        stim.Flow("1 -> 1 xor rec[-1] xor rec[-2] xor rec[-3] xor rec[-4]")
-    )
     assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
 QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
-R 0 1 2 3 4
+R 0 1 2
 TICK
-H 0 1 4
+H 0 1
 TICK
 CZ 0 1
 TICK
@@ -108,38 +107,44 @@ H 1 2 3 4
 TICK
 CZ 0 4
 TICK
-H 0 1 4
+H 0 1
 TICK
-M 0 1 2 3 4
+M 0 1 2
 """)
     z_init_meas_plaquette = make_zxxz_surface_code_plaquette(
-        "Z", ResetBasis.Z, MeasurementBasis.Z
+        "Z",
+        ResetBasis.Z,
+        MeasurementBasis.Z,
+        x_boundary_orientation="HORIZONTAL",
+        init_meas_only_on_side=PlaquetteSide.RIGHT,
     )
-    assert z_init_meas_plaquette.circuit.get_circuit() == stim.Circuit("""
+    circuit = z_init_meas_plaquette.circuit.get_circuit()
+    assert circuit.has_flow(stim.Flow("1 -> _X_Z_ xor rec[-1] xor rec[-2] xor rec[-3]"))
+    assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
 QUBIT_COORDS(-1, -1) 1
 QUBIT_COORDS(1, -1) 2
 QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
-R 0 1 2 3 4
+R 0 2 4
 TICK
-H 0 2 3
+H 0 1 2 3
 TICK
 CZ 0 1
 TICK
 H 1 2 3 4
 TICK
-CZ 0 2
-TICK
 CZ 0 3
+TICK
+CZ 0 2
 TICK
 H 1 2 3 4
 TICK
 CZ 0 4
 TICK
-H 0 2 3
+H 0 1 2 3
 TICK
-M 0 1 2 3 4
+M 0 2 4
 """)
 
 
@@ -256,16 +261,18 @@ M 0 1 2
 """)
 
 
-def test_zxxz_surface_code_vertical_x_boundary_flow() -> None:
-    plaquette = make_zxxz_surface_code_plaquette("X", x_boundary_orientation="VERTICAL")
+def test_zxxz_surface_code_horizontal_x_boundary_flow() -> None:
+    plaquette = make_zxxz_surface_code_plaquette(
+        "X", x_boundary_orientation="HORIZONTAL"
+    )
     circuit = plaquette.circuit.get_circuit()
     assert circuit.has_flow(stim.Flow("_XZZX -> Z____"))
     assert circuit.has_flow(stim.Flow("1 -> _XZZX xor rec[-1]"))
 
 
-def test_zxxz_surface_code_vertical_x_boundary_h_cancel() -> None:
+def test_zxxz_surface_code_horizontal_x_boundary_h_cancel() -> None:
     x_plaquette = make_zxxz_surface_code_plaquette(
-        "X", ResetBasis.X, x_boundary_orientation="VERTICAL"
+        "X", ResetBasis.X, x_boundary_orientation="HORIZONTAL"
     )
     assert x_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -295,8 +302,8 @@ M 0
 """)
     z_plaquette = make_zxxz_surface_code_plaquette(
         "Z",
-        data_qubits_measurement=MeasurementBasis.X,
-        x_boundary_orientation="VERTICAL",
+        data_measurement=MeasurementBasis.X,
+        x_boundary_orientation="HORIZONTAL",
     )
     assert z_plaquette.circuit.get_circuit() == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0

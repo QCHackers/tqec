@@ -18,7 +18,7 @@ def make_css_surface_code_plaquette(
     basis: Literal["X", "Z"],
     data_initialization: ResetBasis | None = None,
     data_measurement: MeasurementBasis | None = None,
-    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
+    x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
     init_meas_only_on_side: PlaquetteSide | None = None,
 ) -> Plaquette:
     """Make a CSS-type surface code plaquette.
@@ -26,8 +26,8 @@ def make_css_surface_code_plaquette(
     Args:
         basis: the basis of the plaquette.
         x_boundary_orientation: the orientation of the X boundary.
-        data_initialization: the basis for data initialization.
-        data_measurement: the basis for data measurement.
+        data_initialization: the logical basis for data initialization.
+        data_measurement: the logical basis for data measurement.
         init_meas_only_on_side: the side for data initialization and measurement.
 
     Returns:
@@ -47,7 +47,7 @@ class _CSSPlaquetteBuilder:
     def __init__(
         self,
         basis: Literal["X", "Z"],
-        x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
+        x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"],
     ) -> None:
         self._basis = basis
         self._x_boundary_orientation = x_boundary_orientation
@@ -93,9 +93,9 @@ class _CSSPlaquetteBuilder:
         # adjust cnot order to make the hook errors perpendicular to the boundary
         match self._basis, self._x_boundary_orientation:
             case ("X", "HORIZONTAL") | ("Z", "VERTICAL"):
-                cnot_order = [1, 3, 2, 4]
-            case _:
                 cnot_order = [1, 2, 3, 4]
+            case _:
+                cnot_order = [1, 3, 2, 4]
         for dq in cnot_order:
             circuit.append("CX", [0, dq][:: (-1 if self._basis == "Z" else 1)], [])
             circuit.append("TICK", [], [])
@@ -103,7 +103,7 @@ class _CSSPlaquetteBuilder:
         circuit.append(f"M{self._basis}", [0], [])
         return list(iter_stim_circuit_without_repeat_by_moments(circuit))
 
-    def _get_data_qubits(self, only_on_side: PlaquetteSide | None) -> list[int]:
+    def _get_data_qubits(self, only_on_side: PlaquetteSide | None = None) -> list[int]:
         if only_on_side is None:
             return [1, 2, 3, 4]
         target_qubits = self._qubits.get_qubits_on_side(only_on_side)

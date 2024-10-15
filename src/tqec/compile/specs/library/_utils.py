@@ -54,7 +54,7 @@ def _build_plaquette_for_different_basis(
     data_meas: bool = False,
     init_meas_only_on_side: PlaquetteSide | None = None,
 ) -> tuple[Plaquette, Plaquette]:
-    b1, b2 = ("X", "Z") if x_boundary_orientation == "VERTICAL" else ("Z", "X")
+    b1, b2 = ("X", "Z") if x_boundary_orientation == "HORIZONTAL" else ("Z", "X")
     b1 = cast(Literal["X", "Z"], b1)
     b2 = cast(Literal["X", "Z"], b2)
 
@@ -158,10 +158,7 @@ def _build_plaquettes_for_substitution(
     data_meas: bool = False,
     repetitions: LinearFunction | None = None,
 ) -> Plaquettes:
-    # plaquettes on the merge/split boundary
-    # The stabilizers associated with these plaquettes will expand/shrink
-    # deterministically during the merge/split operation.
-    p_deterministic1, p_deterministic2 = _build_plaquette_for_different_basis(
+    p1, p2 = _build_plaquette_for_different_basis(
         builder,
         x_boundary_orientation,
         temporal_basis=temporal_basis,
@@ -169,34 +166,30 @@ def _build_plaquettes_for_substitution(
         data_meas=data_meas,
         init_meas_only_on_side=substitution_side,
     )
-    # plaquettes that introduce random stabilizers
-    p_random1, p_random2 = _build_plaquette_for_different_basis(
-        builder, x_boundary_orientation
-    )
     mapping: dict[int, Plaquette]
     if substitution_side == PlaquetteSide.LEFT:
         mapping = {
-            1: p_random1.project_on_boundary(PlaquetteOrientation.UP),
-            7: p_deterministic2,
-            8: p_random1,
+            1: p1.project_on_boundary(PlaquetteOrientation.UP),
+            7: p2,
+            8: p1,
         }
     elif substitution_side == PlaquetteSide.UP:
         mapping = {
-            2: p_random2.project_on_boundary(PlaquetteOrientation.RIGHT),
-            5: p_random2,
-            6: p_deterministic1,
+            2: p2.project_on_boundary(PlaquetteOrientation.RIGHT),
+            5: p2,
+            6: p1,
         }
     elif substitution_side == PlaquetteSide.RIGHT:
         mapping = {
-            4: p_random1.project_on_boundary(PlaquetteOrientation.DOWN),
-            11: p_random1,
-            12: p_deterministic2,
+            4: p1.project_on_boundary(PlaquetteOrientation.DOWN),
+            11: p1,
+            12: p2,
         }
     else:  # substitution_side == PlaquetteSide.DOWN
         mapping = {
-            3: p_random2.project_on_boundary(PlaquetteOrientation.LEFT),
-            13: p_deterministic1,
-            14: p_random2,
+            3: p2.project_on_boundary(PlaquetteOrientation.LEFT),
+            13: p1,
+            14: p2,
         }
     plaquettes = Plaquettes(
         FrozenDefaultDict(
@@ -266,4 +259,4 @@ def _get_x_boundary_orientation(
     cube_spec: CubeSpec,
 ) -> Literal["VERTICAL", "HORIZONTAL"]:
     cube_type = cube_spec.cube_type.value
-    return "VERTICAL" if cube_type[0] == "z" else "HORIZONTAL"
+    return "VERTICAL" if cube_type[0] == "x" else "HORIZONTAL"
