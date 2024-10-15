@@ -26,7 +26,7 @@ from tqec import (
 from tqec.noise_models import NoiseModel
 
 block_graph = BlockGraph.from_dae_file("logical_cnot.dae")
-observables = block_graph.get_abstract_observables()
+observables, _ = block_graph.get_abstract_observables()
 compiled_computation = compile_block_graph(block_graph, observables=[observables[1]])
 
 circuit = compiled_computation.generate_stim_circuit(
