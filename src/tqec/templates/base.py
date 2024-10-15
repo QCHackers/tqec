@@ -153,6 +153,12 @@ class Template(ABC):
         (:class:`Plaquette.origin`) that corresponds to the top-left entry of
         the array returned by :meth:`Template.instantiate`.
 
+        Note:
+            the returned coordinates are in plaquette coordinates. That means
+            that, if you want to get the coordinates of the top-left plaquette
+            origin (which is a qubit), you should multiply the coordinates
+            returned by this method by the tiling increments.
+
         Args:
             k: scaling parameter used to instantiate the template.
 
