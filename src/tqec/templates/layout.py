@@ -156,3 +156,13 @@ class LayoutTemplate(RectangularTemplate):
                 * element_shape[1],
             ] = element_instantiation
         return ret
+
+    @override
+    def instantiation_origin(self, k: int) -> Position2D:
+        origin_shift = self.origin_shift
+        element_shape = self.element_shape(k)
+        increment = self.get_increments()
+        return Position2D(
+            origin_shift.x * element_shape.x * increment.x,
+            origin_shift.y * element_shape.y * increment.y,
+        )

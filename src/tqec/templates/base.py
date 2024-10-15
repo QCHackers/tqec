@@ -6,7 +6,7 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.exceptions import TQECException
-from tqec.position import Displacement, Shape2D
+from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D, round_or_fail
 from tqec.templates.enums import TemplateOrientation, TemplateSide
 from tqec.templates.subtemplates import (
@@ -145,6 +145,23 @@ class Template(ABC):
         return get_spatially_distinct_subtemplates(
             self.instantiate(k), manhattan_radius, avoid_zero_plaquettes
         )
+
+    def instantiation_origin(self, k: int) -> Position2D:
+        """Coordinates of the top-left entry origin.
+
+        This property returns the coordinates of the origin of the plaquette
+        (:class:`Plaquette.origin`) that corresponds to the top-left entry of
+        the array returned by :meth:`Template.instantiate`.
+
+        Args:
+            k: scaling parameter used to instantiate the template.
+
+        Returns:
+            the coordinates of the origin of the plaquette
+            (:class:`Plaquette.origin`) that corresponds to the top-left entry
+            of the array returned by :meth:`Template.instantiate`.
+        """
+        return Position2D(0, 0)
 
 
 class RectangularTemplate(Template):
