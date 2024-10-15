@@ -28,6 +28,26 @@ class CubeType(Enum):
     def is_spatial_junction(self) -> bool:
         return self in [CubeType.ZZX, CubeType.XXZ]
 
+    @property
+    def is_y(self) -> bool:
+        return self == CubeType.Y
+
+    @property
+    def is_virtual(self) -> bool:
+        return self == CubeType.VIRTUAL
+
+    @property
+    def is_regular(self) -> bool:
+        return not self.is_spatial_junction and not self.is_y and not self.is_virtual
+
+    @property
+    def temporal_basis(self) -> Literal["X", "Z", "Y"] | None:
+        if self.is_y:
+            return "Y"
+        if self.is_virtual:
+            return None
+        return cast(Literal["X", "Z"], self.value[2].upper())
+
     def to_zx_node_type(self) -> NodeType:
         """Convert the cube type to a ZX node type."""
         if self == CubeType.VIRTUAL:

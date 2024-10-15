@@ -9,8 +9,7 @@ from tqec import annotate_detectors_automatically
 from tqec._cli.subcommands.base import TQECSubCommand
 from tqec._cli.subcommands.dae2observables import save_correlation_surfaces_to
 from tqec.compile.compile import compile_block_graph
-from tqec.compile.specs.library.css import CSS_SPEC_RULES
-from tqec.compile.substitute import DEFAULT_SUBSTITUTION_RULES
+from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import BlockGraph
 
 
@@ -102,8 +101,8 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
         circuits_out_dir.mkdir(exist_ok=True)
         compiled_graph = compile_block_graph(
             block_graph,
-            spec_rules=CSS_SPEC_RULES,
-            substitute_rules=DEFAULT_SUBSTITUTION_RULES,
+            CSS_BLOCK_BUILDER,
+            CSS_SUBSTITUTION_BUILDER,
             observables=[abstract_observables[i] for i in obs_indices],
         )
         ks: list[int] = args.k
