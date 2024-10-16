@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 import numpy
 import sinter
 
-from tqec import Position3D, ZXGraph
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.compile.specs.library.zxxz import (
     ZXXZ_BLOCK_BUILDER,
     ZXXZ_SUBSTITUTION_BUILDER,
 )
+from tqec.gallery.logical_cnot import logical_cnot_block_graph
 from tqec.noise_models import NoiseModel
 from tqec.simulation.plotting.inset import plot_observable_as_inset
 from tqec.simulation.simulation import start_simulation_using_sinter
@@ -23,44 +23,10 @@ TQEC_FOLDER = EXAMPLE_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
 
 
-def create_zx_graph(z_basis: bool = True) -> ZXGraph:
-    basis_str = "Z" if z_basis else "X"
-    cnot_zx = ZXGraph(f"Logical CNOT in {basis_str} basis")
-
-    if z_basis:
-        cnot_zx.add_z_node(Position3D(0, 0, 0))
-        cnot_zx.add_z_node(Position3D(1, 1, 0))
-        cnot_zx.add_z_node(Position3D(0, 0, 3))
-        cnot_zx.add_z_node(Position3D(1, 1, 3))
-    else:
-        cnot_zx.add_x_node(Position3D(0, 0, 0))
-        cnot_zx.add_x_node(Position3D(1, 1, 0))
-        cnot_zx.add_x_node(Position3D(0, 0, 3))
-        cnot_zx.add_x_node(Position3D(1, 1, 3))
-
-    cnot_zx.add_x_node(Position3D(0, 0, 1))
-    cnot_zx.add_z_node(Position3D(0, 0, 2))
-    cnot_zx.add_x_node(Position3D(0, 1, 1))
-    cnot_zx.add_z_node(Position3D(0, 1, 2))
-    cnot_zx.add_z_node(Position3D(1, 1, 1))
-    cnot_zx.add_z_node(Position3D(1, 1, 2))
-
-    cnot_zx.add_edge(Position3D(0, 0, 0), Position3D(0, 0, 1))
-    cnot_zx.add_edge(Position3D(0, 0, 1), Position3D(0, 0, 2))
-    cnot_zx.add_edge(Position3D(0, 0, 2), Position3D(0, 0, 3))
-    cnot_zx.add_edge(Position3D(0, 0, 1), Position3D(0, 1, 1))
-    cnot_zx.add_edge(Position3D(0, 1, 1), Position3D(0, 1, 2))
-    cnot_zx.add_edge(Position3D(0, 1, 2), Position3D(1, 1, 2))
-    cnot_zx.add_edge(Position3D(1, 1, 0), Position3D(1, 1, 1))
-    cnot_zx.add_edge(Position3D(1, 1, 1), Position3D(1, 1, 2))
-    cnot_zx.add_edge(Position3D(1, 1, 2), Position3D(1, 1, 3))
-    return cnot_zx
-
-
 def generate_graphs(style: Literal["css", "zxxz"], z_basis: bool) -> None:
     # 1 Create `BlockGraph` representing the computation
-    zx_graph = create_zx_graph(z_basis=z_basis)
-    block_graph = zx_graph.to_block_graph()
+    block_graph = logical_cnot_block_graph(z_basis)
+    zx_graph = block_graph.to_zx_graph()
 
     # 2. Find and choose the logical observables
     observables, correlation_surfaces = block_graph.get_abstract_observables()
