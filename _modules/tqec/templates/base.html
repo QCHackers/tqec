@@ -91,7 +91,7 @@
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">Scalable2D</span><span class="p">,</span> <span class="n">round_or_fail</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span><span class="p">,</span> <span class="n">TemplateSide</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateOrientation</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.subtemplates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">UniqueSubTemplates</span><span class="p">,</span>
     <span class="n">get_spatially_distinct_subtemplates</span><span class="p">,</span>
@@ -192,18 +192,6 @@
 <span class="sd">            a displacement of the default increments in the x and y directions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_increments</span>
-
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the indices of plaquettes that are located on the provided</span>
-<span class="sd">        sides.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            sides: the sides to recover plaquettes from.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a non-ordered list of plaquette numbers.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_spatially_distinct_subtemplates</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>

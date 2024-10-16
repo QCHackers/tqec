@@ -119,26 +119,30 @@
     <span class="k">def</span> <span class="nf">num_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">with_updated_layer</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">update_layers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">plaquettes_to_update</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">],</span>
-        <span class="n">layer_to_update</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompiledBlock</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new `CompiledBlock` with the specified layer updated.</span>
+        <span class="n">substitution</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the plaquettes in a specific layer of the block.</span>
+
+<span class="sd">        Warning: This method modifies the `layers` attribute in place.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            plaquettes_to_update: a dictionary of plaquettes to update in the layer.</span>
-<span class="sd">            layer_to_update: the index of the layer to update.</span>
+<span class="sd">            substitution: a mapping from the layer index to the plaquettes that should</span>
+<span class="sd">                be used to update the layer. The index can be negative, which means the</span>
+<span class="sd">                layer is counted from the end of the layers list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_plaquette_layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plaquettes</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">layer_to_update</span><span class="p">:</span>
-                <span class="n">new_plaquette_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">plaquettes</span><span class="o">.</span><span class="n">with_updated_plaquettes</span><span class="p">(</span><span class="n">plaquettes_to_update</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">plaquettes_to_update</span> <span class="ow">in</span> <span class="n">substitution</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">layer</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">+</span> <span class="n">layer</span>
+            <span class="k">if</span> <span class="n">layer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Layer index </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> is out of range for the block with &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="si">}</span><span class="s2"> layers.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">new_plaquette_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">CompiledBlock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">new_plaquette_layers</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">with_updated_plaquettes</span><span class="p">(</span>
+                <span class="n">plaquettes_to_update</span><span class="o">.</span><span class="n">collection</span>
+            <span class="p">)</span></div>
 
 
 

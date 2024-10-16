@@ -120,7 +120,7 @@ using <code class="docutils literal notranslate"><span class="pre">tqec.BlockGra
 <p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library can automatically search for valid observables in the
 imported computation. To get a list of all the valid observables, you can
 use the following code</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">observables</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">observables</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Any observable can be plotted using the <code class="docutils literal notranslate"><span class="pre">tqec</span> <span class="pre">dae2observables</span></code> command line. For our

@@ -442,7 +442,9 @@
             <span class="n">write_html_filepath</span><span class="o">=</span><span class="n">write_html_filepath</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_abstract_observables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_abstract_observables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXGraph</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all the abstract observables from the block graph.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_validity</span><span class="p">(</span><span class="n">allow_virtual_node</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">correlation_subgraphs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_zx_graph</span><span class="p">()</span><span class="o">.</span><span class="n">find_correlation_subgraphs</span><span class="p">()</span>
@@ -494,7 +496,7 @@
             <span class="n">abstract_observables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">AbstractObservable</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">top_lines</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">bottom_regions</span><span class="p">))</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">abstract_observables</span>
+        <span class="k">return</span> <span class="n">abstract_observables</span><span class="p">,</span> <span class="n">correlation_subgraphs</span>
 
     <span class="k">def</span> <span class="nf">with_zero_min_z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the whole graph in the z direction to make the minimum z</span>

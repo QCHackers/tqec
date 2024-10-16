@@ -28,6 +28,10 @@ tqec.computation.block\_graph.enums.CubeType
    .. autosummary::
    
       ~CubeType.is_spatial_junction
+      ~CubeType.is_y
+      ~CubeType.is_virtual
+      ~CubeType.is_regular
+      ~CubeType.temporal_basis
       ~CubeType.ZXX
       ~CubeType.XZX
       ~CubeType.XXZ

@@ -107,7 +107,7 @@
 <span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 
 <span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;logical_cnot.dae&quot;</span><span class="p">)</span>
-<span class="n">observables</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
+<span class="n">observables</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
 <span class="n">compiled_computation</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span><span class="n">block_graph</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
 <span class="n">circuit</span> <span class="o">=</span> <span class="n">compiled_computation</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>

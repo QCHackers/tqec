@@ -14,6 +14,7 @@ tqec.computation.block\_graph.pipe.Pipe
    .. autosummary::
    
       ~Pipe.__init__
+      ~Pipe.shift_position_by
    
    
 

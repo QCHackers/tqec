@@ -16,7 +16,6 @@ tqec.templates.qubit.QubitVerticalBorders
       ~QubitVerticalBorders.__init__
       ~QubitVerticalBorders.get_increments
       ~QubitVerticalBorders.get_midline_plaquettes
-      ~QubitVerticalBorders.get_plaquette_indices_on_sides
       ~QubitVerticalBorders.get_spatially_distinct_subtemplates
       ~QubitVerticalBorders.instantiate
       ~QubitVerticalBorders.shape

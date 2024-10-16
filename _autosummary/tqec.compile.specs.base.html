@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.compile.specs.base.CubeSpec" href="tqec.compile.specs.base.CubeSpec.html" />
+    <link rel="next" title="tqec.compile.specs.base.BlockBuilder" href="tqec.compile.specs.base.BlockBuilder.html" />
     <link rel="prev" title="tqec.compile.specs" href="tqec.compile.specs.html" /> 
 </head>
 
@@ -68,11 +68,11 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.specs.library.html">tqec.compile.specs.library</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.substitute.html">tqec.compile.substitute</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -116,11 +116,20 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.compile.specs.base.CubeSpec.html#tqec.compile.specs.base.CubeSpec" title="tqec.compile.specs.base.CubeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CubeSpec</span></code></a>(cube_type, junction_arms)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.compile.specs.base.BlockBuilder.html#tqec.compile.specs.base.BlockBuilder" title="tqec.compile.specs.base.BlockBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlockBuilder</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Protocol for building a <cite>CompiledBlock</cite> based on a <cite>CubeSpec</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.compile.specs.base.CubeSpec.html#tqec.compile.specs.base.CubeSpec" title="tqec.compile.specs.base.CubeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CubeSpec</span></code></a>(cube_type, junction_arms)</p></td>
 <td><p>Specification of a cube in a block graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.compile.specs.base.SpecRule.html#tqec.compile.specs.base.SpecRule" title="tqec.compile.specs.base.SpecRule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpecRule</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Protocol for returning a <cite>CompiledBlock</cite> based on a <cite>CubeSpec</cite>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.compile.specs.base.PipeSpec.html#tqec.compile.specs.base.PipeSpec" title="tqec.compile.specs.base.PipeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipeSpec</span></code></a>(spec1, spec2, pipe_type)</p></td>
+<td><p>Specification of a pipe in a block graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.compile.specs.base.Substitution.html#tqec.compile.specs.base.Substitution" title="tqec.compile.specs.base.Substitution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Substitution</span></code></a>(src, dst)</p></td>
+<td><p>Collection of plaquettes categorized by the layer index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.compile.specs.base.SubstitutionBuilder.html#tqec.compile.specs.base.SubstitutionBuilder" title="tqec.compile.specs.base.SubstitutionBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SubstitutionBuilder</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Protocol for building the <cite>Substitution</cite> based on a <cite>PipeSpec</cite>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -131,7 +140,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tqec.compile.specs.html" class="btn btn-neutral float-left" title="tqec.compile.specs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.compile.specs.base.CubeSpec.html" class="btn btn-neutral float-right" title="tqec.compile.specs.base.CubeSpec" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.compile.specs.base.BlockBuilder.html" class="btn btn-neutral float-right" title="tqec.compile.specs.base.BlockBuilder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

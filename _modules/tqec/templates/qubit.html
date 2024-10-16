@@ -91,7 +91,6 @@
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECWarning</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">LinearFunction</span><span class="p">,</span> <span class="n">Scalable2D</span>
 <span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">RectangularTemplate</span>
-<span class="kn">from</span> <span class="nn">tqec.templates.enums</span> <span class="kn">import</span> <span class="n">TemplateSide</span>
 
 
 <div class="viewcode-block" id="QubitTemplate">
@@ -151,30 +150,7 @@
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">14</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
-            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">indices</span></div>
+        <span class="k">return</span> <span class="mi">14</span></div>
 
 
 
@@ -226,30 +202,7 @@
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">8</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
-            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
-                    <span class="k">pass</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
-                    <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">indices</span></div>
+        <span class="k">return</span> <span class="mi">8</span></div>
 
 
 
@@ -296,30 +249,7 @@
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">8</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
-            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-                    <span class="k">pass</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-                    <span class="k">pass</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">indices</span></div>
+        <span class="k">return</span> <span class="mi">8</span></div>
 
 
 
@@ -418,30 +348,7 @@
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">15</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">get_plaquette_indices_on_sides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TemplateSide</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">sides</span><span class="p">:</span>
-            <span class="k">match</span> <span class="n">side</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM_RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
-                <span class="k">case</span> <span class="n">TemplateSide</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">:</span>
-                    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">indices</span></div>
+        <span class="k">return</span> <span class="mi">15</span></div>
 
 </pre></div>
 

@@ -28,6 +28,8 @@ tqec.plaquette.library
    :recursive:
 
 
+   builder
+
    css
 
 

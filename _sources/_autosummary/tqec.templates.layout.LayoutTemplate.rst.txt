@@ -18,7 +18,6 @@ tqec.templates.layout.LayoutTemplate
       ~LayoutTemplate.get_increments
       ~LayoutTemplate.get_indices_map_for_instantiation
       ~LayoutTemplate.get_midline_plaquettes
-      ~LayoutTemplate.get_plaquette_indices_on_sides
       ~LayoutTemplate.get_spatially_distinct_subtemplates
       ~LayoutTemplate.instantiate
       ~LayoutTemplate.shape

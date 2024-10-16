@@ -21,7 +21,6 @@ tqec.templates.enums
       CornerPositionEnum
       TemplateOrientation
       TemplateRelativePositionEnum
-      TemplateSide
    
    
 

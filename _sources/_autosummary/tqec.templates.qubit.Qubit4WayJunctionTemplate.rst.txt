@@ -16,7 +16,6 @@ tqec.templates.qubit.Qubit4WayJunctionTemplate
       ~Qubit4WayJunctionTemplate.__init__
       ~Qubit4WayJunctionTemplate.get_increments
       ~Qubit4WayJunctionTemplate.get_midline_plaquettes
-      ~Qubit4WayJunctionTemplate.get_plaquette_indices_on_sides
       ~Qubit4WayJunctionTemplate.get_spatially_distinct_subtemplates
       ~Qubit4WayJunctionTemplate.instantiate
       ~Qubit4WayJunctionTemplate.shape

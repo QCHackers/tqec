@@ -113,6 +113,26 @@
     <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CubeType</span><span class="o">.</span><span class="n">ZZX</span><span class="p">,</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">XXZ</span><span class="p">]</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">Y</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_virtual</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spatial_junction</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_y</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_virtual</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">temporal_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_y</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Y&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+
     <span class="k">def</span> <span class="nf">to_zx_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube type to a ZX node type.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">CubeType</span><span class="o">.</span><span class="n">VIRTUAL</span><span class="p">:</span>

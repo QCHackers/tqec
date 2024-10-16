@@ -32,9 +32,8 @@ tqec.compile
 
    compile
 
+
    observables
 
    specs
-
-   substitute
 

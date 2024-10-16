@@ -1,6 +1,0 @@
-tqec.circuit.instructions.is\_annotation\_instruction
-=====================================================
-
-.. currentmodule:: tqec.circuit.instructions
-
-.. autofunction:: is_annotation_instruction

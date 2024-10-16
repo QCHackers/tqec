@@ -16,7 +16,6 @@ tqec.templates.base.Template
       ~Template.__init__
       ~Template.get_increments
       ~Template.get_midline_plaquettes
-      ~Template.get_plaquette_indices_on_sides
       ~Template.get_spatially_distinct_subtemplates
       ~Template.instantiate
       ~Template.shape

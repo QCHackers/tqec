@@ -67,11 +67,11 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.compile.compile.html">tqec.compile.compile</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.compile.observables.html">tqec.compile.observables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.compile.specs.html">tqec.compile.specs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.substitute.html">tqec.compile.substitute</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -152,8 +152,8 @@ Initialization, Repetitions, and Measurement.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.compile.block.CompiledBlock.__init__" title="tqec.compile.block.CompiledBlock.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(template, layers)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_updated_layer</span></code>(plaquettes_to_update, ...)</p></td>
-<td><p>Returns a new <cite>CompiledBlock</cite> with the specified layer updated.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_layers</span></code>(substitution)</p></td>
+<td><p>Update the plaquettes in a specific layer of the block.</p></td>
 </tr>
 </tbody>
 </table>

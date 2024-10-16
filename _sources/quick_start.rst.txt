@@ -43,7 +43,7 @@ use the following code
 
 .. code-block:: python
 
-    observables = block_graph.get_abstract_observables()
+    observables, _ = block_graph.get_abstract_observables()
 
 Any observable can be plotted using the ``tqec dae2observables`` command line. For our
 specific example, the command line

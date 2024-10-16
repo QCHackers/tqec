@@ -82,17 +82,13 @@
              
   <h1>Source code for tqec.simulation.simulation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">sinter</span>
 
 <span class="kn">from</span> <span class="nn">tqec.compile.compile</span> <span class="kn">import</span> <span class="n">compile_block_graph</span>
-<span class="kn">from</span> <span class="nn">tqec.compile.specs.base</span> <span class="kn">import</span> <span class="n">CubeSpec</span><span class="p">,</span> <span class="n">SpecRule</span>
-<span class="kn">from</span> <span class="nn">tqec.compile.substitute</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">DEFAULT_SUBSTITUTION_RULES</span><span class="p">,</span>
-    <span class="n">SubstitutionKey</span><span class="p">,</span>
-    <span class="n">SubstitutionRule</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.specs.base</span> <span class="kn">import</span> <span class="n">BlockBuilder</span><span class="p">,</span> <span class="n">SubstitutionBuilder</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.specs.library.css</span> <span class="kn">import</span> <span class="n">CSS_BLOCK_BUILDER</span><span class="p">,</span> <span class="n">CSS_SUBSTITUTION_BUILDER</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">BlockGraph</span>
 <span class="kn">from</span> <span class="nn">tqec.noise_models.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 <span class="kn">from</span> <span class="nn">tqec.simulation.generation</span> <span class="kn">import</span> <span class="n">generate_sinter_tasks</span>
@@ -105,8 +101,8 @@
     <span class="n">ks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">ps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
-    <span class="n">cube_specifications</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">CubeSpec</span><span class="p">,</span> <span class="n">SpecRule</span><span class="p">],</span>
-    <span class="n">substitution_rules</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">SubstitutionKey</span><span class="p">,</span> <span class="n">SubstitutionRule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">block_builder</span><span class="p">:</span> <span class="n">BlockBuilder</span> <span class="o">=</span> <span class="n">CSS_BLOCK_BUILDER</span><span class="p">,</span>
+    <span class="n">substitution_builder</span><span class="p">:</span> <span class="n">SubstitutionBuilder</span> <span class="o">=</span> <span class="n">CSS_SUBSTITUTION_BUILDER</span><span class="p">,</span>
     <span class="n">observables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(),</span>
     <span class="n">progress_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">sinter</span><span class="o">.</span><span class="n">Progress</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -135,10 +131,12 @@
 <span class="sd">            model using the provided `noise_model_factory`.</span>
 <span class="sd">        noise_model_factory: a callable that is used to instantiate a noise</span>
 <span class="sd">            model from each of the noise parameters in `ps`.</span>
-<span class="sd">        cube_specification: a description of the different cubes that are</span>
-<span class="sd">            used by the provided `block_graph`.</span>
-<span class="sd">        substitution_rules: a description of the rules that should be applied</span>
-<span class="sd">            to connect two cubes with a pipe.</span>
+<span class="sd">        block_builder: A callable that specifies how to build the `CompiledBlock` from</span>
+<span class="sd">            the specified `CubeSpecs`. Defaults to the block builder for the css type</span>
+<span class="sd">            surface code.</span>
+<span class="sd">        substitution_builder: A callable that specifies how to build the substitution</span>
+<span class="sd">            plaquettes from the specified `PipeSpec`. Defaults to the substitution</span>
+<span class="sd">            builder for the css type surface code.</span>
 <span class="sd">        observables: a list of observables to generate statistics for. If</span>
 <span class="sd">            `None`, all the observables of the provided computation are used.</span>
 <span class="sd">        num_workers: The number of worker processes to use.</span>
@@ -167,9 +165,7 @@
 <span class="sd">        `list[sinter.TaskStats]`) per provided observable in `observables`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">observables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">observables</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">substitution_rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">substitution_rules</span> <span class="o">=</span> <span class="n">DEFAULT_SUBSTITUTION_RULES</span>
+        <span class="n">observables</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">observable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">observables</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span>
@@ -179,8 +175,8 @@
             <span class="p">)</span>
         <span class="n">compiled_graph</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span>
             <span class="n">block_graph</span><span class="p">,</span>
-            <span class="n">spec_rules</span><span class="o">=</span><span class="n">cube_specifications</span><span class="p">,</span>
-            <span class="n">substitute_rules</span><span class="o">=</span><span class="n">substitution_rules</span><span class="p">,</span>
+            <span class="n">block_builder</span><span class="p">,</span>
+            <span class="n">substitution_builder</span><span class="p">,</span>
             <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observable</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">sinter</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span>

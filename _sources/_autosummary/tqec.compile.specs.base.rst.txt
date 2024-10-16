@@ -18,8 +18,11 @@ tqec.compile.specs.base
    .. autosummary::
       :toctree:
    
+      BlockBuilder
       CubeSpec
-      SpecRule
+      PipeSpec
+      Substitution
+      SubstitutionBuilder
    
    
 

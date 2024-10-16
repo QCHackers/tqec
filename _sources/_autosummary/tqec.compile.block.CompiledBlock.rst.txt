@@ -14,7 +14,7 @@ tqec.compile.block.CompiledBlock
    .. autosummary::
    
       ~CompiledBlock.__init__
-      ~CompiledBlock.with_updated_layer
+      ~CompiledBlock.update_layers
    
    
 

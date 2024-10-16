@@ -16,7 +16,6 @@ tqec.templates.base.RectangularTemplate
       ~RectangularTemplate.__init__
       ~RectangularTemplate.get_increments
       ~RectangularTemplate.get_midline_plaquettes
-      ~RectangularTemplate.get_plaquette_indices_on_sides
       ~RectangularTemplate.get_spatially_distinct_subtemplates
       ~RectangularTemplate.instantiate
       ~RectangularTemplate.shape
