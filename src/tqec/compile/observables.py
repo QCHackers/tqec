@@ -144,8 +144,10 @@ def inplace_add_observables(
         for pipe in observable.bottom_regions:
             z = pipe.u.position.z
             template = template_slices[z]
+            origin = template.origin_shift
+            shifted_pipe = pipe.shift_position_by(-origin.x, -origin.y)
             stabilizer_qubits = get_stabilizer_region_qubits_for_pipe(
-                pipe, template.element_shape(k), template.get_increments()
+                shifted_pipe, template.element_shape(k), template.get_increments()
             )
             measurement_records = MeasurementRecordsMap.from_scheduled_circuit(
                 circuits[z][0]
@@ -163,15 +165,19 @@ def inplace_add_observables(
             if isinstance(cube_or_pipe, Cube):
                 z = cube_or_pipe.position.z
                 template = template_slices[z]
+                origin = template.origin_shift
+                shifted_cube = cube_or_pipe.shift_position_by(-origin.x, -origin.y)
                 qubits = get_midline_qubits_for_cube(
-                    cube_or_pipe, template.element_shape(k), template.get_increments()
+                    shifted_cube, template.element_shape(k), template.get_increments()
                 )
             else:
                 z = cube_or_pipe.u.position.z
                 template = template_slices[z]
+                origin = template.origin_shift
+                shifted_pipe = cube_or_pipe.shift_position_by(-origin.x, -origin.y)
                 qubits = [
                     get_center_qubit_at_horizontal_pipe(
-                        cube_or_pipe,
+                        shifted_pipe,
                         template.element_shape(k),
                         template.get_increments(),
                     )

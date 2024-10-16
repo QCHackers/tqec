@@ -22,3 +22,10 @@ class Cube:
     def is_virtual(self) -> bool:
         """Check if the cube is virtual, i.e. an open port."""
         return self.cube_type == CubeType.VIRTUAL
+
+    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Cube:
+        """Shift the position of the cube in the 3D space."""
+        return Cube(
+            self.position.shift_by(dx, dy, dz),
+            self.cube_type,
+        )
