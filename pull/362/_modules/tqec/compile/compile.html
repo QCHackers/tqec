@@ -132,7 +132,7 @@
         <span class="c1"># Use warning instead of exception because a qec circuit without observable</span>
         <span class="c1"># may still be useful, e.g. do statistics on the detection events.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">,</span> <span class="n">TQECWarning</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">generate_stim_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
