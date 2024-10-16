@@ -1,0 +1,6 @@
+tqec.computation.plot.draw\_zx\_graph\_on
+=========================================
+
+.. currentmodule:: tqec.computation.plot
+
+.. autofunction:: draw_zx_graph_on

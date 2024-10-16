@@ -1,0 +1,31 @@
+tqec.templates.base
+===================
+
+.. automodule:: tqec.templates.base
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      RectangularTemplate
+      Template
+   
+   
+
+   
+   
+   
+
+
+

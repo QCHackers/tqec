@@ -1,0 +1,6 @@
+tqec.circuit.instructions.is\_measurement\_instruction
+======================================================
+
+.. currentmodule:: tqec.circuit.instructions
+
+.. autofunction:: is_measurement_instruction
