@@ -20,6 +20,7 @@ def start_simulation_using_sinter(
     ks: Sequence[int],
     ps: Sequence[float],
     noise_model_factory: Callable[[float], NoiseModel],
+    manhattan_radius: int,
     cube_specifications: Mapping[CubeSpec, SpecRule],
     substitution_rules: Mapping[SubstitutionKey, SubstitutionRule] | None = None,
     observables: list[AbstractObservable] | None = None,
@@ -50,6 +51,16 @@ def start_simulation_using_sinter(
             model using the provided `noise_model_factory`.
         noise_model_factory: a callable that is used to instantiate a noise
             model from each of the noise parameters in `ps`.
+        manhattan_radius: radius used to automatically compute detectors. The
+            best value to set this argument to is the minimum integer such that
+            flows generated from any given reset/measurement, from any plaquette
+            at any spatial/temporal place in the QEC computation, do not
+            propagate outside of the qubits used by plaquettes spatially located
+            at maximum `manhattan_radius` plaquettes from the plaquette the
+            reset/measurement belongs to (w.r.t. the Manhattan distance).
+            Default to 2, which is sufficient for regular surface code. If
+            negative, detectors are not computed automatically and are not added
+            to the generated circuits.
         cube_specification: a description of the different cubes that are
             used by the provided `block_graph`.
         substitution_rules: a description of the rules that should be applied
@@ -101,7 +112,12 @@ def start_simulation_using_sinter(
         stats = sinter.collect(
             num_workers=num_workers,
             tasks=generate_sinter_tasks(
-                compiled_graph, ks, ps, noise_model_factory, max_workers=num_workers
+                compiled_graph,
+                ks,
+                ps,
+                noise_model_factory,
+                manhattan_radius,
+                max_workers=num_workers,
             ),
             progress_callback=progress_callback,
             max_shots=max_shots,
