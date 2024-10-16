@@ -77,20 +77,21 @@ class _ZXXZPlaquetteBuilder:
         dqs_considered = self._get_data_qubits(only_on_side)
         if isinstance(basis, ResetBasis):
             self._moments[0].append("R", dqs_considered, [])
+            h_moment_idx = 1
         else:
             self._moments[-1].append("M", dqs_considered, [])
+            h_moment_idx = -2
 
         basis_change_dqs = self._get_init_meas_basis_change_dqs(
             basis.value, dqs_considered
         )
-        moment_idx = 1 if isinstance(basis, ResetBasis) else -2
         # It's important to ignore the H gates on the data qubits that are not
         # considered for initialization/measurement to avoid adding unneeded H.
-        h_cancel_out = {
-            i for i in self._moments[moment_idx].qubits_indices if i in dqs_considered
-        }
+        h_cancel_out = self._moments[h_moment_idx].qubits_indices.intersection(
+            dqs_considered
+        )
         h_targets = {0} | basis_change_dqs ^ h_cancel_out
-        self._moments[moment_idx] = Moment(
+        self._moments[h_moment_idx] = Moment(
             stim.Circuit(f"H {' '.join(map(str, h_targets))}")
         )
 
