@@ -163,20 +163,21 @@
         <span class="n">dqs_considered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_qubits</span><span class="p">(</span><span class="n">only_on_side</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">dqs_considered</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">h_moment_idx</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">dqs_considered</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">h_moment_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
 
         <span class="n">basis_change_dqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_init_meas_basis_change_dqs</span><span class="p">(</span>
             <span class="n">basis</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">dqs_considered</span>
         <span class="p">)</span>
-        <span class="n">moment_idx</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">2</span>
         <span class="c1"># It&#39;s important to ignore the H gates on the data qubits that are not</span>
         <span class="c1"># considered for initialization/measurement to avoid adding unneeded H.</span>
-        <span class="n">h_cancel_out</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">moment_idx</span><span class="p">]</span><span class="o">.</span><span class="n">qubits_indices</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dqs_considered</span>
-        <span class="p">}</span>
+        <span class="n">h_cancel_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">h_moment_idx</span><span class="p">]</span><span class="o">.</span><span class="n">qubits_indices</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">dqs_considered</span>
+        <span class="p">)</span>
         <span class="n">h_targets</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span> <span class="o">|</span> <span class="n">basis_change_dqs</span> <span class="o">^</span> <span class="n">h_cancel_out</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">moment_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Moment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">h_moment_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Moment</span><span class="p">(</span>
             <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;H </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">h_targets</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="p">)</span>
 

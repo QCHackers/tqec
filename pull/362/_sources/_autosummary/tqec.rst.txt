@@ -36,6 +36,8 @@
 
    exceptions
 
+   gallery
+
    interval
 
 

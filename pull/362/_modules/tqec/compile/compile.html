@@ -97,7 +97,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.specs.library.css</span> <span class="kn">import</span> <span class="n">CSS_BLOCK_BUILDER</span><span class="p">,</span> <span class="n">CSS_SUBSTITUTION_BUILDER</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">BlockGraph</span>
-<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span><span class="p">,</span> <span class="n">TQECWarning</span>
 <span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">RepeatedPlaquettes</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position3D</span>
@@ -128,8 +128,10 @@
                 <span class="s2">&quot;The compiled graph should have at least one time slice &quot;</span>
                 <span class="s2">&quot;but got an empty layout_slices.&quot;</span>
             <span class="p">)</span>
-        <span class="c1"># if len(self.observables) == 0:</span>
-        <span class="c1">#     raise TQECException(&quot;The compiled graph includes no observable.&quot;)</span>
+        <span class="c1"># Use warning instead of exception because a qec circuit without observable</span>
+        <span class="c1"># may still be useful, e.g. do statistics on the detection events.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECWarning</span><span class="p">(</span><span class="s2">&quot;The compiled graph includes no observable.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">generate_stim_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

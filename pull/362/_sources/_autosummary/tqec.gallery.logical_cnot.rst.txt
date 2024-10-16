@@ -1,0 +1,30 @@
+tqec.gallery.logical\_cnot
+==========================
+
+.. automodule:: tqec.gallery.logical_cnot
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      logical_cnot_block_graph
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
