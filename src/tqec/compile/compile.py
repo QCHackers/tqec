@@ -160,7 +160,7 @@ class CompiledGraph:
         # Initialise the measurement records map with the first circuit.
         mrecords_map = MeasurementRecordsMap.from_scheduled_circuit(circuits[0])
         # Add the detectors to the first circuit
-        for d in first_slice_detectors:
+        for d in sorted(first_slice_detectors, key=lambda d: d.coordinates):
             circuits[0].append_annotation(d.to_instruction(mrecords_map))
 
         # Now, iterate over all the pairs of circuits.
@@ -175,7 +175,7 @@ class CompiledGraph:
             mrecords_map = mrecords_map.with_added_measurements(
                 MeasurementRecordsMap.from_scheduled_circuit(current_circuit)
             )
-            for d in slice_detectors:
+            for d in sorted(slice_detectors, key=lambda d: d.coordinates):
                 current_circuit.append_annotation(d.to_instruction(mrecords_map))
         # We are now over, all the detectors should be added inplace to the end
         # of the last circuit containing a measurement involved in the detector.
