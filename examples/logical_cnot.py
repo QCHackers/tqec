@@ -68,6 +68,7 @@ def generate_graphs(z_basis: bool) -> None:
         range(1, 5),
         list(numpy.logspace(-5, -1, 10)),
         NoiseModel.uniform_depolarizing,
+        manhattan_radius=2,
         cube_specifications=CSS_SPEC_RULES,
         observables=observables,
         num_workers=16,
