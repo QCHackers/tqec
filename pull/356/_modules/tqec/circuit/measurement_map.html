@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.measurement_map &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.measurement_map</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.circuit.measurement_map</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">stim</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.instructions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">,</span>
+    <span class="n">is_single_qubit_measurement_instruction</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+
+<div class="viewcode-block" id="MeasurementRecordsMap">
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement_map.MeasurementRecordsMap.html#tqec.circuit.measurement_map.MeasurementRecordsMap">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MeasurementRecordsMap</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mapping from measurements appearing in a circuit and their record offsets.</span>
+
+<span class="sd">    This class stores record offsets which are, by essence, relative to a certain</span>
+<span class="sd">    position in a circuit. This means that this class and the measurement offsets</span>
+<span class="sd">    it stores are meaningless without knowledge about the circuit containing the</span>
+<span class="sd">    represented measurements and the position(s) in the circuit at which the</span>
+<span class="sd">    instance at hand is valid.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if at least one of the provided measurement record offsets</span>
+<span class="sd">            is non-negative (`&gt;=0`).</span>
+<span class="sd">        TQECException: if, for any of the provided qubits, the provided offsets</span>
+<span class="sd">            are not sorted.</span>
+<span class="sd">        TQECException: if any measurement offset is duplicated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mapping</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">all_measurement_records_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">qubit</span><span class="p">,</span> <span class="n">measurement_record_offsets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Check that the provided measurement record offsets are negative.</span>
+            <span class="n">nonnegative_offsets</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">offset</span> <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="n">measurement_record_offsets</span> <span class="k">if</span> <span class="n">offset</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">nonnegative_offsets</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid mapping from qubit offsets to measurement record &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;offsets. Found positive offsets (</span><span class="si">{</span><span class="n">nonnegative_offsets</span><span class="si">}</span><span class="s2">) for &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;qubit </span><span class="si">{</span><span class="n">qubit</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Check that measurement record offsets are sorted</span>
+            <span class="k">if</span> <span class="n">measurement_record_offsets</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">measurement_record_offsets</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="s2">&quot;Got measurement record offsets that are not in sorted &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;order: </span><span class="si">{</span><span class="n">measurement_record_offsets</span><span class="si">}</span><span class="s2">. This is not supported.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">all_measurement_records_indices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">measurement_record_offsets</span><span class="p">)</span>
+        <span class="c1"># Check that a given measurement record offset only appears once.</span>
+        <span class="n">deduplicated_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">all_measurement_records_indices</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deduplicated_indices</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_measurement_records_indices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;At least one measurement record offset has been found twice &quot;</span>
+                <span class="s2">&quot;in the provided offsets.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_scheduled_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementMap` from a scheduled circuit.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: circuit containing the measurements to map.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the provided `circuit` contains a `REPEAT` block.</span>
+<span class="sd">            TQECException: if the provided `circuit` contains an unsupported</span>
+<span class="sd">                measurement instruction. Currently, this method supports all</span>
+<span class="sd">                single-qubit measurement instructions (see the value of</span>
+<span class="sd">                `SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES`).</span>
+<span class="sd">            TQECException: if one of the measurement counted in</span>
+<span class="sd">                `circuit.num_measurements` was not processed (this should never</span>
+<span class="sd">                raise, but the post-condition is easy to check so this method</span>
+<span class="sd">                performs the check just in case).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a :class:`MeasurementMap` linking measurements in the provided</span>
+<span class="sd">            `circuit` to their offset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span><span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_circuit</span><span class="p">(</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementMap` from a circuit.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: circuit containing the measurements to map.</span>
+<span class="sd">            qubit_map: qubit map of the provided circuit. If `None`, the</span>
+<span class="sd">                qubit map is computed from the provided circuit. Default to</span>
+<span class="sd">                `None`.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if the provided `circuit` contains a `REPEAT` block.</span>
+<span class="sd">            TQECException: if the provided `circuit` contains an unsupported</span>
+<span class="sd">                measurement instruction. Currently, this method supports all</span>
+<span class="sd">                single-qubit measurement instructions (see the value of</span>
+<span class="sd">                `SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES`).</span>
+<span class="sd">            TQECException: if one of the measurement counted in</span>
+<span class="sd">                `circuit.num_measurements` was not processed (this should never</span>
+<span class="sd">                raise, but the post-condition is easy to check so this method</span>
+<span class="sd">                performs the check just in case).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a :class:`MeasurementMap` linking measurements in the provided</span>
+<span class="sd">            `circuit` to their offset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We iterate the circuit in forward order, which means that the first</span>
+        <span class="c1"># measurement we will encounter will have a record offset of</span>
+        <span class="c1"># `-circuit.num_measurements`. Iterating in this order also allows to</span>
+        <span class="c1"># ensure by construction that the measurement record offsets will be in</span>
+        <span class="c1"># sorted order.</span>
+        <span class="n">current_measurement_record</span> <span class="o">=</span> <span class="o">-</span><span class="n">circuit</span><span class="o">.</span><span class="n">num_measurements</span>
+        <span class="k">if</span> <span class="n">qubit_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+        <span class="n">measurement_records</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">circuit</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instruction</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitRepeatBlock</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="s2">&quot;Found a REPEAT instruction. This is not supported for the moment.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_multi_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Found a non-supported measurement instruction: </span><span class="si">{</span><span class="n">instruction</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_single_qubit_measurement_instruction</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">qi</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">target_groups</span><span class="p">():</span>
+                    <span class="n">qubit</span> <span class="o">=</span> <span class="n">qubit_map</span><span class="o">.</span><span class="n">i2q</span><span class="p">[</span><span class="n">qi</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+                    <span class="n">measurement_records</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">qubit</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">current_measurement_record</span>
+                    <span class="p">)</span>
+                    <span class="n">current_measurement_record</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">current_measurement_record</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Failed post-condition check. Expected a final measurement record of &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;-1 but got </span><span class="si">{</span><span class="n">current_measurement_record</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">. Did we miss a &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;measurement? Circuit:</span><span class="se">\n</span><span class="si">{</span><span class="n">circuit</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">MeasurementRecordsMap</span><span class="p">(</span><span class="n">measurement_records</span><span class="p">)</span>
+
+    <span class="c1"># Explicitly returns a Sequence to show that the returned value is read-only.</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">[</span><span class="n">qubit</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span>
+
+    <span class="k">def</span> <span class="nf">with_added_measurements</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mrecords_map</span><span class="p">:</span> <span class="n">MeasurementRecordsMap</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a new :class:`MeasurementRecordsMap` with measurements from `self`</span>
+<span class="sd">        appearing before measurements from the provided `mrecords_map`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mrecords_map: records of measurements happening after the measurements</span>
+<span class="sd">                represented by `self`.</span>
+<span class="sd">            repetitions: number of time the measurements from `mrecords_map` are</span>
+<span class="sd">                repeated. Default to 1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a new instance containing valid offsets for each measurement in `self`</span>
+<span class="sd">            and `mrecords_map`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_measurements_without_repetition</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span> <span class="k">for</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="n">mrecords_map</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">num_added_measurements</span> <span class="o">=</span> <span class="n">repetitions</span> <span class="o">*</span> <span class="n">num_measurements_without_repetition</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">q</span><span class="p">:</span> <span class="p">[</span><span class="n">o</span> <span class="o">-</span> <span class="n">num_added_measurements</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="n">mrecords_map</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repetitions</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">record</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">o</span> <span class="o">-</span> <span class="n">i</span> <span class="o">*</span> <span class="n">num_measurements_without_repetition</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">MeasurementRecordsMap</span><span class="p">(</span><span class="n">records</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

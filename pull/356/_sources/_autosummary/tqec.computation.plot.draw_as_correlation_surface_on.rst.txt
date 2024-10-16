@@ -1,0 +1,6 @@
+tqec.computation.plot.draw\_as\_correlation\_surface\_on
+========================================================
+
+.. currentmodule:: tqec.computation.plot
+
+.. autofunction:: draw_as_correlation_surface_on

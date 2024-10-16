@@ -1,0 +1,37 @@
+tqec.plaquette.frozendefaultdict
+================================
+
+.. automodule:: tqec.plaquette.frozendefaultdict
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      FrozenDefaultDict
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      FrozenException
+   
+   
+
+
+

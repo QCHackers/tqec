@@ -1,0 +1,39 @@
+tqec.templates.subtemplates
+===========================
+
+.. automodule:: tqec.templates.subtemplates
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_spatially_distinct_3d_subtemplates
+      get_spatially_distinct_subtemplates
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Unique3DSubTemplates
+      UniqueSubTemplates
+   
+   
+
+   
+   
+   
+
+
+

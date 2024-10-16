@@ -1,0 +1,6 @@
+tqec.plaquette.library.empty.empty\_square\_plaquette
+=====================================================
+
+.. currentmodule:: tqec.plaquette.library.empty
+
+.. autofunction:: empty_square_plaquette
