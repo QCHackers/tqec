@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal
+import warnings
 
 import stim
 
@@ -14,7 +15,7 @@ from tqec.compile.specs.base import (
 )
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
-from tqec.exceptions import TQECException, TQECWarning
+from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
@@ -46,7 +47,7 @@ class CompiledGraph:
         # Use warning instead of exception because a qec circuit without observable
         # may still be useful, e.g. do statistics on the detection events.
         if len(self.observables) == 0:
-            raise TQECWarning("The compiled graph includes no observable.")
+            warnings.warn("The compiled graph includes no observable.")
 
     def generate_stim_circuit(
         self,

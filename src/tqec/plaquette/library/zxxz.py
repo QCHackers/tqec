@@ -63,7 +63,7 @@ class _ZXXZPlaquetteBuilder:
             self._qubits,
             ScheduledCircuit(
                 self._moments,
-                schedule=list(range(len(self._moments))),
+                schedule=0,
                 qubit_map=self._qubit_map,
             ),
             mergeable_instructions=self.MERGEABLE_INSTRUCTIONS,

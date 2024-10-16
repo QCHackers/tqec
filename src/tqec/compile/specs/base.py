@@ -110,8 +110,8 @@ class Substitution:
             to the plaquettes that should be used to update
     """
 
-    src: Mapping[int, Plaquettes]
-    dst: Mapping[int, Plaquettes]
+    src: dict[int, Plaquettes]
+    dst: dict[int, Plaquettes]
 
 
 class SubstitutionBuilder(Protocol):

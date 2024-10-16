@@ -40,6 +40,8 @@ class CompiledBlock:
     ) -> None:
         """Update the plaquettes in a specific layer of the block.
 
+        Warning: This method modifies the `layers` attribute in place.
+
         Args:
             substitution: a mapping from the layer index to the plaquettes that should
                 be used to update the layer. The index can be negative, which means the

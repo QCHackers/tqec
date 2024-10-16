@@ -3,12 +3,7 @@ from tqec.computation.zx_graph import ZXGraph
 from tqec.position import Position3D
 
 
-def logical_cnot_block_graph(support_z_basis_observables: bool = True) -> BlockGraph:
-    logical_cnot_zx = _create_logical_cnot_zx_graph(support_z_basis_observables)
-    return logical_cnot_zx.to_block_graph(logical_cnot_zx.name)
-
-
-def _create_logical_cnot_zx_graph(support_z_basis_observables: bool = True) -> ZXGraph:
+def logical_cnot_zx_graph(support_z_basis_observables: bool = True) -> ZXGraph:
     basis_str = "Z" if support_z_basis_observables else "X"
     cnot_zx = ZXGraph(f"Logical CNOT in {basis_str} basis")
 
@@ -40,3 +35,8 @@ def _create_logical_cnot_zx_graph(support_z_basis_observables: bool = True) -> Z
     cnot_zx.add_edge(Position3D(1, 1, 1), Position3D(1, 1, 2))
     cnot_zx.add_edge(Position3D(1, 1, 2), Position3D(1, 1, 3))
     return cnot_zx
+
+
+def logical_cnot_block_graph(support_z_basis_observables: bool = True) -> BlockGraph:
+    logical_cnot_zx = logical_cnot_zx_graph(support_z_basis_observables)
+    return logical_cnot_zx.to_block_graph(logical_cnot_zx.name)
