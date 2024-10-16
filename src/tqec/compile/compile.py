@@ -9,6 +9,7 @@ from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.detectors.compute import compute_detectors_for_fixed_radius
+from tqec.compile.detectors.detector import Detector
 from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs import CubeSpec, SpecRule
 from tqec.compile.specs.library.css import CSS_SPEC_RULES
@@ -160,8 +161,9 @@ class CompiledGraph:
         # Initialise the measurement records map with the first circuit.
         mrecords_map = MeasurementRecordsMap.from_scheduled_circuit(circuits[0])
         # Add the detectors to the first circuit
-        for d in sorted(first_slice_detectors, key=lambda d: d.coordinates):
-            circuits[0].append_annotation(d.to_instruction(mrecords_map))
+        CompiledGraph._inplace_add_detectors_to_circuit(
+            circuits[0], mrecords_map, first_slice_detectors
+        )
 
         # Now, iterate over all the pairs of circuits.
         for i in range(1, len(circuits)):
@@ -175,10 +177,28 @@ class CompiledGraph:
             mrecords_map = mrecords_map.with_added_measurements(
                 MeasurementRecordsMap.from_scheduled_circuit(current_circuit)
             )
-            for d in sorted(slice_detectors, key=lambda d: d.coordinates):
-                current_circuit.append_annotation(d.to_instruction(mrecords_map))
+            CompiledGraph._inplace_add_detectors_to_circuit(
+                current_circuit,
+                mrecords_map,
+                slice_detectors,
+                shift_coords_by=(0, 0, 1),
+            )
         # We are now over, all the detectors should be added inplace to the end
         # of the last circuit containing a measurement involved in the detector.
+
+    @staticmethod
+    def _inplace_add_detectors_to_circuit(
+        circuit: ScheduledCircuit,
+        mrecords_map: MeasurementRecordsMap,
+        detectors: Sequence[Detector],
+        shift_coords_by: tuple[float, ...] = (0, 0, 0),
+    ) -> None:
+        if any(shift != 0 for shift in shift_coords_by):
+            circuit.append_annotation(
+                stim.CircuitInstruction("SHIFT_COORDS", [], shift_coords_by)
+            )
+        for d in sorted(detectors, key=lambda d: d.coordinates):
+            circuit.append_annotation(d.to_instruction(mrecords_map))
 
 
 def compile_block_graph(
