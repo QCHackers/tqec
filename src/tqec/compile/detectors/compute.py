@@ -188,6 +188,10 @@ def _compute_detectors_at_end_of_situation(
         matched_detectors.extend(
             match_boundary_stabilizers(flows[-2], flows[-1], coordinates_by_index)
         )
+    # Note that the matched detectors do not have a time coordinate yet. Because
+    # all the matched detectors belong to the last flow, the time coordinate can
+    # just be "0". Simply add that to all detectors.
+    matched_detectors = [d.with_time_coordinate(0) for d in matched_detectors]
 
     # Get the detectors as Detector instances instead of the
     # `tqec.circuit.detectors.MatchedDetector` class.
