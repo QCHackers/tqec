@@ -15,7 +15,7 @@ from tqec.compile.specs.base import (
 )
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
