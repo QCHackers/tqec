@@ -60,6 +60,9 @@ class CompiledGraph:
         Args:
             k: The scale factor of the templates.
             noise_models: The noise models to be applied to the circuit.
+            manhattan_radius: the radius considered to compute detectors.
+                Detectors are not computed and added to the circuit if this
+                argument is negative.
 
         Returns:
             A compiled stim circuit.
@@ -95,13 +98,14 @@ class CompiledGraph:
         flattened_plaquettes: list[Plaquettes] = sum(
             (layout.layers for layout in self.layout_slices), start=[]
         )
-        self._inplace_add_detectors_to_circuits(
-            flattened_circuits,
-            flattened_templates,
-            flattened_plaquettes,
-            k,
-            manhattan_radius,
-        )
+        if manhattan_radius >= 0:
+            self._inplace_add_detectors_to_circuits(
+                flattened_circuits,
+                flattened_templates,
+                flattened_plaquettes,
+                k,
+                manhattan_radius,
+            )
         # Assemble the circuits.
         circuit = global_qubit_map.to_circuit()
         for circ, plaq in zip(flattened_circuits[:-1], flattened_plaquettes[:-1]):
