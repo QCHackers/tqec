@@ -1,12 +1,17 @@
-from collections import defaultdict
 from functools import partial
 
-from tqec.compile.specs.base import CubeSpec, SpecRule
-from tqec.compile.specs.library._utils import default_spec_rule
+from tqec.compile.specs.base import BlockBuilder, SubstitutionBuilder
+from tqec.compile.specs.library._utils import (
+    default_compiled_block_builder,
+    default_substitution_builder,
+)
 from tqec.plaquette.library.zxxz import make_zxxz_surface_code_plaquette
 
-ZXXZ_SPEC_RULES: defaultdict[CubeSpec, SpecRule] = defaultdict(
-    lambda: partial(
-        default_spec_rule, plaquette_builder=make_zxxz_surface_code_plaquette
-    )
+
+ZXXZ_BLOCK_BUILDER: BlockBuilder = partial(
+    default_compiled_block_builder, plaquette_builder=make_zxxz_surface_code_plaquette
+)
+
+ZXXZ_SUBSTITUTION_BUILDER: SubstitutionBuilder = partial(
+    default_substitution_builder, plaquette_builder=make_zxxz_surface_code_plaquette
 )

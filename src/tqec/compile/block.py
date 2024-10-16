@@ -34,26 +34,30 @@ class CompiledBlock:
     def num_layers(self) -> int:
         return len(self.layers)
 
-    def with_updated_layer(
+    def update_layers(
         self,
-        plaquettes_to_update: Mapping[int, Plaquette],
-        layer_to_update: int,
-    ) -> CompiledBlock:
-        """Returns a new `CompiledBlock` with the specified layer updated.
+        substitution: Mapping[int, Plaquettes],
+    ) -> None:
+        """Update the plaquettes in a specific layer of the block.
+
+        Warning: This method modifies the `layers` attribute in place.
 
         Args:
-            plaquettes_to_update: a dictionary of plaquettes to update in the layer.
-            layer_to_update: the index of the layer to update.
+            substitution: a mapping from the layer index to the plaquettes that should
+                be used to update the layer. The index can be negative, which means the
+                layer is counted from the end of the layers list.
         """
-        new_plaquette_layers = []
-        for i, plaquettes in enumerate(self.layers):
-            if i == layer_to_update:
-                new_plaquette_layers.append(
-                    plaquettes.with_updated_plaquettes(plaquettes_to_update)
+        for layer, plaquettes_to_update in substitution.items():
+            if layer < 0:
+                layer = self.num_layers + layer
+            if layer not in range(self.num_layers):
+                raise TQECException(
+                    f"Layer index {layer} is out of range for the block with "
+                    f"{self.num_layers} layers."
                 )
-            else:
-                new_plaquette_layers.append(plaquettes)
-        return CompiledBlock(self.template, new_plaquette_layers)
+            self.layers[layer] = self.layers[layer].with_updated_plaquettes(
+                plaquettes_to_update.collection
+            )
 
 
 class BlockLayout:

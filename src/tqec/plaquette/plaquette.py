@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Literal, Mapping, Protocol
+from typing import Mapping
 
 from typing_extensions import override
 
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
-from tqec.plaquette.enums import MeasurementBasis, PlaquetteOrientation, ResetBasis
+from tqec.plaquette.enums import PlaquetteOrientation
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.position import Position2D
@@ -58,8 +58,18 @@ class Plaquette:
     def origin(self) -> Position2D:
         return Position2D(0, 0)
 
+    def __eq__(self, rhs: object) -> bool:
+        return (
+            isinstance(rhs, Plaquette)
+            and self.qubits == rhs.qubits
+            and self.circuit == rhs.circuit
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.qubits, str(self.circuit.get_circuit())))
+
     def project_on_boundary(
-        self, plaquette_orientation: PlaquetteOrientation
+        self, projected_orientation: PlaquetteOrientation
     ) -> Plaquette:
         """Project the plaquette on boundary and return a new plaquette with the
         remaining qubits and circuit.
@@ -68,7 +78,7 @@ class Plaquette:
         plaquette.
 
         Args:
-            plaquette_orientation: the orientation of the plaquette after the
+            projected_orientation: the orientation of the plaquette after the
                 projection.
 
         Returns:
@@ -79,7 +89,7 @@ class Plaquette:
             removed.
         """
         kept_data_qubits = self.qubits.get_qubits_on_side(
-            plaquette_orientation.to_plaquette_side()
+            projected_orientation.to_plaquette_side()
         )
         new_plaquette_qubits = PlaquetteQubits(
             kept_data_qubits, self.qubits.syndrome_qubits
@@ -90,16 +100,6 @@ class Plaquette:
         return Plaquette(
             new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
         )
-
-    def __eq__(self, rhs: object) -> bool:
-        return (
-            isinstance(rhs, Plaquette)
-            and self.qubits == rhs.qubits
-            and self.circuit == rhs.circuit
-        )
-
-    def __hash__(self) -> int:
-        return hash((self.qubits, str(self.circuit.get_circuit())))
 
 
 @dataclass(frozen=True)
@@ -174,15 +174,3 @@ class RepeatedPlaquettes(Plaquettes):
 
     def __hash__(self) -> int:
         return hash((self.repetitions, super().__hash__()))
-
-
-class PlaquetteBuilder(Protocol):
-    """Protocol for functions building a `Plaquette`."""
-
-    def __call__(
-        self,
-        basis: Literal["X", "Z"],
-        data_qubits_initialization: ResetBasis | None = None,
-        data_qubits_measurement: MeasurementBasis | None = None,
-        x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
-    ) -> Plaquette: ...
