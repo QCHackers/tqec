@@ -5,46 +5,14 @@ import stim
 
 from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph, compile_block_graph
-from tqec.compile.specs.library.css import CSS_SPEC_RULES
-from tqec.compile.substitute import DEFAULT_SUBSTITUTION_RULES
-from tqec.computation.block_graph import BlockGraph
-from tqec.computation.zx_graph import ZXGraph
+from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.noise_models import NoiseModel
-from tqec.position import Position3D
+from tqec.gallery import logical_cnot_block_graph
 
 BENCHMARK_FOLDER = Path(__file__).resolve().parent
 TQEC_FOLDER = BENCHMARK_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
 CNOT_DAE_FILE = ASSETS_FOLDER / "logical_cnot.dae"
-
-
-def create_block_graph(from_scratch: bool = False) -> BlockGraph:
-    if not from_scratch:
-        return BlockGraph.from_dae_file(CNOT_DAE_FILE)
-
-    cnot_zx = ZXGraph("Logical CNOT ZX Graph")
-
-    cnot_zx.add_z_node(Position3D(0, 0, 0))
-    cnot_zx.add_x_node(Position3D(0, 0, 1))
-    cnot_zx.add_z_node(Position3D(0, 0, 2))
-    cnot_zx.add_z_node(Position3D(0, 0, 3))
-    cnot_zx.add_x_node(Position3D(0, 1, 1))
-    cnot_zx.add_z_node(Position3D(0, 1, 2))
-    cnot_zx.add_z_node(Position3D(1, 1, 0))
-    cnot_zx.add_z_node(Position3D(1, 1, 1))
-    cnot_zx.add_z_node(Position3D(1, 1, 2))
-    cnot_zx.add_z_node(Position3D(1, 1, 3))
-
-    cnot_zx.add_edge(Position3D(0, 0, 0), Position3D(0, 0, 1))
-    cnot_zx.add_edge(Position3D(0, 0, 1), Position3D(0, 0, 2))
-    cnot_zx.add_edge(Position3D(0, 0, 2), Position3D(0, 0, 3))
-    cnot_zx.add_edge(Position3D(0, 0, 1), Position3D(0, 1, 1))
-    cnot_zx.add_edge(Position3D(0, 1, 1), Position3D(0, 1, 2))
-    cnot_zx.add_edge(Position3D(0, 1, 2), Position3D(1, 1, 2))
-    cnot_zx.add_edge(Position3D(1, 1, 0), Position3D(1, 1, 1))
-    cnot_zx.add_edge(Position3D(1, 1, 1), Position3D(1, 1, 2))
-    cnot_zx.add_edge(Position3D(1, 1, 2), Position3D(1, 1, 3))
-    return cnot_zx.to_block_graph("Logical CNOT Block Graph")
 
 
 def generate_stim_circuit(
@@ -59,16 +27,16 @@ def generate_stim_circuit(
 
 def generate_cnot_circuits(*ks: int):
     # 1 Create `BlockGraph` representing the computation
-    block_graph = create_block_graph(from_scratch=False)
+    block_graph = logical_cnot_block_graph()
 
     # 2. (Optional) Find and choose the logical observables
-    observables = block_graph.get_abstract_observables()
+    observables, _ = block_graph.get_abstract_observables()
 
     # 3. Compile the `BlockGraph`
     compiled_graph = compile_block_graph(
         block_graph,
-        spec_rules=CSS_SPEC_RULES,
-        substitute_rules=DEFAULT_SUBSTITUTION_RULES,
+        block_builder=CSS_BLOCK_BUILDER,
+        substitution_builder=CSS_SUBSTITUTION_BUILDER,
         observables=[observables[1]],
     )
 

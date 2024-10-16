@@ -8,7 +8,7 @@ from typing_extensions import override
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D, round_or_fail
-from tqec.templates.enums import TemplateOrientation, TemplateSide
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.subtemplates import (
     UniqueSubTemplates,
     get_spatially_distinct_subtemplates,
@@ -104,18 +104,6 @@ class Template(ABC):
             a displacement of the default increments in the x and y directions.
         """
         return self._default_increments
-
-    @abstractmethod
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        """Get the indices of plaquettes that are located on the provided
-        sides.
-
-        Args:
-            sides: the sides to recover plaquettes from.
-
-        Returns:
-            a non-ordered list of plaquette numbers.
-        """
 
     def get_spatially_distinct_subtemplates(
         self, k: int, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True

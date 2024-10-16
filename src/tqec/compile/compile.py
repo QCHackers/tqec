@@ -1,6 +1,7 @@
 import itertools
+import warnings
 from dataclasses import dataclass
-from typing import Literal, Mapping, Sequence
+from typing import Literal, Sequence
 
 import stim
 
@@ -11,15 +12,15 @@ from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.detectors.compute import compute_detectors_for_fixed_radius
 from tqec.compile.detectors.detector import Detector
 from tqec.compile.observables import inplace_add_observables
-from tqec.compile.specs import CubeSpec, SpecRule
-from tqec.compile.specs.library.css import CSS_SPEC_RULES
-from tqec.compile.substitute import (
-    DEFAULT_SUBSTITUTION_RULES,
-    SubstitutionKey,
-    SubstitutionRule,
+from tqec.compile.specs.base import (
+    BlockBuilder,
+    CubeSpec,
+    PipeSpec,
+    SubstitutionBuilder,
 )
+from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
 from tqec.position import Direction3D, Position3D
@@ -50,8 +51,10 @@ class CompiledGraph:
                 "The compiled graph should have at least one time slice "
                 "but got an empty layout_slices."
             )
+        # Use warning instead of exception because a qec circuit without observable
+        # may still be useful, e.g. do statistics on the detection events.
         if len(self.observables) == 0:
-            raise TQECException("The compiled graph includes no observable.")
+            warnings.warn("The compiled graph includes no observable.", TQECWarning)
 
     def generate_stim_circuit(
         self, k: int, noise_model: NoiseModel | None = None, manhattan_radius: int = 2
@@ -203,25 +206,20 @@ class CompiledGraph:
 
 def compile_block_graph(
     block_graph: BlockGraph,
-    spec_rules: Mapping[CubeSpec, SpecRule] = CSS_SPEC_RULES,
-    substitute_rules: Mapping[
-        SubstitutionKey, SubstitutionRule
-    ] = DEFAULT_SUBSTITUTION_RULES,
+    block_builder: BlockBuilder = CSS_BLOCK_BUILDER,
+    substitution_builder: SubstitutionBuilder = CSS_SUBSTITUTION_BUILDER,
     observables: list[AbstractObservable] | Literal["auto"] | None = "auto",
 ) -> CompiledGraph:
     """Compile a block graph.
 
     Args:
         block_graph: The block graph to compile.
-        spec_rules: Custom specification rules for the cube specs. This is a dict
-            mapping the cube specs to the corresponding spec rules. Spec rules
-            determine how to compile a cube spec into a compiled block, i.e
-            which template to use and the specific plaquettes to use in the
-            template. The default spec rules are the CSS surface code spec rules.
-        substitute_rules: Custom substitution rules for the compiled blocks. This
-            is a dict mapping the substitution keys to the corresponding substitution
-            rules. Substitution rules determine how to substitute plaquettes in
-            the two compiled blocks connected by a pipe.
+        block_builder: A callable that specifies how to build the `CompiledBlock` from
+            the specified `CubeSpecs`. Defaults to the block builder for the css type
+            surface code.
+        substitution_builder: A callable that specifies how to build the substitution
+            plaquettes from the specified `PipeSpec`. Defaults to the substitution
+            builder for the css type surface code.
         observables: The abstract observables to be included in the compiled
             circuit.
             If set to "auto", the observables will be automatically determined from
@@ -248,8 +246,7 @@ def compile_block_graph(
     blocks: dict[Position3D, CompiledBlock] = {}
     for cube in block_graph.cubes:
         spec = cube_specs[cube]
-        spec_rule = spec_rules[spec]
-        blocks[cube.position] = spec_rule(spec)
+        blocks[cube.position] = block_builder(spec)
 
     # 2. Apply the substitution rules to the compiled blocks inplace.
     pipes = block_graph.pipes
@@ -261,9 +258,10 @@ def compile_block_graph(
     # substitution rules.
     for pipe in time_pipes + space_pipes:
         pos1, pos2 = pipe.u.position, pipe.v.position
-        key = SubstitutionKey(cube_specs[pipe.u], cube_specs[pipe.v], pipe.pipe_type)
-        rule = substitute_rules[key]
-        blocks[pos1], blocks[pos2] = rule(key, blocks[pos1], blocks[pos2])
+        key = PipeSpec(cube_specs[pipe.u], cube_specs[pipe.v], pipe.pipe_type)
+        substitution = substitution_builder(key)
+        blocks[pos1].update_layers(substitution.src)
+        blocks[pos2].update_layers(substitution.dst)
 
     # 3. Collect by time and create the blocks layout.
     min_z = min(pos.z for pos in blocks.keys())
@@ -278,7 +276,7 @@ def compile_block_graph(
     if observables is None:
         obs_included = []
     elif observables == "auto":
-        obs_included = block_graph.get_abstract_observables()
+        obs_included, _ = block_graph.get_abstract_observables()
     else:
         obs_included = observables
 

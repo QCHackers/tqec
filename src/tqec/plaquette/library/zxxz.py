@@ -6,18 +6,20 @@ from typing import Literal
 
 import stim
 
+from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.plaquette.enums import MeasurementBasis, ResetBasis
+from tqec.plaquette.enums import MeasurementBasis, PlaquetteSide, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 
 
 def make_zxxz_surface_code_plaquette(
     basis: Literal["X", "Z"],
-    data_qubits_initialization: ResetBasis | None = None,
-    data_qubits_measurement: MeasurementBasis | None = None,
+    data_initialization: ResetBasis | None = None,
+    data_measurement: MeasurementBasis | None = None,
     x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "VERTICAL",
+    init_meas_only_on_side: PlaquetteSide | None = None,
 ) -> Plaquette:
     """Create a ZXXZ-type surface code plaquette. The circuit is adapted to
     superconducting qubits architecture s.t. all CNOTs are compiled to the
@@ -25,79 +27,123 @@ def make_zxxz_surface_code_plaquette(
     are supported.
 
     Args:
-        basis: The basis of the plaquette, either "X" or "Z".
-        data_qubits_initialization: Initialization basis for the data qubits.
-            If None, no initialization is performed.
-        data_qubits_measurement: Measurement basis for the data qubits.
-            If None, no measurement is performed.
-        x_boundary_orientation: The orientation of the X boundary of the surface
-            code block. Either "HORIZONTAL" or "VERTICAL". This determines the
-            CNOT order in the plaquette together with the basis to prevent hook
-            error from decreasing the code distance. Default is "HORIZONTAL".
+        basis: the basis of the plaquette.
+        data_initialization: the logical basis for data initialization.
+        data_measurement: the logical basis for data measurement.
+        x_boundary_orientation: the orientation of the X boundary.
+        init_meas_only_on_side: the side for data initialization and measurement.
     """
-    qubits = SquarePlaquetteQubits()
-    sq = 0
-    # data qubits ordered as "Z" shape
-    dqs = list(range(1, 5))
-    i2q = QubitMap(
-        {0: qubits.syndrome_qubits[0]}
-        | {i + 1: q for i, q in enumerate(qubits.data_qubits)}
-    )
+    builder = _ZXXZPlaquetteBuilder(basis, x_boundary_orientation)
+    if data_initialization is not None:
+        builder.add_data_init_or_meas(data_initialization, init_meas_only_on_side)
+    if data_measurement is not None:
+        builder.add_data_init_or_meas(data_measurement, init_meas_only_on_side)
+    return builder.build()
 
-    circuit = stim.Circuit()
-    # 1. Initialization
-    circuit.append("R", [sq], [])
-    if data_qubits_initialization:
-        circuit.append("R", dqs, [])
-    circuit.append("TICK", [], [])
-    circuit.append("H", [sq], [])
-    if data_qubits_initialization:
-        match basis, data_qubits_initialization:
-            case ("Z", ResetBasis.Z) | ("X", ResetBasis.X):
-                circuit.append("H", [dqs[1], dqs[2]], [])
+
+class _ZXXZPlaquetteBuilder:
+    MERGEABLE_INSTRUCTIONS = frozenset(("H", "R", "RZ", "M", "MZ"))
+
+    def __init__(
+        self,
+        basis: Literal["X", "Z"],
+        x_boundary_orientation: Literal["HORIZONTAL", "VERTICAL"] = "HORIZONTAL",
+    ) -> None:
+        self._basis: Literal["X", "Z"] = basis
+        self._x_boundary_orientation = x_boundary_orientation
+        self._moments: list[Moment] = self._build_memory_moments()
+        self._qubits = SquarePlaquetteQubits()
+        self._qubit_map = QubitMap(
+            {0: self._qubits.syndrome_qubits[0]}
+            | {i + 1: q for i, q in enumerate(self._qubits.data_qubits)}
+        )
+
+    def build(self) -> Plaquette:
+        return Plaquette(
+            self._qubits,
+            ScheduledCircuit(
+                self._moments,
+                schedule=0,
+                qubit_map=self._qubit_map,
+            ),
+            mergeable_instructions=self.MERGEABLE_INSTRUCTIONS,
+        )
+
+    def add_data_init_or_meas(
+        self,
+        basis: ResetBasis | MeasurementBasis,
+        only_on_side: PlaquetteSide | None = None,
+    ) -> None:
+        dqs_considered = self._get_data_qubits(only_on_side)
+        if isinstance(basis, ResetBasis):
+            self._moments[0].append("R", dqs_considered, [])
+            h_moment_idx = 1
+        else:
+            self._moments[-1].append("M", dqs_considered, [])
+            h_moment_idx = -2
+
+        basis_change_dqs = self._get_init_meas_basis_change_dqs(
+            basis.value, dqs_considered
+        )
+        # It's important to ignore the H gates on the data qubits that are not
+        # considered for initialization/measurement to avoid adding unneeded H.
+        h_cancel_out = self._moments[h_moment_idx].qubits_indices.intersection(
+            dqs_considered
+        )
+        h_targets = {0} | basis_change_dqs ^ h_cancel_out
+        self._moments[h_moment_idx] = Moment(
+            stim.Circuit(f"H {' '.join(map(str, h_targets))}")
+        )
+
+    def _build_memory_moments(self) -> list[Moment]:
+        basis_changes: list[int] = [0]
+        # when x boundary is horizontal, a moment of transversal H is applied
+        # to data qubits after/before the initialization/measurement to map
+        # the xzzx stabilizer to zxxz stabilizer and back
+        if self._x_boundary_orientation == "HORIZONTAL":
+            basis_changes.extend(range(1, 5))
+        H_FOR_BASIS_CHANGE = "H " + " ".join(map(str, basis_changes))
+        # adjust cz order to make the hook errors perpendicular to the boundary
+        match self._basis, self._x_boundary_orientation:
+            case ("X", "HORIZONTAL") | ("Z", "VERTICAL"):
+                cz_order = [1, 2, 3, 4]
             case _:
-                circuit.append("H", [dqs[0], dqs[3]], [])
-    circuit.append("TICK", [], [])
+                cz_order = [1, 3, 2, 4]
 
-    # 2. CZ interactions
-    # adjust cz order to make the hook errors perpendicular to the boundary
-    match basis, x_boundary_orientation:
-        case ("X", "HORIZONTAL") | ("Z", "VERTICAL"):
-            cz_order = [1, 3, 2, 4]
-        case _:
-            cz_order = [1, 2, 3, 4]
-
-    H_ON_ALL_DQS = "H " + " ".join(map(str, dqs))
-    circuit += stim.Circuit(f"""
-CZ {sq} {cz_order[0]}
+        H_ON_ALL_DQS = "H " + " ".join(map(str, range(1, 5)))
+        circuit = stim.Circuit(f"""
+R 0
+TICK
+{H_FOR_BASIS_CHANGE}
+TICK
+CZ 0 {cz_order[0]}
 TICK
 {H_ON_ALL_DQS}
 TICK
-CZ {sq} {cz_order[1]}
+CZ 0 {cz_order[1]}
 TICK
-CZ {sq} {cz_order[2]}
+CZ 0 {cz_order[2]}
 TICK
 {H_ON_ALL_DQS}
 TICK
-CZ {sq} {cz_order[3]}
+CZ 0 {cz_order[3]}
 TICK
-H {sq}
+{H_FOR_BASIS_CHANGE}
+TICK
+M 0
 """)
+        return list(iter_stim_circuit_without_repeat_by_moments(circuit))
 
-    # 3. Measurement
-    if data_qubits_measurement:
-        match basis, data_qubits_measurement:
-            case ("Z", MeasurementBasis.Z) | ("X", MeasurementBasis.X):
-                circuit.append("H", [dqs[1], dqs[2]], [])
-            case _:
-                circuit.append("H", [dqs[0], dqs[3]], [])
-    circuit.append("TICK", [], [])
-    circuit.append("M", [sq], [])
-    if data_qubits_measurement:
-        circuit.append("M", dqs, [])
+    def _get_data_qubits(self, only_on_side: PlaquetteSide | None = None) -> list[int]:
+        if only_on_side is None:
+            return [1, 2, 3, 4]
+        target_qubits = self._qubits.get_qubits_on_side(only_on_side)
+        return sorted(self._qubit_map.q2i[q] for q in target_qubits)
 
-    return Plaquette(
-        qubits,
-        ScheduledCircuit.from_circuit(circuit, qubit_map=i2q),
-        mergeable_instructions=frozenset(("H", "R", "RZ", "M", "MZ")),
-    )
+    def _get_init_meas_basis_change_dqs(
+        self, init_or_meas_basis: Literal["X", "Z"], dqs_considered: list[int]
+    ) -> set[int]:
+        x_is_vertical = self._x_boundary_orientation == "VERTICAL"
+        is_same_basis = self._basis == init_or_meas_basis
+        x_basis_dqs = {1, 4} if x_is_vertical ^ is_same_basis else {2, 3}
+        return x_basis_dqs.intersection(dqs_considered)

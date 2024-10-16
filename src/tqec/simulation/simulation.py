@@ -1,15 +1,11 @@
 import multiprocessing
-from typing import Callable, Iterable, Iterator, Mapping, Sequence
+from typing import Callable, Iterable, Iterator, Sequence
 
 import sinter
 
 from tqec.compile.compile import compile_block_graph
-from tqec.compile.specs.base import CubeSpec, SpecRule
-from tqec.compile.substitute import (
-    DEFAULT_SUBSTITUTION_RULES,
-    SubstitutionKey,
-    SubstitutionRule,
-)
+from tqec.compile.specs.base import BlockBuilder, SubstitutionBuilder
+from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.noise_models.noise_model import NoiseModel
 from tqec.simulation.generation import generate_sinter_tasks
@@ -21,8 +17,8 @@ def start_simulation_using_sinter(
     ps: Sequence[float],
     noise_model_factory: Callable[[float], NoiseModel],
     manhattan_radius: int,
-    cube_specifications: Mapping[CubeSpec, SpecRule],
-    substitution_rules: Mapping[SubstitutionKey, SubstitutionRule] | None = None,
+    block_builder: BlockBuilder = CSS_BLOCK_BUILDER,
+    substitution_builder: SubstitutionBuilder = CSS_SUBSTITUTION_BUILDER,
     observables: list[AbstractObservable] | None = None,
     num_workers: int = multiprocessing.cpu_count(),
     progress_callback: Callable[[sinter.Progress], None] | None = None,
@@ -61,10 +57,12 @@ def start_simulation_using_sinter(
             Default to 2, which is sufficient for regular surface code. If
             negative, detectors are not computed automatically and are not added
             to the generated circuits.
-        cube_specification: a description of the different cubes that are
-            used by the provided `block_graph`.
-        substitution_rules: a description of the rules that should be applied
-            to connect two cubes with a pipe.
+        block_builder: A callable that specifies how to build the `CompiledBlock` from
+            the specified `CubeSpecs`. Defaults to the block builder for the css type
+            surface code.
+        substitution_builder: A callable that specifies how to build the substitution
+            plaquettes from the specified `PipeSpec`. Defaults to the substitution
+            builder for the css type surface code.
         observables: a list of observables to generate statistics for. If
             `None`, all the observables of the provided computation are used.
         num_workers: The number of worker processes to use.
@@ -93,9 +91,7 @@ def start_simulation_using_sinter(
         `list[sinter.TaskStats]`) per provided observable in `observables`.
     """
     if observables is None:
-        observables = block_graph.get_abstract_observables()
-    if substitution_rules is None:
-        substitution_rules = DEFAULT_SUBSTITUTION_RULES
+        observables, _ = block_graph.get_abstract_observables()
 
     for i, observable in enumerate(observables):
         if print_progress:
@@ -105,8 +101,8 @@ def start_simulation_using_sinter(
             )
         compiled_graph = compile_block_graph(
             block_graph,
-            spec_rules=cube_specifications,
-            substitute_rules=substitution_rules,
+            block_builder,
+            substitution_builder,
             observables=[observable],
         )
         stats = sinter.collect(

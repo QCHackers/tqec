@@ -32,8 +32,8 @@ def _expected_circuit() -> stim.Circuit:
     R 0
     TICK
     TICK
-    TICK
     CX 1 0
+    TICK
     TICK
     CX 2 0
     TICK

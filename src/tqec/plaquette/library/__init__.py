@@ -9,5 +9,6 @@ from .empty import (
     empty_square_plaquette,
 )
 
+from .builder import PlaquetteBuilder
 from .css import make_css_surface_code_plaquette
 from .zxxz import make_zxxz_surface_code_plaquette

@@ -9,7 +9,6 @@ from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.enums import TemplateSide
 
 
 class LayoutTemplate(RectangularTemplate):
@@ -106,19 +105,6 @@ class LayoutTemplate(RectangularTemplate):
         return sum(
             template.expected_plaquettes_number for template in self._layout.values()
         )
-
-    @override
-    def get_plaquette_indices_on_sides(self, _: list[TemplateSide]) -> list[int]:
-        """Get the indices of plaquettes that are located on the provided
-        sides.
-
-        Args:
-            sides: the sides to recover plaquettes from.
-
-        Returns:
-            a non-ordered list of plaquette numbers.
-        """
-        raise NotImplementedError()
 
     @override
     def instantiate(
