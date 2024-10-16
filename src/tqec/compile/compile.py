@@ -1,6 +1,5 @@
 import itertools
 from dataclasses import dataclass
-from time import perf_counter
 from typing import Literal, Mapping, Sequence
 
 import stim
@@ -10,7 +9,6 @@ from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.detectors.compute import compute_detectors_for_fixed_radius
-from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs import CubeSpec, SpecRule
 from tqec.compile.specs.library.css import CSS_SPEC_RULES
@@ -23,7 +21,7 @@ from tqec.computation.block_graph import AbstractObservable, BlockGraph
 from tqec.exceptions import TQECException
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
-from tqec.position import Direction3D, Displacement, Position3D
+from tqec.position import Direction3D, Position3D
 from tqec.scale import round_or_fail
 from tqec.templates.base import Template
 from tqec.templates.layout import LayoutTemplate
