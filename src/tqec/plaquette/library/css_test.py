@@ -120,13 +120,13 @@ QUBIT_COORDS(-1, 1) 3
 QUBIT_COORDS(1, 1) 4
 R 0 1 2 3 4
 TICK
-CX 1 0 
-TICK 
-CX 2 0 
-TICK 
-CX 3 0 
-TICK 
-CX 4 0 
+CX 1 0
+TICK
+CX 2 0
+TICK
+CX 3 0
+TICK
+CX 4 0
 TICK
 M 0 1 2 3 4
 """)
@@ -245,7 +245,11 @@ MX 0
 
 
 def test_css_surface_code_init_meas_only() -> None:
-    plaquette = make_css_surface_code_plaquette("X", data_initialization=ResetBasis.X, init_meas_only_on_side=PlaquetteSide.RIGHT)
+    plaquette = make_css_surface_code_plaquette(
+        "X",
+        data_initialization=ResetBasis.X,
+        init_meas_only_on_side=PlaquetteSide.RIGHT,
+    )
     circuit = plaquette.circuit.get_circuit()
     assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
@@ -265,7 +269,11 @@ CX 0 4
 TICK
 MX 0
 """)
-    plaquette = make_css_surface_code_plaquette("Z", data_measurement=MeasurementBasis.Z, init_meas_only_on_side=PlaquetteSide.UP)
+    plaquette = make_css_surface_code_plaquette(
+        "Z",
+        data_measurement=MeasurementBasis.Z,
+        init_meas_only_on_side=PlaquetteSide.UP,
+    )
     circuit = plaquette.circuit.get_circuit()
     assert circuit == stim.Circuit("""
 QUBIT_COORDS(0, 0) 0
