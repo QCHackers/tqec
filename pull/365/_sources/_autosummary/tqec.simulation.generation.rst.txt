@@ -1,0 +1,31 @@
+tqec.simulation.generation
+==========================
+
+.. automodule:: tqec.simulation.generation
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      generate_sinter_tasks
+      generate_stim_circuits_with_detectors
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
