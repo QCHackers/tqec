@@ -47,28 +47,6 @@ class MatchedDetector:
         )
 
 
-def _get_detectors_with_time_coordinate(
-    flows: list[FragmentFlows | FragmentLoopFlows],
-    matched_detectors: list[list[MatchedDetector]],
-) -> list[list[MatchedDetector]]:
-    updated_detectors: list[list[MatchedDetector]] = []
-    number_of_fragment_flows_seen = 0
-    for flow, detectors in zip(flows, matched_detectors):
-        if isinstance(flow, FragmentFlows):
-            time_coordinate = number_of_fragment_flows_seen
-            number_of_fragment_flows_seen += 1
-        else:
-            # We insert detectors at the end of the last flow, so we need to compute
-            # the number of FragmentFlows instances before it.
-            time_coordinate = (
-                sum(isinstance(f, FragmentFlows) for f in flow.fragment_flows) - 1
-            )
-        updated_detectors.append(
-            [d.with_time_coordinate(time_coordinate) for d in detectors]
-        )
-    return updated_detectors
-
-
 def match_detectors_from_flows_shallow(
     flows: list[FragmentFlows | FragmentLoopFlows],
     qubit_coordinates: dict[int, tuple[float, ...]],
@@ -113,7 +91,7 @@ def match_detectors_from_flows_shallow(
             match_boundary_stabilizers(flows[i - 1], flows[i], qubit_coordinates)
         )
 
-    return _get_detectors_with_time_coordinate(flows, detectors)
+    return detectors
 
 
 def match_detectors_within_fragment(
