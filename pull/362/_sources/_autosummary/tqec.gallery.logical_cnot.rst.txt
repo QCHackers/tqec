@@ -15,6 +15,7 @@ tqec.gallery.logical\_cnot
       :toctree:
    
       logical_cnot_block_graph
+      logical_cnot_zx_graph
    
    
 

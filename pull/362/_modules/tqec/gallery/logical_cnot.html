@@ -86,15 +86,9 @@
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span>
 
 
-<div class="viewcode-block" id="logical_cnot_block_graph">
-<a class="viewcode-back" href="../../../_autosummary/tqec.gallery.logical_cnot.logical_cnot_block_graph.html#tqec.gallery.logical_cnot.logical_cnot_block_graph">[docs]</a>
-<span class="k">def</span> <span class="nf">logical_cnot_block_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
-    <span class="n">logical_cnot_zx</span> <span class="o">=</span> <span class="n">_create_logical_cnot_zx_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">logical_cnot_zx</span><span class="o">.</span><span class="n">to_block_graph</span><span class="p">(</span><span class="n">logical_cnot_zx</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
-
-
-
-<span class="k">def</span> <span class="nf">_create_logical_cnot_zx_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXGraph</span><span class="p">:</span>
+<div class="viewcode-block" id="logical_cnot_zx_graph">
+<a class="viewcode-back" href="../../../_autosummary/tqec.gallery.logical_cnot.logical_cnot_zx_graph.html#tqec.gallery.logical_cnot.logical_cnot_zx_graph">[docs]</a>
+<span class="k">def</span> <span class="nf">logical_cnot_zx_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXGraph</span><span class="p">:</span>
     <span class="n">basis_str</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span> <span class="k">if</span> <span class="n">support_z_basis_observables</span> <span class="k">else</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">cnot_zx</span> <span class="o">=</span> <span class="n">ZXGraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logical CNOT in </span><span class="si">{</span><span class="n">basis_str</span><span class="si">}</span><span class="s2"> basis&quot;</span><span class="p">)</span>
 
@@ -125,7 +119,16 @@
     <span class="n">cnot_zx</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">cnot_zx</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">cnot_zx</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Position3D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">cnot_zx</span>
+    <span class="k">return</span> <span class="n">cnot_zx</span></div>
+
+
+
+<div class="viewcode-block" id="logical_cnot_block_graph">
+<a class="viewcode-back" href="../../../_autosummary/tqec.gallery.logical_cnot.logical_cnot_block_graph.html#tqec.gallery.logical_cnot.logical_cnot_block_graph">[docs]</a>
+<span class="k">def</span> <span class="nf">logical_cnot_block_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
+    <span class="n">logical_cnot_zx</span> <span class="o">=</span> <span class="n">logical_cnot_zx_graph</span><span class="p">(</span><span class="n">support_z_basis_observables</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logical_cnot_zx</span><span class="o">.</span><span class="n">to_block_graph</span><span class="p">(</span><span class="n">logical_cnot_zx</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
