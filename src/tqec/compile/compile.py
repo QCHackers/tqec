@@ -47,7 +47,7 @@ class CompiledGraph:
         # Use warning instead of exception because a qec circuit without observable
         # may still be useful, e.g. do statistics on the detection events.
         if len(self.observables) == 0:
-            warnings.warn("The compiled graph includes no observable.")
+            warnings.warn("The compiled graph includes no observable.", TQECWarning)
 
     def generate_stim_circuit(
         self,
