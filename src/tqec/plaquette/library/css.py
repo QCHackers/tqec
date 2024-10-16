@@ -25,9 +25,9 @@ def make_css_surface_code_plaquette(
 
     Args:
         basis: the basis of the plaquette.
-        x_boundary_orientation: the orientation of the X boundary.
         data_initialization: the logical basis for data initialization.
         data_measurement: the logical basis for data measurement.
+        x_boundary_orientation: the orientation of the X boundary.
         init_meas_only_on_side: the side for data initialization and measurement.
 
     Returns:

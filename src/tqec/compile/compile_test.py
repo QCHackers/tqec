@@ -54,7 +54,7 @@ def test_compile_single_block_memory(spec: str, cube_type: CubeType, k: int) -> 
         (1,),
     ),
 )
-def test_compile_two_same_blocks_connected_int_time(
+def test_compile_two_same_blocks_connected_in_time(
     spec: str, cube_type: CubeType, k: int
 ) -> None:
     d = 2 * k + 1
