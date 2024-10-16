@@ -54,6 +54,14 @@ def _build_plaquette_for_different_basis(
     data_meas: bool = False,
     init_meas_only_on_side: PlaquetteSide | None = None,
 ) -> tuple[Plaquette, Plaquette]:
+    """Build the two type of plaquettes for the bulk of surface code.
+
+    The two plaquettes are in different basis(X/Z) and form the
+    checkerboard pattern of the surface code. The two plaquettes are
+    returned in a tuple. By convention, the first one of the returned
+    tuple is the plaquette at the left top corner of the square bulk of
+    surface code.
+    """
     b1, b2 = ("X", "Z") if x_boundary_orientation == "HORIZONTAL" else ("Z", "X")
     b1 = cast(Literal["X", "Z"], b1)
     b2 = cast(Literal["X", "Z"], b2)
@@ -79,6 +87,10 @@ def _build_plaquettes_for_rotated_surface_code(
     data_meas: bool = False,
     repetitions: LinearFunction | None = None,
 ) -> Plaquettes:
+    """Build the plaquettes for a rotated surface code.
+
+    The plaquettes can be fit into the `QubitTemplate` by the corresponding indices.
+    """
     p1, p2 = _build_plaquette_for_different_basis(
         builder,
         x_boundary_orientation,
@@ -110,6 +122,7 @@ def _build_regular_block(
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
     repetitions: LinearFunction = _DEFAULT_BLOCK_REPETITIONS,
 ) -> CompiledBlock:
+    """Build a compiled block for a regular cube."""
     layers = [
         _build_plaquettes_for_rotated_surface_code(
             builder,
@@ -131,6 +144,7 @@ def _build_regular_block(
 def _build_substitution_in_time_direction(
     pipe_spec: PipeSpec, plaquette_builder: PlaquetteBuilder
 ) -> Substitution:
+    """Build a substitution for a pipe in the time direction."""
     # substitute the final layer of the src block
     src = {
         -1: _build_plaquettes_for_rotated_surface_code(
@@ -148,7 +162,7 @@ def _build_substitution_in_time_direction(
     return Substitution(src, dst)
 
 
-def _build_plaquettes_for_substitution(
+def _build_plaquettes_for_space_regular_pipe(
     builder: PlaquetteBuilder,
     substitution_side: PlaquetteSide,
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
@@ -158,6 +172,8 @@ def _build_plaquettes_for_substitution(
     data_meas: bool = False,
     repetitions: LinearFunction | None = None,
 ) -> Plaquettes:
+    """Build the plaquettes for a pipe connecting two regular cubes in
+    space."""
     p1, p2 = _build_plaquette_for_different_basis(
         builder,
         x_boundary_orientation,
@@ -206,6 +222,7 @@ def _build_substitution_in_space(
     pipe_spec: PipeSpec,
     plaquette_builder: PlaquetteBuilder,
 ) -> Substitution:
+    """Build a substitution for a pipe in space."""
     if pipe_spec.spec1.cube_type.is_regular and pipe_spec.spec2.cube_type.is_regular:
         return _build_substitution_in_space_with_regular_cubes(
             pipe_spec, plaquette_builder
@@ -217,6 +234,8 @@ def _build_substitution_in_space_with_regular_cubes(
     pipe_spec: PipeSpec,
     plaquette_builder: PlaquetteBuilder,
 ) -> Substitution:
+    """Build a substitution for a pipe in space connecting two regular
+    cubes."""
     pipe_type = pipe_spec.pipe_type
     temporal_basis = pipe_type.temporal_basis()
     # No hadamard: the two cubes have the same orientation
@@ -231,7 +250,7 @@ def _build_substitution_in_space_with_regular_cubes(
 
     def build_substitution(side: PlaquetteSide) -> dict[int, Plaquettes]:
         return {
-            i: _build_plaquettes_for_substitution(
+            i: _build_plaquettes_for_space_regular_pipe(
                 plaquette_builder,
                 side,
                 orientation,
