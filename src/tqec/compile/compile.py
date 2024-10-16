@@ -14,7 +14,7 @@ from tqec.compile.specs.base import (
 )
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
-from tqec.exceptions import TQECException
+from tqec.exceptions import TQECException, TQECWarning
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import RepeatedPlaquettes
 from tqec.position import Direction3D, Displacement, Position3D
@@ -43,8 +43,10 @@ class CompiledGraph:
                 "The compiled graph should have at least one time slice "
                 "but got an empty layout_slices."
             )
-        # if len(self.observables) == 0:
-        #     raise TQECException("The compiled graph includes no observable.")
+        # Use warning instead of exception because a qec circuit without observable
+        # may still be useful, e.g. do statistics on the detection events.
+        if len(self.observables) == 0:
+            raise TQECWarning("The compiled graph includes no observable.")
 
     def generate_stim_circuit(
         self,
