@@ -143,7 +143,6 @@ def test_get_spatially_distinct_3d_subtemplates(
         for j, subtemplate_index_arr in enumerate(row):
             if all(subti == 0 for subti in subtemplate_index_arr):
                 continue
-            print(subtemplate_index_arr)
             subt_index_tup = tuple(subtemplate_index_arr)
             subtemplate = unique_3d_subtemplates.subtemplates[subt_index_tup]
             ir_subarray = instantiation_reconstruction[

@@ -164,17 +164,11 @@ class CompiledGraph:
         # Now, iterate over all the pairs of circuits.
         for i in range(1, len(circuits)):
             current_circuit = circuits[i]
-            start = perf_counter()
             slice_detectors = compute_detectors_for_fixed_radius(
                 (templates[i - 1], templates[i]),
                 k,
                 (plaquettes[i - 1], plaquettes[i]),
                 manhattan_radius,
-            )
-            end = perf_counter()
-            print(
-                f"Found {len(slice_detectors)} detectors in {end-start:.2f} "
-                f"seconds for slice {i}."
             )
             mrecords_map = mrecords_map.with_added_measurements(
                 MeasurementRecordsMap.from_scheduled_circuit(current_circuit)
