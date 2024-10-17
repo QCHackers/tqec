@@ -4,6 +4,7 @@ import numpy
 import numpy.typing as npt
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import Fragment
 from tqec.circuit.detectors.match import (
@@ -71,7 +72,8 @@ def _matched_detectors_to_detectors(
                     f"but got {measurement.qubit}."
                 )
             measurements.append(measurement)
-        ret.append(Detector(frozenset(measurements), d.coords))
+        x, y, t = d.coords
+        ret.append(Detector(frozenset(measurements), StimCoordinates(x, y, t)))
     return ret
 
 

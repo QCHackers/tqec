@@ -3,5 +3,6 @@ numpy
 networkx
 stim
 pycollada
+typing-extensions
 pycryptosat!=5.11.23
 python-sat[cryptosat]

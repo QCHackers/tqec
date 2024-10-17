@@ -12,6 +12,7 @@ from collections import defaultdict
 
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.position import Displacement, Position2D
 
 
@@ -33,9 +34,10 @@ class GridQubit:
     def to_qubit_coords_instruction(self, index: int) -> stim.CircuitInstruction:
         """Return the `QUBIT_COORDS` `stim.CircuitInstruction` needed to define
         `self` in a `stim.Circuit`."""
-        # TODO: check ordering here.
         return stim.CircuitInstruction(
-            "QUBIT_COORDS", [index], [float(self.x), float(self.y)]
+            "QUBIT_COORDS",
+            [index],
+            StimCoordinates(self.x, self.y).to_stim_coordinates(),
         )
 
     def __add__(self, other: GridQubit | Position2D | Displacement) -> GridQubit:
