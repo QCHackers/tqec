@@ -26,7 +26,6 @@ tqec.compile.coordinates.StimCoordinates
    .. autosummary::
    
       ~StimCoordinates.non_spatial_coordinates
-      ~StimCoordinates.spatial
       ~StimCoordinates.t
       ~StimCoordinates.x
       ~StimCoordinates.y
