@@ -27,6 +27,11 @@ class Plaquette:
     X-axis pointing to the right and a Y-axis pointing down.
 
     Attributes:
+        name: a unique name for the plaquette. This field is used to compare
+            plaquettes efficiently (two :class:`Plaquette` instances are
+            considered equal if and only if their names are the same) as well as
+            computing a hash value for any plaquette instance. Finally, the name
+            is used to represent a :class:`Plaquette` instance as a string.
         qubits: qubits used by the plaquette circuit, given in the local
             plaquette coordinate system.
         circuit: scheduled quantum circuit implementing the computation that
