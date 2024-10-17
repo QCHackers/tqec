@@ -15,6 +15,7 @@ tqec.plaquette.plaquette.Plaquette
    
       ~Plaquette.__init__
       ~Plaquette.project_on_boundary
+      ~Plaquette.reliable_hash
    
    
 
