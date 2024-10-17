@@ -40,6 +40,7 @@ class Plaquette:
             `qubits`.
     """
 
+    name: str
     qubits: PlaquetteQubits
     circuit: ScheduledCircuit
     mergeable_instructions: frozenset[str] = field(default_factory=frozenset)
@@ -98,7 +99,10 @@ class Plaquette:
             new_plaquette_qubits.all_qubits
         )
         return Plaquette(
-            new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
+            f"{self.name}_{projected_orientation.name}",
+            new_plaquette_qubits,
+            new_scheduled_circuit,
+            self.mergeable_instructions,
         )
 
 
