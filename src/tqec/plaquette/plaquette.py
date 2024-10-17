@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Mapping
@@ -109,6 +110,9 @@ class Plaquette:
             self.mergeable_instructions,
         )
 
+    def reliable_hash(self) -> int:
+        return int(hashlib.md5(self.name.encode()).hexdigest(), 16)
+
 
 @dataclass(frozen=True)
 class Plaquettes:
@@ -152,7 +156,16 @@ class Plaquettes:
         return isinstance(rhs, Plaquettes) and self.collection == rhs.collection
 
     def __hash__(self) -> int:
-        return hash(self.collection)
+        """Implementation for Python's hash(). The returned value is reliable
+        across runs, interpreters and OSes."""
+        return hash(
+            tuple(
+                sorted(
+                    (index, plaquette.reliable_hash())
+                    for index, plaquette in self.collection.items()
+                )
+            )
+        )
 
 
 @dataclass(frozen=True)
