@@ -1,5 +1,6 @@
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import Fragment
 from tqec.circuit.detectors.match import (
@@ -11,7 +12,6 @@ from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement import Measurement, get_measurements_from_circuit
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit, relabel_circuits_qubit_indices
-from tqec.compile.coordinates import StimCoordinates
 from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.detectors.detector import Detector
 from tqec.exceptions import TQECException

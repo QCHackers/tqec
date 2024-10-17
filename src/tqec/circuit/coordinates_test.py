@@ -1,7 +1,4 @@
-import pytest
-
-from tqec.compile.coordinates import StimCoordinates
-from tqec.exceptions import TQECException
+from tqec.circuit.coordinates import StimCoordinates
 
 
 def test_creation() -> None:
