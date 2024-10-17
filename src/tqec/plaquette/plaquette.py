@@ -60,14 +60,10 @@ class Plaquette:
         return Position2D(0, 0)
 
     def __eq__(self, rhs: object) -> bool:
-        return (
-            isinstance(rhs, Plaquette)
-            and self.qubits == rhs.qubits
-            and self.circuit == rhs.circuit
-        )
+        return isinstance(rhs, Plaquette) and self.name == rhs.name
 
     def __hash__(self) -> int:
-        return hash((self.qubits, str(self.circuit.get_circuit())))
+        return hash(self.name)
 
     def project_on_boundary(
         self, projected_orientation: PlaquetteOrientation
