@@ -30,10 +30,6 @@ class StimCoordinates:
         return self.coordinates[1]
 
     @property
-    def spatial(self) -> Position2D:
-        return Position2D(round_or_fail(self.x), round_or_fail(self.y))
-
-    @property
     def t(self) -> float:
         return self.coordinates[2]
 
