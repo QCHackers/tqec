@@ -1,0 +1,30 @@
+tqec.plaquette.library.builder
+==============================
+
+.. automodule:: tqec.plaquette.library.builder
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      PlaquetteBuilder
+   
+   
+
+   
+   
+   
+
+
+

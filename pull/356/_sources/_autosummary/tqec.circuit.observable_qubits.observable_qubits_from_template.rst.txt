@@ -1,0 +1,6 @@
+tqec.circuit.observable\_qubits.observable\_qubits\_from\_template
+==================================================================
+
+.. currentmodule:: tqec.circuit.observable_qubits
+
+.. autofunction:: observable_qubits_from_template

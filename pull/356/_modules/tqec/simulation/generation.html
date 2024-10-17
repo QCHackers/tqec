@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.simulation.generation &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tqec.simulation.generation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tqec.simulation.generation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+
+<span class="kn">import</span> <span class="nn">sinter</span>
+<span class="kn">import</span> <span class="nn">stim</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.construction</span> <span class="kn">import</span> <span class="n">annotate_detectors_automatically</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.compile</span> <span class="kn">import</span> <span class="n">CompiledGraph</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_models.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
+
+
+<span class="k">def</span> <span class="nf">_parallel_func</span><span class="p">(</span>
+    <span class="n">kp</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">compiled_graph</span><span class="p">:</span> <span class="n">CompiledGraph</span><span class="p">,</span>
+    <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">kp</span>
+    <span class="n">noise_model</span> <span class="o">=</span> <span class="n">noise_model_factory</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">compiled_graph</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">noise_model</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="o">=</span><span class="n">manhattan_radius</span>
+        <span class="p">),</span>
+        <span class="n">k</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="generate_stim_circuits_with_detectors">
+<a class="viewcode-back" href="../../../_autosummary/tqec.simulation.generation.generate_stim_circuits_with_detectors.html#tqec.simulation.generation.generate_stim_circuits_with_detectors">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_stim_circuits_with_detectors</span><span class="p">(</span>
+    <span class="n">compiled_graph</span><span class="p">:</span> <span class="n">CompiledGraph</span><span class="p">,</span>
+    <span class="n">ks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">ps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate stim circuits in parallel.</span>
+
+<span class="sd">    This function generate the `stim.Circuit` instances for all the combinations</span>
+<span class="sd">    of the given `ks` and `ps` with a noise model that depends on `p` and</span>
+<span class="sd">    computed with `noise_model_factory`.</span>
+
+<span class="sd">    It is equivalent to:</span>
+
+<span class="sd">    ```py</span>
+<span class="sd">    for p in ps:</span>
+<span class="sd">        for k in ks:</span>
+<span class="sd">            yield (</span>
+<span class="sd">                compiled_graph.generate_stim_circuit(k, noise_model_factory(p)), k, p</span>
+<span class="sd">            )</span>
+<span class="sd">    ```</span>
+
+<span class="sd">    except that the order in which the results are returned is not guaranteed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        compiled_graph: computation to export to `stim.Circuit` instances.</span>
+<span class="sd">        ks: values of `k` to consider.</span>
+<span class="sd">        ps: values of `p`, the noise strength, to consider.</span>
+<span class="sd">        noise_model_factory: a callable that builds a noise model from an input</span>
+<span class="sd">            strength `p`.</span>
+<span class="sd">        manhattan_radius: radius used to automatically compute detectors. The</span>
+<span class="sd">            best value to set this argument to is the minimum integer such that</span>
+<span class="sd">            flows generated from any given reset/measurement, from any plaquette</span>
+<span class="sd">            at any spatial/temporal place in the QEC computation, do not</span>
+<span class="sd">            propagate outside of the qubits used by plaquettes spatially located</span>
+<span class="sd">            at maximum `manhattan_radius` plaquettes from the plaquette the</span>
+<span class="sd">            reset/measurement belongs to (w.r.t. the Manhattan distance).</span>
+<span class="sd">            Default to 2, which is sufficient for regular surface code. If</span>
+<span class="sd">            negative, detectors are not computed automatically and are not added</span>
+<span class="sd">            to the generated circuits.</span>
+<span class="sd">        max_workers: The maximum number of processes that can be used to</span>
+<span class="sd">            execute the given calls. If None or not given then as many</span>
+<span class="sd">            worker processes will be created as the machine has processors.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        a tuple containing the resulting circuit, the value of `k` that</span>
+<span class="sd">        corresponds to the returned circuit and the value of `p` that corresponds</span>
+<span class="sd">        to the returned circuit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="k">yield from</span> <span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">_parallel_func</span><span class="p">,</span>
+                <span class="n">compiled_graph</span><span class="o">=</span><span class="n">compiled_graph</span><span class="p">,</span>
+                <span class="n">noise_model_factory</span><span class="o">=</span><span class="n">noise_model_factory</span><span class="p">,</span>
+                <span class="n">manhattan_radius</span><span class="o">=</span><span class="n">manhattan_radius</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">ps</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_sinter_tasks">
+<a class="viewcode-back" href="../../../_autosummary/tqec.simulation.generation.generate_sinter_tasks.html#tqec.simulation.generation.generate_sinter_tasks">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_sinter_tasks</span><span class="p">(</span>
+    <span class="n">compiled_graph</span><span class="p">:</span> <span class="n">CompiledGraph</span><span class="p">,</span>
+    <span class="n">ks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">ps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">sinter</span><span class="o">.</span><span class="n">Task</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate `sinter.Task` instances from the provided parameters.</span>
+
+<span class="sd">    This function generate the `sinter.Task` instances for all the combinations</span>
+<span class="sd">    of the given `ks` and `ps` with a noise model that depends on `p` and</span>
+<span class="sd">    computed with `noise_model_factory`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        compiled_graph: computation to export to `stim.Circuit` instances.</span>
+<span class="sd">        ks: values of `k` to consider.</span>
+<span class="sd">        ps: values of `p`, the noise strength, to consider.</span>
+<span class="sd">        noise_model_factory: a callable that builds a noise model from an input</span>
+<span class="sd">            strength `p`.</span>
+<span class="sd">        manhattan_radius: radius used to automatically compute detectors. The</span>
+<span class="sd">            best value to set this argument to is the minimum integer such that</span>
+<span class="sd">            flows generated from any given reset/measurement, from any plaquette</span>
+<span class="sd">            at any spatial/temporal place in the QEC computation, do not</span>
+<span class="sd">            propagate outside of the qubits used by plaquettes spatially located</span>
+<span class="sd">            at maximum `manhattan_radius` plaquettes from the plaquette the</span>
+<span class="sd">            reset/measurement belongs to (w.r.t. the Manhattan distance).</span>
+<span class="sd">            Default to 2, which is sufficient for regular surface code. If</span>
+<span class="sd">            negative, detectors are not computed automatically and are not added</span>
+<span class="sd">            to the generated circuits.</span>
+<span class="sd">        max_workers: The maximum number of processes that can be used to</span>
+<span class="sd">            execute the given calls. If None or not given then as many</span>
+<span class="sd">            worker processes will be created as the machine has processors.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        tasks to be collected by a call to `sinter.collect`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">yield from</span> <span class="p">(</span>
+        <span class="n">sinter</span><span class="o">.</span><span class="n">Task</span><span class="p">(</span>
+            <span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">,</span>
+            <span class="n">json_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">generate_stim_circuits_with_detectors</span><span class="p">(</span>
+            <span class="n">compiled_graph</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">noise_model_factory</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">max_workers</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

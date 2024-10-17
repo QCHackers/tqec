@@ -1,0 +1,30 @@
+tqec.computation.block\_graph.pipe
+==================================
+
+.. automodule:: tqec.computation.block_graph.pipe
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Pipe
+   
+   
+
+   
+   
+   
+
+
+
