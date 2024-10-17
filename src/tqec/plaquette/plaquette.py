@@ -27,6 +27,11 @@ class Plaquette:
     X-axis pointing to the right and a Y-axis pointing down.
 
     Attributes:
+        name: a unique name for the plaquette. This field is used to compare
+            plaquettes efficiently (two :class:`Plaquette` instances are
+            considered equal if and only if their names are the same) as well as
+            computing a hash value for any plaquette instance. Finally, the name
+            is used to represent a :class:`Plaquette` instance as a string.
         qubits: qubits used by the plaquette circuit, given in the local
             plaquette coordinate system.
         circuit: scheduled quantum circuit implementing the computation that
@@ -40,6 +45,7 @@ class Plaquette:
             `qubits`.
     """
 
+    name: str
     qubits: PlaquetteQubits
     circuit: ScheduledCircuit
     mergeable_instructions: frozenset[str] = field(default_factory=frozenset)
@@ -59,14 +65,13 @@ class Plaquette:
         return Position2D(0, 0)
 
     def __eq__(self, rhs: object) -> bool:
-        return (
-            isinstance(rhs, Plaquette)
-            and self.qubits == rhs.qubits
-            and self.circuit == rhs.circuit
-        )
+        return isinstance(rhs, Plaquette) and self.name == rhs.name
 
     def __hash__(self) -> int:
-        return hash((self.qubits, str(self.circuit.get_circuit())))
+        return hash(self.name)
+
+    def __str__(self) -> str:
+        return self.name
 
     def project_on_boundary(
         self, projected_orientation: PlaquetteOrientation
@@ -98,7 +103,10 @@ class Plaquette:
             new_plaquette_qubits.all_qubits
         )
         return Plaquette(
-            new_plaquette_qubits, new_scheduled_circuit, self.mergeable_instructions
+            f"{self.name}_{projected_orientation.name}",
+            new_plaquette_qubits,
+            new_scheduled_circuit,
+            self.mergeable_instructions,
         )
 
 
