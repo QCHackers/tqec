@@ -11,6 +11,7 @@ from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement import Measurement, get_measurements_from_circuit
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit, relabel_circuits_qubit_indices
+from tqec.compile.coordinates import StimCoordinates
 from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.detectors.detector import Detector
 from tqec.exceptions import TQECException
@@ -68,7 +69,7 @@ def _matched_detectors_to_detectors(
                     f"but got {measurement.qubit}."
                 )
             measurements.append(measurement)
-        ret.append(Detector(frozenset(measurements), d.coords))
+        ret.append(Detector(frozenset(measurements), StimCoordinates(d.coords)))
     return frozenset(ret)
 
 
@@ -248,12 +249,10 @@ def compute_detectors_for_constant_template_and_fixed_radius(
                 # coordinates of detectors are derived from the qubits, which are
                 # already in the `GridQubit` convention. So we only need to swap the
                 # coordinates of the plaquette origin.
-                coordinates = (
-                    d.coordinates[0] + plaquette_origin.y,
-                    d.coordinates[1] + plaquette_origin.x,
-                    *d.coordinates[2:],
-                )
                 detectors_by_measurements[offset_measurements] = Detector(
-                    offset_measurements, coordinates
+                    offset_measurements,
+                    d.coordinates.offset_spatially_by(
+                        plaquette_origin.x, plaquette_origin.y
+                    ),
                 )
     return frozenset(detectors_by_measurements.values())

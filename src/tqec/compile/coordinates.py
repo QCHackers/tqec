@@ -3,8 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
-from tqec.position import Position2D
-from tqec.scale import round_or_fail
 
 
 @dataclass(frozen=True)
