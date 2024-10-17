@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.circuit.schedule.ScheduledCircuit &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.circuit.schedule.ScheduleException" href="tqec.circuit.schedule.ScheduleException.html" />
+    <link rel="prev" title="tqec.circuit.schedule.Schedule" href="tqec.circuit.schedule.Schedule.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.coordinates.html">tqec.circuit.coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.instructions.html">tqec.circuit.instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement.html">tqec.circuit.measurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement_map.html">tqec.circuit.measurement_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.moment.html">tqec.circuit.moment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.observable_qubits.html">tqec.circuit.observable_qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit.html">tqec.circuit.qubit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.circuit.schedule.html">tqec.circuit.schedule</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.merge_scheduled_circuits.html">tqec.circuit.schedule.merge_scheduled_circuits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.relabel_circuits_qubit_indices.html">tqec.circuit.schedule.relabel_circuits_qubit_indices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.remove_duplicate_instructions.html">tqec.circuit.schedule.remove_duplicate_instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.Schedule.html">tqec.circuit.schedule.Schedule</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.schedule.ScheduledCircuit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.ScheduleException.html">tqec.circuit.schedule.ScheduleException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.simulation.html">tqec.simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.html">tqec.circuit</a></li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.schedule.html">tqec.circuit.schedule</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.schedule.ScheduledCircuit</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/tqec.circuit.schedule.ScheduledCircuit.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-circuit-schedule-scheduledcircuit">
+<h1>tqec.circuit.schedule.ScheduledCircuit<a class="headerlink" href="#tqec-circuit-schedule-scheduledcircuit" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.circuit.schedule.ScheduledCircuit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScheduledCircuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.Schedule.html#tqec.circuit.schedule.Schedule" title="tqec.circuit.schedule.Schedule"><span class="pre">Schedule</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#ScheduledCircuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.ScheduledCircuit" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="tqec.circuit.schedule.ScheduledCircuit.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.Schedule.html#tqec.circuit.schedule.Schedule" title="tqec.circuit.schedule.Schedule"><span class="pre">Schedule</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule.html#ScheduledCircuit.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.ScheduledCircuit.__init__" title="Link to this definition"></a></dt>
+<dd><p>Represent a quantum circuit with scheduled moments.</p>
+<p>This class aims at representing a <cite>stim.Circuit</cite> instance that has all
+its moments scheduled, i.e., associated with a time slice.</p>
+<p>This class explicitly does not support <cite>stim.CircuitRepeatBlock</cite> (i.e.,
+<cite>REPEAT</cite> instruction). It will raise an exception if such an instruction is
+found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>moments</strong> – moments representing the computation that is scheduled.</p></li>
+<li><p><strong>schedule</strong> – schedule of the provided <cite>moments</cite>. If an integer is
+provided, each moment of the provided <cite>stim.Circuit</cite> is
+scheduled sequentially, starting by the provided integer.</p></li>
+<li><p><strong>qubit_map</strong> – a map from indices to qubits that is used to re-create
+<cite>QUBIT_COORDS</cite> instructions when generating a <cite>stim.Circuit</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ScheduleError</strong> – if the provided schedule is invalid.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
+    <cite>stim.CircuitRepeatBlock</cite> instance.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
+    <cite>QUBIT_COORDS</cite> instruction after the first <cite>TICK</cite> instruction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.ScheduledCircuit.__init__" title="tqec.circuit.schedule.ScheduledCircuit.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(moments, schedule, qubit_map)</p></td>
+<td><p>Represent a quantum circuit with scheduled moments.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_to_schedule_index</span></code>(schedule, moment)</p></td>
+<td><p>Add the operations contained in the provided moment at the provided schedule.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_annotation</span></code>(instruction)</p></td>
+<td><p>Append an annotation to the last moment.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_new_moment</span></code>(moment)</p></td>
+<td><p>Schedule the provided Moment instance at the end of the circuit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_observable</span></code>(index, targets)</p></td>
+<td><p>Append an <cite>OBSERVABLE_INCLUDE</cite> instruction to the last moment.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code>(qubits_to_keep)</p></td>
+<td><p>Filter the circuit to keep only the instructions that are applied on the provided qubits.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_circuit</span></code>(circuit[, schedule, qubit_map])</p></td>
+<td><p>Build a <a class="reference internal" href="#tqec.circuit.schedule.ScheduledCircuit" title="tqec.circuit.schedule.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance from a circuit and a schedule.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_circuit</span></code>([include_qubit_coords])</p></td>
+<td><p>Build and return the <cite>stim.Circuit</cite> instance represented by self.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qubit_coords_definition_preamble</span></code>()</p></td>
+<td><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_repeated_circuit</span></code>(repetitions[, ...])</p></td>
+<td><p>Build and return the <cite>stim.Circuit</cite> instance represented by self encapsulated in a <cite>REPEAT</cite> block.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_qubit_indices</span></code>(qubit_index_map[, inplace])</p></td>
+<td><p>Map the qubits <strong>indices</strong> the <cite>ScheduledCircuit</cite> instance is applied on.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_to_qubits</span></code>(qubit_map[, inplace])</p></td>
+<td><p>Map the qubits the <cite>ScheduledCircuit</cite> instance is applied on.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">moment_at_schedule</span></code>(schedule)</p></td>
+<td><p>Get the Moment instance scheduled at the provided schedule.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">moments</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_measurements</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit_map</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scheduled_moments</span></code></p></td>
+<td><p>Yields <cite>stim.Circuit</cite> instances representing a moment with their computed schedule.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.circuit.schedule.Schedule.html" class="btn btn-neutral float-left" title="tqec.circuit.schedule.Schedule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.circuit.schedule.ScheduleException.html" class="btn btn-neutral float-right" title="tqec.circuit.schedule.ScheduleException" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
