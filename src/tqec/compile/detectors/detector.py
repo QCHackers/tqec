@@ -72,6 +72,7 @@ class Detector:
                     measurement_records_map[measurement.qubit][measurement.offset]
                 )
             )
+        measurement_records.sort(key=lambda mr: mr.value, reverse=True)
         return stim.CircuitInstruction(
             "DETECTOR", measurement_records, self.coordinates.to_stim_coordinates()
         )

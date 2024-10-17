@@ -136,11 +136,9 @@ def test_get_measurements_from_circuit() -> None:
     measurements = get_measurements_from_circuit(
         circuit.get_circuit(include_qubit_coords=True)
     )
-    assert frozenset(measurements) == frozenset(
-        [
-            Measurement(GridQubit(1, 1), -1),
-            Measurement(GridQubit(2, 2), -2),
-            Measurement(GridQubit(2, 2), -1),
-            Measurement(GridQubit(3, 3), -1),
-        ]
-    )
+    assert measurements == [
+        Measurement(GridQubit(1, 1), -1),
+        Measurement(GridQubit(2, 2), -2),
+        Measurement(GridQubit(2, 2), -1),
+        Measurement(GridQubit(3, 3), -1),
+    ]
