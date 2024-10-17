@@ -65,6 +65,9 @@ class Plaquette:
     def __hash__(self) -> int:
         return hash(self.name)
 
+    def __str__(self) -> str:
+        return self.name
+
     def project_on_boundary(
         self, projected_orientation: PlaquetteOrientation
     ) -> Plaquette:
