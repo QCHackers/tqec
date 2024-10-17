@@ -50,6 +50,7 @@ class MatchedDetector:
 def match_detectors_from_flows_shallow(
     flows: list[FragmentFlows | FragmentLoopFlows],
     qubit_coordinates: dict[int, tuple[float, ...]],
+    num_measurements_threshold: int = 3,
 ) -> list[list[MatchedDetector]]:
     """Match detectors in the provided fragments.
 
@@ -75,6 +76,10 @@ def match_detectors_from_flows_shallow(
         qubit_coordinates: a mapping from qubit indices to coordinates. Used to annotate
             the matched detectors with the coordinates from the qubits involved in the
             measurement forming the detector.
+        num_measurements_threshold: minimum number of measurements that should be
+            involved in a detector that only contains measurements from a unique
+            round in order for the detector to be categorized as "due to data-qubit
+            measurements" and shifted by one.
 
     Returns:
         the list of all the detectors found. These detectors are only valid if inserted
@@ -83,12 +88,20 @@ def match_detectors_from_flows_shallow(
         :class:`FragmentLoopFlows` then the returned detectors should be inserted at
         the end of the loop body.
         All the returned detectors have a time coordinate set to 0 except
-        detectors that are only composed of measurements from the last provided
-        flow `flows[-1]` that have a time coordinate set to 1.
+        detectors that are considered "due to data-qubit measurements" that have
+        a time coordinate set to 0.5.
     """
-    detectors: list[list[MatchedDetector]] = [
-        match_detectors_within_fragment(flow, qubit_coordinates) for flow in flows
-    ]
+    detectors: list[list[MatchedDetector]] = []
+    for flow in flows:
+        detectors.append(
+            [
+                d.with_time_coordinate(
+                    0.5 if len(d.measurements) >= num_measurements_threshold else 0
+                )
+                for d in match_detectors_within_fragment(flow, qubit_coordinates)
+            ]
+        )
+
     # Special case for the last detectors within fragment that are due to data qubit
     # measurements: add a time coordinate of 1.
     detectors = [[d.with_time_coordinate(0) for d in ds] for ds in detectors[:-1]] + [
