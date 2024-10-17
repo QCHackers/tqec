@@ -112,6 +112,11 @@
 <span class="sd">    X-axis pointing to the right and a Y-axis pointing down.</span>
 
 <span class="sd">    Attributes:</span>
+<span class="sd">        name: a unique name for the plaquette. This field is used to compare</span>
+<span class="sd">            plaquettes efficiently (two :class:`Plaquette` instances are</span>
+<span class="sd">            considered equal if and only if their names are the same) as well as</span>
+<span class="sd">            computing a hash value for any plaquette instance. Finally, the name</span>
+<span class="sd">            is used to represent a :class:`Plaquette` instance as a string.</span>
 <span class="sd">        qubits: qubits used by the plaquette circuit, given in the local</span>
 <span class="sd">            plaquette coordinate system.</span>
 <span class="sd">        circuit: scheduled quantum circuit implementing the computation that</span>

@@ -124,6 +124,21 @@ QEC experiment.</p>
 <p>By convention, the local plaquette coordinate system is composed of a
 X-axis pointing to the right and a Y-axis pointing down.</p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.name" title="Link to this definition"></a></dt>
+<dd><p>a unique name for the plaquette. This field is used to compare
+plaquettes efficiently (two <a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code></a> instances are
+considered equal if and only if their names are the same) as well as
+computing a hash value for any plaquette instance. Finally, the name
+is used to represent a <a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code></a> instance as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquette.qubits">
 <span class="sig-name descname"><span class="pre">qubits</span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquette.qubits" title="Link to this definition"></a></dt>
 <dd><p>qubits used by the plaquette circuit, given in the local
@@ -188,7 +203,7 @@ circuits together to remove duplicate instructions.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.name" title="tqec.plaquette.plaquette.Plaquette.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.plaquette.plaquette.Plaquette.qubits" title="tqec.plaquette.plaquette.Plaquette.qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></a></p></td>
