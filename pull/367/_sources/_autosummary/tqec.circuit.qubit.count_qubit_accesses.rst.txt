@@ -1,6 +1,0 @@
-tqec.circuit.qubit.count\_qubit\_accesses
-=========================================
-
-.. currentmodule:: tqec.circuit.qubit
-
-.. autofunction:: count_qubit_accesses
