@@ -1,6 +1,0 @@
-tqec.plaquette.frozendefaultdict.FrozenException
-================================================
-
-.. currentmodule:: tqec.plaquette.frozendefaultdict
-
-.. autoexception:: FrozenException
