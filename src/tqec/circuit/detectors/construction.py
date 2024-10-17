@@ -33,7 +33,7 @@ def _detectors_to_circuit(
         circuit.append("SHIFT_COORDS", [], shift_coords)
 
     for detector in detectors:
-        circuit.append(detector.with_time_coordinate(0).to_instruction())
+        circuit.append(detector.to_instruction())
     return circuit
 
 
@@ -91,6 +91,28 @@ def _insert_before_last_tick_instruction(
         return circuit + added_circuit
 
 
+def _append_fragment_to_circuit(
+    circuit: stim.Circuit,
+    fragment: Fragment | FragmentLoop,
+    detectors: list[MatchedDetector],
+    qubit_coords_map: dict[int, tuple[float, ...]],
+    shifts: tuple[float, ...] = (0, 0, 0),
+):
+    detectors_circuit = _detectors_to_circuit(detectors, shift_coords=shifts)
+    if isinstance(fragment, Fragment):
+        circuit += _insert_before_last_tick_instruction(
+            fragment.circuit, detectors_circuit
+        )
+    else:  # isinstance(fragment, FragmentLoop):
+        loop_body = compile_fragments_to_circuit_with_detectors(
+            fragment.fragments, qubit_coords_map
+        )
+        circuit += (
+            _insert_before_last_tick_instruction(loop_body, detectors_circuit)
+            * fragment.repetitions
+        )
+
+
 def compile_fragments_to_circuit_with_detectors(
     fragments: list[Fragment | FragmentLoop],
     qubit_coords_map: dict[int, tuple[float, ...]],
@@ -101,18 +123,15 @@ def compile_fragments_to_circuit_with_detectors(
     circuit = stim.Circuit()
     number_of_spatial_coordinates = len(next(iter(qubit_coords_map.values()), []))
     shifts = tuple(0 for _ in range(number_of_spatial_coordinates)) + (1,)
-    for fragment, detectors in zip(fragments, detectors_from_flows):
-        detectors_circuit = _detectors_to_circuit(detectors, shift_coords=shifts)
-        if isinstance(fragment, Fragment):
-            circuit += _insert_before_last_tick_instruction(
-                fragment.circuit, detectors_circuit
-            )
-        else:  # isinstance(fragment, FragmentLoop):
-            loop_body = compile_fragments_to_circuit_with_detectors(
-                fragment.fragments, qubit_coords_map
-            )
-            circuit += (
-                _insert_before_last_tick_instruction(loop_body, detectors_circuit)
-                * fragment.repetitions
-            )
+
+    # Add the first moment without any shift
+    _append_fragment_to_circuit(
+        circuit, fragments[0], detectors_from_flows[0], qubit_coords_map
+    )
+    # Add the other moments
+    for fragment, detectors in zip(fragments[1:], detectors_from_flows[1:]):
+        _append_fragment_to_circuit(
+            circuit, fragment, detectors, qubit_coords_map, shifts=shifts
+        )
+
     return circuit

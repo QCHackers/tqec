@@ -82,13 +82,26 @@ def match_detectors_from_flows_shallow(
         parameter `flows`. If the last provided flow is an instance of
         :class:`FragmentLoopFlows` then the returned detectors should be inserted at
         the end of the loop body.
+        All the returned detectors have a time coordinate set to 0 except
+        detectors that are only composed of measurements from the last provided
+        flow `flows[-1]` that have a time coordinate set to 1.
     """
     detectors: list[list[MatchedDetector]] = [
         match_detectors_within_fragment(flow, qubit_coordinates) for flow in flows
     ]
+    # Special case for the last detectors within fragment that are due to data qubit
+    # measurements: add a time coordinate of 1.
+    detectors = [[d.with_time_coordinate(0) for d in ds] for ds in detectors[:-1]] + [
+        [d.with_time_coordinate(1) for d in detectors[-1]]
+    ]
     for i in range(1, len(flows)):
         detectors[i].extend(
-            match_boundary_stabilizers(flows[i - 1], flows[i], qubit_coordinates)
+            [
+                d.with_time_coordinate(0)
+                for d in match_boundary_stabilizers(
+                    flows[i - 1], flows[i], qubit_coordinates
+                )
+            ]
         )
 
     return detectors
