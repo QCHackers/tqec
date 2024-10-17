@@ -1,6 +1,0 @@
-tqec.compile.observables.inplace\_add\_observables
-==================================================
-
-.. currentmodule:: tqec.compile.observables
-
-.. autofunction:: inplace_add_observables
