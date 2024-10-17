@@ -1,0 +1,30 @@
+tqec.compile.coordinates
+========================
+
+.. automodule:: tqec.compile.coordinates
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      StimCoordinates
+   
+   
+
+   
+   
+   
+
+
+

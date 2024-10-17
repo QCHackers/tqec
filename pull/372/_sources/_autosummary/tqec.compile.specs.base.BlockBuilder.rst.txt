@@ -1,0 +1,22 @@
+tqec.compile.specs.base.BlockBuilder
+====================================
+
+.. currentmodule:: tqec.compile.specs.base
+
+.. autoclass:: BlockBuilder
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BlockBuilder.__init__
+   
+   
+
+   
+   
+   

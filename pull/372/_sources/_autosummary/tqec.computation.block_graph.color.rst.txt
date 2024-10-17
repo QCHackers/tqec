@@ -1,0 +1,31 @@
+tqec.computation.block\_graph.color
+===================================
+
+.. automodule:: tqec.computation.block_graph.color
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Color
+      Color3D
+   
+   
+
+   
+   
+   
+
+
+

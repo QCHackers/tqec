@@ -1,0 +1,35 @@
+tqec.compile.coordinates.StimCoordinates
+========================================
+
+.. currentmodule:: tqec.compile.coordinates
+
+.. autoclass:: StimCoordinates
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~StimCoordinates.__init__
+      ~StimCoordinates.offset_spatially_by
+      ~StimCoordinates.to_stim_coordinates
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~StimCoordinates.non_spatial_coordinates
+      ~StimCoordinates.spatial
+      ~StimCoordinates.t
+      ~StimCoordinates.x
+      ~StimCoordinates.y
+      ~StimCoordinates.coordinates
+   
+   
