@@ -89,9 +89,9 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.moment</span> <span class="kn">import</span> <span class="n">Moment</span><span class="p">,</span> <span class="n">iter_stim_circuit_without_repeat_by_moments</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
-<span class="kn">from</span> <span class="nn">tqec.circuit.moment</span> <span class="kn">import</span> <span class="n">Moment</span><span class="p">,</span> <span class="n">iter_stim_circuit_without_repeat_by_moments</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.enums</span> <span class="kn">import</span> <span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">PlaquetteSide</span><span class="p">,</span> <span class="n">ResetBasis</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.qubit</span> <span class="kn">import</span> <span class="n">SquarePlaquetteQubits</span>
@@ -129,6 +129,7 @@
 
 <span class="k">class</span> <span class="nc">_CSSPlaquetteBuilder</span><span class="p">:</span>
     <span class="n">MERGEABLE_INSTRUCTIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;MZ&quot;</span><span class="p">,</span> <span class="s2">&quot;MX&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ&quot;</span><span class="p">,</span> <span class="s2">&quot;RX&quot;</span><span class="p">))</span>
+    <span class="n">BASE_NAME</span> <span class="o">=</span> <span class="s2">&quot;CSS&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -143,9 +144,30 @@
             <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span><span class="o">.</span><span class="n">syndrome_qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
             <span class="o">|</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span><span class="o">.</span><span class="n">data_qubits</span><span class="p">)}</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ResetBasis</span><span class="p">,</span> <span class="n">PlaquetteSide</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MeasurementBasis</span><span class="p">,</span> <span class="n">PlaquetteSide</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_get_plaquette_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">_CSSPlaquetteBuilder</span><span class="o">.</span><span class="n">BASE_NAME</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;basis(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x_boundary_orientation</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">side_part</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;datainit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">side_part</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">side_part</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;datameas(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">side_part</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plaquette</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Plaquette</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_plaquette_name</span><span class="p">(),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_qubits</span><span class="p">,</span>
             <span class="n">ScheduledCircuit</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">,</span>
@@ -160,7 +182,12 @@
         <span class="n">basis</span><span class="p">:</span> <span class="n">ResetBasis</span> <span class="o">|</span> <span class="n">MeasurementBasis</span><span class="p">,</span>
         <span class="n">only_on_side</span><span class="p">:</span> <span class="n">PlaquetteSide</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">moment_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">ResetBasis</span><span class="p">):</span>
+            <span class="n">moment_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data_init</span> <span class="o">=</span> <span class="n">basis</span><span class="p">,</span> <span class="n">only_on_side</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">moment_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data_meas</span> <span class="o">=</span> <span class="n">basis</span><span class="p">,</span> <span class="n">only_on_side</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">basis</span><span class="o">.</span><span class="n">instruction_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_qubits</span><span class="p">(</span><span class="n">only_on_side</span><span class="p">),</span> <span class="p">[]</span>
         <span class="p">)</span>

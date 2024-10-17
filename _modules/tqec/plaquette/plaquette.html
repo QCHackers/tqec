@@ -112,6 +112,11 @@
 <span class="sd">    X-axis pointing to the right and a Y-axis pointing down.</span>
 
 <span class="sd">    Attributes:</span>
+<span class="sd">        name: a unique name for the plaquette. This field is used to compare</span>
+<span class="sd">            plaquettes efficiently (two :class:`Plaquette` instances are</span>
+<span class="sd">            considered equal if and only if their names are the same) as well as</span>
+<span class="sd">            computing a hash value for any plaquette instance. Finally, the name</span>
+<span class="sd">            is used to represent a :class:`Plaquette` instance as a string.</span>
 <span class="sd">        qubits: qubits used by the plaquette circuit, given in the local</span>
 <span class="sd">            plaquette coordinate system.</span>
 <span class="sd">        circuit: scheduled quantum circuit implementing the computation that</span>
@@ -125,6 +130,7 @@
 <span class="sd">            `qubits`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">qubits</span><span class="p">:</span> <span class="n">PlaquetteQubits</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span>
     <span class="n">mergeable_instructions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">)</span>
@@ -144,14 +150,13 @@
         <span class="k">return</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubits</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">qubits</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuit</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">circuit</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">name</span>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">qubits</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">project_on_boundary</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">projected_orientation</span><span class="p">:</span> <span class="n">PlaquetteOrientation</span>
@@ -183,7 +188,10 @@
             <span class="n">new_plaquette_qubits</span><span class="o">.</span><span class="n">all_qubits</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Plaquette</span><span class="p">(</span>
-            <span class="n">new_plaquette_qubits</span><span class="p">,</span> <span class="n">new_scheduled_circuit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mergeable_instructions</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">projected_orientation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">new_plaquette_qubits</span><span class="p">,</span>
+            <span class="n">new_scheduled_circuit</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mergeable_instructions</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
