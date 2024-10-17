@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to contribute &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Automatic detector computation" href="detectors.html" />
+    <link rel="prev" title="Quick start using tqec" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-procedure-for-developers">Installation procedure (for developers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">How to contribute</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#look-at-issues">1. Look at issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comment-on-one-or-more-issues">2. Comment on one or more issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-specific-branch-for-each-issue">3. Create a specific branch for each issue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#work-in-your-branch-and-submit-a-pull-request">4. Work in your branch and submit a pull request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#merge-the-pr">5. Merge the PR</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/tqec.html">tqec</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to contribute</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-contribute">
+<h1>How to contribute<a class="headerlink" href="#how-to-contribute" title="Link to this heading"></a></h1>
+<section id="installation-procedure-for-developers">
+<h2>Installation procedure (for developers)<a class="headerlink" href="#installation-procedure-for-developers" title="Link to this heading"></a></h2>
+<p>If you want to help maintaining and improving the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package, you will need
+to install a few more packages than the regular installation. It is also
+recommended to use an editable installation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository to have local files to work on</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/QCHackers/tqec.git
+<span class="c1"># Install the library with developer dependencies</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;tqec[all]&#39;</span>
+<span class="c1"># Go in the tqec directory and enable pre-commit</span>
+<span class="nb">cd</span><span class="w"> </span>tqec
+pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>You can now start contributing, following the rules explained in the next sections.</p>
+</section>
+<section id="id1">
+<h2>How to contribute<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="look-at-issues">
+<h3>1. Look at issues<a class="headerlink" href="#look-at-issues" title="Link to this heading"></a></h3>
+<p>Start by looking at the <a class="reference external" href="https://github.com/QCHackers/tqec/issues">issues list</a>.
+Issues can be filtered by tags. Below are a few of the most interesting tags:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/QCHackers/tqec/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">good first issue</a>
+for issues that have been judged easy to address without prior knowledge on the code base.</p></li>
+<li><p><a class="reference external" href="https://github.com/QCHackers/tqec/issues?q=is%3Aissue+is%3Aopen+label%3Abackend">backend</a>
+for issues related to the Python code.</p></li>
+</ul>
+<p>Pick one issue that you <strong>want</strong> to work on. We emphasize on <strong>want</strong>: this is an open
+source project, so do not force yourself to work on something that does not interest
+you.</p>
+</section>
+<section id="comment-on-one-or-more-issues">
+<h3>2. Comment on one or more issues<a class="headerlink" href="#comment-on-one-or-more-issues" title="Link to this heading"></a></h3>
+<p>Once you have found one or more issue(s) you want to work on, send a comment on these
+issues to:</p>
+<ol class="arabic simple">
+<li><p>make your interest public,</p></li>
+<li><p>ask for updates, as the issue might not be up-to-date.</p></li>
+</ol>
+<p>One of the lead developers will come back to you and assign you the issue if</p>
+<ol class="arabic simple">
+<li><p>nobody is already working on it,</p></li>
+<li><p>the issue is still relevant.</p></li>
+</ol>
+</section>
+<section id="create-a-specific-branch-for-each-issue">
+<h3>3. Create a specific branch for each issue<a class="headerlink" href="#create-a-specific-branch-for-each-issue" title="Link to this heading"></a></h3>
+<p>If you are part of the QCHacker community, you will be able to
+<a class="reference external" href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">create a branch</a>
+directly in the QCHacker/tqec repository. If you are not, you can
+<a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">fork</a>
+the QCHacker/tqec repository on your own account
+(<a class="reference external" href="https://github.com/QCHackers/tqec/fork">click here</a>) and create a branch there.</p>
+</section>
+<section id="work-in-your-branch-and-submit-a-pull-request">
+<h3>4. Work in your branch and submit a pull request<a class="headerlink" href="#work-in-your-branch-and-submit-a-pull-request" title="Link to this heading"></a></h3>
+<p>You should only work on the branch you just created. Implement the fix you envisionned
+to the issue you were assigned to.</p>
+<p>If, for personnal/professional reasons, lack of motivation, lack of time, or whatever
+the reason for which you know that you won’t be able to complete your implementation, please
+let us know in the issue so that we can un-assign you and let someone else work on
+the issue.</p>
+<p>Once you think you have something that is ready for review or at least ready to be read
+by other people, you can
+<a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request">submit a pull request (PR)</a>
+on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch of the QCHacker/tqec repository. In the PR message, try to
+provide as much information as possible to help other people understanding your code.</p>
+</section>
+<section id="merge-the-pr">
+<h3>5. Merge the PR<a class="headerlink" href="#merge-the-pr" title="Link to this heading"></a></h3>
+<p>Once your code has been reviewed and accepted by at least one of the developers, you
+will be able to merge it to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.
+You (the PR owner) are responsible to click on the “Merge” button. If you prefer someone
+else to do it, you should send a clear comment asking for it.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick start using tqec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="detectors.html" class="btn btn-neutral float-right" title="Automatic detector computation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
