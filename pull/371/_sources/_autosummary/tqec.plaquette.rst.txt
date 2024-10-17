@@ -1,0 +1,41 @@
+tqec.plaquette
+==============
+
+.. automodule:: tqec.plaquette
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   enums
+
+   frozendefaultdict
+
+   library
+
+   plaquette
+
+   qubit
+
+
