@@ -1,0 +1,6 @@
+tqec.computation.geometry.load\_library\_block\_geometries
+==========================================================
+
+.. currentmodule:: tqec.computation.geometry
+
+.. autofunction:: load_library_block_geometries

@@ -1,0 +1,33 @@
+tqec.circuit.instructions
+=========================
+
+.. automodule:: tqec.circuit.instructions
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      is_annotation_instruction
+      is_measurement_instruction
+      is_multi_qubit_measurement_instruction
+      is_single_qubit_measurement_instruction
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,30 @@
+tqec.circuit.observable\_qubits
+===============================
+
+.. automodule:: tqec.circuit.observable_qubits
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      observable_qubits_from_template
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
