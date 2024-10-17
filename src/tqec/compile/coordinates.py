@@ -1,45 +1,47 @@
+"""Implements a wrapper to standardise stim coordinate system across the code base."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from tqec.exceptions import TQECException
-
 
 @dataclass(frozen=True)
 class StimCoordinates:
-    coordinates: tuple[float, ...]
+    """Wrapper around a tuple of coordinates.
 
-    def __post_init__(self) -> None:
-        if len(self.coordinates) < 3:
-            raise TQECException(
-                f"Got {len(self.coordinates)} coordinates but expected at least 3."
-            )
-        if len(self.coordinates) > 16:
-            raise TQECException(
-                f"Cannot have more than 16 coordinates. Got {len(self.coordinates)}."
-            )
+    This class should be used whenever a `stim.CircuitInstruction` that expects
+    arguments that are interpreted by stim as coordinates is built. This is the
+    case of the `DETECTOR` instruction for example.
+    """
 
-    @property
-    def x(self) -> float:
-        return self.coordinates[0]
+    _ABS_TOL = 1e-10
 
-    @property
-    def y(self) -> float:
-        return self.coordinates[1]
-
-    @property
-    def t(self) -> float:
-        return self.coordinates[2]
+    x: float
+    y: float
+    t: float | None = None
 
     def to_stim_coordinates(self) -> tuple[float, ...]:
-        return self.coordinates
+        if self.t is not None:
+            return (self.x, self.y, self.t)
+        return (self.x, self.y)
 
     def __str__(self) -> str:
-        return "(" + ",".join(f"{c:.2f}" for c in self.coordinates) + ")"
-
-    @property
-    def non_spatial_coordinates(self) -> tuple[float, ...]:
-        return self.coordinates[2:]
+        return "(" + ",".join(f"{c:.2f}" for c in self.to_stim_coordinates()) + ")"
 
     def offset_spatially_by(self, x: float, y: float) -> StimCoordinates:
-        return StimCoordinates((self.x + x, self.y + y, *self.non_spatial_coordinates))
+        return StimCoordinates(self.x + x, self.y + y, self.t)
+
+    def __eq__(self, value: object) -> bool:
+        return (
+            isinstance(value, StimCoordinates)
+            and abs(self.x - value.x) < StimCoordinates._ABS_TOL
+            and abs(self.y - value.y) < StimCoordinates._ABS_TOL
+            and (
+                (self.t is None and value.t is None)
+                or (
+                    self.t is not None
+                    and value.t is not None
+                    and abs(self.t - value.t) < StimCoordinates._ABS_TOL
+                )
+            )
+        )

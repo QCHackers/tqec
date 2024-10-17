@@ -69,7 +69,8 @@ def _matched_detectors_to_detectors(
                     f"but got {measurement.qubit}."
                 )
             measurements.append(measurement)
-        ret.append(Detector(frozenset(measurements), StimCoordinates(d.coords)))
+        x, y, t = d.coords
+        ret.append(Detector(frozenset(measurements), StimCoordinates(x, y, t)))
     return frozenset(ret)
 
 

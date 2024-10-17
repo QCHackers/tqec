@@ -31,9 +31,7 @@ class Detector:
         return (
             isinstance(rhs, Detector)
             and self.measurements == rhs.measurements
-            and numpy.allclose(
-                self.coordinates.coordinates, rhs.coordinates.coordinates
-            )
+            and self.coordinates == rhs.coordinates
         )
 
     def __str__(self) -> str:

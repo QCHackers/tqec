@@ -23,15 +23,15 @@ def test_detector_creation(measurement: Measurement) -> None:
     with pytest.raises(
         TQECException, match="^Trying to create a detector without any measurement.$"
     ):
-        Detector(frozenset(), StimCoordinates((0, 0, 0)))
+        Detector(frozenset(), StimCoordinates(0, 0, 0))
 
-    Detector(frozenset([measurement]), StimCoordinates((0, 3, 0)))
+    Detector(frozenset([measurement]), StimCoordinates(0, 3, 0))
 
 
 def test_detector_to_instruction(
     measurement: Measurement, mrecords_map: MeasurementRecordsMap
 ) -> None:
-    detector = Detector(frozenset([measurement]), StimCoordinates((1, 1, 0)))
+    detector = Detector(frozenset([measurement]), StimCoordinates(1, 1, 0))
     instruction = detector.to_instruction(mrecords_map)
     assert instruction.name == "DETECTOR"
     assert instruction.targets_copy() == [stim.target_rec(-1)]
@@ -43,9 +43,9 @@ def test_detector_to_instruction(
 
 
 def test_detector_offset_spatially_by(measurement: Measurement) -> None:
-    detector = Detector(frozenset([measurement]), StimCoordinates((1, 1, 0)))
+    detector = Detector(frozenset([measurement]), StimCoordinates(1, 1, 0))
     offset_detector = detector.offset_spatially_by(45, -2)
     assert offset_detector.measurements == frozenset(
         [measurement.offset_spatially_by(45, -2)]
     )
-    assert offset_detector.coordinates.coordinates == (46, -1, 0)
+    assert offset_detector.coordinates.to_stim_coordinates() == (46, -1, 0)
