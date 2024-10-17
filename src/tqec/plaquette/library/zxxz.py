@@ -43,6 +43,7 @@ def make_zxxz_surface_code_plaquette(
 
 class _ZXXZPlaquetteBuilder:
     MERGEABLE_INSTRUCTIONS = frozenset(("H", "R", "RZ", "M", "MZ"))
+    BASE_NAME = "ZXXZ"
 
     def __init__(
         self,
@@ -57,9 +58,30 @@ class _ZXXZPlaquetteBuilder:
             {0: self._qubits.syndrome_qubits[0]}
             | {i + 1: q for i, q in enumerate(self._qubits.data_qubits)}
         )
+        self._data_init: tuple[ResetBasis, PlaquetteSide | None] | None = None
+        self._data_meas: tuple[MeasurementBasis, PlaquetteSide | None] | None = None
+
+    def _get_plaquette_name(self) -> str:
+        parts = [
+            _ZXXZPlaquetteBuilder.BASE_NAME,
+            f"basis({self._basis})",
+            self._x_boundary_orientation,
+        ]
+        if self._data_init is not None:
+            side_part = (
+                f",{self._data_init[1].name}" if self._data_init[1] is not None else ""
+            )
+            parts.append(f"datainit({self._data_init[0].name}{side_part})")
+        if self._data_meas is not None:
+            side_part = (
+                f",{self._data_meas[1].name}" if self._data_meas[1] is not None else ""
+            )
+            parts.append(f"datameas({self._data_meas[0].name}{side_part})")
+        return "_".join(parts)
 
     def build(self) -> Plaquette:
         return Plaquette(
+            self._get_plaquette_name(),
             self._qubits,
             ScheduledCircuit(
                 self._moments,
@@ -78,9 +100,11 @@ class _ZXXZPlaquetteBuilder:
         if isinstance(basis, ResetBasis):
             self._moments[0].append("R", dqs_considered, [])
             h_moment_idx = 1
+            self._data_init = basis, only_on_side
         else:
             self._moments[-1].append("M", dqs_considered, [])
             h_moment_idx = -2
+            self._data_meas = basis, only_on_side
 
         basis_change_dqs = self._get_init_meas_basis_change_dqs(
             basis.value, dqs_considered
