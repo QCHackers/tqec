@@ -95,6 +95,7 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.coordinates</span> <span class="kn">import</span> <span class="n">StimCoordinates</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position2D</span>
 
 
@@ -121,9 +122,10 @@
     <span class="k">def</span> <span class="nf">to_qubit_coords_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the `QUBIT_COORDS` `stim.CircuitInstruction` needed to define</span>
 <span class="sd">        `self` in a `stim.Circuit`.&quot;&quot;&quot;</span>
-        <span class="c1"># TODO: check ordering here.</span>
         <span class="k">return</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>
-            <span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)]</span>
+            <span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">index</span><span class="p">],</span>
+            <span class="n">StimCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_stim_coordinates</span><span class="p">(),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GridQubit</span> <span class="o">|</span> <span class="n">Position2D</span> <span class="o">|</span> <span class="n">Displacement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridQubit</span><span class="p">:</span>

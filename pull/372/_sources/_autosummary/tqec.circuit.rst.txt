@@ -28,6 +28,9 @@ tqec.circuit
    :recursive:
 
 
+   coordinates
+
+
    generation
 
 

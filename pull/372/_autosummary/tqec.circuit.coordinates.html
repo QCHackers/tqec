@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.compile.coordinates &mdash; TQEC  documentation</title>
+  <title>tqec.circuit.coordinates &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.compile.coordinates.StimCoordinates" href="tqec.compile.coordinates.StimCoordinates.html" />
-    <link rel="prev" title="tqec.compile.compile.CompiledGraph" href="tqec.compile.compile.CompiledGraph.html" /> 
+    <link rel="next" title="tqec.circuit.coordinates.StimCoordinates" href="tqec.circuit.coordinates.StimCoordinates.html" />
+    <link rel="prev" title="tqec.circuit" href="tqec.circuit.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,18 +57,23 @@
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="tqec.compile.html">tqec.compile</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.block.html">tqec.compile.block</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.compile.html">tqec.compile.compile</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.compile.coordinates</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.compile.coordinates.StimCoordinates.html">tqec.compile.coordinates.StimCoordinates</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.circuit.coordinates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.observables.html">tqec.compile.observables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.compile.specs.html">tqec.compile.specs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.instructions.html">tqec.circuit.instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement.html">tqec.circuit.measurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement_map.html">tqec.circuit.measurement_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.moment.html">tqec.circuit.moment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.observable_qubits.html">tqec.circuit.observable_qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit.html">tqec.circuit.qubit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.schedule.html">tqec.circuit.schedule</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
@@ -98,10 +103,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
-          <li class="breadcrumb-item"><a href="tqec.compile.html">tqec.compile</a></li>
-      <li class="breadcrumb-item active">tqec.compile.coordinates</li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.html">tqec.circuit</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.coordinates</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.compile.coordinates.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.circuit.coordinates.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -109,13 +114,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-tqec.compile.coordinates">
-<span id="tqec-compile-coordinates"></span><h1>tqec.compile.coordinates<a class="headerlink" href="#module-tqec.compile.coordinates" title="Link to this heading"></a></h1>
+  <section id="module-tqec.circuit.coordinates">
+<span id="tqec-circuit-coordinates"></span><h1>tqec.circuit.coordinates<a class="headerlink" href="#module-tqec.circuit.coordinates" title="Link to this heading"></a></h1>
+<p>Implements a wrapper to standardise stim coordinate system across the code base.</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.compile.coordinates.StimCoordinates.html#tqec.compile.coordinates.StimCoordinates" title="tqec.compile.coordinates.StimCoordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StimCoordinates</span></code></a>(coordinates)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html#tqec.circuit.coordinates.StimCoordinates" title="tqec.circuit.coordinates.StimCoordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StimCoordinates</span></code></a>(x, y[, t])</p></td>
+<td><p>Wrapper around a tuple of coordinates.</p></td>
 </tr>
 </tbody>
 </table>
@@ -125,8 +131,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.compile.compile.CompiledGraph.html" class="btn btn-neutral float-left" title="tqec.compile.compile.CompiledGraph" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.compile.coordinates.StimCoordinates.html" class="btn btn-neutral float-right" title="tqec.compile.coordinates.StimCoordinates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.circuit.html" class="btn btn-neutral float-left" title="tqec.circuit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.circuit.coordinates.StimCoordinates.html" class="btn btn-neutral float-right" title="tqec.circuit.coordinates.StimCoordinates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

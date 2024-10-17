@@ -1,7 +1,7 @@
-tqec.compile.coordinates.StimCoordinates
+tqec.circuit.coordinates.StimCoordinates
 ========================================
 
-.. currentmodule:: tqec.compile.coordinates
+.. currentmodule:: tqec.circuit.coordinates
 
 .. autoclass:: StimCoordinates
 
@@ -25,10 +25,8 @@ tqec.compile.coordinates.StimCoordinates
 
    .. autosummary::
    
-      ~StimCoordinates.non_spatial_coordinates
       ~StimCoordinates.t
       ~StimCoordinates.x
       ~StimCoordinates.y
-      ~StimCoordinates.coordinates
    
    

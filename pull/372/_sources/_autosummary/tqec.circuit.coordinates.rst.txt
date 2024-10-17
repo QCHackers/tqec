@@ -1,7 +1,7 @@
-tqec.compile.coordinates
+tqec.circuit.coordinates
 ========================
 
-.. automodule:: tqec.compile.coordinates
+.. automodule:: tqec.circuit.coordinates
 
    
    

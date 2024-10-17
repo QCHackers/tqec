@@ -33,8 +33,6 @@ tqec.compile
    compile
 
 
-   coordinates
-
    observables
 
    specs
