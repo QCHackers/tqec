@@ -1,5 +1,6 @@
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.detectors.flow import build_flows_from_fragments
 from tqec.circuit.detectors.fragment import Fragment
 from tqec.circuit.detectors.match import (
@@ -68,7 +69,8 @@ def _matched_detectors_to_detectors(
                     f"but got {measurement.qubit}."
                 )
             measurements.append(measurement)
-        ret.append(Detector(frozenset(measurements), d.coords))
+        x, y, t = d.coords
+        ret.append(Detector(frozenset(measurements), StimCoordinates(x, y, t)))
     return frozenset(ret)
 
 
@@ -248,12 +250,10 @@ def compute_detectors_for_constant_template_and_fixed_radius(
                 # coordinates of detectors are derived from the qubits, which are
                 # already in the `GridQubit` convention. So we only need to swap the
                 # coordinates of the plaquette origin.
-                coordinates = (
-                    d.coordinates[0] + plaquette_origin.y,
-                    d.coordinates[1] + plaquette_origin.x,
-                    *d.coordinates[2:],
-                )
                 detectors_by_measurements[offset_measurements] = Detector(
-                    offset_measurements, coordinates
+                    offset_measurements,
+                    d.coordinates.offset_spatially_by(
+                        plaquette_origin.x, plaquette_origin.y
+                    ),
                 )
     return frozenset(detectors_by_measurements.values())

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import numpy
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.measurement_map import MeasurementRecordsMap
 from tqec.exceptions import TQECException
@@ -17,17 +18,11 @@ class Detector:
     """Represent a detector as a set of measurements and optional coordinates."""
 
     measurements: frozenset[Measurement]
-    coordinates: tuple[float, ...]
+    coordinates: StimCoordinates
 
     def __post_init__(self) -> None:
         if not self.measurements:
             raise TQECException("Trying to create a detector without any measurement.")
-        if len(self.coordinates) < 2:
-            raise TQECException(
-                "Coordinates should at least provide 2 spatial dimensions. "
-                f"The provided  coordinates {self.coordinates} only contain "
-                f"{len(self.coordinates)} dimensions."
-            )
 
     def __hash__(self) -> int:
         return hash(self.measurements)
@@ -36,13 +31,12 @@ class Detector:
         return (
             isinstance(rhs, Detector)
             and self.measurements == rhs.measurements
-            and numpy.allclose(self.coordinates, rhs.coordinates)
+            and self.coordinates == rhs.coordinates
         )
 
     def __str__(self) -> str:
-        coordinates_str = "(" + ",".join(f"{c:.2f}" for c in self.coordinates) + ")"
         measurements_str = "{" + ",".join(map(str, self.measurements)) + "}"
-        return f"D{coordinates_str}{measurements_str}"
+        return f"D{self.coordinates}{measurements_str}"
 
     def to_instruction(
         self, measurement_records_map: MeasurementRecordsMap
@@ -79,7 +73,7 @@ class Detector:
                 )
             )
         return stim.CircuitInstruction(
-            "DETECTOR", measurement_records, self.coordinates
+            "DETECTOR", measurement_records, self.coordinates.to_stim_coordinates()
         )
 
     def offset_spatially_by(self, x: int, y: int) -> Detector:
@@ -96,5 +90,5 @@ class Detector:
 
         return Detector(
             frozenset(m.offset_spatially_by(x, y) for m in self.measurements),
-            (self.coordinates[0] + x, self.coordinates[1] + y, *self.coordinates[2:]),
+            self.coordinates.offset_spatially_by(x, y),
         )
