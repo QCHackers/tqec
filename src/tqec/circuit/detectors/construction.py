@@ -97,7 +97,7 @@ def _append_fragment_to_circuit(
     detectors: list[MatchedDetector],
     qubit_coords_map: dict[int, tuple[float, ...]],
     shifts: tuple[float, ...] = (0, 0, 0),
-):
+) -> None:
     detectors_circuit = _detectors_to_circuit(detectors, shift_coords=shifts)
     if isinstance(fragment, Fragment):
         circuit += _insert_before_last_tick_instruction(
