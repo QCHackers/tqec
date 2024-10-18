@@ -5,9 +5,6 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Sequence
 
-import numpy
-import numpy.typing as npt
-
 from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement_map import MeasurementRecordsMap
 from tqec.circuit.moment import Moment
@@ -21,10 +18,6 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
 from tqec.templates.subtemplates import SubTemplateType
-
-
-def _NUMPY_ARRAY_HASHER(arr: npt.NDArray[numpy.int_]) -> int:
-    return int(hashlib.md5(arr.data.tobytes(), usedforsecurity=False).hexdigest(), 16)
 
 
 @dataclass(frozen=True)
