@@ -1,0 +1,34 @@
+tqec.compile.specs.base
+=======================
+
+.. automodule:: tqec.compile.specs.base
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockBuilder
+      CubeSpec
+      PipeSpec
+      Substitution
+      SubstitutionBuilder
+   
+   
+
+   
+   
+   
+
+
+

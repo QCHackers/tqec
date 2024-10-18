@@ -1,0 +1,37 @@
+tqec.compile.compile
+====================
+
+.. automodule:: tqec.compile.compile
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compile_block_graph
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      CompiledGraph
+   
+   
+
+   
+   
+   
+
+
+
