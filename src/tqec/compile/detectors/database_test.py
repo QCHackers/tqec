@@ -71,7 +71,6 @@ SUBTEMPLATES: list[SubTemplateType] = list(
                 QubitTemplate().instantiate(k=10), manhattan_radius=2
             ).subtemplates.values()
         ),
-        axis=0,
     )
 )
 
