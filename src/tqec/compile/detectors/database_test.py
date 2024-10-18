@@ -143,14 +143,14 @@ def test_detector_database_key_hash() -> None:
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
     # on the Python interpreter, Python version, host OS, process ID, ...
-    assert hash(dbkey) == 6635855037027289589
+    assert hash(dbkey) == 1085786788918911944
 
     dbkey = _DetectorDatabaseKey(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1])
     assert hash(dbkey) == hash(dbkey)
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
     # on the Python interpreter, Python version, host OS, process ID, ...
-    assert hash(dbkey) == -8009786746945676048
+    assert hash(dbkey) == 1699471538780763110
 
 
 def test_detector_database_creation() -> None:
@@ -209,3 +209,15 @@ def test_detector_database_freeze() -> None:
     detectors2 = db.get_detectors(SUBTEMPLATES[:4], PLAQUETTE_COLLECTIONS[:4])
     assert detectors2 is not None
     assert detectors2 == DETECTORS[1]
+
+
+def test_detector_database_translation_invariance() -> None:
+    db = DetectorDatabase()
+    db.add_situation(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1], DETECTORS[0])
+
+    offset = 36
+    translated_subtemplate = SUBTEMPLATES[0] + offset
+    translated_plaquettes = PLAQUETTE_COLLECTIONS[0].map_indices(lambda i: i + offset)
+    detectors = db.get_detectors((translated_subtemplate,), (translated_plaquettes,))
+    assert detectors is not None
+    assert detectors == DETECTORS[0]
