@@ -82,14 +82,12 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
         return (
             isinstance(other, FrozenDefaultDict)
             and (
-                not operator.xor(
-                    self._default_factory is None, other._default_factory is None
+                (self._default_factory is None and other._default_factory is None)
+                or (
+                    self._default_factory is not None
+                    and other._default_factory is not None
+                    and (self._default_factory() == other._default_factory())
                 )
-            )
-            and (
-                self._default_factory is not None
-                and other._default_factory is not None
-                and (self._default_factory() == other._default_factory())
             )
             and self._dict == other._dict
         )
