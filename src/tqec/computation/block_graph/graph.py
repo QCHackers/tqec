@@ -205,20 +205,18 @@ class BlockGraph:
 
         # Add the virtual nodes first
         for node in zx_graph.nodes:
-            if node.is_virtual:
-                block_graph.add_cube(node.position, CubeType.VIRTUAL)
+            if node.is_port:
+                block_graph.add_cube(node.pos, CubeType.VIRTUAL)
                 nodes_to_handle.remove(node)
         # Check 3D corner
         for node in nodes_to_handle:
-            if len({e.direction for e in zx_graph.edges_at(node.position)}) == 3:
-                raise TQECException(f"ZX graph has a 3D corner at {node.position}.")
+            if len({e.direction for e in zx_graph.edges_at(node.pos)}) == 3:
+                raise TQECException(f"ZX graph has a 3D corner at {node.pos}.")
         # The color of corner cubes can be inferred locally from the ZX graph
         # by querying which plane the corner is in and the color of the ZX node.
         corner_cubes: dict[Position3D, Cube] = {}
         for node in set(nodes_to_handle):
-            edge_directions_at_node = {
-                e.direction for e in zx_graph.edges_at(node.position)
-            }
+            edge_directions_at_node = {e.direction for e in zx_graph.edges_at(node.pos)}
             if len(edge_directions_at_node) != 2:
                 continue
             node_type = node.node_type
@@ -234,9 +232,9 @@ class BlockGraph:
                 + cube_type_str[direction_index + 1 :]
             )
             cube_type = CubeType(cube_type_str)
-            block_graph.add_cube(node.position, cube_type)
+            block_graph.add_cube(node.pos, cube_type)
             nodes_to_handle.remove(node)
-            corner_cubes[node.position] = Cube(node.position, cube_type)
+            corner_cubes[node.pos] = Cube(node.pos, cube_type)
 
         # Infer the block structure from the corner cubes
         # BFS traverse each connected component from a corner node in that component
@@ -256,9 +254,9 @@ class BlockGraph:
                 aligned_node = next(
                     ty.cast(ZXNode, zx_graph.get_node(pos))
                     for pos in sorted_positions
-                    if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_virtual
+                    if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_port
                 )
-                node_pos, node_type = aligned_node.position, aligned_node.node_type
+                node_pos, node_type = aligned_node.pos, aligned_node.node_type
                 edges_at_node = zx_graph.edges_at(node_pos)
                 if not edges_at_node:
                     aligned_node_type = (
@@ -272,9 +270,9 @@ class BlockGraph:
                         "x" if node_type == NodeType.X else "z",
                     )
                     aligned_node_type = CubeType("".join(node_type_list))
-                block_graph.add_cube(aligned_node.position, aligned_node_type)
+                block_graph.add_cube(aligned_node.pos, aligned_node_type)
                 nodes_to_handle.remove(aligned_node)
-                bfs_sources.append(Cube(aligned_node.position, aligned_node_type))
+                bfs_sources.append(Cube(aligned_node.pos, aligned_node_type))
         for src_cube in bfs_sources:
             for p1, p2 in nx.bfs_edges(zx_graph.nx_graph, src_cube.position):
                 edge = zx_graph.get_edge(p1, p2)
@@ -286,8 +284,8 @@ class BlockGraph:
                 p1, p2 = sorted((p1, p2))
                 src = ty.cast(ZXNode, zx_graph.get_node(p1))
                 dst = ty.cast(ZXNode, zx_graph.get_node(p2))
-                can_infer_from_src = src not in nodes_to_handle and not src.is_virtual
-                can_infer_from_dst = dst not in nodes_to_handle and not dst.is_virtual
+                can_infer_from_src = src not in nodes_to_handle and not src.is_port
+                can_infer_from_dst = dst not in nodes_to_handle and not dst.is_port
                 if not can_infer_from_src and not can_infer_from_dst:
                     raise TQECException(
                         f"Cannot infer the pipe structure from the ZX graph at edge {p1} -> {p2}."
@@ -304,18 +302,18 @@ class BlockGraph:
                     other_cube_type = pipe_type.infer_cube_type_at_side(
                         not can_infer_from_src, other_node.node_type == NodeType.Z
                     )
-                    block_graph.add_cube(other_node.position, other_cube_type)
+                    block_graph.add_cube(other_node.pos, other_cube_type)
                     nodes_to_handle.remove(other_node)
                 block_graph.add_pipe(p1, p2, pipe_type)
                 edges_to_handle.remove(edge)
 
         if nodes_to_handle:
             raise TQECException(
-                f"The cube structure at positions {[n.position for n in nodes_to_handle]} cannot be resolved."
+                f"The cube structure at positions {[n.pos for n in nodes_to_handle]} cannot be resolved."
             )
         if edges_to_handle:
             raise TQECException(
-                f"The pipe structure at {[(e.u.position, e.v.position) for e in edges_to_handle]} cannot be resolved."
+                f"The pipe structure at {[(e.u.pos, e.v.pos) for e in edges_to_handle]} cannot be resolved."
             )
 
         block_graph.check_validity(allow_virtual_node=True)
@@ -367,7 +365,7 @@ class BlockGraph:
 
         for g in correlation_subgraphs:
             if g.num_nodes == 1:
-                cube = self.get_cube(g.nodes[0].position)
+                cube = self.get_cube(g.nodes[0].pos)
                 assert (
                     cube is not None
                 ), f"{g.nodes[0]} is in the graph and should be associated with a Cube instance."
@@ -380,7 +378,7 @@ class BlockGraph:
             for edge in g.edges:
                 correlation_type_at_src = edge.u.node_type.value
                 correlation_type_at_dst = edge.v.node_type.value
-                pipe = self.get_pipe(edge.u.position, edge.v.position)
+                pipe = self.get_pipe(edge.u.pos, edge.v.pos)
                 assert (
                     pipe is not None
                 ), f"{edge} is in the graph and should be associated with a Pipe instance."

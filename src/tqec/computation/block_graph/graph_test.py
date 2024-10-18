@@ -101,10 +101,10 @@ def test_convert_zx_graph_no_corner() -> None:
 
 def test_convert_zx_graph_roundtrip() -> None:
     g = ZXGraph("Test ZX Graph")
-    g.add_virtual_node(Position3D(0, 0, 0))
+    g.add_port(Position3D(0, 0, 0))
     g.add_x_node(Position3D(0, 0, 1))
     g.add_z_node(Position3D(0, 0, 2))
-    g.add_virtual_node(Position3D(1, 0, 0))
+    g.add_port(Position3D(1, 0, 0))
     g.add_x_node(Position3D(1, 0, 1))
     g.add_z_node(Position3D(1, 0, 2))
     g.add_edge(Position3D(0, 0, 0), Position3D(0, 0, 1))

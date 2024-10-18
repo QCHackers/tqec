@@ -35,8 +35,8 @@ def draw_zx_graph_on(
         hadamard_size: The size of the Hadamard transition. Default is 200.
         edge_width: The width of the edge. Default is 1.
     """
-    non_virtual_nodes = [n for n in graph.nodes if not n.is_virtual]
-    non_virtual_nodes_array = _positions_array(*[n.position for n in non_virtual_nodes])
+    non_virtual_nodes = [n for n in graph.nodes if not n.is_port]
+    non_virtual_nodes_array = _positions_array(*[n.pos for n in non_virtual_nodes])
     if non_virtual_nodes_array.size > 0:
         ax.scatter(
             *non_virtual_nodes_array,
@@ -50,7 +50,7 @@ def draw_zx_graph_on(
         )
 
     for edge in graph.edges:
-        pos_array = _positions_array(edge.u.position, edge.v.position)
+        pos_array = _positions_array(edge.u.pos, edge.v.pos)
         ax.plot(
             *pos_array,
             color="tab:gray",
@@ -93,7 +93,7 @@ def draw_as_correlation_surface_on(
     correlation_edge_width: int = 3,
 ) -> None:
     for edge in graph.edges:
-        pos_array = _positions_array(edge.u.position, edge.v.position)
+        pos_array = _positions_array(edge.u.pos, edge.v.pos)
         if not edge.has_hadamard:
             correlation_type = edge.u.node_type
             ax.plot(
@@ -108,7 +108,7 @@ def draw_as_correlation_surface_on(
                     *numpy.hstack(
                         [
                             hadamard_position.reshape(3, 1),
-                            _positions_array(node.position),
+                            _positions_array(node.pos),
                         ]
                     ),
                     color=CORRELATION_COLOR[node.node_type],
