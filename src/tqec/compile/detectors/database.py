@@ -25,7 +25,7 @@ def _NUMPY_ARRAY_HASHER(arr: npt.NDArray[numpy.int_]) -> int:
 
 
 @dataclass(frozen=True)
-class DetectorDatabaseKey:
+class _DetectorDatabaseKey:
     """Immutable type used as a key in the database of detectors.
 
     This class represents a "situation" for which we might be able to compute
@@ -90,7 +90,7 @@ class DetectorDatabaseKey:
 
     def __eq__(self, rhs: object) -> bool:
         return (
-            isinstance(rhs, DetectorDatabaseKey)
+            isinstance(rhs, _DetectorDatabaseKey)
             and len(self.subtemplates) == len(rhs.subtemplates)
             and all(
                 bool(numpy.all(self_st == rhs_st))
@@ -138,7 +138,7 @@ class DetectorDatabase:
     computation.
     """
 
-    mapping: dict[DetectorDatabaseKey, frozenset[Detector]] = field(
+    mapping: dict[_DetectorDatabaseKey, frozenset[Detector]] = field(
         default_factory=dict
     )
     frozen: bool = False
@@ -169,7 +169,7 @@ class DetectorDatabase:
         """
         if self.frozen:
             raise TQECException("Cannot add a situation to a frozen database.")
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         self.mapping[key] = (
             frozenset([detectors]) if isinstance(detectors, Detector) else detectors
         )
@@ -195,7 +195,7 @@ class DetectorDatabase:
         """
         if self.frozen:
             raise TQECException("Cannot remove a situation to a frozen database.")
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         del self.mapping[key]
 
     def get_detectors(
@@ -220,7 +220,7 @@ class DetectorDatabase:
             detectors associated with the provided situation or `None` if the
             situation is not in the database.
         """
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         return self.mapping.get(key)
 
     def freeze(self) -> None:

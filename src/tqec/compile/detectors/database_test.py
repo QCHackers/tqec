@@ -4,7 +4,7 @@ import pytest
 from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
-from tqec.compile.detectors.database import DetectorDatabase, DetectorDatabaseKey
+from tqec.compile.detectors.database import DetectorDatabase, _DetectorDatabaseKey
 from tqec.compile.detectors.detector import Detector
 from tqec.compile.specs.library._utils import _build_plaquettes_for_rotated_surface_code
 from tqec.exceptions import TQECException
@@ -118,20 +118,20 @@ DETECTORS: list[frozenset[Detector]] = [
 
 
 def test_detector_database_key_creation() -> None:
-    DetectorDatabaseKey((SUBTEMPLATES[0],), (PLAQUETTE_COLLECTIONS[0],))
-    DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
+    _DetectorDatabaseKey((SUBTEMPLATES[0],), (PLAQUETTE_COLLECTIONS[0],))
+    _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
     with pytest.raises(
         TQECException,
         match="^DetectorDatabaseKey can only store an equal number of "
         "subtemplates and plaquettes. Got 4 subtemplates and 3 plaquettes.$",
     ):
-        DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:4])
+        _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:4])
 
 
 def test_detector_database_key_num_timeslices() -> None:
     for i in range(min(len(PLAQUETTE_COLLECTIONS), len(SUBTEMPLATES))):
         assert (
-            DetectorDatabaseKey(
+            _DetectorDatabaseKey(
                 SUBTEMPLATES[:i], PLAQUETTE_COLLECTIONS[:i]
             ).num_timeslices
             == i
@@ -139,14 +139,14 @@ def test_detector_database_key_num_timeslices() -> None:
 
 
 def test_detector_database_key_hash() -> None:
-    dbkey = DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
+    dbkey = _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
     assert hash(dbkey) == hash(dbkey)
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
     # on the Python interpreter, Python version, host OS, process ID, ...
     assert hash(dbkey) == 6635855037027289589
 
-    dbkey = DetectorDatabaseKey(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1])
+    dbkey = _DetectorDatabaseKey(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1])
     assert hash(dbkey) == hash(dbkey)
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
