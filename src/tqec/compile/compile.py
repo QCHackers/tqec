@@ -10,6 +10,7 @@ from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.compile.block import BlockLayout, CompiledBlock
 from tqec.compile.detectors.compute import compute_detectors_for_fixed_radius
+from tqec.compile.detectors.database import DetectorDatabase
 from tqec.compile.detectors.detector import Detector
 from tqec.compile.observables import inplace_add_observables
 from tqec.compile.specs.base import (
@@ -57,7 +58,12 @@ class CompiledGraph:
             warnings.warn("The compiled graph includes no observable.", TQECWarning)
 
     def generate_stim_circuit(
-        self, k: int, noise_model: NoiseModel | None = None, manhattan_radius: int = 2
+        self,
+        k: int,
+        noise_model: NoiseModel | None = None,
+        manhattan_radius: int = 2,
+        detector_database: DetectorDatabase | None = None,
+        only_use_database: bool = False,
     ) -> stim.Circuit:
         """Generate the stim circuit from the compiled graph.
 
@@ -67,6 +73,11 @@ class CompiledGraph:
             manhattan_radius: the radius considered to compute detectors.
                 Detectors are not computed and added to the circuit if this
                 argument is negative.
+            detector_database: an instance to retrieve from / store in detectors
+                that are computed as part of the circuit generation.
+            only_use_database: if True, only detectors from the database will be
+                used. An error will be raised if a situation that is not
+                registered in the database is encountered.
 
         Returns:
             A compiled stim circuit.
@@ -109,6 +120,8 @@ class CompiledGraph:
                 flattened_plaquettes,
                 k,
                 manhattan_radius,
+                detector_database=detector_database,
+                only_use_database=only_use_database,
             )
         # Assemble the circuits.
         circuit = global_qubit_map.to_circuit()
@@ -154,12 +167,19 @@ class CompiledGraph:
         plaquettes: Sequence[Plaquettes],
         k: int,
         manhattan_radius: int = 2,
+        detector_database: DetectorDatabase | None = None,
+        only_use_database: bool = False,
     ) -> None:
         # Start with the first circuit, as this is a special case.
         first_template = templates[0]
         first_plaquettes = plaquettes[0]
         first_slice_detectors = compute_detectors_for_fixed_radius(
-            (first_template,), k, (first_plaquettes,), manhattan_radius
+            (first_template,),
+            k,
+            (first_plaquettes,),
+            manhattan_radius,
+            detector_database,
+            only_use_database,
         )
         # Initialise the measurement records map with the first circuit.
         mrecords_map = MeasurementRecordsMap.from_scheduled_circuit(circuits[0])
@@ -176,6 +196,8 @@ class CompiledGraph:
                 k,
                 (plaquettes[i - 1], plaquettes[i]),
                 manhattan_radius,
+                detector_database,
+                only_use_database,
             )
             mrecords_map = mrecords_map.with_added_measurements(
                 MeasurementRecordsMap.from_scheduled_circuit(current_circuit)
