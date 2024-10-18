@@ -6,9 +6,9 @@ from typing import Literal
 
 import stim
 
+from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.plaquette.enums import MeasurementBasis, PlaquetteSide, ResetBasis
 from tqec.plaquette.plaquette import Plaquette
 from tqec.plaquette.qubit import SquarePlaquetteQubits
@@ -43,6 +43,7 @@ def make_css_surface_code_plaquette(
 
 class _CSSPlaquetteBuilder:
     MERGEABLE_INSTRUCTIONS = frozenset(("M", "MZ", "MX", "R", "RZ", "RX"))
+    BASE_NAME = "CSS"
 
     def __init__(
         self,
@@ -57,9 +58,30 @@ class _CSSPlaquetteBuilder:
             {0: self._qubits.syndrome_qubits[0]}
             | {i + 1: q for i, q in enumerate(self._qubits.data_qubits)}
         )
+        self._data_init: tuple[ResetBasis, PlaquetteSide | None] | None = None
+        self._data_meas: tuple[MeasurementBasis, PlaquetteSide | None] | None = None
+
+    def _get_plaquette_name(self) -> str:
+        parts = [
+            _CSSPlaquetteBuilder.BASE_NAME,
+            f"basis({self._basis})",
+            self._x_boundary_orientation,
+        ]
+        if self._data_init is not None:
+            side_part = (
+                f",{self._data_init[1].name}" if self._data_init[1] is not None else ""
+            )
+            parts.append(f"datainit({self._data_init[0].name}{side_part})")
+        if self._data_meas is not None:
+            side_part = (
+                f",{self._data_meas[1].name}" if self._data_meas[1] is not None else ""
+            )
+            parts.append(f"datameas({self._data_meas[0].name}{side_part})")
+        return "_".join(parts)
 
     def build(self) -> Plaquette:
         return Plaquette(
+            self._get_plaquette_name(),
             self._qubits,
             ScheduledCircuit(
                 self._moments,
@@ -74,7 +96,12 @@ class _CSSPlaquetteBuilder:
         basis: ResetBasis | MeasurementBasis,
         only_on_side: PlaquetteSide | None = None,
     ) -> None:
-        moment_index = 0 if isinstance(basis, ResetBasis) else -1
+        if isinstance(basis, ResetBasis):
+            moment_index = 0
+            self._data_init = basis, only_on_side
+        else:
+            moment_index = -1
+            self._data_meas = basis, only_on_side
         self._moments[moment_index].append(
             f"{basis.instruction_name}", self._get_data_qubits(only_on_side), []
         )

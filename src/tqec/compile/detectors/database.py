@@ -1,3 +1,4 @@
+import hashlib
 from dataclasses import dataclass, field
 from typing import Sequence
 
@@ -20,7 +21,7 @@ from tqec.templates.subtemplates import SubTemplateType
 
 
 def _NUMPY_ARRAY_HASHER(arr: npt.NDArray[numpy.int_]) -> int:
-    return hash(arr.data.tobytes())
+    return int(hashlib.md5(arr.data.tobytes(), usedforsecurity=False).hexdigest(), 16)
 
 
 @dataclass(frozen=True)
@@ -221,6 +222,12 @@ class DetectorDatabase:
         """
         key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         return self.mapping.get(key)
+
+    def freeze(self) -> None:
+        self.frozen = True
+
+    def unfreeze(self) -> None:
+        self.frozen = False
 
     def to_crumble_urls(self, plaquette_increments: Displacement) -> list[str]:
         urls: list[str] = []

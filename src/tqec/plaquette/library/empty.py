@@ -10,7 +10,7 @@ from tqec.plaquette.qubit import (
 
 
 def empty_plaquette(qubits: PlaquetteQubits) -> Plaquette:
-    return Plaquette(qubits, ScheduledCircuit.empty())
+    return Plaquette("empty", qubits, ScheduledCircuit.empty())
 
 
 def empty_square_plaquette() -> Plaquette:
