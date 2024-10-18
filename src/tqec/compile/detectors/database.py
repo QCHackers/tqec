@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import pickle
 from dataclasses import dataclass, field
 from functools import cached_property
+from pathlib import Path
 from typing import Sequence
 
 from tqec.circuit.generation import generate_circuit_from_instantiation
@@ -235,3 +237,21 @@ class DetectorDatabase:
 
     def __len__(self) -> int:
         return len(self.mapping)
+
+    def to_file(self, filepath: Path) -> None:
+        if not filepath.parent.exists():
+            filepath.parent.mkdir()
+        with open(filepath, "wb") as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def from_file(filepath: Path) -> DetectorDatabase:
+        with open(filepath, "rb") as f:
+            database = pickle.load(f)
+            if not isinstance(database, DetectorDatabase):
+                raise TQECException(
+                    f"Found the Python type {type(database).__name__} in the "
+                    f"provided file but {type(DetectorDatabase).__name__} was "
+                    "expected."
+                )
+        return database
