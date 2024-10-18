@@ -409,6 +409,9 @@ def compute_detectors_for_fixed_radius(
     # on at least one syndrome qubit of the central plaquette. That means that
     # detectors computed here are unique and we do not have to check for
     # duplicates.
+    # Also, the last timestep template origin might not be (0, 0), so we have
+    # to shift detectors accordingly.
+    last_template_origin = templates[-1].instantiation_origin(k)
     detectors: list[Detector] = []
     for i, row in enumerate(unique_3d_subtemplates.subtemplate_indices):
         for j, subtemplate_indices in enumerate(row):
@@ -416,7 +419,10 @@ def compute_detectors_for_fixed_radius(
                 continue
             for d in detectors_by_subtemplate[tuple(subtemplate_indices)]:
                 detectors.append(
-                    d.offset_spatially_by(j * increments.x, i * increments.y)
+                    d.offset_spatially_by(
+                        (j + last_template_origin.x) * increments.x,
+                        (i + last_template_origin.y) * increments.y,
+                    )
                 )
 
     return detectors
