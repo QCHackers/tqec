@@ -327,8 +327,8 @@ def _compute_superimposed_template_instantiations(
             _get_or_default(
                 instantiation,
                 slices=[
+                    (top_left.y - inst_origin.y, bottom_right.y - inst_origin.y),
                     (top_left.x - inst_origin.x, bottom_right.x - inst_origin.x),
-                    (top_left.y - inst_origin.x, bottom_right.y - inst_origin.x),
                 ],
                 default=0,
             )
