@@ -14,6 +14,7 @@ tqec.plaquette.plaquette.RepeatedPlaquettes
    .. autosummary::
    
       ~RepeatedPlaquettes.__init__
+      ~RepeatedPlaquettes.map_indices
       ~RepeatedPlaquettes.num_rounds
       ~RepeatedPlaquettes.repeat
       ~RepeatedPlaquettes.with_updated_plaquettes
