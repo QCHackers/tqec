@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 import hashlib
 from dataclasses import dataclass, field
-from typing import Any, Sequence
-
-import numpy
-import numpy.typing as npt
+from functools import cached_property
+from typing import Sequence
 
 from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement_map import MeasurementRecordsMap
@@ -20,12 +20,8 @@ from tqec.position import Displacement
 from tqec.templates.subtemplates import SubTemplateType
 
 
-def _NUMPY_ARRAY_HASHER(arr: npt.NDArray[numpy.int_]) -> int:
-    return int(hashlib.md5(arr.data.tobytes(), usedforsecurity=False).hexdigest(), 16)
-
-
 @dataclass(frozen=True)
-class DetectorDatabaseKey:
+class _DetectorDatabaseKey:
     """Immutable type used as a key in the database of detectors.
 
     This class represents a "situation" for which we might be able to compute
@@ -43,25 +39,19 @@ class DetectorDatabaseKey:
 
     ## Implementation details
 
-    This class stores data types that are not efficiently hashable (i.e., not in
-    constant time) when considering their values:
+    This class uses a surjective representation to compare (`__eq__`) and hash
+    (`__hash__`) its instances. This representation is computed and cached using
+    the :meth:`_DetectorDatabaseKey.plaquette_names` property that basically
+    uses the provided subtemplates to build a nested tuple data-structure with
+    the same shape as `self.subtemplates` (3 dimensions, the first one being the
+    number of time steps, the next 2 ones being of odd and equal size and
+    depending on the radius used to build subtemplates) storing in each of its
+    entries the corresponding plaquette name.
 
-    - `self.subtemplates` is a raw array of integers without any guarantee on the
-      stored values except that they are positive.
-    - `self.plaquettes_by_timestep` contains :class:`Plaquette` instances, each
-      containing a class:`ScheduledCircuit` instance, ultimately containing a
-      `stim.Circuit`. Hashing a quantum circuit cannot be performed in constant
-      time.
-
-    For `self.subtemplates`, we hash the `shape` of the array as well as the
-    hash of the array's data. This is a constant time operation, because
-    we only consider spatially local detectors at the moment and that
-    restriction makes sub-templates that are of constant size (w.r.t the number
-    of qubits).
-
-    For `self.plaquettes_by_timestep`, we rely on the hash implementation of
-    :class:`Plaquettes`. It is up to :class:`Plaquettes` to implement hash
-    efficiently.
+    This intermediate data-structure is not the most memory efficient one, but
+    it has the advantage of being easy to construct, trivially invariant to
+    plaquette re-indexing and easy to hash (with some care to NOT use Python's
+    default `hash` due to its absence of stability across different runs).
     """
 
     subtemplates: Sequence[SubTemplateType]
@@ -79,24 +69,28 @@ class DetectorDatabaseKey:
     def num_timeslices(self) -> int:
         return len(self.subtemplates)
 
-    def __hash__(self) -> int:
-        return hash(
-            (
-                tuple(st.shape for st in self.subtemplates),
-                tuple(_NUMPY_ARRAY_HASHER(st) for st in self.subtemplates),
-                tuple(self.plaquettes_by_timestep),
-            )
+    @cached_property
+    def plaquette_names(self) -> tuple[tuple[tuple[str, ...], ...], ...]:
+        return tuple(
+            tuple(tuple(plaquettes[pi].name for pi in row) for row in st)
+            for st, plaquettes in zip(self.subtemplates, self.plaquettes_by_timestep)
         )
+
+    def reliable_hash(self) -> int:
+        hasher = hashlib.md5()
+        for timeslice in self.plaquette_names:
+            for row in timeslice:
+                for name in row:
+                    hasher.update(name.encode())
+        return int(hasher.hexdigest(), 16)
+
+    def __hash__(self) -> int:
+        return self.reliable_hash()
 
     def __eq__(self, rhs: object) -> bool:
         return (
-            isinstance(rhs, DetectorDatabaseKey)
-            and len(self.subtemplates) == len(rhs.subtemplates)
-            and all(
-                bool(numpy.all(self_st == rhs_st))
-                for self_st, rhs_st in zip(self.subtemplates, rhs.subtemplates)
-            )
-            and self.plaquettes_by_timestep == rhs.plaquettes_by_timestep
+            isinstance(rhs, _DetectorDatabaseKey)
+            and self.plaquette_names == rhs.plaquette_names
         )
 
     def circuit(self, plaquette_increments: Displacement) -> ScheduledCircuit:
@@ -138,7 +132,7 @@ class DetectorDatabase:
     computation.
     """
 
-    mapping: dict[DetectorDatabaseKey, frozenset[Detector]] = field(
+    mapping: dict[_DetectorDatabaseKey, frozenset[Detector]] = field(
         default_factory=dict
     )
     frozen: bool = False
@@ -169,7 +163,7 @@ class DetectorDatabase:
         """
         if self.frozen:
             raise TQECException("Cannot add a situation to a frozen database.")
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         self.mapping[key] = (
             frozenset([detectors]) if isinstance(detectors, Detector) else detectors
         )
@@ -195,7 +189,7 @@ class DetectorDatabase:
         """
         if self.frozen:
             raise TQECException("Cannot remove a situation to a frozen database.")
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         del self.mapping[key]
 
     def get_detectors(
@@ -220,7 +214,7 @@ class DetectorDatabase:
             detectors associated with the provided situation or `None` if the
             situation is not in the database.
         """
-        key = DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
+        key = _DetectorDatabaseKey(subtemplates, plaquettes_by_timestep)
         return self.mapping.get(key)
 
     def freeze(self) -> None:

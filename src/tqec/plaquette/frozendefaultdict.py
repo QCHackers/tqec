@@ -82,14 +82,12 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
         return (
             isinstance(other, FrozenDefaultDict)
             and (
-                not operator.xor(
-                    self._default_factory is None, other._default_factory is None
+                (self._default_factory is None and other._default_factory is None)
+                or (
+                    self._default_factory is not None
+                    and other._default_factory is not None
+                    and (self._default_factory() == other._default_factory())
                 )
-            )
-            and (
-                self._default_factory is not None
-                and other._default_factory is not None
-                and (self._default_factory() == other._default_factory())
             )
             and self._dict == other._dict
         )
@@ -97,8 +95,8 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
     def has_default_factory(self) -> bool:
         return self._default_factory is not None
 
-    def map_keys(self, key_map: Mapping[K, K]) -> FrozenDefaultDict[K, V]:
+    def map_keys(self, callable: Callable[[K], K]) -> FrozenDefaultDict[K, V]:
         return FrozenDefaultDict(
-            {key_map[k]: v for k, v in self.items()},
+            {callable(k): v for k, v in self.items()},
             default_factory=self._default_factory,
         )
