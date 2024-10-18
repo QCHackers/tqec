@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Callable, Mapping
+from typing import Callable, Literal, Mapping
 
 from typing_extensions import override
 
@@ -169,6 +169,14 @@ class Plaquettes:
                 )
             )
         )
+
+    def to_name_dict(self) -> dict[int | Literal["default"], str]:
+        d: dict[int | Literal["default"], str] = {
+            k: p.name for k, p in self.collection.items()
+        }
+        if self.collection.default_factory is not None:
+            d["default"] = self.collection.default_factory().name
+        return d
 
 
 @dataclass(frozen=True)
