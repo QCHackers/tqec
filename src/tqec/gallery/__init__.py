@@ -1,1 +1,2 @@
 from .logical_cnot import logical_cnot_zx_graph, logical_cnot_block_graph
+from .three_cnot import three_cnot_zx_graph, three_cnot_block_graph
