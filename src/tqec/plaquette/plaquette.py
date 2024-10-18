@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Mapping
+from typing import Callable, Mapping
 
 from typing_extensions import override
 
@@ -151,6 +151,9 @@ class Plaquettes:
         self, plaquettes_to_update: Mapping[int, Plaquette]
     ) -> Plaquettes:
         return Plaquettes(self.collection | plaquettes_to_update)
+
+    def map_indices(self, callable: Callable[[int], int]) -> Plaquettes:
+        return Plaquettes(self.collection.map_keys(callable))
 
     def __eq__(self, rhs: object) -> bool:
         return isinstance(rhs, Plaquettes) and self.collection == rhs.collection

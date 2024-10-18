@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Iterable
+from typing import Callable, Iterable, Mapping
 
 import stim
 
@@ -56,7 +56,10 @@ class QubitMap:
     def qubits(self) -> Iterable[GridQubit]:
         return self.i2q.values()
 
-    def with_mapped_qubits(self, qubit_map: dict[GridQubit, GridQubit]) -> QubitMap:
+    def with_mapped_qubits(
+        self,
+        qubit_map: Mapping[GridQubit, GridQubit] | Callable[[GridQubit], GridQubit],
+    ) -> QubitMap:
         """Change the qubits involved in `self` without changing the associated indices.
 
         Args:
@@ -70,7 +73,10 @@ class QubitMap:
         Returns:
             a new instance representing the updated mapping.
         """
-        return QubitMap({i: qubit_map[q] for i, q in self.i2q.items()})
+        if isinstance(qubit_map, Mapping):
+            return QubitMap({i: qubit_map[q] for i, q in self.i2q.items()})
+        else:
+            return QubitMap({i: qubit_map(q) for i, q in self.i2q.items()})
 
     def items(self) -> Iterable[tuple[int, GridQubit]]:
         return self.i2q.items()

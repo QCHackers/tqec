@@ -27,6 +27,7 @@ Alongside :class:`ScheduledCircuit`, this module defines:
 from __future__ import annotations
 
 import bisect
+import itertools
 import typing as ty
 import warnings
 from copy import deepcopy
@@ -420,7 +421,9 @@ class ScheduledCircuit:
             )
 
     def map_to_qubits(
-        self, qubit_map: dict[GridQubit, GridQubit], inplace: bool = False
+        self,
+        qubit_map: dict[GridQubit, GridQubit] | ty.Callable[[GridQubit], GridQubit],
+        inplace: bool = False,
     ) -> ScheduledCircuit:
         """Map the qubits the `ScheduledCircuit` instance is applied on.
 
@@ -440,7 +443,9 @@ class ScheduledCircuit:
             else self).
         """
         operand = self if inplace else deepcopy(self)
-        operand._qubit_map = operand._qubit_map.with_mapped_qubits(qubit_map)
+        operand._qubit_map = operand._qubit_map.with_mapped_qubits(
+            qubit_map if not isinstance(qubit_map, dict) else (lambda q: qubit_map[q])
+        )
         return operand
 
     def __copy__(self) -> ScheduledCircuit:
@@ -589,7 +594,7 @@ class ScheduledCircuit:
                 "The provided instruction is not an annotation, which is "
                 "disallowed by the append_annotation method."
             )
-        self._moments[-1].append_instruction(instruction)
+        self._moments[-1].append_annotation(instruction)
 
     @property
     def num_measurements(self) -> int:
@@ -895,7 +900,8 @@ def relabel_circuits_qubit_indices(
             not defined by a `QUBIT_COORDS` instruction.
 
     Args:
-        circuits: circuit instances to remap.
+        circuits: circuit instances to remap. This parameter is not mutated by
+            this function and is only used in read-only mode.
 
     Returns:
         the same circuits with update qubit indices as well as the global qubit
@@ -906,7 +912,10 @@ def relabel_circuits_qubit_indices(
         2. the returned qubit map
     """
     # First, get a global qubit index map.
-    needed_qubits = frozenset.union(*[c.qubits for c in circuits])
+    # Using itertools to avoid the edge case `len(circuits) == 0`
+    needed_qubits = frozenset(
+        itertools.chain.from_iterable([c.qubits for c in circuits])
+    )
     global_qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
     global_q2i = global_qubit_map.q2i
     # Then, get the remapped circuits. Note that map_qubit_indices should

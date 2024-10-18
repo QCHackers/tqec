@@ -14,6 +14,7 @@ import typing as ty
 
 import stim
 
+from tqec.circuit.instructions import is_annotation_instruction
 from tqec.circuit.qubit import count_qubit_accesses, get_used_qubit_indices
 from tqec.exceptions import TQECException
 
@@ -43,6 +44,7 @@ class Moment:
     def __init__(self, circuit: stim.Circuit, copy_circuit: bool = False) -> None:
         Moment.check_is_valid_moment(circuit)
         self._circuit: stim.Circuit = circuit.copy() if copy_circuit else circuit
+        self._used_qubits: set[int] = get_used_qubit_indices(self._circuit)
 
     @property
     def circuit(self) -> stim.Circuit:
@@ -68,17 +70,18 @@ class Moment:
             )
 
     @property
-    def qubits_indices(self) -> frozenset[int]:
+    def qubits_indices(self) -> set[int]:
         """Return the qubit indices this moment operates on.
 
         Note:
             Some instructions are considered annotations (e.g., `QUBIT_COORDS`,
-            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an exhaustive
-            list). These instructions are ignored by this property, meaning that the
-            qubits they operate on will only be returned by this property iff another
-            non-annotation instruction is applied on said qubits.
+            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an
+            exhaustive list). These instructions are ignored by this property,
+            meaning that the qubits they operate on will only be returned by
+            this property iff another non-annotation instruction is applied on
+            said qubits.
         """
-        return get_used_qubit_indices(self._circuit)
+        return self._used_qubits
 
     def contains_instruction(self, instruction_name: str) -> bool:
         """Return `True` if `self` contains at least one operation with the
@@ -100,10 +103,8 @@ class Moment:
     def __iadd__(self, other: Moment | stim.Circuit) -> Moment:
         """Add instructions in-place in `self`."""
         if isinstance(other, stim.Circuit):
-            other = Moment(other)
-        self_used_qubits = get_used_qubit_indices(self._circuit)
-        other_used_qubits = get_used_qubit_indices(other._circuit)
-        both_sides_used_qubits = self_used_qubits.intersection(other_used_qubits)
+            other = Moment(other, copy_circuit=False)
+        both_sides_used_qubits = self._used_qubits.intersection(other._used_qubits)
         if both_sides_used_qubits:
             raise TQECException(
                 "Trying to add an overlapping quantum circuit to a Moment instance."
@@ -111,22 +112,98 @@ class Moment:
         self._circuit += other._circuit
         return self
 
+    @staticmethod
+    def _get_used_qubit_indices(
+        targets: ty.Iterable[int | stim.GateTarget],
+    ) -> list[int]:
+        qubits: list[int] = []
+        for target in targets:
+            if isinstance(target, int):
+                qubits.append(target)
+                continue
+            # isinstance(target, stim.GateTarget)
+            if target.is_qubit_target:
+                assert isinstance(target.qubit_value, int)  # type checker is happy
+                qubits.append(target.qubit_value)
+        return qubits
+
     def append(
         self,
-        name: str,
-        targets: int | stim.GateTarget | ty.Iterable[int | stim.GateTarget],
-        args: float | ty.Iterable[float],
+        name_or_instr: str | stim.CircuitInstruction,
+        targets: ty.Iterable[int | stim.GateTarget] | None = None,
+        args: ty.Iterable[float] | None = None,
     ) -> None:
-        """Append an instruction to the :class:`Moment`."""
-        circuit_to_add = stim.Circuit()
-        circuit_to_add.append(name, targets, args)
-        self += circuit_to_add
+        """Append an instruction to the :class:`Moment`.
 
-    def append_instruction(self, instruction: stim.CircuitInstruction) -> None:
-        """Append an instruction to the :class:`Moment`."""
-        circuit_to_add = stim.Circuit()
-        circuit_to_add.append(instruction)
-        self += circuit_to_add
+        Note:
+            if you append an annotation (e.g., `DETECTOR` or `QUBIT_COORDS`) then
+            you should use :meth:`append_annotation` that is more efficient.
+
+        Args:
+            name_or_instr: either the name of the instruction to append or the
+                actual instruction. If the name is provided, `targets` and `args`
+                are used to build the `stim.CircuitInstruction` instance that
+                will be appended. Else, they are not accessed.
+            targets: if `name_or_instr` is a string representing the instruction
+                name, this argument represent the targets the instruction should
+                be applied on. Else, it is not used.
+            args: if `name_or_instr` is a string representing the instruction
+                name, this argument represent the arguments the instruction
+                should be applied with. Else, it is not used.
+        """
+        if targets is None:
+            targets = tuple()
+        if args is None:
+            args = tuple()
+
+        instruction: stim.CircuitInstruction
+        if isinstance(name_or_instr, str):
+            instruction = stim.CircuitInstruction(name_or_instr, targets, args)
+        else:
+            instruction = name_or_instr
+
+        if is_annotation_instruction(instruction):
+            self.append_annotation(instruction)
+            return
+
+        # Checking Moment invariant
+        instruction_qubits = Moment._get_used_qubit_indices(
+            targets if isinstance(name_or_instr, str) else name_or_instr.targets_copy()
+        )
+        overlapping_qubits = self._used_qubits.intersection(instruction_qubits)
+        if overlapping_qubits:
+            raise TQECException(
+                f"Cannot add {instruction} to the Moment due to qubit(s) "
+                f"{overlapping_qubits} being already in use."
+            )
+        self._used_qubits.update(instruction_qubits)
+        self._circuit.append(instruction)
+
+    def append_annotation(
+        self, annotation_instruction: stim.CircuitInstruction
+    ) -> None:
+        """Append an annotation instruction to the Moment.
+
+        This method is way more efficient than :meth:`append_instruction` to
+        append an annotation. This is thanks to the fact that annotations are
+        not using any qubit and so can be appended without checking that the
+        instruction does not apply on already used qubits.
+
+        Args:
+            annotation_instruction: an annotation to append to the moment
+                represented by `self`.
+
+        Raises:
+            TQECException: if `not is_annotation_instruction(annotation_instruction)`.
+        """
+        if not is_annotation_instruction(annotation_instruction):
+            raise TQECException(
+                "The method append_annotation only supports appending "
+                f"annotations. Found instruction {annotation_instruction.name} "
+                "That is not a valid annotation. Call append_instruction for "
+                "generic instructions."
+            )
+        self._circuit.append(annotation_instruction)
 
     @property
     def instructions(self) -> ty.Iterator[stim.CircuitInstruction]:
