@@ -1,3 +1,4 @@
+from tqec.computation.zx_graph import NodeType, ZXEdge, ZXGraph, ZXNode
 from tqec.computation.block_graph import (
     BlockGraph,
     BlockType,
@@ -12,4 +13,3 @@ from tqec.computation.collada import (
     read_block_graph_from_dae_file,
     write_block_graph_to_dae_file,
 )
-from tqec.computation.zx_graph import NodeType, ZXEdge, ZXGraph, ZXNode
