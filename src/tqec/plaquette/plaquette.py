@@ -113,6 +113,10 @@ class Plaquette:
     def reliable_hash(self) -> int:
         return int(hashlib.md5(self.name.encode()).hexdigest(), 16)
 
+    @property
+    def num_measurements(self) -> int:
+        return self.circuit.num_measurements
+
 
 @dataclass(frozen=True)
 class Plaquettes:
