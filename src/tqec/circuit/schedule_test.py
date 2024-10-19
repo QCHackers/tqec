@@ -262,14 +262,14 @@ def test_scheduled_circuit_map_to_qubits() -> None:
     circuit = ScheduledCircuit.from_circuit(
         stim.Circuit("QUBIT_COORDS(0.0, 0.0) 0\nQUBIT_COORDS(0.0, 1.0) 1\nH 0 1")
     )
-    mapped_circuit = circuit.map_to_qubits(qubit_map)
+    mapped_circuit = circuit.map_to_qubits(lambda q: qubit_map[q])
     assert mapped_circuit.get_circuit() == stim.Circuit(
         "QUBIT_COORDS(18, 345) 0\nQUBIT_COORDS(1, 0) 1\nH 0 1"
     )
     assert circuit.get_circuit() == stim.Circuit(
         "QUBIT_COORDS(0.0, 0.0) 0\nQUBIT_COORDS(0.0, 1.0) 1\nH 0 1"
     )
-    circuit.map_to_qubits(qubit_map, inplace=True)
+    circuit.map_to_qubits(lambda q: qubit_map[q], inplace=True)
     assert circuit.get_circuit() == mapped_circuit.get_circuit()
 
 
