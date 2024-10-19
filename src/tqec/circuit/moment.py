@@ -305,7 +305,7 @@ class Moment:
             _avoid_checks=True,
         )
 
-    def __deepcopy__(self, memo: dict[Any, Any]) -> Moment:
+    def __deepcopy__(self, _: dict[Any, Any]) -> Moment:
         return Moment(
             self._circuit.copy(),
             used_qubits=self._used_qubits,

@@ -152,6 +152,7 @@ class ScheduledCircuit:
         moments: list[Moment],
         schedule: Schedule | list[int] | int,
         qubit_map: QubitMap,
+        _avoid_checks: bool = False,
     ) -> None:
         """Represent a quantum circuit with scheduled moments.
 
@@ -169,6 +170,10 @@ class ScheduledCircuit:
                 scheduled sequentially, starting by the provided integer.
             qubit_map: a map from indices to qubits that is used to re-create
                 `QUBIT_COORDS` instructions when generating a `stim.Circuit`.
+            _avoid_checks: if True, the inputs are not checked for pre-condition
+                violation and it is up to the user to ensure that
+                ScheduledCircuit pre-conditions are checked by the provided
+                input.
 
         Raises:
             ScheduleError: if the provided schedule is invalid.
@@ -188,10 +193,13 @@ class ScheduledCircuit:
                 "ScheduledCircuit expects all the provided moments to be scheduled. "
                 f"Got {len(moments)} moments but {len(schedule)} schedules."
             )
-        if any(m.contains_instruction("QUBIT_COORDS") for m in moments[1:]):
+        if not _avoid_checks and any(
+            m.contains_instruction("QUBIT_COORDS") for m in moments
+        ):
             raise ScheduleException(
                 "ScheduledCircuit instance expects the input `stim.Circuit` to "
-                "only contain QUBIT_COORDS instructions before the first TICK."
+                "not contain any QUBIT_COORDS instruction. Found at least one "
+                "moment with a QUBIT_COORDS instruction."
             )
 
         self._moments: list[Moment] = moments
@@ -200,7 +208,7 @@ class ScheduledCircuit:
 
     @staticmethod
     def empty() -> ScheduledCircuit:
-        return ScheduledCircuit([], Schedule(), QubitMap())
+        return ScheduledCircuit([], Schedule(), QubitMap(), _avoid_checks=True)
 
     @staticmethod
     def from_circuit(
@@ -236,8 +244,13 @@ class ScheduledCircuit:
         if isinstance(schedule, list):
             schedule = Schedule(schedule)
 
-        ScheduledCircuit._check_input_circuit(circuit)
-
+        # Ensure that the provided circuit does not contain any
+        # `stim.CircuitRepeatBlock` instance.
+        if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in circuit):
+            raise ScheduleException(
+                "stim.CircuitRepeatBlock instances are not supported in "
+                "a ScheduledCircuit instance."
+            )
         moments: list[Moment] = list(
             iter_stim_circuit_without_repeat_by_moments(
                 circuit, collected_before_use=True
@@ -259,17 +272,7 @@ class ScheduledCircuit:
         # And because we want the cleanest possible moments, we can remove the
         # `QUBIT_COORDS` instructions from the first moment.
         moments[0].remove_all_instructions_inplace(frozenset(["QUBIT_COORDS"]))
-        return ScheduledCircuit(moments, schedule, qubit_map)
-
-    @staticmethod
-    def _check_input_circuit(circuit: stim.Circuit) -> None:
-        # Ensure that the provided circuit does not contain any
-        # `stim.CircuitRepeatBlock` instance.
-        if any(isinstance(inst, stim.CircuitRepeatBlock) for inst in circuit):
-            raise ScheduleException(
-                "stim.CircuitRepeatBlock instances are not supported in "
-                "a ScheduledCircuit instance."
-            )
+        return ScheduledCircuit(moments, schedule, qubit_map, _avoid_checks=True)
 
     @property
     def schedule(self) -> Schedule:
@@ -398,9 +401,7 @@ class ScheduledCircuit:
             return self
         else:
             return ScheduledCircuit(
-                mapped_moments,
-                self._schedule,
-                mapped_final_qubits,
+                mapped_moments, self._schedule, mapped_final_qubits, _avoid_checks=True
             )
 
     def map_to_qubits(
@@ -432,13 +433,16 @@ class ScheduledCircuit:
         return operand
 
     def __copy__(self) -> ScheduledCircuit:
-        return ScheduledCircuit(self._moments, self._schedule, self._qubit_map)
-
-    def __deepcopy__(self, memo: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
-            deepcopy(self._moments, memo=memo),
-            deepcopy(self._schedule, memo=memo),
-            deepcopy(self._qubit_map, memo=memo),
+            self._moments, self._schedule, self._qubit_map, _avoid_checks=True
+        )
+
+    def __deepcopy__(self, _: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
+        return ScheduledCircuit(
+            deepcopy(self._moments),
+            deepcopy(self._schedule),
+            deepcopy(self._qubit_map),
+            _avoid_checks=True,
         )
 
     @property
@@ -613,7 +617,7 @@ class ScheduledCircuit:
             filtered_schedule.append(schedule)
         qubit_map = self._qubit_map.filter_by_qubits(qubits_to_keep)
         filtered_circuit = ScheduledCircuit(
-            filtered_moments, Schedule(filtered_schedule), qubit_map
+            filtered_moments, Schedule(filtered_schedule), qubit_map, _avoid_checks=True
         )
         # The qubit indices may not be contiguous anymore, so we need to remap them.
         indices_map = {oi: ni for ni, oi in enumerate(qubit_map.indices)}
@@ -851,11 +855,7 @@ def merge_scheduled_circuits(
         all_moments.append(Moment(circuit))
         all_schedules.append(schedule)
 
-    return ScheduledCircuit(
-        all_moments,
-        all_schedules,
-        global_i2q,
-    )
+    return ScheduledCircuit(all_moments, all_schedules, global_i2q, _avoid_checks=True)
 
 
 def relabel_circuits_qubit_indices(
