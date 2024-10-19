@@ -16,6 +16,7 @@ tqec.templates.display
    
       display_template
       display_template_from_instantiation
+      get_template_representation_from_instantiation
    
    
 

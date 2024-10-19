@@ -25,4 +25,10 @@ tqec.plaquette.frozendefaultdict.FrozenDefaultDict
 
    
    
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~FrozenDefaultDict.default_factory
+   
    

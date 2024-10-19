@@ -229,7 +229,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">generate_circuit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_template</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+                <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">inplace_qubit_map</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span>
         <span class="p">]</span></div>

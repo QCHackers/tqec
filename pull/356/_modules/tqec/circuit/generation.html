@@ -101,13 +101,14 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
-<span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
-<span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span><span class="p">,</span> <span class="n">merge_scheduled_circuits</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ScheduledCircuit</span><span class="p">,</span>
+    <span class="n">merge_scheduled_circuits</span><span class="p">,</span>
+    <span class="n">relabel_circuits_qubit_indices</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquette</span><span class="p">,</span> <span class="n">Plaquettes</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Displacement</span>
@@ -222,32 +223,38 @@
     <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plaquette_array</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">column_index</span><span class="p">,</span> <span class="n">plaquette_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">plaquette_index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">scheduled_circuit</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">plaquette_circuits</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">])</span>
-                <span class="n">offset</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
-                    <span class="n">column_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">row_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">y</span>
-                <span class="p">)</span>
+                <span class="c1"># Warning: this is a reference to a shared circuit. It cannot be</span>
+                <span class="c1">#          changed in-place!!</span>
+                <span class="n">scheduled_circuit</span> <span class="o">=</span> <span class="n">plaquette_circuits</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">]</span>
                 <span class="n">plaquette</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">]</span>
-                <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">_create_mapping</span><span class="p">(</span><span class="n">plaquette</span><span class="p">,</span> <span class="n">scheduled_circuit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
-                <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="n">all_scheduled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scheduled_circuit</span><span class="p">)</span>
+                <span class="n">qubit_offset</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
+                    <span class="n">plaquette</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">column_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">plaquette</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">row_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="c1"># Warning: the variable `mapped_scheduled_circuit` shares with</span>
+                <span class="c1">#          `plaquette_circuits[plaquette_index]` a reference to</span>
+                <span class="c1">#          the circuit data-structure. This is not an issue here</span>
+                <span class="c1">#          as we never attempt to mutate that circuit before</span>
+                <span class="c1">#          calling `relabel_circuits_qubit_indices`, that</span>
+                <span class="c1">#          explicitly returns a copy of its inputs, and do not</span>
+                <span class="c1">#          mutate them either.</span>
+                <span class="n">mapped_scheduled_circuit</span> <span class="o">=</span> <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span> <span class="o">+</span> <span class="n">qubit_offset</span><span class="p">,</span> <span class="n">inplace_qubit_map</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+                <span class="n">all_scheduled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapped_scheduled_circuit</span><span class="p">)</span>
                 <span class="n">additional_mergeable_instructions</span> <span class="o">|=</span> <span class="n">plaquette</span><span class="o">.</span><span class="n">mergeable_instructions</span>
 
-    <span class="c1"># Merge everything!</span>
+    <span class="c1"># Merge everything, but first make sure that the circuits are compatible.</span>
+    <span class="c1"># Note that relabel_circuits_qubit_indices guarantees in its documentation</span>
+    <span class="c1"># that the input circuits are not mutated but rather copied. This allows us</span>
+    <span class="c1"># to not deepcopy the circuits earlier in the function.</span>
+    <span class="n">all_scheduled_circuits</span><span class="p">,</span> <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">relabel_circuits_qubit_indices</span><span class="p">(</span>
+        <span class="n">all_scheduled_circuits</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">merge_scheduled_circuits</span><span class="p">(</span>
-        <span class="n">all_scheduled_circuits</span><span class="p">,</span> <span class="n">additional_mergeable_instructions</span>
+        <span class="n">all_scheduled_circuits</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">,</span> <span class="n">additional_mergeable_instructions</span>
     <span class="p">)</span></div>
 
-
-
-<span class="k">def</span> <span class="nf">_create_mapping</span><span class="p">(</span>
-    <span class="n">plaquette</span><span class="p">:</span> <span class="n">Plaquette</span><span class="p">,</span> <span class="n">scheduled_circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">Displacement</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]:</span>
-    <span class="n">origin</span> <span class="o">=</span> <span class="n">plaquette</span><span class="o">.</span><span class="n">origin</span>
-    <span class="n">qubit_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">qubit</span><span class="p">:</span> <span class="n">qubit</span> <span class="o">+</span> <span class="n">Displacement</span><span class="p">(</span><span class="n">offset</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">scheduled_circuit</span><span class="o">.</span><span class="n">qubits</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">qubit_map</span>
 </pre></div>
 
            </div>

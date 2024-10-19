@@ -19,8 +19,8 @@ tqec.circuit.moment.Moment
       ~Moment.check_is_valid_moment
       ~Moment.contains_instruction
       ~Moment.filter_by_qubits
-      ~Moment.operates_on
       ~Moment.remove_all_instructions_inplace
+      ~Moment.with_mapped_qubit_indices
    
    
 

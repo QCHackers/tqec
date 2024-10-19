@@ -16,6 +16,7 @@ tqec.plaquette.plaquette.Plaquettes
       ~Plaquettes.__init__
       ~Plaquettes.map_indices
       ~Plaquettes.repeat
+      ~Plaquettes.to_name_dict
       ~Plaquettes.with_updated_plaquettes
    
    
