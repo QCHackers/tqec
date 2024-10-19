@@ -147,9 +147,13 @@ def _compute_detectors_at_end_of_situation(
             "Unsupported input: you should provide as many subtemplates as "
             "there are plaquettes."
         )
-    # Note: if the last entry of `subtemplates` is full of zero, then we can be
-    #       sure there are no detectors here, so early return.
-    if numpy.all(subtemplates[-1] == 0):
+    # Note: if the center plaquette of the last entry of `subtemplates` does not
+    #       contain any measurement, then we can be sure that there is no
+    #       detectors here, so early return.
+    radius = subtemplates[-1].shape[0] // 2
+    center_plaquette_index = subtemplates[-1][radius, radius]
+    center_plaquette = plaquettes[-1][center_plaquette_index]
+    if center_plaquette.num_measurements == 0:
         return frozenset()
 
     # Note: if there is more than 1 time slice, remove any initial time slice
