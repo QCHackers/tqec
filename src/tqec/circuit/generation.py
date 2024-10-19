@@ -18,13 +18,14 @@ Note that these methods do not work with `REPEAT` instructions.
 
 from __future__ import annotations
 
-from copy import deepcopy
-
 import numpy
 import numpy.typing as npt
 
-from tqec.circuit.qubit import GridQubit
-from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
+from tqec.circuit.schedule import (
+    ScheduledCircuit,
+    merge_scheduled_circuits,
+    relabel_circuits_qubit_indices,
+)
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Displacement
@@ -142,13 +143,26 @@ def generate_circuit_from_instantiation(
                     plaquette.origin.x + column_index * increments.x,
                     plaquette.origin.y + row_index * increments.y,
                 )
+                # Warning: the variable `mapped_scheduled_circuit` shares with
+                #          `plaquette_circuits[plaquette_index]` a reference to
+                #          the circuit data-structure. This is not an issue here
+                #          as we never attempt to mutate that circuit before
+                #          calling `relabel_circuits_qubit_indices`, that
+                #          explicitly returns a copy of its inputs, and do not
+                #          mutate them either.
                 mapped_scheduled_circuit = scheduled_circuit.map_to_qubits(
-                    lambda q: q + qubit_offset, inplace=False
+                    lambda q: q + qubit_offset, inplace_qubit_map=False
                 )
                 all_scheduled_circuits.append(mapped_scheduled_circuit)
                 additional_mergeable_instructions |= plaquette.mergeable_instructions
 
-    # Merge everything!
+    # Merge everything, but first make sure that the circuits are compatible.
+    # Note that relabel_circuits_qubit_indices guarantees in its documentation
+    # that the input circuits are not mutated but rather copied. This allows us
+    # to not deepcopy the circuits earlier in the function.
+    all_scheduled_circuits, qubit_map = relabel_circuits_qubit_indices(
+        all_scheduled_circuits
+    )
     return merge_scheduled_circuits(
-        all_scheduled_circuits, additional_mergeable_instructions
+        all_scheduled_circuits, qubit_map, additional_mergeable_instructions
     )

@@ -269,7 +269,7 @@ def test_scheduled_circuit_map_to_qubits() -> None:
     assert circuit.get_circuit() == stim.Circuit(
         "QUBIT_COORDS(0.0, 0.0) 0\nQUBIT_COORDS(0.0, 1.0) 1\nH 0 1"
     )
-    circuit.map_to_qubits(lambda q: qubit_map[q], inplace=True)
+    circuit.map_to_qubits(lambda q: qubit_map[q], inplace_qubit_map=True)
     assert circuit.get_circuit() == mapped_circuit.get_circuit()
 
 
@@ -371,20 +371,13 @@ def test_relabel_circuits_qubit_indices() -> None:
 def test_merge_scheduled_circuits() -> None:
     # Any qubit target not defined by a QUBIT_COORDS instruction should raise
     # an exception.
-    with pytest.raises(KeyError):
-        merge_scheduled_circuits(
-            [
-                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
-                ScheduledCircuit.from_circuit(stim.Circuit("H 0 1 2")),
-            ]
-        )
-
-    circuit = merge_scheduled_circuits(
+    _circuits, _qubit_map = relabel_circuits_qubit_indices(
         [
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0")),
         ]
     )
+    circuit = merge_scheduled_circuits(_circuits, _qubit_map)
     assert circuit.get_circuit() == stim.Circuit(
         "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 1) 1\nH 0\nX 1"
     )
@@ -394,11 +387,12 @@ def test_merge_scheduled_circuits() -> None:
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")),
         ],
+        global_qubit_map=QubitMap({0: GridQubit(0, 0)}),
         mergeable_instructions=["H"],
     )
     assert circuit.get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
 
-    circuit = merge_scheduled_circuits(
+    _circuits, _qubit_map = relabel_circuits_qubit_indices(
         [
             ScheduledCircuit.from_circuit(
                 stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0\nTICK\nM 0"), [0, 2]
@@ -406,6 +400,7 @@ def test_merge_scheduled_circuits() -> None:
             ScheduledCircuit.from_circuit(stim.Circuit("QUBIT_COORDS(1, 1) 0\nX 0"), 1),
         ]
     )
+    circuit = merge_scheduled_circuits(_circuits, _qubit_map)
     assert circuit.get_circuit() == stim.Circuit(
         "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 1) 1\nH 0\nTICK\nX 1\nTICK\nM 0"
     )

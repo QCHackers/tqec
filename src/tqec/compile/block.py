@@ -138,7 +138,7 @@ class BlockLayout:
         )
         return [
             generate_circuit(self._template, k, layer).map_to_qubits(
-                lambda q: q + offset, inplace=True
+                lambda q: q + offset, inplace_qubit_map=True
             )
             for layer in self._layers
         ]
