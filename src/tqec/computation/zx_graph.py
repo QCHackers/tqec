@@ -8,6 +8,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, cast
 
 import networkx as nx
+import stim
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
@@ -57,6 +58,10 @@ class ZXNode:
         return self.node_type == NodeType.Y
 
     @property
+    def is_zx_node(self) -> bool:
+        """Check if the node is an X or Z-type node."""
+        return self.node_type in [NodeType.X, NodeType.Z]
+
     def with_zx_flipped(self) -> ZXNode:
         """Get a new node with the node type flipped."""
         return ZXNode(self.position, self.node_type.with_zx_flipped())
@@ -170,9 +175,9 @@ class ZXGraph:
         return self._ports
 
     @property
-    def port_labels(self) -> list[str]:
-        """Get the labels of the open ports."""
-        return list(self._ports.keys())
+    def ordered_port_labels(self) -> list[str]:
+        """Get the labels of the open ports in the order of their positions."""
+        return sorted(self._ports.keys(), key=lambda label: self._ports[label])
 
     def is_port(self, position: Position3D) -> bool:
         """Check if the node at the position is an open port."""
@@ -363,7 +368,7 @@ class ZXGraph:
         """Get a new ZX graph with the node types flipped."""
         new_graph = ZXGraph(name or self.name)
         for edge in self.edges:
-            u, v = edge.u.with_zx_flipped, edge.v.with_zx_flipped
+            u, v = edge.u.with_zx_flipped(), edge.v.with_zx_flipped()
             port_label = None
             if u.is_port or v.is_port:
                 pos_to_label = {pos: label for label, pos in self.ports.items()}
@@ -377,3 +382,8 @@ class ZXGraph:
                 port_label,
             )
         return new_graph
+
+    @property
+    def is_single_connected_component(self) -> bool:
+        """Check if the graph is a single connected component."""
+        return nx.number_connected_components(self._graph) == 1
