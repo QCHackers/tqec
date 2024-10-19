@@ -8,12 +8,12 @@ from enum import Enum
 from typing import TYPE_CHECKING, cast
 
 import networkx as nx
-import stim
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
 if TYPE_CHECKING:
+    from tqec.computation.correlation import CorrelationSurface
     from tqec.computation.block_graph import BlockGraph
 
 
@@ -32,6 +32,9 @@ class NodeType(Enum):
             return NodeType.X
         else:
             return self
+
+    def __str__(self) -> str:
+        return self.value
 
 
 @dataclass(frozen=True)
@@ -65,6 +68,9 @@ class ZXNode:
     def with_zx_flipped(self) -> ZXNode:
         """Get a new node with the node type flipped."""
         return ZXNode(self.position, self.node_type.with_zx_flipped())
+
+    def __str__(self) -> str:
+        return f"{self.node_type}{self.position}"
 
 
 @dataclass(frozen=True)
@@ -103,6 +109,9 @@ class ZXEdge:
         if u.y != v.y:
             return Direction3D.Y
         return Direction3D.Z
+
+    def __str__(self) -> str:
+        return f"{self.u}-{self.v}"
 
 
 _NODE_DATA_KEY = "tqec_zx_node_data"
@@ -339,7 +348,16 @@ class ZXGraph:
             if node_type == NodeType.P:
                 raise TQECException("Cannot fill the ports with port type.")
             pos = self._ports[label]
-            self._graph.add_node(pos, **{_NODE_DATA_KEY: ZXNode(pos, node_type)})
+            fill_node = ZXNode(pos, node_type)
+            self._graph.add_node(pos, **{_NODE_DATA_KEY: fill_node})
+            for edge in self.edges_at(pos):
+                self._graph.remove_edge(edge.u.position, edge.v.position)
+                other = edge.u if edge.v.position == pos else edge.v
+                self._graph.add_edge(
+                    other.position,
+                    pos,
+                    **{_EDGE_DATA_KEY: ZXEdge(other, fill_node, edge.has_hadamard)},
+                )
             self._ports.pop(label)
 
     def to_block_graph(self, name: str = "") -> BlockGraph:
@@ -387,3 +405,9 @@ class ZXGraph:
     def is_single_connected_component(self) -> bool:
         """Check if the graph is a single connected component."""
         return nx.number_connected_components(self._graph) == 1
+
+    def find_correration_surfaces(self) -> set[CorrelationSurface]:
+        """Find the correlation surfaces in the ZX graph."""
+        from tqec.computation.correlation import find_correlation_surfaces
+
+        return find_correlation_surfaces(self)

@@ -8,9 +8,12 @@ from tqec.computation.zx_graph import NodeType, ZXEdge, ZXGraph, ZXNode
 def test_zx_node() -> None:
     node = ZXNode(Position3D(0, 0, 0), NodeType.Z)
     assert not node.is_port
+    assert str(node) == "Z(0,0,0)"
 
     node = ZXNode(Position3D(0, 1, 4), NodeType.P)
     assert node.is_port
+    assert str(node) == "PORT(0,1,4)"
+
 
 
 def test_zx_edge() -> None:
@@ -21,6 +24,7 @@ def test_zx_edge() -> None:
     assert edge.u.position == Position3D(1, 0, 0)
     assert edge.v.position == Position3D(2, 0, 0)
     assert edge.direction == Direction3D.X
+    assert str(edge) == "X(1,0,0)-Z(2,0,0)"
 
     with pytest.raises(TQECException, match="An edge must connect two nearby nodes."):
         ZXEdge(
@@ -176,6 +180,9 @@ def test_zx_graph_fill_ports() -> None:
     assert g.num_ports == 0
     assert g[Position3D(0, 0, 0)].node_type == NodeType.X
     assert g[Position3D(2, 0, 0)].node_type == NodeType.X
+    new_edge = g.get_edge(Position3D(0, 0, 0), Position3D(1, 0, 0))
+    assert new_edge.u == ZXNode(Position3D(0, 0, 0), NodeType.X)
+    assert new_edge.v == ZXNode(Position3D(1, 0, 0), NodeType.X)
     assert g.num_nodes == 3
     assert g.num_ports == 0
 

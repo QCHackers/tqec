@@ -20,7 +20,7 @@ class CorrelationSurface:
             stabilizer is a Pauli string with the same length as the number of ports in the
             ZX graph. The Pauli operator at each port is determined by the correlation type
             of the port. It determines the correlation between the logical operators at the
-            ports.
+            ports. Sign of the stabilizer is neglected.
 
     """
 
@@ -55,7 +55,7 @@ def find_correlation_surfaces(
     # If the node is isolated, it is guaranteed to be X/Z type.
     # Then return a single node correlation surface.
     if zx_graph.num_nodes == 1 and zx_graph.num_edges == 0:
-        return {CorrelationSurface(zx_graph.nodes[0], "")}
+        return {CorrelationSurface(zx_graph.nodes[0].with_zx_flipped(), "")}
     # Start from each leaf node to find the correlation surfaces.
     correlation_surfaces = set()
     for leaf in zx_graph.leaf_nodes:
@@ -73,7 +73,9 @@ def find_correlation_surfaces_at_leaf(
     # Travese the graph to find the correlation spans.
     # Z/X type node can only support the correlation surface with the same type.
     if leaf.is_zx_node:
-        spans = _find_correlation_spans_dfs(zx_graph, leaf, leaf, set())
+        spans = _find_correlation_spans_dfs(
+            zx_graph, leaf, leaf.with_zx_flipped(), set()
+        )
         return _construct_compatible_correlation_surfaces(zx_graph, spans)
     x_spans = _find_correlation_spans_dfs(
         zx_graph, leaf, ZXNode(leaf.position, NodeType.X), set()
@@ -149,7 +151,11 @@ def _is_compatible_correlation(
         correlation_type = correlation_types.get(leaf.position)
         if correlation_type is None:
             continue
-        if leaf.node_type != correlation_type:
+        # Y type correlation must be be supported on the Y type node.
+        if (correlation_type == NodeType.Y) != (leaf.node_type == NodeType.Y):
+            return False
+        # Z/X type correlation must be supported on the opposite type node.
+        if correlation_type != NodeType.Y and correlation_type == leaf.node_type:
             return False
     return True
 
@@ -177,15 +183,14 @@ def _correlation_type_product(
     type1: NodeType,
     type2: NodeType,
 ) -> NodeType | None:
-    match type1, type2:
-        case NodeType.X, NodeType.Z:
-            return NodeType.Y
-        case NodeType.X, NodeType.Y:
-            return NodeType.Z
-        case NodeType.Y, NodeType.Z:
-            return NodeType.X
-        case _:
-            return None
+    type_set = set([type1, type2])
+    if type_set == {NodeType.X, NodeType.Z}:
+        return NodeType.Y
+    if type_set == {NodeType.X, NodeType.Y}:
+        return NodeType.Z
+    if type_set == {NodeType.Y, NodeType.Z}:
+        return NodeType.X
+    return None
 
 
 def _find_correlation_spans_dfs(
@@ -214,13 +219,13 @@ def _find_correlation_spans_dfs(
         Append the spans to the `branched_spans_from_parent`.
     3. Post-processing
         - If no spans are found, return a single empty span.
-        - If the color of the node matches the correlation type, all the children
-        should be traversed. Iterate through all the combinations where exactly one
-        span is selected from each child, and union them to form a new span.
-        Append the new span to the `correlation_spans`.
-        - If the color of the node does not match the correlation type, only one
-        child can be traversed. Append all the spans in the `branched_spans_from_parent`
-        to the `correlation_spans`.
+        - If the color of the node does not match the correlation type, all the children
+        should be traversed. Iterate through all the combinations where exactly one span
+        is selected from each child, and union them to form a new span. Append the new
+        span to the `correlation_spans`.
+        - If the color of the node matches the correlation type, only one child can be
+        traversed. Append all the spans in the `branched_spans_from_parent` to the
+        `correlation_spans`.
     """
     correlation_spans: list[frozenset[ZXEdge]] = []
     parent_position = parent_zx_node.position
@@ -255,13 +260,13 @@ def _find_correlation_spans_dfs(
         )
     if not branched_spans_from_parent:
         return [frozenset()]
-    # the color of node matches the correlation type
+    # the color of node does not match the correlation type
     # broadcast the correlation type to all the neighbors
-    if parent_zx_type == parent_correlation_type:
+    if parent_zx_type != parent_correlation_type:
         for prod in itertools.product(*branched_spans_from_parent):
             correlation_spans.append(frozenset(itertools.chain(*prod)))
     else:
-        # the color of node does not match the correlation type
+        # the color of node match the correlation type
         # only one of the neighbors can be the correlation path
         correlation_spans.extend(itertools.chain(*branched_spans_from_parent))
     return correlation_spans
