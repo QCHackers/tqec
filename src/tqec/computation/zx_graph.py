@@ -52,6 +52,11 @@ class ZXNode:
         return self.node_type == NodeType.P
 
     @property
+    def is_y_node(self) -> bool:
+        """Check if the node is a Y-type node."""
+        return self.node_type == NodeType.Y
+
+    @property
     def with_zx_flipped(self) -> ZXNode:
         """Get a new node with the node type flipped."""
         return ZXNode(self.position, self.node_type.with_zx_flipped())
@@ -76,6 +81,8 @@ class ZXEdge:
             raise TQECException("An edge must connect two nearby nodes.")
         if self.u.is_port and self.v.is_port:
             raise TQECException("Cannot create an edge between two ports.")
+        if (self.u.is_y_node or self.v.is_y_node) and self.direction != Direction3D.Z:
+            raise TQECException("An edge with Y-type node must be in the Z-direction.")
         # Ensure position of u is less than v
         u, v = self.u, self.v
         if self.u.position > self.v.position:
@@ -162,6 +169,11 @@ class ZXGraph:
         """Get the position of open ports of the graph."""
         return self._ports
 
+    @property
+    def port_labels(self) -> list[str]:
+        """Get the labels of the open ports."""
+        return list(self._ports.keys())
+
     def is_port(self, position: Position3D) -> bool:
         """Check if the node at the position is an open port."""
         return position in self._ports.values()
@@ -174,17 +186,23 @@ class ZXGraph:
         position: Position3D,
         node_type: NodeType,
     ) -> None:
-        """Add a node to the graph.
+        """Add a node to the graph. If the a node already exists at the position, the
+        node type will be updated.
 
-        If the a node already exists at the position, the node type will be updated.
+        Note that a port or a Y-type node can only be added to the graph using `add_edge`
+        because they must be connected to other nodes.
 
         Args:
             position: The 3D position of the node.
             node_type: The type of the node.
+
+        Raises:
+            TQECException: If the node type is P or Y.
+            TQECException: If a different node already exists at the position.
         """
-        if node_type == NodeType.P:
+        if node_type == NodeType.P or node_type == NodeType.Y:
             raise TQECException(
-                "A port cannot be added solely, please use `add_edge` instead."
+                "Cannot add a P or Y-type node solely, please use add_edge."
             )
         node = ZXNode(position, node_type)
         self._check_node_conflict(node)
@@ -202,10 +220,6 @@ class ZXGraph:
         """Add an X-type node to the graph."""
         self.add_node(position, NodeType.X)
 
-    def add_y_node(self, position: Position3D) -> None:
-        """Add an Y-type node to the graph."""
-        self.add_node(position, NodeType.Y)
-
     def add_z_node(self, position: Position3D) -> None:
         """Add a Z-type node to the graph."""
         self.add_node(position, NodeType.Z)
@@ -220,7 +234,7 @@ class ZXGraph:
         """Add an edge to the graph. If the nodes do not exist in the graph,
         the nodes will be created.
 
-        A port can only be added to the graph using this method along with an edge.
+        A port or a Y-type node can only be added to the graph using this method.
 
         Args:
             u: The first node of the edge.
@@ -232,16 +246,15 @@ class ZXGraph:
         Raises:
             TQECException: If the edge does not connect two nearby nodes.
             TQECException: If add the edge to two ports.
-            TQECException: If add the edge to a port that already has an edge.
+            TQECException: If add the edge to a port or a Y node that already has an edge.
             TQECException: If the edge includes a port, but the port label is not provided.
             TQECException: If the edge includes a port, but the port label is already used.
 
         """
         if not u.position.is_neighbour(v.position):
             raise TQECException("An edge must connect two nearby nodes.")
-        if self.has_edge_between(u.position, v.position):
-            self._check_node_conflict(u)
-            self._check_node_conflict(v)
+        self._check_node_conflict(u)
+        self._check_node_conflict(v)
         if u.is_port and v.is_port:
             raise TQECException("Cannot create an edge between two ports.")
         port_update: dict[str, Position3D] = {}
@@ -256,14 +269,15 @@ class ZXGraph:
                 )
             port_update[port_label] = u.position if u.is_port else v.position
         for node in [u, v]:
-            if node.is_port and len(self.edges_at(node.position)) != 0:
-                raise TQECException(f"Port {node} should have at most one edge.")
+            if node.node_type in [NodeType.Z, NodeType.X]:
+                continue
+            if len(self.edges_at(node.position)) != 0:
+                raise TQECException("Node of type P or Y should have at most one edge.")
+        edge = ZXEdge(u, v, has_hadamard)
 
         self._graph.add_node(u.position, **{_NODE_DATA_KEY: u})
         self._graph.add_node(v.position, **{_NODE_DATA_KEY: v})
-        self._graph.add_edge(
-            u.position, v.position, **{_EDGE_DATA_KEY: ZXEdge(u, v, has_hadamard)}
-        )
+        self._graph.add_edge(u.position, v.position, **{_EDGE_DATA_KEY: edge})
         self._ports.update(port_update)
 
     def __contains__(self, position: Position3D) -> bool:
