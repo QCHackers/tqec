@@ -10,7 +10,7 @@ instead of using `cirq` data-structures.
 
 from __future__ import annotations
 
-import typing as ty
+from typing import Any, Callable, Iterable, Iterator, cast
 
 import stim
 
@@ -41,10 +41,44 @@ class Moment:
     moment, even though the annotation is never executed in hardware).
     """
 
-    def __init__(self, circuit: stim.Circuit, copy_circuit: bool = False) -> None:
-        Moment.check_is_valid_moment(circuit)
-        self._circuit: stim.Circuit = circuit.copy() if copy_circuit else circuit
-        self._used_qubits: set[int] = get_used_qubit_indices(self._circuit)
+    def __init__(
+        self,
+        circuit: stim.Circuit,
+        used_qubits: set[int] | None = None,
+        _avoid_checks: bool = False,
+    ) -> None:
+        """Initialize a `Moment` instance.
+
+        Args:
+            circuit: collection of instructions representing the `Moment`. It
+                should represent a valid moment, see the class documentation for
+                a detailed explanation of the pre-conditions.
+            used_qubits: a set of qubit indices used in the provided `circuit`.
+                It is the user responsibility to ensure that this input is
+                correct if it is provided, as any non-None input will not be
+                checked. Defaults to None, which triggers a call to
+                :func:`get_used_qubit_indices` to initialise the indices.
+            _avoid_checks: avoid checking the validity of the provided `circuit`.
+                This parameter can be used when the user knows that the provided
+                `circuit` is a valid moment (and so checks the pre-conditions
+                listed in the class documentation). Defaults to False, which
+                triggers a systematic check and might raise if the provided
+                circuit is not a valid moment.
+
+        Raises:
+            TQECException: if the circuit contains one or more `TICK` instruction.
+            TQECException: if the circuit contains at least 2 non-annotation
+                instructions that are applied on the same qubit target.
+            TQECException: if the circuit contains a `REPEAT` block instruction.
+        """
+        if not _avoid_checks:
+            Moment.check_is_valid_moment(circuit)
+        self._circuit: stim.Circuit = circuit
+        self._used_qubits: set[int]
+        if used_qubits is not None:
+            self._used_qubits = used_qubits
+        else:
+            self._used_qubits = get_used_qubit_indices(self._circuit)
 
     @property
     def circuit(self) -> stim.Circuit:
@@ -52,6 +86,17 @@ class Moment:
 
     @staticmethod
     def check_is_valid_moment(circuit: stim.Circuit) -> None:
+        """Check if the provided circuit can be considered a valid moment.
+
+        Args:
+            circuit: instance to check.
+
+        Raises:
+            TQECException: if the circuit contains one or more `TICK` instruction.
+            TQECException: if the circuit contains at least 2 non-annotation
+                instructions that are applied on the same qubit target.
+            TQECException: if the circuit contains a `REPEAT` block instruction.
+        """
         if circuit.num_ticks > 0:
             raise TQECException(
                 "Cannot initialize a Moment with a stim.Circuit instance "
@@ -100,10 +145,8 @@ class Moment:
             new_circuit.append(inst)
         self._circuit = new_circuit
 
-    def __iadd__(self, other: Moment | stim.Circuit) -> Moment:
+    def __iadd__(self, other: Moment) -> Moment:
         """Add instructions in-place in `self`."""
-        if isinstance(other, stim.Circuit):
-            other = Moment(other, copy_circuit=False)
         both_sides_used_qubits = self._used_qubits.intersection(other._used_qubits)
         if both_sides_used_qubits:
             raise TQECException(
@@ -114,7 +157,7 @@ class Moment:
 
     @staticmethod
     def _get_used_qubit_indices(
-        targets: ty.Iterable[int | stim.GateTarget],
+        targets: Iterable[int | stim.GateTarget],
     ) -> list[int]:
         qubits: list[int] = []
         for target in targets:
@@ -130,8 +173,8 @@ class Moment:
     def append(
         self,
         name_or_instr: str | stim.CircuitInstruction,
-        targets: ty.Iterable[int | stim.GateTarget] | None = None,
-        args: ty.Iterable[float] | None = None,
+        targets: Iterable[int | stim.GateTarget] | None = None,
+        args: Iterable[float] | None = None,
     ) -> None:
         """Append an instruction to the :class:`Moment`.
 
@@ -206,24 +249,17 @@ class Moment:
         self._circuit.append(annotation_instruction)
 
     @property
-    def instructions(self) -> ty.Iterator[stim.CircuitInstruction]:
+    def instructions(self) -> Iterator[stim.CircuitInstruction]:
         """Iterator over all the instructions contained in the moment."""
         # We can ignore the type error below because:
         # 1. if a Moment instance is created with a stim.CircuitRepeatBlock
         #    instance, it will raise an exception.
-        # 2. `Moment.__iadd__` is the only method that may add an instance of
-        #    stim.CircuitRepeatBlock, but it checks that the input circuit to be
-        #    added does not contain such an instance (by creating a Moment from
-        #    it).
+        # 2. `Moment.append` is the only method that may add an instance of
+        #    stim.CircuitRepeatBlock, but its typing information explicitly
+        #    prevents that case.
         # So we know for sure that there are only `stim.CircuitInstruction`
         # instances.
         yield from self._circuit  # type: ignore
-
-    def operates_on(self, qubits: ty.Sequence[int]) -> bool:
-        """Returns `True` if `self` contains non-annotation operations that are
-        applied on each of the provided qubit indices."""
-        qindices = self.qubits_indices
-        return all(q in qindices for q in qubits)
 
     @property
     def num_measurements(self) -> int:
@@ -235,37 +271,74 @@ class Moment:
         # so let's ignore it for the moment.
         return self._circuit.num_measurements  # type: ignore
 
-    def filter_by_qubits(self, qubits_to_keep: ty.Iterable[int]) -> Moment:
+    def filter_by_qubits(self, qubits_to_keep: Iterable[int]) -> Moment:
         """Return a new :class:`Moment` instance containing only the
         instructions that are applied on the provided qubits."""
         qubits = frozenset(qubits_to_keep)
+        used_qubits: set[int] = set()
         new_circuit = stim.Circuit()
         for instruction in self.instructions:
             targets: list[stim.GateTarget] = []
             for target_group in instruction.target_groups():
                 qubit_targets = [
-                    ty.cast(int, t.qubit_value)
-                    for t in target_group
-                    if t.is_qubit_target
+                    cast(int, t.qubit_value) for t in target_group if t.is_qubit_target
                 ]
                 if any(q not in qubits for q in qubit_targets):
                     continue
                 targets.extend(target_group)
+                used_qubits.update(qubit_targets)
             if targets:
                 new_circuit.append(
                     instruction.name, targets, instruction.gate_args_copy()
                 )
-        return Moment(new_circuit)
+        return Moment(new_circuit, used_qubits=used_qubits, _avoid_checks=True)
 
     @property
     def is_empty(self) -> bool:
         """Return `True` if the :class:`Moment` instance is empty."""
         return len(self._circuit) == 0
 
+    def __copy__(self) -> Moment:
+        return Moment(
+            self._circuit,
+            used_qubits=self._used_qubits,
+            _avoid_checks=True,
+        )
+
+    def __deepcopy__(self, memo: dict[Any, Any]) -> Moment:
+        return Moment(
+            self._circuit.copy(),
+            used_qubits=self._used_qubits,
+            _avoid_checks=True,
+        )
+
+    def with_mapped_qubit_indices(self, qubit_index_map: dict[int, int]) -> Moment:
+        circuit = stim.Circuit()
+        for instr in self.instructions:
+            mapped_targets: list[stim.GateTarget] = []
+            for target in instr.targets_copy():
+                # Non qubit targets are left untouched.
+                if not target.is_qubit_target:
+                    mapped_targets.append(target)
+                    continue
+                # Qubit targets are mapped using `qubit_index_map`
+                target_qubit = cast(int, target.qubit_value)
+                mapped_targets.append(
+                    stim.GateTarget(qubit_index_map[target_qubit])
+                    if not target.is_inverted_result_target
+                    else stim.GateTarget(-qubit_index_map[target_qubit])
+                )
+            circuit.append(instr.name, mapped_targets, instr.gate_args_copy())
+        return Moment(
+            circuit,
+            used_qubits={qubit_index_map[q] for q in self._used_qubits},
+            _avoid_checks=True,
+        )
+
 
 def iter_stim_circuit_without_repeat_by_moments(
     circuit: stim.Circuit, collected_before_use: bool = True
-) -> ty.Iterator[Moment]:
+) -> Iterator[Moment]:
     """Iterate over the `stim.Circuit` by moments.
 
     A moment in a `stim.Circuit` is a sequence of instructions between two `TICK`
@@ -291,7 +364,7 @@ def iter_stim_circuit_without_repeat_by_moments(
             inserted such that instructions between two `TICK` instructions
             are always applied on disjoint sets of qubits.
     """
-    copy_func: ty.Callable[[stim.Circuit], stim.Circuit] = (
+    copy_func: Callable[[stim.Circuit], stim.Circuit] = (
         (lambda c: c.copy()) if collected_before_use else (lambda c: c)
     )
     cur_moment = stim.Circuit()

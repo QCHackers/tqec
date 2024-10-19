@@ -26,7 +26,6 @@ _INVALID_MOMENT_CIRCUITS: list[stim.Circuit] = [
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
 def test_moment_creation(circuit: stim.Circuit) -> None:
     Moment(circuit)
-    Moment(circuit, copy_circuit=True)
 
 
 @pytest.mark.parametrize("circuit", _INVALID_MOMENT_CIRCUITS)
@@ -38,7 +37,6 @@ def test_moment_invalid_creation(circuit: stim.Circuit) -> None:
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
 def test_moment_circuit_property(circuit: stim.Circuit) -> None:
     assert Moment(circuit).circuit == circuit
-    assert Moment(circuit, copy_circuit=True).circuit == circuit
 
 
 def test_moment_qubit_indices() -> None:
@@ -96,17 +94,17 @@ def test_moment_remove_all_instructions_inplace() -> None:
 
 def test_moment_iadd() -> None:
     moment = Moment(stim.Circuit("H 0"))
-    moment += stim.Circuit("H 1")
+    moment += Moment(stim.Circuit("H 1"))
     moment += Moment(stim.Circuit("H 2"))
     assert moment.circuit == stim.Circuit("H 0 1 2")
-    moment += stim.Circuit("QUBIT_COORDS(0, 0) 0")
+    moment += Moment(stim.Circuit("QUBIT_COORDS(0, 0) 0"))
     assert moment.circuit == stim.Circuit("H 0 1 2\nQUBIT_COORDS(0, 0) 0")
 
     with pytest.raises(
         TQECException,
         match="^Trying to add an overlapping quantum circuit to a Moment instance.$",
     ):
-        moment += stim.Circuit("H 0")
+        moment += Moment(stim.Circuit("H 0"))
 
 
 def test_moment_append() -> None:
@@ -142,22 +140,6 @@ def test_moment_append_instruction() -> None:
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
 def test_moment_instructions_property(circuit: stim.Circuit) -> None:
     assert list(Moment(circuit).instructions) == list(iter(circuit))
-
-
-def test_moment_operates_on() -> None:
-    moment = Moment(stim.Circuit("H 0 1 2 3"))
-    assert moment.operates_on([0])
-    assert moment.operates_on([0, 1, 2, 3])
-    assert not moment.operates_on([4])
-    assert not moment.operates_on([0, 1, 2, 3, 4])
-
-    moment = Moment(
-        stim.Circuit("H 0 1 2 3\nQUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(0, 1) 4")
-    )
-    assert moment.operates_on([0])
-    assert moment.operates_on([0, 1, 2, 3])
-    assert not moment.operates_on([4])
-    assert not moment.operates_on([0, 1, 2, 3, 4])
 
 
 def test_moment_num_measurements() -> None:

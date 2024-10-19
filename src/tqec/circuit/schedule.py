@@ -390,25 +390,8 @@ class ScheduledCircuit:
         )
         mapped_moments: list[Moment] = []
         for moment in self._moments:
-            mapped_moment_circuit = stim.Circuit()
-            for instr in moment.instructions:
-                mapped_targets: list[stim.GateTarget] = []
-                for target in instr.targets_copy():
-                    # Non qubit targets are left untouched.
-                    if not target.is_qubit_target:
-                        mapped_targets.append(target)
-                        continue
-                    # Qubit targets are mapped using `qubit_index_map`
-                    target_qubit = ty.cast(int, target.qubit_value)
-                    mapped_targets.append(
-                        stim.GateTarget(qubit_index_map[target_qubit])
-                        if not target.is_inverted_result_target
-                        else stim.GateTarget(-qubit_index_map[target_qubit])
-                    )
-                mapped_moment_circuit.append(
-                    instr.name, mapped_targets, instr.gate_args_copy()
-                )
-            mapped_moments.append(Moment(mapped_moment_circuit))
+            mapped_moments.append(moment.with_mapped_qubit_indices(qubit_index_map))
+
         if inplace:
             self._qubit_map = mapped_final_qubits
             self._moments = mapped_moments
