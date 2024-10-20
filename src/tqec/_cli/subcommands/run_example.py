@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+
 import argparse
+from itertools import combinations
 import logging
 from pathlib import Path
 
@@ -101,17 +103,12 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
         z_basis: bool = args.include_z_basis
         ks: list[int] = args.k
         ps: list[float] = args.p
-        add_detectors: bool = args.add_detectors
 
         # Set up the output directories
         logging.info("Setting up output directories.")
         if not out_dir.exists():
             out_dir.mkdir(parents=True)
 
-        observable_out_dir = out_dir / "observables"
-        observable_out_dir.mkdir(exist_ok=True)
-        circuits_out_dir = out_dir / "circuits"
-        circuits_out_dir.mkdir(exist_ok=True)
         simulations_out_dir = out_dir / "simulations"
         simulations_out_dir.mkdir(exist_ok=True)
         plots_out_dir = out_dir / "plots"
@@ -145,7 +142,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             NoiseModel.uniform_depolarizing,
             block_builder=block_builder,
             substitution_builder=substitution_builder,
-            observables=observables,
+            observables=[observables[i] for i in obs_indices],
             num_workers=20,
             max_shots=10_000_000,
             max_errors=5_000,
@@ -153,28 +150,6 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             print_progress=True,
         )
         logging.info("Simulation finished.")
-
-        # Store outputs
-        logging.info("Write all the outputs...")
-        logging.info("Write observables to %s.", observable_out_dir)
-        save_correlation_surfaces_to(
-            zx_graph,
-            observable_out_dir,
-            [correlation_surfaces[i] for i in obs_indices],
-        )
-
-        logging.info("Write circuits to %s.", circuits_out_dir)
-        compiled_graph = compile_block_graph(
-            block_graph,
-            CSS_BLOCK_BUILDER,
-            CSS_SUBSTITUTION_BUILDER,
-            observables=[observables[i] for i in obs_indices],
-        )
-        for k in ks:
-            circuit = compiled_graph.generate_stim_circuit(k)
-            if add_detectors:
-                circuit = annotate_detectors_automatically(circuit)
-            circuit.to_file(circuits_out_dir / f"{k=}.stim")
 
         logging.info("Write plots to %s.", plots_out_dir)
         for i, stat in enumerate(stats):
