@@ -8,12 +8,12 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 from tqec.computation.correlation import CorrelationSurface
 from tqec.position import Position3D
-from tqec.computation.zx_graph import ZXType, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
 
-NODE_COLOR: dict[ZXType, str] = {
-    ZXType.X: "#FF7F7F",  # (255, 127, 127)
-    ZXType.Y: "#63C676",  # (99, 198, 118)
-    ZXType.Z: "#7396FF",  # (115, 150, 255)
+NODE_COLOR: dict[ZXKind, str] = {
+    ZXKind.X: "#FF7F7F",  # (255, 127, 127)
+    ZXKind.Y: "#63C676",  # (99, 198, 118)
+    ZXKind.Z: "#7396FF",  # (115, 150, 255)
 }
 
 
@@ -46,7 +46,7 @@ def draw_zx_graph_on(
         ax.scatter(
             *vis_nodes_array,
             s=node_size,
-            c=[NODE_COLOR[n.node_type] for n in vis_nodes],
+            c=[NODE_COLOR[n.kind] for n in vis_nodes],
             alpha=1.0,
             edgecolors="black",
         )
@@ -115,13 +115,13 @@ def draw_correlation_surface_on(
             continue
         types = tuple(correlation_types[p] for p in positions)
         pos_array = _positions_array(*positions)
-        if not edge.has_hadamard or all(t == ZXType.Y for t in types):
-            if any(t == ZXType.Z for t in types):
-                correlation = ZXType.Z
-            elif any(t == ZXType.X for t in types):
-                correlation = ZXType.X
+        if not edge.has_hadamard or all(t == ZXKind.Y for t in types):
+            if any(t == ZXKind.Z for t in types):
+                correlation = ZXKind.Z
+            elif any(t == ZXKind.X for t in types):
+                correlation = ZXKind.X
             else:
-                correlation = ZXType.Y
+                correlation = ZXKind.Y
             ax.plot(
                 *pos_array,
                 color=NODE_COLOR[correlation],
@@ -130,7 +130,7 @@ def draw_correlation_surface_on(
         else:
             hadamard_position = numpy.mean(pos_array, axis=1)
             for i in [0, 1]:
-                if types[i] != ZXType.Y:
+                if types[i] != ZXKind.Y:
                     correlation = types[i]
                 else:
                     correlation = types[1 - i].with_zx_flipped()

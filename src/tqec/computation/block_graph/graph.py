@@ -15,7 +15,7 @@ from tqec.computation.block_graph.cube import Cube
 from tqec.computation.block_graph.enums import CubeType, PipeType
 from tqec.computation.block_graph.observable import AbstractObservable
 from tqec.computation.block_graph.pipe import Pipe
-from tqec.computation.zx_graph import ZXType, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
 
 if ty.TYPE_CHECKING:
     from tqec.computation.collada import ColladaDisplayHelper
@@ -219,12 +219,12 @@ class BlockGraph:
             edge_directions_at_node = {e.direction for e in zx_graph.edges_at(node.pos)}
             if len(edge_directions_at_node) != 2:
                 continue
-            node_type = node.node_type
+            node_type = node.kind
             normal_direction = (
                 set(Direction3D.all()).difference(edge_directions_at_node).pop()
             )
             direction_index = Direction3D.all().index(normal_direction)
-            normal_direction_color = "x" if node_type == ZXType.Z else "z"
+            normal_direction_color = "x" if node_type == ZXKind.Z else "z"
             cube_type_str = str(node_type.value) * 3
             cube_type_str = (
                 cube_type_str[:direction_index]
@@ -256,18 +256,18 @@ class BlockGraph:
                     for pos in sorted_positions
                     if not ty.cast(ZXNode, zx_graph.get_node(pos)).is_port
                 )
-                node_pos, node_type = aligned_node.pos, aligned_node.node_type
+                node_pos, node_type = aligned_node.pos, aligned_node.kind
                 edges_at_node = zx_graph.edges_at(node_pos)
                 if not edges_at_node:
                     aligned_node_type = (
-                        CubeType.XZZ if node_type == ZXType.Z else CubeType.XZX
+                        CubeType.XZZ if node_type == ZXKind.Z else CubeType.XZX
                     )
                 else:
                     edge_direction = edges_at_node[0].direction
                     node_type_list = ["x", "z"]
                     node_type_list.insert(
                         edge_direction.axis_index,
-                        "x" if node_type == ZXType.X else "z",
+                        "x" if node_type == ZXKind.X else "z",
                     )
                     aligned_node_type = CubeType("".join(node_type_list))
                 block_graph.add_cube(aligned_node.pos, aligned_node_type)
@@ -300,7 +300,7 @@ class BlockGraph:
                 if src in nodes_to_handle or dst in nodes_to_handle:
                     other_node = dst if can_infer_from_src else src
                     other_cube_type = pipe_type.infer_cube_type_at_side(
-                        not can_infer_from_src, other_node.node_type == ZXType.Z
+                        not can_infer_from_src, other_node.kind == ZXKind.Z
                     )
                     block_graph.add_cube(other_node.pos, other_cube_type)
                     nodes_to_handle.remove(other_node)

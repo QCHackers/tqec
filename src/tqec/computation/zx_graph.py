@@ -18,19 +18,19 @@ if TYPE_CHECKING:
     from tqec.computation.block_graph import BlockGraph
 
 
-class ZXType(Enum):
-    """Valid node types in a ZX graph."""
+class ZXKind(Enum):
+    """Valid node kind in a ZX graph."""
 
     X = "X"
     Y = "Y"
     Z = "Z"
     P = "PORT"  # Open port for the input/ouput of the computation
 
-    def with_zx_flipped(self) -> ZXType:
-        if self == ZXType.X:
-            return ZXType.Z
-        elif self == ZXType.Z:
-            return ZXType.X
+    def with_zx_flipped(self) -> ZXKind:
+        if self == ZXKind.X:
+            return ZXKind.Z
+        elif self == ZXKind.Z:
+            return ZXKind.X
         else:
             return self
 
@@ -44,34 +44,34 @@ class ZXNode:
 
     Attributes:
         position: The 3D position of the node.
-        node_type: The type of the node.
+        kind: The kind of the node.
     """
 
     position: Position3D
-    node_type: ZXType
+    kind: ZXKind
 
     @property
     def is_port(self) -> bool:
         """Check if the node is an open port, i.e. represents the input/output
         of the computation."""
-        return self.node_type == ZXType.P
+        return self.kind == ZXKind.P
 
     @property
     def is_y_node(self) -> bool:
-        """Check if the node is a Y-type node."""
-        return self.node_type == ZXType.Y
+        """Check if the node is a Y node."""
+        return self.kind == ZXKind.Y
 
     @property
     def is_zx_node(self) -> bool:
-        """Check if the node is an X or Z-type node."""
-        return self.node_type in [ZXType.X, ZXType.Z]
+        """Check if the node is an X or Z node."""
+        return self.kind in [ZXKind.X, ZXKind.Z]
 
     def with_zx_flipped(self) -> ZXNode:
-        """Get a new node with the node type flipped."""
-        return ZXNode(self.position, self.node_type.with_zx_flipped())
+        """Get a new node with the ZX kind flipped."""
+        return ZXNode(self.position, self.kind.with_zx_flipped())
 
     def __str__(self) -> str:
-        return f"{self.node_type}{self.position}"
+        return f"{self.kind}{self.position}"
 
 
 @dataclass(frozen=True, order=True)
@@ -94,7 +94,7 @@ class ZXEdge:
         if self.u.is_port and self.v.is_port:
             raise TQECException("Cannot create an edge between two ports.")
         if (self.u.is_y_node or self.v.is_y_node) and self.direction != Direction3D.Z:
-            raise TQECException("An edge with Y-type node must be in the Z-direction.")
+            raise TQECException("An edge with Y kind node must be in the Z-direction.")
         # Ensure position of u is less than v
         u, v = self.u, self.v
         if self.u.position > self.v.position:
@@ -111,12 +111,12 @@ class ZXEdge:
             return Direction3D.Y
         return Direction3D.Z
 
-    def get_node_type_at(self, position: Position3D) -> ZXType:
-        """Get the node type at the given position of the edge."""
+    def get_node_kind_at(self, position: Position3D) -> ZXKind:
+        """Get the node kind at the given position of the edge."""
         if self.u.position == position:
-            return self.u.node_type
+            return self.u.kind
         if self.v.position == position:
-            return self.v.node_type
+            return self.v.kind
         raise TQECException("The position is not an endpoint of the edge.")
 
     def __str__(self) -> str:
@@ -202,27 +202,25 @@ class ZXGraph:
     def add_node(
         self,
         position: Position3D,
-        node_type: ZXType,
+        kind: ZXKind,
     ) -> None:
         """Add a node to the graph. If the a node already exists at the position, the
-        node type will be updated.
+        node kind will be updated.
 
-        Note that a port or a Y-type node can only be added to the graph using `add_edge`
+        Note that a port or a Y node can only be added to the graph using `add_edge`
         because they must be connected to other nodes.
 
         Args:
             position: The 3D position of the node.
-            node_type: The type of the node.
+            kind: The kind of the node.
 
         Raises:
-            TQECException: If the node type is P or Y.
+            TQECException: If the node kind is P or Y.
             TQECException: If a different node already exists at the position.
         """
-        if node_type == ZXType.P or node_type == ZXType.Y:
-            raise TQECException(
-                "Cannot add a P or Y-type node solely, please use add_edge."
-            )
-        node = ZXNode(position, node_type)
+        if kind == ZXKind.P or kind == ZXKind.Y:
+            raise TQECException("Cannot add a P or Y node solely, please use add_edge.")
+        node = ZXNode(position, kind)
         self._check_node_conflict(node)
         self._graph.add_node(position, **{_NODE_DATA_KEY: node})
 
@@ -235,12 +233,12 @@ class ZXGraph:
             )
 
     def add_x_node(self, position: Position3D) -> None:
-        """Add an X-type node to the graph."""
-        self.add_node(position, ZXType.X)
+        """Add an X node to the graph."""
+        self.add_node(position, ZXKind.X)
 
     def add_z_node(self, position: Position3D) -> None:
-        """Add a Z-type node to the graph."""
-        self.add_node(position, ZXType.Z)
+        """Add a Z node to the graph."""
+        self.add_node(position, ZXKind.Z)
 
     def add_edge(
         self,
@@ -252,7 +250,7 @@ class ZXGraph:
         """Add an edge to the graph. If the nodes do not exist in the graph,
         the nodes will be created.
 
-        A port or a Y-type node can only be added to the graph using this method.
+        A port or a Y node can only be added to the graph using this method.
 
         Args:
             u: The first node of the edge.
@@ -287,10 +285,10 @@ class ZXGraph:
                 )
             port_update[port_label] = u.position if u.is_port else v.position
         for node in [u, v]:
-            if node.node_type in [ZXType.Z, ZXType.X]:
+            if node.kind in [ZXKind.Z, ZXKind.X]:
                 continue
             if len(self.edges_at(node.position)) != 0:
-                raise TQECException("Node of type P or Y should have at most one edge.")
+                raise TQECException("Node of kind P or Y should have at most one edge.")
         edge = ZXEdge(u, v, has_hadamard)
 
         self._graph.add_node(u.position, **{_NODE_DATA_KEY: u})
@@ -334,25 +332,25 @@ class ZXGraph:
             for _, _, data in self._graph.edges(position, data=True)
         ]
 
-    def fill_ports(self, fill: Mapping[str, ZXType] | ZXType) -> None:
-        """Fill the ports at specified position with a node with the given type.
+    def fill_ports(self, fill: Mapping[str, ZXKind] | ZXKind) -> None:
+        """Fill the ports at specified position with a node with the given kind.
 
         Args:
-            fill: A mapping from the label of the ports to the node type to fill.
+            fill: A mapping from the label of the ports to the node kind to fill.
 
         Raises:
             TQECException: if there is no port with the given label.
-            TQECException: if try to fill the port with port type.
+            TQECException: if try to fill the port with port kind.
         """
-        if isinstance(fill, ZXType):
+        if isinstance(fill, ZXKind):
             fill = {label: fill for label in self._ports}
-        for label, node_type in fill.items():
+        for label, kind in fill.items():
             if label not in self._ports:
                 raise TQECException(f"There is no port with label {label}.")
-            if node_type == ZXType.P:
-                raise TQECException("Cannot fill the ports with port type.")
+            if kind == ZXKind.P:
+                raise TQECException("Cannot fill the ports with port kind.")
             pos = self._ports[label]
-            fill_node = ZXNode(pos, node_type)
+            fill_node = ZXNode(pos, kind)
             self._graph.add_node(pos, **{_NODE_DATA_KEY: fill_node})
             for edge in self.edges_at(pos):
                 self._graph.remove_edge(edge.u.position, edge.v.position)
@@ -387,7 +385,7 @@ class ZXGraph:
         return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
 
     def with_zx_flipped(self, name: str | None = None) -> ZXGraph:
-        """Get a new ZX graph with the node types flipped."""
+        """Get a new ZX graph with the node kind flipped."""
         new_graph = ZXGraph(name or self.name)
         for edge in self.edges:
             u, v = edge.u.with_zx_flipped(), edge.v.with_zx_flipped()

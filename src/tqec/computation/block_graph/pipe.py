@@ -33,11 +33,3 @@ class Pipe:
     def direction(self) -> Direction3D:
         """Get the direction of the pipe."""
         return self.pipe_type.direction
-
-    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Pipe:
-        """Shift the position of the pipe in the 3D space."""
-        return Pipe(
-            self.u.shift_position_by(dx, dy, dz),
-            self.v.shift_position_by(dx, dy, dz),
-            self.pipe_type,
-        )

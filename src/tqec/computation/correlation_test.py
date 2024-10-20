@@ -1,13 +1,13 @@
 import pytest
 
 from tqec.computation.correlation import CorrelationSurface
-from tqec.computation.zx_graph import ZXType, ZXEdge, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
 
 def test_correlation_single_xz_node() -> None:
-    for node_type in [ZXType.X, ZXType.Z]:
+    for node_type in [ZXKind.X, ZXKind.Z]:
         g = ZXGraph()
         g.add_node(Position3D(0, 0, 0), node_type)
         assert g.find_correration_surfaces() == [
@@ -27,7 +27,7 @@ def test_correlation_single_xz_node() -> None:
 
 
 def test_correlation_two_xz_node() -> None:
-    for node_type in [ZXType.X, ZXType.Z]:
+    for node_type in [ZXKind.X, ZXKind.Z]:
         g = ZXGraph()
         g.add_edge(
             ZXNode(Position3D(0, 0, 0), node_type),
@@ -49,8 +49,8 @@ def test_correlation_two_xz_node() -> None:
 
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXType.X),
-        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 0, 0), ZXKind.X),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
     )
     assert g.find_correration_surfaces() == []
 
@@ -58,8 +58,8 @@ def test_correlation_two_xz_node() -> None:
 def test_correlation_hadamard() -> None:
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXType.X),
-        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 0, 0), ZXKind.X),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
         has_hadamard=True,
     )
     assert g.find_correration_surfaces() == [
@@ -67,8 +67,8 @@ def test_correlation_hadamard() -> None:
             frozenset(
                 [
                     ZXEdge(
-                        ZXNode(Position3D(0, 0, 0), ZXType.Z),
-                        ZXNode(Position3D(0, 0, 1), ZXType.X),
+                        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+                        ZXNode(Position3D(0, 0, 1), ZXKind.X),
                         has_hadamard=True,
                     )
                 ]
@@ -81,8 +81,8 @@ def test_correlation_hadamard() -> None:
 def test_correlation_y_node() -> None:
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXType.Y),
-        ZXNode(Position3D(0, 0, 1), ZXType.P),
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, 1), ZXKind.P),
         port_label="out",
     )
     assert g.find_correration_surfaces() == [
@@ -90,12 +90,12 @@ def test_correlation_y_node() -> None:
             frozenset(
                 [
                     ZXEdge(
-                        ZXNode(Position3D(0, 0, 0), ZXType.X),
-                        ZXNode(Position3D(0, 0, 1), ZXType.X),
+                        ZXNode(Position3D(0, 0, 0), ZXKind.X),
+                        ZXNode(Position3D(0, 0, 1), ZXKind.X),
                     ),
                     ZXEdge(
-                        ZXNode(Position3D(0, 0, 0), ZXType.Z),
-                        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+                        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+                        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
                     ),
                 ]
             ),
@@ -107,17 +107,17 @@ def test_correlation_y_node() -> None:
 def test_correlation_port_passthrough():
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXType.P),
-        ZXNode(Position3D(1, 0, 0), ZXType.Z),
+        ZXNode(Position3D(0, 0, 0), ZXKind.P),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
         port_label="in",
     )
     g.add_edge(
-        ZXNode(Position3D(1, 0, 0), ZXType.Z),
-        ZXNode(Position3D(2, 0, 0), ZXType.P),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(2, 0, 0), ZXKind.P),
         port_label="out",
     )
 
-    def _span(node_type: ZXType) -> frozenset[ZXEdge]:
+    def _span(node_type: ZXKind) -> frozenset[ZXEdge]:
         return frozenset(
             [
                 ZXEdge(
@@ -131,8 +131,8 @@ def test_correlation_port_passthrough():
             ]
         )
 
-    x_span = _span(ZXType.X)
-    z_span = _span(ZXType.Z)
+    x_span = _span(ZXKind.X)
+    z_span = _span(ZXKind.Z)
 
     assert set(g.find_correration_surfaces()) == {
         CorrelationSurface(x_span, {"in": "X", "out": "X"}),
@@ -143,22 +143,22 @@ def test_correlation_port_passthrough():
 def test_correlation_logical_s_via_gate_teleportation() -> None:
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXType.P),
-        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 0, 0), ZXKind.P),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
         port_label="in",
     )
     g.add_edge(
-        ZXNode(Position3D(0, 0, 1), ZXType.Z),
-        ZXNode(Position3D(0, 0, 2), ZXType.P),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 2), ZXKind.P),
         port_label="out",
     )
     g.add_edge(
-        ZXNode(Position3D(0, 0, 1), ZXType.Z),
-        ZXNode(Position3D(1, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 1), ZXKind.Z),
     )
     g.add_edge(
-        ZXNode(Position3D(1, 0, 1), ZXType.Z),
-        ZXNode(Position3D(1, 0, 2), ZXType.Y),
+        ZXNode(Position3D(1, 0, 1), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 2), ZXKind.Y),
     )
     correlation_surfaces = g.find_correration_surfaces()
     impl_external_stabilizers = [cs.external_stabilizer for cs in correlation_surfaces]

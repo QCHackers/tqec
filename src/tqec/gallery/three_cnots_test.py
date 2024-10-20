@@ -1,4 +1,4 @@
-from tqec.computation.zx_graph import ZXType
+from tqec.computation.zx_graph import ZXKind
 from tqec.gallery.three_cnots import three_cnots_zx_graph
 
 
@@ -8,8 +8,8 @@ def test_three_cnots_zx_graph_open() -> None:
     assert g.num_nodes == 6
     assert g.num_edges == 12
     assert len(g.leaf_nodes) == 6
-    assert len([n for n in g.nodes if n.node_type == ZXType.Z]) == 4
-    assert len([n for n in g.nodes if n.node_type == ZXType.X]) == 2
+    assert len([n for n in g.nodes if n.kind == ZXKind.Z]) == 4
+    assert len([n for n in g.nodes if n.kind == ZXKind.X]) == 2
     assert {*g.ports.keys()} == {
         "In_a",
         "Out_a",
@@ -27,8 +27,8 @@ def test_three_cnots_zx_graph_filled() -> None:
         assert g.num_nodes == 12
         assert g.num_edges == 12
         assert len(g.leaf_nodes) == 6
-        num_x_nodes = len([n for n in g.nodes if n.node_type == ZXType.X])
-        num_z_nodes = len([n for n in g.nodes if n.node_type == ZXType.Z])
+        num_x_nodes = len([n for n in g.nodes if n.kind == ZXKind.X])
+        num_z_nodes = len([n for n in g.nodes if n.kind == ZXKind.Z])
         if port_type == "x":
             assert num_x_nodes == 8
             assert num_z_nodes == 4

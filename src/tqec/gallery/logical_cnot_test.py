@@ -1,4 +1,4 @@
-from tqec.computation.zx_graph import ZXType
+from tqec.computation.zx_graph import ZXKind
 from tqec.gallery.logical_cnot import logical_cnot_zx_graph
 
 
@@ -8,8 +8,8 @@ def test_logical_cnot_zx_graph_open() -> None:
     assert g.num_nodes == 6
     assert g.num_edges == 9
     assert len(g.leaf_nodes) == 4
-    assert len([n for n in g.nodes if n.node_type == ZXType.Z]) == 2
-    assert len([n for n in g.nodes if n.node_type == ZXType.X]) == 4
+    assert len([n for n in g.nodes if n.kind == ZXKind.Z]) == 2
+    assert len([n for n in g.nodes if n.kind == ZXKind.X]) == 4
     assert {*g.ports.keys()} == {
         "In_Control",
         "Out_Control",
@@ -25,8 +25,8 @@ def test_logical_cnot_zx_graph_filled() -> None:
         assert g.num_nodes == 10
         assert g.num_edges == 9
         assert len(g.leaf_nodes) == 4
-        num_x_nodes = len([n for n in g.nodes if n.node_type == ZXType.X])
-        num_z_nodes = len([n for n in g.nodes if n.node_type == ZXType.Z])
+        num_x_nodes = len([n for n in g.nodes if n.kind == ZXKind.X])
+        num_z_nodes = len([n for n in g.nodes if n.kind == ZXKind.Z])
         if port_type == "x":
             assert num_x_nodes == 8
             assert num_z_nodes == 2
