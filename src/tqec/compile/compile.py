@@ -5,6 +5,7 @@ from typing import Literal, Sequence
 
 import stim
 
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.measurement_map import MeasurementRecordsMap
 from tqec.circuit.qubit_map import QubitMap
 from tqec.circuit.schedule import ScheduledCircuit
@@ -206,7 +207,7 @@ class CompiledGraph:
                 current_circuit,
                 mrecords_map,
                 slice_detectors,
-                shift_coords_by=(0, 0, 1),
+                shift_coords_by=StimCoordinates(0, 0, 1),
             )
         # We are now over, all the detectors should be added inplace to the end
         # of the last circuit containing a measurement involved in the detector.
@@ -216,11 +217,13 @@ class CompiledGraph:
         circuit: ScheduledCircuit,
         mrecords_map: MeasurementRecordsMap,
         detectors: Sequence[Detector],
-        shift_coords_by: tuple[float, ...] = (0, 0, 0),
+        shift_coords_by: StimCoordinates | None = None,
     ) -> None:
-        if any(shift != 0 for shift in shift_coords_by):
+        if shift_coords_by is not None:
             circuit.append_annotation(
-                stim.CircuitInstruction("SHIFT_COORDS", [], shift_coords_by)
+                stim.CircuitInstruction(
+                    "SHIFT_COORDS", [], shift_coords_by.to_stim_coordinates()
+                )
             )
         for d in sorted(detectors, key=lambda d: d.coordinates):
             circuit.append_annotation(d.to_instruction(mrecords_map))
