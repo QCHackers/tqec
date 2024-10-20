@@ -1,0 +1,6 @@
+tqec.computation.block\_graph.cube.BlockType
+============================================
+
+.. currentmodule:: tqec.computation.block_graph.cube
+
+.. autodata:: BlockType

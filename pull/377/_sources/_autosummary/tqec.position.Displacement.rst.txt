@@ -1,0 +1,29 @@
+tqec.position.Displacement
+==========================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: Displacement
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Displacement.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Displacement.x
+      ~Displacement.y
+   
+   

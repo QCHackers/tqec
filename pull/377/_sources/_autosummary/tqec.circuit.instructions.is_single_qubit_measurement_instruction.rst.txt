@@ -1,0 +1,6 @@
+tqec.circuit.instructions.is\_single\_qubit\_measurement\_instruction
+=====================================================================
+
+.. currentmodule:: tqec.circuit.instructions
+
+.. autofunction:: is_single_qubit_measurement_instruction
