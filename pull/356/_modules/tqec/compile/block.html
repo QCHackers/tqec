@@ -221,6 +221,20 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_shifted_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate and shift the circuits for all the layers in `self`.</span>
+
+<span class="sd">        The returned circuit are appropriately shifted to account for any shifts</span>
+<span class="sd">        due to the fact that the origin of the template stored in `self` might</span>
+<span class="sd">        not be the global origin.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: scaling factor used to instantiate the template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            as many circuits as there are layers in `self`, each circuit being</span>
+<span class="sd">            the instantiation of one layer (i.e., a set of :class:`Plaquette`</span>
+<span class="sd">            instances) and the :class:`Template` instance from `self`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We need to shift the circuit based on the shift of the layout template.</span>
         <span class="n">top_left_plaquette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_template</span><span class="o">.</span><span class="n">instantiation_origin</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="n">increments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>

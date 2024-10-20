@@ -258,6 +258,9 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            moments: moments representing the computation that is scheduled.</span>
+<span class="sd">                The provided `moments` should not contain any `QUBIT_COORDS`</span>
+<span class="sd">                instructions. Instead, the qubit coordinates should be provided</span>
+<span class="sd">                through the `qubit_map` parameter.</span>
 <span class="sd">            schedule: schedule of the provided `moments`. If an integer is</span>
 <span class="sd">                provided, each moment of the provided `stim.Circuit` is</span>
 <span class="sd">                scheduled sequentially, starting by the provided integer.</span>

@@ -137,7 +137,10 @@ found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>moments</strong> – moments representing the computation that is scheduled.</p></li>
+<li><p><strong>moments</strong> – moments representing the computation that is scheduled.
+The provided <cite>moments</cite> should not contain any <cite>QUBIT_COORDS</cite>
+instructions. Instead, the qubit coordinates should be provided
+through the <cite>qubit_map</cite> parameter.</p></li>
 <li><p><strong>schedule</strong> – schedule of the provided <cite>moments</cite>. If an integer is
 provided, each moment of the provided <cite>stim.Circuit</cite> is
 scheduled sequentially, starting by the provided integer.</p></li>

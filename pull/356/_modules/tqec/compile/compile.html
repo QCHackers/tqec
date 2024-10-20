@@ -88,6 +88,7 @@
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.coordinates</span> <span class="kn">import</span> <span class="n">StimCoordinates</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.measurement_map</span> <span class="kn">import</span> <span class="n">MeasurementRecordsMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
@@ -291,7 +292,7 @@
                 <span class="n">current_circuit</span><span class="p">,</span>
                 <span class="n">mrecords_map</span><span class="p">,</span>
                 <span class="n">slice_detectors</span><span class="p">,</span>
-                <span class="n">shift_coords_by</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">shift_coords_by</span><span class="o">=</span><span class="n">StimCoordinates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="c1"># We are now over, all the detectors should be added inplace to the end</span>
         <span class="c1"># of the last circuit containing a measurement involved in the detector.</span>
@@ -301,11 +302,13 @@
         <span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">,</span>
         <span class="n">mrecords_map</span><span class="p">:</span> <span class="n">MeasurementRecordsMap</span><span class="p">,</span>
         <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Detector</span><span class="p">],</span>
-        <span class="n">shift_coords_by</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">shift_coords_by</span><span class="p">:</span> <span class="n">StimCoordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">shift</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">shift</span> <span class="ow">in</span> <span class="n">shift_coords_by</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">shift_coords_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span>
-                <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span><span class="s2">&quot;SHIFT_COORDS&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">shift_coords_by</span><span class="p">)</span>
+                <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>
+                    <span class="s2">&quot;SHIFT_COORDS&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">shift_coords_by</span><span class="o">.</span><span class="n">to_stim_coordinates</span><span class="p">()</span>
+                <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">detectors</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">coordinates</span><span class="p">):</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_instruction</span><span class="p">(</span><span class="n">mrecords_map</span><span class="p">))</span></div>
