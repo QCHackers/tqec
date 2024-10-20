@@ -130,6 +130,20 @@ class BlockLayout:
         return len(self._layers)
 
     def get_shifted_circuits(self, k: int) -> list[ScheduledCircuit]:
+        """Instantiate and shift the circuits for all the layers in `self`.
+
+        The returned circuit are appropriately shifted to account for any shifts
+        due to the fact that the origin of the template stored in `self` might
+        not be the global origin.
+
+        Args:
+            k: scaling factor used to instantiate the template.
+
+        Returns:
+            as many circuits as there are layers in `self`, each circuit being
+            the instantiation of one layer (i.e., a set of :class:`Plaquette`
+            instances) and the :class:`Template` instance from `self`.
+        """
         # We need to shift the circuit based on the shift of the layout template.
         top_left_plaquette = self._template.instantiation_origin(k)
         increments = self._template.get_increments()
