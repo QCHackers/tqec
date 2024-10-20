@@ -48,10 +48,10 @@ def test_qubit_map_q2i() -> None:
 
 def test_qubit_map_with_mapped_qubits() -> None:
     qubit_map = {GridQubit(i, -i): GridQubit(-i, i) for i in range(4)}
-    assert QubitMap().with_mapped_qubits(qubit_map) == QubitMap()
+    assert QubitMap().with_mapped_qubits(lambda q: qubit_map[q]) == QubitMap()
 
     qmap = QubitMap({i: GridQubit(i, -i) for i in range(4)})
-    assert qmap.with_mapped_qubits(qubit_map) == QubitMap(
+    assert qmap.with_mapped_qubits(lambda q: qubit_map[q]) == QubitMap(
         {i: GridQubit(-i, i) for i in range(4)}
     )
 

@@ -57,8 +57,7 @@ class QubitMap:
         return self.i2q.values()
 
     def with_mapped_qubits(
-        self,
-        qubit_map: Mapping[GridQubit, GridQubit] | Callable[[GridQubit], GridQubit],
+        self, qubit_map: Callable[[GridQubit], GridQubit]
     ) -> QubitMap:
         """Change the qubits involved in `self` without changing the associated indices.
 
@@ -73,10 +72,7 @@ class QubitMap:
         Returns:
             a new instance representing the updated mapping.
         """
-        if isinstance(qubit_map, Mapping):
-            return QubitMap({i: qubit_map[q] for i, q in self.i2q.items()})
-        else:
-            return QubitMap({i: qubit_map(q) for i, q in self.i2q.items()})
+        return QubitMap({i: qubit_map(q) for i, q in self.i2q.items()})
 
     def items(self) -> Iterable[tuple[int, GridQubit]]:
         return self.i2q.items()
