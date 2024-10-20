@@ -4,23 +4,23 @@ import tempfile
 import pytest
 
 from tqec.computation.block_graph import BlockGraph
-from tqec.computation.zx_graph import NodeType, Position3D, ZXGraph
+from tqec.computation.zx_graph import ZXType, Position3D, ZXGraph
 
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])
 def test_logical_cnot_collada_write_read(pipe_length: float) -> None:
     zx_graph = ZXGraph("Logical CNOT ZX Graph")
     for position, node_type in [
-        (Position3D(0, 0, 0), NodeType.Z),
-        (Position3D(0, 0, 1), NodeType.X),
-        (Position3D(0, 0, 2), NodeType.Z),
-        (Position3D(0, 0, 3), NodeType.Z),
-        (Position3D(0, 1, 1), NodeType.X),
-        (Position3D(0, 1, 2), NodeType.Z),
-        (Position3D(1, 1, 0), NodeType.Z),
-        (Position3D(1, 1, 1), NodeType.Z),
-        (Position3D(1, 1, 2), NodeType.Z),
-        (Position3D(1, 1, 3), NodeType.Z),
+        (Position3D(0, 0, 0), ZXType.Z),
+        (Position3D(0, 0, 1), ZXType.X),
+        (Position3D(0, 0, 2), ZXType.Z),
+        (Position3D(0, 0, 3), ZXType.Z),
+        (Position3D(0, 1, 1), ZXType.X),
+        (Position3D(0, 1, 2), ZXType.Z),
+        (Position3D(1, 1, 0), ZXType.Z),
+        (Position3D(1, 1, 1), ZXType.Z),
+        (Position3D(1, 1, 2), ZXType.Z),
+        (Position3D(1, 1, 3), ZXType.Z),
     ]:
         zx_graph.add_node(position, node_type)
 

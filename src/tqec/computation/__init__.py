@@ -1,4 +1,4 @@
-from tqec.computation.zx_graph import NodeType, ZXEdge, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXType, ZXEdge, ZXGraph, ZXNode
 from tqec.computation.block_graph import (
     BlockGraph,
     BlockType,

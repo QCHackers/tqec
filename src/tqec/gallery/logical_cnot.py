@@ -1,6 +1,6 @@
 from typing import Literal
 from tqec.computation.block_graph.graph import BlockGraph
-from tqec.computation.zx_graph import NodeType, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXType, ZXGraph, ZXNode
 from tqec.position import Position3D
 
 
@@ -12,48 +12,48 @@ def logical_cnot_zx_graph(port_type: Literal["z", "x", "open"]) -> ZXGraph:
         name = "Logical CNOT with open ports"
     g = ZXGraph(name)
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), NodeType.P),
-        ZXNode(Position3D(0, 0, 1), NodeType.Z),
+        ZXNode(Position3D(0, 0, 0), ZXType.P),
+        ZXNode(Position3D(0, 0, 1), ZXType.Z),
         port_label="In_Control",
     )
     g.add_edge(
-        ZXNode(Position3D(0, 0, 1), NodeType.Z),
-        ZXNode(Position3D(0, 0, 2), NodeType.X),
+        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 0, 2), ZXType.X),
     )
     g.add_edge(
-        ZXNode(Position3D(0, 0, 2), NodeType.X),
-        ZXNode(Position3D(0, 0, 3), NodeType.P),
+        ZXNode(Position3D(0, 0, 2), ZXType.X),
+        ZXNode(Position3D(0, 0, 3), ZXType.P),
         port_label="Out_Control",
     )
     g.add_edge(
-        ZXNode(Position3D(0, 0, 1), NodeType.Z),
-        ZXNode(Position3D(0, 1, 1), NodeType.Z),
+        ZXNode(Position3D(0, 0, 1), ZXType.Z),
+        ZXNode(Position3D(0, 1, 1), ZXType.Z),
     )
     g.add_edge(
-        ZXNode(Position3D(0, 1, 1), NodeType.Z),
-        ZXNode(Position3D(0, 1, 2), NodeType.X),
+        ZXNode(Position3D(0, 1, 1), ZXType.Z),
+        ZXNode(Position3D(0, 1, 2), ZXType.X),
     )
     g.add_edge(
-        ZXNode(Position3D(0, 1, 2), NodeType.X),
-        ZXNode(Position3D(1, 1, 2), NodeType.X),
+        ZXNode(Position3D(0, 1, 2), ZXType.X),
+        ZXNode(Position3D(1, 1, 2), ZXType.X),
     )
     g.add_edge(
-        ZXNode(Position3D(1, 1, 0), NodeType.P),
-        ZXNode(Position3D(1, 1, 1), NodeType.X),
+        ZXNode(Position3D(1, 1, 0), ZXType.P),
+        ZXNode(Position3D(1, 1, 1), ZXType.X),
         port_label="In_Target",
     )
     g.add_edge(
-        ZXNode(Position3D(1, 1, 1), NodeType.X),
-        ZXNode(Position3D(1, 1, 2), NodeType.X),
+        ZXNode(Position3D(1, 1, 1), ZXType.X),
+        ZXNode(Position3D(1, 1, 2), ZXType.X),
     )
     g.add_edge(
-        ZXNode(Position3D(1, 1, 2), NodeType.X),
-        ZXNode(Position3D(1, 1, 3), NodeType.P),
+        ZXNode(Position3D(1, 1, 2), ZXType.X),
+        ZXNode(Position3D(1, 1, 3), ZXType.P),
         port_label="Out_Target",
     )
 
     if port_type != "open":
-        g.fill_ports(NodeType(port_type.upper()))
+        g.fill_ports(ZXType(port_type.upper()))
     return g
 
 

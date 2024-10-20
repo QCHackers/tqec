@@ -7,7 +7,7 @@ from typing import Literal, cast
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
 from tqec.computation.block_graph.color import Color, Color3D
-from tqec.computation.zx_graph import NodeType
+from tqec.computation.zx_graph import ZXType
 
 
 class CubeType(Enum):
@@ -48,14 +48,14 @@ class CubeType(Enum):
             return None
         return cast(Literal["X", "Z"], self.value[2].upper())
 
-    def to_zx_node_type(self) -> NodeType:
+    def to_zx_node_type(self) -> ZXType:
         """Convert the cube type to a ZX node type."""
         if self == CubeType.VIRTUAL:
-            return NodeType.V
+            return ZXType.V
         if self.value.count("z") == 2:
-            return NodeType.Z
+            return ZXType.Z
         if self.value.count("x") == 2:
-            return NodeType.X
+            return ZXType.X
         raise TQECException(
             f"Conversion from {self} to ZX node type is not supported yet."
         )

@@ -1,14 +1,15 @@
 from dataclasses import dataclass
+import functools
 import itertools
 from copy import copy
 from typing import Iterable
 
-from tqec.computation.zx_graph import ZXGraph, NodeType, ZXNode, ZXEdge
+from tqec.computation.zx_graph import ZXGraph, ZXType, ZXNode, ZXEdge
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class CorrelationSurface:
     """A correlation surface in the ZX graph.
 
@@ -16,21 +17,19 @@ class CorrelationSurface:
         span: Either a set of correlation edges or a single node. If it is a single node,
             it represents a logical operator preserved in memory. If it is a set of edges,
             it represents the correlation between logical operators spanning in the 3D space.
-        external_stabilizer: The external stabilizer of the correlation surface. External
-            stabilizer is a Pauli string with the same length as the number of ports in the
-            ZX graph. The Pauli operator at each port is determined by the correlation type
-            of the port. It determines the correlation between the logical operators at the
-            ports. Sign of the stabilizer is neglected.
+        external_stabilizer: The external stabilizer of the correlation surface. The external
+            stabilizer is a mapping from the port label to the Pauli operator at the port.
+            Sign of the stabilizer is neglected.
 
     """
 
     span: frozenset[ZXEdge] | ZXNode
-    external_stabilizer: str
+    external_stabilizer: dict[str, str]
 
     def __post_init__(self):
         # Single node span represents a logical operator preserved in memory.
         if isinstance(self.span, ZXNode):
-            if self.span.node_type not in [NodeType.X, NodeType.Z]:
+            if self.span.node_type not in [ZXType.X, ZXType.Z]:
                 raise TQECException(
                     "The single node correlation surface must be X or Z type."
                 )
@@ -39,10 +38,23 @@ class CorrelationSurface:
                 "The correlation surface must contain at least one edge."
             )
 
+    def __hash__(self):
+        return hash(self.span)
+
+    def get_node_correlation_types(self) -> dict[Position3D, ZXType]:
+        """Get the correlation type of the nodes in the correlation surface.
+
+        Returns:
+            A dictionary mapping the position of the node to the correlation type.
+        """
+        if isinstance(self.span, ZXNode):
+            return {self.span.position: self.span.node_type}
+        return _get_nodes_correlation_types(self.span)
+
 
 def find_correlation_surfaces(
     zx_graph: ZXGraph,
-) -> set[CorrelationSurface]:
+) -> list[CorrelationSurface]:
     """Find the correlation surfaces in the ZX graph.
 
     A recursive depth-first search algorithm is used to find the correlation
@@ -55,12 +67,12 @@ def find_correlation_surfaces(
     # If the node is isolated, it is guaranteed to be X/Z type.
     # Then return a single node correlation surface.
     if zx_graph.num_nodes == 1 and zx_graph.num_edges == 0:
-        return {CorrelationSurface(zx_graph.nodes[0].with_zx_flipped(), "")}
+        return [CorrelationSurface(zx_graph.nodes[0].with_zx_flipped(), {})]
     # Start from each leaf node to find the correlation surfaces.
     correlation_surfaces = set()
     for leaf in zx_graph.leaf_nodes:
         correlation_surfaces.update(find_correlation_surfaces_at_leaf(zx_graph, leaf))
-    return correlation_surfaces
+    return sorted(correlation_surfaces)
 
 
 def find_correlation_surfaces_at_leaf(
@@ -78,19 +90,18 @@ def find_correlation_surfaces_at_leaf(
         )
         return _construct_compatible_correlation_surfaces(zx_graph, spans)
     x_spans = _find_correlation_spans_dfs(
-        zx_graph, leaf, ZXNode(leaf.position, NodeType.X), set()
+        zx_graph, leaf, ZXNode(leaf.position, ZXType.X), set()
     )
     z_spans = _find_correlation_spans_dfs(
-        zx_graph, leaf, ZXNode(leaf.position, NodeType.Z), set()
+        zx_graph, leaf, ZXNode(leaf.position, ZXType.Z), set()
     )
-    # Append an empty span to represent the case where there is no producted correlation.
-    spans = []
-    for sx, sz in itertools.product(x_spans + [frozenset()], z_spans + [frozenset()]):
-        if not sx and not sz:
-            continue
-        # use xor to get the producted correlation.
-        spans.append(sx ^ sz)
-    return _construct_compatible_correlation_surfaces(zx_graph, spans)
+    # For the port node, try to construct both the x and z type correlation surfaces.
+    if leaf.is_port:
+        return _construct_compatible_correlation_surfaces(zx_graph, x_spans + z_spans)
+    # For the Y type node, the correlation surface must be the product of the x and z type.
+    return _construct_compatible_correlation_surfaces(
+        zx_graph, [sx | sz for sx, sz in itertools.product(x_spans, z_spans)]
+    )
 
 
 def _construct_compatible_correlation_surfaces(
@@ -121,27 +132,26 @@ def _construct_compatible_correlation_surfaces(
 
 def _get_external_stabilizer(
     zx_graph: ZXGraph,
-    correlation_types: dict[Position3D, NodeType],
-) -> str:
+    correlation_types: dict[Position3D, ZXType],
+) -> dict[str, str]:
     """Construct the external stabilizer for the correlation surface.
 
-    The external stabilizer is a Pauli string with the same length as the number of ports
-    in the ZX graph. The correlation type of each port is used to determine the Pauli
-    operator in the string.
+    The external stabilizer is a mapping from the port label to the Pauli operator
+    at the port.
     """
-    external_stabilizer = ["_"] * zx_graph.num_ports
-    for i, port_label in enumerate(zx_graph.ordered_port_labels):
-        port = zx_graph.ports[port_label]
+    external_stabilizer = {}
+    for label, port in zx_graph.ports.items():
         correlation_type = correlation_types.get(port)
         if correlation_type is None:
-            continue
-        external_stabilizer[i] = correlation_type.value
-    return "".join(external_stabilizer)
+            external_stabilizer[label] = "I"
+        else:
+            external_stabilizer[label] = correlation_type.value
+    return external_stabilizer
 
 
 def _is_compatible_correlation(
     zx_graph: ZXGraph,
-    correlation_types: dict[Position3D, NodeType],
+    correlation_types: dict[Position3D, ZXType],
 ) -> bool:
     # Only need to check the leaf nodes compatibility.
     for leaf in zx_graph.leaf_nodes:
@@ -152,44 +162,51 @@ def _is_compatible_correlation(
         if correlation_type is None:
             continue
         # Y type correlation must be be supported on the Y type node.
-        if (correlation_type == NodeType.Y) != (leaf.node_type == NodeType.Y):
+        if (correlation_type == ZXType.Y) != (leaf.node_type == ZXType.Y):
             return False
         # Z/X type correlation must be supported on the opposite type node.
-        if correlation_type != NodeType.Y and correlation_type == leaf.node_type:
+        if correlation_type != ZXType.Y and correlation_type == leaf.node_type:
             return False
     return True
 
 
 def _get_nodes_correlation_types(
     span: frozenset[ZXEdge],
-) -> dict[Position3D, NodeType]:
-    correlation_types: dict[Position3D, NodeType] = {}
+) -> dict[Position3D, ZXType]:
+    edges_group_by_position: dict[tuple[Position3D, Position3D], list[ZXEdge]] = {}
     for edge in span:
-        for node in [edge.u, edge.v]:
-            existing_type = correlation_types.get(node.position)
-            if existing_type is None:
-                correlation_types[node.position] = node.node_type
+        edges_group_by_position.setdefault(
+            (edge.u.position, edge.v.position), []
+        ).append(edge)
+
+    correlation_types: dict[Position3D, ZXType] = {}
+    for uv, edges in edges_group_by_position.items():
+        for pos in uv:
+            node_type = correlation_types.get(pos)
+            if node_type is not None:
                 continue
-            cur_type = node.node_type
-            product_type = _correlation_type_product(existing_type, cur_type)
-            if product_type is None:
-                correlation_types.pop(node.position)
-            else:
-                correlation_types[node.position] = product_type
+            types = {edge.get_node_type_at(pos) for edge in edges}
+            product = functools.reduce(_correlation_type_product, types)
+            if product is not None:
+                correlation_types[pos] = product
     return correlation_types
 
 
 def _correlation_type_product(
-    type1: NodeType,
-    type2: NodeType,
-) -> NodeType | None:
+    type1: ZXType | None,
+    type2: ZXType | None,
+) -> ZXType | None:
+    if type1 is None:
+        return type2
+    if type2 is None:
+        return type1
     type_set = set([type1, type2])
-    if type_set == {NodeType.X, NodeType.Z}:
-        return NodeType.Y
-    if type_set == {NodeType.X, NodeType.Y}:
-        return NodeType.Z
-    if type_set == {NodeType.Y, NodeType.Z}:
-        return NodeType.X
+    if type_set == {ZXType.X, ZXType.Z}:
+        return ZXType.Y
+    if type_set == {ZXType.X, ZXType.Y}:
+        return ZXType.Z
+    if type_set == {ZXType.Y, ZXType.Z}:
+        return ZXType.X
     return None
 
 

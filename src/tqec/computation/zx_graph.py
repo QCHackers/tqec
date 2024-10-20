@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, cast
 
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import networkx as nx
 
 from tqec.exceptions import TQECException
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from tqec.computation.block_graph import BlockGraph
 
 
-class NodeType(Enum):
+class ZXType(Enum):
     """Valid node types in a ZX graph."""
 
     X = "X"
@@ -25,11 +26,11 @@ class NodeType(Enum):
     Z = "Z"
     P = "PORT"  # Open port for the input/ouput of the computation
 
-    def with_zx_flipped(self) -> NodeType:
-        if self == NodeType.X:
-            return NodeType.Z
-        elif self == NodeType.Z:
-            return NodeType.X
+    def with_zx_flipped(self) -> ZXType:
+        if self == ZXType.X:
+            return ZXType.Z
+        elif self == ZXType.Z:
+            return ZXType.X
         else:
             return self
 
@@ -37,7 +38,7 @@ class NodeType(Enum):
         return self.value
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class ZXNode:
     """A node in the ZX graph.
 
@@ -47,23 +48,23 @@ class ZXNode:
     """
 
     position: Position3D
-    node_type: NodeType
+    node_type: ZXType
 
     @property
     def is_port(self) -> bool:
         """Check if the node is an open port, i.e. represents the input/output
         of the computation."""
-        return self.node_type == NodeType.P
+        return self.node_type == ZXType.P
 
     @property
     def is_y_node(self) -> bool:
         """Check if the node is a Y-type node."""
-        return self.node_type == NodeType.Y
+        return self.node_type == ZXType.Y
 
     @property
     def is_zx_node(self) -> bool:
         """Check if the node is an X or Z-type node."""
-        return self.node_type in [NodeType.X, NodeType.Z]
+        return self.node_type in [ZXType.X, ZXType.Z]
 
     def with_zx_flipped(self) -> ZXNode:
         """Get a new node with the node type flipped."""
@@ -73,7 +74,7 @@ class ZXNode:
         return f"{self.node_type}{self.position}"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class ZXEdge:
     """An edge in the ZX graph.
 
@@ -109,6 +110,14 @@ class ZXEdge:
         if u.y != v.y:
             return Direction3D.Y
         return Direction3D.Z
+
+    def get_node_type_at(self, position: Position3D) -> ZXType:
+        """Get the node type at the given position of the edge."""
+        if self.u.position == position:
+            return self.u.node_type
+        if self.v.position == position:
+            return self.v.node_type
+        raise TQECException("The position is not an endpoint of the edge.")
 
     def __str__(self) -> str:
         return f"{self.u}-{self.v}"
@@ -183,11 +192,6 @@ class ZXGraph:
         """Get the position of open ports of the graph."""
         return self._ports
 
-    @property
-    def ordered_port_labels(self) -> list[str]:
-        """Get the labels of the open ports in the order of their positions."""
-        return sorted(self._ports.keys(), key=lambda label: self._ports[label])
-
     def is_port(self, position: Position3D) -> bool:
         """Check if the node at the position is an open port."""
         return position in self._ports.values()
@@ -198,7 +202,7 @@ class ZXGraph:
     def add_node(
         self,
         position: Position3D,
-        node_type: NodeType,
+        node_type: ZXType,
     ) -> None:
         """Add a node to the graph. If the a node already exists at the position, the
         node type will be updated.
@@ -214,7 +218,7 @@ class ZXGraph:
             TQECException: If the node type is P or Y.
             TQECException: If a different node already exists at the position.
         """
-        if node_type == NodeType.P or node_type == NodeType.Y:
+        if node_type == ZXType.P or node_type == ZXType.Y:
             raise TQECException(
                 "Cannot add a P or Y-type node solely, please use add_edge."
             )
@@ -232,11 +236,11 @@ class ZXGraph:
 
     def add_x_node(self, position: Position3D) -> None:
         """Add an X-type node to the graph."""
-        self.add_node(position, NodeType.X)
+        self.add_node(position, ZXType.X)
 
     def add_z_node(self, position: Position3D) -> None:
         """Add a Z-type node to the graph."""
-        self.add_node(position, NodeType.Z)
+        self.add_node(position, ZXType.Z)
 
     def add_edge(
         self,
@@ -283,7 +287,7 @@ class ZXGraph:
                 )
             port_update[port_label] = u.position if u.is_port else v.position
         for node in [u, v]:
-            if node.node_type in [NodeType.Z, NodeType.X]:
+            if node.node_type in [ZXType.Z, ZXType.X]:
                 continue
             if len(self.edges_at(node.position)) != 0:
                 raise TQECException("Node of type P or Y should have at most one edge.")
@@ -330,7 +334,7 @@ class ZXGraph:
             for _, _, data in self._graph.edges(position, data=True)
         ]
 
-    def fill_ports(self, fill: Mapping[str, NodeType] | NodeType) -> None:
+    def fill_ports(self, fill: Mapping[str, ZXType] | ZXType) -> None:
         """Fill the ports at specified position with a node with the given type.
 
         Args:
@@ -340,12 +344,12 @@ class ZXGraph:
             TQECException: if there is no port with the given label.
             TQECException: if try to fill the port with port type.
         """
-        if isinstance(fill, NodeType):
+        if isinstance(fill, ZXType):
             fill = {label: fill for label in self._ports}
         for label, node_type in fill.items():
             if label not in self._ports:
                 raise TQECException(f"There is no port with label {label}.")
-            if node_type == NodeType.P:
+            if node_type == ZXType.P:
                 raise TQECException("Cannot fill the ports with port type.")
             pos = self._ports[label]
             fill_node = ZXNode(pos, node_type)
@@ -406,8 +410,18 @@ class ZXGraph:
         """Check if the graph is a single connected component."""
         return nx.number_connected_components(self._graph) == 1
 
-    def find_correration_surfaces(self) -> set[CorrelationSurface]:
-        """Find the correlation surfaces in the ZX graph."""
+    def find_correration_surfaces(self) -> list[CorrelationSurface]:
+        """Find the correlation surfaces in the ZX graph.
+
+        A recursive depth-first search algorithm is used to find the correlation
+        surfaces starting from each leaf node.
+        """
         from tqec.computation.correlation import find_correlation_surfaces
 
         return find_correlation_surfaces(self)
+
+    def draw(self) -> Axes3D:
+        """Draw the graph using matplotlib."""
+        from tqec.computation.zx_plot import plot_zx_graph
+
+        return plot_zx_graph(self)

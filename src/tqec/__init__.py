@@ -13,7 +13,7 @@ from .computation import (
     Color3D,
     Cube,
     CubeType,
-    NodeType,
+    ZXType,
     Pipe,
     PipeType,
     ZXEdge,
