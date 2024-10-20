@@ -259,7 +259,7 @@ class Unique3DSubTemplates:
             `t` is the number of time-steps that are considered. This array
             stores **time independent** sub-template indices. The 3-dimensional
             sub-templates indices are all the entries on the third dimension,
-            i.e., `t`-tuples indexed by `0<=i<n` and `0<=j<n`.
+            i.e., `t`-tuples indexed by `0<=i<n` and `0<=j<m`.
         subtemplates: a store of sub-template (values) indexed by `t`-tuples of
             integers (keys) that link the sub-template center to the original
             template instantiation thanks to `subtemplate_indices`.

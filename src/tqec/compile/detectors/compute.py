@@ -100,6 +100,8 @@ def _center_plaquette_syndrome_qubits(
         plaquette. Returns an empty collection if the central plaquette has the
         index `0`.
     """
+    # Subtemplates are expected to have a shape of (2*r+1, 2*r+1), so `r` can
+    # be recovered by computing `(2*r+1) // 2 == r`.
     r = subtemplate.shape[0] // 2
     central_plaquette_index = int(subtemplate[r, r])
 
@@ -222,18 +224,20 @@ def compute_detectors_at_end_of_situation(
     """Returns detectors that should be added at the end of the provided situation.
 
     Args:
-        subtemplates: a tuple containing either one or two sub-template(s), each
-            consisting of square 2-dimensional array of integers with odd-length
-            sides representing the arrangement of plaquettes in a subtemplate.
-        plaquettes_at_timestep: a tuple containing either one or two collection(s)
-            of plaquettes each representing one QEC round.
+        subtemplates: a sequence of sub-template(s), each entry consisting of
+            a square 2-dimensional array of integers with odd-length sides
+            representing the arrangement of plaquettes in a subtemplate.
+        plaquettes_at_timestep: a sequence of collection of plaquettes each
+            representing one QEC round.
         increments: spatial increments between each `Plaquette` origin.
         database: existing database of detectors that is used to avoid computing
             detectors if the database already contains them. If provided, this
             function guarantees that the database will contain the provided
             situation when returning (i.e., either it already contained the
             situation or it has been updated **in-place** with the computed
-            detectors). Default to `None` which result in not using any kind of
+            detectors). If the database is frozen and a new situation is
+            encountered, an exception will be thrown when trying to mutate the
+            database. Default to `None` which result in not using any kind of
             database and unconditionally performing the detector computation.
         only_use_database: if True, only detectors from the database will be
             used. An error will be raised if a situation that is not registered
@@ -305,6 +309,26 @@ def compute_detectors_at_end_of_situation(
 def _get_or_default(
     array: npt.NDArray[numpy.int_], slices: Sequence[tuple[int, int]], default: int = 0
 ) -> npt.NDArray[numpy.int_]:
+    """Get slices of a `numpy` array, returning the provided `default` value for
+    out-of-bound accesses.
+
+    Args:
+        array: `numpy` array to recover values from.
+        slices: a sequence of tuples `(start, stop)` representing the slice that
+            should be returned for the corresponding array axis. The first slice
+            indexes elements on `axis=0`, the second on `axis=1`, ...
+        default: value to use when indices from the provided slices are
+            out-of-bound for the provided `array`. Defaults to 0.
+
+    Raises:
+        TQECException: if any of the provided slice has `start > stop`.
+        TQECException: if the number of provided slices does not exactly match
+            the number of dimensions of the provided array.
+
+    Returns:
+        `array[slices[0][0]:slices[0][1], ..., slices[-1][0]:slices[-1][1]]`,
+        with any out-of-bounds index associated to the provided `default` value.
+    """
     if any(start > stop for start, stop in slices):
         raise TQECException("The provided slices should be non-empty.")
     if len(slices) != len(array.shape):
@@ -349,6 +373,38 @@ def _get_or_default(
 def _compute_superimposed_template_instantiations(
     templates: Sequence[Template], k: int
 ) -> list[npt.NDArray[numpy.int_]]:
+    """Compute the instantiation of all the provided `templates`, making sure
+    that they are aligned with the last provided one.
+
+    When instantiating multiple templates that are supposed to be stacked up on
+    top of each other (i.e., executed one after the other) we might be
+    confronted with several edge cases:
+
+    - what if the templates do not have the same shape?
+    - what if the templates do not have the same origin?
+
+    In our specific case of computing detectors, we always focus on the top-most
+    (i.e., last executed, last entry of the provided `templates`) template because
+    this is the template that we are searching detectors in. That means that we
+    want to instantiate :class:`Template` instances with potentially different
+    shapes and origins and be sure that they are all aligned with the top-most
+    :class:`Template` instance.
+
+    This function ensures exactly this. It does that by instantiating all the
+    provided templates and cutting all the obtained instantiations to the
+    coordinates where the last provided template is defined.
+
+    Args:
+        templates: instances representing templates that will be instantiated
+            and cut to the coordinates where `templates[-1]` is defined.
+        k: scaling parameter used to instantiate `templates`.
+
+    Returns:
+        a list of template instantiation that all have the same shape and the
+        same origin, meaning that in the final circuit `ret[i][x, y]` represent
+        indices of plaquettes that will be stacked up (in time) for all `i` and
+        any `x` and `y`.
+    """
     origins = [t.instantiation_origin(k) for t in templates]
     instantiations = [t.instantiate(k) for t in templates]
 
