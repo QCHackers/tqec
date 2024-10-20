@@ -309,6 +309,41 @@ def test_scheduled_circuit_modification() -> None:
     )
 
 
+def test_scheduled_circuit_append_annotation() -> None:
+    circuit = ScheduledCircuit.empty()
+    circuit.append_new_moment(Moment(stim.Circuit("H 0 1 2")))
+    circuit.append_annotation(
+        stim.CircuitInstruction("DETECTOR", [stim.target_rec(-1)], [0, 0])
+    )
+    circuit.append_observable(0, [stim.target_rec(-1)])
+    with pytest.raises(
+        TQECException,
+        match="^The provided instruction is not an annotation, which is "
+        "disallowed by the append_annotation method.$",
+    ):
+        circuit.append_annotation(stim.CircuitInstruction("H", [0, 1], []))
+
+
+def test_scheduled_circuit_filter_by_qubit() -> None:
+    circuit = ScheduledCircuit(
+        [Moment(stim.Circuit("H 0 1 2"))],
+        schedule=0,
+        qubit_map=QubitMap({i: GridQubit(i, i) for i in range(3)}),
+    )
+    filtered_circuit = circuit.filter_by_qubits([GridQubit(i, i) for i in range(3)])
+    assert filtered_circuit.get_circuit() == circuit.get_circuit()
+    assert filtered_circuit.schedule == circuit.schedule
+
+    filtered_circuit = circuit.filter_by_qubits([GridQubit(0, 0), GridQubit(0, 1)])
+    assert filtered_circuit.get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+    assert filtered_circuit.schedule == circuit.schedule
+
+    circuit.append_new_moment(Moment(stim.Circuit("H 1 2")))
+    filtered_circuit = circuit.filter_by_qubits([GridQubit(0, 0), GridQubit(0, 1)])
+    assert filtered_circuit.get_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+    assert filtered_circuit.schedule == Schedule([0])
+
+
 def test_remove_duplicate_instructions() -> None:
     instructions: list[stim.CircuitInstruction] = list(
         iter(stim.Circuit("H 0 0 0 2 0 0 0 0 1 1 2 2 0 0 0 3"))

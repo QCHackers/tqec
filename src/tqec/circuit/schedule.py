@@ -165,6 +165,9 @@ class ScheduledCircuit:
 
         Args:
             moments: moments representing the computation that is scheduled.
+                The provided `moments` should not contain any `QUBIT_COORDS`
+                instructions. Instead, the qubit coordinates should be provided
+                through the `qubit_map` parameter.
             schedule: schedule of the provided `moments`. If an integer is
                 provided, each moment of the provided `stim.Circuit` is
                 scheduled sequentially, starting by the provided integer.
