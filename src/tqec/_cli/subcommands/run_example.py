@@ -32,7 +32,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             "run-examples",
             description=(
                 "Runs the full pipeline on the CNot example."
-                ".dae -> stim circuits and observables -> simulation -> plots"
+                "block graph -> stim circuits and observables -> simulation -> plots"
             ),
         )
         parser.add_argument(
@@ -51,7 +51,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
 
         parser.add_argument(
             "-p",
-            help="The noise leves applied to the simulation.",
+            help="The noise levels applied to the simulation.",
             nargs="+",
             type=float,
             default=list(np.logspace(-4, -1, 10)),
