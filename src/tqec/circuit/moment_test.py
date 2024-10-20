@@ -39,6 +39,12 @@ def test_moment_circuit_property(circuit: stim.Circuit) -> None:
     assert Moment(circuit).circuit == circuit
 
 
+def test_moment_is_empty() -> None:
+    assert Moment(stim.Circuit()).is_empty
+    assert not Moment(stim.Circuit("H 0")).is_empty
+    assert not Moment(stim.Circuit("DETECTOR(0, 0, 1) rec[-1]")).is_empty
+
+
 def test_moment_qubit_indices() -> None:
     assert Moment(stim.Circuit("H 0 1 2 3")).qubits_indices == frozenset([0, 1, 2, 3])
     assert Moment(stim.Circuit("M 1 4 6")).qubits_indices == frozenset([1, 4, 6])
@@ -137,6 +143,24 @@ def test_moment_append_instruction() -> None:
         moment.append(stim.CircuitInstruction("H", [stim.GateTarget(0)], []))
 
 
+def test_moment_append_annotation() -> None:
+    moment = Moment(stim.Circuit("H 0"))
+    moment.append_annotation(
+        stim.CircuitInstruction("DETECTOR", [stim.target_rec(-1)], [0, 0, 1])
+    )
+    moment.append_annotation(
+        stim.CircuitInstruction("OBSERVABLE_INCLUDE", [stim.target_rec(-1)], [1])
+    )
+    assert moment.circuit == stim.Circuit(
+        "H 0\nDETECTOR(0, 0, 1) rec[-1]\nOBSERVABLE_INCLUDE(1) rec[-1]"
+    )
+    with pytest.raises(
+        TQECException,
+        match="^The method append_annotation only supports appending annotations.*",
+    ):
+        moment.append_annotation(stim.CircuitInstruction("H", [stim.GateTarget(0)], []))
+
+
 @pytest.mark.parametrize("circuit", _VALID_MOMENT_CIRCUITS)
 def test_moment_instructions_property(circuit: stim.Circuit) -> None:
     assert list(Moment(circuit).instructions) == list(iter(circuit))
@@ -210,3 +234,24 @@ def test_iterate_circuit_by_moment() -> None:
                 stim.Circuit("REPEAT 10 {\n    H 0 1 2 3\n}")
             )
         )
+
+
+def test_moment_with_mapped_qubit_indices() -> None:
+    moment = Moment(
+        stim.Circuit(
+            "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(0, 1) 1\nH 0 1\nDETECTOR(0, 0) rec[-1]"
+        )
+    )
+    mapped_moment = moment.with_mapped_qubit_indices({0: 1, 1: 0})
+    assert mapped_moment.circuit == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 1\nQUBIT_COORDS(0, 1) 0\nH 1 0\nDETECTOR(0, 0) rec[-1]"
+    )
+    assert mapped_moment.qubits_indices == {0, 1}
+    assert moment.circuit == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(0, 1) 1\nH 0 1\nDETECTOR(0, 0) rec[-1]"
+    )
+    mapped_moment = moment.with_mapped_qubit_indices({0: 12, 1: 56, 2: 23})
+    assert mapped_moment.circuit == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 12\nQUBIT_COORDS(0, 1) 56\nH 12 56\nDETECTOR(0, 0) rec[-1]"
+    )
+    assert mapped_moment.qubits_indices == {12, 56}
