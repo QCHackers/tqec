@@ -37,11 +37,11 @@ def get_midline_qubits_for_cube(
     cube: Cube, block_shape: Shape2D, template_increments: Displacement
 ) -> list[GridQubit]:
     """Get the midline qubits for a cube."""
-    if cube.cube_type.is_spatial_junction or cube.is_virtual:
+    if cube.kind.is_spatial_junction or cube.is_port:
         raise TQECException(
             "Cannot get midline qubits for a spatial junction cube or a virtual cube."
         )
-    cube_type = cube.cube_type.value
+    cube_type = cube.kind.value
     time_boundary_basis = cube_type[2]
     midline_orientation = Direction3D.from_axis_index(
         cube_type.index(time_boundary_basis)

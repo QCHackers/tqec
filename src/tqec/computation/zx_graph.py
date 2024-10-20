@@ -192,10 +192,6 @@ class ZXGraph:
         """Get the position of open ports of the graph."""
         return self._ports
 
-    def is_port(self, position: Position3D) -> bool:
-        """Check if the node at the position is an open port."""
-        return position in self._ports.values()
-
     def _node_degree(self, node: ZXNode) -> int:
         return self._graph.degree(node.position)  # type: ignore
 
@@ -204,7 +200,7 @@ class ZXGraph:
         position: Position3D,
         kind: ZXKind,
     ) -> None:
-        """Add a node to the graph. If the a node already exists at the position, the
+        """Add a node to the graph. If a node already exists at the position, the
         node kind will be updated.
 
         Note that a port or a Y node can only be added to the graph using `add_edge`

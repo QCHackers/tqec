@@ -11,8 +11,8 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.computation.block_graph.cube import Cube
-from tqec.computation.block_graph.enums import CubeType, PipeType
+from tqec.computation.block_graph.cube import Cube, CubeKind
+from tqec.computation.block_graph.enums import PipeType
 from tqec.computation.block_graph.observable import AbstractObservable
 from tqec.computation.block_graph.pipe import Pipe
 from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
@@ -23,6 +23,9 @@ if ty.TYPE_CHECKING:
 
 _CUBE_DATA_KEY = "tqec_block_cube_data"
 _PIPE_DATA_KEY = "tqec_block_pipe_data"
+
+BlockType = CubeKind | PipeType
+"""Valid block types in the library."""
 
 
 class BlockGraph:
@@ -50,7 +53,7 @@ class BlockGraph:
     @property
     def num_open_ports(self) -> int:
         """The number of open ports in the graph."""
-        return sum(cube.is_virtual for cube in self.cubes)
+        return sum(cube.is_port for cube in self.cubes)
 
     @property
     def cubes(self) -> list[Cube]:
@@ -65,7 +68,7 @@ class BlockGraph:
     def add_cube(
         self,
         position: Position3D,
-        cube_type: CubeType,
+        cube_type: CubeKind,
     ) -> None:
         """Add a cube to the graph.
 
@@ -127,7 +130,7 @@ class BlockGraph:
                 port of a pipe. It is not a physical cube but a placeholder for the pipe to connect to the
                 boundary of the graph. Default is True.
         """
-        if not allow_virtual_node and any(cube.is_virtual for cube in self.cubes):
+        if not allow_virtual_node and any(cube.is_port for cube in self.cubes):
             raise TQECException("The graph contains a virtual node.")
         for cube in self.cubes:
             self._check_validity_locally_at_cube(cube)
@@ -135,7 +138,7 @@ class BlockGraph:
     def _check_validity_locally_at_cube(self, cube: Cube) -> None:
         """Check the validity of the block structures locally at a cube."""
         # Skip the virtual cube
-        if cube.is_virtual:
+        if cube.is_port:
             return
         pipes_by_direction: dict[Direction3D, list[Pipe]] = {}
         for pipe in self.pipes_at(cube.position):
@@ -145,7 +148,7 @@ class BlockGraph:
         if len(pipe_directions) == 3:
             raise TQECException(f"Cube at {cube.position} has a 3D corner.")
         # 2. Match color at pass-through
-        cube_color = cube.cube_type.get_color()
+        cube_color = cube.kind.get_color()
         for direction, pipes in pipes_by_direction.items():
             if not all(
                 pipe.pipe_type.get_color_at_side(pipe.u == cube).match(cube_color)
@@ -158,7 +161,7 @@ class BlockGraph:
         if len(pipe_directions) == 2:
             # since we have checked the pass-through match
             # we only have to check that the surrounding walls at the turn plane have the same color
-            if cube.cube_type.normal_direction_to_corner_plane() in pipe_directions:
+            if cube.kind.normal_direction_to_corner_plane() in pipe_directions:
                 raise TQECException(
                     f"Cube at {cube.position} has unmatched color at turn."
                 )
@@ -171,7 +174,7 @@ class BlockGraph:
         """Convert the block graph to a ZX graph."""
         zx_graph = ZXGraph(name if name else self.name + "_zx")
         for cube in self.cubes:
-            zx_graph.add_node(cube.position, cube.cube_type.to_zx_node_type())
+            zx_graph.add_node(cube.position, cube.kind.to_zx_node_type())
         for pipe in self.pipes:
             zx_graph.add_edge(
                 pipe.u.position, pipe.v.position, pipe.pipe_type.has_hadamard
@@ -206,7 +209,7 @@ class BlockGraph:
         # Add the virtual nodes first
         for node in zx_graph.nodes:
             if node.is_port:
-                block_graph.add_cube(node.pos, CubeType.VIRTUAL)
+                block_graph.add_cube(node.pos, CubeKind.VIRTUAL)
                 nodes_to_handle.remove(node)
         # Check 3D corner
         for node in nodes_to_handle:
@@ -231,7 +234,7 @@ class BlockGraph:
                 + normal_direction_color
                 + cube_type_str[direction_index + 1 :]
             )
-            cube_type = CubeType(cube_type_str)
+            cube_type = CubeKind(cube_type_str)
             block_graph.add_cube(node.pos, cube_type)
             nodes_to_handle.remove(node)
             corner_cubes[node.pos] = Cube(node.pos, cube_type)
@@ -260,7 +263,7 @@ class BlockGraph:
                 edges_at_node = zx_graph.edges_at(node_pos)
                 if not edges_at_node:
                     aligned_node_type = (
-                        CubeType.XZZ if node_type == ZXKind.Z else CubeType.XZX
+                        CubeKind.XZZ if node_type == ZXKind.Z else CubeKind.XZX
                     )
                 else:
                     edge_direction = edges_at_node[0].direction
@@ -269,7 +272,7 @@ class BlockGraph:
                         edge_direction.axis_index,
                         "x" if node_type == ZXKind.X else "z",
                     )
-                    aligned_node_type = CubeType("".join(node_type_list))
+                    aligned_node_type = CubeKind("".join(node_type_list))
                 block_graph.add_cube(aligned_node.pos, aligned_node_type)
                 nodes_to_handle.remove(aligned_node)
                 bfs_sources.append(Cube(aligned_node.pos, aligned_node_type))
@@ -294,7 +297,7 @@ class BlockGraph:
                 known_cube = ty.cast(
                     Cube, block_graph.get_cube(p1 if can_infer_from_src else p2)
                 )
-                pipe_type = known_cube.cube_type.infer_pipe_type_at_direction(
+                pipe_type = known_cube.kind.infer_pipe_type_at_direction(
                     edge.direction, can_infer_from_src, edge.has_hadamard
                 )
                 if src in nodes_to_handle or dst in nodes_to_handle:
@@ -384,10 +387,7 @@ class BlockGraph:
                 ), f"{edge} is in the graph and should be associated with a Pipe instance."
                 u, v = pipe.u, pipe.v
                 if pipe.direction == Direction3D.Z:
-                    if (
-                        is_measured(v)
-                        and v.cube_type.value[2] == correlation_type_at_dst
-                    ):
+                    if is_measured(v) and v.kind.value[2] == correlation_type_at_dst:
                         top_lines.add(v)
                     continue
                 # The direction for which the correlation surface of that type
@@ -416,7 +416,7 @@ class BlockGraph:
             return deepcopy(self)
         new_graph = BlockGraph(self.name)
         for cube in self.cubes:
-            new_graph.add_cube(cube.position.shift_by(dz=-minz), cube.cube_type)
+            new_graph.add_cube(cube.position.shift_by(dz=-minz), cube.kind)
         for pipe in self.pipes:
             new_graph.add_pipe(
                 pipe.u.position.shift_by(dz=-minz),

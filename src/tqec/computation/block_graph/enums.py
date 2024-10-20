@@ -7,97 +7,7 @@ from typing import Literal, cast
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
 from tqec.computation.block_graph.color import Color, Color3D
-from tqec.computation.zx_graph import ZXKind
-
-
-class CubeType(Enum):
-    """Valid cube types in the library."""
-
-    ZXX = "zxx"
-    XZX = "xzx"
-    XXZ = "xxz"
-    XZZ = "xzz"
-    ZXZ = "zxz"
-    ZZX = "zzx"
-    # Y basis measurement
-    Y = "y"
-    # Virtual cube for open port
-    VIRTUAL = "virtual"
-
-    @property
-    def is_spatial_junction(self) -> bool:
-        return self in [CubeType.ZZX, CubeType.XXZ]
-
-    @property
-    def is_y(self) -> bool:
-        return self == CubeType.Y
-
-    @property
-    def is_virtual(self) -> bool:
-        return self == CubeType.VIRTUAL
-
-    @property
-    def is_regular(self) -> bool:
-        return not self.is_spatial_junction and not self.is_y and not self.is_virtual
-
-    @property
-    def temporal_basis(self) -> Literal["X", "Z", "Y"] | None:
-        if self.is_y:
-            return "Y"
-        if self.is_virtual:
-            return None
-        return cast(Literal["X", "Z"], self.value[2].upper())
-
-    def to_zx_node_type(self) -> ZXKind:
-        """Convert the cube type to a ZX node type."""
-        if self == CubeType.VIRTUAL:
-            return ZXKind.V
-        if self.value.count("z") == 2:
-            return ZXKind.Z
-        if self.value.count("x") == 2:
-            return ZXKind.X
-        raise TQECException(
-            f"Conversion from {self} to ZX node type is not supported yet."
-        )
-
-    def get_color(self) -> Color3D:
-        """Get the color of the block."""
-        return Color3D.from_string(self.value)
-
-    @staticmethod
-    def from_color(color: Color3D) -> CubeType:
-        """Get the cube type from the color."""
-        if color.is_null:
-            return CubeType.VIRTUAL
-        if any(c.is_null for c in astuple(color)):
-            raise TQECException("All the color must be defined for a non-virtual cube.")
-        return CubeType("".join(c.value for c in astuple(color)).lower())
-
-    def normal_direction_to_corner_plane(self) -> Direction3D:
-        """If the cube is at a corner, return the normal direction to the
-        corner plane.
-
-        Due to the color match rule at the corner turn, the corner plane
-        can be inferred from the type of the cube.
-        """
-        if self == CubeType.VIRTUAL:
-            raise TQECException("Cannot infer the corner plane for a virtual cube.")
-        if self.value.count("z") == 2:
-            return Direction3D.from_axis_index(self.value.index("x"))
-        return Direction3D.from_axis_index(self.value.index("z"))
-
-    def infer_pipe_type_at_direction(
-        self,
-        direction: Direction3D,
-        src_side_if_h_pipe: bool = True,
-        has_hadamard: bool = False,
-    ) -> PipeType:
-        """Infer the pipe type connecting this cube at some direction with the
-        color match rule."""
-        if self == CubeType.VIRTUAL:
-            raise TQECException("Cannot infer the pipe type for a virtual cube.")
-        color = self.get_color().pop_color_at_direction(direction)
-        return PipeType.from_color_at_side(color, src_side_if_h_pipe, has_hadamard)
+from tqec.computation.block_graph.cube import CubeKind
 
 
 class PipeType(Enum):
@@ -157,12 +67,12 @@ class PipeType(Enum):
 
     def infer_cube_type_at_side(
         self, src_side_if_h_pipe: bool = True, is_z_cube: bool = True
-    ) -> CubeType:
+    ) -> CubeKind:
         """Infer the cube type at the side of the pipe."""
         color = self.get_color_at_side(src_side_if_h_pipe).push_color_at_direction(
             self.direction, Color.Z if is_z_cube else Color.X
         )
-        return CubeType.from_color(color)
+        return CubeKind.from_color(color)
 
     def temporal_basis(self) -> Literal["X", "Z"]:
         if self.direction == Direction3D.Z:

@@ -161,12 +161,12 @@ def write_block_graph_to_dae_file(
         return ty.cast(_FloatPosition, tuple(p * (1 + pipe_length) for p in pos))
 
     for cube in block_graph.cubes:
-        if cube.is_virtual:
+        if cube.is_port:
             continue
         scaled_position = scale_position(cube.position.as_tuple())
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position
-        base.add_instance_node(instance_id, matrix, cube.cube_type)
+        base.add_instance_node(instance_id, matrix, cube.kind)
         instance_id += 1
     for pipe in block_graph.pipes:
         src_pos = scale_position(pipe.u.position.as_tuple())

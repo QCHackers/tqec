@@ -44,14 +44,14 @@ class CubeSpec:
     @staticmethod
     def from_cube(cube: Cube, graph: BlockGraph) -> CubeSpec:
         """Returns the cube spec from a cube in a block graph."""
-        if cube.cube_type not in [CubeType.ZZX, CubeType.XXZ]:
-            return CubeSpec(cube.cube_type)
+        if cube.kind not in [CubeType.ZZX, CubeType.XXZ]:
+            return CubeSpec(cube.kind)
         pos = cube.position
         junction_arms = JunctionArms.NONE
         for flag, shift in JunctionArms.get_map_from_arm_to_shift().items():
             if graph.get_pipe(pos, pos.shift_by(*shift)) is not None:
                 junction_arms |= flag
-        return CubeSpec(cube.cube_type, junction_arms)
+        return CubeSpec(cube.kind, junction_arms)
 
 
 class BlockBuilder(Protocol):
