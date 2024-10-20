@@ -38,7 +38,7 @@ def test_compile_single_block_memory(spec: str, cube_type: CubeType, k: int) -> 
         g, block_builder, substitution_builder, observables
     )
     circuit = compiled_graph.generate_stim_circuit(
-        k, noise_model=NoiseModel.uniform_depolarizing(0.001)
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
 
     assert circuit.num_detectors == (d**2 - 1) * d
@@ -72,7 +72,7 @@ def test_compile_two_same_blocks_connected_in_time(
         g, block_builder, substitution_builder, observables
     )
     circuit = compiled_graph.generate_stim_circuit(
-        k, noise_model=NoiseModel.uniform_depolarizing(0.001)
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
 
     dem = circuit.detector_error_model()
@@ -115,7 +115,7 @@ def test_compile_two_same_blocks_connected_in_space(
         g, block_builder, substitution_builder, observables
     )
     circuit = compiled_graph.generate_stim_circuit(
-        k, noise_model=NoiseModel.uniform_depolarizing(0.001)
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
 
     dem = circuit.detector_error_model()
@@ -162,7 +162,7 @@ def test_compile_L_shape_in_space_time(
         g, block_builder, substitution_builder, observables
     )
     circuit = compiled_graph.generate_stim_circuit(
-        k, noise_model=NoiseModel.uniform_depolarizing(0.001)
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
 
     dem = circuit.detector_error_model()
@@ -193,7 +193,7 @@ def test_compile_logical_cnot(spec: str, support_z_basis_obs: bool, k: int) -> N
         g, block_builder, substitution_builder, observables
     )
     circuit = compiled_graph.generate_stim_circuit(
-        k, noise_model=NoiseModel.uniform_depolarizing(0.001)
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
 
     dem = circuit.detector_error_model()
