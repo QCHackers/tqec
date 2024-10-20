@@ -110,7 +110,7 @@ The compilation of the block graph is done automatically based on the inputs.
 .. code-block:: python
 
     import numpy as np
-    
+
     from tqec.noise_models import NoiseModel
     from tqec.simulation.simulation import start_simulation_using_sinter
 
@@ -140,7 +140,7 @@ Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation
     from tqec.simulation.plotting import plot_simulation_results
 
     zx_graph = block_graph.to_zx_graph()
-    
+
     for i, stat in enumerate(stats):
         fig, ax = plt.subplots()
         sinter.plot_error_rate(
@@ -161,7 +161,7 @@ Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation
 This quick start guide has shown how to use the ``tqec`` library to define a computation,
 import it into the library, compile it to stim circuits.
 Simulations are run and visualized for multiple error rates and code distances.
-For an extensive example, see also the 
+For an extensive example, see also the
 `tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py`_.
 
 The process can be repeated through the cli using
