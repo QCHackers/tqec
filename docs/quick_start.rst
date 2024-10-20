@@ -139,6 +139,8 @@ Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation
 
     from tqec.simulation.plotting import plot_simulation_results
 
+    zx_graph = block_graph.to_zx_graph()
+    
     for i, stat in enumerate(stats):
         fig, ax = plt.subplots()
         sinter.plot_error_rate(
