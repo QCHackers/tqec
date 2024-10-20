@@ -28,14 +28,17 @@ def draw_zx_graph_on(
     node_size: int = 400,
     hadamard_size: int = 200,
     edge_width: int = 1,
+    annotate_ports: bool = True,
 ) -> None:
     """Draw the 3D graph using matplotlib on the provided figure.
 
     Args:
+        graph: The ZX graph to draw.
         ax: a 3-dimensional ax to draw on.
         node_size: The size of the node. Default is 400.
         hadamard_size: The size of the Hadamard transition. Default is 200.
         edge_width: The width of the edge. Default is 1.
+        annotate_ports: Whether to annotate the ports if they are present. Default is True.
     """
     vis_nodes = [n for n in graph.nodes if not n.is_port]
     vis_nodes_array = _positions_array(*[n.position for n in vis_nodes])
@@ -47,6 +50,16 @@ def draw_zx_graph_on(
             alpha=1.0,
             edgecolors="black",
         )
+    if graph.ports and annotate_ports:
+        for label, port in graph.ports.items():
+            ax.text(
+                *port.as_tuple(),
+                s=label,
+                color="black",
+                fontsize=15,
+                ha="center",
+                va="center",
+            )
 
     for edge in graph.edges:
         pos_array = _positions_array(edge.u.position, edge.v.position)
