@@ -109,11 +109,13 @@ The compilation of the block graph is done automatically based on the inputs.
 
 .. code-block:: python
 
+    from multiprocessing import cpu_count()
+
     import numpy as np
 
     from tqec.noise_models import NoiseModel
     from tqec.simulation.simulation import start_simulation_using_sinter
-
+    # returns a iterator
     stats = start_simulation_using_sinter(
         block_graph,
         ks=range(1, 4), # k values for the code distance
@@ -121,7 +123,7 @@ The compilation of the block graph is done automatically based on the inputs.
         noise_model_factory=NoiseModel.uniform_depolarizing # noise model
         observables=[observables[1]], # observable of interest
         decoders=["pymatching"],
-        num_workers=20,
+        num_workers=cpu_count(),
         max_shots=10_000_000,
         max_errors=5_000,
         print_progress=True,
@@ -145,7 +147,7 @@ Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation
     # len(stats) = 1 if we have multiple we can iterate over the results
     sinter.plot_error_rate(
         ax=ax,
-        stats=stats,
+        stats=next(stats),
         x_func=lambda stat: stat.json_metadata["p"],
         group_func=lambda stat: stat.json_metadata["d"],
     )

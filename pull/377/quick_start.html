@@ -177,11 +177,13 @@ Usually you want to simulate combinations of error rates and code distances, pot
 for multiple observables.
 Multiple runs can be done in parallel using the <code class="docutils literal notranslate"><span class="pre">sinter</span></code> library using the <code class="docutils literal notranslate"><span class="pre">start_simulation_using_sinter</span></code>.
 The compilation of the block graph is done automatically based on the inputs.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">cpu_count</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 <span class="kn">from</span> <span class="nn">tqec.simulation.simulation</span> <span class="kn">import</span> <span class="n">start_simulation_using_sinter</span>
-
+<span class="c1"># returns a iterator</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">start_simulation_using_sinter</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">,</span>
     <span class="n">ks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="c1"># k values for the code distance</span>
@@ -189,7 +191,7 @@ The compilation of the block graph is done automatically based on the inputs.</p
     <span class="n">noise_model_factory</span><span class="o">=</span><span class="n">NoiseModel</span><span class="o">.</span><span class="n">uniform_depolarizing</span> <span class="c1"># noise model</span>
     <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="c1"># observable of interest</span>
     <span class="n">decoders</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pymatching&quot;</span><span class="p">],</span>
-    <span class="n">num_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">cpu_count</span><span class="p">(),</span>
     <span class="n">max_shots</span><span class="o">=</span><span class="mi">10_000_000</span><span class="p">,</span>
     <span class="n">max_errors</span><span class="o">=</span><span class="mi">5_000</span><span class="p">,</span>
     <span class="n">print_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -210,7 +212,7 @@ The compilation of the block graph is done automatically based on the inputs.</p
 <span class="c1"># len(stats) = 1 if we have multiple we can iterate over the results</span>
 <span class="n">sinter</span><span class="o">.</span><span class="n">plot_error_rate</span><span class="p">(</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-    <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span>
+    <span class="n">stats</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">stats</span><span class="p">),</span>
     <span class="n">x_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">stat</span><span class="p">:</span> <span class="n">stat</span><span class="o">.</span><span class="n">json_metadata</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span>
     <span class="n">group_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">stat</span><span class="p">:</span> <span class="n">stat</span><span class="o">.</span><span class="n">json_metadata</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span>
 <span class="p">)</span>
