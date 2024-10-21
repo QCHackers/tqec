@@ -9,13 +9,10 @@ from .circuit import (
 from .compile import compile_block_graph
 from .computation import (
     BlockGraph,
-    BlockType,
-    Color3D,
+    BlockKind,
     Cube,
-    CubeType,
     ZXKind,
     Pipe,
-    PipeType,
     ZXEdge,
     ZXGraph,
     ZXNode,

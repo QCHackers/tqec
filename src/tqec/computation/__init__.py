@@ -1,12 +1,11 @@
 from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
 from tqec.computation.block_graph import (
     BlockGraph,
-    BlockType,
-    Color3D,
+    BlockKind,
     Cube,
-    CubeType,
+    CubeKind,
     Pipe,
-    PipeType,
+    PipeKind,
 )
 from tqec.computation.collada import (
     display_collada_model,

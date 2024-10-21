@@ -209,10 +209,15 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
         ZXNode(Position3D(1, 0, 0), ZXKind.Y),
     )
-    with pytest.raises(TQECException, match="The Y node must only has Z-direction edge."):
+    with pytest.raises(
+        TQECException, match="The Y node must only has Z-direction edge."
+    ):
         g.validate()
 
     g = ZXGraph()
+    g.add_node(Position3D(0, 0, 1), ZXKind.Y)
+    with pytest.raises(TQECException, match="The Y node must have at least one edge."):
+        g.validate()
     g.add_edge(
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
         ZXNode(Position3D(0, 0, 1), ZXKind.Y),
@@ -221,3 +226,20 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(0, 0, 2), ZXKind.Z),
         ZXNode(Position3D(0, 0, 1), ZXKind.Y),
     )
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 1, 0), ZXKind.Z),
+    )
+    g.validate()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+    )
+    with pytest.raises(TQECException, match="ZX graph has a 3D corne"):
+        g.validate()

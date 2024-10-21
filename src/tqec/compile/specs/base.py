@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Mapping, Protocol
+from typing import Protocol
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.enums import JunctionArms
-from tqec.computation.block_graph.cube import Cube
-from tqec.computation.block_graph.enums import CubeType, PipeType
+from tqec.computation.block_graph.cube import Cube, CubeKind
 from tqec.computation.block_graph.graph import BlockGraph
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes

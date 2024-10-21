@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import astuple, dataclass
 from enum import Enum
 
@@ -110,21 +112,9 @@ class Direction3D(Enum):
     Z = 2
 
     @staticmethod
-    def all() -> list["Direction3D"]:
-        """Get all directions."""
-        return [e for e in Direction3D]
-
-    @staticmethod
-    def from_axis_index(i: int) -> "Direction3D":
-        """Get the direction from the axis index."""
-        if i not in [d.value for d in Direction3D]:
-            raise TQECException(f"Invalid axis index: {i}")
-        return Direction3D.all()[i]
-
-    @property
-    def axis_index(self) -> int:
-        """Get the axis index."""
-        return self.value
+    def all_directions() -> list[Direction3D]:
+        """Return all the directions."""
+        return [Direction3D.X, Direction3D.Y, Direction3D.Z]
 
     def __str__(self) -> str:
         return self.name

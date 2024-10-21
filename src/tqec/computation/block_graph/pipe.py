@@ -4,8 +4,77 @@ from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.computation.block_graph.cube import Cube
-from tqec.computation.block_graph.enums import PipeType
+from tqec.computation.block_graph.cube import Cube, ZXBasis, ZXCube, CubeKind
+
+
+@dataclass(frozen=True)
+class PipeKind:
+    x: ZXBasis | None
+    y: ZXBasis | None
+    z: ZXBasis | None
+    has_hadamard: bool = False
+
+    def __post_init__(self) -> None:
+        if sum(basis is None for basis in (self.x, self.y, self.z)) != 1:
+            raise TQECException("Exactly one basis must be None for a pipe.")
+        if len(set(str(self))) != 4:
+            raise TQECException("Pipe must have different basis walls.")
+
+    def __str__(self) -> str:
+        return "".join(
+            basis.value if basis is not None else "O"
+            for basis in (self.x, self.y, self.z)
+        ) + ("H" if self.has_hadamard else "")
+
+    @staticmethod
+    def from_str(string: str) -> PipeKind:
+        """Create a pipe kind from the string representation."""
+        string = string.upper()
+        has_hadamard = len(string) == 4 and string[3] == "H"
+        return PipeKind(
+            *[ZXBasis(s) if s != "O" else None for s in string[:3]],
+            has_hadamard=has_hadamard,
+        )
+
+    @staticmethod
+    def from_matched_endpoint(CubeKind, )
+
+    @property
+    def direction(self) -> Direction3D:
+        """Get the connection direction of the pipe."""
+        return Direction3D(str(self).index("O"))
+
+    def get_basis_along(
+        self, direction: Direction3D, at_src_side: bool = True
+    ) -> ZXBasis | None:
+        """Get the basis of the kind in the given direction.
+
+        Args:
+            direction: The direction of the basis.
+            at_src_side: If the basis is at the source side of the pipe. This matters
+                when the pipe has hadamard transition. The dst side will have the opposite
+                basis of the src side if the pipe has hadamard transition.
+
+        Returns:
+            None if the basis is not defined in the direction, i.e. the direction is
+            the same as the pipe direction. Otherwise, the basis in the direction at
+            the specified side.
+        """
+        if direction == self.direction:
+            return None
+        src_basis = ZXBasis(str(self)[direction.value])
+        if not at_src_side and self.has_hadamard:
+            return src_basis.with_zx_flipped()
+
+    @property
+    def is_temporal(self) -> bool:
+        """Check if the pipe is temporal."""
+        return self.z is None
+
+    @property
+    def is_spatial(self) -> bool:
+        """Check if the pipe is spatial."""
+        return not self.is_temporal
 
 
 @dataclass(frozen=True)
@@ -14,11 +83,16 @@ class Pipe:
 
     The pipe represents the idle or merge/split lattice surgery
     operation on logical qubits depending on its direction.
+
+    Attributes:
+        u: The first cube. The position of u will be guaranteed to be less than v.
+        v: The second cube. The position of v will be guaranteed to be greater than u.
+        kind: The type of the pipe.
     """
 
     u: Cube
     v: Cube
-    pipe_type: PipeType
+    kind: PipeKind
 
     def __post_init__(self) -> None:
         if not self.u.position.is_neighbour(self.v.position):
@@ -32,4 +106,20 @@ class Pipe:
     @property
     def direction(self) -> Direction3D:
         """Get the direction of the pipe."""
-        return self.pipe_type.direction
+        return self.kind.direction
+
+    def validate(self) -> None:
+        """Check the color of the pipe can match the cubes at its endpoints."""
+        for cube in (self.u, self.v):
+            if cube.is_port or cube.is_y_cube:
+                continue
+            assert isinstance(cube.kind, ZXCube)
+            for direction in Direction3D.all_directions():
+                if direction == self.direction:
+                    continue
+                cube_basis = cube.kind.get_basis_along(direction)
+                pipe_basis = self.kind.get_basis_along(direction, cube == self.u)
+                if cube_basis != pipe_basis:
+                    raise TQECException(
+                        f"The pipe has color does not match the cube {cube}."
+                    )

@@ -8,7 +8,7 @@ import numpy as np
 import numpy.typing as npt
 
 from tqec.position import Direction3D
-from tqec.computation.block_graph import BlockType, CubeType, PipeType
+from tqec.computation.block_graph import BlockKind, CubeKind, PipeKind
 
 
 class FaceType(Enum):
@@ -113,7 +113,7 @@ class Face:
         )
 
 
-def parse_block_type_from_str(block_type: str) -> BlockType:
+def parse_block_type_from_str(block_type: str) -> BlockKind:
     """Parse a block type from a string."""
     if "o" in block_type:
         return PipeType(block_type.lower())
@@ -121,7 +121,7 @@ def parse_block_type_from_str(block_type: str) -> BlockType:
         return CubeType(block_type.lower())
 
 
-Geometry = dict[BlockType, list[Face]]
+Geometry = dict[BlockKind, list[Face]]
 
 
 def _create_zx_cube_geometries() -> Geometry:

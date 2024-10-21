@@ -15,7 +15,7 @@ import numpy.typing as npt
 
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
-from tqec.computation.block_graph import BlockGraph, BlockType, CubeType, PipeType
+from tqec.computation.block_graph import BlockGraph, BlockKind, CubeKind, PipeKind
 from tqec.computation.geometry import (
     Face,
     FaceType,
