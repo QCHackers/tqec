@@ -127,7 +127,7 @@ The compilation of the block graph is done automatically based on the inputs.
         print_progress=True,
     )
 
-``Sinter`` can be additionally supplied with simulation parameters see
+``Sinter`` can be additionally supplied with simulation parameters, full interoperability with ``sinter`` is not yet implemented.
 `sinter_api https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md`_
 
 
@@ -141,20 +141,20 @@ Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation
 
     zx_graph = block_graph.to_zx_graph()
 
-    for i, stat in enumerate(stats):
-        fig, ax = plt.subplots()
-        sinter.plot_error_rate(
-            ax=ax,
-            stats=stat,
-            x_func=lambda stat: stat.json_metadata["p"],
-            group_func=lambda stat: stat.json_metadata["d"],
-        )
-        plot_observable_as_inset(ax, zx_graph, correlation_surfaces[i])
-        ax.grid(axis="both")
-        ax.legend()
-        ax.loglog()
-        ax.set_title(f"Logical CNOT Error Rate")
-        fig.savefig(f"logical_cnot_result_x_observable_{i}.png")
+    fig, ax = plt.subplots()
+    # len(stats) = 1 if we have multiple we can iterate over the results
+    sinter.plot_error_rate(
+        ax=ax,
+        stats=stats,
+        x_func=lambda stat: stat.json_metadata["p"],
+        group_func=lambda stat: stat.json_metadata["d"],
+    )
+    plot_observable_as_inset(ax, zx_graph, correlation_surfaces[1])
+    ax.grid(axis="both")
+    ax.legend()
+    ax.loglog()
+    ax.set_title(f"Logical CNOT Error Rate")
+    fig.savefig(f"logical_cnot_result_x_observable_{1}.png")
 
 8. Conclusion
 -------------
