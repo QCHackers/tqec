@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+from multiprocessing import cpu_count
 from pathlib import Path
 
 import numpy as np
@@ -31,7 +32,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "run-examples",
             description=(
-                "Runs the full pipeline on the CNot example."
+                "Runs the full pipeline on the CNOT example. "
                 "block graph -> stim circuits and observables -> simulation -> plots"
             ),
         )
@@ -67,24 +68,16 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             type=int,
         )
         parser.add_argument(
-            "--add-detectors",
-            help="Whether to add detectors to the circuits.",
-            action="store_true",
-        )
-        parser.add_argument(
-            "--generate-only",
-            help="Whether to run generation only.",
-            action="store_true",
-        )
-        parser.add_argument(
             "--code-style",
             help="Use the CSS or ZXXZ code style.",
-            choices=["css", "zxxz"],
+            choices=["CSS", "ZXXZ"],
+            default="CSS",
         )
         parser.add_argument(
-            "--include-z-basis",
-            help="Whether to include the Z basis in the simulation.",
-            action="store_true",
+            "--basis",
+            help="Which basis to use for simulation.",
+            choices=["X", "Z"],
+            default="X",
         )
         parser.set_defaults(func=RunExamplesTQECSubCommand.execute)
 
@@ -96,7 +89,8 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
         out_dir: Path = args.out_dir.resolve()
         obs_indices: list[int] = args.obs_include
         style: str = args.code_style
-        z_basis: bool = args.include_z_basis
+        basis_str: str = args.basis
+        z_basis: bool = basis_str == "Z"
         ks: list[int] = args.k
         ps: list[float] = args.p
 
@@ -110,7 +104,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
         plots_out_dir = out_dir / "plots"
         plots_out_dir.mkdir(exist_ok=True)
 
-        logging.info("Generating CNot block graph and zx graph.")
+        logging.info("Generating CNOT block graph and zx graph.")
         block_graph = logical_cnot_block_graph(z_basis)
         zx_graph = block_graph.to_zx_graph()
 
@@ -125,9 +119,9 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
                 + f"but requested indices up to {max(obs_indices)}."
             )
 
-        block_builder = CSS_BLOCK_BUILDER if style == "css" else ZXXZ_BLOCK_BUILDER
+        block_builder = CSS_BLOCK_BUILDER if style == "CSS" else ZXXZ_BLOCK_BUILDER
         substitution_builder = (
-            CSS_SUBSTITUTION_BUILDER if style == "css" else ZXXZ_SUBSTITUTION_BUILDER
+            CSS_SUBSTITUTION_BUILDER if style == "CSS" else ZXXZ_SUBSTITUTION_BUILDER
         )
 
         logging.info("Start the simulation, this might take some time.")
@@ -139,7 +133,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             block_builder=block_builder,
             substitution_builder=substitution_builder,
             observables=[observables[i] for i in obs_indices],
-            num_workers=20,
+            num_workers=cpu_count(),
             max_shots=10_000_000,
             max_errors=5_000,
             decoders=["pymatching"],
@@ -149,7 +143,6 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
 
         logging.info("Write plots to %s.", plots_out_dir)
         for i, stat in enumerate(stats):
-            basis_str = "Z" if z_basis else "X"
             with open(
                 simulations_out_dir
                 / f"{style}_logical_cnot_result_{basis_str}_observable_{i}.csv",
@@ -171,7 +164,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             ax.grid(axis="both")
             ax.legend()
             ax.loglog()
-            ax.set_title(f"{style.upper()} Logical CNOT Error Rate")
+            ax.set_title(f"{style} Logical CNOT Error Rate")
             fig.savefig(
                 plots_out_dir
                 / f"{style}_logical_cnot_result_{basis_str}_observable_{i}.png"
