@@ -209,17 +209,15 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
         ZXNode(Position3D(1, 0, 0), ZXKind.Y),
     )
-    g.add_edge(
-        ZXNode(Position3D(2, 0, 0), ZXKind.X),
-        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
-    )
-    with pytest.raises(TQECException, match="The Y node must have exactly one edge."):
+    with pytest.raises(TQECException, match="The Y node must only has Z-direction edge."):
         g.validate()
 
     g = ZXGraph()
     g.add_edge(
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Y),
     )
-    with pytest.raises(TQECException, match="The Y node must have Z-direction edge."):
-        g.validate()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 2), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Y),
+    )

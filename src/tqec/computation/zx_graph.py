@@ -169,7 +169,7 @@ class ZXGraph:
     @property
     def num_ports(self) -> int:
         """The number of open ports in the graph."""
-        return len([node for node in self.nodes if node.is_port])
+        return len(self._ports)
 
     @property
     def num_edges(self) -> int:
@@ -254,9 +254,6 @@ class ZXGraph:
             u: The first node of the edge.
             v: The second node of the edge.
             has_hadamard: Whether the edge has a Hadamard transition.
-
-        Raises:
-            TQECException: If the edge does not connect two nearby nodes.
 
         """
         edge = ZXEdge(u, v, has_hadamard)
@@ -387,12 +384,11 @@ class ZXGraph:
 
         To represent a valid computation, the graph must have:
             - the graph is a single connected component
-            - all the ports and Y nodes are leaf nodes
-            - Y nodes only have Z-direction edges
+            - Y nodes are time-like, i.e. only have Z-direction edges
 
         Raises:
             TQECException: If the graph is not a single connected component.
-            TQECException: If the port or Y node is not a leaf node.
+            TQECException: If the port node is not a leaf node.
             TQECException: If the Y node has an edge not in Z direction.
         """
         if nx.number_connected_components(self._graph) != 1:
@@ -403,8 +399,8 @@ class ZXGraph:
             if node.is_port and self._node_degree(node) != 1:
                 raise TQECException("The port node must be a leaf node.")
             if node.is_y_node:
-                if self._node_degree(node) != 1:
-                    raise TQECException("The Y node must have exactly one edge.")
-                edge = self.edges_at(node.position)[0]
-                if edge.direction != Direction3D.Z:
-                    raise TQECException("The Y node must have Z-direction edge.")
+                if not all(
+                    edge.direction == Direction3D.Z
+                    for edge in self.edges_at(node.position)
+                ):
+                    raise TQECException("The Y node must only has Z-direction edge.")

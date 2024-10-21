@@ -1,5 +1,4 @@
 from dataclasses import astuple
-from turtle import position
 from typing import cast
 
 import numpy
