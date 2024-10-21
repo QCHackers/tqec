@@ -230,6 +230,18 @@
     <span class="k">def</span> <span class="nf">_relabel_circuits_qubit_indices_inplace</span><span class="p">(</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QubitMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equivalent to :func:`relabel_circuits_qubit_indices` but applied to</span>
+<span class="sd">        nested lists and performing the modifications in-place in the provided</span>
+<span class="sd">        `circuits`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuits: circuit instances to remap. This parameter is mutated by</span>
+<span class="sd">                this function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            qubit map used to remap the qubit indices that is valid for all the</span>
+<span class="sd">            circuits provided as input after this method executed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">used_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
             <span class="c1"># Using itertools to avoid the edge case where there is no circuit</span>
             <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
@@ -256,6 +268,31 @@
         <span class="n">detector_database</span><span class="p">:</span> <span class="n">DetectorDatabase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">only_use_database</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute and add in-place to `circuits` valid detectors.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuits: circuits to add detectors to. Should have the same number</span>
+<span class="sd">                of entries as `templates` and `plaquettes`.</span>
+<span class="sd">            templates: templates used to generate the provided `circuits`. Should</span>
+<span class="sd">                have the same number of entries as `circuits` and `plaquettes`.</span>
+<span class="sd">            plaquettes: plaquettes used to generate the provided `circuits`.</span>
+<span class="sd">                Should have the same number of entries as `circuits` and</span>
+<span class="sd">                `templates`.</span>
+<span class="sd">            k: scaling parameter that has been used to generate the provided</span>
+<span class="sd">                `circuits`.</span>
+<span class="sd">            manhattan_radius: radius considered to compute detectors. Defaults</span>
+<span class="sd">                to 2.</span>
+<span class="sd">            detector_database: a database associating &quot;situations&quot; (subtemplate</span>
+<span class="sd">                and plaquettes) to already computed detectors. Defaults to None,</span>
+<span class="sd">                meaning that no database is provided and all the detectors should</span>
+<span class="sd">                be re-computed.</span>
+<span class="sd">            only_use_database: if True, only detectors present in the provided</span>
+<span class="sd">                database are used. If the database is `None` or if a &quot;situation&quot;</span>
+<span class="sd">                that is not in the database is encountered, an exception will be</span>
+<span class="sd">                raised. Defaults to False, meaning that encountered &quot;situations&quot;</span>
+<span class="sd">                that are not present in the database will be analysed to find</span>
+<span class="sd">                detectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Start with the first circuit, as this is a special case.</span>
         <span class="n">first_template</span> <span class="o">=</span> <span class="n">templates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">first_plaquettes</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -304,6 +341,19 @@
         <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Detector</span><span class="p">],</span>
         <span class="n">shift_coords_by</span><span class="p">:</span> <span class="n">StimCoordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided `detectors` to the provided `circuits`, inserting a</span>
+<span class="sd">        `SHIFT_COORDS` instruction before `DETECTOR` instructions if required.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: circuit to modify in-place.</span>
+<span class="sd">            mrecords_map: a measurement record map containing at least all the</span>
+<span class="sd">                measurements in the provided `detectors`.</span>
+<span class="sd">            detectors: all the detectors that should be added at the end of the</span>
+<span class="sd">                provided `circuit`.</span>
+<span class="sd">            shift_coords_by: if not None, used to insert a `SHIFT_COORDS`</span>
+<span class="sd">                instruction before inserting the `DETECTOR` instructions.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">shift_coords_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span>
                 <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>

@@ -401,6 +401,19 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">with_mapped_qubit_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubit_index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map the qubits **indices** the `Moment` instance is applied on.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method has to iterate over all the instructions in `self` and</span>
+<span class="sd">            change the gate target they are applied on.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            qubit_index_map: the map used to modify the qubit targets.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a modified copy of `self` with the qubit gate targets mapped according</span>
+<span class="sd">            to the provided `qubit_index_map`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
             <span class="n">mapped_targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>

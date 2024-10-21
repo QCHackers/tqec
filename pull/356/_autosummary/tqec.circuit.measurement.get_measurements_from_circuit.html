@@ -123,7 +123,26 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.circuit.measurement.get_measurements_from_circuit">
 <span class="sig-name descname"><span class="pre">get_measurements_from_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.measurement.Measurement.html#tqec.circuit.measurement.Measurement" title="tqec.circuit.measurement.Measurement"><span class="pre">Measurement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/measurement.html#get_measurements_from_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement.get_measurements_from_circuit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get all the measurements found in the provided circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>circuit</strong> – circuit to extract measurements from.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit contains a <cite>REPEAT</cite> block.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit contains a multi-qubit measurement
+    gate such as MXX or MPP.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided circuit contains a single-qubit
+    measurement gate with a non-qubit target.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>all the measurements present in the provided <cite>circuit</cite>, in their order
+of appearance (so in increasing order of measurement record offsets).</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

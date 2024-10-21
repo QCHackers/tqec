@@ -650,9 +650,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insertion_index</span><span class="p">,</span> <span class="n">schedule</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insertion_index</span><span class="p">,</span> <span class="n">moment</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Else, the schedule already exists, in which case we just need to add the</span>
-            <span class="c1"># operations to an existing moment. Note that this might fail if two</span>
-            <span class="c1"># operations overlap.</span>
+            <span class="c1"># Else, the schedule already exists, in which case we just need to</span>
+            <span class="c1"># add the operations to an existing moment. Note that this might</span>
+            <span class="c1"># fail if two instructions overlap.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">[</span><span class="n">moment_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">moment</span>
 
     <span class="k">def</span> <span class="nf">append_observable</span><span class="p">(</span>

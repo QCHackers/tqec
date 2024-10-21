@@ -271,6 +271,22 @@
 <div class="viewcode-block" id="get_measurements_from_circuit">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement.get_measurements_from_circuit.html#tqec.circuit.measurement.get_measurements_from_circuit">[docs]</a>
 <span class="k">def</span> <span class="nf">get_measurements_from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get all the measurements found in the provided circuit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: circuit to extract measurements from.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if the provided circuit contains a `REPEAT` block.</span>
+<span class="sd">        TQECException: if the provided circuit contains a multi-qubit measurement</span>
+<span class="sd">            gate such as MXX or MPP.</span>
+<span class="sd">        TQECException: if the provided circuit contains a single-qubit</span>
+<span class="sd">            measurement gate with a non-qubit target.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        all the measurements present in the provided `circuit`, in their order</span>
+<span class="sd">        of appearance (so in increasing order of measurement record offsets).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
     <span class="n">num_measurements</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">measurements_reverse_order</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Measurement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
