@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import astuple, dataclass
 from enum import Enum
 
@@ -51,7 +53,7 @@ class Shape2D:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
@@ -66,6 +68,12 @@ class Displacement:
     x: int
     y: int
 
+    def __mul__(self, factor: int) -> Displacement:
+        return Displacement(factor * self.x, factor * self.y)
+
+    def __rmul__(self, factor: int) -> Displacement:
+        return self.__mul__(factor)
+
 
 @dataclass(frozen=True, order=True)
 class Position3D:
@@ -79,11 +87,11 @@ class Position3D:
         if any(not isinstance(i, int) for i in astuple(self)):
             raise TQECException("Position must be an integer.")
 
-    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> "Position3D":
+    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Position3D:
         """Shift the position by the given offset."""
         return Position3D(self.x + dx, self.y + dy, self.z + dz)
 
-    def is_neighbour(self, other: "Position3D") -> bool:
+    def is_neighbour(self, other: Position3D) -> bool:
         """Check if the other position is near to this position, i.e. Manhattan
         distance is 1."""
         return (
@@ -110,12 +118,12 @@ class Direction3D(Enum):
     Z = 2
 
     @staticmethod
-    def all() -> list["Direction3D"]:
+    def all() -> list[Direction3D]:
         """Get all directions."""
         return [e for e in Direction3D]
 
     @staticmethod
-    def from_axis_index(i: int) -> "Direction3D":
+    def from_axis_index(i: int) -> Direction3D:
         """Get the direction from the axis index."""
         if i not in [d.value for d in Direction3D]:
             raise TQECException(f"Invalid axis index: {i}")

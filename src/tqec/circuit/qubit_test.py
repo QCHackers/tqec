@@ -87,3 +87,15 @@ def test_used_qubit_indices() -> None:
     assert get_used_qubit_indices(
         stim.Circuit("REPEAT 34{\nH 0 1 2 3\nTICK\nH 0 1 2 3\n}")
     ) == frozenset(range(4))
+
+
+def test_to_qubit_coords_instruction() -> None:
+    assert GridQubit(0, 0).to_qubit_coords_instruction(0) == stim.CircuitInstruction(
+        "QUBIT_COORDS", [0], [0, 0]
+    )
+    assert GridQubit(0, 0).to_qubit_coords_instruction(
+        34789
+    ) == stim.CircuitInstruction("QUBIT_COORDS", [34789], [0, 0])
+    assert GridQubit(-1, 1).to_qubit_coords_instruction(0) == stim.CircuitInstruction(
+        "QUBIT_COORDS", [0], [-1, 1]
+    )

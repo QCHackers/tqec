@@ -9,7 +9,7 @@ from tqec.exceptions import TQECException
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
-from tqec.position import Position2D
+from tqec.position import Displacement, Position2D
 from tqec.scale import LinearFunction
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.layout import LayoutTemplate
@@ -129,11 +129,30 @@ class BlockLayout:
     def num_layers(self) -> int:
         return len(self._layers)
 
-    def instantiate_layer(self, layer_index: int, k: int) -> ScheduledCircuit:
-        """Instantiates the specified layer into a `ScheduledCircuit`.
+    def get_shifted_circuits(self, k: int) -> list[ScheduledCircuit]:
+        """Instantiate and shift the circuits for all the layers in `self`.
 
-        Note that this method does not shift the circuits based on the
-        layout template. And the circuits are not repeated based on the
-        repetitions in the layer.
+        The returned circuit are appropriately shifted to account for any shifts
+        due to the fact that the origin of the template stored in `self` might
+        not be the global origin.
+
+        Args:
+            k: scaling factor used to instantiate the template.
+
+        Returns:
+            as many circuits as there are layers in `self`, each circuit being
+            the instantiation of one layer (i.e., a set of :class:`Plaquette`
+            instances) and the :class:`Template` instance from `self`.
         """
-        return generate_circuit(self._template, k, self._layers[layer_index])
+        # We need to shift the circuit based on the shift of the layout template.
+        top_left_plaquette = self._template.instantiation_origin(k)
+        increments = self._template.get_increments()
+        offset = Displacement(
+            top_left_plaquette.x * increments.x, top_left_plaquette.y * increments.y
+        )
+        return [
+            generate_circuit(self._template, k, layer).map_to_qubits(
+                lambda q: q + offset, inplace_qubit_map=True
+            )
+            for layer in self._layers
+        ]

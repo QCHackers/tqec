@@ -6,7 +6,6 @@ from typing import Callable, Iterable, Iterator
 import sinter
 import stim
 
-from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph
 from tqec.noise_models.noise_model import NoiseModel
 
@@ -16,12 +15,13 @@ def _parallel_func(
     *,
     compiled_graph: CompiledGraph,
     noise_model_factory: Callable[[float], NoiseModel],
+    manhattan_radius: int,
 ) -> tuple[stim.Circuit, int, float]:
     k, p = kp
     noise_model = noise_model_factory(p)
     return (
-        annotate_detectors_automatically(
-            compiled_graph.generate_stim_circuit(k, noise_model)
+        compiled_graph.generate_stim_circuit(
+            k, noise_model, manhattan_radius=manhattan_radius
         ),
         k,
         p,
@@ -33,6 +33,7 @@ def generate_stim_circuits_with_detectors(
     ks: Iterable[int],
     ps: Iterable[float],
     noise_model_factory: Callable[[float], NoiseModel],
+    manhattan_radius: int,
     max_workers: int | None = None,
 ) -> Iterator[tuple[stim.Circuit, int, float]]:
     """Generate stim circuits in parallel.
@@ -59,6 +60,16 @@ def generate_stim_circuits_with_detectors(
         ps: values of `p`, the noise strength, to consider.
         noise_model_factory: a callable that builds a noise model from an input
             strength `p`.
+        manhattan_radius: radius used to automatically compute detectors. The
+            best value to set this argument to is the minimum integer such that
+            flows generated from any given reset/measurement, from any plaquette
+            at any spatial/temporal place in the QEC computation, do not
+            propagate outside of the qubits used by plaquettes spatially located
+            at maximum `manhattan_radius` plaquettes from the plaquette the
+            reset/measurement belongs to (w.r.t. the Manhattan distance).
+            Default to 2, which is sufficient for regular surface code. If
+            negative, detectors are not computed automatically and are not added
+            to the generated circuits.
         max_workers: The maximum number of processes that can be used to
             execute the given calls. If None or not given then as many
             worker processes will be created as the machine has processors.
@@ -74,6 +85,7 @@ def generate_stim_circuits_with_detectors(
                 _parallel_func,
                 compiled_graph=compiled_graph,
                 noise_model_factory=noise_model_factory,
+                manhattan_radius=manhattan_radius,
             ),
             itertools.product(ks, ps),
         )
@@ -84,6 +96,7 @@ def generate_sinter_tasks(
     ks: Iterable[int],
     ps: Iterable[float],
     noise_model_factory: Callable[[float], NoiseModel],
+    manhattan_radius: int,
     max_workers: int | None = None,
 ) -> Iterator[sinter.Task]:
     """Generate `sinter.Task` instances from the provided parameters.
@@ -98,6 +111,16 @@ def generate_sinter_tasks(
         ps: values of `p`, the noise strength, to consider.
         noise_model_factory: a callable that builds a noise model from an input
             strength `p`.
+        manhattan_radius: radius used to automatically compute detectors. The
+            best value to set this argument to is the minimum integer such that
+            flows generated from any given reset/measurement, from any plaquette
+            at any spatial/temporal place in the QEC computation, do not
+            propagate outside of the qubits used by plaquettes spatially located
+            at maximum `manhattan_radius` plaquettes from the plaquette the
+            reset/measurement belongs to (w.r.t. the Manhattan distance).
+            Default to 2, which is sufficient for regular surface code. If
+            negative, detectors are not computed automatically and are not added
+            to the generated circuits.
         max_workers: The maximum number of processes that can be used to
             execute the given calls. If None or not given then as many
             worker processes will be created as the machine has processors.
@@ -111,6 +134,6 @@ def generate_sinter_tasks(
             json_metadata={"d": 2 * k + 1, "r": 2 * k + 1, "p": p},
         )
         for circuit, k, p in generate_stim_circuits_with_detectors(
-            compiled_graph, ks, ps, noise_model_factory, max_workers
+            compiled_graph, ks, ps, noise_model_factory, manhattan_radius, max_workers
         )
     )

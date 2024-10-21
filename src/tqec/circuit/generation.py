@@ -18,15 +18,15 @@ Note that these methods do not work with `REPEAT` instructions.
 
 from __future__ import annotations
 
-from copy import deepcopy
-
 import numpy
 import numpy.typing as npt
 
-from tqec.circuit.qubit import GridQubit
-from tqec.circuit.schedule import ScheduledCircuit, merge_scheduled_circuits
-from tqec.exceptions import TQECException
-from tqec.plaquette.plaquette import Plaquette, Plaquettes
+from tqec.circuit.schedule import (
+    ScheduledCircuit,
+    merge_scheduled_circuits,
+    relabel_circuits_qubit_indices,
+)
+from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
 from tqec.templates.base import Template
 
@@ -62,9 +62,6 @@ def generate_circuit(
     Returns:
         a `ScheduledCircuit` instance implementing the (part of) quantum error
         correction experiment represented by the provided inputs.
-
-    Raises:
-        TQECException: if `len(plaquettes) != template.expected_plaquettes_number`.
     """
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
@@ -115,9 +112,8 @@ def generate_circuit_from_instantiation(
         TQECException: if any index in `plaquette_array` is not correctly
             associated to a plaquette in `plaquettes`.
     """
-    # Check that the user gave enough plaquettes.
+    # Collect all the used plaquette indices, removing 0 if present.
     indices = numpy.unique(plaquette_array)
-    # Remove the first 0 entry in indices if present
     if indices[0] == 0:
         indices = indices[1:]
 
@@ -134,28 +130,33 @@ def generate_circuit_from_instantiation(
     for row_index, line in enumerate(plaquette_array):
         for column_index, plaquette_index in enumerate(line):
             if plaquette_index != 0:
-                scheduled_circuit = deepcopy(plaquette_circuits[plaquette_index])
-                offset = Displacement(
-                    column_index * increments.x, row_index * increments.y
-                )
+                # Computing the offset that should be applied to each qubits.
                 plaquette = plaquettes[plaquette_index]
-                qubit_map = _create_mapping(plaquette, scheduled_circuit, offset)
-                scheduled_circuit.map_to_qubits(qubit_map, inplace=True)
-                all_scheduled_circuits.append(scheduled_circuit)
+                qubit_offset = Displacement(
+                    plaquette.origin.x + column_index * increments.x,
+                    plaquette.origin.y + row_index * increments.y,
+                )
+                # Warning: the variable `mapped_scheduled_circuit` shares with
+                #          `plaquette_circuits[plaquette_index]` a reference to
+                #          the circuit data-structure. This is not an issue here
+                #          as we never attempt to mutate that circuit before
+                #          calling `relabel_circuits_qubit_indices`, that
+                #          explicitly returns a copy of its inputs, and do not
+                #          mutate them either.
+                scheduled_circuit = plaquette_circuits[plaquette_index]
+                mapped_scheduled_circuit = scheduled_circuit.map_to_qubits(
+                    lambda q: q + qubit_offset, inplace_qubit_map=False
+                )
+                all_scheduled_circuits.append(mapped_scheduled_circuit)
                 additional_mergeable_instructions |= plaquette.mergeable_instructions
 
-    # Merge everything!
-    return merge_scheduled_circuits(
-        all_scheduled_circuits, additional_mergeable_instructions
+    # Merge everything, but first make sure that the circuits are compatible.
+    # Note that relabel_circuits_qubit_indices guarantees in its documentation
+    # that the input circuits are not mutated but rather copied. This allows us
+    # to not deepcopy the circuits earlier in the function.
+    all_scheduled_circuits, qubit_map = relabel_circuits_qubit_indices(
+        all_scheduled_circuits
     )
-
-
-def _create_mapping(
-    plaquette: Plaquette, scheduled_circuit: ScheduledCircuit, offset: Displacement
-) -> dict[GridQubit, GridQubit]:
-    origin = plaquette.origin
-    qubit_map = {
-        qubit: qubit + Displacement(offset.x + origin.x, offset.y + origin.y)
-        for qubit in scheduled_circuit.qubits
-    }
-    return qubit_map
+    return merge_scheduled_circuits(
+        all_scheduled_circuits, qubit_map, additional_mergeable_instructions
+    )

@@ -130,7 +130,7 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
     return counter
 
 
-def get_used_qubit_indices(circuit: stim.Circuit) -> frozenset[int]:
+def get_used_qubit_indices(circuit: stim.Circuit) -> set[int]:
     """Returns the indices of qubits that are used by at least one non-
     annotation instruction.
 
@@ -141,4 +141,4 @@ def get_used_qubit_indices(circuit: stim.Circuit) -> frozenset[int]:
         the set of qubit indices that are used by at least one non-annotation
         instruction.
     """
-    return frozenset(count_qubit_accesses(circuit).keys())
+    return set(count_qubit_accesses(circuit).keys())

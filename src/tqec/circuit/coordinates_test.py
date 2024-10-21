@@ -24,3 +24,26 @@ def test_offset_spatially_by() -> None:
     assert coords.x == 34
     assert coords.y == 7
     assert coords.t == 0
+
+
+def test_comparison() -> None:
+    assert StimCoordinates(0, 0, 0) < StimCoordinates(0, 0, 1)
+    assert StimCoordinates(0, 0, -1) < StimCoordinates(0, 0, 0)
+    assert StimCoordinates(0, 0, 0) < StimCoordinates(0, 1, 0)
+    assert StimCoordinates(0, -1, 0) < StimCoordinates(0, 0, 0)
+    assert StimCoordinates(0, 0, 0) < StimCoordinates(1, 0, 0)
+    assert StimCoordinates(-1, 0, 0) < StimCoordinates(0, 0, 0)
+    assert StimCoordinates(0, 0, 0) < StimCoordinates(1, -1, -1)
+    assert StimCoordinates(-1, 1, 1) < StimCoordinates(0, 0, 0)
+
+    assert StimCoordinates(0, 0) < StimCoordinates(0, 1)
+    assert StimCoordinates(0, -1) < StimCoordinates(0, 0)
+    assert StimCoordinates(0, 0) < StimCoordinates(1, 0)
+    assert StimCoordinates(-1, 0) < StimCoordinates(0, 0)
+    assert StimCoordinates(0, 0) < StimCoordinates(1, -1)
+    assert StimCoordinates(-1, 1) < StimCoordinates(0, 0)
+
+    assert StimCoordinates(0, 0) < StimCoordinates(0, 0, 1)
+
+    assert StimCoordinates(0, 0) == StimCoordinates(0, 0)
+    assert not StimCoordinates(0, 0, 0) == StimCoordinates(0, 0)

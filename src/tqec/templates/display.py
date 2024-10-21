@@ -32,8 +32,14 @@ def display_template_from_instantiation(instantiation: npt.NDArray[numpy.int_]) 
         instantiation: the integer array obtained from the `Template.instantiate`
             method.
     """
-    for line in instantiation:
-        for element in line:
-            element = str(element) if element != 0 else "."
-            print(f"{element:>3}", end="")
-        print()
+    print(get_template_representation_from_instantiation(instantiation))
+
+
+def get_template_representation_from_instantiation(
+    instantiation: npt.NDArray[numpy.int_],
+) -> str:
+    max_integer = numpy.max(instantiation)
+    pad = len(str(max_integer)) + 1
+    return "\n".join(
+        " ".join(str(num).ljust(pad) for num in line) for line in instantiation
+    )

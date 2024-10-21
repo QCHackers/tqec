@@ -42,6 +42,7 @@ def generate_graphs(style: Literal["css", "zxxz"], z_basis: bool) -> None:
         range(1, 4),
         list(numpy.logspace(-4, -1, 10)),
         NoiseModel.uniform_depolarizing,
+        manhattan_radius=2,
         block_builder=block_builder,
         substitution_builder=substitution_builder,
         observables=observables,
