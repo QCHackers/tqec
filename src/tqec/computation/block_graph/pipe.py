@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.computation.block_graph.cube import Cube, ZXBasis, ZXCube, CubeKind
+from tqec.computation.block_graph.cube import Cube, ZXBasis, ZXCube
 
 
 @dataclass(frozen=True)
@@ -36,24 +36,21 @@ class PipeKind:
             has_hadamard=has_hadamard,
         )
 
-    @staticmethod
-    def from_matched_endpoint(CubeKind, )
-
     @property
     def direction(self) -> Direction3D:
         """Get the connection direction of the pipe."""
         return Direction3D(str(self).index("O"))
 
     def get_basis_along(
-        self, direction: Direction3D, at_src_side: bool = True
+        self, direction: Direction3D, at_head: bool = True
     ) -> ZXBasis | None:
         """Get the basis of the kind in the given direction.
 
         Args:
             direction: The direction of the basis.
-            at_src_side: If the basis is at the source side of the pipe. This matters
-                when the pipe has hadamard transition. The dst side will have the opposite
-                basis of the src side if the pipe has hadamard transition.
+            at_head: If True, get the basis at the head side of the pipe. Otherwise,
+                get the basis at the tail of the pipe. The head side will have the
+                opposite basis as the tail if the pipe has hadamard transition.
 
         Returns:
             None if the basis is not defined in the direction, i.e. the direction is
@@ -62,9 +59,9 @@ class PipeKind:
         """
         if direction == self.direction:
             return None
-        src_basis = ZXBasis(str(self)[direction.value])
-        if not at_src_side and self.has_hadamard:
-            return src_basis.with_zx_flipped()
+        head_basis = ZXBasis(str(self)[direction.value])
+        if not at_head and self.has_hadamard:
+            return head_basis.with_zx_flipped()
 
     @property
     def is_temporal(self) -> bool:

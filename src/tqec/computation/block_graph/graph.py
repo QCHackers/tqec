@@ -11,10 +11,14 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.computation.block_graph.cube import Cube, CubeKind, Port, ZXBasis, ZXCube
+from tqec.computation.block_graph.cube import (
+    Cube,
+    CubeKind,
+    ZXCube,
+)
 from tqec.computation.block_graph.pipe import Pipe, PipeKind
 from tqec.computation.block_graph.observable import AbstractObservable
-from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
+from tqec.computation.zx_graph import ZXGraph
 
 if TYPE_CHECKING:
     from tqec.computation.collada import ColladaDisplayHelper
@@ -156,8 +160,8 @@ class BlockGraph:
     def __contains__(self, position: Position3D) -> bool:
         return position in self._graph
 
-    def __getitem__(self, position: Position3D) -> ZXNode:
-        return cast(ZXNode, self._graph.nodes[position][_CUBE_DATA_KEY])
+    def __getitem__(self, position: Position3D) -> Cube:
+        return cast(Cube, self._graph.nodes[position][_CUBE_DATA_KEY])
 
     def validate(self) -> None:
         """Check the validity of the block structures represented by the graph.
@@ -222,115 +226,24 @@ class BlockGraph:
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
         """Convert the block graph to a ZX graph."""
-        zx_graph = ZXGraph(name or self.name)
-        for cube in self.cubes:
-            node = cube.to_zx_node()
-            zx_graph.add_node(node.position, node.kind, node.label)
-        for pipe in self.pipes:
-            zx_graph.add_edge(
-                pipe.u.to_zx_node(), pipe.v.to_zx_node(), pipe.kind.has_hadamard
-            )
-        return zx_graph
+        from tqec.computation.block_graph.conversion import (
+            convert_block_graph_to_zx_graph,
+        )
+
+        return convert_block_graph_to_zx_graph(self, name)
+
+    def from_zx_graph(self, zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
+        """Construct the block graph from a ZX graph."""
+        from tqec.computation.block_graph.conversion import (
+            convert_zx_graph_to_block_graph,
+        )
+
+        return convert_zx_graph_to_block_graph(zx_graph, name)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BlockGraph):
             return False
         return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
-
-    @staticmethod
-    def from_zx_graph(zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
-        """Construct a block graph from a ZX graph.
-
-        The ZX graph includes the minimal information required to construct the block graph,
-        but not guaranteed to admit a valid block structure. The block structure will be inferred
-        from the ZX graph and validated.
-
-        Args:
-            zx_graph: The base ZX graph to construct the block graph.
-            name: The name of the new block graph. If None, the name of the ZX graph will be used.
-
-        Returns:
-            The constructed block graph.
-        """
-        # validate the ZX graph before constructing the block graph
-        zx_graph.validate()
-
-        nodes_to_handle = set(zx_graph.nodes)
-        edges_to_handle = set(zx_graph.edges)
-
-        block_graph = BlockGraph(name or zx_graph.name)
-        # The color of corner cubes can be inferred locally from the ZX graph
-        corner_cubes: set[Cube] = set()
-        for node in set(nodes_to_handle):
-            directions = {e.direction for e in zx_graph.edges_at(node.position)}
-            if len(directions) != 2:
-                continue
-            normal_direction = (
-                set(Direction3D.all_directions()).difference(directions).pop()
-            )
-            kind = ZXCube.from_normal_basis(ZXBasis(node.kind.value), normal_direction)
-            block_graph.add_cube(node.position, kind, node.label)
-            nodes_to_handle.remove(node)
-            corner_cubes.add(Cube(node.position, kind, node.label))
-
-        # BFS traverse starting from a known-kind node to infer the kinds of others
-        bfs_source = next((c.position for c in corner_cubes), None)
-        # If no corner cube can be found, then specify the kind of a ZX node with
-        # minimum position in the graph
-        if bfs_source is None:
-            nodes_sorted_by_pos: list[ZXNode] = sorted(
-                nodes_to_handle, key=lambda n: n.position
-            )
-            specified_node = next(
-                n for n in nodes_sorted_by_pos if not n.is_port and not n.is_y_node
-            )
-            edges_at_node = zx_graph.edges_at(specified_node.position)
-            # Special case: single node ZXGraph
-            if len(edges_at_node) == 1:
-                specified_kind = (
-                    ZXCube.from_str("ZXZ")
-                    if specified_node.kind == ZXKind.X
-                    else ZXCube.from_str("ZXX")
-                )
-            else:
-                # the basis along the edge direction must be the opposite of the node kind
-                basis = ["X", "Z"]
-                basis.insert(
-                    edges_at_node[0].direction.value,
-                    specified_node.kind.with_zx_flipped().value,
-                )
-                specified_kind = ZXCube.from_str("".join(basis))
-            bfs_source = specified_node.position
-            block_graph.add_cube(bfs_source, specified_kind, specified_node.label)
-            nodes_to_handle.remove(specified_node)
-
-        for p1, p2 in nx.bfs_edges(zx_graph.nx_graph, bfs_source):
-            edge = zx_graph.get_edge(p1, p2)
-            if edge not in edges_to_handle:
-                continue
-            src_node, dst_node = edge.u, edge.v
-            # Special case for port connects to y node: select pipe arbitrarily and consistently
-            if {src_node.kind, dst_node.kind} == {ZXKind.P, ZXKind.Y}:
-                bases: list[ZXBasis | None] = [ZXBasis.X, ZXBasis.Z]
-                bases.insert(edge.direction.value, None)
-                pipe_type = PipeKind(*bases, has_hadamard=edge.has_hadamard)
-                continue
-            # There must be at least one handled cube in the edge due to the BFS traversal
-            handled_index = 1 if src_node in nodes_to_handle else 0
-            block_graph.add_pipe(p1, p2, pipe_type)
-            edges_to_handle.remove(edge)
-
-        if nodes_to_handle:
-            raise TQECException(
-                f"The cube structure at positions {[n.position for n in nodes_to_handle]} cannot be resolved."
-            )
-        if edges_to_handle:
-            raise TQECException(
-                f"The pipe structure at {[(e.u.position, e.v.position) for e in edges_to_handle]} cannot be resolved."
-            )
-
-        block_graph.validate()
-        return block_graph
 
     def to_dae_file(
         self, filename: str | pathlib.Path, pipe_length: float = 2.0

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Generator, cast
 
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 import networkx as nx
@@ -119,6 +119,10 @@ class ZXEdge:
         if self.v.position == position:
             return self.v.kind
         raise TQECException("The position is not an endpoint of the edge.")
+
+    def __iter__(self) -> Generator[ZXNode]:
+        yield self.u
+        yield self.v
 
     def __str__(self) -> str:
         strs = [str(self.u), str(self.v)]
