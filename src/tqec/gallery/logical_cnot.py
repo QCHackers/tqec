@@ -12,9 +12,8 @@ def logical_cnot_zx_graph(port_type: Literal["z", "x", "open"]) -> ZXGraph:
         name = "Logical CNOT with open ports"
     g = ZXGraph(name)
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXKind.P),
+        ZXNode(Position3D(0, 0, 0), ZXKind.P, "In_Control"),
         ZXNode(Position3D(0, 0, 1), ZXKind.Z),
-        port_label="In_Control",
     )
     g.add_edge(
         ZXNode(Position3D(0, 0, 1), ZXKind.Z),
@@ -22,8 +21,7 @@ def logical_cnot_zx_graph(port_type: Literal["z", "x", "open"]) -> ZXGraph:
     )
     g.add_edge(
         ZXNode(Position3D(0, 0, 2), ZXKind.X),
-        ZXNode(Position3D(0, 0, 3), ZXKind.P),
-        port_label="Out_Control",
+        ZXNode(Position3D(0, 0, 3), ZXKind.P, "Out_Control"),
     )
     g.add_edge(
         ZXNode(Position3D(0, 0, 1), ZXKind.Z),
@@ -38,9 +36,8 @@ def logical_cnot_zx_graph(port_type: Literal["z", "x", "open"]) -> ZXGraph:
         ZXNode(Position3D(1, 1, 2), ZXKind.X),
     )
     g.add_edge(
-        ZXNode(Position3D(1, 1, 0), ZXKind.P),
+        ZXNode(Position3D(1, 1, 0), ZXKind.P, "In_Target"),
         ZXNode(Position3D(1, 1, 1), ZXKind.X),
-        port_label="In_Target",
     )
     g.add_edge(
         ZXNode(Position3D(1, 1, 1), ZXKind.X),
@@ -48,8 +45,7 @@ def logical_cnot_zx_graph(port_type: Literal["z", "x", "open"]) -> ZXGraph:
     )
     g.add_edge(
         ZXNode(Position3D(1, 1, 2), ZXKind.X),
-        ZXNode(Position3D(1, 1, 3), ZXKind.P),
-        port_label="Out_Target",
+        ZXNode(Position3D(1, 1, 3), ZXKind.P, "Out_Target"),
     )
 
     if port_type != "open":

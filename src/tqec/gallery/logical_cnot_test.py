@@ -5,7 +5,7 @@ from tqec.gallery.logical_cnot import logical_cnot_zx_graph
 def test_logical_cnot_zx_graph_open() -> None:
     g = logical_cnot_zx_graph("open")
     assert g.num_ports == 4
-    assert g.num_nodes == 6
+    assert g.num_nodes == 10
     assert g.num_edges == 9
     assert len(g.leaf_nodes) == 4
     assert len([n for n in g.nodes if n.kind == ZXKind.Z]) == 2

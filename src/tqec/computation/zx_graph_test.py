@@ -7,15 +7,29 @@ from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
 
 def test_zx_node() -> None:
     node = ZXNode(Position3D(0, 0, 0), ZXKind.Z)
+    assert node.is_zx_node
     assert not node.is_port
     assert str(node) == "Z(0,0,0)"
 
-    node = ZXNode(Position3D(0, 1, 4), ZXKind.P)
+    node = ZXNode(Position3D(0, 1, 4), ZXKind.P, label="test")
     assert node.is_port
     assert str(node) == "PORT(0,1,4)"
 
+    with pytest.raises(TQECException, match="A port node must have a port label."):
+        ZXNode(Position3D(0, 0, 0), ZXKind.P)
+
+    node = ZXNode(Position3D(1, 0, 0), ZXKind.Y)
+    assert node.is_y_node
+    assert str(node) == "Y(1,0,0)"
+
 
 def test_zx_edge() -> None:
+    with pytest.raises(TQECException, match="An edge must connect two nearby nodes."):
+        ZXEdge(
+            ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+            ZXNode(Position3D(2, 0, 0), ZXKind.Z),
+        )
+
     edge = ZXEdge(
         ZXNode(Position3D(2, 0, 0), ZXKind.Z),
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
@@ -25,24 +39,14 @@ def test_zx_edge() -> None:
     assert edge.direction == Direction3D.X
     assert str(edge) == "X(1,0,0)-Z(2,0,0)"
 
-    with pytest.raises(TQECException, match="An edge must connect two nearby nodes."):
-        ZXEdge(
-            ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-            ZXNode(Position3D(2, 0, 0), ZXKind.Z),
-        )
-
-    with pytest.raises(TQECException, match="Cannot create an edge between two ports."):
-        ZXEdge(
-            ZXNode(Position3D(0, 0, 0), ZXKind.P),
-            ZXNode(Position3D(1, 0, 0), ZXKind.P),
-        )
-    with pytest.raises(
-        TQECException, match="An edge with Y kind node must be in the Z-direction."
-    ):
-        ZXEdge(
-            ZXNode(Position3D(0, 0, 0), ZXKind.Y),
-            ZXNode(Position3D(1, 0, 0), ZXKind.Z),
-        )
+    edge = ZXEdge(
+        ZXNode(Position3D(2, 1, 0), ZXKind.Y),
+        ZXNode(Position3D(2, 0, 0), ZXKind.X),
+        has_hadamard=True,
+    )
+    assert edge.has_hadamard
+    assert str(edge) == "X(2,0,0)-H-Y(2,1,0)"
+    assert edge.direction == Direction3D.Y
 
 
 def test_zx_graph_construction() -> None:
@@ -59,17 +63,20 @@ def test_zx_graph_add_node() -> None:
     assert g[Position3D(0, 0, 0)].kind == ZXKind.Z
     assert Position3D(0, 0, 0) in g
 
-    g.add_x_node(Position3D(0, 1, 1))
-    assert g.num_nodes == 2
-
-    with pytest.raises(TQECException, match="Cannot add a P or Y node solely"):
-        g.add_node(Position3D(2, 0, 0), ZXKind.P)
-
-    with pytest.raises(TQECException, match="Cannot add a P or Y node solely"):
-        g.add_node(Position3D(2, 0, 0), ZXKind.Y)
-
     with pytest.raises(TQECException, match="The graph already has a different node"):
-        g.add_node(Position3D(0, 1, 1), ZXKind.Z)
+        g.add_node(Position3D(0, 0, 0), ZXKind.X)
+
+    g.add_node(Position3D(1, 0, 0), ZXKind.P, label="test")
+    assert g.num_nodes == 2
+    assert g.num_ports == 1
+    assert g[Position3D(1, 0, 0)].kind == ZXKind.P
+    assert g.ports == {"test": Position3D(1, 0, 0)}
+
+    with pytest.raises(
+        TQECException,
+        match="There is already a different port with label test in the graph",
+    ):
+        g.add_node(Position3D(2, 0, 0), ZXKind.P, label="test")
 
 
 def test_zx_graph_add_edge() -> None:
@@ -85,55 +92,14 @@ def test_zx_graph_add_edge() -> None:
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
-        ZXNode(Position3D(2, 0, 0), ZXKind.P),
-        port_label="out",
+        ZXNode(Position3D(2, 0, 0), ZXKind.P, label="out"),
     )
-    assert g.num_nodes == 3
+    assert g.num_nodes == 4
     assert g.num_edges == 3
     assert g.num_ports == 1
     assert g.ports == {"out": Position3D(2, 0, 0)}
     assert g.has_edge_between(Position3D(0, 0, 0), Position3D(1, 0, 0))
     assert g.get_edge(Position3D(0, 0, 0), Position3D(1, 0, 0)).has_hadamard
-
-    with pytest.raises(TQECException, match="An edge must connect two nearby nodes."):
-        g.add_edge(
-            ZXNode(Position3D(0, 2, 0), ZXKind.Z),
-            ZXNode(Position3D(0, 0, 0), ZXKind.X),
-        )
-
-    with pytest.raises(TQECException, match="Cannot create an edge between two ports."):
-        g.add_edge(
-            ZXNode(Position3D(2, 0, 0), ZXKind.P),
-            ZXNode(Position3D(3, 0, 0), ZXKind.P),
-        )
-
-    with pytest.raises(
-        TQECException, match="The edge includes a port, a port label must be provided."
-    ):
-        g.add_edge(
-            ZXNode(Position3D(-1, 0, 0), ZXKind.P),
-            ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-        )
-
-    with pytest.raises(TQECException, match="should have at most one edge."):
-        g.add_edge(
-            ZXNode(Position3D(2, 0, 0), ZXKind.P),
-            ZXNode(Position3D(3, 0, 0), ZXKind.Z),
-            port_label="p",
-        )
-    with pytest.raises(TQECException, match="should have at most one edge."):
-        g.add_edge(
-            ZXNode(Position3D(1, 0, 1), ZXKind.Y),
-            ZXNode(Position3D(1, 0, 2), ZXKind.Z),
-        )
-    with pytest.raises(
-        TQECException, match="There is already a port with label out in the graph"
-    ):
-        g.add_edge(
-            ZXNode(Position3D(-1, 0, 0), ZXKind.P),
-            ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-            port_label="out",
-        )
 
 
 def test_zx_graph_edges_at() -> None:
@@ -148,8 +114,7 @@ def test_zx_graph_edges_at() -> None:
     ):
         g.add_edge(
             ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-            ZXNode(pos, ZXKind.P),
-            port_label=f"p{i}",
+            ZXNode(pos, ZXKind.P, f"p{i}"),
         )
     assert len(g.edges_at(Position3D(0, 0, 0))) == 4
     assert len(g.edges_at(Position3D(1, 0, 0))) == 1
@@ -158,16 +123,14 @@ def test_zx_graph_edges_at() -> None:
 def test_zx_graph_fill_ports() -> None:
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXKind.P),
+        ZXNode(Position3D(0, 0, 0), ZXKind.P, label="in"),
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
-        port_label="in",
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
-        ZXNode(Position3D(2, 0, 0), ZXKind.P),
-        port_label="out",
+        ZXNode(Position3D(2, 0, 0), ZXKind.P, label="out"),
     )
-    assert g.num_nodes == 1
+    assert g.num_nodes == 3
     assert g.num_ports == 2
     with pytest.raises(TQECException, match="There is no port with label unknown"):
         g.fill_ports({"unknown": ZXKind.Z})
@@ -189,9 +152,8 @@ def test_zx_graph_fill_ports() -> None:
 def test_zx_graph_with_zx_flipped() -> None:
     g = ZXGraph()
     g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXKind.P),
+        ZXNode(Position3D(0, 0, 0), ZXKind.P, label="p1"),
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
-        port_label="p1",
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
@@ -203,19 +165,61 @@ def test_zx_graph_with_zx_flipped() -> None:
     )
     g.add_edge(
         ZXNode(Position3D(2, 0, 0), ZXKind.Z),
-        ZXNode(Position3D(2, 0, 1), ZXKind.P),
-        port_label="p2",
+        ZXNode(Position3D(2, 0, 1), ZXKind.P, label="p2"),
     )
-    assert g.num_nodes == 3
+    assert g.num_nodes == 5
     assert g.num_ports == 2
     assert g.num_edges == 4
 
     flipped_g = g.with_zx_flipped()
-    assert flipped_g.num_nodes == 3
-    assert g.num_ports == 2
-    assert g.num_edges == 4
+    assert flipped_g.num_nodes == 5
+    assert flipped_g.num_ports == 2
+    assert flipped_g.num_edges == 4
     assert flipped_g[Position3D(0, 0, 0)].kind == ZXKind.P
     assert flipped_g[Position3D(1, 0, 0)].kind == ZXKind.Z
     assert flipped_g[Position3D(2, 0, 0)].kind == ZXKind.X
     assert flipped_g[Position3D(2, 0, -1)].kind == ZXKind.Y
     assert flipped_g[Position3D(2, 0, 1)].kind == ZXKind.P
+
+
+def test_zx_graph_validity() -> None:
+    g = ZXGraph()
+    g.add_node(Position3D(0, 0, 0), ZXKind.Z)
+    g.add_node(Position3D(1, 0, 0), ZXKind.X)
+    with pytest.raises(
+        TQECException,
+        match="The graph must be a single connected component to represent a computation.",
+    ):
+        g.validate()
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.P, "test"),
+    )
+    g.add_edge(
+        ZXNode(Position3D(2, 0, 0), ZXKind.X),
+        ZXNode(Position3D(1, 0, 0), ZXKind.P, "test"),
+    )
+    with pytest.raises(TQECException, match="The port node must be a leaf node."):
+        g.validate()
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
+    )
+    g.add_edge(
+        ZXNode(Position3D(2, 0, 0), ZXKind.X),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
+    )
+    with pytest.raises(TQECException, match="The Y node must have exactly one edge."):
+        g.validate()
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
+    )
+    with pytest.raises(TQECException, match="The Y node must have Z-direction edge."):
+        g.validate()

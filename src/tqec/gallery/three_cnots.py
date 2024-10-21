@@ -16,14 +16,12 @@ def three_cnots_zx_graph(port_type: Literal["x", "z", "open"]) -> ZXGraph:
     """
     g = ZXGraph("Three CNOT")
     g.add_edge(
-        ZXNode(Position3D(-1, 0, 0), ZXKind.P),
+        ZXNode(Position3D(-1, 0, 0), ZXKind.P, "Out_a"),
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-        port_label="Out_a",
     )
     g.add_edge(
-        ZXNode(Position3D(0, -1, 0), ZXKind.P),
+        ZXNode(Position3D(0, -1, 0), ZXKind.P, "In_a"),
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-        port_label="In_a",
     )
     g.add_edge(
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
@@ -38,19 +36,16 @@ def three_cnots_zx_graph(port_type: Literal["x", "z", "open"]) -> ZXGraph:
         ZXNode(Position3D(1, 1, 0), ZXKind.X),
     )
     g.add_edge(
-        ZXNode(Position3D(1, 0, -1), ZXKind.P),
+        ZXNode(Position3D(1, 0, -1), ZXKind.P, "In_b"),
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
-        port_label="In_b",
     )
     g.add_edge(
-        ZXNode(Position3D(1, 1, -1), ZXKind.P),
+        ZXNode(Position3D(1, 1, -1), ZXKind.P, "In_c"),
         ZXNode(Position3D(1, 1, 0), ZXKind.X),
-        port_label="In_c",
     )
     g.add_edge(
         ZXNode(Position3D(1, 1, 0), ZXKind.X),
-        ZXNode(Position3D(2, 1, 0), ZXKind.P),
-        port_label="Out_c",
+        ZXNode(Position3D(2, 1, 0), ZXKind.P, "Out_c"),
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 0), ZXKind.X),
@@ -58,8 +53,7 @@ def three_cnots_zx_graph(port_type: Literal["x", "z", "open"]) -> ZXGraph:
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 1), ZXKind.Z),
-        ZXNode(Position3D(1, 0, 2), ZXKind.P),
-        port_label="Out_b",
+        ZXNode(Position3D(1, 0, 2), ZXKind.P, "Out_b"),
     )
     g.add_edge(
         ZXNode(Position3D(1, 0, 1), ZXKind.Z),

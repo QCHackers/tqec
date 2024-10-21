@@ -60,10 +60,7 @@ def find_correlation_surfaces(
     A recursive depth-first search algorithm is used to find the correlation
     surfaces starting from each leaf node.
     """
-    if not zx_graph.is_single_connected_component:
-        raise TQECException(
-            "The graph must be a single connected component to find the correlation surfaces."
-        )
+    zx_graph.validate()
     # If the node is isolated, it is guaranteed to be X/Z type.
     # Then return a single node correlation surface.
     if zx_graph.num_nodes == 1 and zx_graph.num_edges == 0:

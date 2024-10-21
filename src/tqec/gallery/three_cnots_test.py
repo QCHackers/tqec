@@ -5,7 +5,7 @@ from tqec.gallery.three_cnots import three_cnots_zx_graph
 def test_three_cnots_zx_graph_open() -> None:
     g = three_cnots_zx_graph("open")
     assert g.num_ports == 6
-    assert g.num_nodes == 6
+    assert g.num_nodes == 12
     assert g.num_edges == 12
     assert len(g.leaf_nodes) == 6
     assert len([n for n in g.nodes if n.kind == ZXKind.Z]) == 4
