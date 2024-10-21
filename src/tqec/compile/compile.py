@@ -145,6 +145,18 @@ class CompiledGraph:
     def _relabel_circuits_qubit_indices_inplace(
         circuits: Sequence[Sequence[ScheduledCircuit]],
     ) -> QubitMap:
+        """Equivalent to :func:`relabel_circuits_qubit_indices` but applied to
+        nested lists and performing the modifications in-place in the provided
+        `circuits`.
+
+        Args:
+            circuits: circuit instances to remap. This parameter is mutated by
+                this function.
+
+        Returns:
+            qubit map used to remap the qubit indices that is valid for all the
+            circuits provided as input after this method executed.
+        """
         used_qubits = frozenset(
             # Using itertools to avoid the edge case where there is no circuit
             itertools.chain.from_iterable(
@@ -171,6 +183,31 @@ class CompiledGraph:
         detector_database: DetectorDatabase | None = None,
         only_use_database: bool = False,
     ) -> None:
+        """Compute and add in-place to `circuits` valid detectors.
+
+        Args:
+            circuits: circuits to add detectors to. Should have the same number
+                of entries as `templates` and `plaquettes`.
+            templates: templates used to generate the provided `circuits`. Should
+                have the same number of entries as `circuits` and `plaquettes`.
+            plaquettes: plaquettes used to generate the provided `circuits`.
+                Should have the same number of entries as `circuits` and
+                `templates`.
+            k: scaling parameter that has been used to generate the provided
+                `circuits`.
+            manhattan_radius: radius considered to compute detectors. Defaults
+                to 2.
+            detector_database: a database associating "situations" (subtemplate
+                and plaquettes) to already computed detectors. Defaults to None,
+                meaning that no database is provided and all the detectors should
+                be re-computed.
+            only_use_database: if True, only detectors present in the provided
+                database are used. If the database is `None` or if a "situation"
+                that is not in the database is encountered, an exception will be
+                raised. Defaults to False, meaning that encountered "situations"
+                that are not present in the database will be analysed to find
+                detectors.
+        """
         # Start with the first circuit, as this is a special case.
         first_template = templates[0]
         first_plaquettes = plaquettes[0]
@@ -219,6 +256,19 @@ class CompiledGraph:
         detectors: Sequence[Detector],
         shift_coords_by: StimCoordinates | None = None,
     ) -> None:
+        """Add the provided `detectors` to the provided `circuits`, inserting a
+        `SHIFT_COORDS` instruction before `DETECTOR` instructions if required.
+
+        Args:
+            circuit: circuit to modify in-place.
+            mrecords_map: a measurement record map containing at least all the
+                measurements in the provided `detectors`.
+            detectors: all the detectors that should be added at the end of the
+                provided `circuit`.
+            shift_coords_by: if not None, used to insert a `SHIFT_COORDS`
+                instruction before inserting the `DETECTOR` instructions.
+                Defaults to None.
+        """
         if shift_coords_by is not None:
             circuit.append_annotation(
                 stim.CircuitInstruction(

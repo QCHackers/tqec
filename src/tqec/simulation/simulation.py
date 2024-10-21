@@ -86,9 +86,9 @@ def start_simulation_using_sinter(
             If not specified, only decoders with support built into sinter, such
             as 'pymatching' and 'fusion_blossom', can be used.
 
-    Returns:
-        a list containing one simulation result (of type
-        `list[sinter.TaskStats]`) per provided observable in `observables`.
+    Yields:
+        one simulation result (of type `list[sinter.TaskStats]`) per provided
+        observable in `observables`.
     """
     if observables is None:
         observables, _ = block_graph.get_abstract_observables()

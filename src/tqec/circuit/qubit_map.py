@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Callable, Iterable, Mapping
+from typing import Callable, Iterable
 
 import stim
 
@@ -38,6 +38,8 @@ class QubitMap:
 
     @staticmethod
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
+        """Creates a qubit map from the provided `qubits`, associating indices
+        using the order in which qubits are provided."""
         return QubitMap(dict(enumerate(qubits)))
 
     @staticmethod

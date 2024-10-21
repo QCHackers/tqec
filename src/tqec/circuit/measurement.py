@@ -177,6 +177,22 @@ class RepeatedMeasurement(AbstractMeasurement):
 
 
 def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
+    """Get all the measurements found in the provided circuit.
+
+    Args:
+        circuit: circuit to extract measurements from.
+
+    Raises:
+        TQECException: if the provided circuit contains a `REPEAT` block.
+        TQECException: if the provided circuit contains a multi-qubit measurement
+            gate such as MXX or MPP.
+        TQECException: if the provided circuit contains a single-qubit
+            measurement gate with a non-qubit target.
+
+    Returns:
+        all the measurements present in the provided `circuit`, in their order
+        of appearance (so in increasing order of measurement record offsets).
+    """
     qubit_map = QubitMap.from_circuit(circuit)
     num_measurements: dict[GridQubit, int] = {}
     measurements_reverse_order: list[Measurement] = []

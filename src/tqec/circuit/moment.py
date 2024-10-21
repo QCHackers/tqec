@@ -313,6 +313,19 @@ class Moment:
         )
 
     def with_mapped_qubit_indices(self, qubit_index_map: dict[int, int]) -> Moment:
+        """Map the qubits **indices** the `Moment` instance is applied on.
+
+        Note:
+            This method has to iterate over all the instructions in `self` and
+            change the gate target they are applied on.
+
+        Args:
+            qubit_index_map: the map used to modify the qubit targets.
+
+        Returns:
+            a modified copy of `self` with the qubit gate targets mapped according
+            to the provided `qubit_index_map`.
+        """
         circuit = stim.Circuit()
         for instr in self.instructions:
             mapped_targets: list[stim.GateTarget] = []

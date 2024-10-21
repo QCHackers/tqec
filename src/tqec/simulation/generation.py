@@ -6,7 +6,6 @@ from typing import Callable, Iterable, Iterator
 import sinter
 import stim
 
-from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph
 from tqec.noise_models.noise_model import NoiseModel
 

@@ -73,12 +73,30 @@ class _DetectorDatabaseKey:
 
     @cached_property
     def plaquette_names(self) -> tuple[tuple[tuple[str, ...], ...], ...]:
+        """Cached property that returns nested tuples such that
+        `ret[t][y][x] == self.plaquettes_by_timestep[t][self.subtemplates[t][y, x]].name`.
+
+        The returned object can be iterated on using:
+
+        ```py
+        for t, names in enumerate(self.plaquette_names):
+            subtemplate = self.subtemplates[t]
+            plaquettes = self.plaquettes_by_timestep[t]
+            for y, names_row in enumerate(names):
+                for x, name in enumerate(names_row):
+                    plaquette: Plaquette = plaquettes[subtemplate[y, x]]
+                    assert name == plaquette.name
+        ```
+        """
         return tuple(
             tuple(tuple(plaquettes[pi].name for pi in row) for row in st)
             for st, plaquettes in zip(self.subtemplates, self.plaquettes_by_timestep)
         )
 
+    @cached_property
     def reliable_hash(self) -> int:
+        """Returns a hash of `self` that is guaranteed to be constant across
+        Python versions, OSes and executions."""
         hasher = hashlib.md5()
         for timeslice in self.plaquette_names:
             for row in timeslice:
@@ -87,7 +105,7 @@ class _DetectorDatabaseKey:
         return int(hasher.hexdigest(), 16)
 
     def __hash__(self) -> int:
-        return self.reliable_hash()
+        return self.reliable_hash
 
     def __eq__(self, rhs: object) -> bool:
         return (
@@ -129,7 +147,7 @@ class DetectorDatabase:
     This class aims at storing efficiently a set of "situations" in which the
     corresponding detectors are known and do not have to be re-computed.
 
-    In this class, a "situation" is described by :class:`DetectorDatabaseKey`
+    In this class, a "situation" is described by :class:`_DetectorDatabaseKey`
     and correspond to a spatially and temporally local piece of a larger
     computation.
     """
@@ -226,6 +244,17 @@ class DetectorDatabase:
         self.frozen = False
 
     def to_crumble_urls(self, plaquette_increments: Displacement) -> list[str]:
+        """Returns one URL pointing to https://algassert.com/crumble for each of
+        the registered situations.
+
+        Args:
+            plaquette_increments: increments between two :class:`Plaquette`
+                origins.
+
+        Returns:
+            a list of Crumble URLs, each one representing a situation stored in
+            `self`.
+        """
         urls: list[str] = []
         for key, detectors in self.mapping.items():
             circuit = key.circuit(plaquette_increments)

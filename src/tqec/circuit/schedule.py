@@ -556,9 +556,9 @@ class ScheduledCircuit:
             self._schedule.insert(insertion_index, schedule)
             self._moments.insert(insertion_index, moment)
         else:
-            # Else, the schedule already exists, in which case we just need to add the
-            # operations to an existing moment. Note that this might fail if two
-            # operations overlap.
+            # Else, the schedule already exists, in which case we just need to
+            # add the operations to an existing moment. Note that this might
+            # fail if two instructions overlap.
             self._moments[moment_index] += moment
 
     def append_observable(

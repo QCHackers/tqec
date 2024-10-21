@@ -26,8 +26,7 @@ from tqec.circuit.schedule import (
     merge_scheduled_circuits,
     relabel_circuits_qubit_indices,
 )
-from tqec.exceptions import TQECException
-from tqec.plaquette.plaquette import Plaquette, Plaquettes
+from tqec.plaquette.plaquette import Plaquettes
 from tqec.position import Displacement
 from tqec.templates.base import Template
 
@@ -63,9 +62,6 @@ def generate_circuit(
     Returns:
         a `ScheduledCircuit` instance implementing the (part of) quantum error
         correction experiment represented by the provided inputs.
-
-    Raises:
-        TQECException: if `len(plaquettes) != template.expected_plaquettes_number`.
     """
     # instantiate the template with the appropriate plaquette indices.
     # Index 0 is "no plaquette" by convention and should not be included here.
@@ -116,9 +112,8 @@ def generate_circuit_from_instantiation(
         TQECException: if any index in `plaquette_array` is not correctly
             associated to a plaquette in `plaquettes`.
     """
-    # Check that the user gave enough plaquettes.
+    # Collect all the used plaquette indices, removing 0 if present.
     indices = numpy.unique(plaquette_array)
-    # Remove the first 0 entry in indices if present
     if indices[0] == 0:
         indices = indices[1:]
 
@@ -135,9 +130,7 @@ def generate_circuit_from_instantiation(
     for row_index, line in enumerate(plaquette_array):
         for column_index, plaquette_index in enumerate(line):
             if plaquette_index != 0:
-                # Warning: this is a reference to a shared circuit. It cannot be
-                #          changed in-place!!
-                scheduled_circuit = plaquette_circuits[plaquette_index]
+                # Computing the offset that should be applied to each qubits.
                 plaquette = plaquettes[plaquette_index]
                 qubit_offset = Displacement(
                     plaquette.origin.x + column_index * increments.x,
@@ -150,6 +143,7 @@ def generate_circuit_from_instantiation(
                 #          calling `relabel_circuits_qubit_indices`, that
                 #          explicitly returns a copy of its inputs, and do not
                 #          mutate them either.
+                scheduled_circuit = plaquette_circuits[plaquette_index]
                 mapped_scheduled_circuit = scheduled_circuit.map_to_qubits(
                     lambda q: q + qubit_offset, inplace_qubit_map=False
                 )
