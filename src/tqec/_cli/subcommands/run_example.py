@@ -23,14 +23,14 @@ from tqec.simulation.plotting.inset import plot_observable_as_inset
 from tqec.simulation.simulation import start_simulation_using_sinter
 
 
-class RunExamplesTQECSubCommand(TQECSubCommand):
+class RunExampleTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
     def add_subcommand(
         main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
     ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
-            "run-examples",
+            "run-example",
             description=(
                 "Runs the full pipeline on the CNOT example. "
                 "block graph -> stim circuits and observables -> simulation -> plots"
@@ -79,7 +79,7 @@ class RunExamplesTQECSubCommand(TQECSubCommand):
             choices=["X", "Z"],
             default="X",
         )
-        parser.set_defaults(func=RunExamplesTQECSubCommand.execute)
+        parser.set_defaults(func=RunExampleTQECSubCommand.execute)
 
     @staticmethod
     @override
