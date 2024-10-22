@@ -1,6 +1,0 @@
-tqec.computation.collada.read\_block\_graph\_from\_dae\_file
-============================================================
-
-.. currentmodule:: tqec.computation.collada
-
-.. autofunction:: read_block_graph_from_dae_file

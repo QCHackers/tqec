@@ -52,6 +52,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#choose-the-observable-s-of-interest">3. Choose the observable(s) of interest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#compile-and-export-the-computation">4. Compile and export the computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#annotate-the-circuit-with-detectors">5. Annotate the circuit with detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulate-multiple-experiments">6. Simulate multiple experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-the-results">7. Plot the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">8. Conclusion</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -120,7 +123,7 @@ using <code class="docutils literal notranslate"><span class="pre">tqec.BlockGra
 <p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library can automatically search for valid observables in the
 imported computation. To get a list of all the valid observables, you can
 use the following code</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">observables</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">observables</span><span class="p">,</span> <span class="n">correlation_surfaces</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Any observable can be plotted using the <code class="docutils literal notranslate"><span class="pre">tqec</span> <span class="pre">dae2observables</span></code> command line. For our
@@ -166,6 +169,74 @@ generated.</p>
 error-corrected implementation of a CNOT gate shown at the beginning of this page.</p>
 <p>You can download the circuit in a <code class="docutils literal notranslate"><span class="pre">stim</span></code> format here:
 <a class="reference download internal" download="" href="_downloads/8e453df8dbca573b43e529d035ccbe46/logical_cnot.stim"><code class="xref download docutils literal notranslate"><span class="pre">media/quick_start/logical_cnot.stim</span></code></a>.</p>
+</section>
+<section id="simulate-multiple-experiments">
+<h2>6. Simulate multiple experiments<a class="headerlink" href="#simulate-multiple-experiments" title="Link to this heading"></a></h2>
+<p>The circuit can be simulated using the <code class="docutils literal notranslate"><span class="pre">stim</span></code> and <code class="docutils literal notranslate"><span class="pre">sinter</span></code> libraries.
+Usually you want to simulate combinations of error rates and code distances, potentially
+for multiple observables.
+Multiple runs can be done in parallel using the <code class="docutils literal notranslate"><span class="pre">sinter</span></code> library using the <code class="docutils literal notranslate"><span class="pre">start_simulation_using_sinter</span></code>.
+The compilation of the block graph is done automatically based on the inputs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">cpu_count</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
+<span class="kn">from</span> <span class="nn">tqec.simulation.simulation</span> <span class="kn">import</span> <span class="n">start_simulation_using_sinter</span>
+<span class="c1"># returns a iterator</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">start_simulation_using_sinter</span><span class="p">(</span>
+    <span class="n">block_graph</span><span class="p">,</span>
+    <span class="n">ks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="c1"># k values for the code distance</span>
+    <span class="n">ps</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="c1"># error rates</span>
+    <span class="n">noise_model_factory</span><span class="o">=</span><span class="n">NoiseModel</span><span class="o">.</span><span class="n">uniform_depolarizing</span> <span class="c1"># noise model</span>
+    <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="c1"># observable of interest</span>
+    <span class="n">decoders</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pymatching&quot;</span><span class="p">],</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">cpu_count</span><span class="p">(),</span>
+    <span class="n">max_shots</span><span class="o">=</span><span class="mi">10_000_000</span><span class="p">,</span>
+    <span class="n">max_errors</span><span class="o">=</span><span class="mi">5_000</span><span class="p">,</span>
+    <span class="n">print_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Sinter</span></code> can be additionally supplied with simulation parameters, full interoperability with <code class="docutils literal notranslate"><span class="pre">sinter</span></code> is not yet implemented.
+<a href="#id1"><span class="problematic" id="id2">`sinter_api https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md`_</span></a></p>
+</section>
+<section id="plot-the-results">
+<h2>7. Plot the results<a class="headerlink" href="#plot-the-results" title="Link to this heading"></a></h2>
+<p>Simulation Results can be plotted with <code class="docutils literal notranslate"><span class="pre">matplolib</span></code> using the <code class="docutils literal notranslate"><span class="pre">plot_simulation_results</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.simulation.plotting</span> <span class="kn">import</span> <span class="n">plot_simulation_results</span>
+
+<span class="n">zx_graph</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">to_zx_graph</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="c1"># len(stats) = 1 if we have multiple we can iterate over the results</span>
+<span class="n">sinter</span><span class="o">.</span><span class="n">plot_error_rate</span><span class="p">(</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">stats</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">stats</span><span class="p">),</span>
+    <span class="n">x_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">stat</span><span class="p">:</span> <span class="n">stat</span><span class="o">.</span><span class="n">json_metadata</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span>
+    <span class="n">group_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">stat</span><span class="p">:</span> <span class="n">stat</span><span class="o">.</span><span class="n">json_metadata</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plot_observable_as_inset</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">zx_graph</span><span class="p">,</span> <span class="n">correlation_surfaces</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logical CNOT Error Rate&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logical_cnot_result_x_observable_</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="conclusion">
+<h2>8. Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>This quick start guide has shown how to use the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library to define a computation,
+import it into the library, compile it to stim circuits.
+Simulations are run and visualized for multiple error rates and code distances.
+For an extensive example, see also the
+<a href="#id3"><span class="problematic" id="id4">`tqec_example &lt;https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py`_</span></a>.</p>
+<p>The process can be repeated through the cli using</p>
+<p>..code-block:: bash</p>
+<blockquote>
+<div><p>tqec run-example –out-dir ./results</p>
+</div></blockquote>
 </section>
 </section>
 

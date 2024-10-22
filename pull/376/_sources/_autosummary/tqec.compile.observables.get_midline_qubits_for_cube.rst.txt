@@ -1,6 +1,0 @@
-tqec.compile.observables.get\_midline\_qubits\_for\_cube
-========================================================
-
-.. currentmodule:: tqec.compile.observables
-
-.. autofunction:: get_midline_qubits_for_cube
