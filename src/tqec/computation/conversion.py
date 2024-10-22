@@ -173,11 +173,11 @@ def _fix_kind_for_one_node(
     block_graph: BlockGraph,
     nodes_to_handle: set[ZXNode],
 ) -> None:
-    sorted_nodes = sorted(nodes_to_handle, key=lambda n: n.position)[0]
+    sorted_nodes = sorted(nodes_to_handle, key=lambda n: n.position)
     fix_kind_node = next(n for n in sorted_nodes if n.is_zx_node)
     edges_at_node = zx_graph.edges_at(fix_kind_node.position)
     # Special case: single node ZXGraph
-    if len(edges_at_node) == 1:
+    if len(edges_at_node) == 0:
         specified_kind = (
             ZXCube.from_str("ZXZ")
             if fix_kind_node.kind == ZXKind.X
@@ -192,6 +192,7 @@ def _fix_kind_for_one_node(
         )
         specified_kind = ZXCube.from_str("".join(basis))
     block_graph.add_cube(fix_kind_node.position, specified_kind, fix_kind_node.label)
+    nodes_to_handle.remove(fix_kind_node)
 
 
 def _handle_leftover_nodes(

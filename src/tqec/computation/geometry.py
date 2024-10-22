@@ -117,9 +117,10 @@ class Face:
 
 def parse_block_kind_from_str(block_kind: str) -> BlockKind:
     """Parse a block kind from a string."""
-    if "o" in block_kind:
+    block_kind = block_kind.upper()
+    if "O" in block_kind:
         return PipeKind.from_str(block_kind)
-    elif block_kind.upper() == "Y":
+    elif block_kind == "Y":
         return YCube()
     else:
         return ZXCube.from_str(block_kind)

@@ -349,9 +349,11 @@ class ZXGraph:
         Returns:
             The constructed block graph.
         """
-        from tqec.computation.block_graph import BlockGraph
+        from tqec.computation.conversion import (
+            convert_zx_graph_to_block_graph,
+        )
 
-        return BlockGraph.from_zx_graph(self, name=name)
+        return convert_zx_graph_to_block_graph(self, name)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ZXGraph):
