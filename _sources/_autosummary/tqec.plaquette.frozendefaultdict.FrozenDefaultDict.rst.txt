@@ -18,6 +18,7 @@ tqec.plaquette.frozendefaultdict.FrozenDefaultDict
       ~FrozenDefaultDict.has_default_factory
       ~FrozenDefaultDict.items
       ~FrozenDefaultDict.keys
+      ~FrozenDefaultDict.map_keys
       ~FrozenDefaultDict.values
    
    
