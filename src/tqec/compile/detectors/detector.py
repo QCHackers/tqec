@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import numpy
 import stim
 
 from tqec.circuit.coordinates import StimCoordinates
