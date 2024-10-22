@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from enum import Enum
 
-from tqec.computation.block_graph.pipe import PipeKind
 from tqec.computation.zx_graph import ZXKind, ZXNode
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import cast, TYPE_CHECKING
+from typing import Sequence, cast, TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
@@ -19,6 +19,7 @@ from tqec.computation.block_graph.cube import (
 from tqec.computation.block_graph.pipe import Pipe, PipeKind
 from tqec.computation.block_graph.observable import AbstractObservable
 from tqec.computation.zx_graph import ZXGraph
+from tqec.computation.correlation import CorrelationSurface
 
 if TYPE_CHECKING:
     from tqec.computation.collada import ColladaDisplayHelper
@@ -280,10 +281,11 @@ class BlockGraph:
 
     def get_abstract_observables(
         self,
-    ) -> tuple[list[AbstractObservable], list[ZXGraph]]:
+        correlation_surfaces: Sequence[CorrelationSurface] | None = None,
+    ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
         """Get all the abstract observables from the block graph."""
-        self.check_validity(allow_virtual_node=False)
-        correlation_subgraphs = self.to_zx_graph().find_correlation_subgraphs()
+        self.validate()
+        correlation_subgraphs = self.to_zx_graph().find_correration_surfaces()
         abstract_observables: list[AbstractObservable] = []
 
         def is_measured(cube: Cube) -> bool:

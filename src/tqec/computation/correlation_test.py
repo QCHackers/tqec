@@ -162,3 +162,27 @@ def test_correlation_logical_s_via_gate_teleportation() -> None:
             ]
         ]
     )
+
+
+def test_correlation_y_init_follow_measure() -> None:
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, -1), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, -1), ZXKind.X),
+        ZXNode(Position3D(0, 0, -2), ZXKind.P, "in"),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 2), ZXKind.P, "out"),
+    )
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 2
+    assert correlation_surfaces[0].external_stabilizer == {"in": "I", "out": "Y"}
+    assert correlation_surfaces[1].external_stabilizer == {"in": "Y", "out": "I"}

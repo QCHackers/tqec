@@ -130,6 +130,12 @@ class ZXEdge:
             strs.insert(1, "H")
         return "-".join(strs)
 
+    def with_zx_flipped(self) -> ZXEdge:
+        """Get a new edge with the node kind flipped."""
+        return ZXEdge(
+            self.u.with_zx_flipped(), self.v.with_zx_flipped(), self.has_hadamard
+        )
+
 
 _NODE_DATA_KEY = "tqec_zx_node_data"
 _EDGE_DATA_KEY = "tqec_zx_edge_data"

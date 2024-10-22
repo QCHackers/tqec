@@ -49,7 +49,7 @@ class CorrelationSurface:
         """
         if isinstance(self.span, ZXNode):
             return {self.span.position: self.span.kind}
-        return _get_nodes_correlation_types(self.span)
+        return _get_node_correlation_types(self.span)
 
 
 def find_correlation_surfaces(
@@ -58,47 +58,80 @@ def find_correlation_surfaces(
     """Find the correlation surfaces in the ZX graph.
 
     A recursive depth-first search algorithm is used to find the correlation
-    surfaces starting from each leaf node.
+    surfaces starting from each leaf node or internal Y node.
     """
     zx_graph.validate()
     # If the node is isolated, it is guaranteed to be X/Z type.
     # Then return a single node correlation surface.
     if zx_graph.num_nodes == 1 and zx_graph.num_edges == 0:
         return [CorrelationSurface(zx_graph.nodes[0].with_zx_flipped(), {})]
-    # Start from each leaf node to find the correlation surfaces.
+    # Start from each leaf node or internal Y node to find the correlation surfaces.
+    roots = set(zx_graph.leaf_nodes)
+    roots.update(node for node in zx_graph.nodes if node.is_y_node)
     correlation_surfaces = set()
-    for leaf in zx_graph.leaf_nodes:
-        correlation_surfaces.update(find_correlation_surfaces_at_leaf(zx_graph, leaf))
+    for root in roots:
+        correlation_surfaces.update(find_correlation_surfaces_from(zx_graph, root))
     return sorted(correlation_surfaces)
 
 
-def find_correlation_surfaces_at_leaf(
+def find_correlation_surfaces_from(
     zx_graph: ZXGraph,
-    leaf: ZXNode,
+    root: ZXNode,
 ) -> list[CorrelationSurface]:
-    """Find the correlation surfaces starting from a leaf node in the ZX graph."""
-    if leaf not in zx_graph.leaf_nodes:
-        raise TQECException("The node is not a leaf node in the graph.")
+    """Find the correlation surfaces starting from a specific node in the ZX graph."""
+    if root not in zx_graph.leaf_nodes and not root.is_y_node:
+        raise TQECException("The root node must be a leaf node or an internal Y node.")
     # Traverse the graph to find the correlation spans.
     # Z/X type node can only support the correlation surface with the same type.
-    if leaf.is_zx_node:
+    if root.is_zx_node:
         spans = _find_correlation_spans_dfs(
-            zx_graph, leaf, leaf.with_zx_flipped(), set()
+            zx_graph, root, root.with_zx_flipped(), set()
         )
         return _construct_compatible_correlation_surfaces(zx_graph, spans)
     x_spans = _find_correlation_spans_dfs(
-        zx_graph, leaf, ZXNode(leaf.position, ZXKind.X), set()
+        zx_graph, root, ZXNode(root.position, ZXKind.X), set()
     )
     z_spans = _find_correlation_spans_dfs(
-        zx_graph, leaf, ZXNode(leaf.position, ZXKind.Z), set()
+        zx_graph, root, ZXNode(root.position, ZXKind.Z), set()
     )
     # For the port node, try to construct both the x and z type correlation surfaces.
-    if leaf.is_port:
+    if root.is_port:
         return _construct_compatible_correlation_surfaces(zx_graph, x_spans + z_spans)
     # For the Y type node, the correlation surface must be the product of the x and z type.
-    return _construct_compatible_correlation_surfaces(
-        zx_graph, [sx | sz for sx, sz in itertools.product(x_spans, z_spans)]
-    )
+    assert root.is_y_node
+    correlation_surfaces = []
+    for edge in sorted(zx_graph.edges_at(root.position)):
+        u, v = edge.u, edge.v
+        child = u if v == root else v
+        x_correlation = ZXNode(
+            child.position, ZXKind.Z if edge.has_hadamard else ZXKind.X
+        )
+        x_correlation_edge = ZXEdge(
+            ZXNode(root.position, ZXKind.X),
+            x_correlation,
+            edge.has_hadamard,
+        )
+        x_spans = _find_correlation_spans_dfs(
+            zx_graph,
+            child,
+            x_correlation,
+            {root.position},
+            frozenset([x_correlation_edge]),
+        )
+        z_spans = _find_correlation_spans_dfs(
+            zx_graph,
+            child,
+            x_correlation.with_zx_flipped(),
+            {root.position},
+            frozenset([x_correlation_edge.with_zx_flipped()]),
+        )
+
+        correlation_surfaces.extend(
+            _construct_compatible_correlation_surfaces(
+                zx_graph, [sx | sz for sx, sz in itertools.product(x_spans, z_spans)]
+            )
+        )
+    return correlation_surfaces
 
 
 def _construct_compatible_correlation_surfaces(
@@ -115,7 +148,9 @@ def _construct_compatible_correlation_surfaces(
     """
     correlation_surfaces = []
     for span in spans:
-        correlation_node_types = _get_nodes_correlation_types(span)
+        if not span:
+            continue
+        correlation_node_types = _get_node_correlation_types(span)
         if not _is_compatible_correlation(zx_graph, correlation_node_types):
             continue
         correlation_surfaces.append(
@@ -150,42 +185,46 @@ def _is_compatible_correlation(
     zx_graph: ZXGraph,
     correlation_types: dict[Position3D, ZXKind],
 ) -> bool:
-    # Only need to check the leaf nodes compatibility.
+    # Check the leaf nodes compatibility.
     for leaf in zx_graph.leaf_nodes:
         # Port is compatible with any correlation type.
-        if leaf.is_port:
+        # And leave the Y type nodes to be handled later.
+        if leaf.is_port or leaf.is_y_node:
             continue
         correlation_type = correlation_types.get(leaf.position)
         if correlation_type is None:
             continue
-        # Y type correlation must be be supported on the Y type node.
-        if (correlation_type == ZXKind.Y) != (leaf.kind == ZXKind.Y):
+        # Y correlation cannot be supported by Z/X type node.
+        # Z/X correlation must be supported on the opposite type node.
+        if correlation_type == ZXKind.Y or correlation_type == leaf.kind:
             return False
-        # Z/X type correlation must be supported on the opposite type node.
-        if correlation_type != ZXKind.Y and correlation_type == leaf.kind:
-            return False
+    # Check for Y nodes
+    for node in zx_graph.nodes:
+        if not node.is_y_node:
+            continue
+        for edge in zx_graph.edges_at(node.position):
+            for n in edge:
+                correlation = correlation_types.get(n.position)
+                if correlation is None:
+                    continue
+                if correlation != ZXKind.Y:
+                    return False
     return True
 
 
-def _get_nodes_correlation_types(
+def _get_node_correlation_types(
     span: frozenset[ZXEdge],
 ) -> dict[Position3D, ZXKind]:
-    edges_group_by_position: dict[tuple[Position3D, Position3D], list[ZXEdge]] = {}
+    correlations_at_position: dict[Position3D, set[ZXKind | None]] = {}
     for edge in span:
-        edges_group_by_position.setdefault(
-            (edge.u.position, edge.v.position), []
-        ).append(edge)
+        for node in edge:
+            correlations_at_position.setdefault(node.position, {None}).add(node.kind)
 
     correlation_types: dict[Position3D, ZXKind] = {}
-    for uv, edges in edges_group_by_position.items():
-        for pos in uv:
-            node_type = correlation_types.get(pos)
-            if node_type is not None:
-                continue
-            types = {edge.get_node_kind_at(pos) for edge in edges}
-            product = functools.reduce(_correlation_type_product, types)
-            if product is not None:
-                correlation_types[pos] = product
+    for pos, types in correlations_at_position.items():
+        product = functools.reduce(_correlation_type_product, types)
+        if product is not None:
+            correlation_types[pos] = product
     return correlation_types
 
 
@@ -212,6 +251,7 @@ def _find_correlation_spans_dfs(
     parent_zx_node: ZXNode,
     parent_correlation_node: ZXNode,
     visited_positions: set[Position3D],
+    previous_edges: frozenset[ZXEdge] = frozenset(),
 ) -> list[frozenset[ZXEdge]]:
     """Recursively find all the correlation spans starting from a node,
     represented by the correlation edges in the subgraph.
@@ -243,44 +283,51 @@ def _find_correlation_spans_dfs(
     """
     correlation_spans: list[frozenset[ZXEdge]] = []
     parent_position = parent_zx_node.position
-    parent_zx_type = parent_zx_node.kind
-    parent_correlation_type = parent_correlation_node.kind
+    parent_zx_kind = parent_zx_node.kind
+    parent_correlation = parent_correlation_node.kind
     visited_positions.add(parent_position)
 
     branched_spans_from_parent: list[list[frozenset[ZXEdge]]] = []
     for edge in zx_graph.edges_at(parent_position):
         cur_zx_node = edge.u if edge.v == parent_zx_node else edge.v
-        if cur_zx_node.position in visited_positions:
+        if cur_zx_node.position in visited_positions and not cur_zx_node.is_y_node:
             continue
         cur_correlation_node = ZXNode(
             cur_zx_node.position,
-            parent_correlation_type.with_zx_flipped()
+            parent_correlation.with_zx_flipped()
             if edge.has_hadamard
-            else parent_correlation_type,
+            else parent_correlation,
         )
         correlation_edge = ZXEdge(
             parent_correlation_node, cur_correlation_node, edge.has_hadamard
         )
+        if cur_zx_node.is_y_node:
+            branched_spans_from_parent.append([frozenset([correlation_edge])])
+            continue
+
         branched_spans_from_parent.append(
-            [
-                span | {correlation_edge}
-                for span in _find_correlation_spans_dfs(
-                    zx_graph,
-                    cur_zx_node,
-                    cur_correlation_node,
-                    copy(visited_positions),
-                )
-            ]
+            _find_correlation_spans_dfs(
+                zx_graph,
+                cur_zx_node,
+                cur_correlation_node,
+                copy(visited_positions),
+                frozenset([correlation_edge]),
+            )
         )
     if not branched_spans_from_parent:
-        return [frozenset()]
+        return [previous_edges]
     # the color of node does not match the correlation type
     # broadcast the correlation type to all the neighbors
-    if parent_zx_type != parent_correlation_type:
+    if parent_zx_kind != ZXKind.Y and parent_zx_kind != parent_correlation:
         for prod in itertools.product(*branched_spans_from_parent):
-            correlation_spans.append(frozenset(itertools.chain(*prod)))
+            correlation_spans.append(frozenset(itertools.chain(*prod)) | previous_edges)
     else:
-        # the color of node match the correlation type
+        # the color of node match the correlation type or the node is Y type
         # only one of the neighbors can be the correlation path
-        correlation_spans.extend(itertools.chain(*branched_spans_from_parent))
+        correlation_spans.extend(
+            [
+                span | previous_edges
+                for span in itertools.chain(*branched_spans_from_parent)
+            ]
+        )
     return correlation_spans
