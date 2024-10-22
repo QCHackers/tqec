@@ -183,6 +183,8 @@ def _compute_detectors_at_end_of_situation(
     #       detectors here, so early return.
     radius = subtemplates[-1].shape[0] // 2
     center_plaquette_index = subtemplates[-1][radius, radius]
+    if center_plaquette_index == 0:
+        return frozenset()
     center_plaquette = plaquettes[-1][center_plaquette_index]
     if center_plaquette.num_measurements == 0:
         return frozenset()
@@ -243,6 +245,32 @@ def _compute_detectors_at_end_of_situation(
     return _filter_detectors(detectors, subtemplates, plaquettes, increments)
 
 
+def _get_database_access_exception(
+    subtemplates: Sequence[SubTemplateType],
+    plaquettes_by_timestep: Sequence[Plaquettes],
+) -> TQECException:
+    return TQECException(
+        "Failed to retrieve a situation from the provided database but "
+        "only_use_database was True. Failing instead of computing "
+        "automatically detectors. You might want to populate the "
+        "database with the missing situation before re-calling this "
+        "method. Description of the situation:\n"
+        "Subtemplates and plaquettes (by decreasing time, the first "
+        "displayed subtemplate is for the last timeslice):\n"
+        + ("\n" + "-" * 40 + "\n").join(
+            "\n".join(
+                (
+                    "Subtemplate:",
+                    get_template_representation_from_instantiation(subtemplate),
+                    "Plaquettes:",
+                    json.dumps(plaquettes.to_name_dict()),
+                )
+            )
+            for subtemplate, plaquettes in zip(subtemplates, plaquettes_by_timestep)
+        )
+    )
+
+
 def compute_detectors_at_end_of_situation(
     subtemplates: Sequence[SubTemplateType],
     plaquettes_by_timestep: Sequence[Plaquettes],
@@ -270,7 +298,8 @@ def compute_detectors_at_end_of_situation(
             database and unconditionally performing the detector computation.
         only_use_database: if True, only detectors from the database will be
             used. An error will be raised if a situation that is not registered
-            in the database is encountered. Default to False.
+            in the database is encountered or if the database is not provided.
+            Default to False.
 
     Returns:
         all the detectors that can be appended at the end of the circuit
@@ -286,28 +315,7 @@ def compute_detectors_at_end_of_situation(
         # If not found and only detectors from the database should be used, this
         # is an error.
         if detectors is None and only_use_database:
-            raise TQECException(
-                "Failed to retrieve a situation from the provided database but "
-                "only_use_database was True. Failing instead of computing "
-                "automatically detectors. You might want to populate the "
-                "database with the missing situation before re-calling this "
-                "method. Description of the situation:\n"
-                "Subtemplates and plaquettes (by decreasing time, the first "
-                "displayed subtemplate is for the last timeslice):\n"
-                + ("\n" + "-" * 40 + "\n").join(
-                    "\n".join(
-                        (
-                            "Subtemplate:",
-                            get_template_representation_from_instantiation(subtemplate),
-                            "Plaquettes:",
-                            json.dumps(plaquettes.to_name_dict()),
-                        )
-                    )
-                    for subtemplate, plaquettes in zip(
-                        subtemplates, plaquettes_by_timestep
-                    )
-                )
-            )
+            raise _get_database_access_exception(subtemplates, plaquettes_by_timestep)
         # Else, if not found but we are allowed to compute detectors, compute
         # and store in database.
         elif detectors is None:
@@ -315,8 +323,10 @@ def compute_detectors_at_end_of_situation(
                 subtemplates, plaquettes_by_timestep, increments
             )
             database.add_situation(subtemplates, plaquettes_by_timestep, detectors)
-    # If database is None, just compute the detectors.
+    # If database is None
     else:
+        if only_use_database:
+            raise _get_database_access_exception(subtemplates, plaquettes_by_timestep)
         detectors = _compute_detectors_at_end_of_situation(
             subtemplates, plaquettes_by_timestep, increments
         )
