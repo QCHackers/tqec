@@ -42,7 +42,7 @@ class ZXCube(CubeKind):
 
     def __post_init__(self) -> None:
         if self.x == self.y == self.z:
-            raise ValueError(
+            raise TQECException(
                 "The cube kind with all the same basis walls is not allowed."
             )
 
@@ -103,12 +103,18 @@ class ZXCube(CubeKind):
 class Port(CubeKind):
     """Cube kind representing the open ports in the block graph."""
 
+    def __str__(self) -> str:
+        return "PORT"
+
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.P
 
 
 class YCube(CubeKind):
     """Cube kind representing the Y-basis initialization/measurements."""
+
+    def __str__(self) -> str:
+        return "Y"
 
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.Y
@@ -126,6 +132,9 @@ class Cube:
     def __post_init__(self) -> None:
         if self.is_port and self.label is None:
             raise TQECException("A port cube must have a port label.")
+
+    def __str__(self) -> str:
+        return f"{self.kind}{self.position}"
 
     @property
     def is_port(self) -> bool:

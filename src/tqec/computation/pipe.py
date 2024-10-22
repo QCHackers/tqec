@@ -63,6 +63,7 @@ class PipeKind:
         head_basis = ZXBasis(str(self)[direction.value])
         if not at_head and self.has_hadamard:
             return head_basis.with_zx_flipped()
+        return head_basis
 
     @property
     def is_temporal(self) -> bool:
@@ -93,11 +94,17 @@ class Pipe:
     kind: PipeKind
 
     def __post_init__(self) -> None:
-        if not self.u.position.is_neighbour(self.v.position):
-            raise TQECException("A pipe must connect two nearby cubes.")
-        # Ensure position of u is less than v
         u, v = self.u, self.v
-        if self.u.position > self.v.position:
+        p1, p2 = u.position, v.position
+        shift = [0, 0, 0]
+        shift[self.kind.direction.value] = 1
+        if not p1.shift_by(*shift) == p2 and not p2.shift_by(*shift) == p1:
+            raise TQECException(
+                f"The pipe must connect two nearby cubes in direction {self.kind.direction}."
+            )
+
+        # Ensure position of u is less than v
+        if p1 > p2:
             object.__setattr__(self, "u", v)
             object.__setattr__(self, "v", u)
 
@@ -108,7 +115,7 @@ class Pipe:
 
     def validate(self) -> None:
         """Check the color of the pipe can match the cubes at its endpoints."""
-        for cube in (self.u, self.v):
+        for cube in self:
             if cube.is_port or cube.is_y_cube:
                 continue
             assert isinstance(cube.kind, ZXCube)
