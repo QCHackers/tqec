@@ -1,0 +1,6 @@
+tqec.computation.geometry.parse\_block\_type\_from\_str
+=======================================================
+
+.. currentmodule:: tqec.computation.geometry
+
+.. autofunction:: parse_block_type_from_str
