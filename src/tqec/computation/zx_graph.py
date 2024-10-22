@@ -38,7 +38,7 @@ class ZXKind(Enum):
         return self.value
 
 
-@dataclass(frozen=True, order=True)
+@dataclass(frozen=True)
 class ZXNode:
     """A node in the ZX graph.
 
@@ -79,7 +79,7 @@ class ZXNode:
         return f"{self.kind}{self.position}"
 
 
-@dataclass(frozen=True, order=True)
+@dataclass(frozen=True)
 class ZXEdge:
     """An edge in the ZX graph.
 

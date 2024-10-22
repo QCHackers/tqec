@@ -7,17 +7,12 @@ from tqec.position import Position3D
 
 
 def test_correlation_single_xz_node() -> None:
-    for kind in [ZXKind.X, ZXKind.Z]:
-        g = ZXGraph()
-        g.add_node(Position3D(0, 0, 0), kind)
-        assert g.find_correration_surfaces() == [
-            CorrelationSurface(ZXNode(Position3D(0, 0, 0), kind.with_zx_flipped()), {})
-        ]
-
     g = ZXGraph()
     g.add_node(Position3D(0, 0, 0), ZXKind.X)
-    g.add_node(Position3D(1, 0, 0), ZXKind.Z)
-    with pytest.raises(TQECException):
+    with pytest.raises(
+        TQECException,
+        match="The graph must contain at least two nodes to find correlation surfaces.",
+    ):
         g.find_correration_surfaces()
 
 
@@ -184,5 +179,37 @@ def test_correlation_y_init_follow_measure() -> None:
     )
     correlation_surfaces = g.find_correration_surfaces()
     assert len(correlation_surfaces) == 2
-    assert correlation_surfaces[0].external_stabilizer == {"in": "I", "out": "Y"}
-    assert correlation_surfaces[1].external_stabilizer == {"in": "Y", "out": "I"}
+    assert correlation_surfaces[0].external_stabilizer == {"in": "Y", "out": "I"}
+    assert correlation_surfaces[1].external_stabilizer == {"in": "I", "out": "Y"}
+
+
+def test_correlation_0_shape_y_nodes() -> None:
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, 1), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 1), ZXKind.X),
+        ZXNode(Position3D(-1, 0, 1), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(-1, 0, 0), ZXKind.X),
+        ZXNode(Position3D(-1, 0, 1), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(-1, 0, -1), ZXKind.X),
+        ZXNode(Position3D(-1, 0, 0), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(-1, 0, -1), ZXKind.X),
+        ZXNode(Position3D(0, 0, -1), ZXKind.X),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, -1), ZXKind.X),
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+    )
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 1
+    assert len(correlation_surfaces[0].span) == 12
+    assert correlation_surfaces[0].external_stabilizer == {}

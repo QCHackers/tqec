@@ -233,7 +233,8 @@ class BlockGraph:
 
         return convert_block_graph_to_zx_graph(self, name)
 
-    def from_zx_graph(self, zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
+    @staticmethod
+    def from_zx_graph(zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
         """Construct the block graph from a ZX graph."""
         from tqec.computation.block_graph.conversion import (
             convert_zx_graph_to_block_graph,

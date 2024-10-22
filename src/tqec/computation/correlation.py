@@ -9,21 +9,20 @@ from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
 
-@dataclass(frozen=True, order=True)
+@dataclass(frozen=True)
 class CorrelationSurface:
     """A correlation surface in the ZX graph.
 
     Attributes:
-        span: Either a set of correlation edges or a single node. If it is a single node,
-            it represents a logical operator preserved in memory. If it is a set of edges,
-            it represents the correlation between logical operators spanning in the 3D space.
+        span: A set of `ZXEdge` representing the correlation between logical operators spanning
+            in the 3D space.
         external_stabilizer: The external stabilizer of the correlation surface. The external
             stabilizer is a mapping from the port label to the Pauli operator at the port.
             Sign of the stabilizer is neglected.
 
     """
 
-    span: frozenset[ZXEdge] | ZXNode
+    span: frozenset[ZXEdge]
     external_stabilizer: dict[str, str]
 
     def __post_init__(self):
@@ -47,9 +46,14 @@ class CorrelationSurface:
         Returns:
             A dictionary mapping the position of the node to the correlation type.
         """
-        if isinstance(self.span, ZXNode):
-            return {self.span.position: self.span.kind}
         return _get_node_correlation_types(self.span)
+
+    def span_positions(self) -> list[Position3D]:
+        """Get the positions of the nodes in the correlation surface."""
+        return sorted(
+            {edge.u.position for edge in self.span}
+            | {edge.v.position for edge in self.span}
+        )
 
 
 def find_correlation_surfaces(
@@ -63,15 +67,18 @@ def find_correlation_surfaces(
     zx_graph.validate()
     # If the node is isolated, it is guaranteed to be X/Z type.
     # Then return a single node correlation surface.
-    if zx_graph.num_nodes == 1 and zx_graph.num_edges == 0:
-        return [CorrelationSurface(zx_graph.nodes[0].with_zx_flipped(), {})]
+    if zx_graph.num_nodes <= 1:
+        raise TQECException(
+            "The graph must contain at least two nodes to find correlation surfaces."
+        )
     # Start from each leaf node or internal Y node to find the correlation surfaces.
     roots = set(zx_graph.leaf_nodes)
     roots.update(node for node in zx_graph.nodes if node.is_y_node)
-    correlation_surfaces = set()
+    correlation_surfaces: set[CorrelationSurface] = set()
     for root in roots:
         correlation_surfaces.update(find_correlation_surfaces_from(zx_graph, root))
-    return sorted(correlation_surfaces)
+    # sort the correlation surfaces to make the result deterministic
+    return sorted(correlation_surfaces, key=lambda x: x.span_positions())
 
 
 def find_correlation_surfaces_from(
@@ -88,23 +95,23 @@ def find_correlation_surfaces_from(
             zx_graph, root, root.with_zx_flipped(), set()
         )
         return _construct_compatible_correlation_surfaces(zx_graph, spans)
-    x_spans = _find_correlation_spans_dfs(
-        zx_graph, root, ZXNode(root.position, ZXKind.X), set()
-    )
-    z_spans = _find_correlation_spans_dfs(
-        zx_graph, root, ZXNode(root.position, ZXKind.Z), set()
-    )
     # For the port node, try to construct both the x and z type correlation surfaces.
     if root.is_port:
+        x_spans = _find_correlation_spans_dfs(
+            zx_graph, root, ZXNode(root.position, ZXKind.X), set()
+        )
+        z_spans = _find_correlation_spans_dfs(
+            zx_graph, root, ZXNode(root.position, ZXKind.Z), set()
+        )
         return _construct_compatible_correlation_surfaces(zx_graph, x_spans + z_spans)
     # For the Y type node, the correlation surface must be the product of the x and z type.
     assert root.is_y_node
     correlation_surfaces = []
-    for edge in sorted(zx_graph.edges_at(root.position)):
+    for edge in zx_graph.edges_at(root.position):
         u, v = edge.u, edge.v
-        child = u if v == root else v
+        neighbor = u if v == root else v
         x_correlation = ZXNode(
-            child.position, ZXKind.Z if edge.has_hadamard else ZXKind.X
+            neighbor.position, ZXKind.Z if edge.has_hadamard else ZXKind.X
         )
         x_correlation_edge = ZXEdge(
             ZXNode(root.position, ZXKind.X),
@@ -113,14 +120,14 @@ def find_correlation_surfaces_from(
         )
         x_spans = _find_correlation_spans_dfs(
             zx_graph,
-            child,
+            neighbor,
             x_correlation,
             {root.position},
             frozenset([x_correlation_edge]),
         )
         z_spans = _find_correlation_spans_dfs(
             zx_graph,
-            child,
+            neighbor,
             x_correlation.with_zx_flipped(),
             {root.position},
             frozenset([x_correlation_edge.with_zx_flipped()]),
@@ -290,7 +297,7 @@ def _find_correlation_spans_dfs(
     branched_spans_from_parent: list[list[frozenset[ZXEdge]]] = []
     for edge in zx_graph.edges_at(parent_position):
         cur_zx_node = edge.u if edge.v == parent_zx_node else edge.v
-        if cur_zx_node.position in visited_positions and not cur_zx_node.is_y_node:
+        if cur_zx_node.position in visited_positions:
             continue
         cur_correlation_node = ZXNode(
             cur_zx_node.position,
@@ -310,7 +317,8 @@ def _find_correlation_spans_dfs(
                 zx_graph,
                 cur_zx_node,
                 cur_correlation_node,
-                copy(visited_positions),
+                # mark y node as unvisited for potential reuse of internal y node
+                {p for p in visited_positions if not zx_graph[p].is_y_node},
                 frozenset([correlation_edge]),
             )
         )
