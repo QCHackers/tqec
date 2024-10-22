@@ -2,6 +2,7 @@ from typing import Literal, cast
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.base import CubeSpec, PipeSpec, Substitution
+from tqec.computation.cube import CubeKind, ZXBasis, ZXCube
 from tqec.plaquette.enums import (
     MeasurementBasis,
     PlaquetteOrientation,
@@ -22,11 +23,12 @@ def default_compiled_block_builder(
     spec: CubeSpec, *, plaquette_builder: PlaquetteBuilder
 ) -> CompiledBlock:
     """Default rule for generating a `CompiledBlock` based on a `CubeSpec`."""
-    if spec.cube_type.is_regular:
+    if spec.is_regular:
+        assert isinstance(spec.kind, ZXCube)
         return _build_regular_block(
             plaquette_builder,
-            cast(Literal["X", "Z"], spec.cube_type.temporal_basis),
-            _get_x_boundary_orientation(spec),
+            spec.kind.z,
+            _get_x_boundary_orientation(spec.kind),
         )
     raise NotImplementedError("Irregular cubes are not implemented yet.")
 
@@ -35,7 +37,7 @@ def default_substitution_builder(
     pipe_spec: PipeSpec, *, plaquette_builder: PlaquetteBuilder
 ) -> Substitution:
     """Default rule for generating a `Substitution` based on a `PipeSpec`."""
-    pipe_type = pipe_spec.pipe_type
+    pipe_type = pipe_spec.pipe_kind
     if pipe_type.has_hadamard:
         raise NotImplementedError("Hadamard pipes are not implemented yet.")
     # pipe in time direction
@@ -49,7 +51,7 @@ def _build_plaquette_for_different_basis(
     builder: PlaquetteBuilder,
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
     *,
-    temporal_basis: Literal["X", "Z"] | None = None,
+    temporal_basis: ZXBasis | None = None,
     data_init: bool = False,
     data_meas: bool = False,
     init_meas_only_on_side: PlaquetteSide | None = None,
@@ -82,7 +84,7 @@ def _build_plaquettes_for_rotated_surface_code(
     builder: PlaquetteBuilder,
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
     *,
-    temporal_basis: Literal["X", "Z"] | None = None,
+    temporal_basis: ZXBasis | None = None,
     data_init: bool = False,
     data_meas: bool = False,
     repetitions: LinearFunction | None = None,
@@ -118,7 +120,7 @@ def _build_plaquettes_for_rotated_surface_code(
 
 def _build_regular_block(
     builder: PlaquetteBuilder,
-    temporal_basis: Literal["X", "Z"],
+    temporal_basis: ZXBasis,
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
     repetitions: LinearFunction = _DEFAULT_BLOCK_REPETITIONS,
 ) -> CompiledBlock:
@@ -149,14 +151,14 @@ def _build_substitution_in_time_direction(
     src = {
         -1: _build_plaquettes_for_rotated_surface_code(
             plaquette_builder,
-            _get_x_boundary_orientation(pipe_spec.spec1),
+            _get_x_boundary_orientation(pipe_spec.spec1.kind),
         )
     }
     # substitute the first layer of the dst block
     dst = {
         0: _build_plaquettes_for_rotated_surface_code(
             plaquette_builder,
-            _get_x_boundary_orientation(pipe_spec.spec2),
+            _get_x_boundary_orientation(pipe_spec.spec2.kind),
         )
     }
     return Substitution(src, dst)
@@ -167,7 +169,7 @@ def _build_plaquettes_for_space_regular_pipe(
     substitution_side: PlaquetteSide,
     x_boundary_orientation: Literal["VERTICAL", "HORIZONTAL"],
     *,
-    temporal_basis: Literal["X", "Z"] | None = None,
+    temporal_basis: ZXBasis | None = None,
     data_init: bool = False,
     data_meas: bool = False,
     repetitions: LinearFunction | None = None,
@@ -223,7 +225,7 @@ def _build_substitution_in_space(
     plaquette_builder: PlaquetteBuilder,
 ) -> Substitution:
     """Build a substitution for a pipe in space."""
-    if pipe_spec.spec1.cube_type.is_regular and pipe_spec.spec2.cube_type.is_regular:
+    if pipe_spec.spec1.is_regular and pipe_spec.spec2.is_regular:
         return _build_substitution_in_space_with_regular_cubes(
             pipe_spec, plaquette_builder
         )
@@ -236,14 +238,14 @@ def _build_substitution_in_space_with_regular_cubes(
 ) -> Substitution:
     """Build a substitution for a pipe in space connecting two regular
     cubes."""
-    pipe_type = pipe_spec.pipe_type
-    temporal_basis = pipe_type.temporal_basis()
+    pipe_type = pipe_spec.pipe_kind
+    temporal_basis = pipe_type.z
     # No hadamard: the two cubes have the same orientation
-    orientation = _get_x_boundary_orientation(pipe_spec.spec1)
+    orientation = _get_x_boundary_orientation(pipe_spec.spec1.kind)
     # In `tqec` library, the positive y-axis is the downward direction
     substitute_side1 = (
         PlaquetteSide.RIGHT
-        if pipe_spec.pipe_type.direction == Direction3D.X
+        if pipe_spec.pipe_kind.direction == Direction3D.X
         else PlaquetteSide.DOWN
     )
     substitute_side2 = substitute_side1.opposite()
@@ -275,7 +277,7 @@ def _build_substitution_in_space_with_regular_cubes(
 
 
 def _get_x_boundary_orientation(
-    cube_spec: CubeSpec,
+    cube_kind: CubeKind,
 ) -> Literal["VERTICAL", "HORIZONTAL"]:
-    cube_type = cube_spec.cube_type.value
-    return "VERTICAL" if cube_type[0] == "x" else "HORIZONTAL"
+    assert isinstance(cube_kind, ZXCube)
+    return "VERTICAL" if cube_kind.x == ZXBasis.X else "HORIZONTAL"

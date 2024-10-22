@@ -5,7 +5,7 @@ from typing import Generator
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
-from tqec.computation.block_graph.cube import Cube, ZXBasis, ZXCube
+from tqec.computation.cube import Cube, ZXBasis, ZXCube
 
 
 @dataclass(frozen=True)
@@ -18,7 +18,7 @@ class PipeKind:
     def __post_init__(self) -> None:
         if sum(basis is None for basis in (self.x, self.y, self.z)) != 1:
             raise TQECException("Exactly one basis must be None for a pipe.")
-        if len(set(str(self))) != 4:
+        if len({self.x, self.y, self.z}) != 3:
             raise TQECException("Pipe must have different basis walls.")
 
     def __str__(self) -> str:
@@ -125,3 +125,11 @@ class Pipe:
     def __iter__(self) -> Generator[Cube]:
         yield self.u
         yield self.v
+
+    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Pipe:
+        """Shift the position of the pipe by the given displacement."""
+        return Pipe(
+            self.u.shift_position_by(dx, dy, dz),
+            self.v.shift_position_by(dx, dy, dz),
+            self.kind,
+        )

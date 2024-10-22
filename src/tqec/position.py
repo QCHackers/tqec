@@ -81,11 +81,11 @@ class Position3D:
         if any(not isinstance(i, int) for i in astuple(self)):
             raise TQECException("Position must be an integer.")
 
-    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> "Position3D":
+    def shift_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Position3D:
         """Shift the position by the given offset."""
         return Position3D(self.x + dx, self.y + dy, self.z + dz)
 
-    def is_neighbour(self, other: "Position3D") -> bool:
+    def is_neighbour(self, other: Position3D) -> bool:
         """Check if the other position is near to this position, i.e. Manhattan
         distance is 1."""
         return (

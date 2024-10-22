@@ -149,3 +149,7 @@ class Cube:
     def to_zx_node(self) -> ZXNode:
         """Convert the cube to a ZX node."""
         return ZXNode(self.position, self.kind.to_zx_kind(), self.label)
+
+    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Cube:
+        """Shift the position of the cube."""
+        return Cube(self.position.shift_by(dx, dy, dz), self.kind, self.label)

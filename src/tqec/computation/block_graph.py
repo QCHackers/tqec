@@ -11,18 +11,18 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.computation.block_graph.cube import (
+from tqec.computation.cube import (
     Cube,
     CubeKind,
     ZXCube,
 )
-from tqec.computation.block_graph.pipe import Pipe, PipeKind
-from tqec.computation.block_graph.observable import AbstractObservable
+from tqec.computation.pipe import Pipe, PipeKind
 from tqec.computation.zx_graph import ZXGraph
 from tqec.computation.correlation import CorrelationSurface
 
 if TYPE_CHECKING:
     from tqec.computation.collada import ColladaDisplayHelper
+    from tqec.computation.abstract_observable import AbstractObservable
 
 
 _CUBE_DATA_KEY = "tqec_block_cube_data"
@@ -227,7 +227,7 @@ class BlockGraph:
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
         """Convert the block graph to a ZX graph."""
-        from tqec.computation.block_graph.conversion import (
+        from tqec.computation.conversion import (
             convert_block_graph_to_zx_graph,
         )
 
@@ -236,7 +236,7 @@ class BlockGraph:
     @staticmethod
     def from_zx_graph(zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
         """Construct the block graph from a ZX graph."""
-        from tqec.computation.block_graph.conversion import (
+        from tqec.computation.conversion import (
             convert_zx_graph_to_block_graph,
         )
 
@@ -285,7 +285,7 @@ class BlockGraph:
         correlation_surfaces: list[CorrelationSurface] | None = None,
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
         """Get all the abstract observables from the block graph."""
-        from tqec.computation.block_graph.observable import (
+        from tqec.computation.abstract_observable import (
             correlation_surface_to_abstract_observable,
         )
 
@@ -303,7 +303,7 @@ class BlockGraph:
 
         return abstract_observables, correlation_surfaces
 
-    def set_min_z_to_zero(self) -> BlockGraph:
+    def shift_min_z_to_zero(self) -> BlockGraph:
         """Shift the whole graph in the z direction to make the minimum z equal zero."""
         minz = min(cube.position.z for cube in self.cubes)
         if minz == 0:

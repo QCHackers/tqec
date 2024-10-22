@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from tqec.computation.block_graph.cube import Cube, ZXCube
-from tqec.computation.block_graph.graph import BlockGraph
-from tqec.computation.block_graph.pipe import Pipe
+from tqec.computation.cube import Cube, ZXCube
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.pipe import Pipe
 from tqec.computation.correlation import CorrelationSurface
 from tqec.computation.zx_graph import ZXKind
 from tqec.exceptions import TQECException

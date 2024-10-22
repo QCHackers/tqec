@@ -5,8 +5,9 @@ from typing import Protocol
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.enums import JunctionArms
-from tqec.computation.block_graph.cube import Cube, CubeKind
-from tqec.computation.block_graph.graph import BlockGraph
+from tqec.computation.cube import Cube, CubeKind, ZXCube
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquettes
 
@@ -20,13 +21,13 @@ class CubeSpec:
     applying the substitution rules.
 
     Attributes:
-        cube_type: Type of the cube.
+        cube_kind: The kind of the cube.
         junction_arms: Flag indicating the spatial directions the cube connects to the
             adjacent cubes. This is useful for spatial junctions (XXZ and ZZX) where
             the arms can determine the template used to implement the cube.
     """
 
-    cube_type: CubeType
+    kind: CubeKind
     junction_arms: JunctionArms = JunctionArms.NONE
 
     def __post_init__(self) -> None:
@@ -38,12 +39,16 @@ class CubeSpec:
 
     @property
     def is_spatial_junction(self) -> bool:
-        return self.cube_type.is_spatial_junction
+        return isinstance(self.kind, ZXCube) and self.kind.is_spatial_junction
+
+    @property
+    def is_regular(self) -> bool:
+        return not self.is_spatial_junction
 
     @staticmethod
     def from_cube(cube: Cube, graph: BlockGraph) -> CubeSpec:
         """Returns the cube spec from a cube in a block graph."""
-        if cube.kind not in [CubeType.ZZX, CubeType.XXZ]:
+        if not cube.is_spatial_junction:
             return CubeSpec(cube.kind)
         pos = cube.position
         junction_arms = JunctionArms.NONE
@@ -87,7 +92,7 @@ class PipeSpec:
 
     spec1: CubeSpec
     spec2: CubeSpec
-    pipe_type: PipeType
+    pipe_kind: PipeKind
 
 
 @dataclass(frozen=True)

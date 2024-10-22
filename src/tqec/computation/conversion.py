@@ -1,7 +1,7 @@
 """Conversion between `ZXGraph` and `BlockGraph`."""
 
 from typing import cast
-from tqec.computation.block_graph.cube import (
+from tqec.computation.cube import (
     Cube,
     CubeKind,
     Port,
@@ -9,8 +9,8 @@ from tqec.computation.block_graph.cube import (
     ZXBasis,
     ZXCube,
 )
-from tqec.computation.block_graph.graph import BlockGraph
-from tqec.computation.block_graph.pipe import PipeKind
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.pipe import PipeKind
 from tqec.computation.zx_graph import ZXEdge, ZXGraph, ZXKind, ZXNode
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D

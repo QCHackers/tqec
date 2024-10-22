@@ -1,5 +1,5 @@
 from typing import Literal
-from tqec.computation.block_graph.graph import BlockGraph
+from tqec.computation.block_graph import BlockGraph
 from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
 from tqec.position import Position3D
 

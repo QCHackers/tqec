@@ -7,8 +7,10 @@ from enum import Enum
 import numpy as np
 import numpy.typing as npt
 
+from tqec.computation.cube import YCube, ZXCube
+from tqec.computation.pipe import PipeKind
 from tqec.position import Direction3D
-from tqec.computation.block_graph import BlockKind, CubeKind, PipeKind
+from tqec.computation.block_graph import BlockKind
 
 
 class FaceType(Enum):
@@ -59,7 +61,7 @@ class Face:
         return np.array([0, 0, 2, 2, 1, 1, 2, 2, 0, 0, 3, 3], dtype=np.int_)
 
     def get_vertices(self) -> npt.NDArray[np.float64]:
-        ax3_index = self.normal_direction.axis_index
+        ax3_index = self.normal_direction.value
         ax1_index = (ax3_index + 1) % 3
         ax2_index = (ax3_index + 2) % 3
         # rectangle vertices
@@ -84,7 +86,7 @@ class Face:
 
     def get_normal_vectors(self) -> npt.NDArray[np.float64]:
         normal = np.zeros(3, dtype=np.float64)
-        ax3_index = self.normal_direction.axis_index
+        ax3_index = self.normal_direction.value
         normal[ax3_index] = 1 if self.positive_facing else -1
         return np.tile(normal, 4)
 
@@ -113,12 +115,14 @@ class Face:
         )
 
 
-def parse_block_type_from_str(block_type: str) -> BlockKind:
-    """Parse a block type from a string."""
-    if "o" in block_type:
-        return PipeType(block_type.lower())
+def parse_block_kind_from_str(block_kind: str) -> BlockKind:
+    """Parse a block kind from a string."""
+    if "o" in block_kind:
+        return PipeKind.from_str(block_kind)
+    elif block_kind.upper() == "Y":
+        return YCube()
     else:
-        return CubeType(block_type.lower())
+        return ZXCube.from_str(block_kind)
 
 
 Geometry = dict[BlockKind, list[Face]]
@@ -131,7 +135,7 @@ def _create_zx_cube_geometries() -> Geometry:
     for name in ["zxx", "xzx", "xxz", "xzz", "zxz", "zzx"]:
         faces = []
         for i, face_type in enumerate(name):
-            normal_direction = Direction3D.from_axis_index(i)
+            normal_direction = Direction3D(i)
             face = Face(
                 FaceType.from_string(face_type), width, height, normal_direction, False
             )
@@ -139,14 +143,14 @@ def _create_zx_cube_geometries() -> Geometry:
             translation = [0.0, 0.0, 0.0]
             translation[i] = 1.0
             faces.append(face.translated_by(*translation).with_opposite_facing())
-        cube_geometries[parse_block_type_from_str(name)] = faces
+        cube_geometries[parse_block_kind_from_str(name)] = faces
     return cube_geometries
 
 
 def _create_y_cube_geometry() -> Geometry:
     """Create the y cube geometry."""
     faces = []
-    for normal_direction in Direction3D.all():
+    for normal_direction in Direction3D.all_directions():
         if normal_direction == Direction3D.X:
             width, height = 1.0, 0.5
         elif normal_direction == Direction3D.Y:
@@ -156,11 +160,11 @@ def _create_y_cube_geometry() -> Geometry:
         face = Face(FaceType.Y, width, height, normal_direction, False)
         faces.append(face)
         translation = [0.0, 0.0, 0.0]
-        translation[normal_direction.axis_index] = (
+        translation[normal_direction.value] = (
             1.0 if normal_direction != Direction3D.Z else 0.5
         )
         faces.append(face.translated_by(*translation).with_opposite_facing())
-    return {CubeType.Y: faces}
+    return {YCube(): faces}
 
 
 def _create_no_h_pipe_geometries() -> Geometry:
@@ -176,7 +180,7 @@ def _create_no_h_pipe_geometries() -> Geometry:
                 width, height = 2.0, 1.0
             else:
                 width, height = 1.0, 2.0
-            normal_direction = Direction3D.from_axis_index(i)
+            normal_direction = Direction3D(i)
             face = Face(
                 FaceType.from_string(face_type), width, height, normal_direction, False
             )
@@ -184,7 +188,7 @@ def _create_no_h_pipe_geometries() -> Geometry:
             translation = [0.0, 0.0, 0.0]
             translation[i] = 1.0
             faces.append(face.translated_by(*translation).with_opposite_facing())
-        pipe_geometries[parse_block_type_from_str(name)] = faces
+        pipe_geometries[parse_block_kind_from_str(name)] = faces
     return pipe_geometries
 
 
@@ -214,7 +218,7 @@ def _create_h_pipe_geometries() -> Geometry:
                 w1, h1 = 1.0, 0.9
                 w2, h2 = 1.0, 0.2
                 w3, h3 = 1.0, 0.9
-            normal_direction = Direction3D.from_axis_index(i)
+            normal_direction = Direction3D(i)
             face1 = Face(
                 FaceType.from_string(face_type), w1, h1, normal_direction, False
             )
@@ -236,7 +240,7 @@ def _create_h_pipe_geometries() -> Geometry:
                 face.translated_by(*translation).with_opposite_facing()
                 for face in [face1, face2, face3]
             )
-        pipe_geometries[parse_block_type_from_str(name)] = faces
+        pipe_geometries[parse_block_kind_from_str(name)] = faces
     return pipe_geometries
 
 
