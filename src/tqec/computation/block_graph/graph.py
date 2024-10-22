@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import Sequence, cast, TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
@@ -282,71 +282,38 @@ class BlockGraph:
 
     def get_abstract_observables(
         self,
-        correlation_surfaces: Sequence[CorrelationSurface] | None = None,
+        correlation_surfaces: list[CorrelationSurface] | None = None,
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
         """Get all the abstract observables from the block graph."""
+        from tqec.computation.block_graph.observable import (
+            correlation_surface_to_abstract_observable,
+        )
+
         self.validate()
-        correlation_subgraphs = self.to_zx_graph().find_correration_surfaces()
-        abstract_observables: list[AbstractObservable] = []
+        # Edge case: only one cube in the graph
+        if self.num_cubes == 1:
+            return [AbstractObservable(frozenset(self.cubes), frozenset())], []
 
-        def is_measured(cube: Cube) -> bool:
-            return self.get_pipe(cube.position, cube.position.shift_by(0, 0, 1)) is None
+        if correlation_surfaces is None:
+            correlation_surfaces = self.to_zx_graph().find_correration_surfaces()
+        abstract_observables: list[AbstractObservable] = [
+            correlation_surface_to_abstract_observable(self, surface)
+            for surface in correlation_surfaces
+        ]
 
-        for g in correlation_subgraphs:
-            if g.num_nodes == 1:
-                cube = self.get_cube(g.nodes[0].pos)
-                assert (
-                    cube is not None
-                ), f"{g.nodes[0]} is in the graph and should be associated with a Cube instance."
-                abstract_observables.append(
-                    AbstractObservable(frozenset({cube}), frozenset())
-                )
-                continue
-            top_lines: set[Cube | Pipe] = set()
-            bottom_regions: set[Pipe] = set()
-            for edge in g.edges:
-                correlation_type_at_src = edge.u.node_type.value
-                correlation_type_at_dst = edge.v.node_type.value
-                pipe = self.get_pipe(edge.u.pos, edge.v.pos)
-                assert (
-                    pipe is not None
-                ), f"{edge} is in the graph and should be associated with a Pipe instance."
-                u, v = pipe.u, pipe.v
-                if pipe.direction == Direction3D.Z:
-                    if is_measured(v) and v.kind.value[2] == correlation_type_at_dst:
-                        top_lines.add(v)
-                    continue
-                # The direction for which the correlation surface of that type
-                # can be attached to the pipe
-                correlation_type_direction = Direction3D.from_axis_index(
-                    pipe.pipe_type.value.index(correlation_type_at_src)
-                )
-                if correlation_type_direction == Direction3D.Z:
-                    top_lines.add(pipe)
-                    if is_measured(u):
-                        top_lines.add(u)
-                    if is_measured(v):
-                        top_lines.add(v)
-                else:
-                    bottom_regions.add(pipe)
-            abstract_observables.append(
-                AbstractObservable(frozenset(top_lines), frozenset(bottom_regions))
-            )
-        return abstract_observables, correlation_subgraphs
+        return abstract_observables, correlation_surfaces
 
-    def with_zero_min_z(self) -> BlockGraph:
-        """Shift the whole graph in the z direction to make the minimum z
-        zero."""
+    def set_min_z_to_zero(self) -> BlockGraph:
+        """Shift the whole graph in the z direction to make the minimum z equal zero."""
         minz = min(cube.position.z for cube in self.cubes)
         if minz == 0:
             return deepcopy(self)
         new_graph = BlockGraph(self.name)
-        for cube in self.cubes:
-            new_graph.add_cube(cube.position.shift_by(dz=-minz), cube.kind)
         for pipe in self.pipes:
+            u, v = pipe.u, pipe.v
             new_graph.add_pipe(
-                pipe.u.position.shift_by(dz=-minz),
-                pipe.v.position.shift_by(dz=-minz),
-                pipe.pipe_type,
+                Cube(u.position.shift_by(dz=-minz), u.kind, u.label),
+                Cube(v.position.shift_by(dz=-minz), v.kind, v.label),
+                pipe.kind,
             )
         return new_graph

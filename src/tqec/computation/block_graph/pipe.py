@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Generator
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D
@@ -120,3 +121,7 @@ class Pipe:
                     raise TQECException(
                         f"The pipe has color does not match the cube {cube}."
                     )
+
+    def __iter__(self) -> Generator[Cube]:
+        yield self.u
+        yield self.v

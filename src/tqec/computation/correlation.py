@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import functools
 import itertools
-from copy import copy
 from typing import Iterable
 
 from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode, ZXEdge
