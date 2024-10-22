@@ -226,6 +226,7 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(0, 0, 2), ZXKind.Z),
         ZXNode(Position3D(0, 0, 1), ZXKind.Y),
     )
+    g.validate()
 
     g = ZXGraph()
     g.add_edge(

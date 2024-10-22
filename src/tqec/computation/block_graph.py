@@ -11,11 +11,7 @@ import networkx as nx
 
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
-from tqec.computation.cube import (
-    Cube,
-    CubeKind,
-    ZXCube,
-)
+from tqec.computation.cube import Cube, CubeKind
 from tqec.computation.pipe import Pipe, PipeKind
 from tqec.computation.zx_graph import ZXGraph
 from tqec.computation.correlation import CorrelationSurface
@@ -33,7 +29,7 @@ BlockKind = CubeKind | PipeKind
 
 
 class BlockGraph:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str = "") -> None:
         """An undirected graph representation of a 3D spacetime defect diagram
         with the block structures explicitly defined."""
         self._name = name
@@ -49,6 +45,11 @@ class BlockGraph:
     def num_ports(self) -> int:
         """The number of open ports in the graph."""
         return len(self._ports)
+
+    @property
+    def ports(self) -> dict[str, Position3D]:
+        """The open ports in the graph."""
+        return self._ports
 
     @property
     def num_cubes(self) -> int:
@@ -209,21 +210,9 @@ class BlockGraph:
         pipes_by_direction: dict[Direction3D, list[Pipe]] = {}
         for pipe in pipes:
             pipes_by_direction.setdefault(pipe.direction, []).append(pipe)
-        pipe_directions = set(pipes_by_direction.keys())
-        # d). No 3D corner
-        if len(pipe_directions) == 3:
-            raise TQECException(f"Cube at {cube.position} has a 3D corner pipes.")
-        # f). Match color at passthrough
+        # d), f), g). Match color
         for pipes in pipes:
             pipe.validate()
-        # g). Match color at turn
-        if len(pipe_directions) == 2:
-            assert isinstance(cube.kind, ZXCube)
-            # the surrounding walls perpendicular to the turn plane have the same color
-            if cube.kind.normal_direction in pipe_directions:
-                raise TQECException(
-                    f"Pipes turn at {cube.position} do not have matching colors."
-                )
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
         """Convert the block graph to a ZX graph."""

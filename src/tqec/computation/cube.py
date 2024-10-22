@@ -109,6 +109,12 @@ class Port(CubeKind):
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.P
 
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Port)
+
+    def __ne__(self, other: object) -> bool:
+        return not self == other
+
 
 class YCube(CubeKind):
     """Cube kind representing the Y-basis initialization/measurements."""
@@ -118,6 +124,12 @@ class YCube(CubeKind):
 
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.Y
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, YCube)
+
+    def __ne__(self, other: object) -> bool:
+        return not self == other
 
 
 @dataclass(frozen=True)
