@@ -60,20 +60,12 @@ def _get_measurement_offset_mapping(circuit: stim.Circuit) -> dict[int, Measurem
 def _matched_detectors_to_detectors(
     detectors: list[MatchedDetector],
     measurements_by_offset: dict[int, Measurement],
-    qubits_by_indices: dict[int, GridQubit],
 ) -> list[Detector]:
     ret: list[Detector] = []
     for d in detectors:
         measurements: list[Measurement] = []
         for m in d.measurements:
-            measurement = measurements_by_offset[m.offset]
-            expected_qubit = qubits_by_indices[m.qubit_index]
-            if measurement.qubit != expected_qubit:
-                raise TQECException(
-                    f"Expected qubit {expected_qubit} from index {m.qubit_index} "
-                    f"but got {measurement.qubit}."
-                )
-            measurements.append(measurement)
+            measurements.append(measurements_by_offset[m.offset])
         x, y, t = d.coords
         ret.append(Detector(frozenset(measurements), StimCoordinates(x, y, t)))
     return ret
@@ -207,7 +199,7 @@ def _compute_detectors_at_end_of_situation(
     # `tqec.circuit.detectors.MatchedDetector` class.
     measurements_by_offset = _get_measurement_offset_mapping(complete_circuit)
     detectors = _matched_detectors_to_detectors(
-        matched_detectors, measurements_by_offset, global_qubit_map.i2q
+        matched_detectors, measurements_by_offset
     )
 
     # Filter out detectors and return the left ones.
