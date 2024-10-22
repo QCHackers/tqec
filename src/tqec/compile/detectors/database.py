@@ -243,13 +243,16 @@ class DetectorDatabase:
     def unfreeze(self) -> None:
         self.frozen = False
 
-    def to_crumble_urls(self, plaquette_increments: Displacement) -> list[str]:
+    def to_crumble_urls(
+        self, plaquette_increments: Displacement = Displacement(2, 2)
+    ) -> list[str]:
         """Returns one URL pointing to https://algassert.com/crumble for each of
         the registered situations.
 
         Args:
             plaquette_increments: increments between two :class:`Plaquette`
-                origins.
+                origins. Default to `Displacement(2, 2)` which is the expected
+                value for surface code.
 
         Returns:
             a list of Crumble URLs, each one representing a situation stored in
