@@ -61,6 +61,18 @@ def _matched_detectors_to_detectors(
     detectors: list[MatchedDetector],
     measurements_by_offset: dict[int, Measurement],
 ) -> list[Detector]:
+    """Transform :class:`MatchedDetector` instances into `Detector` ones.
+
+    Args:
+        detectors: list of detectors to translate.
+        measurements_by_offset: map from measurement record offsets that are used
+            in the provided `detectors` to :class:`Measurement` instances
+            using a spatially-local representation of measurements.
+
+    Returns:
+        :class:`Detector` instances representing the same detectors as the
+        provided `detectors`.
+    """
     ret: list[Detector] = []
     for d in detectors:
         measurements: list[Measurement] = []
@@ -112,6 +124,31 @@ def _filter_detectors(
     plaquettes: Sequence[Plaquettes],
     increments: Displacement,
 ) -> frozenset[Detector]:
+    """Filter detectors that do not involve at least one measurement on a
+    syndrome qubit of the central plaquette, in the last round.
+
+    Warning:
+        This function assumes that there is exactly one measurement on each
+        syndrome qubit per round. That means that if a syndrome qubit is not
+        measured, or if it is measured twice during the same round, this function
+        will return wrong results.
+        For the moment, this assumption is verified for all the plaquettes we are
+        using, but this restriction should be kept in mind in case a future
+        plaquette does not check this condition.
+
+    Args:
+        detectors: list of detectors to filter.
+        subtemplates: subtemplate on which the detectors have been computed. Only
+            the last time step (`subtemplates[-1]`) is used by this function.
+        plaquettes: plaquettes on which the detectors have been computed. Only
+            the last time step (`plaquettes[-1]`) is used by this function.
+        increments: increment between two neighbouring plaquette origins.
+
+    Returns:
+        a filtered sequence of detectors. All the returned detectors are from
+        the provided `detectors` (i.e., this function does not create or combine
+        detectors).
+    """
     # First, we want the detectors to be composed of at least one measurement
     # involving one of the syndrome qubits of the central plaquette in the last
     # timestep.
