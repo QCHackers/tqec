@@ -1,6 +1,0 @@
-tqec.computation.collada.display\_collada\_model
-================================================
-
-.. currentmodule:: tqec.computation.collada
-
-.. autofunction:: display_collada_model
