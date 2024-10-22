@@ -338,6 +338,47 @@ def get_spatially_distinct_3d_subtemplates(
     manhattan_radius: int = 1,
     avoid_zero_plaquettes: bool = True,
 ) -> Unique3DSubTemplates:
+    """Returns a representation of all the distinct 3-dimensional sub-templates
+    of the provided manhattan radius.
+
+    Note:
+        This function will likely be inefficient for large templates (i.e.,
+        large values of `k`) or for large Manhattan radiuses, both in terms of
+        memory used and computation time.
+
+        Right now, with
+
+        - `n` the width of the provided `instantiations` array,
+        - `m` the height of the provided `instantiations` array,
+        - `t` the number of time slices (`len(instantiations)`),
+        - `r` the provided Manhattan radius,
+
+        it takes of the order of up to `n*m*t*(2*r+1)²` memory, has to sort `t`
+        arrays of `n*m` elements of size `(2*r+1)²` in lexicographic order, so
+        require, in the worst case, `O(t*n*m*log(n*m)*(2*r+1)²)` runtime.
+
+    Warning:
+        This function assumes that the provided `instantiations` are compatible
+        with each other. That means that they should all have the same shape and
+        they should all be defined with respect to the same origin in order to
+        ensure that stacking all the instantiations result in a 3-dimensional
+        instantiation that is found in an actual QEC computation.
+
+    Args:
+        instantiations: a sequence of 2-dimensional arrays representing the
+            instantiated templates on which sub-templates should be computed.
+            They should all be "compatible" with each other. See warning in the
+            function documentation.
+        manhattan_radius: radius of the considered ball using the Manhattan
+            distance. Only squares with sides of `2*manhattan_radius+1`
+            plaquettes will be considered.
+        avoid_zero_plaquettes: `True` if sub-templates with an empty plaquette
+            (i.e., 0 value in the instantiation of the Template instance) at
+            its center should be ignored. Default to `True`.
+
+    Returns:
+        a representation of all the sub-templates found.
+    """
     unique_2d_subtemplates = [
         get_spatially_distinct_subtemplates(
             inst,
