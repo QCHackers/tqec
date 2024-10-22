@@ -43,7 +43,7 @@ use the following code
 
 .. code-block:: python
 
-    observables, _ = block_graph.get_abstract_observables()
+    observables, correlation_surfaces = block_graph.get_abstract_observables()
 
 Any observable can be plotted using the ``tqec dae2observables`` command line. For our
 specific example, the command line
@@ -98,3 +98,76 @@ error-corrected implementation of a CNOT gate shown at the beginning of this pag
 
 You can download the circuit in a ``stim`` format here:
 :download:`media/quick_start/logical_cnot.stim <./media/quick_start/logical_cnot.stim>`.
+
+6. Simulate multiple experiments
+--------------------------------
+The circuit can be simulated using the ``stim`` and ``sinter`` libraries.
+Usually you want to simulate combinations of error rates and code distances, potentially
+for multiple observables.
+Multiple runs can be done in parallel using the ``sinter`` library using the ``start_simulation_using_sinter``.
+The compilation of the block graph is done automatically based on the inputs.
+
+.. code-block:: python
+
+    from multiprocessing import cpu_count()
+
+    import numpy as np
+
+    from tqec.noise_models import NoiseModel
+    from tqec.simulation.simulation import start_simulation_using_sinter
+    # returns a iterator
+    stats = start_simulation_using_sinter(
+        block_graph,
+        ks=range(1, 4), # k values for the code distance
+        ps=list(np.logspace(-4, -1, 10)), # error rates
+        noise_model_factory=NoiseModel.uniform_depolarizing # noise model
+        observables=[observables[1]], # observable of interest
+        decoders=["pymatching"],
+        num_workers=cpu_count(),
+        max_shots=10_000_000,
+        max_errors=5_000,
+        print_progress=True,
+    )
+
+``Sinter`` can be additionally supplied with simulation parameters, full interoperability with ``sinter`` is not yet implemented.
+`sinter_api https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md`_
+
+
+7. Plot the results
+-------------------
+Simulation Results can be plotted with ``matplolib`` using the ``plot_simulation_results``.
+
+.. code-block:: python
+
+    from tqec.simulation.plotting import plot_simulation_results
+
+    zx_graph = block_graph.to_zx_graph()
+
+    fig, ax = plt.subplots()
+    # len(stats) = 1 if we have multiple we can iterate over the results
+    sinter.plot_error_rate(
+        ax=ax,
+        stats=next(stats),
+        x_func=lambda stat: stat.json_metadata["p"],
+        group_func=lambda stat: stat.json_metadata["d"],
+    )
+    plot_observable_as_inset(ax, zx_graph, correlation_surfaces[1])
+    ax.grid(axis="both")
+    ax.legend()
+    ax.loglog()
+    ax.set_title(f"Logical CNOT Error Rate")
+    fig.savefig(f"logical_cnot_result_x_observable_{1}.png")
+
+8. Conclusion
+-------------
+This quick start guide has shown how to use the ``tqec`` library to define a computation,
+import it into the library, compile it to stim circuits.
+Simulations are run and visualized for multiple error rates and code distances.
+For an extensive example, see also the
+`tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py`_.
+
+The process can be repeated through the cli using
+
+..code-block:: bash
+
+    tqec run-example --out-dir ./results
