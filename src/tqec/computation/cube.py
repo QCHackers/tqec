@@ -109,6 +109,9 @@ class Port(CubeKind):
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.P
 
+    def __hash__(self) -> int:
+        return hash(Port)
+
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Port)
 
@@ -124,6 +127,9 @@ class YCube(CubeKind):
 
     def to_zx_kind(self) -> ZXKind:
         return ZXKind.Y
+
+    def __hash__(self) -> int:
+        return hash(YCube)
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, YCube)
