@@ -1,6 +1,0 @@
-tqec.gallery.logical\_cnot.logical\_cnot\_block\_graph
-======================================================
-
-.. currentmodule:: tqec.gallery.logical_cnot
-
-.. autofunction:: logical_cnot_block_graph
