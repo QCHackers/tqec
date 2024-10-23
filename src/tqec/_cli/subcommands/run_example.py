@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-
 import argparse
 import logging
 from multiprocessing import cpu_count
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import sinter
 from typing_extensions import override
 
@@ -130,6 +129,7 @@ class RunExampleTQECSubCommand(TQECSubCommand):
             ks,
             ps,
             NoiseModel.uniform_depolarizing,
+            manhattan_radius=2,
             block_builder=block_builder,
             substitution_builder=substitution_builder,
             observables=[observables[i] for i in obs_indices],

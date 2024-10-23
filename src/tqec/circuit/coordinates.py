@@ -45,3 +45,6 @@ class StimCoordinates:
                 )
             )
         )
+
+    def __lt__(self, other: StimCoordinates) -> bool:
+        return self.to_stim_coordinates() < other.to_stim_coordinates()

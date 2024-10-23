@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import pickle
 from dataclasses import dataclass, field
 from functools import cached_property
+from pathlib import Path
 from typing import Sequence
 
 from tqec.circuit.generation import generate_circuit_from_instantiation
@@ -71,12 +73,30 @@ class _DetectorDatabaseKey:
 
     @cached_property
     def plaquette_names(self) -> tuple[tuple[tuple[str, ...], ...], ...]:
+        """Cached property that returns nested tuples such that
+        `ret[t][y][x] == self.plaquettes_by_timestep[t][self.subtemplates[t][y, x]].name`.
+
+        The returned object can be iterated on using:
+
+        ```py
+        for t, names in enumerate(self.plaquette_names):
+            subtemplate = self.subtemplates[t]
+            plaquettes = self.plaquettes_by_timestep[t]
+            for y, names_row in enumerate(names):
+                for x, name in enumerate(names_row):
+                    plaquette: Plaquette = plaquettes[subtemplate[y, x]]
+                    assert name == plaquette.name
+        ```
+        """
         return tuple(
             tuple(tuple(plaquettes[pi].name for pi in row) for row in st)
             for st, plaquettes in zip(self.subtemplates, self.plaquettes_by_timestep)
         )
 
+    @cached_property
     def reliable_hash(self) -> int:
+        """Returns a hash of `self` that is guaranteed to be constant across
+        Python versions, OSes and executions."""
         hasher = hashlib.md5()
         for timeslice in self.plaquette_names:
             for row in timeslice:
@@ -85,7 +105,7 @@ class _DetectorDatabaseKey:
         return int(hasher.hexdigest(), 16)
 
     def __hash__(self) -> int:
-        return self.reliable_hash()
+        return self.reliable_hash
 
     def __eq__(self, rhs: object) -> bool:
         return (
@@ -127,7 +147,7 @@ class DetectorDatabase:
     This class aims at storing efficiently a set of "situations" in which the
     corresponding detectors are known and do not have to be re-computed.
 
-    In this class, a "situation" is described by :class:`DetectorDatabaseKey`
+    In this class, a "situation" is described by :class:`_DetectorDatabaseKey`
     and correspond to a spatially and temporally local piece of a larger
     computation.
     """
@@ -223,7 +243,21 @@ class DetectorDatabase:
     def unfreeze(self) -> None:
         self.frozen = False
 
-    def to_crumble_urls(self, plaquette_increments: Displacement) -> list[str]:
+    def to_crumble_urls(
+        self, plaquette_increments: Displacement = Displacement(2, 2)
+    ) -> list[str]:
+        """Returns one URL pointing to https://algassert.com/crumble for each of
+        the registered situations.
+
+        Args:
+            plaquette_increments: increments between two :class:`Plaquette`
+                origins. Default to `Displacement(2, 2)` which is the expected
+                value for surface code.
+
+        Returns:
+            a list of Crumble URLs, each one representing a situation stored in
+            `self`.
+        """
         urls: list[str] = []
         for key, detectors in self.mapping.items():
             circuit = key.circuit(plaquette_increments)
@@ -232,3 +266,24 @@ class DetectorDatabase:
                 circuit.append_annotation(detector.to_instruction(rec_map))
             urls.append(circuit.get_circuit().to_crumble_url())
         return urls
+
+    def __len__(self) -> int:
+        return len(self.mapping)
+
+    def to_file(self, filepath: Path) -> None:
+        if not filepath.parent.exists():
+            filepath.parent.mkdir()
+        with open(filepath, "wb") as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def from_file(filepath: Path) -> DetectorDatabase:
+        with open(filepath, "rb") as f:
+            database = pickle.load(f)
+            if not isinstance(database, DetectorDatabase):
+                raise TQECException(
+                    f"Found the Python type {type(database).__name__} in the "
+                    f"provided file but {type(DetectorDatabase).__name__} was "
+                    "expected."
+                )
+        return database
