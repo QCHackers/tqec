@@ -1,0 +1,6 @@
+tqec.computation.correlation.find\_correlation\_surfaces\_from
+==============================================================
+
+.. currentmodule:: tqec.computation.correlation
+
+.. autofunction:: find_correlation_surfaces_from

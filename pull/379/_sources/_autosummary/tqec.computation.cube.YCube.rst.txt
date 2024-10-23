@@ -1,0 +1,23 @@
+tqec.computation.cube.YCube
+===========================
+
+.. currentmodule:: tqec.computation.cube
+
+.. autoclass:: YCube
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~YCube.__init__
+      ~YCube.to_zx_kind
+   
+   
+
+   
+   
+   

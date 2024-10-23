@@ -1,0 +1,31 @@
+tqec.computation.pipe
+=====================
+
+.. automodule:: tqec.computation.pipe
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Pipe
+      PipeKind
+   
+   
+
+   
+   
+   
+
+
+

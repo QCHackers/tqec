@@ -1,0 +1,6 @@
+tqec.circuit.generation.generate\_circuit
+=========================================
+
+.. currentmodule:: tqec.circuit.generation
+
+.. autofunction:: generate_circuit
