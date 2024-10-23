@@ -4,8 +4,10 @@ import tempfile
 import pytest
 
 from tqec.computation.block_graph import BlockGraph
+from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
 from tqec.gallery.logical_cnot import logical_cnot_block_graph, logical_cnot_zx_graph
 from tqec.gallery.three_cnots import three_cnots_block_graph, three_cnots_zx_graph
+from tqec.position import Position3D
 
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])
@@ -41,4 +43,19 @@ def test_open_ports_roundtrip_not_equal() -> None:
         block_graph.to_dae_file(temp_file.name, 2.0)
         block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
         assert block_graph_from_file != block_graph
+    os.remove(temp_file.name)
+
+
+def test_y_cube_positioning_during_roundtrip() -> None:
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Y),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+    )
+    block_graph = g.to_block_graph()
+    with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
+        block_graph.to_dae_file(temp_file.name, 10.0)
+        block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
+        assert block_graph_from_file == block_graph
+        assert block_graph_from_file.to_zx_graph() == g
     os.remove(temp_file.name)

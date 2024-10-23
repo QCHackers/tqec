@@ -13,7 +13,7 @@ import collada.source
 import numpy as np
 import numpy.typing as npt
 
-from tqec.computation.cube import Port, CubeKind
+from tqec.computation.cube import Port, CubeKind, YCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
@@ -122,10 +122,18 @@ def read_block_graph_from_dae_file(
             int_pos_before_scale.append(int(round(p_before_scale)))
         return Position3D(*int_pos_before_scale)
 
+    def offset_y_cube_position(pos: _FloatPosition) -> _FloatPosition:
+        z = pos[2]
+        if np.isclose(z - 0.5, np.floor(z), atol=1e-9):
+            z = z - 0.5
+        return (pos[0], pos[1], z / (1 + uniform_pipe_scale))
+
     # Construct the block graph
     graph = BlockGraph(graph_name)
-    for pos, cube_type in parsed_cubes:
-        graph.add_cube(int_position_before_scale(pos), cube_type)
+    for pos, cube_kind in parsed_cubes:
+        if isinstance(cube_kind, YCube):
+            pos = offset_y_cube_position(pos)
+        graph.add_cube(int_position_before_scale(pos), cube_kind)
     port_index = 0
     for pos, pipe_type in parsed_pipes:
         pipe_direction_idx = pipe_type.direction.value
@@ -165,10 +173,18 @@ def write_block_graph_to_dae_file(
     def scale_position(pos: tuple[int, int, int]) -> _FloatPosition:
         return ty.cast(_FloatPosition, tuple(p * (1 + pipe_length) for p in pos))
 
+    def offset_y_cube_position(pos: _FloatPosition) -> _FloatPosition:
+        x, y, z = pos
+        return x, y, z + 0.5
+
     for cube in block_graph.cubes:
         if cube.is_port:
             continue
         scaled_position = scale_position(cube.position.as_tuple())
+        if cube.is_y_cube and block_graph.has_pipe_between(
+            cube.position, cube.position.shift_by(dz=1)
+        ):
+            scaled_position = offset_y_cube_position(scaled_position)
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position
         base.add_instance_node(instance_id, matrix, cube.kind)
