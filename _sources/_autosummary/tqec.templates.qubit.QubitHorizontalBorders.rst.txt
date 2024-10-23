@@ -18,6 +18,7 @@ tqec.templates.qubit.QubitHorizontalBorders
       ~QubitHorizontalBorders.get_midline_plaquettes
       ~QubitHorizontalBorders.get_spatially_distinct_subtemplates
       ~QubitHorizontalBorders.instantiate
+      ~QubitHorizontalBorders.instantiation_origin
       ~QubitHorizontalBorders.shape
    
    

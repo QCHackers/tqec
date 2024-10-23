@@ -14,6 +14,7 @@ tqec.templates.subtemplates
    .. autosummary::
       :toctree:
    
+      get_spatially_distinct_3d_subtemplates
       get_spatially_distinct_subtemplates
    
    
@@ -25,6 +26,7 @@ tqec.templates.subtemplates
    .. autosummary::
       :toctree:
    
+      Unique3DSubTemplates
       UniqueSubTemplates
    
    

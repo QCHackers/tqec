@@ -25,6 +25,7 @@ tqec.plaquette.plaquette.Plaquette
 
    .. autosummary::
    
+      ~Plaquette.num_measurements
       ~Plaquette.origin
       ~Plaquette.name
       ~Plaquette.qubits

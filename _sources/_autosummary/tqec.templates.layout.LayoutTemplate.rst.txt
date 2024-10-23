@@ -20,6 +20,7 @@ tqec.templates.layout.LayoutTemplate
       ~LayoutTemplate.get_midline_plaquettes
       ~LayoutTemplate.get_spatially_distinct_subtemplates
       ~LayoutTemplate.instantiate
+      ~LayoutTemplate.instantiation_origin
       ~LayoutTemplate.shape
    
    

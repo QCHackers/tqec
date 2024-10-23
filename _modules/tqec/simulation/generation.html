@@ -89,7 +89,6 @@
 <span class="kn">import</span> <span class="nn">sinter</span>
 <span class="kn">import</span> <span class="nn">stim</span>
 
-<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.construction</span> <span class="kn">import</span> <span class="n">annotate_detectors_automatically</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.compile</span> <span class="kn">import</span> <span class="n">CompiledGraph</span>
 <span class="kn">from</span> <span class="nn">tqec.noise_models.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 
@@ -99,12 +98,13 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">compiled_graph</span><span class="p">:</span> <span class="n">CompiledGraph</span><span class="p">,</span>
     <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">kp</span>
     <span class="n">noise_model</span> <span class="o">=</span> <span class="n">noise_model_factory</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="n">annotate_detectors_automatically</span><span class="p">(</span>
-            <span class="n">compiled_graph</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">noise_model</span><span class="p">)</span>
+        <span class="n">compiled_graph</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">noise_model</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="o">=</span><span class="n">manhattan_radius</span>
         <span class="p">),</span>
         <span class="n">k</span><span class="p">,</span>
         <span class="n">p</span><span class="p">,</span>
@@ -118,6 +118,7 @@
     <span class="n">ks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">ps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate stim circuits in parallel.</span>
@@ -144,6 +145,16 @@
 <span class="sd">        ps: values of `p`, the noise strength, to consider.</span>
 <span class="sd">        noise_model_factory: a callable that builds a noise model from an input</span>
 <span class="sd">            strength `p`.</span>
+<span class="sd">        manhattan_radius: radius used to automatically compute detectors. The</span>
+<span class="sd">            best value to set this argument to is the minimum integer such that</span>
+<span class="sd">            flows generated from any given reset/measurement, from any plaquette</span>
+<span class="sd">            at any spatial/temporal place in the QEC computation, do not</span>
+<span class="sd">            propagate outside of the qubits used by plaquettes spatially located</span>
+<span class="sd">            at maximum `manhattan_radius` plaquettes from the plaquette the</span>
+<span class="sd">            reset/measurement belongs to (w.r.t. the Manhattan distance).</span>
+<span class="sd">            Default to 2, which is sufficient for regular surface code. If</span>
+<span class="sd">            negative, detectors are not computed automatically and are not added</span>
+<span class="sd">            to the generated circuits.</span>
 <span class="sd">        max_workers: The maximum number of processes that can be used to</span>
 <span class="sd">            execute the given calls. If None or not given then as many</span>
 <span class="sd">            worker processes will be created as the machine has processors.</span>
@@ -159,6 +170,7 @@
                 <span class="n">_parallel_func</span><span class="p">,</span>
                 <span class="n">compiled_graph</span><span class="o">=</span><span class="n">compiled_graph</span><span class="p">,</span>
                 <span class="n">noise_model_factory</span><span class="o">=</span><span class="n">noise_model_factory</span><span class="p">,</span>
+                <span class="n">manhattan_radius</span><span class="o">=</span><span class="n">manhattan_radius</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">ps</span><span class="p">),</span>
         <span class="p">)</span></div>
@@ -172,6 +184,7 @@
     <span class="n">ks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">ps</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">noise_model_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">NoiseModel</span><span class="p">],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">sinter</span><span class="o">.</span><span class="n">Task</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate `sinter.Task` instances from the provided parameters.</span>
@@ -186,6 +199,16 @@
 <span class="sd">        ps: values of `p`, the noise strength, to consider.</span>
 <span class="sd">        noise_model_factory: a callable that builds a noise model from an input</span>
 <span class="sd">            strength `p`.</span>
+<span class="sd">        manhattan_radius: radius used to automatically compute detectors. The</span>
+<span class="sd">            best value to set this argument to is the minimum integer such that</span>
+<span class="sd">            flows generated from any given reset/measurement, from any plaquette</span>
+<span class="sd">            at any spatial/temporal place in the QEC computation, do not</span>
+<span class="sd">            propagate outside of the qubits used by plaquettes spatially located</span>
+<span class="sd">            at maximum `manhattan_radius` plaquettes from the plaquette the</span>
+<span class="sd">            reset/measurement belongs to (w.r.t. the Manhattan distance).</span>
+<span class="sd">            Default to 2, which is sufficient for regular surface code. If</span>
+<span class="sd">            negative, detectors are not computed automatically and are not added</span>
+<span class="sd">            to the generated circuits.</span>
 <span class="sd">        max_workers: The maximum number of processes that can be used to</span>
 <span class="sd">            execute the given calls. If None or not given then as many</span>
 <span class="sd">            worker processes will be created as the machine has processors.</span>
@@ -199,7 +222,7 @@
             <span class="n">json_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">generate_stim_circuits_with_detectors</span><span class="p">(</span>
-            <span class="n">compiled_graph</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">noise_model_factory</span><span class="p">,</span> <span class="n">max_workers</span>
+            <span class="n">compiled_graph</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">noise_model_factory</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">,</span> <span class="n">max_workers</span>
         <span class="p">)</span>
     <span class="p">)</span></div>
 

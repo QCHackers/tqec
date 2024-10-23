@@ -18,6 +18,7 @@ tqec.templates.base.RectangularTemplate
       ~RectangularTemplate.get_midline_plaquettes
       ~RectangularTemplate.get_spatially_distinct_subtemplates
       ~RectangularTemplate.instantiate
+      ~RectangularTemplate.instantiation_origin
       ~RectangularTemplate.shape
    
    

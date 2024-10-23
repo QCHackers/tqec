@@ -14,7 +14,7 @@ tqec.compile.block.BlockLayout
    .. autosummary::
    
       ~BlockLayout.__init__
-      ~BlockLayout.instantiate_layer
+      ~BlockLayout.get_shifted_circuits
    
    
 

@@ -84,6 +84,7 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
@@ -328,6 +329,189 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">final_indices</span> <span class="o">=</span> <span class="n">inverse_indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">UniqueSubTemplates</span><span class="p">(</span><span class="n">final_indices</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)),</span> <span class="n">subtemplates_by_indices</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Unique3DSubTemplates">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.subtemplates.Unique3DSubTemplates.html#tqec.templates.subtemplates.Unique3DSubTemplates">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Unique3DSubTemplates</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores information on the sub-templates of a specific spatial radius</span>
+<span class="sd">    present on a time concatenation of `Template` instances.</span>
+
+<span class="sd">    This class is a generalization of :class:`UniqueSubTemplates` when several</span>
+<span class="sd">    :class:`Template` instances are concatenated in time. In that case,</span>
+<span class="sd">    sub-templates of the last (in time) :class:`Template` instance are not enough</span>
+<span class="sd">    to represent the different &quot;situations&quot; that can be encountered.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        subtemplate_indices: a 3-dimensional array with shape `(n, m, t)` where</span>
+<span class="sd">            `(n, m)` is the shape of the original `Template` instantiation and</span>
+<span class="sd">            `t` is the number of time-steps that are considered. This array</span>
+<span class="sd">            stores **time independent** sub-template indices. The 3-dimensional</span>
+<span class="sd">            sub-templates indices are all the entries on the third dimension,</span>
+<span class="sd">            i.e., `t`-tuples indexed by `0&lt;=i&lt;n` and `0&lt;=j&lt;m`.</span>
+<span class="sd">        subtemplates: a store of sub-template (values) indexed by `t`-tuples of</span>
+<span class="sd">            integers (keys) that link the sub-template center to the original</span>
+<span class="sd">            template instantiation thanks to `subtemplate_indices`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">subtemplate_indices</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]</span>
+    <span class="n">subtemplates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">SubTemplateType</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Check that we have a 3-dimensional subtemplate_indices.</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtemplate_indices</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expecting a 3-dimensional array but got the shape </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;that represents a </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2">-dimensional array.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Recover the number of timesteps and check that all the provided</span>
+        <span class="c1"># subtemplates keys contain exactly the right number of entries.</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">!=</span> <span class="n">t</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> time slices in subtemplate_indices but got a key &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;in self.subtemplates that do not contain </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> entries.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># We do not need a valid subtemplate for the 0 index, but check that</span>
+        <span class="c1"># all the other indices have their corresponding entry.</span>
+        <span class="n">zero</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subtemplate_indices</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">zero</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">indices</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Found an index in subtemplate_indices that does &quot;</span>
+                <span class="s2">&quot;not correspond to a valid subtemplate.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Check that the provided subtemplate shapes are valid:</span>
+        <span class="c1"># - square with odd sides in the spatial dimensions,</span>
+        <span class="c1"># - 3-dimensional</span>
+        <span class="c1"># - all equal</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Subtemplate shapes are expected to be square. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Found the shape </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2"> that is not a square.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Subtemplate shapes are expected to be squares with an &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;odd size length. Found size length </span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Expecting 3-dimensional subtemplates but got a template with &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> dimensions.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">subtemplate</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span> <span class="k">for</span> <span class="n">subtemplate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;All the subtemplates should have the exact same shape. &quot;</span>
+                <span class="s2">&quot;Found one with a differing shape.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">manhattan_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">any_subtemplate</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subtemplates</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">any_subtemplate</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># height should be `2 * manhattan_radius + 1` so `height // 2` is</span>
+        <span class="c1"># the Manhattan radius.</span>
+        <span class="k">return</span> <span class="n">height</span> <span class="o">//</span> <span class="mi">2</span></div>
+
+
+
+<div class="viewcode-block" id="get_spatially_distinct_3d_subtemplates">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.subtemplates.get_spatially_distinct_3d_subtemplates.html#tqec.templates.subtemplates.get_spatially_distinct_3d_subtemplates">[docs]</a>
+<span class="k">def</span> <span class="nf">get_spatially_distinct_3d_subtemplates</span><span class="p">(</span>
+    <span class="n">instantiations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]],</span>
+    <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Unique3DSubTemplates</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a representation of all the distinct 3-dimensional sub-templates</span>
+<span class="sd">    of the provided manhattan radius.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function will likely be inefficient for large templates (i.e.,</span>
+<span class="sd">        large values of `k`) or for large Manhattan radiuses, both in terms of</span>
+<span class="sd">        memory used and computation time.</span>
+
+<span class="sd">        Right now, with</span>
+
+<span class="sd">        - `n` the width of the provided `instantiations` array,</span>
+<span class="sd">        - `m` the height of the provided `instantiations` array,</span>
+<span class="sd">        - `t` the number of time slices (`len(instantiations)`),</span>
+<span class="sd">        - `r` the provided Manhattan radius,</span>
+
+<span class="sd">        it takes of the order of up to `n*m*t*(2*r+1)²` memory, has to sort `t`</span>
+<span class="sd">        arrays of `n*m` elements of size `(2*r+1)²` in lexicographic order, so</span>
+<span class="sd">        require, in the worst case, `O(t*n*m*log(n*m)*(2*r+1)²)` runtime.</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">        This function assumes that the provided `instantiations` are compatible</span>
+<span class="sd">        with each other. That means that they should all have the same shape and</span>
+<span class="sd">        they should all be defined with respect to the same origin in order to</span>
+<span class="sd">        ensure that stacking all the instantiations result in a 3-dimensional</span>
+<span class="sd">        instantiation that is found in an actual QEC computation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        instantiations: a sequence of 2-dimensional arrays representing the</span>
+<span class="sd">            instantiated templates on which sub-templates should be computed.</span>
+<span class="sd">            They should all be &quot;compatible&quot; with each other. See warning in the</span>
+<span class="sd">            function documentation.</span>
+<span class="sd">        manhattan_radius: radius of the considered ball using the Manhattan</span>
+<span class="sd">            distance. Only squares with sides of `2*manhattan_radius+1`</span>
+<span class="sd">            plaquettes will be considered.</span>
+<span class="sd">        avoid_zero_plaquettes: `True` if sub-templates with an empty plaquette</span>
+<span class="sd">            (i.e., 0 value in the instantiation of the Template instance) at</span>
+<span class="sd">            its center should be ignored. Default to `True`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a representation of all the sub-templates found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unique_2d_subtemplates</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">get_spatially_distinct_subtemplates</span><span class="p">(</span>
+            <span class="n">inst</span><span class="p">,</span>
+            <span class="n">manhattan_radius</span><span class="o">=</span><span class="n">manhattan_radius</span><span class="p">,</span>
+            <span class="n">avoid_zero_plaquettes</span><span class="o">=</span><span class="n">avoid_zero_plaquettes</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instantiations</span>
+    <span class="p">]</span>
+
+    <span class="n">subtemplates_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">u2ds</span><span class="o">.</span><span class="n">subtemplate_indices</span> <span class="k">for</span> <span class="n">u2ds</span> <span class="ow">in</span> <span class="n">unique_2d_subtemplates</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">subtemplates_indices</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">subtemplates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">unique_3d_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">subtemplates_indices</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># We might have 0 indices on some 2-dimensional slices. Because 0 will not be</span>
+    <span class="c1"># a valid index for the 2-dimensional subtemplates we got from</span>
+    <span class="c1"># get_spatially_distinct_subtemplates, pre-generate the corresponding array.</span>
+    <span class="n">zeros_2d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">manhattan_radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">manhattan_radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">unique_3d_indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="c1"># Get the list of subtemplates that should be stacked in the time dimension.</span>
+        <span class="n">subtemplates_2d_to_stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">subtemplates_2d_to_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zeros_2d</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">subtemplates_2d_to_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">unique_2d_subtemplates</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">subtemplates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="c1"># Stack the 2-dimensional subtemplates into a 3-dimensional one.</span>
+        <span class="n">subtemplate</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">subtemplates_2d_to_stack</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Add the 3-dimensional subtemplate to the mapping.</span>
+        <span class="n">subtemplates</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span> <span class="o">=</span> <span class="n">subtemplate</span>
+    <span class="k">return</span> <span class="n">Unique3DSubTemplates</span><span class="p">(</span><span class="n">subtemplates_indices</span><span class="p">,</span> <span class="n">subtemplates</span><span class="p">)</span></div>
 
 </pre></div>
 

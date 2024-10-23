@@ -120,7 +120,7 @@
 <h1>tqec.circuit.moment.Moment<a class="headerlink" href="#tqec-circuit-moment-moment" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.circuit.moment.Moment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/moment.html#Moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.moment.Moment" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_avoid_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/moment.html#Moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.moment.Moment" title="Link to this definition"></a></dt>
 <dd><p>A collection of instructions that can be executed in parallel.</p>
 <p>This class is a collection of <cite>stim.CircuitInstruction</cite> instances that
 can all be executed in parallel. That means that it maintains the following
@@ -143,23 +143,52 @@ above (meaning that an annotation might push a quantum gate to the next
 moment, even though the annotation is never executed in hardware).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.moment.Moment.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/moment.html#Moment.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.moment.Moment.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_avoid_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/moment.html#Moment.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.moment.Moment.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize a <cite>Moment</cite> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circuit</strong> – collection of instructions representing the <cite>Moment</cite>. It
+should represent a valid moment, see the class documentation for
+a detailed explanation of the pre-conditions.</p></li>
+<li><p><strong>used_qubits</strong> – a set of qubit indices used in the provided <cite>circuit</cite>.
+It is the user responsibility to ensure that this input is
+correct if it is provided, as any non-None input will not be
+checked. Defaults to None, which triggers a call to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_used_qubit_indices()</span></code> to initialise the indices.</p></li>
+<li><p><strong>_avoid_checks</strong> – avoid checking the validity of the provided <cite>circuit</cite>.
+This parameter can be used when the user knows that the provided
+<cite>circuit</cite> is a valid moment (and so checks the pre-conditions
+listed in the class documentation). Defaults to False, which
+triggers a systematic check and might raise if the provided
+circuit is not a valid moment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the circuit contains one or more <cite>TICK</cite> instruction.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the circuit contains at least 2 non-annotation
+    instructions that are applied on the same qubit target.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the circuit contains a <cite>REPEAT</cite> block instruction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.moment.Moment.__init__" title="tqec.circuit.moment.Moment.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(circuit[, copy_circuit])</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.moment.Moment.__init__" title="tqec.circuit.moment.Moment.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(circuit[, used_qubits, _avoid_checks])</p></td>
+<td><p>Initialize a <cite>Moment</cite> instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(name, targets, args)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(name_or_instr[, targets, args])</p></td>
 <td><p>Append an instruction to the <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_instruction</span></code>(instruction)</p></td>
-<td><p>Append an instruction to the <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a>.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_annotation</span></code>(annotation_instruction)</p></td>
+<td><p>Append an annotation instruction to the Moment.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_is_valid_moment</span></code>(circuit)</p></td>
-<td><p></p></td>
+<td><p>Check if the provided circuit can be considered a valid moment.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_instruction</span></code>(instruction_name)</p></td>
 <td><p>Return <cite>True</cite> if <cite>self</cite> contains at least one operation with the provided name.</p></td>
@@ -167,11 +196,11 @@ moment, even though the annotation is never executed in hardware).</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code>(qubits_to_keep)</p></td>
 <td><p>Return a new <a class="reference internal" href="#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance containing only the instructions that are applied on the provided qubits.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operates_on</span></code>(qubits)</p></td>
-<td><p>Returns <cite>True</cite> if <cite>self</cite> contains non-annotation operations that are applied on each of the provided qubit indices.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_all_instructions_inplace</span></code>(...)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_all_instructions_inplace</span></code>(...)</p></td>
 <td><p>Remove in-place all the instructions that have their name in the provided <cite>instructions_to_remove</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_mapped_qubit_indices</span></code>(qubit_index_map)</p></td>
+<td><p>Map the qubits <strong>indices</strong> the <cite>Moment</cite> instance is applied on.</p></td>
 </tr>
 </tbody>
 </table>

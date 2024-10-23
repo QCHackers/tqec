@@ -136,17 +136,17 @@ such collisions.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>all the qubit targets used in each of the provided circuits should have
-a corresponding <cite>QUBIT_COORDS([coordinates]) [qubit target]</cite> for this
-function to work correctly. If that is not the case, a KeyError will be
-raised.</p>
+a corresponding entry in the circuit qubit map for this function to work
+correctly. If that is not the case, a KeyError will be raised.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>KeyError</strong> – if any of the provided circuit contains a qubit target that is
-    not defined by a <cite>QUBIT_COORDS</cite> instruction.</p>
+    not present in its qubit map.</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>circuits</strong> – circuit instances to remap.</p>
+<dd class="field-even"><p><strong>circuits</strong> – circuit instances to remap. This parameter is not mutated by
+this function and is only used in read-only mode.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><p>the same circuits with update qubit indices as well as the global qubit
@@ -154,7 +154,7 @@ indices map that has been used. Qubits in the returned global qubit map
 are assigned to an index such that:</p>
 <ol class="arabic simple">
 <li><p>the sequence of indices is <cite>range(0, len(qubit_map))</cite>.</p></li>
-<li><p>the returned qubit map</p></li>
+<li><p>qubits are assigned indices in sorted order.</p></li>
 </ol>
 </p>
 </dd>

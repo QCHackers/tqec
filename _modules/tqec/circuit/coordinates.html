@@ -129,7 +129,10 @@
                     <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">value</span><span class="o">.</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">StimCoordinates</span><span class="o">.</span><span class="n">_ABS_TOL</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">StimCoordinates</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_stim_coordinates</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">to_stim_coordinates</span><span class="p">()</span></div>
 
 </pre></div>
 

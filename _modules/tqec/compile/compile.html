@@ -81,14 +81,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.compile.compile</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">stim</span>
 
+<span class="kn">from</span> <span class="nn">tqec.circuit.coordinates</span> <span class="kn">import</span> <span class="n">StimCoordinates</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.measurement_map</span> <span class="kn">import</span> <span class="n">MeasurementRecordsMap</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.qubit_map</span> <span class="kn">import</span> <span class="n">QubitMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.block</span> <span class="kn">import</span> <span class="n">BlockLayout</span><span class="p">,</span> <span class="n">CompiledBlock</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.detectors.compute</span> <span class="kn">import</span> <span class="n">compute_detectors_for_fixed_radius</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.detectors.database</span> <span class="kn">import</span> <span class="n">DetectorDatabase</span>
+<span class="kn">from</span> <span class="nn">tqec.compile.detectors.detector</span> <span class="kn">import</span> <span class="n">Detector</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.observables</span> <span class="kn">import</span> <span class="n">inplace_add_observables</span>
 <span class="kn">from</span> <span class="nn">tqec.compile.specs.base</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BlockBuilder</span><span class="p">,</span>
@@ -100,9 +107,11 @@
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">BlockGraph</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span><span class="p">,</span> <span class="n">TQECWarning</span>
 <span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
-<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">RepeatedPlaquettes</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Position3D</span>
+<span class="kn">from</span> <span class="nn">tqec.plaquette.plaquette</span> <span class="kn">import</span> <span class="n">Plaquettes</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Position3D</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.base</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.layout</span> <span class="kn">import</span> <span class="n">LayoutTemplate</span>
 
 
 <div class="viewcode-block" id="CompiledGraph">
@@ -138,108 +147,221 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">noise_model</span><span class="p">:</span> <span class="n">NoiseModel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">detector_database</span><span class="p">:</span> <span class="n">DetectorDatabase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">only_use_database</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the stim circuit from the compiled graph.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k: The scale factor of the templates.</span>
 <span class="sd">            noise_models: The noise models to be applied to the circuit.</span>
+<span class="sd">            manhattan_radius: the radius considered to compute detectors.</span>
+<span class="sd">                Detectors are not computed and added to the circuit if this</span>
+<span class="sd">                argument is negative.</span>
+<span class="sd">            detector_database: an instance to retrieve from / store in detectors</span>
+<span class="sd">                that are computed as part of the circuit generation.</span>
+<span class="sd">            only_use_database: if True, only detectors from the database will be</span>
+<span class="sd">                used. An error will be raised if a situation that is not</span>
+<span class="sd">                registered in the database is encountered.</span>
 
+<span class="sd">        Returns:</span>
 <span class="sd">            A compiled stim circuit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># assemble circuits time slice by time slice, layer by layer.</span>
+        <span class="c1"># Generate the quantum circuits, time slice by time slice, layer by layer.</span>
+        <span class="c1"># Note that the circuits have to be shifted to their correct position.</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">:</span>
-            <span class="n">circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">instantiate_layer</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">)]</span>
-            <span class="p">)</span>
-        <span class="c1"># construct observables</span>
+            <span class="n">circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">get_shifted_circuits</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="c1"># The generated circuits cannot, for the moment, be merged together because</span>
+        <span class="c1"># the qubit indices used are likely inconsistent between circuits (a given</span>
+        <span class="c1"># index `i` might be used for different qubits in different circuits).</span>
+        <span class="c1"># Fix that now so that we do not have to think about it later.</span>
+        <span class="n">global_qubit_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relabel_circuits_qubit_indices_inplace</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+
+        <span class="c1"># Construct the observables and add them in-place to the built circuits.</span>
         <span class="n">inplace_add_observables</span><span class="p">(</span>
             <span class="n">circuits</span><span class="p">,</span>
             <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">template</span> <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">],</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">,</span>
             <span class="n">k</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="c1"># shift and merge circuits</span>
-        <span class="n">circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift_and_merge_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="c1"># apply noise models</span>
+
+        <span class="c1"># Compute the detectors and add them in-place in circuits</span>
+        <span class="n">flattened_circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">flattened_templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LayoutTemplate</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">template</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span>
+            <span class="p">),</span>
+            <span class="n">start</span><span class="o">=</span><span class="p">[],</span>
+        <span class="p">)</span>
+        <span class="n">flattened_plaquettes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layers</span> <span class="k">for</span> <span class="n">layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">manhattan_radius</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inplace_add_detectors_to_circuits</span><span class="p">(</span>
+                <span class="n">flattened_circuits</span><span class="p">,</span>
+                <span class="n">flattened_templates</span><span class="p">,</span>
+                <span class="n">flattened_plaquettes</span><span class="p">,</span>
+                <span class="n">k</span><span class="p">,</span>
+                <span class="n">manhattan_radius</span><span class="p">,</span>
+                <span class="n">detector_database</span><span class="o">=</span><span class="n">detector_database</span><span class="p">,</span>
+                <span class="n">only_use_database</span><span class="o">=</span><span class="n">only_use_database</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="c1"># Assemble the circuits.</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">global_qubit_map</span><span class="o">.</span><span class="n">to_circuit</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">circ</span><span class="p">,</span> <span class="n">plaq</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">flattened_circuits</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">flattened_plaquettes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaq</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span><span class="p">):</span>
+                <span class="n">circuit</span> <span class="o">+=</span> <span class="n">circ</span><span class="o">.</span><span class="n">get_repeated_circuit</span><span class="p">(</span>
+                    <span class="n">round_or_fail</span><span class="p">(</span><span class="n">plaq</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">circuit</span> <span class="o">+=</span> <span class="n">circ</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span><span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+        <span class="n">circuit</span> <span class="o">+=</span> <span class="n">flattened_circuits</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span><span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># If provided, apply the noise model.</span>
         <span class="k">if</span> <span class="n">noise_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">circuit</span> <span class="o">=</span> <span class="n">noise_model</span><span class="o">.</span><span class="n">noisy_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">circuit</span>
 
-    <span class="k">def</span> <span class="nf">_shift_and_merge_circuits</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Warning:</span>
-<span class="sd">            Modify in-place the provided `circuits`.</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_relabel_circuits_qubit_indices_inplace</span><span class="p">(</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QubitMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equivalent to :func:`relabel_circuits_qubit_indices` but applied to</span>
+<span class="sd">        nested lists and performing the modifications in-place in the provided</span>
+<span class="sd">        `circuits`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            circuits:</span>
+<span class="sd">            circuits: circuit instances to remap. This parameter is mutated by</span>
+<span class="sd">                this function.</span>
 
 <span class="sd">        Returns:</span>
-
+<span class="sd">            qubit map used to remap the qubit indices that is valid for all the</span>
+<span class="sd">            circuits provided as input after this method executed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># First, shift all the circuits to make sure that they are each applied</span>
-        <span class="c1"># on the correct qubits</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shift_all_circuits_inplace</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="c1"># Then, get a global qubit index map to remap the circuit indices on the</span>
-        <span class="c1"># fly.</span>
-        <span class="n">needed_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">qubits</span> <span class="k">for</span> <span class="n">clayer</span> <span class="ow">in</span> <span class="n">circuits</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">clayer</span><span class="p">]</span>
+        <span class="n">used_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="c1"># Using itertools to avoid the edge case where there is no circuit</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">qubits</span> <span class="k">for</span> <span class="n">clayer</span> <span class="ow">in</span> <span class="n">circuits</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">clayer</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">global_q2i</span> <span class="o">=</span> <span class="p">{</span><span class="n">q</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">needed_qubits</span><span class="p">))}</span>
-        <span class="c1"># Add the QUBIT_COORDS instructions at the beginning of the circuit</span>
-        <span class="n">final_circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">global_q2i</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">final_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">to_qubit_coords_instruction</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-        <span class="c1"># Merge all the circuits, constructing a REPEAT block when needed.</span>
-        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">layout</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
-                <span class="c1"># Remap the circuit qubit indices to be sure that there will be</span>
-                <span class="c1"># no index clash.</span>
-                <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">local_indices_to_global_indices</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">local_index</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="p">}</span>
-                <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">global_qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_qubits</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">used_qubits</span><span class="p">))</span>
+        <span class="n">global_q2i</span> <span class="o">=</span> <span class="n">global_qubit_map</span><span class="o">.</span><span class="n">q2i</span>
+        <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">circuits</span><span class="p">):</span>
+            <span class="n">local_indices_to_global_indices</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">local_index</span><span class="p">:</span> <span class="n">global_q2i</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">local_index</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">global_qubit_map</span>
 
-                <span class="c1"># Append either the full circuit or a REPEAT block.</span>
-                <span class="n">layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">RepeatedPlaquettes</span><span class="p">):</span>
-                    <span class="n">final_circuit</span> <span class="o">+=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_repeated_circuit</span><span class="p">(</span>
-                        <span class="n">round_or_fail</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span>
-                        <span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">final_circuit</span> <span class="o">+=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span>
-                        <span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span>
-                    <span class="p">)</span>
-                <span class="c1"># Do not forget to append a TICK here</span>
-                <span class="n">final_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TICK&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
-        <span class="c1"># We appended one extra TICK at the end, remove it and return the result.</span>
-        <span class="k">return</span> <span class="n">final_circuit</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_shift_all_circuits_inplace</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_inplace_add_detectors_to_circuits</span><span class="p">(</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
+        <span class="n">templates</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Template</span><span class="p">],</span>
+        <span class="n">plaquettes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">],</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">detector_database</span><span class="p">:</span> <span class="n">DetectorDatabase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">only_use_database</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">layout</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_slices</span><span class="p">):</span>
-            <span class="c1"># We need to shift the circuit based on the shift of the layout template.</span>
-            <span class="n">origin_shift</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">origin_shift</span>
-            <span class="n">element_shape</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">element_shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-            <span class="n">increment</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">get_increments</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
-                <span class="n">qubit_map</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">q</span><span class="p">:</span> <span class="n">q</span>
-                    <span class="o">+</span> <span class="n">Displacement</span><span class="p">(</span>
-                        <span class="n">origin_shift</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">element_shape</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">increment</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                        <span class="n">origin_shift</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">element_shape</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">increment</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">qubits</span>
-                <span class="p">}</span>
-                <span class="n">circuits</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">map_to_qubits</span><span class="p">(</span><span class="n">qubit_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute and add in-place to `circuits` valid detectors.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuits: circuits to add detectors to. Should have the same number</span>
+<span class="sd">                of entries as `templates` and `plaquettes`.</span>
+<span class="sd">            templates: templates used to generate the provided `circuits`. Should</span>
+<span class="sd">                have the same number of entries as `circuits` and `plaquettes`.</span>
+<span class="sd">            plaquettes: plaquettes used to generate the provided `circuits`.</span>
+<span class="sd">                Should have the same number of entries as `circuits` and</span>
+<span class="sd">                `templates`.</span>
+<span class="sd">            k: scaling parameter that has been used to generate the provided</span>
+<span class="sd">                `circuits`.</span>
+<span class="sd">            manhattan_radius: radius considered to compute detectors. Defaults</span>
+<span class="sd">                to 2.</span>
+<span class="sd">            detector_database: a database associating &quot;situations&quot; (subtemplate</span>
+<span class="sd">                and plaquettes) to already computed detectors. Defaults to None,</span>
+<span class="sd">                meaning that no database is provided and all the detectors should</span>
+<span class="sd">                be re-computed.</span>
+<span class="sd">            only_use_database: if True, only detectors present in the provided</span>
+<span class="sd">                database are used. If the database is `None` or if a &quot;situation&quot;</span>
+<span class="sd">                that is not in the database is encountered, an exception will be</span>
+<span class="sd">                raised. Defaults to False, meaning that encountered &quot;situations&quot;</span>
+<span class="sd">                that are not present in the database will be analysed to find</span>
+<span class="sd">                detectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Start with the first circuit, as this is a special case.</span>
+        <span class="n">first_template</span> <span class="o">=</span> <span class="n">templates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">first_plaquettes</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">first_slice_detectors</span> <span class="o">=</span> <span class="n">compute_detectors_for_fixed_radius</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">first_template</span><span class="p">,),</span>
+            <span class="n">k</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">first_plaquettes</span><span class="p">,),</span>
+            <span class="n">manhattan_radius</span><span class="p">,</span>
+            <span class="n">detector_database</span><span class="p">,</span>
+            <span class="n">only_use_database</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Initialise the measurement records map with the first circuit.</span>
+        <span class="n">mrecords_map</span> <span class="o">=</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_scheduled_circuit</span><span class="p">(</span><span class="n">circuits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># Add the detectors to the first circuit</span>
+        <span class="n">CompiledGraph</span><span class="o">.</span><span class="n">_inplace_add_detectors_to_circuit</span><span class="p">(</span>
+            <span class="n">circuits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mrecords_map</span><span class="p">,</span> <span class="n">first_slice_detectors</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Now, iterate over all the pairs of circuits.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)):</span>
+            <span class="n">current_circuit</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">slice_detectors</span> <span class="o">=</span> <span class="n">compute_detectors_for_fixed_radius</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">templates</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                <span class="n">k</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">plaquettes</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                <span class="n">manhattan_radius</span><span class="p">,</span>
+                <span class="n">detector_database</span><span class="p">,</span>
+                <span class="n">only_use_database</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">mrecords_map</span> <span class="o">=</span> <span class="n">mrecords_map</span><span class="o">.</span><span class="n">with_added_measurements</span><span class="p">(</span>
+                <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_scheduled_circuit</span><span class="p">(</span><span class="n">current_circuit</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">CompiledGraph</span><span class="o">.</span><span class="n">_inplace_add_detectors_to_circuit</span><span class="p">(</span>
+                <span class="n">current_circuit</span><span class="p">,</span>
+                <span class="n">mrecords_map</span><span class="p">,</span>
+                <span class="n">slice_detectors</span><span class="p">,</span>
+                <span class="n">shift_coords_by</span><span class="o">=</span><span class="n">StimCoordinates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="c1"># We are now over, all the detectors should be added inplace to the end</span>
+        <span class="c1"># of the last circuit containing a measurement involved in the detector.</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_inplace_add_detectors_to_circuit</span><span class="p">(</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">,</span>
+        <span class="n">mrecords_map</span><span class="p">:</span> <span class="n">MeasurementRecordsMap</span><span class="p">,</span>
+        <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Detector</span><span class="p">],</span>
+        <span class="n">shift_coords_by</span><span class="p">:</span> <span class="n">StimCoordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided `detectors` to the provided `circuits`, inserting a</span>
+<span class="sd">        `SHIFT_COORDS` instruction before `DETECTOR` instructions if required.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: circuit to modify in-place.</span>
+<span class="sd">            mrecords_map: a measurement record map containing at least all the</span>
+<span class="sd">                measurements in the provided `detectors`.</span>
+<span class="sd">            detectors: all the detectors that should be added at the end of the</span>
+<span class="sd">                provided `circuit`.</span>
+<span class="sd">            shift_coords_by: if not None, used to insert a `SHIFT_COORDS`</span>
+<span class="sd">                instruction before inserting the `DETECTOR` instructions.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">shift_coords_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span>
+                <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>
+                    <span class="s2">&quot;SHIFT_COORDS&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">shift_coords_by</span><span class="o">.</span><span class="n">to_stim_coordinates</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">detectors</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">coordinates</span><span class="p">):</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">append_annotation</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_instruction</span><span class="p">(</span><span class="n">mrecords_map</span><span class="p">))</span></div>
 
 
 

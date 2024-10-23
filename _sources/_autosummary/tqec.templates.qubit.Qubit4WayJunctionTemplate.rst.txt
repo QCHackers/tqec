@@ -18,6 +18,7 @@ tqec.templates.qubit.Qubit4WayJunctionTemplate
       ~Qubit4WayJunctionTemplate.get_midline_plaquettes
       ~Qubit4WayJunctionTemplate.get_spatially_distinct_subtemplates
       ~Qubit4WayJunctionTemplate.instantiate
+      ~Qubit4WayJunctionTemplate.instantiation_origin
       ~Qubit4WayJunctionTemplate.shape
    
    
