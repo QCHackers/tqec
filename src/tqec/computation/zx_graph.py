@@ -398,12 +398,12 @@ class ZXGraph:
             - the graph is a single connected component
             - the graph has no 3D corner
             - the port node is a leaf node
-            - Y nodes are time-like, i.e. only have Z-direction edges
+            - Y nodes is a leaf node and is time-like, i.e. only have Z-direction edges
 
         Raises:
             TQECException: If the graph is not a single connected component.
             TQECException: If the port node is not a leaf node.
-            TQECException: If the Y node has no edge.
+            TQECException: If the Y node is not a leaf node.
             TQECException: If the Y node has an edge not in Z direction.
         """
         if nx.number_connected_components(self._graph) != 1:
@@ -414,11 +414,9 @@ class ZXGraph:
         for node in self.nodes:
             if len({e.direction for e in self.edges_at(node.position)}) == 3:
                 raise TQECException(f"ZX graph has a 3D corner at {node.position}.")
-            if node.is_port and self._node_degree(node) != 1:
-                raise TQECException("The port node must be a leaf node.")
+            if not node.is_zx_node and self._node_degree(node) != 1:
+                raise TQECException("The port/Y node must be a leaf node.")
             if node.is_y_node:
-                edges = self.edges_at(node.position)
-                if not edges:
-                    raise TQECException("The Y node must have at least one edge.")
-                if not all(edge.direction == Direction3D.Z for edge in edges):
+                (edge,) = self.edges_at(node.position)
+                if not edge.direction == Direction3D.Z:
                     raise TQECException("The Y node must only has Z-direction edge.")

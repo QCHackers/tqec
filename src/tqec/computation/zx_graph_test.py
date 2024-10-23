@@ -201,7 +201,7 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(2, 0, 0), ZXKind.X),
         ZXNode(Position3D(1, 0, 0), ZXKind.P, "test"),
     )
-    with pytest.raises(TQECException, match="The port node must be a leaf node."):
+    with pytest.raises(TQECException, match="The port/Y node must be a leaf node."):
         g.validate()
 
     g = ZXGraph()
@@ -213,20 +213,6 @@ def test_zx_graph_validity() -> None:
         TQECException, match="The Y node must only has Z-direction edge."
     ):
         g.validate()
-
-    g = ZXGraph()
-    g.add_node(Position3D(0, 0, 1), ZXKind.Y)
-    with pytest.raises(TQECException, match="The Y node must have at least one edge."):
-        g.validate()
-    g.add_edge(
-        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
-        ZXNode(Position3D(0, 0, 1), ZXKind.Y),
-    )
-    g.add_edge(
-        ZXNode(Position3D(0, 0, 2), ZXKind.Z),
-        ZXNode(Position3D(0, 0, 1), ZXKind.Y),
-    )
-    g.validate()
 
     g = ZXGraph()
     g.add_edge(

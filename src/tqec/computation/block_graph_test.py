@@ -86,12 +86,12 @@ def test_block_graph_validate_y_cube() -> None:
         Cube(Position3D(1, 0, 0), YCube()),
         PipeKind.from_str("OXZ"),
     )
-    with pytest.raises(TQECException, match="has non-time-like pipes connected"):
+    with pytest.raises(TQECException, match="has non-timelike pipes connected"):
         g.validate()
 
     g = BlockGraph()
     g.add_cube(Position3D(0, 0, 1), YCube())
-    with pytest.raises(TQECException, match="has no pipe connected"):
+    with pytest.raises(TQECException, match="does not have exactly one pipe connected"):
         g.validate()
 
     g.add_pipe(
@@ -104,7 +104,8 @@ def test_block_graph_validate_y_cube() -> None:
         Cube(Position3D(0, 0, 1), YCube()),
         PipeKind.from_str("ZXO"),
     )
-    g.validate()
+    with pytest.raises(TQECException, match="does not have exactly one pipe connected"):
+        g.validate()
 
 
 def test_block_graph_validate_3d_corner() -> None:

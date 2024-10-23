@@ -198,11 +198,13 @@ class BlockGraph:
             return
         # c). time-like Y
         if cube.is_y_cube:
-            if not pipes:
-                raise TQECException(f"Y cube at {cube.position} has no pipe connected.")
-            if not all(pipe.direction == Direction3D.Z for pipe in pipes):
+            if len(pipes) != 1:
                 raise TQECException(
-                    f"Y cube at {cube.position} has non-time-like pipes connected."
+                    f"Y cube at {cube.position} does not have exactly one pipe connected."
+                )
+            if not pipes[0].direction == Direction3D.Z:
+                raise TQECException(
+                    f"Y cube at {cube.position} has non-timelike pipes connected."
                 )
             return
 
