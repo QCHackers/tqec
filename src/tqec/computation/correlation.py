@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import functools
 import itertools
 from typing import Iterable
 
@@ -35,6 +34,11 @@ class CorrelationSurface:
             raise TQECException(
                 "The correlation surface must contain at least one edge."
             )
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, CorrelationSurface):
+            return False
+        return self.span == other.span
 
     def __hash__(self):
         return hash(self.span)
@@ -181,35 +185,19 @@ def _is_compatible_correlation(
 def _get_node_correlation_types(
     span: frozenset[ZXEdge],
 ) -> dict[Position3D, ZXKind]:
-    correlations_at_position: dict[Position3D, set[ZXKind | None]] = {}
+    correlations_at_position: dict[Position3D, set[ZXKind]] = {}
     for edge in span:
         for node in edge:
-            correlations_at_position.setdefault(node.position, {None}).add(node.kind)
+            correlations_at_position.setdefault(node.position, set()).add(node.kind)
 
     correlation_types: dict[Position3D, ZXKind] = {}
     for pos, types in correlations_at_position.items():
-        product = functools.reduce(_correlation_type_product, types)
-        if product is not None:
-            correlation_types[pos] = product
+        if len(types) == 1:
+            correlation_types[pos] = types.pop()
+        else:
+            assert len(types) == 2
+            correlation_types[pos] = ZXKind.Y
     return correlation_types
-
-
-def _correlation_type_product(
-    type1: ZXKind | None,
-    type2: ZXKind | None,
-) -> ZXKind | None:
-    if type1 is None:
-        return type2
-    if type2 is None:
-        return type1
-    type_set = {type1, type2}
-    if type_set == {ZXKind.X, ZXKind.Z}:
-        return ZXKind.Y
-    if type_set == {ZXKind.X, ZXKind.Y}:
-        return ZXKind.Z
-    if type_set == {ZXKind.Y, ZXKind.Z}:
-        return ZXKind.X
-    return None
 
 
 def _find_correlation_spans_dfs(
@@ -274,8 +262,7 @@ def _find_correlation_spans_dfs(
                     zx_graph,
                     cur_zx_node,
                     cur_correlation_node,
-                    # mark y node as unvisited for potential reuse of internal y node
-                    {p for p in visited_positions if not zx_graph[p].is_y_node},
+                    set(visited_positions),
                 )
             ]
         )

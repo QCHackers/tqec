@@ -280,6 +280,7 @@ class BlockGraph:
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
         """Get all the abstract observables from the block graph."""
         from tqec.computation.abstract_observable import (
+            AbstractObservable,
             correlation_surface_to_abstract_observable,
         )
 

@@ -26,6 +26,12 @@ class AbstractObservable:
     top_lines: frozenset[Cube | Pipe]
     bottom_regions: frozenset[Pipe]
 
+    def __post_init__(self) -> None:
+        if not self.top_lines and not self.bottom_regions:
+            raise TQECException(
+                "The top lines and bottom regions cannot both be empty."
+            )
+
 
 def correlation_surface_to_abstract_observable(
     block_graph: BlockGraph,
@@ -36,7 +42,7 @@ def correlation_surface_to_abstract_observable(
     if validate_graph:
         if block_graph.num_ports != 0:
             raise TQECException(
-                "The block graph must have not open ports to support observables."
+                "The block graph must have no open ports to support observables."
             )
         block_graph.validate()
 
