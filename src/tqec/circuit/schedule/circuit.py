@@ -1,37 +1,8 @@
-"""Defines the :class:`ScheduledCircuit` class.
-
-This module is central to the `tqec` library because it implements one of the
-most used class of the library: :class:`ScheduledCircuit`.
-
-A :class:`ScheduledCircuit` is "simply" a `stim.Circuit` that have all its
-moments (portions of computation between two `TICK` instructions) assigned to
-a unique positive integer representing the time slice at which the moment should
-be scheduled.
-
-Alongside :class:`ScheduledCircuit`, this module defines:
-
-- :class:`Schedule` that is a thin wrapper around `list[int]` to represent a
-  schedule (a sorted list of non-duplicated positive integers).
-- :func:`remove_duplicate_instructions` to remove some instructions appearing
-  twice in a single moment (most of the time due to data qubit
-  reset/measurements that are defined by each plaquette, even on qubits shared
-  with other plaquettes, leading to duplicates).
-- :func:`merge_scheduled_circuits` that merge several :class:`ScheduledCircuit`
-  instances into one.
-- :func:`relabel_circuits_qubit_indices` to prepare several
-  :class:`ScheduledCircuit` before merging them. This function is called
-  internally by :func:`merge_scheduled_circuits` but might be useful at other
-  places and so is kept public.
-"""
-
 from __future__ import annotations
 
 import bisect
-import itertools
-import typing as ty
-import warnings
 from copy import copy, deepcopy
-from dataclasses import dataclass, field
+from typing import Any, Callable, Iterable, Iterator, Sequence
 
 import stim
 
@@ -39,111 +10,9 @@ from tqec.circuit.instructions import is_annotation_instruction
 from tqec.circuit.moment import Moment, iter_stim_circuit_without_repeat_by_moments
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.qubit_map import QubitMap, get_qubit_map
-from tqec.exceptions import TQECException, TQECWarning
-
-
-class ScheduleException(TQECException):
-    pass
-
-
-@dataclass
-class Schedule:
-    """Thin wrapper around `list[int]` to represent a schedule.
-
-    This class ensures that the list of integers provided is a valid
-    schedule by checking that all entries are positive integers, that
-    the list is sorted and that it does not contain any duplicate.
-    """
-
-    schedule: list[int] = field(default_factory=list)
-
-    _INITIAL_SCHEDULE: ty.ClassVar[int] = 0
-
-    def __post_init__(self) -> None:
-        Schedule._check_schedule(self.schedule)
-
-    @staticmethod
-    def from_offsets(schedule_offsets: ty.Sequence[int]) -> Schedule:
-        """Get a valid schedule from offsets.
-
-        This method should be used to avoid any dependency on
-        `Schedule._INITIAL_SCHEDULE` in user code.
-        """
-        return Schedule([Schedule._INITIAL_SCHEDULE + s for s in schedule_offsets])
-
-    @staticmethod
-    def _check_schedule(schedule: list[int]) -> None:
-        # Check that the schedule is sorted and positive
-        if schedule and (
-            not all(schedule[i] < schedule[i + 1] for i in range(len(schedule) - 1))
-            or schedule[0] < Schedule._INITIAL_SCHEDULE
-        ):
-            raise ScheduleException(
-                f"The provided schedule {schedule} is not a sorted list of positive "
-                "integers. You should only provide sorted schedules with positive "
-                "entries."
-            )
-
-    def __len__(self) -> int:
-        return len(self.schedule)
-
-    def __getitem__(self, i: int) -> int:
-        return self.schedule[i]
-
-    def __iter__(self) -> ty.Iterator[int]:
-        return iter(self.schedule)
-
-    def insert(self, i: int, value: int) -> None:
-        """Insert an integer to the schedule.
-
-        If inserting the integer results in an invalid schedule, the schedule is
-        brought back to its (valid) original state before calling this function
-        and a `ScheduleException` is raised.
-
-        Args:
-            i: index at which the provided value should be inserted.
-            value: value to insert.
-
-        Raises:
-            ScheduleException: if the inserted integer makes the schedule
-                invalid.
-        """
-        self.schedule.insert(i, value)
-        try:
-            Schedule._check_schedule(self.schedule)
-        except ScheduleException as e:
-            self.schedule.pop(i)
-            raise e
-
-    def append(self, value: int) -> None:
-        """Append an integer to the schedule.
-
-        If appending the integer results in an invalid schedule, the schedule is
-        brought back to its (valid) original state before calling this function
-        and a `ScheduleException` is raised.
-
-        Args:
-            value: value to insert.
-
-        Raises:
-            ScheduleException: if the inserted integer makes the schedule
-                invalid.
-        """
-        self.schedule.append(value)
-        try:
-            Schedule._check_schedule(self.schedule)
-        except ScheduleException as e:
-            self.schedule.pop(-1)
-            raise e
-
-    def append_schedule(self, schedule: Schedule) -> None:
-        starting_index = (
-            self.schedule[-1] + 1 if self.schedule else Schedule._INITIAL_SCHEDULE
-        )
-        # Note: not using a generator here but explicitly constructing a list
-        #       because if `schedule == self` a generator would induce an
-        #       infinite loop.
-        self.schedule.extend([starting_index + s for s in schedule.schedule])
+from tqec.circuit.schedule.exception import ScheduleException
+from tqec.circuit.schedule.schedule import Schedule
+from tqec.exceptions import TQECException
 
 
 class ScheduledCircuit:
@@ -409,7 +278,7 @@ class ScheduledCircuit:
 
     def map_to_qubits(
         self,
-        qubit_map: ty.Callable[[GridQubit], GridQubit],
+        qubit_map: Callable[[GridQubit], GridQubit],
         inplace_qubit_map: bool = False,
     ) -> ScheduledCircuit:
         """Map the qubits the `ScheduledCircuit` instance is applied on.
@@ -445,7 +314,7 @@ class ScheduledCircuit:
             self._moments, self._schedule, self._qubit_map, _avoid_checks=True
         )
 
-    def __deepcopy__(self, _: dict[ty.Any, ty.Any]) -> ScheduledCircuit:
+    def __deepcopy__(self, _: dict[Any, Any]) -> ScheduledCircuit:
         return ScheduledCircuit(
             deepcopy(self._moments),
             deepcopy(self._schedule),
@@ -454,7 +323,7 @@ class ScheduledCircuit:
         )
 
     @property
-    def scheduled_moments(self) -> ty.Iterator[tuple[int, Moment]]:
+    def scheduled_moments(self) -> Iterator[tuple[int, Moment]]:
         """Yields `stim.Circuit` instances representing a moment with their
         computed schedule.
 
@@ -465,7 +334,7 @@ class ScheduledCircuit:
         yield from zip(self._schedule, self._moments)
 
     @property
-    def moments(self) -> ty.Iterator[Moment]:
+    def moments(self) -> Iterator[Moment]:
         yield from self._moments
 
     @property
@@ -561,9 +430,7 @@ class ScheduledCircuit:
             # fail if two instructions overlap.
             self._moments[moment_index] += moment
 
-    def append_observable(
-        self, index: int, targets: ty.Sequence[stim.GateTarget]
-    ) -> None:
+    def append_observable(self, index: int, targets: Sequence[stim.GateTarget]) -> None:
         """Append an `OBSERVABLE_INCLUDE` instruction to the last moment.
 
         Args:
@@ -595,9 +462,7 @@ class ScheduledCircuit:
     def num_measurements(self) -> int:
         return sum(m.num_measurements for m in self._moments)
 
-    def filter_by_qubits(
-        self, qubits_to_keep: ty.Iterable[GridQubit]
-    ) -> ScheduledCircuit:
+    def filter_by_qubits(self, qubits_to_keep: Iterable[GridQubit]) -> ScheduledCircuit:
         """Filter the circuit to keep only the instructions that are applied on the
         provided qubits. If an instruction is applied on a qubit that is not in the
         provided list, it is removed.
@@ -634,298 +499,3 @@ class ScheduledCircuit:
     @property
     def qubit_map(self) -> QubitMap:
         return self._qubit_map
-
-
-class _ScheduledCircuits:
-    def __init__(
-        self, circuits: list[ScheduledCircuit], global_qubit_map: QubitMap
-    ) -> None:
-        """Represents a collection of :class`ScheduledCircuit` instances.
-
-        This class aims at providing accessors for several compatible instances
-        of :class:`ScheduledCircuit`. It allows to iterate on gates globally, for
-        all the managed instances of :class:`ScheduledCircuit`, and implement a
-        few other accessor methods to help with the task of merging multiple
-        :class`ScheduledCircuit` together.
-
-        Args:
-            circuits: the instances that should be managed. Note that the
-                instances provided here have to be "compatible" with each
-                other.
-            global_qubit_map: a unique qubit map that can be used to map qubits
-                to indices for all the provided `circuits`.
-        """
-        # We might need to remap qubits to avoid index collision on several
-        # circuits.
-        self._circuits = circuits
-        self._global_qubit_map = global_qubit_map
-        self._iterators = [circuit.scheduled_moments for circuit in self._circuits]
-        self._current_moments = [next(it, None) for it in self._iterators]
-
-    def has_pending_moment(self) -> bool:
-        """Checks if any of the managed instances has a pending moment.
-
-        Any moment that has not been collected by using collect_moment
-        is considered to be pending.
-        """
-        return any(self._has_pending_moment(i) for i in range(len(self._circuits)))
-
-    def _has_pending_moment(self, index: int) -> bool:
-        """Check if the managed instance at the given index has a pending
-        operation."""
-        return self._current_moments[index] is not None
-
-    def _peek_scheduled_moment(self, index: int) -> tuple[int, Moment] | None:
-        """Recover **without collecting** the pending operation for the
-        instance at the given index."""
-        return self._current_moments[index]
-
-    def _pop_scheduled_moment(self, index: int) -> tuple[int, Moment]:
-        """Recover and mark as collected the pending moment for the instance at
-        the given index.
-
-        Raises:
-            AssertionError: if not self.has_pending_operation(index).
-        """
-        ret = self._current_moments[index]
-        if ret is None:
-            raise TQECException(
-                "Trying to pop a Moment instance from a ScheduledCircuit with "
-                "all its moments already collected."
-            )
-        self._current_moments[index] = next(self._iterators[index], None)
-        return ret
-
-    @property
-    def number_of_circuits(self) -> int:
-        return len(self._circuits)
-
-    def collect_moments_at_minimum_schedule(self) -> tuple[int, list[Moment]]:
-        """Collect all the moments that can be collected.
-
-        This method collects and returns a list of all the moments that should
-        be scheduled next.
-
-        Returns:
-            a list of :class:`Moment` instances that should be added next to
-            the QEC circuit.
-        """
-        assert self.has_pending_moment()
-        circuit_indices_organised_by_schedule: dict[int, list[int]] = dict()
-        for circuit_index in range(self.number_of_circuits):
-            if not self._has_pending_moment(circuit_index):
-                continue
-            schedule, _ = self._peek_scheduled_moment(circuit_index)  # type: ignore
-            circuit_indices_organised_by_schedule.setdefault(schedule, list()).append(
-                circuit_index
-            )
-
-        minimum_schedule = min(circuit_indices_organised_by_schedule.keys())
-        moments_to_return: list[Moment] = list()
-        for circuit_index in circuit_indices_organised_by_schedule[minimum_schedule]:
-            _, moment = self._pop_scheduled_moment(circuit_index)
-            moments_to_return.append(moment)
-        return minimum_schedule, moments_to_return
-
-    @property
-    def q2i(self) -> dict[GridQubit, int]:
-        return self._global_qubit_map.q2i
-
-
-def _sort_target_groups(
-    targets: ty.Iterable[list[stim.GateTarget]],
-) -> list[list[stim.GateTarget]]:
-    def _sort_key(target_group: ty.Iterable[stim.GateTarget]) -> tuple[int, ...]:
-        return tuple(t.value for t in target_group)
-
-    return sorted(targets, key=_sort_key)
-
-
-def remove_duplicate_instructions(
-    instructions: list[stim.CircuitInstruction],
-    mergeable_instruction_names: frozenset[str],
-) -> list[stim.CircuitInstruction]:
-    """Removes all the duplicate instructions from the given list.
-
-    Note:
-        This function guarantees the following post-conditions on the returned
-        results:
-
-        - Instructions with a name that is not in `mergeable_instruction_names`
-          are returned at the front of the returned list, in the same relative
-          ordering as provided in `instructions` input.
-        - Instructions with a name that is in `mergeable_instruction_names` will
-          be returned after all the instructions with a name that does not
-          appear in `mergeable_instruction_names`. The order in which these
-          instructions are returned is not guaranteed and can change between
-          executions.
-
-    Warning:
-        this function **does not keep instruction ordering**. It is intended to
-        be used with input `instructions` that, once de-duplication has been
-        applied, form a valid moment, which means that each instruction can be
-        executed in parallel, and so their order in the returned list does not
-        matter.
-
-        If that is not your case, take extra care to the output of this
-        function as it will likely introduce hard-to-debug issues. To prevent
-        such potential misuse, this function checks for such cases and outputs
-        a warning if it happens.
-
-    Returns:
-        a list containing a copy of the stim.CircuitInstruction instances from
-        the given instructions but without any duplicate.
-    """
-    # Separate mergeable operations from non-mergeable ones.
-    mergeable_operations: dict[
-        tuple[str, tuple[float, ...]], set[tuple[stim.GateTarget, ...]]
-    ] = {}
-    final_operations: list[stim.CircuitInstruction] = list()
-    for inst in instructions:
-        if inst.name in mergeable_instruction_names:
-            # Mergeable operations are automatically merged thanks to
-            # the use of a set here.
-            mergeable_operations.setdefault(
-                (inst.name, tuple(inst.gate_args_copy())), set()
-            ).update(tuple(group) for group in inst.target_groups())
-        else:
-            final_operations.append(inst)
-    # Add the merged operations into the final ones
-    final_operations.extend(
-        stim.CircuitInstruction(
-            name, sum(_sort_target_groups([list(t) for t in targets]), start=[]), args
-        )
-        for (name, args), targets in mergeable_operations.items()
-    )
-    # Warn if the output instructions do not form a valid moment, as this is
-    # likely a misuse of this function.
-    try:
-        circuit = stim.Circuit()
-        for instr in final_operations:
-            circuit.append(instr)
-        Moment.check_is_valid_moment(circuit)
-    except TQECException:
-        warnings.warn(
-            "The instructions obtained at the end of the "
-            "`remove_duplicate_instructions` function do not form a valid "
-            "moment. You are likely misusing the function. Final instructions "
-            "obtained and gathered into a single stim.Circuit: "
-            f"\n{circuit}",
-            TQECWarning,
-        )
-    return final_operations
-
-
-def merge_scheduled_circuits(
-    circuits: list[ScheduledCircuit],
-    global_qubit_map: QubitMap,
-    mergeable_instructions: ty.Iterable[str] = (),
-) -> ScheduledCircuit:
-    """Merge several ScheduledCircuit instances into one instance.
-
-    This function takes several **compatible** scheduled circuits as input and
-    merge them, respecting their schedules, into a unique `ScheduledCircuit`
-    instance that will then be returned to the caller.
-
-    The provided circuits should be compatible between each other. Compatible
-    circuits are circuits that can all be described with a unique global qubit
-    map. In other words, if two circuits from the list of compatible circuits
-    use the same qubit index, that should mean that they use the same qubit.
-    You can obtain compatible circuits by using
-    :func:`relabel_circuits_qubit_indices`.
-
-    Args:
-        circuits: **compatible** circuits to merge.
-        qubit_map: global qubit map for all the provided `circuits`.
-        mergeable_instructions: a list of instruction names that are considered
-            mergeable. Duplicate instructions with a name in this list will be
-            merged into a single instruction.
-
-    Returns:
-        a circuit representing the merged scheduled circuits given as input.
-    """
-    scheduled_circuits = _ScheduledCircuits(circuits, global_qubit_map)
-
-    all_moments: list[Moment] = []
-    all_schedules = Schedule()
-    global_i2q = QubitMap({i: q for q, i in scheduled_circuits.q2i.items()})
-
-    while scheduled_circuits.has_pending_moment():
-        schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
-        # Flatten the moments into a list of operations to perform some modifications
-        instructions = sum((list(moment.instructions) for moment in moments), start=[])
-        # Avoid duplicated operations. Any operation that have the Plaquette.get_mergeable_tag() tag
-        # is considered mergeable, and can be removed if another operation in the list
-        # is considered equal (and has the mergeable tag).
-        deduplicated_instructions = remove_duplicate_instructions(
-            instructions,
-            mergeable_instruction_names=frozenset(mergeable_instructions),
-        )
-        circuit = stim.Circuit()
-        for inst in deduplicated_instructions:
-            circuit.append(
-                inst.name,
-                sum(_sort_target_groups(inst.target_groups()), start=[]),
-                inst.gate_args_copy(),
-            )
-        all_moments.append(Moment(circuit))
-        all_schedules.append(schedule)
-
-    return ScheduledCircuit(all_moments, all_schedules, global_i2q, _avoid_checks=True)
-
-
-def relabel_circuits_qubit_indices(
-    circuits: ty.Sequence[ScheduledCircuit],
-) -> tuple[list[ScheduledCircuit], QubitMap]:
-    """Relabel the qubit indices of the provided circuits to avoid collision.
-
-    When several :class:`ScheduledCircuit` are constructed without a global
-    knowledge of all the qubits, qubit indices used by each instance likely
-    overlap. This is an issue when we try to merge such circuits because one
-    index might represent a different qubit depending on the circuit it is used
-    in.
-
-    This function takes a sequence of circuits and relabel their qubits to avoid
-    such collisions.
-
-    Warning:
-        all the qubit targets used in each of the provided circuits should have
-        a corresponding entry in the circuit qubit map for this function to work
-        correctly. If that is not the case, a KeyError will be raised.
-
-    Raises:
-        KeyError: if any of the provided circuit contains a qubit target that is
-            not present in its qubit map.
-
-    Args:
-        circuits: circuit instances to remap. This parameter is not mutated by
-            this function and is only used in read-only mode.
-
-    Returns:
-        the same circuits with update qubit indices as well as the global qubit
-        indices map that has been used. Qubits in the returned global qubit map
-        are assigned to an index such that:
-
-        1. the sequence of indices is `range(0, len(qubit_map))`.
-        2. qubits are assigned indices in sorted order.
-    """
-    # First, get a global qubit index map.
-    # Using itertools to avoid the edge case `len(circuits) == 0`
-    needed_qubits = frozenset(
-        itertools.chain.from_iterable([c.qubits for c in circuits])
-    )
-    global_qubit_map = QubitMap.from_qubits(sorted(needed_qubits))
-    global_q2i = global_qubit_map.q2i
-    # Then, get the remapped circuits. Note that map_qubit_indices should
-    # have approximately the same runtime cost whatever the value of inplace
-    # so we ask for a new instance to avoid keeping a reference to the given
-    # circuits.
-    relabeled_circuits: list[ScheduledCircuit] = []
-    for circuit in circuits:
-        local_indices_to_global_indices = {
-            local_index: global_q2i[q] for local_index, q in circuit.qubit_map.items()
-        }
-        relabeled_circuits.append(
-            circuit.map_qubit_indices(local_indices_to_global_indices, inplace=False)
-        )
-    return relabeled_circuits, global_qubit_map
