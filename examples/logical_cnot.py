@@ -23,9 +23,9 @@ TQEC_FOLDER = EXAMPLE_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
 
 
-def generate_graphs(style: Literal["css", "zxxz"], z_basis: bool) -> None:
+def generate_graphs(style: Literal["css", "zxxz"], basis: Literal["z", "x"]) -> None:
     # 1 Create `BlockGraph` representing the computation
-    block_graph = logical_cnot_block_graph(z_basis)
+    block_graph = logical_cnot_block_graph(basis)
     zx_graph = block_graph.to_zx_graph()
 
     # 2. Find and choose the logical observables
@@ -65,18 +65,17 @@ def generate_graphs(style: Literal["css", "zxxz"], z_basis: bool) -> None:
         ax.legend()
         ax.loglog()
         ax.set_title(f"{style.upper()} Logical CNOT Error Rate")
-        basis_str = "Z" if z_basis else "X"
         fig.savefig(
             ASSETS_FOLDER
-            / f"{style}_logical_cnot_result_{basis_str}_observable_{i}.png"
+            / f"{style}_logical_cnot_result_{basis.upper()}_observable_{i}.png"
         )
 
 
 def main():
-    generate_graphs("css", True)
-    generate_graphs("css", False)
-    generate_graphs("zxxz", True)
-    generate_graphs("zxxz", False)
+    generate_graphs("css", "z")
+    generate_graphs("css", "x")
+    generate_graphs("zxxz", "z")
+    generate_graphs("zxxz", "x")
 
 
 if __name__ == "__main__":
