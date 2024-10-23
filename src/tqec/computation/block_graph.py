@@ -133,7 +133,7 @@ class BlockGraph:
 
     def has_pipe_between(self, pos1: Position3D, pos2: Position3D) -> bool:
         """Check if there is an pipe between two positions."""
-        return self._graph.has_edge(pos1, pos2)
+        return cast(bool, self._graph.has_edge(pos1, pos2))
 
     def pipes_at(self, position: Position3D) -> list[Pipe]:
         """Get the pipes connected to a cube."""
@@ -213,7 +213,7 @@ class BlockGraph:
         for pipe in pipes:
             pipes_by_direction.setdefault(pipe.direction, []).append(pipe)
         # d), f), g). Match color
-        for pipes in pipes:
+        for pipe in pipes:
             pipe.validate()
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:

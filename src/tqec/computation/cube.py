@@ -19,6 +19,9 @@ class ZXBasis(Enum):
         """Get the basis with the Z/X flipped."""
         return ZXBasis.Z if self == ZXBasis.X else ZXBasis.X
 
+    def __str__(self) -> str:
+        return self.value
+
 
 class CubeKind(ABC):
     """Base class for the cube types."""
@@ -97,7 +100,7 @@ class ZXCube(CubeKind):
 
     def get_basis_along(self, direction: Direction3D) -> ZXBasis:
         """Get the basis of the wall in the given direction."""
-        return astuple(self)[direction.value]
+        return self.as_tuple()[direction.value]
 
 
 class Port(CubeKind):

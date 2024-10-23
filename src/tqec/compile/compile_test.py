@@ -47,7 +47,7 @@ def test_compile_single_block_memory(spec: str, kind: str, k: int) -> None:
 
 
 @pytest.mark.parametrize(
-    ("spec", "cube_type", "k"),
+    ("spec", "kind", "k"),
     itertools.product(SPECS.keys(), ("ZXZ", "ZXX", "XZX", "XZZ"), (1,)),
 )
 def test_compile_two_same_blocks_connected_in_time(
@@ -80,7 +80,7 @@ def test_compile_two_same_blocks_connected_in_time(
 
 
 @pytest.mark.parametrize(
-    ("spec", "cube_pipe_type", "k"),
+    ("spec", "kinds", "k"),
     itertools.product(
         SPECS.keys(),
         (
@@ -124,7 +124,7 @@ def test_compile_two_same_blocks_connected_in_space(
 
 
 @pytest.mark.parametrize(
-    ("spec", "cube_and_space_pipe_type", "k"),
+    ("spec", "kinds", "k"),
     itertools.product(
         SPECS.keys(),
         (

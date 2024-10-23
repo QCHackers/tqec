@@ -93,7 +93,7 @@ def test_correlation_y_node() -> None:
     ]
 
 
-def test_correlation_port_passthrough():
+def test_correlation_port_passthrough() -> None:
     g = ZXGraph()
     g.add_edge(
         ZXNode(Position3D(0, 0, 0), ZXKind.P, "in"),

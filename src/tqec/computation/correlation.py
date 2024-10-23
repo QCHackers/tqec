@@ -23,7 +23,7 @@ class CorrelationSurface:
     span: frozenset[ZXEdge]
     external_stabilizer: dict[str, str]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Single node span represents a logical operator preserved in memory.
         if isinstance(self.span, ZXNode):
             if self.span.kind not in [ZXKind.X, ZXKind.Z]:
@@ -40,7 +40,7 @@ class CorrelationSurface:
             return False
         return self.span == other.span
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.span)
 
     def get_node_correlation_types(self) -> dict[Position3D, ZXKind]:

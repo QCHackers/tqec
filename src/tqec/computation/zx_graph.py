@@ -276,7 +276,7 @@ class ZXGraph:
 
     def has_edge_between(self, pos1: Position3D, pos2: Position3D) -> bool:
         """Check if there is an edge between two positions."""
-        return self._graph.has_edge(pos1, pos2)
+        return cast(bool, self._graph.has_edge(pos1, pos2))
 
     def get_edge(self, pos1: Position3D, pos2: Position3D) -> ZXEdge:
         """Get the edge by its endpoint positions.

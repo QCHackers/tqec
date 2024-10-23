@@ -61,7 +61,7 @@ def test_abstract_observable_for_single_horizontal_pipe() -> None:
     observables, correlation_surfaces = g.get_abstract_observables()
     assert len(observables) == len(correlation_surfaces) == 1
     assert observables[0] == AbstractObservable(
-        top_lines=frozenset(g.cubes + g.pipes),
+        top_lines=frozenset([*g.cubes, *g.pipes]),
         bottom_regions=frozenset(),
     )
 

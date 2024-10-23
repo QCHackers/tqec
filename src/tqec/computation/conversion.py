@@ -207,9 +207,11 @@ def _handle_leftover_nodes(
 
 
 def _choose_arbitrary_pipe_kind(edge: ZXEdge) -> PipeKind:
-    bases: list[ZXBasis | None] = [ZXBasis.X, ZXBasis.Z]
-    bases.insert(edge.direction.value, None)
-    return PipeKind(*bases, has_hadamard=edge.has_hadamard)
+    bases: list[str] = ["X", "Z"]
+    bases.insert(edge.direction.value, "O")
+    if edge.has_hadamard:
+        bases.append("H")
+    return PipeKind.from_str("".join(bases))
 
 
 def _infer_pipe_kind_from_endpoint(
@@ -219,13 +221,16 @@ def _infer_pipe_kind_from_endpoint(
     has_hadamard: bool = False,
 ) -> PipeKind:
     """Infer the pipe kind from the endpoint cube kind and the pipe direction."""
-    bases: list[ZXBasis | None]
+    bases: list[ZXBasis]
     if not at_pipe_head and has_hadamard:
         bases = [basis.with_zx_flipped() for basis in endpoint_kind.as_tuple()]
     else:
         bases = list(endpoint_kind.as_tuple())
-    bases[pipe_direction.value] = None
-    return PipeKind(*bases, has_hadamard=has_hadamard)
+    bases_str = [basis.value for basis in bases]
+    bases_str[pipe_direction.value] = "O"
+    if has_hadamard:
+        bases_str.append("H")
+    return PipeKind.from_str("".join(bases_str))
 
 
 def _infer_cube_kind_from_pipe(
