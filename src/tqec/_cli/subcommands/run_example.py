@@ -4,6 +4,7 @@ import argparse
 import logging
 from multiprocessing import cpu_count
 from pathlib import Path
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -88,8 +89,7 @@ class RunExampleTQECSubCommand(TQECSubCommand):
         out_dir: Path = args.out_dir.resolve()
         obs_indices: list[int] = args.obs_include
         style: str = args.code_style
-        basis_str: str = args.basis
-        z_basis: bool = basis_str == "Z"
+        port_type: Literal["x", "z"] = args.basis
         ks: list[int] = args.k
         ps: list[float] = args.p
 
@@ -104,7 +104,7 @@ class RunExampleTQECSubCommand(TQECSubCommand):
         plots_out_dir.mkdir(exist_ok=True)
 
         logging.info("Generating CNOT block graph and zx graph.")
-        block_graph = logical_cnot_block_graph(z_basis)
+        block_graph = logical_cnot_block_graph(port_type)
         zx_graph = block_graph.to_zx_graph()
 
         # observables to a subdirectory
@@ -145,7 +145,7 @@ class RunExampleTQECSubCommand(TQECSubCommand):
         for i, stat in enumerate(stats):
             with open(
                 simulations_out_dir
-                / f"{style}_logical_cnot_result_{basis_str}_observable_{i}.csv",
+                / f"{style}_logical_cnot_result_{port_type.upper()}_observable_{i}.csv",
                 "w+",
                 encoding="utf-8",
             ) as stats_file:
@@ -167,5 +167,5 @@ class RunExampleTQECSubCommand(TQECSubCommand):
             ax.set_title(f"{style} Logical CNOT Error Rate")
             fig.savefig(
                 plots_out_dir
-                / f"{style}_logical_cnot_result_{basis_str}_observable_{i}.png"
+                / f"{style}_logical_cnot_result_{port_type.upper()}_observable_{i}.png"
             )
