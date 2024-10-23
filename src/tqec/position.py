@@ -53,7 +53,7 @@ class Shape2D:
         return (self.y, self.x)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Displacement:
     """Simple wrapper around tuple[int, int].
 
@@ -67,6 +67,12 @@ class Displacement:
 
     x: int
     y: int
+
+    def __mul__(self, factor: int) -> Displacement:
+        return Displacement(factor * self.x, factor * self.y)
+
+    def __rmul__(self, factor: int) -> Displacement:
+        return self.__mul__(factor)
 
 
 @dataclass(frozen=True, order=True)

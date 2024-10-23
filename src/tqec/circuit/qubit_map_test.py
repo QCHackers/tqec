@@ -29,6 +29,17 @@ def test_qubit_map_creation() -> None:
     ):
         QubitMap.from_qubits([q, q])
 
+    QubitMap.from_circuit(stim.Circuit())
+    QubitMap.from_circuit(stim.Circuit("H 0"))
+    QubitMap.from_circuit(stim.Circuit("QUBIT_COORDS(0, 0) 0"))
+    with pytest.raises(
+        TQECException,
+        match=f"^Found qubit\\(s\\) with more than one index: {qset_str}.$",
+    ):
+        QubitMap.from_circuit(
+            stim.Circuit("QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(0, 0) 1")
+        )
+
 
 def test_qubit_map_getters() -> None:
     assert frozenset(QubitMap().indices) == frozenset()
@@ -48,10 +59,10 @@ def test_qubit_map_q2i() -> None:
 
 def test_qubit_map_with_mapped_qubits() -> None:
     qubit_map = {GridQubit(i, -i): GridQubit(-i, i) for i in range(4)}
-    assert QubitMap().with_mapped_qubits(qubit_map) == QubitMap()
+    assert QubitMap().with_mapped_qubits(lambda q: qubit_map[q]) == QubitMap()
 
     qmap = QubitMap({i: GridQubit(i, -i) for i in range(4)})
-    assert qmap.with_mapped_qubits(qubit_map) == QubitMap(
+    assert qmap.with_mapped_qubits(lambda q: qubit_map[q]) == QubitMap(
         {i: GridQubit(-i, i) for i in range(4)}
     )
 
@@ -88,3 +99,12 @@ def test_get_final_qubits() -> None:
         ),
     ):
         get_qubit_map(stim.Circuit("QUBIT_COORDS(0, 0, 1) 0"))
+
+
+def test_qubit_map_to_circuit() -> None:
+    assert QubitMap.from_qubits([GridQubit(0, 0)]).to_circuit() == stim.Circuit(
+        "QUBIT_COORDS(0, 0) 0"
+    )
+    assert QubitMap.from_circuit(
+        stim.Circuit("QUBIT_COORDS(0, 0) 0\nH 0")
+    ).to_circuit() == stim.Circuit("QUBIT_COORDS(0, 0) 0")

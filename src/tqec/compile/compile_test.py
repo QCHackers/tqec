@@ -1,8 +1,9 @@
 import itertools
 from typing import Literal
+
 import pytest
+
 from tqec.compile.compile import compile_block_graph
-from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.specs.base import BlockBuilder, SubstitutionBuilder
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.compile.specs.library.zxxz import (
@@ -12,10 +13,9 @@ from tqec.compile.specs.library.zxxz import (
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.cube import Cube, ZXCube
 from tqec.computation.pipe import PipeKind
+from tqec.gallery.logical_cnot import logical_cnot_block_graph
 from tqec.noise_models.noise_model import NoiseModel
 from tqec.position import Position3D
-from tqec.gallery.logical_cnot import logical_cnot_block_graph
-
 
 SPECS: dict[str, tuple[BlockBuilder, SubstitutionBuilder]] = {
     "CSS": (CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER),
@@ -37,11 +37,10 @@ def test_compile_single_block_memory(spec: str, kind: str, k: int) -> None:
     compiled_graph = compile_block_graph(
         g, block_builder, substitution_builder, observables
     )
-    circuit = annotate_detectors_automatically(
-        compiled_graph.generate_stim_circuit(
-            k, noise_model=NoiseModel.uniform_depolarizing(0.001)
-        )
+    circuit = compiled_graph.generate_stim_circuit(
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
+
     assert circuit.num_detectors == (d**2 - 1) * d
     assert len(circuit.shortest_graphlike_error()) == d
 
@@ -68,11 +67,10 @@ def test_compile_two_same_blocks_connected_in_time(
     compiled_graph = compile_block_graph(
         g, block_builder, substitution_builder, observables
     )
-    circuit = annotate_detectors_automatically(
-        compiled_graph.generate_stim_circuit(
-            k, noise_model=NoiseModel.uniform_depolarizing(0.001)
-        )
+    circuit = compiled_graph.generate_stim_circuit(
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
+
     dem = circuit.detector_error_model()
     assert dem.num_detectors == (d**2 - 1) * 2 * d
     assert dem.num_observables == 1
@@ -112,11 +110,10 @@ def test_compile_two_same_blocks_connected_in_space(
     compiled_graph = compile_block_graph(
         g, block_builder, substitution_builder, observables
     )
-    circuit = annotate_detectors_automatically(
-        compiled_graph.generate_stim_circuit(
-            k, noise_model=NoiseModel.uniform_depolarizing(0.001)
-        )
+    circuit = compiled_graph.generate_stim_circuit(
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
+
     dem = circuit.detector_error_model()
     assert dem.num_detectors == 2 * (d**2 - 1) + (d + 1 + 2 * (d**2 - 1)) * (d - 1)
     assert dem.num_observables == 1
@@ -160,11 +157,10 @@ def test_compile_L_shape_in_space_time(
     compiled_graph = compile_block_graph(
         g, block_builder, substitution_builder, observables
     )
-    circuit = annotate_detectors_automatically(
-        compiled_graph.generate_stim_circuit(
-            k, noise_model=NoiseModel.uniform_depolarizing(0.001)
-        )
+    circuit = compiled_graph.generate_stim_circuit(
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
+
     dem = circuit.detector_error_model()
     assert (
         dem.num_detectors
@@ -192,11 +188,10 @@ def test_compile_logical_cnot(spec: str, port_type: Literal["z", "x"], k: int) -
     compiled_graph = compile_block_graph(
         g, block_builder, substitution_builder, observables
     )
-    circuit = annotate_detectors_automatically(
-        compiled_graph.generate_stim_circuit(
-            k, noise_model=NoiseModel.uniform_depolarizing(0.001)
-        )
+    circuit = compiled_graph.generate_stim_circuit(
+        k, noise_model=NoiseModel.uniform_depolarizing(0.001), manhattan_radius=2
     )
+
     dem = circuit.detector_error_model()
     assert dem.num_observables == 3
     assert len(dem.shortest_graphlike_error()) == d
