@@ -98,7 +98,7 @@ def _handle_special_pipes(
     nodes_to_handle: set[ZXNode],
     edges_to_handle: set[ZXEdge],
 ) -> None:
-    for edge in edges_to_handle:
+    for edge in set(edges_to_handle):
         u, v = edge.u, edge.v
         if u.is_zx_node or v.is_zx_node:
             continue

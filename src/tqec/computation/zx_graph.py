@@ -358,7 +358,10 @@ class ZXGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ZXGraph):
             return False
-        return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+        return (
+            cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+            and self._ports == other._ports
+        )
 
     def __contains__(self, position: Position3D) -> bool:
         return position in self._graph

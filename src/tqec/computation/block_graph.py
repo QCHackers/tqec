@@ -236,7 +236,10 @@ class BlockGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BlockGraph):
             return False
-        return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+        return (
+            cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+            and self._ports == other._ports
+        )
 
     def to_dae_file(
         self, filename: str | pathlib.Path, pipe_length: float = 2.0

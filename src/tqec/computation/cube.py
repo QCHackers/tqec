@@ -115,9 +115,6 @@ class Port(CubeKind):
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Port)
 
-    def __ne__(self, other: object) -> bool:
-        return not self == other
-
 
 class YCube(CubeKind):
     """Cube kind representing the Y-basis initialization/measurements."""
@@ -133,9 +130,6 @@ class YCube(CubeKind):
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, YCube)
-
-    def __ne__(self, other: object) -> bool:
-        return not self == other
 
 
 @dataclass(frozen=True)
