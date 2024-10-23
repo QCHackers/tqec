@@ -13,14 +13,16 @@ import collada.source
 import numpy as np
 import numpy.typing as npt
 
+from tqec.computation.cube import Port, CubeKind, YCube
+from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
-from tqec.computation.block_graph import BlockGraph, BlockType, CubeType, PipeType
+from tqec.computation.block_graph import BlockGraph, BlockKind
 from tqec.computation.geometry import (
     Face,
     FaceType,
     load_library_block_geometries,
-    parse_block_type_from_str,
+    parse_block_kind_from_str,
 )
 
 _RGBA = tuple[float, float, float, float]
@@ -65,8 +67,8 @@ def read_block_graph_from_dae_file(
         )
     sketchup_node: collada.scene.Node = scene.nodes[0]
     uniform_pipe_scale: float | None = None
-    parsed_cubes: list[tuple[_FloatPosition, CubeType]] = []
-    parsed_pipes: list[tuple[_FloatPosition, PipeType]] = []
+    parsed_cubes: list[tuple[_FloatPosition, CubeKind]] = []
+    parsed_pipes: list[tuple[_FloatPosition, PipeKind]] = []
     for node in sketchup_node.children:
         if (
             isinstance(node, collada.scene.Node)
@@ -78,18 +80,18 @@ def read_block_graph_from_dae_file(
             instance_block = ty.cast(collada.scene.NodeNode, node.children[0])
             # Get block type
             library_block: collada.scene.Node = instance_block.node
-            block_type = parse_block_type_from_str(library_block.name)
+            block_kind = parse_block_kind_from_str(library_block.name)
             # Get instance transformation
             transformation = Transformation.from_4d_affine_matrix(node.matrix)
             translation: _FloatPosition = tuple(transformation.translation)
             # NOTE: Currently rotation is not allowed
             if not np.allclose(transformation.rotation, np.eye(3), atol=1e-9):
                 raise TQECException(
-                    f"There is a non-identity rotation for {block_type.value} block at position {translation}."
+                    f"There is a non-identity rotation for {block_kind} block at position {translation}."
                 )
-            if isinstance(block_type, PipeType):
-                scale_index = block_type.direction.axis_index
-                scale = transformation.scale[block_type.direction.axis_index]
+            if isinstance(block_kind, PipeKind):
+                scale_index = block_kind.direction.value
+                scale = transformation.scale[scale_index]
                 if uniform_pipe_scale is None:
                     uniform_pipe_scale = scale * 2.0
                 elif not np.isclose(uniform_pipe_scale, scale * 2.0, atol=1e-9):
@@ -100,11 +102,11 @@ def read_block_graph_from_dae_file(
                     raise TQECException(
                         "Only the dimension along the connector can be scaled."
                     )
-                parsed_pipes.append((translation, block_type))
+                parsed_pipes.append((translation, block_kind))
             else:
                 if not np.allclose(transformation.scale, np.ones(3), atol=1e-9):
                     raise TQECException("Scaling of cubes is not allowed.")
-                parsed_cubes.append((translation, block_type))
+                parsed_cubes.append((translation, block_kind))
 
     assert uniform_pipe_scale is not None, (
         "Expected to be able to initialize a pipe scale, but did not succeed. "
@@ -120,12 +122,21 @@ def read_block_graph_from_dae_file(
             int_pos_before_scale.append(int(round(p_before_scale)))
         return Position3D(*int_pos_before_scale)
 
+    def offset_y_cube_position(pos: _FloatPosition) -> _FloatPosition:
+        z = pos[2]
+        if np.isclose(z - 0.5, np.floor(z), atol=1e-9):
+            z = z - 0.5
+        return (pos[0], pos[1], z / (1 + uniform_pipe_scale))
+
     # Construct the block graph
     graph = BlockGraph(graph_name)
-    for pos, cube_type in parsed_cubes:
-        graph.add_cube(int_position_before_scale(pos), cube_type)
+    for pos, cube_kind in parsed_cubes:
+        if isinstance(cube_kind, YCube):
+            pos = offset_y_cube_position(pos)
+        graph.add_cube(int_position_before_scale(pos), cube_kind)
+    port_index = 0
     for pos, pipe_type in parsed_pipes:
-        pipe_direction_idx = pipe_type.direction.axis_index
+        pipe_direction_idx = pipe_type.direction.value
         scaled_src_pos_list = list(pos)
         scaled_src_pos_list[pipe_direction_idx] -= 1
         src_pos = int_position_before_scale(
@@ -135,10 +146,12 @@ def read_block_graph_from_dae_file(
         dst_pos_list[pipe_direction_idx] += 1
         dst_pos = Position3D(*dst_pos_list)
         if src_pos not in graph:
-            graph.add_cube(src_pos, CubeType.VIRTUAL)
+            graph.add_cube(src_pos, Port(), label=f"Port{port_index}")
+            port_index += 1
         if dst_pos not in graph:
-            graph.add_cube(dst_pos, CubeType.VIRTUAL)
-        graph.add_pipe(src_pos, dst_pos, pipe_type)
+            graph.add_cube(dst_pos, Port(), label=f"Port{port_index}")
+            port_index += 1
+        graph.add_pipe(graph[src_pos], graph[dst_pos], pipe_type)
     return graph
 
 
@@ -160,25 +173,33 @@ def write_block_graph_to_dae_file(
     def scale_position(pos: tuple[int, int, int]) -> _FloatPosition:
         return ty.cast(_FloatPosition, tuple(p * (1 + pipe_length) for p in pos))
 
+    def offset_y_cube_position(pos: _FloatPosition) -> _FloatPosition:
+        x, y, z = pos
+        return x, y, z + 0.5
+
     for cube in block_graph.cubes:
-        if cube.is_virtual:
+        if cube.is_port:
             continue
         scaled_position = scale_position(cube.position.as_tuple())
+        if cube.is_y_cube and block_graph.has_pipe_between(
+            cube.position, cube.position.shift_by(dz=1)
+        ):
+            scaled_position = offset_y_cube_position(scaled_position)
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position
-        base.add_instance_node(instance_id, matrix, cube.cube_type)
+        base.add_instance_node(instance_id, matrix, cube.kind)
         instance_id += 1
     for pipe in block_graph.pipes:
         src_pos = scale_position(pipe.u.position.as_tuple())
         pipe_pos = list(src_pos)
-        pipe_pos[pipe.direction.axis_index] += 1.0
+        pipe_pos[pipe.direction.value] += 1.0
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = pipe_pos
         scales = [1.0, 1.0, 1.0]
         # We divide the scaling by 2.0 because the pipe's default length is 2.0.
-        scales[pipe.direction.axis_index] = pipe_length / 2.0
+        scales[pipe.direction.value] = pipe_length / 2.0
         matrix[:3, :3] = np.diag(scales)
-        base.add_instance_node(instance_id, matrix, pipe.pipe_type)
+        base.add_instance_node(instance_id, matrix, pipe.kind)
         instance_id += 1
     base.mesh.write(file_like)
 
@@ -192,7 +213,7 @@ class _BaseColladaData:
         self.materials: dict[FaceType, collada.material.Material] = {}
         self.geometry_nodes: dict[Face, collada.scene.GeometryNode] = {}
         self.root_node = collada.scene.Node("SketchUp", name="SketchUp")
-        self.library_nodes: dict[BlockType, collada.scene.Node] = {}
+        self.library_nodes: dict[BlockKind, collada.scene.Node] = {}
 
         self._create_scene()
         self._add_asset_info()
@@ -271,32 +292,32 @@ class _BaseColladaData:
         )
         self.geometry_nodes[face] = geom_node
 
-    def _add_library_node(self, block_type: BlockType) -> None:
-        if block_type in self.library_nodes:
+    def _add_library_node(self, block_kind: BlockKind) -> None:
+        if block_kind in self.library_nodes:
             return
-        for face in self.library_geometry[block_type]:
+        for face in self.library_geometry[block_kind]:
             self._add_face_geometry_node(face)
         children = [
-            self.geometry_nodes[face] for face in self.library_geometry[block_type]
+            self.geometry_nodes[face] for face in self.library_geometry[block_kind]
         ]
-        node = collada.scene.Node(block_type.value, children, name=block_type.value)
+        node = collada.scene.Node(str(block_kind), children, name=str(block_kind))
         self.mesh.nodes.append(node)
-        self.library_nodes[block_type] = node
+        self.library_nodes[block_kind] = node
 
     def add_instance_node(
         self,
         instance_id: int,
         transform_matrix: npt.NDArray[np.float32],
-        block_type: BlockType,
+        block_kind: BlockKind,
     ) -> None:
         """Add an instance node to the root node."""
-        self._add_library_node(block_type)
+        self._add_library_node(block_kind)
         child_node = collada.scene.Node(
             f"ID{instance_id}",
             name=f"instance_{instance_id}",
             transforms=[collada.scene.MatrixTransform(transform_matrix.flatten())],
         )
-        point_to_node = self.library_nodes[block_type]
+        point_to_node = self.library_nodes[block_kind]
         instance_node = collada.scene.NodeNode(point_to_node)
         child_node.children.append(instance_node)
         self.root_node.children.append(child_node)
