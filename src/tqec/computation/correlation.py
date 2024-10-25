@@ -49,7 +49,14 @@ class CorrelationSurface:
 def find_correlation_surfaces(
     zx_graph: ZXGraph,
 ) -> list[CorrelationSurface]:
-    """Find the correlation surfaces in the ZX graph."""
+    """Find the correlation surfaces in the ZX graph.
+
+    The algorithm starts from each leaf node in the graph, and find the correlation surfaces
+    using the flood fill like algorithm. For Z/X type node, the correlation surface must start
+    from the opposite type node. For the Port, the correlation surface can start from both X/Z
+    type node. For the Y type node, the correlation surface must be the product of the X and Z
+    type.
+    """
     zx_graph.validate()
     if zx_graph.num_nodes <= 1:
         raise TQECException(
@@ -72,7 +79,7 @@ def find_correlation_surfaces_from_leaf(
     leaf: ZXNode,
 ) -> list[CorrelationSurface]:
     """Find the correlation surfaces starting from a leaf node in the ZX graph."""
-    # Z/X type node can only support the correlation surface with the same type.
+    # Z/X type node can only support the correlation surface with the opposite type.
     if leaf.is_zx_node:
         spans = (
             _find_spans_with_flood_fill(zx_graph, {leaf.with_zx_flipped()}, set()) or []
@@ -187,6 +194,19 @@ def _find_spans_with_flood_fill(
     correlation_frontier: set[ZXNode],
     correlation_span: set[ZXEdge],
 ) -> list[frozenset[ZXEdge]] | None:
+    """Find the correlation spans in the ZX graph using the flood fill like algorithm.
+
+    matched correlation node: Node at which the correlation type matches the node type.
+    mismatched correlation node: Node at which the correlation type mismatches the node type.
+
+    The algorithm starts from a set of correlation frontier and greedily expands the correlation
+    span until no more mismatched correlation nodes are in the frontier. Then it explore the
+    matched correlation nodes, and select even number of edges to be included in the span. If
+    no such selection can be made, the search is pruned. For different choices, the algorithm
+    recursively explores the next frontier until the search is completed. Finally, the branches
+    at different nodes are produced to form the correlation spans.
+
+    """
     # The ZX node type mismatches the correlation type, then we can flood
     # through all the edges connected to the current node.
     # Greedily flood through the edges until encountering the matched correlation type.
