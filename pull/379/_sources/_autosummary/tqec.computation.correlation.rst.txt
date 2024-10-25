@@ -15,7 +15,7 @@ tqec.computation.correlation
       :toctree:
    
       find_correlation_surfaces
-      find_correlation_surfaces_from
+      find_correlation_surfaces_from_leaf
    
    
 

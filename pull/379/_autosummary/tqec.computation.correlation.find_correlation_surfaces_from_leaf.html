@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.computation.correlation.find_correlation_surfaces_from &mdash; TQEC  documentation</title>
+  <title>tqec.computation.correlation.find_correlation_surfaces_from_leaf &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -66,7 +66,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.conversion.html">tqec.computation.conversion</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces.html">tqec.computation.correlation.find_correlation_surfaces</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.computation.correlation.find_correlation_surfaces_from</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.computation.correlation.find_correlation_surfaces_from_leaf</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html">tqec.computation.correlation.CorrelationSurface</a></li>
 </ul>
 </li>
@@ -107,9 +107,9 @@
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.computation.html">tqec.computation</a></li>
           <li class="breadcrumb-item"><a href="tqec.computation.correlation.html">tqec.computation.correlation</a></li>
-      <li class="breadcrumb-item active">tqec.computation.correlation.find_correlation_surfaces_from</li>
+      <li class="breadcrumb-item active">tqec.computation.correlation.find_correlation_surfaces_from_leaf</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.computation.correlation.find_correlation_surfaces_from.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.computation.correlation.find_correlation_surfaces_from_leaf.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,12 +117,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-computation-correlation-find-correlation-surfaces-from">
-<h1>tqec.computation.correlation.find_correlation_surfaces_from<a class="headerlink" href="#tqec-computation-correlation-find-correlation-surfaces-from" title="Link to this heading"></a></h1>
+  <section id="tqec-computation-correlation-find-correlation-surfaces-from-leaf">
+<h1>tqec.computation.correlation.find_correlation_surfaces_from_leaf<a class="headerlink" href="#tqec-computation-correlation-find-correlation-surfaces-from-leaf" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="tqec.computation.correlation.find_correlation_surfaces_from">
-<span class="sig-name descname"><span class="pre">find_correlation_surfaces_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><span class="pre">ZXNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#find_correlation_surfaces_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.find_correlation_surfaces_from" title="Link to this definition"></a></dt>
-<dd><p>Find the correlation surfaces starting from a specific node in the ZX graph.</p>
+<dt class="sig sig-object py" id="tqec.computation.correlation.find_correlation_surfaces_from_leaf">
+<span class="sig-name descname"><span class="pre">find_correlation_surfaces_from_leaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><span class="pre">ZXNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#find_correlation_surfaces_from_leaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.find_correlation_surfaces_from_leaf" title="Link to this definition"></a></dt>
+<dd><p>Find the correlation surfaces starting from a leaf node in the ZX graph.</p>
 </dd></dl>
 
 </section>
