@@ -37,8 +37,11 @@ class ZXKind(Enum):
     def __str__(self) -> str:
         return self.value
 
+    def __lt__(self, other: ZXKind) -> bool:
+        return self.value < other.value
 
-@dataclass(frozen=True)
+
+@dataclass(frozen=True, order=True)
 class ZXNode:
     """A node in the ZX graph.
 
@@ -79,7 +82,7 @@ class ZXNode:
         return f"{self.kind}{self.position}"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class ZXEdge:
     """An edge in the ZX graph.
 

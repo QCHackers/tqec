@@ -45,19 +45,6 @@ class CorrelationSurface:
         """
         return _get_node_correlation_types(self.span)
 
-    def _order_key(self) -> tuple[tuple[Position3D, Position3D, str], ...]:
-        """Order key for sorting the correlation surface."""
-        return tuple(
-            sorted(
-                (
-                    edge.u.position,
-                    edge.v.position,
-                    edge.u.kind.value,
-                )
-                for edge in self.span
-            )
-        )
-
 
 def find_correlation_surfaces(
     zx_graph: ZXGraph,
@@ -76,9 +63,8 @@ def find_correlation_surfaces(
     correlation_surfaces: set[CorrelationSurface] = set()
     for leaf in leaves:
         correlation_surfaces.update(find_correlation_surfaces_from_leaf(zx_graph, leaf))
-    # TODO: improve the sort
     # sort the correlation surfaces to make the result deterministic
-    return sorted(correlation_surfaces, key=lambda x: x._order_key())
+    return sorted(correlation_surfaces, key=lambda x: sorted(x.span))
 
 
 def find_correlation_surfaces_from_leaf(
