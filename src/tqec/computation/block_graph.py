@@ -17,7 +17,7 @@ from tqec.computation.zx_graph import ZXGraph
 from tqec.computation.correlation import CorrelationSurface
 
 if TYPE_CHECKING:
-    from tqec.computation.collada import ColladaDisplayHelper
+    from tqec.interop.collada_html_viewer import ColladaHTMLViewer
     from tqec.computation.abstract_observable import AbstractObservable
 
 
@@ -245,14 +245,14 @@ class BlockGraph:
         self, filename: str | pathlib.Path, pipe_length: float = 2.0
     ) -> None:
         """Export the block graph to a DAE file."""
-        from tqec.computation.collada import write_block_graph_to_dae_file
+        from tqec.interop.collada import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(self, filename, pipe_length)
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
         """Construct a block graph from a DAE file."""
-        from tqec.computation.collada import read_block_graph_from_dae_file
+        from tqec.interop.collada import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
@@ -260,12 +260,10 @@ class BlockGraph:
         self,
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
-    ) -> ColladaDisplayHelper:
+    ) -> ColladaHTMLViewer:
         """Display the block graph in 3D."""
-        from tqec.computation.collada import (
-            display_collada_model,
-            write_block_graph_to_dae_file,
-        )
+        from tqec.interop.collada import write_block_graph_to_dae_file
+        from tqec.interop.collada_html_viewer import display_collada_model
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(self, bytes_buffer, pipe_length)
