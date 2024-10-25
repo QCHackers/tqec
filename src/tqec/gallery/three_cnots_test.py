@@ -39,10 +39,17 @@ def test_three_cnots_zx_graph_filled() -> None:
 
 
 def test_three_cnots_correlation_surface() -> None:
+    g = three_cnots_zx_graph("x")
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 7
+
+    g = three_cnots_zx_graph("x")
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 7
+
     g = three_cnots_zx_graph("open")
     correlation_surfaces = g.find_correration_surfaces()
     all_external_stabilizers = [cs.external_stabilizer for cs in correlation_surfaces]
-    # Pauli string in order `a'abb'cc'`
     assert all(
         [
             s in all_external_stabilizers

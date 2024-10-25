@@ -199,14 +199,14 @@ class ZXGraph:
     @property
     def leaf_nodes(self) -> list[ZXNode]:
         """Get the leaf nodes of the graph, including the ports."""
-        return [node for node in self.nodes if self._node_degree(node) == 1]
+        return [node for node in self.nodes if self.node_degree(node) == 1]
 
     @property
     def ports(self) -> dict[str, Position3D]:
         """Get the position of open ports of the graph."""
         return self._ports
 
-    def _node_degree(self, node: ZXNode) -> int:
+    def node_degree(self, node: ZXNode) -> int:
         return self._graph.degree(node.position)  # type: ignore
 
     def add_node(
@@ -417,7 +417,7 @@ class ZXGraph:
         for node in self.nodes:
             if len({e.direction for e in self.edges_at(node.position)}) == 3:
                 raise TQECException(f"ZX graph has a 3D corner at {node.position}.")
-            if not node.is_zx_node and self._node_degree(node) != 1:
+            if not node.is_zx_node and self.node_degree(node) != 1:
                 raise TQECException("The port/Y node must be a leaf node.")
             if node.is_y_node:
                 (edge,) = self.edges_at(node.position)

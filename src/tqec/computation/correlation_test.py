@@ -157,3 +157,54 @@ def test_correlation_logical_s_via_gate_teleportation() -> None:
             ]
         ]
     )
+
+
+def test_correlation_four_node_circle() -> None:
+    """Test against the following graph:
+       o---o
+       |   |
+    ---o---o
+
+    and
+
+       o---o
+       |   |
+    ---o---o
+       |
+    """
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(-1, 0, 0), ZXKind.P, "p1"),
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 1, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(1, 1, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 1, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 1, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+    )
+
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 1
+    assert correlation_surfaces[0].external_stabilizer == {"p1": "X"}
+
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(0, -1, 0), ZXKind.P, "p2"),
+    )
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 3
+    assert correlation_surfaces[0].external_stabilizer == {"p1": "X", "p2": "X"}
+    assert correlation_surfaces[1].external_stabilizer == {"p1": "Z", "p2": "Z"}
+    assert correlation_surfaces[2].external_stabilizer == {"p1": "Z", "p2": "Z"}

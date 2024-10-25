@@ -37,6 +37,16 @@ def test_logical_cnot_zx_graph_filled() -> None:
 
 
 def test_logical_cnot_correlation_surface() -> None:
+    g = logical_cnot_zx_graph("x")
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 3
+
+    g = logical_cnot_zx_graph("z")
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 3
+
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 3
     g = logical_cnot_zx_graph("open")
     correlation_surfaces = g.find_correration_surfaces()
     all_external_stabilizers = [cs.external_stabilizer for cs in correlation_surfaces]
