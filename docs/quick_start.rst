@@ -130,7 +130,6 @@ The compilation of the block graph is done automatically based on the inputs.
     )
 
 ``Sinter`` can be additionally supplied with simulation parameters, full interoperability with ``sinter`` is not yet implemented.
-`sinter_api https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md`_
 
 
 7. Plot the results
@@ -164,7 +163,7 @@ This quick start guide has shown how to use the ``tqec`` library to define a com
 import it into the library, compile it to stim circuits.
 Simulations are run and visualized for multiple error rates and code distances.
 For an extensive example, see also the
-`tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py`_.
+`tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py>`_.
 
 The process can be repeated through the cli using
 
