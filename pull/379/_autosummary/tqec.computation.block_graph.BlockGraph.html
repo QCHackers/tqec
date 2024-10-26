@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.computation.collada" href="tqec.computation.collada.html" />
+    <link rel="next" title="tqec.computation.conversion" href="tqec.computation.conversion.html" />
     <link rel="prev" title="tqec.computation.block_graph.BlockKind" href="tqec.computation.block_graph.BlockKind.html" /> 
 </head>
 
@@ -66,11 +66,9 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.computation.block_graph.BlockGraph</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.collada.html">tqec.computation.collada</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.conversion.html">tqec.computation.conversion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.cube.html">tqec.computation.cube</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.geometry.html">tqec.computation.geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.pipe.html">tqec.computation.pipe</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_graph.html">tqec.computation.zx_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_plot.html">tqec.computation.zx_plot</a></li>
@@ -78,6 +76,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.interop.html">tqec.interop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -140,7 +139,7 @@ with the block structures explicitly defined.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pipe</span></code>(u, v, kind)</p></td>
 <td><p>Add a pipe to the graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">display</span></code>([write_html_filepath, pipe_length])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">display</span></code>([write_html_filepath, pipe_length, ...])</p></td>
 <td><p>Display the block graph in 3D.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dae_file</span></code>(filename[, graph_name])</p></td>
@@ -164,7 +163,7 @@ with the block structures explicitly defined.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_min_z_to_zero</span></code>()</p></td>
 <td><p>Shift the whole graph in the z direction to make the minimum z equal zero.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dae_file</span></code>(filename[, pipe_length])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dae_file</span></code>(filename[, pipe_length, ...])</p></td>
 <td><p>Export the block graph to a DAE file.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_graph</span></code>([name])</p></td>
@@ -210,7 +209,7 @@ with the block structures explicitly defined.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tqec.computation.block_graph.BlockKind.html" class="btn btn-neutral float-left" title="tqec.computation.block_graph.BlockKind" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.computation.collada.html" class="btn btn-neutral float-right" title="tqec.computation.collada" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.computation.conversion.html" class="btn btn-neutral float-right" title="tqec.computation.conversion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,7 +1,7 @@
-tqec.computation.geometry.Face
-==============================
+tqec.interop.geometry.Face
+==========================
 
-.. currentmodule:: tqec.computation.geometry
+.. currentmodule:: tqec.interop.geometry
 
 .. autoclass:: Face
 
@@ -17,8 +17,8 @@ tqec.computation.geometry.Face
       ~Face.get_normal_vectors
       ~Face.get_triangle_indices
       ~Face.get_vertices
-      ~Face.translated_by
-      ~Face.with_opposite_facing
+      ~Face.shift_by
+      ~Face.with_negated_normal_direction
    
    
 
@@ -28,9 +28,8 @@ tqec.computation.geometry.Face
 
    .. autosummary::
    
-      ~Face.positive_facing
-      ~Face.translation
-      ~Face.face_type
+      ~Face.position
+      ~Face.kind
       ~Face.width
       ~Face.height
       ~Face.normal_direction

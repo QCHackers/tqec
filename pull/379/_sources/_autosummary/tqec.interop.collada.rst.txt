@@ -1,7 +1,7 @@
-tqec.computation.geometry
-=========================
+tqec.interop.collada
+====================
 
-.. automodule:: tqec.computation.geometry
+.. automodule:: tqec.interop.collada
 
    
    
@@ -14,8 +14,8 @@ tqec.computation.geometry
    .. autosummary::
       :toctree:
    
-      load_library_block_geometries
-      parse_block_kind_from_str
+      read_block_graph_from_dae_file
+      write_block_graph_to_dae_file
    
    
 
@@ -26,8 +26,8 @@ tqec.computation.geometry
    .. autosummary::
       :toctree:
    
-      Face
-      FaceType
+      LibraryNodeKey
+      Transformation
    
    
 

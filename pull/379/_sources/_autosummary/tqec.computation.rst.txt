@@ -34,9 +34,6 @@ tqec.computation
    block_graph
 
 
-   collada
-
-
    conversion
 
 
@@ -45,8 +42,6 @@ tqec.computation
 
    cube
 
-
-   geometry
 
    pipe
 

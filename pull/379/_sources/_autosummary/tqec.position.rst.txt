@@ -20,9 +20,11 @@ tqec.position
    
       Direction3D
       Displacement
+      FloatPosition3D
       Position2D
       Position3D
       Shape2D
+      SignedDirection3D
    
    
 

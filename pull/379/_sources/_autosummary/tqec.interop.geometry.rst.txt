@@ -1,0 +1,32 @@
+tqec.interop.geometry
+=====================
+
+.. automodule:: tqec.interop.geometry
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Face
+      FaceKind
+      Geometries
+   
+   
+
+   
+   
+   
+
+
+

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.computation.geometry.load_library_block_geometries &mdash; TQEC  documentation</title>
+  <title>tqec.interop &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.computation.geometry.parse_block_kind_from_str" href="tqec.computation.geometry.parse_block_kind_from_str.html" />
-    <link rel="prev" title="tqec.computation.geometry" href="tqec.computation.geometry.html" /> 
+    <link rel="next" title="tqec.interop.collada" href="tqec.interop.collada.html" />
+    <link rel="prev" title="tqec.gallery.three_cnots.three_cnots_zx_graph" href="tqec.gallery.three_cnots.three_cnots_zx_graph.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,27 +59,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="tqec.computation.html">tqec.computation</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.abstract_observable.html">tqec.computation.abstract_observable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.collada.html">tqec.computation.collada</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.conversion.html">tqec.computation.conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.cube.html">tqec.computation.cube</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.computation.geometry.html">tqec.computation.geometry</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.computation.geometry.load_library_block_geometries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.parse_block_kind_from_str.html">tqec.computation.geometry.parse_block_kind_from_str</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.Face.html">tqec.computation.geometry.Face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.FaceType.html">tqec.computation.geometry.FaceType</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.pipe.html">tqec.computation.pipe</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_graph.html">tqec.computation.zx_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_plot.html">tqec.computation.zx_plot</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tqec.interop</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tqec.interop.collada.html">tqec.interop.collada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.interop.collada_html_viewer.html">tqec.interop.collada_html_viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.interop.geometry.html">tqec.interop.geometry</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -106,11 +94,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
-          <li class="breadcrumb-item"><a href="tqec.computation.html">tqec.computation</a></li>
-          <li class="breadcrumb-item"><a href="tqec.computation.geometry.html">tqec.computation.geometry</a></li>
-      <li class="breadcrumb-item active">tqec.computation.geometry.load_library_block_geometries</li>
+      <li class="breadcrumb-item active">tqec.interop</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.computation.geometry.load_library_block_geometries.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.interop.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -118,22 +104,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-computation-geometry-load-library-block-geometries">
-<h1>tqec.computation.geometry.load_library_block_geometries<a class="headerlink" href="#tqec-computation-geometry-load-library-block-geometries" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tqec.computation.geometry.load_library_block_geometries">
-<span class="sig-name descname"><span class="pre">load_library_block_geometries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><span class="pre">CubeKind</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind" title="tqec.computation.pipe.PipeKind"><span class="pre">PipeKind</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.geometry.Face.html#tqec.computation.geometry.Face" title="tqec.computation.geometry.Face"><span class="pre">Face</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/geometry.html#load_library_block_geometries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.geometry.load_library_block_geometries" title="Link to this definition"></a></dt>
-<dd><p>Load the geometries of all the library blocks.</p>
-</dd></dl>
-
+  <section id="module-tqec.interop">
+<span id="tqec-interop"></span><h1>tqec.interop<a class="headerlink" href="#module-tqec.interop" title="Link to this heading"></a></h1>
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.interop.collada.html#module-tqec.interop.collada" title="tqec.interop.collada"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collada</span></code></a></p></td>
+<td><p>Handling interoperation with Collada DAE files.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.interop.collada_html_viewer.html#module-tqec.interop.collada_html_viewer" title="tqec.interop.collada_html_viewer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collada_html_viewer</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.interop.geometry.html#module-tqec.interop.geometry" title="tqec.interop.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.computation.geometry.html" class="btn btn-neutral float-left" title="tqec.computation.geometry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.computation.geometry.parse_block_kind_from_str.html" class="btn btn-neutral float-right" title="tqec.computation.geometry.parse_block_kind_from_str" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.gallery.three_cnots.three_cnots_zx_graph.html" class="btn btn-neutral float-left" title="tqec.gallery.three_cnots.three_cnots_zx_graph" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.interop.collada.html" class="btn btn-neutral float-right" title="tqec.interop.collada" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

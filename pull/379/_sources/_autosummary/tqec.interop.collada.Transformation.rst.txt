@@ -1,7 +1,7 @@
-tqec.computation.collada.Transformation
-=======================================
+tqec.interop.collada.Transformation
+===================================
 
-.. currentmodule:: tqec.computation.collada
+.. currentmodule:: tqec.interop.collada
 
 .. autoclass:: Transformation
 

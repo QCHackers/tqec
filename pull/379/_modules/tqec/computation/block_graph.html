@@ -93,14 +93,14 @@
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
-<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Position3D</span>
+<span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">SignedDirection3D</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">CubeKind</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.pipe</span> <span class="kn">import</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">PipeKind</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXGraph</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.correlation</span> <span class="kn">import</span> <span class="n">CorrelationSurface</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">tqec.computation.collada</span> <span class="kn">import</span> <span class="n">ColladaDisplayHelper</span>
+    <span class="kn">from</span> <span class="nn">tqec.interop.collada_html_viewer</span> <span class="kn">import</span> <span class="n">ColladaHTMLViewer</span>
     <span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="n">AbstractObservable</span>
 
 
@@ -330,17 +330,22 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">to_dae_file</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Export the block graph to a DAE file.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.computation.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
 
-        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">)</span>
+        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">,</span> <span class="n">pop_faces_at_direction</span>
+        <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_dae_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a block graph from a DAE file.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.computation.collada</span> <span class="kn">import</span> <span class="n">read_block_graph_from_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">read_block_graph_from_dae_file</span>
 
         <span class="k">return</span> <span class="n">read_block_graph_from_dae_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">)</span>
 
@@ -348,15 +353,16 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaDisplayHelper</span><span class="p">:</span>
+        <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaHTMLViewer</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the block graph in 3D.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.computation.collada</span> <span class="kn">import</span> <span class="p">(</span>
-            <span class="n">display_collada_model</span><span class="p">,</span>
-            <span class="n">write_block_graph_to_dae_file</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada_html_viewer</span> <span class="kn">import</span> <span class="n">display_collada_model</span>
 
         <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">)</span>
+        <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">,</span> <span class="n">pop_faces_at_direction</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">display_collada_model</span><span class="p">(</span>
             <span class="n">filepath_or_bytes</span><span class="o">=</span><span class="n">bytes_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
             <span class="n">write_html_filepath</span><span class="o">=</span><span class="n">write_html_filepath</span><span class="p">,</span>

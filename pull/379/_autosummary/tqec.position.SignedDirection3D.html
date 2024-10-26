@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.computation.geometry &mdash; TQEC  documentation</title>
+  <title>tqec.position.SignedDirection3D &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.computation.geometry.load_library_block_geometries" href="tqec.computation.geometry.load_library_block_geometries.html" />
-    <link rel="prev" title="tqec.computation.cube.ZXCube" href="tqec.computation.cube.ZXCube.html" /> 
+    <link rel="next" title="tqec.scale" href="tqec.scale.html" />
+    <link rel="prev" title="tqec.position.Shape2D" href="tqec.position.Shape2D.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,31 +59,26 @@
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="tqec.computation.html">tqec.computation</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.abstract_observable.html">tqec.computation.abstract_observable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.collada.html">tqec.computation.collada</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.conversion.html">tqec.computation.conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.cube.html">tqec.computation.cube</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.computation.geometry</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.load_library_block_geometries.html">tqec.computation.geometry.load_library_block_geometries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.parse_block_kind_from_str.html">tqec.computation.geometry.parse_block_kind_from_str</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.Face.html">tqec.computation.geometry.Face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.FaceType.html">tqec.computation.geometry.FaceType</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.pipe.html">tqec.computation.pipe</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_graph.html">tqec.computation.zx_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_plot.html">tqec.computation.zx_plot</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.interop.html">tqec.interop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.position.html">tqec.position</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.Direction3D.html">tqec.position.Direction3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.Displacement.html">tqec.position.Displacement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.FloatPosition3D.html">tqec.position.FloatPosition3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.Position2D.html">tqec.position.Position2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.Position3D.html">tqec.position.Position3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.Shape2D.html">tqec.position.Shape2D</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.position.SignedDirection3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tqec.position.SignedDirection3D"><code class="docutils literal notranslate"><span class="pre">SignedDirection3D</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.simulation.html">tqec.simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
@@ -106,10 +101,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
-          <li class="breadcrumb-item"><a href="tqec.computation.html">tqec.computation</a></li>
-      <li class="breadcrumb-item active">tqec.computation.geometry</li>
+          <li class="breadcrumb-item"><a href="tqec.position.html">tqec.position</a></li>
+      <li class="breadcrumb-item active">tqec.position.SignedDirection3D</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.computation.geometry.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.position.SignedDirection3D.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,38 +112,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-tqec.computation.geometry">
-<span id="tqec-computation-geometry"></span><h1>tqec.computation.geometry<a class="headerlink" href="#module-tqec.computation.geometry" title="Link to this heading"></a></h1>
-<p class="rubric">Functions</p>
+  <section id="tqec-position-signeddirection3d">
+<h1>tqec.position.SignedDirection3D<a class="headerlink" href="#tqec-position-signeddirection3d" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.position.SignedDirection3D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SignedDirection3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Direction3D.html#tqec.position.Direction3D" title="tqec.position.Direction3D"><span class="pre">Direction3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">towards_positive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/position.html#SignedDirection3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.position.SignedDirection3D" title="Link to this definition"></a></dt>
+<dd><p>Signed directions in the 3D spacetime diagram.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.position.SignedDirection3D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Direction3D.html#tqec.position.Direction3D" title="tqec.position.Direction3D"><span class="pre">Direction3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">towards_positive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.position.SignedDirection3D.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.geometry.load_library_block_geometries.html#tqec.computation.geometry.load_library_block_geometries" title="tqec.computation.geometry.load_library_block_geometries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_library_block_geometries</span></code></a>()</p></td>
-<td><p>Load the geometries of all the library blocks.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.geometry.parse_block_kind_from_str.html#tqec.computation.geometry.parse_block_kind_from_str" title="tqec.computation.geometry.parse_block_kind_from_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_block_kind_from_str</span></code></a>(block_kind)</p></td>
-<td><p>Parse a block kind from a string.</p></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Classes</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.geometry.Face.html#tqec.computation.geometry.Face" title="tqec.computation.geometry.Face"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Face</span></code></a>(face_type, width, height, normal_direction)</p></td>
-<td><p>A rectangle face in the 3d space.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.geometry.FaceType.html#tqec.computation.geometry.FaceType" title="tqec.computation.geometry.FaceType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceType</span></code></a>(value[, names, module, qualname, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.position.SignedDirection3D.__init__" title="tqec.position.SignedDirection3D.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(direction, towards_positive)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">towards_positive</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.computation.cube.ZXCube.html" class="btn btn-neutral float-left" title="tqec.computation.cube.ZXCube" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.computation.geometry.load_library_block_geometries.html" class="btn btn-neutral float-right" title="tqec.computation.geometry.load_library_block_geometries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.position.Shape2D.html" class="btn btn-neutral float-left" title="tqec.position.Shape2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.scale.html" class="btn btn-neutral float-right" title="tqec.scale" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

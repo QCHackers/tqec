@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.computation.geometry.FaceType &mdash; TQEC  documentation</title>
+  <title>tqec.interop.geometry.FaceKind &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.computation.pipe" href="tqec.computation.pipe.html" />
-    <link rel="prev" title="tqec.computation.geometry.Face" href="tqec.computation.geometry.Face.html" /> 
+    <link rel="next" title="tqec.interop.geometry.Geometries" href="tqec.interop.geometry.Geometries.html" />
+    <link rel="prev" title="tqec.interop.geometry.Face" href="tqec.interop.geometry.Face.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,27 +59,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="tqec.computation.html">tqec.computation</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.abstract_observable.html">tqec.computation.abstract_observable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.collada.html">tqec.computation.collada</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.conversion.html">tqec.computation.conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.cube.html">tqec.computation.cube</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.computation.geometry.html">tqec.computation.geometry</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.load_library_block_geometries.html">tqec.computation.geometry.load_library_block_geometries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.parse_block_kind_from_str.html">tqec.computation.geometry.parse_block_kind_from_str</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.geometry.Face.html">tqec.computation.geometry.Face</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.computation.geometry.FaceType</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.pipe.html">tqec.computation.pipe</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_graph.html">tqec.computation.zx_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.computation.zx_plot.html">tqec.computation.zx_plot</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.interop.html">tqec.interop</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tqec.interop.collada.html">tqec.interop.collada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.interop.collada_html_viewer.html">tqec.interop.collada_html_viewer</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.interop.geometry.html">tqec.interop.geometry</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.Face.html">tqec.interop.geometry.Face</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.interop.geometry.FaceKind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.Geometries.html">tqec.interop.geometry.Geometries</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -106,11 +99,11 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
-          <li class="breadcrumb-item"><a href="tqec.computation.html">tqec.computation</a></li>
-          <li class="breadcrumb-item"><a href="tqec.computation.geometry.html">tqec.computation.geometry</a></li>
-      <li class="breadcrumb-item active">tqec.computation.geometry.FaceType</li>
+          <li class="breadcrumb-item"><a href="tqec.interop.html">tqec.interop</a></li>
+          <li class="breadcrumb-item"><a href="tqec.interop.geometry.html">tqec.interop.geometry</a></li>
+      <li class="breadcrumb-item active">tqec.interop.geometry.FaceKind</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.computation.geometry.FaceType.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.interop.geometry.FaceKind.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -118,23 +111,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-computation-geometry-facetype">
-<h1>tqec.computation.geometry.FaceType<a class="headerlink" href="#tqec-computation-geometry-facetype" title="Link to this heading"></a></h1>
+  <section id="tqec-interop-geometry-facekind">
+<h1>tqec.interop.geometry.FaceKind<a class="headerlink" href="#tqec-interop-geometry-facekind" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="tqec.computation.geometry.FaceType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FaceType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/geometry.html#FaceType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.geometry.FaceType" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.interop.geometry.FaceKind">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FaceKind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/interop/geometry.html#FaceKind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.geometry.FaceKind" title="Link to this definition"></a></dt>
 <dd><dl class="py method">
-<dt class="sig sig-object py" id="tqec.computation.geometry.FaceType.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tqec.computation.geometry.FaceType.__init__" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tqec.interop.geometry.FaceKind.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tqec.interop.geometry.FaceKind.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_string</span></code>(face_type)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">opposite</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_zx_flipped</span></code>()</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -145,10 +135,10 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">X</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Y</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Y</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">H</span></code></p></td>
@@ -164,8 +154,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.computation.geometry.Face.html" class="btn btn-neutral float-left" title="tqec.computation.geometry.Face" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.computation.pipe.html" class="btn btn-neutral float-right" title="tqec.computation.pipe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.interop.geometry.Face.html" class="btn btn-neutral float-left" title="tqec.interop.geometry.Face" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.interop.geometry.Geometries.html" class="btn btn-neutral float-right" title="tqec.interop.geometry.Geometries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

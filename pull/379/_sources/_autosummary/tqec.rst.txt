@@ -38,6 +38,8 @@
 
    gallery
 
+   interop
+
    interval
 
 

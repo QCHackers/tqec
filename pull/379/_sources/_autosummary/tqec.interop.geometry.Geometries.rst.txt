@@ -1,0 +1,23 @@
+tqec.interop.geometry.Geometries
+================================
+
+.. currentmodule:: tqec.interop.geometry
+
+.. autoclass:: Geometries
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Geometries.__init__
+      ~Geometries.get_geometry
+   
+   
+
+   
+   
+   

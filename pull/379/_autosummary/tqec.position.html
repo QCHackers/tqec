@@ -62,15 +62,18 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.interop.html">tqec.interop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tqec.position</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tqec.position.Direction3D.html">tqec.position.Direction3D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.position.Displacement.html">tqec.position.Displacement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.FloatPosition3D.html">tqec.position.FloatPosition3D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.position.Position2D.html">tqec.position.Position2D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.position.Position3D.html">tqec.position.Position3D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.position.Shape2D.html">tqec.position.Shape2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.position.SignedDirection3D.html">tqec.position.SignedDirection3D</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
@@ -116,14 +119,20 @@
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.position.Displacement.html#tqec.position.Displacement" title="tqec.position.Displacement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Displacement</span></code></a>(x, y)</p></td>
 <td><p>Simple wrapper around tuple[int, int].</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.position.Position2D.html#tqec.position.Position2D" title="tqec.position.Position2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Position2D</span></code></a>(x, y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.position.FloatPosition3D.html#tqec.position.FloatPosition3D" title="tqec.position.FloatPosition3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FloatPosition3D</span></code></a>(x, y, z)</p></td>
+<td><p>A 3D float position.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.position.Position2D.html#tqec.position.Position2D" title="tqec.position.Position2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Position2D</span></code></a>(x, y)</p></td>
 <td><p>Simple wrapper around tuple[int, int].</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Position3D</span></code></a>(x, y, z)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Position3D</span></code></a>(x, y, z)</p></td>
 <td><p>A 3D integer position.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.position.Shape2D.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shape2D</span></code></a>(x, y)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.position.Shape2D.html#tqec.position.Shape2D" title="tqec.position.Shape2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shape2D</span></code></a>(x, y)</p></td>
 <td><p>Simple wrapper around tuple[int, int].</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.position.SignedDirection3D.html#tqec.position.SignedDirection3D" title="tqec.position.SignedDirection3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SignedDirection3D</span></code></a>(direction, towards_positive)</p></td>
+<td><p>Signed directions in the 3D spacetime diagram.</p></td>
 </tr>
 </tbody>
 </table>

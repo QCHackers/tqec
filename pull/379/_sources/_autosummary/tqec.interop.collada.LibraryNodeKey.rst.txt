@@ -1,0 +1,29 @@
+tqec.interop.collada.LibraryNodeKey
+===================================
+
+.. currentmodule:: tqec.interop.collada
+
+.. autoclass:: LibraryNodeKey
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LibraryNodeKey.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LibraryNodeKey.pop_faces_at_directions
+      ~LibraryNodeKey.kind
+   
+   

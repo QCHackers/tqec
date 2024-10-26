@@ -1,0 +1,33 @@
+tqec.position.FloatPosition3D
+=============================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: FloatPosition3D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FloatPosition3D.__init__
+      ~FloatPosition3D.as_tuple
+      ~FloatPosition3D.shift_by
+      ~FloatPosition3D.shift_in_direction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~FloatPosition3D.x
+      ~FloatPosition3D.y
+      ~FloatPosition3D.z
+   
+   
