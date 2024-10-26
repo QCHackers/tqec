@@ -73,7 +73,7 @@ html_static_path = ["_static"]
 # See https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
     "style_external_links": True,
-    "navigation_depth": 4,
+    "navigation_depth": 10,
 }
 
 
@@ -120,6 +120,13 @@ def setup(app):
     # Connect the autodoc-skip-member event from apidoc to the callback
     app.connect("autodoc-skip-member", autodoc_skip_member_handler)
 
+
+autodoc_member_order = "groupwise"
+# See https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content
+autoclass_content = "both"
+autodoc_default_options = {
+    "show-inheritance": True,
+}
 
 # Automatically execute and import some notebooks in the documentation.
 

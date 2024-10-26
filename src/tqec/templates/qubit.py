@@ -1,3 +1,5 @@
+"""Defines templates representing logical qubits and its constituent parts."""
+
 import warnings
 from typing import Sequence
 

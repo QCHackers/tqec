@@ -35,4 +35,4 @@ from .plaquette.enums import PlaquetteOrientation
 from .position import Direction3D, Displacement, Position2D, Position3D, Shape2D
 from .scale import LinearFunction, Scalable2D, ScalableInterval, round_or_fail
 from .templates import Template
-from .templates.enums import TemplateOrientation, TemplateRelativePositionEnum
+from .templates.enums import TemplateOrientation

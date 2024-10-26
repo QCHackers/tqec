@@ -1,3 +1,5 @@
+"""Defines functions and classes to generate and store sub-templates."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

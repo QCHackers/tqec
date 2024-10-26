@@ -1,3 +1,5 @@
+"""Defines a high-level template composing several sub-templates."""
+
 from copy import deepcopy
 from typing import Sequence
 
@@ -33,7 +35,7 @@ class LayoutTemplate(RectangularTemplate):
             element_layout: a dictionary with the position of the element
                 templates in the layout as keys and the templates as values.
             default_increments: default increments between two plaquettes. Defaults
-                to `Displacement(2, 2)` when `None`.
+                to ``Displacement(2, 2)`` when ``None``.
         """
         super().__init__(default_increments)
         if not element_layout:
