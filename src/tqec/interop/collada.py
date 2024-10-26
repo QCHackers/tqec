@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-import typing as ty
+from typing import BinaryIO, Iterable, Mapping, cast
 from dataclasses import dataclass
 
 import collada
@@ -14,22 +14,16 @@ import numpy.typing as npt
 from tqec.computation.cube import Port, CubeKind, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
+from tqec.interop.color import DEFAULT_FACE_COLORS, RGBA
 from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.computation.block_graph import BlockGraph, BlockKind
 from tqec.interop.geometry import (
     Face,
     FaceKind,
-    Geometries,
+    BlockGeometries,
 )
 from tqec.scale import round_or_fail
 
-_RGBA = tuple[float, float, float, float]
-_FACE_RGBA: dict[FaceKind, _RGBA] = {
-    FaceKind.X: (1.0, 127 / 255, 127 / 255, 1.0),
-    FaceKind.Y: (99 / 255, 198 / 255, 118 / 255, 1.0),
-    FaceKind.Z: (115 / 255, 150 / 255, 1.0, 1.0),
-    FaceKind.H: (1.0, 1.0, 101 / 255, 1.0),
-}
 
 ASSET_AUTHOR = "TQEC Community"
 ASSET_AUTHORING_TOOL_TQEC = "https://github.com/QCHackers/tqec"
@@ -83,7 +77,7 @@ def read_block_graph_from_dae_file(
             and len(node.children) == 1
             and isinstance(node.children[0], collada.scene.NodeNode)
         ):
-            instance = ty.cast(collada.scene.NodeNode, node.children[0])
+            instance = cast(collada.scene.NodeNode, node.children[0])
             library_node: collada.scene.Node = instance.node
             kind = _block_kind_from_str(library_node.name)
             transformation = Transformation.from_4d_affine_matrix(node.matrix)
@@ -151,9 +145,10 @@ def read_block_graph_from_dae_file(
 
 def write_block_graph_to_dae_file(
     block_graph: BlockGraph,
-    file_like: str | pathlib.Path | ty.BinaryIO,
+    file_like: str | pathlib.Path | BinaryIO,
     pipe_length: float = 2.0,
     pop_faces_at_direction: SignedDirection3D | None = None,
+    custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
 ) -> None:
     """Write the block graph to a Collada DAE file.
 
@@ -163,7 +158,7 @@ def write_block_graph_to_dae_file(
         pipe_length: The length of the pipe blocks. Default is 2.0.
         pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.
     """
-    base = _BaseColladaData(pop_faces_at_direction)
+    base = _BaseColladaData(pop_faces_at_direction, custom_face_colors)
     instance_id = 0
 
     def scale_position(pos: Position3D) -> FloatPosition3D:
@@ -216,11 +211,15 @@ class LibraryNodeKey:
 
 
 class _BaseColladaData:
-    def __init__(self, pop_faces_at_direction: SignedDirection3D | None = None) -> None:
+    def __init__(
+        self,
+        pop_faces_at_direction: SignedDirection3D | None = None,
+        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
+    ) -> None:
         """The base model template including the definition of all the library
         nodes and the necessary material, geometry definitions."""
         self.mesh = collada.Collada()
-        self.geometries = Geometries()
+        self.geometries = BlockGeometries()
 
         self.materials: dict[FaceKind, collada.material.Material] = {}
         self.geometry_nodes: dict[Face, collada.scene.GeometryNode] = {}
@@ -231,6 +230,11 @@ class _BaseColladaData:
             if pop_faces_at_direction
             else frozenset()
         )
+        custom_face_colors = (
+            dict(custom_face_colors) if custom_face_colors is not None else dict()
+        )
+
+        self._face_colors = DEFAULT_FACE_COLORS | custom_face_colors
 
         self._create_scene()
         self._add_asset_info()
@@ -256,7 +260,7 @@ class _BaseColladaData:
     def _add_materials(self) -> None:
         """Add all the materials for different faces."""
         for face_type in FaceKind:
-            rgba = _FACE_RGBA[face_type]
+            rgba = self._face_colors[face_type].as_floats()
             effect = collada.material.Effect(
                 f"{face_type.value}_effect",
                 [],
@@ -312,7 +316,7 @@ class _BaseColladaData:
     def _add_library_node(
         self,
         block_kind: BlockKind,
-        pop_faces_at_directions: ty.Iterable[SignedDirection3D] = (),
+        pop_faces_at_directions: Iterable[SignedDirection3D] = (),
     ) -> LibraryNodeKey:
         pop_faces_at_directions = (
             frozenset(pop_faces_at_directions) | self._pop_faces_at_direction
@@ -335,7 +339,7 @@ class _BaseColladaData:
         instance_id: int,
         transform_matrix: npt.NDArray[np.float32],
         block_kind: BlockKind,
-        pop_faces_at_directions: ty.Iterable[SignedDirection3D] = (),
+        pop_faces_at_directions: Iterable[SignedDirection3D] = (),
     ) -> None:
         """Add an instance node to the root node."""
         key = self._add_library_node(block_kind, pop_faces_at_directions)
