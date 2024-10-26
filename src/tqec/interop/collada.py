@@ -325,7 +325,7 @@ class _BaseColladaData:
             self._add_face_geometry_node(face)
         children = [self.geometry_nodes[face] for face in faces]
         key_str = str(key)
-        node = collada.scene.Node(key_str, children, name=key_str)
+        node = collada.scene.Node(key_str, children, name=str(key.kind))
         self.mesh.nodes.append(node)
         self.library_nodes[key] = node
         return key
