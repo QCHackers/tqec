@@ -11,157 +11,175 @@ class ColladaHTMLViewer:
     implementation of `_repr_html_` method."""
 
     HTML_TEMPLATE = Template("""
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
-    <meta charset="UTF-8" />
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.138.0/build/three.module.js",
-        "three-orbitcontrols": "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js",
-        "three-collada-loader": "https://unpkg.com/three@0.138.0/examples/jsm/loaders/ColladaLoader.js"
+  <meta charset="UTF-8" />
+  <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.138.0/build/three.module.js",
+          "three-orbitcontrols": "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js",
+          "three-collada-loader": "https://unpkg.com/three@0.138.0/examples/jsm/loaders/ColladaLoader.js"
+        }
       }
-    }
-  </script>
+    </script>
 </head>
 
 <body>
-    <a download="model.dae" id="tqec-3d-viewer-download-link"
-        href="data:text/plain;base64,$MODEL_BASE64_PLACEHOLDER">Download 3D Model as .dae File</a>
-    <br>Mouse Wheel = Zoom. Left Drag = Orbit. Right Drag = Strafe.
-    <div id="tqec-3d-viewer-scene-container" style="width: calc(100vw - 32px); height: calc(100vh - 64px);">JavaScript Blocked?</div>
+  <a download="model.dae" id="model-download-link" href="data:text/plain;base64,$MODEL_BASE64_PLACEHOLDER">Download 3D
+    Model as .dae File</a>
+  <br />Mouse Wheel = Zoom. Left Drag = Orbit. Right Drag = Strafe.
+  <div id="scene-container" style="width: calc(100vw - 32px); height: calc(100vh - 64px)">
+    JavaScript Blocked?
+  </div>
 
-    <script type="module">
-        let container = document.getElementById("tqec-3d-viewer-scene-container");
-        let downloadLink = document.getElementById("tqec-3d-viewer-download-link");
-        container.textContent = "Loading viewer...";
+  <script type="module">
+    import * as THREE from "three";
+    import {OrbitControls} from "three-orbitcontrols";
+    import {ColladaLoader} from "three-collada-loader";
 
-        /// BEGIN TERRIBLE HACK.
-        /// Change the ID to avoid cross-cell interactions.
-        /// This is a workaround for https://github.com/jupyter/notebook/issues/6598
-        container.id = undefined;
-        downloadLink.id = undefined;
+    const container = document.getElementById("scene-container");
+    const downloadLink = document.getElementById("model-download-link");
 
-        import { Box3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, Vector3, DoubleSide, AxesHelper } from "three";
-        import { OrbitControls } from "three-orbitcontrols";
-        import { ColladaLoader } from "three-collada-loader";
+    // Remove IDs to avoid cross-cell interactions (workaround for Jupyter notebook issue)
+    container.removeAttribute("id");
+    downloadLink.removeAttribute("id");
 
-        try {
-            container.textContent = "Loading model...";
-            let modelDataUri = downloadLink.href;
-            let collada = await new ColladaLoader().loadAsync(modelDataUri);
-            container.textContent = "Loading scene...";
+    container.textContent = "Loading viewer...";
 
-            // Create the scene, adding lighting for the loaded objects.
-            let scene = new Scene();
-            scene.background = new Color("#CBDFC6");
-            // Ambient light
-            const ambientLight = new AmbientLight(0xffffff, 3);
+    async function init() {
+      try {
+        container.textContent = "Loading model...";
 
-            scene.add(ambientLight);
+        const modelDataUri = downloadLink.href;
+        const collada = await new ColladaLoader().loadAsync(modelDataUri);
 
-            // Traverse the model to set materials to double-sided
-            collada.scene.traverse(function (node) {
-                if (node.isMesh) {
-                    node.material.side = DoubleSide;
-                }
-            });
-            scene.add(collada.scene);
+        container.textContent = "Loading scene...";
 
-            // Point the camera at the center, far enough back to see everything.
-            let camera = new PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100000);
-            let controls = new OrbitControls(camera, container);
-            let bounds = new Box3().setFromObject(scene);
-            let mid = new Vector3(
-                (bounds.min.x + bounds.max.x) * 0.5,
-                (bounds.min.y + bounds.max.y) * 0.5,
-                (bounds.min.z + bounds.max.z) * 0.5,
-            );
-            let boxPoints = [];
-            for (let dx of [0, 0.5, 1]) {
-                for (let dy of [0, 0.5, 1]) {
-                    for (let dz of [0, 0.5, 1]) {
-                        boxPoints.push(new Vector3(
-                            bounds.min.x + (bounds.max.x - bounds.min.x) * dx,
-                            bounds.min.y + (bounds.max.y - bounds.min.y) * dy,
-                            bounds.min.z + (bounds.max.z - bounds.min.z) * dz,
-                        ));
-                    }
-                }
-            }
-            let isInView = p => {
-                p = new Vector3(p.x, p.y, p.z);
-                p.project(camera);
-                return Math.abs(p.x) < 1 && Math.abs(p.y) < 1 && p.z >= 0 && p.z < 1;
-            };
-            let unit = new Vector3(0.3, 0.4, -1.8);
-            unit.normalize();
-            let setCameraDistance = d => {
-                controls.target.copy(mid);
-                camera.position.copy(mid);
-                camera.position.addScaledVector(unit, d);
-                controls.update();
-                return boxPoints.every(isInView);
-            };
+        // Create the scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("#CBDFC6");
 
-            let maxDistance = 1;
-            for (let k = 0; k < 20; k++) {
-                if (setCameraDistance(maxDistance)) {
-                    break;
-                }
-                maxDistance *= 2;
-            }
-            let minDistance = maxDistance;
-            for (let k = 0; k < 20; k++) {
-                minDistance /= 2;
-                if (!setCameraDistance(minDistance)) {
-                    break;
-                }
-            }
-            for (let k = 0; k < 20; k++) {
-                let mid = (minDistance + maxDistance) / 2;
-                if (setCameraDistance(mid)) {
-                    maxDistance = mid;
-                } else {
-                    minDistance = mid;
-                }
-            }
-            setCameraDistance(maxDistance);
+        // Set up lights
+        setupLights(scene);
 
-            // Add axes helper to the scene
-            let axesHelper = new AxesHelper(2);
-            axesHelper.rotation.x = -Math.PI / 2; // Rotate the axes to align with the model's Z-up orientation
-            scene.add(axesHelper);
+        // Prepare and add the model to the scene
+        processModel(collada.scene);
+        scene.add(collada.scene);
 
-            // Set up rendering.
-            let renderer = new WebGLRenderer({ antialias: true });
-            container.textContent = "";
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.physicallyCorrectLights = true;
-            container.appendChild(renderer.domElement);
+        // Set up the camera and controls
+        const camera = new THREE.PerspectiveCamera(
+          35,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          100000,
+        );
+        const controls = new OrbitControls(camera, container);
 
-            // Render whenever any important changes have occurred.
-            requestAnimationFrame(() => renderer.render(scene, camera));
-            new ResizeObserver(() => {
-                let w = container.clientWidth;
-                let h = container.clientHeight;
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-                renderer.setSize(w, h);
-                renderer.render(scene, camera);
-            }).observe(container);
-            controls.addEventListener("change", () => {
-                renderer.render(scene, camera);
-            })
-        } catch (ex) {
-            container.textContent = "Failed to show model. " + ex;
-            console.error(ex);
+        // Adjust camera to fit the scene
+        fitCameraToObject(camera, controls, scene);
+
+        // Add axes helper
+        const axesHelper = new THREE.AxesHelper(2);
+        axesHelper.rotation.x = -Math.PI / 2;
+        scene.add(axesHelper);
+
+        // Set up renderer
+        const renderer = new THREE.WebGLRenderer({antialias: true});
+        setupRenderer(renderer, container, camera, scene);
+
+        // Start rendering
+        renderScene(renderer, scene, camera, controls, container);
+      } catch (ex) {
+        container.textContent = "Failed to show model. " + ex;
+        console.error(ex);
+      }
+    }
+
+    function setupLights(scene) {
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      directionalLight.position.set(10, 10, 10);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+    }
+
+    function processModel(modelScene) {
+      modelScene.traverse((node) => {
+        if (node.isMesh) {
+          node.material.side = THREE.DoubleSide;
+
+          // Add edges for better visibility
+          const edgesGeometry = new THREE.EdgesGeometry(node.geometry);
+          const edgesMaterial = new THREE.LineBasicMaterial({
+            color: 0x000000,
+          });
+          const edgeMesh = new THREE.LineSegments(
+            edgesGeometry,
+            edgesMaterial,
+          );
+          node.add(edgeMesh);
         }
-    </script>
+      });
+    }
+
+    function fitCameraToObject(camera, controls, scene) {
+      const bounds = new THREE.Box3().setFromObject(scene);
+      const center = bounds.getCenter(new THREE.Vector3());
+      const size = bounds.getSize(new THREE.Vector3());
+
+      // Compute the distance required to fit the object
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = camera.fov * (Math.PI / 180);
+      let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+
+      camera.position.set(center.x, center.y, cameraZ * 1.2);
+      camera.lookAt(center);
+
+      // Update the controls target and update the controls
+      controls.target.copy(center);
+      controls.update();
+    }
+
+    function setupRenderer(renderer, container, camera, scene) {
+      container.textContent = "";
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.physicallyCorrectLights = true;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.setClearColor(0xdedede);
+      container.appendChild(renderer.domElement);
+    }
+
+    function renderScene(renderer, scene, camera, controls, container) {
+      const render = () => {
+        renderer.render(scene, camera);
+      };
+
+      render();
+
+      new ResizeObserver(() => {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+        render();
+      }).observe(container);
+
+      controls.addEventListener("change", render);
+    }
+
+    init();
+  </script>
 </body>
+
 </html>
 """)
 

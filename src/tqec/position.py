@@ -145,6 +145,9 @@ class SignedDirection3D:
     def __neg__(self) -> SignedDirection3D:
         return SignedDirection3D(self.direction, not self.towards_positive)
 
+    def __str__(self) -> str:
+        return f"{self.direction}{'+' if self.towards_positive else '-'}"
+
 
 @dataclass(frozen=True, order=True)
 class FloatPosition3D:

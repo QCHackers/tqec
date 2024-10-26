@@ -14,12 +14,12 @@ import numpy.typing as npt
 from tqec.computation.cube import Port, CubeKind, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
-from tqec.position import FloatPosition3D, Position3D
+from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.computation.block_graph import BlockGraph, BlockKind
 from tqec.interop.geometry import (
     Face,
     FaceKind,
-    load_library_block_geometries,
+    Geometries,
 )
 from tqec.scale import round_or_fail
 
@@ -153,6 +153,7 @@ def write_block_graph_to_dae_file(
     block_graph: BlockGraph,
     file_like: str | pathlib.Path | ty.BinaryIO,
     pipe_length: float = 2.0,
+    pop_faces_at_direction: SignedDirection3D | None = None,
 ) -> None:
     """Write the block graph to a Collada DAE file.
 
@@ -160,8 +161,9 @@ def write_block_graph_to_dae_file(
         block_graph: The block graph to write.
         file: The output file path or file-like object that supports binary write.
         pipe_length: The length of the pipe blocks. Default is 2.0.
+        pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.
     """
-    base = _BaseColladaData()
+    base = _BaseColladaData(pop_faces_at_direction)
     instance_id = 0
 
     def scale_position(pos: Position3D) -> FloatPosition3D:
@@ -177,7 +179,12 @@ def write_block_graph_to_dae_file(
             scaled_position = scaled_position.shift_by(dz=0.5)
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position.as_tuple()
-        base.add_instance_node(instance_id, matrix, cube.kind)
+        pop_faces_at_directions = []
+        for pipe in block_graph.pipes_at(cube.position):
+            pop_faces_at_directions.append(
+                SignedDirection3D(pipe.direction, cube == pipe.u)
+            )
+        base.add_instance_node(instance_id, matrix, cube.kind, pop_faces_at_directions)
         instance_id += 1
     for pipe in block_graph.pipes:
         head_pos = scale_position(pipe.u.position)
@@ -193,16 +200,37 @@ def write_block_graph_to_dae_file(
     base.mesh.write(file_like)
 
 
+@dataclass(frozen=True)
+class LibraryNodeKey:
+    """The key to access the library node in the Collada DAE file."""
+
+    kind: BlockKind
+    pop_faces_at_directions: frozenset[SignedDirection3D] = frozenset()
+
+    def __str__(self) -> str:
+        string = f"{self.kind}"
+        if self.pop_faces_at_directions:
+            string += " without "
+            string += " ".join(str(d) for d in self.pop_faces_at_directions)
+        return string
+
+
 class _BaseColladaData:
-    def __init__(self) -> None:
+    def __init__(self, pop_faces_at_direction: SignedDirection3D | None = None) -> None:
         """The base model template including the definition of all the library
         nodes and the necessary material, geometry definitions."""
         self.mesh = collada.Collada()
-        self.library_geometry = load_library_block_geometries()
+        self.geometries = Geometries()
+
         self.materials: dict[FaceKind, collada.material.Material] = {}
         self.geometry_nodes: dict[Face, collada.scene.GeometryNode] = {}
         self.root_node = collada.scene.Node("SketchUp", name="SketchUp")
-        self.library_nodes: dict[BlockKind, collada.scene.Node] = {}
+        self.library_nodes: dict[LibraryNodeKey, collada.scene.Node] = {}
+        self._pop_faces_at_direction: frozenset[SignedDirection3D] = (
+            frozenset({pop_faces_at_direction})
+            if pop_faces_at_direction
+            else frozenset()
+        )
 
         self._create_scene()
         self._add_asset_info()
@@ -281,32 +309,42 @@ class _BaseColladaData:
         )
         self.geometry_nodes[face] = geom_node
 
-    def _add_library_node(self, block_kind: BlockKind) -> None:
-        if block_kind in self.library_nodes:
-            return
-        for face in self.library_geometry[block_kind]:
+    def _add_library_node(
+        self,
+        block_kind: BlockKind,
+        pop_faces_at_directions: ty.Iterable[SignedDirection3D] = (),
+    ) -> LibraryNodeKey:
+        pop_faces_at_directions = (
+            frozenset(pop_faces_at_directions) | self._pop_faces_at_direction
+        )
+        key = LibraryNodeKey(block_kind, pop_faces_at_directions)
+        if key in self.library_nodes:
+            return key
+        faces = self.geometries.get_geometry(block_kind, pop_faces_at_directions)
+        for face in faces:
             self._add_face_geometry_node(face)
-        children = [
-            self.geometry_nodes[face] for face in self.library_geometry[block_kind]
-        ]
-        node = collada.scene.Node(str(block_kind), children, name=str(block_kind))
+        children = [self.geometry_nodes[face] for face in faces]
+        key_str = str(key)
+        node = collada.scene.Node(key_str, children, name=key_str)
         self.mesh.nodes.append(node)
-        self.library_nodes[block_kind] = node
+        self.library_nodes[key] = node
+        return key
 
     def add_instance_node(
         self,
         instance_id: int,
         transform_matrix: npt.NDArray[np.float32],
         block_kind: BlockKind,
+        pop_faces_at_directions: ty.Iterable[SignedDirection3D] = (),
     ) -> None:
         """Add an instance node to the root node."""
-        self._add_library_node(block_kind)
+        key = self._add_library_node(block_kind, pop_faces_at_directions)
         child_node = collada.scene.Node(
             f"ID{instance_id}",
             name=f"instance_{instance_id}",
             transforms=[collada.scene.MatrixTransform(transform_matrix.flatten())],
         )
-        point_to_node = self.library_nodes[block_kind]
+        point_to_node = self.library_nodes[key]
         instance_node = collada.scene.NodeNode(point_to_node)
         child_node.children.append(instance_node)
         self.root_node.children.append(child_node)

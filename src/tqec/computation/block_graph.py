@@ -10,7 +10,7 @@ from io import BytesIO
 import networkx as nx
 
 from tqec.exceptions import TQECException
-from tqec.position import Direction3D, Position3D
+from tqec.position import Direction3D, Position3D, SignedDirection3D
 from tqec.computation.cube import Cube, CubeKind
 from tqec.computation.pipe import Pipe, PipeKind
 from tqec.computation.zx_graph import ZXGraph
@@ -242,12 +242,17 @@ class BlockGraph:
         )
 
     def to_dae_file(
-        self, filename: str | pathlib.Path, pipe_length: float = 2.0
+        self,
+        filename: str | pathlib.Path,
+        pipe_length: float = 2.0,
+        pop_faces_at_direction: SignedDirection3D | None = None,
     ) -> None:
         """Export the block graph to a DAE file."""
         from tqec.interop.collada import write_block_graph_to_dae_file
 
-        write_block_graph_to_dae_file(self, filename, pipe_length)
+        write_block_graph_to_dae_file(
+            self, filename, pipe_length, pop_faces_at_direction
+        )
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
@@ -260,13 +265,16 @@ class BlockGraph:
         self,
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
+        pop_faces_at_direction: SignedDirection3D | None = None,
     ) -> ColladaHTMLViewer:
         """Display the block graph in 3D."""
         from tqec.interop.collada import write_block_graph_to_dae_file
         from tqec.interop.collada_html_viewer import display_collada_model
 
         bytes_buffer = BytesIO()
-        write_block_graph_to_dae_file(self, bytes_buffer, pipe_length)
+        write_block_graph_to_dae_file(
+            self, bytes_buffer, pipe_length, pop_faces_at_direction
+        )
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),
             write_html_filepath=write_html_filepath,
