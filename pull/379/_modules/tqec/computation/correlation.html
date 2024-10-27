@@ -81,7 +81,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.computation.correlation</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
@@ -94,50 +96,96 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CorrelationSurface</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A correlation surface in the ZX graph.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A correlation surface in the logical computation.</span>
+
+<span class="sd">    The correlation surface specifies the correlation between the logical operators in the</span>
+<span class="sd">    spacetime diagram. Logical observable can be derived from the boundaries of the correlation</span>
+<span class="sd">    surface.</span>
+
+<span class="sd">    The correlation surface is defined by the set of edges in the ZX graph. Each edge represents</span>
+<span class="sd">    a X/Z surface within the pipe in the `BlockGraph` picture. A Y surface is represented by two</span>
+<span class="sd">    distinct edges, one for the X surface and one for the Z surface. Therefore, the nodes of the</span>
+<span class="sd">    edges in the correlation surface must be Z/X type nodes.</span>
+
 
 <span class="sd">    Attributes:</span>
+<span class="sd">        nodes: A set of `ZXNode` representing the nodes in the correlation surface. The kind of</span>
+<span class="sd">            the node is determined by what kinds of correlation the node supports. If both X and</span>
+<span class="sd">            Z correlation are supported, the node is a Y type node.</span>
 <span class="sd">        span: A set of `ZXEdge` representing the correlation between logical operators spanning</span>
-<span class="sd">            in the 3D space.</span>
-<span class="sd">        external_stabilizer: The external stabilizer of the correlation surface. The external</span>
-<span class="sd">            stabilizer is a mapping from the port label to the Pauli operator at the port.</span>
-<span class="sd">            Sign of the stabilizer is neglected.</span>
+<span class="sd">            in the 3D space. The edges in the span must be between Z/X type nodes.</span>
+<span class="sd">        external_stabilizer: A mapping from the port label to the Pauli operator at the port, which</span>
+<span class="sd">            represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer</span>
+<span class="sd">            is neglected.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">span</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]</span>
-    <span class="n">external_stabilizer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="n">nodes</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]</span>
+    <span class="n">span</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">()</span>
+    <span class="n">external_stabilizer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">compare</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The correlation surface must contain at least one edge.&quot;</span>
+                <span class="s2">&quot;The correlation surface must contain at least one node.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">is_zx_node</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The correlation surface must contain only Z/X type nodes.&quot;</span>
+                <span class="s2">&quot;The edges in the correlation surface must be between Z/X type nodes.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CorrelationSurface</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">span</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_span</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">span</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CorrelationSurface</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a correlation surface from the correlation span.&quot;&quot;&quot;</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">)</span>
+        <span class="n">correlation_types</span> <span class="o">=</span> <span class="n">CorrelationSurface</span><span class="o">.</span><span class="n">get_correlation_types</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">ZXNode</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="n">external_stabilizer</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">correlation_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">external_stabilizer</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">external_stabilizer</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">correlation_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">CorrelationSurface</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">span</span><span class="p">,</span> <span class="n">external_stabilizer</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_correlation_types</span><span class="p">(</span><span class="n">span</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation types at the nodes in the correlation span.</span>
+
+<span class="sd">        The correlation type at the node is determined by the correlation types of the edges</span>
+<span class="sd">        connected to the node. If the node is connected to both X and Z type edges, the correlation</span>
+<span class="sd">        is Y type. If the node is connected to only one type of edge, the correlation is Z/X type.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">correlations_at_position</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">ZXKind</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">span</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">:</span>
+                <span class="n">correlations_at_position</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+
+        <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">types</span> <span class="ow">in</span> <span class="n">correlations_at_position</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">correlation_types</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+                <span class="n">correlation_types</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span>
+        <span class="k">return</span> <span class="n">correlation_types</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spanning_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">Position3D</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the positions spanned by the correlation surface.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">}</span>
+    <span class="k">def</span> <span class="nf">node_correlation_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a mapping from the position of the node to the correlation type supported at</span>
+<span class="sd">        the node.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">kind</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">get_node_correlation_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation type of the nodes in the correlation surface.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A dictionary mapping the position of the node to the correlation type.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_get_node_correlation_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">)</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_single_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the correlation surface contains only one node.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span></div>
 
 
 
@@ -149,16 +197,25 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation surfaces in the ZX graph.</span>
 
 <span class="sd">    The algorithm starts from each leaf node in the graph, and find the correlation surfaces</span>
-<span class="sd">    using the flood fill like algorithm. For Z/X type node, the correlation surface must start</span>
-<span class="sd">    from the opposite type node. For the Port, the correlation surface can start from both X/Z</span>
-<span class="sd">    type node. For the Y type node, the correlation surface must be the product of the X and Z</span>
-<span class="sd">    type.</span>
+<span class="sd">    using the flood fill like algorithm.</span>
+
+<span class="sd">    For Z/X type node, the correlation surface must start from the opposite type node. For the</span>
+<span class="sd">    Port, the correlation surface can start from both X/Z type node. For the Y type node, the</span>
+<span class="sd">    correlation surface must be the product of the X and Z type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        zx_graph: The ZX graph to find the correlation surfaces.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of `CorrelationSurface` in the graph.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">zx_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-            <span class="s2">&quot;The graph must contain at least two nodes to find correlation surfaces.&quot;</span>
-        <span class="p">)</span>
+    <span class="c1"># Edge case: single node graph</span>
+    <span class="k">if</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">CorrelationSurface</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">zx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">with_zx_flipped</span><span class="p">()}))</span>
+        <span class="p">]</span>
+    <span class="c1"># Find correlation surfaces starting from each leaf node</span>
     <span class="n">leaves</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">zx_graph</span><span class="o">.</span><span class="n">leaf_nodes</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">leaves</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -217,77 +274,34 @@
 <span class="sd">    type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">correlation_surfaces</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_is_compatible</span><span class="p">(</span>
+        <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># Check the leaf nodes compatibility.</span>
+        <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">leaf_nodes</span><span class="p">:</span>
+            <span class="c1"># Port is compatible with any correlation type.</span>
+            <span class="k">if</span> <span class="n">leaf</span><span class="o">.</span><span class="n">is_port</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">correlation_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># Y correlation can only be supported on the Y type node.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">correlation_type</span> <span class="o">==</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="c1"># Z/X correlation must be supported on the opposite type node.</span>
+            <span class="k">if</span> <span class="n">correlation_type</span> <span class="o">!=</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span> <span class="ow">and</span> <span class="n">correlation_type</span> <span class="o">==</span> <span class="n">leaf</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
     <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">spans</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">span</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">correlation_node_types</span> <span class="o">=</span> <span class="n">_get_node_correlation_types</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_compatible_correlation</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">,</span> <span class="n">correlation_node_types</span><span class="p">):</span>
+        <span class="n">correlation_surface</span> <span class="o">=</span> <span class="n">CorrelationSurface</span><span class="o">.</span><span class="n">from_span</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">,</span> <span class="n">span</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_compatible</span><span class="p">(</span><span class="n">correlation_surface</span><span class="o">.</span><span class="n">node_correlation_types</span><span class="p">):</span>
             <span class="k">continue</span>
-        <span class="n">correlation_surfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">CorrelationSurface</span><span class="p">(</span>
-                <span class="n">span</span><span class="p">,</span>
-                <span class="n">_get_external_stabilizer</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">,</span> <span class="n">correlation_node_types</span><span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">correlation_surfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">correlation_surface</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">correlation_surfaces</span>
-
-
-<span class="k">def</span> <span class="nf">_is_compatible_correlation</span><span class="p">(</span>
-    <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
-    <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="c1"># Check the leaf nodes compatibility.</span>
-    <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">leaf_nodes</span><span class="p">:</span>
-        <span class="c1"># Port is compatible with any correlation type.</span>
-        <span class="k">if</span> <span class="n">leaf</span><span class="o">.</span><span class="n">is_port</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">correlation_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="c1"># Y correlation can only be supported on the Y type node.</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">correlation_type</span> <span class="o">==</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="c1"># Z/X correlation must be supported on the opposite type node.</span>
-        <span class="k">if</span> <span class="n">correlation_type</span> <span class="o">!=</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span> <span class="ow">and</span> <span class="n">correlation_type</span> <span class="o">==</span> <span class="n">leaf</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-
-<span class="k">def</span> <span class="nf">_get_external_stabilizer</span><span class="p">(</span>
-    <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
-    <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct the external stabilizer for the correlation surface.</span>
-
-<span class="sd">    The external stabilizer is a mapping from the port label to the Pauli operator</span>
-<span class="sd">    at the port.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">external_stabilizer</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">correlation_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">external_stabilizer</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">external_stabilizer</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">correlation_type</span><span class="o">.</span><span class="n">value</span>
-    <span class="k">return</span> <span class="n">external_stabilizer</span>
-
-
-<span class="k">def</span> <span class="nf">_get_node_correlation_types</span><span class="p">(</span>
-    <span class="n">span</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
-    <span class="n">correlations_at_position</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">ZXKind</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">span</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">:</span>
-            <span class="n">correlations_at_position</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
-
-    <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">types</span> <span class="ow">in</span> <span class="n">correlations_at_position</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">correlation_types</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
-            <span class="n">correlation_types</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span>
-    <span class="k">return</span> <span class="n">correlation_types</span>
 
 
 <span class="k">def</span> <span class="nf">_find_spans_with_flood_fill</span><span class="p">(</span>
@@ -306,6 +320,11 @@
 <span class="sd">    no such selection can be made, the search is pruned. For different choices, the algorithm</span>
 <span class="sd">    recursively explores the next frontier until the search is completed. Finally, the branches</span>
 <span class="sd">    at different nodes are produced to form the correlation spans.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        zx_graph: The ZX graph to find the correlation spans in.</span>
+<span class="sd">        correlation_frontier: The set of correlation nodes to be explored at this step.</span>
+<span class="sd">        correlation_span: The current correlation span.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The ZX node type mismatches the correlation type, then we can flood</span>

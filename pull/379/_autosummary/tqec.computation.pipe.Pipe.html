@@ -121,8 +121,6 @@
 <dt class="sig sig-object py" id="tqec.computation.pipe.Pipe">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube" title="tqec.computation.cube.Cube"><span class="pre">Cube</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube" title="tqec.computation.cube.Cube"><span class="pre">Cube</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind" title="tqec.computation.pipe.PipeKind"><span class="pre">PipeKind</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/pipe.html#Pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.pipe.Pipe" title="Link to this definition"></a></dt>
 <dd><p>A block connecting two cubes in a 3D spacetime diagram.</p>
-<p>The pipe represents the idle or merge/split lattice surgery
-operation on logical qubits depending on its direction.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.pipe.Pipe.u">
 <span class="sig-name descname"><span class="pre">u</span></span><a class="headerlink" href="#tqec.computation.pipe.Pipe.u" title="Link to this definition"></a></dt>
@@ -167,10 +165,13 @@ operation on logical qubits depending on its direction.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.pipe.Pipe.__init__" title="tqec.computation.pipe.Pipe.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(u, v, kind)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_position_by</span></code>([dx, dy, dz])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_cubes</span></code>(u, v)</p></td>
+<td><p>Create a pipe connecting two cubes and infer the pipe kind.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_position_by</span></code>([dx, dy, dz])</p></td>
 <td><p>Shift the position of the pipe by the given displacement.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code>()</p></td>
 <td><p>Check the color of the pipe can match the cubes at its endpoints.</p></td>
 </tr>
 </tbody>

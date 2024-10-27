@@ -126,13 +126,35 @@
     <span class="n">correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span><span class="p">,</span>
     <span class="n">validate_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractObservable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a correlation surface to an abstract observable.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a correlation surface to an abstract observable.</span>
+
+<span class="sd">    You need to provide a correlation surface that is valid in the corresponding `ZXGraph`</span>
+<span class="sd">    of the block graph. Otherwise, the behavior is undefined.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        block_graph: The block graph containing the correlation surface.</span>
+<span class="sd">        correlation_surface: The correlation surface to convert.</span>
+<span class="sd">        validate_graph: Whether to validate the block graph before conversion.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The abstract observable derived from the correlation surface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">validate_graph</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">num_ports</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;The block graph must have no open ports to support observables.&quot;</span>
             <span class="p">)</span>
         <span class="n">block_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">has_single_node</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">num_cubes</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The block graph must have exactly one cube to support the single-node correlation surface.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">AbstractObservable</span><span class="p">(</span>
+            <span class="nb">frozenset</span><span class="p">(</span><span class="n">block_graph</span><span class="o">.</span><span class="n">cubes</span><span class="p">),</span>
+            <span class="nb">frozenset</span><span class="p">(),</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">has_obs_include</span><span class="p">(</span><span class="n">cube</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">correlation</span><span class="p">:</span> <span class="n">ZXKind</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_y_cube</span><span class="p">:</span>

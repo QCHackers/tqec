@@ -29,6 +29,7 @@ tqec.computation.cube.Cube
       ~Cube.is_regular
       ~Cube.is_spatial_junction
       ~Cube.is_y_cube
+      ~Cube.is_zx_cube
       ~Cube.label
       ~Cube.position
       ~Cube.kind

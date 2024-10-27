@@ -158,7 +158,26 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pipe is spatial.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_temporal</span></div>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_temporal</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_cube_kind</span><span class="p">(</span>
+        <span class="n">cube_kind</span><span class="p">:</span> <span class="n">ZXCube</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">,</span>
+        <span class="n">cube_at_head</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeKind</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe kind from the endpoint cube kind and the pipe direction.&quot;&quot;&quot;</span>
+        <span class="n">bases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXBasis</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cube_at_head</span> <span class="ow">and</span> <span class="n">has_hadamard</span><span class="p">:</span>
+            <span class="n">bases</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">with_zx_flipped</span><span class="p">()</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">cube_kind</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cube_kind</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">())</span>
+        <span class="n">bases_str</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">]</span>
+        <span class="n">bases_str</span><span class="p">[</span><span class="n">direction</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span>
+        <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
+            <span class="n">bases_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bases_str</span><span class="p">))</span></div>
 
 
 
@@ -167,9 +186,6 @@
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two cubes in a 3D spacetime diagram.</span>
-
-<span class="sd">    The pipe represents the idle or merge/split lattice surgery</span>
-<span class="sd">    operation on logical qubits depending on its direction.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        u: The first cube. The position of u will be guaranteed to be less than v.</span>
@@ -195,6 +211,42 @@
         <span class="k">if</span> <span class="n">p1</span> <span class="o">&gt;</span> <span class="n">p2</span><span class="p">:</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_cubes</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Cube</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipe</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe connecting two cubes and infer the pipe kind.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">u</span><span class="o">.</span><span class="n">is_zx_cube</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_zx_cube</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;At least one cube must be a ZX cube to infer the pipe kind.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">position</span> <span class="o">&lt;</span> <span class="n">v</span><span class="o">.</span><span class="n">position</span> <span class="k">else</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">is_neighbour</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;The cubes must be neighbours to create a pipe.&quot;</span><span class="p">)</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="n">d</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">all_directions</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">shift_in_direction</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">position</span>
+        <span class="p">)</span>
+
+        <span class="c1"># One cube is not a ZX cube</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">u</span><span class="o">.</span><span class="n">is_zx_cube</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_zx_cube</span><span class="p">:</span>
+            <span class="n">infer_from</span> <span class="o">=</span> <span class="n">u</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_zx_cube</span> <span class="k">else</span> <span class="n">v</span>
+            <span class="n">cube_kind</span> <span class="o">=</span> <span class="n">infer_from</span><span class="o">.</span><span class="n">kind</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cube_kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span>
+            <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_cube_kind</span><span class="p">(</span><span class="n">cube_kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">infer_from</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">pipe_kind</span><span class="p">)</span>
+
+        <span class="c1"># Both cubes are ZX cubes</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span>
+        <span class="n">has_hadamard</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">get_basis_along</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">get_basis_along</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">all_directions</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">direction</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">has_hadamard</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer a valid pipe kind from the cubes.&quot;</span><span class="p">)</span>
+        <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_cube_kind</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">pipe_kind</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>

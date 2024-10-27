@@ -191,10 +191,17 @@
     <span class="n">ax</span><span class="p">:</span> <span class="n">Axes3D</span><span class="p">,</span>
     <span class="n">correlation_edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw the correlation surface on the provided axes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        correlation_surface: The correlation surface to draw.</span>
+<span class="sd">        ax: The 3-dimensional ax to draw on.</span>
+<span class="sd">        correlation_edge_width: The width of the correlation edge. Default is 3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">span</span> <span class="o">=</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">span</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="n">ZXNode</span><span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">correlation_types</span> <span class="o">=</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">get_node_correlation_types</span><span class="p">()</span>
+    <span class="n">correlation_types</span> <span class="o">=</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">node_correlation_types</span>
     <span class="n">processed_edges</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">Position3D</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">span</span><span class="p">:</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>

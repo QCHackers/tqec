@@ -108,9 +108,8 @@
         <span class="p">)</span>
 
     <span class="c1"># Surfaces in the cubes</span>
-    <span class="n">correlation_types</span> <span class="o">=</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">get_node_correlation_types</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">spanning_positions</span><span class="p">:</span>
-        <span class="n">cube</span> <span class="o">=</span> <span class="n">block_graph</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+        <span class="n">cube</span> <span class="o">=</span> <span class="n">block_graph</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">]</span>
         <span class="c1"># Do not add surfaces in ports or Y-cubes</span>
         <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_port</span> <span class="ow">or</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_y_cube</span><span class="p">:</span>
             <span class="k">continue</span>
@@ -119,7 +118,7 @@
                 <span class="n">block_graph</span><span class="p">,</span>
                 <span class="n">cube</span><span class="p">,</span>
                 <span class="n">correlation_surface</span><span class="p">,</span>
-                <span class="n">correlation_types</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span>
                 <span class="n">pipe_length</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>

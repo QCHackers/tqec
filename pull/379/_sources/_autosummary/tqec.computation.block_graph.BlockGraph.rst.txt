@@ -16,7 +16,6 @@ tqec.computation.block\_graph.BlockGraph
       ~BlockGraph.__init__
       ~BlockGraph.add_cube
       ~BlockGraph.add_pipe
-      ~BlockGraph.display
       ~BlockGraph.from_dae_file
       ~BlockGraph.from_zx_graph
       ~BlockGraph.get_abstract_observables
@@ -27,6 +26,7 @@ tqec.computation.block\_graph.BlockGraph
       ~BlockGraph.to_dae_file
       ~BlockGraph.to_zx_graph
       ~BlockGraph.validate
+      ~BlockGraph.view_as_html
    
    
 

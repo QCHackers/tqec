@@ -216,21 +216,64 @@
 <span class="s2">    }</span>
 
 <span class="s2">    function fitCameraToObject(camera, controls, scene) {</span>
-<span class="s2">      const bounds = new THREE.Box3().setFromObject(scene);</span>
-<span class="s2">      const center = bounds.getCenter(new THREE.Vector3());</span>
-<span class="s2">      const size = bounds.getSize(new THREE.Vector3());</span>
+<span class="s2">      let bounds = new THREE.Box3().setFromObject(scene);</span>
+<span class="s2">      let mid = new THREE.Vector3(</span>
+<span class="s2">        (bounds.min.x + bounds.max.x) * 0.5,</span>
+<span class="s2">        (bounds.min.y + bounds.max.y) * 0.5,</span>
+<span class="s2">        (bounds.min.z + bounds.max.z) * 0.5,</span>
+<span class="s2">      );</span>
+<span class="s2">      let boxPoints = [];</span>
+<span class="s2">      for (let dx of [0, 0.5, 1]) {</span>
+<span class="s2">        for (let dy of [0, 0.5, 1]) {</span>
+<span class="s2">          for (let dz of [0, 0.5, 1]) {</span>
+<span class="s2">            boxPoints.push(</span>
+<span class="s2">              new THREE.Vector3(</span>
+<span class="s2">                bounds.min.x + (bounds.max.x - bounds.min.x) * dx,</span>
+<span class="s2">                bounds.min.y + (bounds.max.y - bounds.min.y) * dy,</span>
+<span class="s2">                bounds.min.z + (bounds.max.z - bounds.min.z) * dz,</span>
+<span class="s2">              ),</span>
+<span class="s2">            );</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+<span class="s2">      let isInView = (p) =&gt; {</span>
+<span class="s2">        p = new THREE.Vector3(p.x, p.y, p.z);</span>
+<span class="s2">        p.project(camera);</span>
+<span class="s2">        return Math.abs(p.x) &lt; 1 &amp;&amp; Math.abs(p.y) &lt; 1 &amp;&amp; p.z &gt;= 0 &amp;&amp; p.z &lt; 1;</span>
+<span class="s2">      };</span>
+<span class="s2">      let unit = new THREE.Vector3(0.3, 0.4, 1.8);</span>
+<span class="s2">      unit.normalize();</span>
+<span class="s2">      let setCameraDistance = (d) =&gt; {</span>
+<span class="s2">        controls.target.copy(mid);</span>
+<span class="s2">        camera.position.copy(mid);</span>
+<span class="s2">        camera.position.addScaledVector(unit, d);</span>
+<span class="s2">        controls.update();</span>
+<span class="s2">        return boxPoints.every(isInView);</span>
+<span class="s2">      };</span>
 
-<span class="s2">      // Compute the distance required to fit the object</span>
-<span class="s2">      const maxDim = Math.max(size.x, size.y, size.z);</span>
-<span class="s2">      const fov = camera.fov * (Math.PI / 180);</span>
-<span class="s2">      let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));</span>
-
-<span class="s2">      camera.position.set(center.x, center.y, cameraZ * 1.2);</span>
-<span class="s2">      camera.lookAt(center);</span>
-
-<span class="s2">      // Update the controls target and update the controls</span>
-<span class="s2">      controls.target.copy(center);</span>
-<span class="s2">      controls.update();</span>
+<span class="s2">      let maxDistance = 1;</span>
+<span class="s2">      for (let k = 0; k &lt; 20; k++) {</span>
+<span class="s2">        if (setCameraDistance(maxDistance)) {</span>
+<span class="s2">          break;</span>
+<span class="s2">        }</span>
+<span class="s2">        maxDistance *= 2;</span>
+<span class="s2">      }</span>
+<span class="s2">      let minDistance = maxDistance;</span>
+<span class="s2">      for (let k = 0; k &lt; 20; k++) {</span>
+<span class="s2">        minDistance /= 2;</span>
+<span class="s2">        if (!setCameraDistance(minDistance)) {</span>
+<span class="s2">          break;</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+<span class="s2">      for (let k = 0; k &lt; 20; k++) {</span>
+<span class="s2">        let mid = (minDistance + maxDistance) / 2;</span>
+<span class="s2">        if (setCameraDistance(mid)) {</span>
+<span class="s2">          maxDistance = mid;</span>
+<span class="s2">        } else {</span>
+<span class="s2">          minDistance = mid;</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+<span class="s2">      setCameraDistance(maxDistance);</span>
 <span class="s2">    }</span>
 
 <span class="s2">    function setupRenderer(renderer, container, camera, scene) {</span>

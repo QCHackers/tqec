@@ -100,6 +100,9 @@
     <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockKind</span>
 
 
+<span class="n">CORRELATION_SUFFIX</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_CORRELATION&quot;</span>
+
+
 <div class="viewcode-block" id="FaceKind">
 <a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.FaceKind.html#tqec.interop.geometry.FaceKind">[docs]</a>
 <span class="k">class</span> <span class="nc">FaceKind</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -107,8 +110,8 @@
     <span class="n">Y</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
     <span class="n">H</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
-    <span class="n">X_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;X_CORRELATION&quot;</span>
-    <span class="n">Z_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;Z_CORRELATION&quot;</span>
+    <span class="n">X_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span> <span class="o">+</span> <span class="n">CORRELATION_SUFFIX</span>
+    <span class="n">Z_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span> <span class="o">+</span> <span class="n">CORRELATION_SUFFIX</span>
 
     <span class="k">def</span> <span class="nf">with_zx_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FaceKind</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>

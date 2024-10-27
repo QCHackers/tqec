@@ -123,54 +123,56 @@
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.block_graph.BlockGraph.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/computation/block_graph.html#BlockGraph.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.block_graph.BlockGraph.__init__" title="Link to this definition"></a></dt>
-<dd><p>An undirected graph representation of a 3D spacetime defect diagram
-with the block structures explicitly defined.</p>
+<dd><p>An undirected graph representation of a 3D logical computation.</p>
+<p>The nodes of the graph are the cubes, which are the computational units of the logical
+computation. The edges of the graph are the pipes connecting the cubes, which guides
+the computation through the spacetime.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.block_graph.BlockGraph.__init__" title="tqec.computation.block_graph.BlockGraph.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([name])</p></td>
-<td><p>An undirected graph representation of a 3D spacetime defect diagram with the block structures explicitly defined.</p></td>
+<td><p>An undirected graph representation of a 3D logical computation.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_cube</span></code>(position, kind[, label, check_conflict])</p></td>
 <td><p>Add a cube to the graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pipe</span></code>(u, v, kind)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pipe</span></code>(u, v[, kind])</p></td>
 <td><p>Add a pipe to the graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">display</span></code>([write_html_filepath, pipe_length, ...])</p></td>
-<td><p>Display the block graph in 3D.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dae_file</span></code>(filename[, graph_name])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dae_file</span></code>(filename[, graph_name])</p></td>
 <td><p>Construct a block graph from a DAE file.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_zx_graph</span></code>(zx_graph[, name])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_zx_graph</span></code>(zx_graph[, name])</p></td>
 <td><p>Construct the block graph from a ZX graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_abstract_observables</span></code>([correlation_surfaces])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_abstract_observables</span></code>([correlation_surfaces])</p></td>
 <td><p>Get all the abstract observables from the block graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pipe</span></code>(pos1, pos2)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pipe</span></code>(pos1, pos2)</p></td>
 <td><p>Get the pipe by its endpoint positions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_pipe_between</span></code>(pos1, pos2)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_pipe_between</span></code>(pos1, pos2)</p></td>
 <td><p>Check if there is an pipe between two positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipes_at</span></code>(position)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipes_at</span></code>(position)</p></td>
 <td><p>Get the pipes connected to a cube.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_min_z_to_zero</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_min_z_to_zero</span></code>()</p></td>
 <td><p>Shift the whole graph in the z direction to make the minimum z equal zero.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dae_file</span></code>(filename[, pipe_length, ...])</p></td>
-<td><p>Export the block graph to a DAE file.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dae_file</span></code>(file_path[, pipe_length, ...])</p></td>
+<td><p>Write the block graph to a Collada DAE file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_graph</span></code>([name])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_graph</span></code>([name])</p></td>
 <td><p>Convert the block graph to a ZX graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code>()</p></td>
 <td><p>Check the validity of the block structures represented by the graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">view_as_html</span></code>([write_html_filepath, ...])</p></td>
+<td><p>View COLLADA model in html with the help of <cite>three.js</cite>.</p></td>
 </tr>
 </tbody>
 </table>

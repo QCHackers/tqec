@@ -123,10 +123,18 @@
 <span class="sig-name descname"><span class="pre">find_correlation_surfaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#find_correlation_surfaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.find_correlation_surfaces" title="Link to this definition"></a></dt>
 <dd><p>Find the correlation surfaces in the ZX graph.</p>
 <p>The algorithm starts from each leaf node in the graph, and find the correlation surfaces
-using the flood fill like algorithm. For Z/X type node, the correlation surface must start
-from the opposite type node. For the Port, the correlation surface can start from both X/Z
-type node. For the Y type node, the correlation surface must be the product of the X and Z
-type.</p>
+using the flood fill like algorithm.</p>
+<p>For Z/X type node, the correlation surface must start from the opposite type node. For the
+Port, the correlation surface can start from both X/Z type node. For the Y type node, the
+correlation surface must be the product of the X and Z type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>zx_graph</strong> – The ZX graph to find the correlation surfaces.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of <cite>CorrelationSurface</cite> in the graph.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

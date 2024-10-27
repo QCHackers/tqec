@@ -125,8 +125,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>block_graph</strong> – The block graph to write.</p></li>
 <li><p><strong>file</strong> – The output file path or file-like object that supports binary write.</p></li>
-<li><p><strong>pipe_length</strong> – The length of the pipe blocks. Default is 2.0.</p></li>
-<li><p><strong>pop_faces_at_direction</strong> – The direction to pop the faces of the blocks. Default is None.</p></li>
+<li><p><strong>pipe_length</strong> – The length of the pipes. Default is 2.0.</p></li>
+<li><p><strong>pop_faces_at_direction</strong> – Remove the faces at the given direction for all the blocks.
+This is useful for visualizing the internal structure of the blocks. Default is None.</p></li>
+<li><p><strong>custom_face_colors</strong> – A mapping from the face kind to the RGBA color to override the default
+face colors.</p></li>
+<li><p><strong>show_correlation_surface</strong> – The correlation surface to show in the block graph. Default is None.</p></li>
 </ul>
 </dd>
 </dl>

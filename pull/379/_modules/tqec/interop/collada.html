@@ -103,6 +103,7 @@
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">FloatPosition3D</span><span class="p">,</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">SignedDirection3D</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">BlockKind</span>
 <span class="kn">from</span> <span class="nn">tqec.interop.geometry</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CORRELATION_SUFFIX</span><span class="p">,</span>
     <span class="n">Face</span><span class="p">,</span>
     <span class="n">FaceKind</span><span class="p">,</span>
     <span class="n">BlockGeometries</span><span class="p">,</span>
@@ -167,7 +168,11 @@
         <span class="p">):</span>
             <span class="n">instance</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">library_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">node</span>
-            <span class="n">kind</span> <span class="o">=</span> <span class="n">_block_kind_from_str</span><span class="p">(</span><span class="n">library_node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">library_node</span><span class="o">.</span><span class="n">name</span>
+            <span class="c1"># Skip the correlation surface nodes</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">CORRELATION_SUFFIX</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="n">_block_kind_from_str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_4d_affine_matrix</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
             <span class="n">translation</span> <span class="o">=</span> <span class="n">FloatPosition3D</span><span class="p">(</span><span class="o">*</span><span class="n">transformation</span><span class="o">.</span><span class="n">translation</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">transformation</span><span class="o">.</span><span class="n">rotation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
@@ -247,10 +252,20 @@
 <span class="sd">    Args:</span>
 <span class="sd">        block_graph: The block graph to write.</span>
 <span class="sd">        file: The output file path or file-like object that supports binary write.</span>
-<span class="sd">        pipe_length: The length of the pipe blocks. Default is 2.0.</span>
-<span class="sd">        pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.</span>
+<span class="sd">        pipe_length: The length of the pipes. Default is 2.0.</span>
+<span class="sd">        pop_faces_at_direction: Remove the faces at the given direction for all the blocks.</span>
+<span class="sd">            This is useful for visualizing the internal structure of the blocks. Default is None.</span>
+<span class="sd">        custom_face_colors: A mapping from the face kind to the RGBA color to override the default</span>
+<span class="sd">            face colors.</span>
+<span class="sd">        show_correlation_surface: The correlation surface to show in the block graph. Default is None.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base</span> <span class="o">=</span> <span class="n">_BaseColladaData</span><span class="p">(</span><span class="n">pop_faces_at_direction</span><span class="p">,</span> <span class="n">custom_face_colors</span><span class="p">)</span>
+
+    <span class="n">custom_face_colors</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">custom_face_colors</span><span class="p">)</span> <span class="k">if</span> <span class="n">custom_face_colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">face_colors</span> <span class="o">=</span> <span class="n">DEFAULT_FACE_COLORS</span> <span class="o">|</span> <span class="n">custom_face_colors</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">_BaseColladaData</span><span class="p">(</span><span class="n">face_colors</span><span class="p">,</span> <span class="n">pop_faces_at_direction</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">scale_position</span><span class="p">(</span><span class="n">pos</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatPosition3D</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FloatPosition3D</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">pipe_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pos</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()))</span>
@@ -308,8 +323,8 @@
 <span class="k">class</span> <span class="nc">_BaseColladaData</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
+        <span class="n">face_colors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">],</span>
         <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library</span>
 <span class="sd">        nodes and the necessary material, geometry definitions.&quot;&quot;&quot;</span>
@@ -326,11 +341,7 @@
             <span class="k">if</span> <span class="n">pop_faces_at_direction</span>
             <span class="k">else</span> <span class="nb">frozenset</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="n">custom_face_colors</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="nb">dict</span><span class="p">(</span><span class="n">custom_face_colors</span><span class="p">)</span> <span class="k">if</span> <span class="n">custom_face_colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_face_colors</span> <span class="o">=</span> <span class="n">DEFAULT_FACE_COLORS</span> <span class="o">|</span> <span class="n">custom_face_colors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_colors</span> <span class="o">=</span> <span class="n">face_colors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_create_scene</span><span class="p">()</span>
@@ -455,7 +466,7 @@
         <span class="n">surface</span> <span class="o">=</span> <span class="n">get_correlation_surface_geometry</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
         <span class="n">geometry_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="p">),</span> <span class="p">[</span><span class="n">geometry_node</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">[</span><span class="n">geometry_node</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">value</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_library</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
@@ -516,8 +527,7 @@
     <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Transformation</span><span class="p">:</span>
         <span class="n">translation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># TODO: CHECK THIS</span>
-        <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">to_4d_affine_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>

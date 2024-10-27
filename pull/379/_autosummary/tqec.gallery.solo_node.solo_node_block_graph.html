@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.gallery.logical_cnot.logical_cnot_block_graph &mdash; TQEC  documentation</title>
+  <title>tqec.gallery.solo_node.solo_node_block_graph &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.gallery.logical_cnot.logical_cnot_zx_graph" href="tqec.gallery.logical_cnot.logical_cnot_zx_graph.html" />
-    <link rel="prev" title="tqec.gallery.logical_cnot" href="tqec.gallery.logical_cnot.html" /> 
+    <link rel="next" title="tqec.gallery.solo_node.solo_node_zx_graph" href="tqec.gallery.solo_node.solo_node_zx_graph.html" />
+    <link rel="prev" title="tqec.gallery.solo_node" href="tqec.gallery.solo_node.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -62,12 +62,12 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.gallery.logical_cnot.html">tqec.gallery.logical_cnot</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.gallery.logical_cnot.logical_cnot_block_graph</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.gallery.logical_cnot.logical_cnot_zx_graph.html">tqec.gallery.logical_cnot.logical_cnot_zx_graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.gallery.logical_cnot.html">tqec.gallery.logical_cnot</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.gallery.solo_node.html">tqec.gallery.solo_node</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.gallery.solo_node.solo_node_block_graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.gallery.solo_node.solo_node_zx_graph.html">tqec.gallery.solo_node.solo_node_zx_graph</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.gallery.solo_node.html">tqec.gallery.solo_node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.gallery.three_cnots.html">tqec.gallery.three_cnots</a></li>
 </ul>
 </li>
@@ -99,10 +99,10 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.gallery.html">tqec.gallery</a></li>
-          <li class="breadcrumb-item"><a href="tqec.gallery.logical_cnot.html">tqec.gallery.logical_cnot</a></li>
-      <li class="breadcrumb-item active">tqec.gallery.logical_cnot.logical_cnot_block_graph</li>
+          <li class="breadcrumb-item"><a href="tqec.gallery.solo_node.html">tqec.gallery.solo_node</a></li>
+      <li class="breadcrumb-item active">tqec.gallery.solo_node.solo_node_block_graph</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.gallery.logical_cnot.logical_cnot_block_graph.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.gallery.solo_node.solo_node_block_graph.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -110,12 +110,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-gallery-logical-cnot-logical-cnot-block-graph">
-<h1>tqec.gallery.logical_cnot.logical_cnot_block_graph<a class="headerlink" href="#tqec-gallery-logical-cnot-logical-cnot-block-graph" title="Link to this heading"></a></h1>
+  <section id="tqec-gallery-solo-node-solo-node-block-graph">
+<h1>tqec.gallery.solo_node.solo_node_block_graph<a class="headerlink" href="#tqec-gallery-solo-node-solo-node-block-graph" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="tqec.gallery.logical_cnot.logical_cnot_block_graph">
-<span class="sig-name descname"><span class="pre">logical_cnot_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'OPEN'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/logical_cnot.html#logical_cnot_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.logical_cnot.logical_cnot_block_graph" title="Link to this definition"></a></dt>
-<dd><p>Create the <cite>BlockGraph</cite> for the logical CNOT gate with the given port type.</p>
+<dt class="sig sig-object py" id="tqec.gallery.solo_node.solo_node_block_graph">
+<span class="sig-name descname"><span class="pre">solo_node_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/solo_node.html#solo_node_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.solo_node.solo_node_block_graph" title="Link to this definition"></a></dt>
+<dd><p>Get a block graph with a single node of the given basis.</p>
 </dd></dl>
 
 </section>
@@ -124,8 +124,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.gallery.logical_cnot.html" class="btn btn-neutral float-left" title="tqec.gallery.logical_cnot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.gallery.logical_cnot.logical_cnot_zx_graph.html" class="btn btn-neutral float-right" title="tqec.gallery.logical_cnot.logical_cnot_zx_graph" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.gallery.solo_node.html" class="btn btn-neutral float-left" title="tqec.gallery.solo_node" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.gallery.solo_node.solo_node_zx_graph.html" class="btn btn-neutral float-right" title="tqec.gallery.solo_node.solo_node_zx_graph" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

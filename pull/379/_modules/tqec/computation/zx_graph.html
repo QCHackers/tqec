@@ -242,19 +242,7 @@
 <div class="viewcode-block" id="ZXGraph.__init__">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of the logical computation.</span>
-
-<span class="sd">        Despite the name, the graph is not exactly the ZX-calculus graph</span>
-<span class="sd">        as rewrite rules can not be applied to the graph arbitrarily.</span>
-<span class="sd">        The graph must correspond to a valid 3D spacetime diagram, which</span>
-<span class="sd">        can be realized with the lattice surgery on the 2D patches of</span>
-<span class="sd">        surface code. And rewrite rules can only be applied with respect</span>
-<span class="sd">        to a valid physical realization of the spacetime diagram.</span>
-
-<span class="sd">        Note that not all ZX graph admits a valid spacetime diagram</span>
-<span class="sd">        representation. And the graph construction **does not check**</span>
-<span class="sd">        the validity constraints.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A ZX-diagram like graph representation of the logical computation.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="c1"># Internal undirected graph representation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
