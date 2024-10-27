@@ -198,6 +198,9 @@
 <span class="s2">        if (node.isMesh) {</span>
 <span class="s2">          node.material.side = THREE.DoubleSide;</span>
 
+<span class="s2">          if (node.name.endsWith(&quot;correlation_surface&quot;)) {</span>
+<span class="s2">            return;</span>
+<span class="s2">          }</span>
 <span class="s2">          // Add edges for better visibility</span>
 <span class="s2">          const edgesGeometry = new THREE.EdgesGeometry(node.geometry);</span>
 <span class="s2">          const edgesMaterial = new THREE.LineBasicMaterial({</span>

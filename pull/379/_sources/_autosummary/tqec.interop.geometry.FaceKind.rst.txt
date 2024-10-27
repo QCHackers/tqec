@@ -27,5 +27,7 @@ tqec.interop.geometry.FaceKind
       ~FaceKind.Y
       ~FaceKind.Z
       ~FaceKind.H
+      ~FaceKind.X_CORRELATION
+      ~FaceKind.Z_CORRELATION
    
    

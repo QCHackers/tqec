@@ -14,7 +14,7 @@ tqec.position.FloatPosition3D
    .. autosummary::
    
       ~FloatPosition3D.__init__
-      ~FloatPosition3D.as_tuple
+      ~FloatPosition3D.as_array
       ~FloatPosition3D.shift_by
       ~FloatPosition3D.shift_in_direction
    

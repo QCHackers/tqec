@@ -15,6 +15,7 @@ tqec.interop.collada.Transformation
    
       ~Transformation.__init__
       ~Transformation.from_4d_affine_matrix
+      ~Transformation.to_4d_affine_matrix
    
    
 
@@ -27,6 +28,5 @@ tqec.interop.collada.Transformation
       ~Transformation.translation
       ~Transformation.scale
       ~Transformation.rotation
-      ~Transformation.affine_matrix
    
    

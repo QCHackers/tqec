@@ -9,6 +9,13 @@ tqec.interop.geometry
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_correlation_surface_geometry
+   
    
 
    
@@ -18,9 +25,9 @@ tqec.interop.geometry
    .. autosummary::
       :toctree:
    
+      BlockGeometries
       Face
       FaceKind
-      Geometries
    
    
 

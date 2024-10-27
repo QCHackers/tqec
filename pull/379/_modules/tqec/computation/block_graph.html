@@ -86,7 +86,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
@@ -102,6 +102,8 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">tqec.interop.collada_html_viewer</span> <span class="kn">import</span> <span class="n">ColladaHTMLViewer</span>
     <span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="n">AbstractObservable</span>
+    <span class="kn">from</span> <span class="nn">tqec.interop.color</span> <span class="kn">import</span> <span class="n">RGBA</span>
+    <span class="kn">from</span> <span class="nn">tqec.interop.geometry</span> <span class="kn">import</span> <span class="n">FaceKind</span>
 
 
 <span class="n">_CUBE_DATA_KEY</span> <span class="o">=</span> <span class="s2">&quot;tqec_block_cube_data&quot;</span>
@@ -354,6 +356,8 @@
         <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
         <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaHTMLViewer</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the block graph in 3D.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
@@ -361,7 +365,12 @@
 
         <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
         <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">bytes_buffer</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">,</span> <span class="n">pop_faces_at_direction</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">bytes_buffer</span><span class="p">,</span>
+            <span class="n">pipe_length</span><span class="p">,</span>
+            <span class="n">pop_faces_at_direction</span><span class="p">,</span>
+            <span class="n">custom_face_colors</span><span class="p">,</span>
+            <span class="n">show_correlation_surface</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">display_collada_model</span><span class="p">(</span>
             <span class="n">filepath_or_bytes</span><span class="o">=</span><span class="n">bytes_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>

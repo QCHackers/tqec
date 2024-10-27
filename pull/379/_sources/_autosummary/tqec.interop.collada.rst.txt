@@ -26,7 +26,7 @@ tqec.interop.collada
    .. autosummary::
       :toctree:
    
-      LibraryNodeKey
+      BlockLibraryKey
       Transformation
    
    

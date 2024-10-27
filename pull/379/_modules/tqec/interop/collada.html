@@ -86,7 +86,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">import</span> <span class="nn">collada</span>
@@ -94,25 +94,22 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
+<span class="kn">from</span> <span class="nn">tqec.computation.correlation</span> <span class="kn">import</span> <span class="n">CorrelationSurface</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXKind</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="n">Port</span><span class="p">,</span> <span class="n">CubeKind</span><span class="p">,</span> <span class="n">YCube</span><span class="p">,</span> <span class="n">ZXCube</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.pipe</span> <span class="kn">import</span> <span class="n">PipeKind</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span class="kn">from</span> <span class="nn">tqec.interop.color</span> <span class="kn">import</span> <span class="n">DEFAULT_FACE_COLORS</span><span class="p">,</span> <span class="n">RGBA</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">FloatPosition3D</span><span class="p">,</span> <span class="n">Position3D</span><span class="p">,</span> <span class="n">SignedDirection3D</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">BlockKind</span>
 <span class="kn">from</span> <span class="nn">tqec.interop.geometry</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Face</span><span class="p">,</span>
     <span class="n">FaceKind</span><span class="p">,</span>
-    <span class="n">Geometries</span><span class="p">,</span>
+    <span class="n">BlockGeometries</span><span class="p">,</span>
+    <span class="n">get_correlation_surface_geometry</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
 
-<span class="n">_RGBA</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="n">_FACE_RGBA</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">_RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">127</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">127</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span> <span class="p">(</span><span class="mi">99</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">198</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">118</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="p">(</span><span class="mi">115</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">150</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">H</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-<span class="p">}</span>
 
 <span class="n">ASSET_AUTHOR</span> <span class="o">=</span> <span class="s2">&quot;TQEC Community&quot;</span>
 <span class="n">ASSET_AUTHORING_TOOL_TQEC</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/QCHackers/tqec&quot;</span>
@@ -168,7 +165,7 @@
             <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
             <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="n">instance</span> <span class="o">=</span> <span class="n">ty</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">library_node</span><span class="p">:</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">node</span>
             <span class="n">kind</span> <span class="o">=</span> <span class="n">_block_kind_from_str</span><span class="p">(</span><span class="n">library_node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_4d_affine_matrix</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
@@ -239,9 +236,11 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.interop.collada.write_block_graph_to_dae_file.html#tqec.interop.collada.write_block_graph_to_dae_file">[docs]</a>
 <span class="k">def</span> <span class="nf">write_block_graph_to_dae_file</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
-    <span class="n">file_like</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="n">ty</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span>
+    <span class="n">file_like</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="n">BinaryIO</span><span class="p">,</span>
     <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
     <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show_correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write the block graph to a Collada DAE file.</span>
 
@@ -251,8 +250,7 @@
 <span class="sd">        pipe_length: The length of the pipe blocks. Default is 2.0.</span>
 <span class="sd">        pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base</span> <span class="o">=</span> <span class="n">_BaseColladaData</span><span class="p">(</span><span class="n">pop_faces_at_direction</span><span class="p">)</span>
-    <span class="n">instance_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">_BaseColladaData</span><span class="p">(</span><span class="n">pop_faces_at_direction</span><span class="p">,</span> <span class="n">custom_face_colors</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">scale_position</span><span class="p">(</span><span class="n">pos</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatPosition3D</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FloatPosition3D</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">pipe_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pos</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()))</span>
@@ -266,33 +264,33 @@
         <span class="p">):</span>
             <span class="n">scaled_position</span> <span class="o">=</span> <span class="n">scaled_position</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaled_position</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span>
+        <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaled_position</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
         <span class="n">pop_faces_at_directions</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">pipes_at</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">position</span><span class="p">):</span>
             <span class="n">pop_faces_at_directions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">SignedDirection3D</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="n">cube</span> <span class="o">==</span> <span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">add_instance_node</span><span class="p">(</span><span class="n">instance_id</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
-        <span class="n">instance_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">add_block_instance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">pipes</span><span class="p">:</span>
         <span class="n">head_pos</span> <span class="o">=</span> <span class="n">scale_position</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
         <span class="n">pipe_pos</span> <span class="o">=</span> <span class="n">head_pos</span><span class="o">.</span><span class="n">shift_in_direction</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipe_pos</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span>
+        <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipe_pos</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
         <span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
         <span class="c1"># We divide the scaling by 2.0 because the pipe&#39;s default length is 2.0.</span>
         <span class="n">scales</span><span class="p">[</span><span class="n">pipe</span><span class="o">.</span><span class="n">direction</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipe_length</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">add_instance_node</span><span class="p">(</span><span class="n">instance_id</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
-        <span class="n">instance_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">add_block_instance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_correlation_surface</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">add_correlation_surface</span><span class="p">(</span><span class="n">block_graph</span><span class="p">,</span> <span class="n">show_correlation_surface</span><span class="p">,</span> <span class="n">pipe_length</span><span class="p">)</span>
     <span class="n">base</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_like</span><span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="LibraryNodeKey">
-<a class="viewcode-back" href="../../../_autosummary/tqec.interop.collada.LibraryNodeKey.html#tqec.interop.collada.LibraryNodeKey">[docs]</a>
+<div class="viewcode-block" id="BlockLibraryKey">
+<a class="viewcode-back" href="../../../_autosummary/tqec.interop.collada.BlockLibraryKey.html#tqec.interop.collada.BlockLibraryKey">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">LibraryNodeKey</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">BlockLibraryKey</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The key to access the library node in the Collada DAE file.&quot;&quot;&quot;</span>
 
     <span class="n">kind</span><span class="p">:</span> <span class="n">BlockKind</span>
@@ -308,21 +306,32 @@
 
 
 <span class="k">class</span> <span class="nc">_BaseColladaData</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The base model template including the definition of all the library</span>
 <span class="sd">        nodes and the necessary material, geometry definitions.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="n">Geometries</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="n">BlockGeometries</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Face</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SketchUp&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">LibraryNodeKey</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_library</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockLibraryKey</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_library</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">ZXKind</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pop_faces_at_direction</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="nb">frozenset</span><span class="p">({</span><span class="n">pop_faces_at_direction</span><span class="p">})</span>
             <span class="k">if</span> <span class="n">pop_faces_at_direction</span>
             <span class="k">else</span> <span class="nb">frozenset</span><span class="p">()</span>
         <span class="p">)</span>
+        <span class="n">custom_face_colors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">custom_face_colors</span><span class="p">)</span> <span class="k">if</span> <span class="n">custom_face_colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_colors</span> <span class="o">=</span> <span class="n">DEFAULT_FACE_COLORS</span> <span class="o">|</span> <span class="n">custom_face_colors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_create_scene</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_asset_info</span><span class="p">()</span>
@@ -348,7 +357,7 @@
     <span class="k">def</span> <span class="nf">_add_materials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all the materials for different faces.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">face_type</span> <span class="ow">in</span> <span class="n">FaceKind</span><span class="p">:</span>
-            <span class="n">rgba</span> <span class="o">=</span> <span class="n">_FACE_RGBA</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span>
+            <span class="n">rgba</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_face_colors</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span><span class="o">.</span><span class="n">as_floats</span><span class="p">()</span>
             <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_effect&quot;</span><span class="p">,</span>
                 <span class="p">[],</span>
@@ -356,23 +365,23 @@
                 <span class="n">diffuse</span><span class="o">=</span><span class="n">rgba</span><span class="p">,</span>
                 <span class="n">emission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">specular</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">transparent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">transparent</span><span class="o">=</span><span class="n">rgba</span><span class="p">,</span>
+                <span class="n">transparency</span><span class="o">=</span><span class="n">rgba</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                 <span class="n">ambient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">reflective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">double_sided</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">effect</span><span class="p">)</span>
 
-            <span class="n">effect</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">material</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_material&quot;</span><span class="p">,</span> <span class="n">effect</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">material</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="n">face_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">material</span>
 
-    <span class="k">def</span> <span class="nf">_add_face_geometry_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">:</span> <span class="n">Face</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_face_geometry_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">:</span> <span class="n">Face</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
         <span class="c1"># Create geometry</span>
         <span class="n">id_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FaceID</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span>
@@ -400,46 +409,88 @@
             <span class="n">geom</span><span class="p">,</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MaterialNode</span><span class="p">(</span><span class="n">MATERIAL_SYMBOL</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)]</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_node</span>
+        <span class="k">return</span> <span class="n">geom_node</span>
 
-    <span class="k">def</span> <span class="nf">_add_library_node</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_add_block_library_node</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">block_kind</span><span class="p">:</span> <span class="n">BlockKind</span><span class="p">,</span>
-        <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LibraryNodeKey</span><span class="p">:</span>
+        <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockLibraryKey</span><span class="p">:</span>
         <span class="n">pop_faces_at_directions</span> <span class="o">=</span> <span class="p">(</span>
             <span class="nb">frozenset</span><span class="p">(</span><span class="n">pop_faces_at_directions</span><span class="p">)</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_faces_at_direction</span>
         <span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">LibraryNodeKey</span><span class="p">(</span><span class="n">block_kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">BlockLibraryKey</span><span class="p">(</span><span class="n">block_kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_library</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">key</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">(</span><span class="n">block_kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
         <span class="n">key_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">key_str</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">kind</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_library</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
         <span class="k">return</span> <span class="n">key</span>
 
-    <span class="k">def</span> <span class="nf">add_instance_node</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">add_block_instance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">instance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">transform_matrix</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">],</span>
         <span class="n">block_kind</span><span class="p">:</span> <span class="n">BlockKind</span><span class="p">,</span>
-        <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an instance node to the root node.&quot;&quot;&quot;</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_library_node</span><span class="p">(</span><span class="n">block_kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_block_library_node</span><span class="p">(</span><span class="n">block_kind</span><span class="p">,</span> <span class="n">pop_faces_at_directions</span><span class="p">)</span>
         <span class="n">child_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;ID</span><span class="si">{</span><span class="n">instance_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;instance_</span><span class="si">{</span><span class="n">instance_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ID</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;instance_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MatrixTransform</span><span class="p">(</span><span class="n">transform_matrix</span><span class="o">.</span><span class="n">flatten</span><span class="p">())],</span>
         <span class="p">)</span>
-        <span class="n">point_to_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library_nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">point_to_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_library</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">instance_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">(</span><span class="n">point_to_node</span><span class="p">)</span>
         <span class="n">child_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_add_surface_library_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="n">ZXKind</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_library</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">surface</span> <span class="o">=</span> <span class="n">get_correlation_surface_geometry</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+        <span class="n">geometry_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_face_geometry_node</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="p">),</span> <span class="p">[</span><span class="n">geometry_node</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_library</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+
+    <span class="k">def</span> <span class="nf">add_correlation_surface</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
+        <span class="n">correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span><span class="p">,</span>
+        <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.correlation</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">get_transformations_for_correlation_surface</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">transformation</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">in</span> <span class="n">get_transformations_for_correlation_surface</span><span class="p">(</span>
+            <span class="n">block_graph</span><span class="p">,</span> <span class="n">correlation_surface</span><span class="p">,</span> <span class="n">pipe_length</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_surface_library_node</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+            <span class="n">child_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;ID</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;instance_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="si">}</span><span class="s2">_correlation_surface&quot;</span><span class="p">,</span>
+                <span class="n">transforms</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MatrixTransform</span><span class="p">(</span>
+                        <span class="n">transformation</span><span class="o">.</span><span class="n">to_4d_affine_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">point_to_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_library</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+            <span class="n">instance_node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">(</span><span class="n">point_to_node</span><span class="p">)</span>
+            <span class="n">child_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_node</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span> <span class="o">+=</span> <span class="mi">1</span>
 
 
 <div class="viewcode-block" id="Transformation">
@@ -455,20 +506,25 @@
 <span class="sd">        translation: The length-3 translation vector.</span>
 <span class="sd">        scale: The length-3 scaling vector, which is the scaling factor along each axis.</span>
 <span class="sd">        rotation: The 3x3 rotation matrix.</span>
-<span class="sd">        affine_matrix: The 4x4 affine matrix composed of the translation, scaling, and rotation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">translation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
     <span class="n">scale</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
     <span class="n">rotation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
-    <span class="n">affine_matrix</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_4d_affine_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Transformation</span><span class="p">:</span>
         <span class="n">translation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># TODO: CHECK THIS</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">mat</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_4d_affine_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translation</span>
+        <span class="k">return</span> <span class="n">mat</span></div>
 
 </pre></div>
 

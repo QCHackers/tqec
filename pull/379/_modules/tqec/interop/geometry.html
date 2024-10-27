@@ -83,6 +83,7 @@
   <h1>Source code for tqec.interop.geometry</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
@@ -91,8 +92,12 @@
 
 <span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="n">YCube</span><span class="p">,</span> <span class="n">ZXCube</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.pipe</span> <span class="kn">import</span> <span class="n">PipeKind</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXKind</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">FloatPosition3D</span><span class="p">,</span> <span class="n">SignedDirection3D</span>
-<span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockKind</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockKind</span>
 
 
 <div class="viewcode-block" id="FaceKind">
@@ -102,12 +107,18 @@
     <span class="n">Y</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
     <span class="n">H</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+    <span class="n">X_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;X_CORRELATION&quot;</span>
+    <span class="n">Z_CORRELATION</span> <span class="o">=</span> <span class="s2">&quot;Z_CORRELATION&quot;</span>
 
     <span class="k">def</span> <span class="nf">with_zx_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FaceKind</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">X</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">X_CORRELATION</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z_CORRELATION</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z_CORRELATION</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FaceKind</span><span class="o">.</span><span class="n">X_CORRELATION</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -179,15 +190,15 @@
 
 
 
-<div class="viewcode-block" id="Geometries">
-<a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.Geometries.html#tqec.interop.geometry.Geometries">[docs]</a>
-<span class="k">class</span> <span class="nc">Geometries</span><span class="p">:</span>
+<div class="viewcode-block" id="BlockGeometries">
+<a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.BlockGeometries.html#tqec.interop.geometry.BlockGeometries">[docs]</a>
+<span class="k">class</span> <span class="nc">BlockGeometries</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of geometries of blocks.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Geometries.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.Geometries.html#tqec.interop.geometry.Geometries.__init__">[docs]</a>
+<div class="viewcode-block" id="BlockGeometries.__init__">
+<a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.BlockGeometries.html#tqec.interop.geometry.BlockGeometries.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockKind</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BlockKind</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># 6 x/z cube blocks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_zx_cube_geometries</span><span class="p">()</span>
         <span class="c1"># 1 y cube block</span>
@@ -204,7 +215,7 @@
         <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the geometry of a block kind, possibly with some faces popped out.&quot;&quot;&quot;</span>
-        <span class="n">faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">face</span>
             <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span>
@@ -230,7 +241,7 @@
                 <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">face</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_negated_normal_direction</span><span class="p">()</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span>
 
     <span class="k">def</span> <span class="nf">_load_y_cube_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Geometry for the y cube.&quot;&quot;&quot;</span>
@@ -247,7 +258,7 @@
             <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
             <span class="n">translation</span><span class="p">[</span><span class="n">direction</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">direction</span> <span class="o">!=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span> <span class="k">else</span> <span class="mf">0.5</span>
             <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_negated_normal_direction</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">[</span><span class="n">YCube</span><span class="p">()]</span> <span class="o">=</span> <span class="n">faces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">YCube</span><span class="p">()]</span> <span class="o">=</span> <span class="n">faces</span>
 
     <span class="k">def</span> <span class="nf">_load_pipe_without_hadamard_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Geometries for ozx, oxz, xoz, zox, xzo, zxo pipes.&quot;&quot;&quot;</span>
@@ -274,7 +285,7 @@
                 <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">face</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_negated_normal_direction</span><span class="p">()</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span>
 
     <span class="k">def</span> <span class="nf">_load_pipe_with_hadamard_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Geometries for ozxh, oxzh, zoxh, xozh, zxoh, xzoh pipes.&quot;&quot;&quot;</span>
@@ -324,7 +335,23 @@
                     <span class="n">face</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="o">*</span><span class="n">translation</span><span class="p">)</span><span class="o">.</span><span class="n">with_negated_normal_direction</span><span class="p">()</span>
                     <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="p">[</span><span class="n">face1</span><span class="p">,</span> <span class="n">face2</span><span class="p">,</span> <span class="n">face3</span><span class="p">]</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">base_geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces</span>
+
+    <span class="k">def</span> <span class="nf">_load_correlation_surface_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Geometries for horizontal, vertical and inclined surfaces.&quot;&quot;&quot;</span>
+        <span class="c1"># horizontal surface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span></div>
+
+
+
+<div class="viewcode-block" id="get_correlation_surface_geometry">
+<a class="viewcode-back" href="../../../_autosummary/tqec.interop.geometry.get_correlation_surface_geometry.html#tqec.interop.geometry.get_correlation_surface_geometry">[docs]</a>
+<span class="k">def</span> <span class="nf">get_correlation_surface_geometry</span><span class="p">(</span><span class="n">zx_kind</span><span class="p">:</span> <span class="n">ZXKind</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Face</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the face representing the correlation surface.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">zx_kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ZXKind</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Z</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Invalid ZX kind for correlation surface.&quot;</span><span class="p">)</span>
+    <span class="n">normal_direction</span> <span class="o">=</span> <span class="n">SignedDirection3D</span><span class="p">(</span><span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Face</span><span class="p">(</span><span class="n">FaceKind</span><span class="p">(</span><span class="n">zx_kind</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="s2">&quot;_CORRELATION&quot;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">normal_direction</span><span class="p">)</span></div>
 
 </pre></div>
 

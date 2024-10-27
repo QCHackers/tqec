@@ -113,6 +113,10 @@
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;The correlation surface must contain at least one edge.&quot;</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">is_zx_node</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;The correlation surface must contain only Z/X type nodes.&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CorrelationSurface</span><span class="p">):</span>
@@ -121,6 +125,11 @@
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spanning_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">Position3D</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the positions spanned by the correlation surface.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">get_node_correlation_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation type of the nodes in the correlation surface.</span>

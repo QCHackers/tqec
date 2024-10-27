@@ -24,6 +24,7 @@ tqec.computation.correlation.CorrelationSurface
 
    .. autosummary::
    
+      ~CorrelationSurface.spanning_positions
       ~CorrelationSurface.span
       ~CorrelationSurface.external_stabilizer
    
