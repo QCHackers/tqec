@@ -23,7 +23,7 @@ TQEC_FOLDER = EXAMPLE_FOLDER.parent
 ASSETS_FOLDER = TQEC_FOLDER / "assets"
 
 
-def generate_graphs(style: Literal["css", "zxxz"], basis: Literal["z", "x"]) -> None:
+def generate_graphs(style: Literal["css", "zxxz"], basis: Literal["Z", "X"]) -> None:
     # 1 Create `BlockGraph` representing the computation
     block_graph = logical_cnot_block_graph(basis)
     zx_graph = block_graph.to_zx_graph()
@@ -73,10 +73,10 @@ def generate_graphs(style: Literal["css", "zxxz"], basis: Literal["z", "x"]) -> 
 
 
 def main():
-    generate_graphs("css", "z")
-    generate_graphs("css", "x")
-    generate_graphs("zxxz", "z")
-    generate_graphs("zxxz", "x")
+    generate_graphs("css", "Z")
+    generate_graphs("css", "X")
+    generate_graphs("zxxz", "Z")
+    generate_graphs("zxxz", "X")
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
 from tqec.position import Position3D
 
 
-def three_cnots_zx_graph(port_type: Literal["x", "z", "open"]) -> ZXGraph:
+def three_cnots_zx_graph(port_type: Literal["X", "Z", "OPEN"]) -> ZXGraph:
     """Three CNOT ZX graph.
 
     Implement the following circuit:
@@ -64,11 +64,11 @@ def three_cnots_zx_graph(port_type: Literal["x", "z", "open"]) -> ZXGraph:
         ZXNode(Position3D(1, 1, 1), ZXKind.Z),
     )
 
-    if port_type != "open":
+    if port_type != "OPEN":
         g.fill_ports(ZXKind(port_type.upper()))
     return g
 
 
-def three_cnots_block_graph(port_type: Literal["x", "z", "open"]) -> BlockGraph:
+def three_cnots_block_graph(port_type: Literal["X", "Z", "OPEN"]) -> BlockGraph:
     zx_graph = three_cnots_zx_graph(port_type)
     return zx_graph.to_block_graph("Three CNOT")

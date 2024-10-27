@@ -103,6 +103,13 @@ def draw_correlation_surface_on(
     ax: Axes3D,
     correlation_edge_width: int = 3,
 ) -> None:
+    """Draw the correlation surface on the provided axes.
+
+    Args:
+        correlation_surface: The correlation surface to draw.
+        ax: The 3-dimensional ax to draw on.
+        correlation_edge_width: The width of the correlation edge. Default is 3.
+    """
     span = correlation_surface.span
     if isinstance(span, ZXNode):
         return

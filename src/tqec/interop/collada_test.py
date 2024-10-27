@@ -12,7 +12,7 @@ from tqec.position import Direction3D, Position3D, SignedDirection3D
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])
 def test_logical_cnot_collada_write_read(pipe_length: float) -> None:
-    block_graph = logical_cnot_block_graph("x")
+    block_graph = logical_cnot_block_graph("X")
 
     # Set `delete=False` to be compatible with Windows
     # https://docs.python.org/3/library/tempfile.html#tempfile.NamedTemporaryFile
@@ -20,7 +20,7 @@ def test_logical_cnot_collada_write_read(pipe_length: float) -> None:
         block_graph.to_dae_file(temp_file.name, pipe_length)
         block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
         assert block_graph_from_file == block_graph
-        assert block_graph_from_file.to_zx_graph() == logical_cnot_zx_graph("x")
+        assert block_graph_from_file.to_zx_graph() == logical_cnot_zx_graph("X")
 
     # Manually delete the temporary file
     os.remove(temp_file.name)
@@ -28,17 +28,17 @@ def test_logical_cnot_collada_write_read(pipe_length: float) -> None:
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])
 def test_three_cnots_collada_write_read(pipe_length: float) -> None:
-    block_graph = three_cnots_block_graph("z")
+    block_graph = three_cnots_block_graph("Z")
     with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
         block_graph.to_dae_file(temp_file.name, pipe_length)
         block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
         assert block_graph_from_file == block_graph
-        assert block_graph_from_file.to_zx_graph() == three_cnots_zx_graph("z")
+        assert block_graph_from_file.to_zx_graph() == three_cnots_zx_graph("Z")
     os.remove(temp_file.name)
 
 
 def test_open_ports_roundtrip_not_equal() -> None:
-    block_graph = logical_cnot_block_graph("open")
+    block_graph = logical_cnot_block_graph("OPEN")
     with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
         block_graph.to_dae_file(temp_file.name, 2.0)
         block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
@@ -62,7 +62,7 @@ def test_y_cube_positioning_during_roundtrip() -> None:
 
 
 def test_collada_write_read_with_correlation_surface() -> None:
-    block_graph = logical_cnot_block_graph("x")
+    block_graph = logical_cnot_block_graph("X")
     correlation_surfaces = block_graph.to_zx_graph().find_correration_surfaces()
 
     with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
@@ -75,6 +75,6 @@ def test_collada_write_read_with_correlation_surface() -> None:
             )
             block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
             assert block_graph_from_file == block_graph
-            assert block_graph_from_file.to_zx_graph() == logical_cnot_zx_graph("x")
+            assert block_graph_from_file.to_zx_graph() == logical_cnot_zx_graph("X")
 
     os.remove(temp_file.name)

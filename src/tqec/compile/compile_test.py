@@ -174,11 +174,11 @@ def test_compile_L_shape_in_space_time(
     ("spec", "port_type", "k"),
     itertools.product(
         SPECS.keys(),
-        ("z", "x"),
+        ("Z", "X"),
         (1,),
     ),
 )
-def test_compile_logical_cnot(spec: str, port_type: Literal["z", "x"], k: int) -> None:
+def test_compile_logical_cnot(spec: str, port_type: Literal["Z", "X"], k: int) -> None:
     d = 2 * k + 1
     g = logical_cnot_block_graph(port_type)
 

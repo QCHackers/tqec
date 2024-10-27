@@ -89,7 +89,7 @@ class RunExampleTQECSubCommand(TQECSubCommand):
         out_dir: Path = args.out_dir.resolve()
         obs_indices: list[int] = args.obs_include
         style: str = args.code_style
-        port_type: Literal["x", "z"] = args.basis
+        port_type: Literal["X", "Z"] = args.basis
         ks: list[int] = args.k
         ps: list[float] = args.p
 

@@ -103,13 +103,13 @@ def test_conversion_L_shape() -> None:
     assert block.to_zx_graph() == zx
 
 
-@pytest.mark.parametrize("port_type", ("z", "x", "open"))
-def test_conversion_logical_cnot(port_type: Literal["z", "x", "open"]) -> None:
+@pytest.mark.parametrize("port_type", ("Z", "X", "OPEN"))
+def test_conversion_logical_cnot(port_type: Literal["Z", "X", "OPEN"]) -> None:
     block = logical_cnot_block_graph(port_type)
     assert block.to_zx_graph() == logical_cnot_zx_graph(port_type)
 
 
-@pytest.mark.parametrize("port_type", ("z", "x", "open"))
-def test_conversion_three_cnots(port_type: Literal["z", "x", "open"]) -> None:
+@pytest.mark.parametrize("port_type", ("Z", "X", "OPEN"))
+def test_conversion_three_cnots(port_type: Literal["Z", "X", "OPEN"]) -> None:
     block = three_cnots_block_graph(port_type)
     assert block.to_zx_graph() == three_cnots_zx_graph(port_type)

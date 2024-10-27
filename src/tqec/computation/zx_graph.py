@@ -146,7 +146,7 @@ _EDGE_DATA_KEY = "tqec_zx_edge_data"
 
 class ZXGraph:
     def __init__(self, name: str = "") -> None:
-        """An restricted zx graph representation of the logical computation."""
+        """A ZX-diagram like graph representation of the logical computation."""
         self._name = name
         # Internal undirected graph representation
         self._graph = nx.Graph()

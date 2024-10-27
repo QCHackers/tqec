@@ -3,8 +3,8 @@ from tqec.computation.zx_graph import ZXKind
 from tqec.gallery.three_cnots import three_cnots_zx_graph
 
 
-def test_three_cnots_zx_graph_open() -> None:
-    g = three_cnots_zx_graph("open")
+def test_three_cnots_zx_graph_OPEN() -> None:
+    g = three_cnots_zx_graph("OPEN")
     assert g.num_ports == 6
     assert g.num_nodes == 12
     assert g.num_edges == 12
@@ -22,15 +22,15 @@ def test_three_cnots_zx_graph_open() -> None:
 
 
 def test_three_cnots_zx_graph_filled() -> None:
-    for port_type in ("x", "z"):
-        g = three_cnots_zx_graph(cast(Literal["x", "z"], port_type))
+    for port_type in ("X", "Z"):
+        g = three_cnots_zx_graph(cast(Literal["X", "Z"], port_type))
         assert g.num_ports == 0
         assert g.num_nodes == 12
         assert g.num_edges == 12
         assert len(g.leaf_nodes) == 6
         num_x_nodes = len([n for n in g.nodes if n.kind == ZXKind.X])
         num_z_nodes = len([n for n in g.nodes if n.kind == ZXKind.Z])
-        if port_type == "x":
+        if port_type == "X":
             assert num_x_nodes == 8
             assert num_z_nodes == 4
         else:
@@ -39,15 +39,15 @@ def test_three_cnots_zx_graph_filled() -> None:
 
 
 def test_three_cnots_correlation_surface() -> None:
-    g = three_cnots_zx_graph("x")
+    g = three_cnots_zx_graph("X")
     correlation_surfaces = g.find_correration_surfaces()
     assert len(correlation_surfaces) == 7
 
-    g = three_cnots_zx_graph("x")
+    g = three_cnots_zx_graph("X")
     correlation_surfaces = g.find_correration_surfaces()
     assert len(correlation_surfaces) == 7
 
-    g = three_cnots_zx_graph("open")
+    g = three_cnots_zx_graph("OPEN")
     correlation_surfaces = g.find_correration_surfaces()
     all_external_stabilizers = [cs.external_stabilizer for cs in correlation_surfaces]
     assert all(
