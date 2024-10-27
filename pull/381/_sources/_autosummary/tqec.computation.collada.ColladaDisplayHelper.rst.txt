@@ -1,0 +1,35 @@
+tqec.computation.collada.ColladaDisplayHelper
+=============================================
+
+.. currentmodule:: tqec.computation.collada
+
+.. autoclass:: ColladaDisplayHelper
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ColladaDisplayHelper.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ColladaDisplayHelper.HTML_TEMPLATE
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   
+   

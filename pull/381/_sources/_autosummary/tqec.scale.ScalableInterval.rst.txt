@@ -1,0 +1,39 @@
+tqec.scale.ScalableInterval
+===========================
+
+.. currentmodule:: tqec.scale
+
+.. autoclass:: ScalableInterval
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ScalableInterval.__init__
+      ~ScalableInterval.is_empty
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ScalableInterval.width
+      ~ScalableInterval.start
+      ~ScalableInterval.end
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: is_empty
+   
+   

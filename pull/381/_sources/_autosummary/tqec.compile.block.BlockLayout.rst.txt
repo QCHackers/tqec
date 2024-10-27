@@ -1,0 +1,39 @@
+tqec.compile.block.BlockLayout
+==============================
+
+.. currentmodule:: tqec.compile.block
+
+.. autoclass:: BlockLayout
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BlockLayout.__init__
+      ~BlockLayout.get_shifted_circuits
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BlockLayout.layers
+      ~BlockLayout.num_layers
+      ~BlockLayout.template
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: get_shifted_circuits
+   
+   
