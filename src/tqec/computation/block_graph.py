@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import cast, TYPE_CHECKING
+from typing import Mapping, cast, TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
@@ -19,6 +19,8 @@ from tqec.computation.correlation import CorrelationSurface
 if TYPE_CHECKING:
     from tqec.interop.collada_html_viewer import ColladaHTMLViewer
     from tqec.computation.abstract_observable import AbstractObservable
+    from tqec.interop.color import RGBA
+    from tqec.interop.geometry import FaceKind
 
 
 _CUBE_DATA_KEY = "tqec_block_cube_data"
@@ -266,6 +268,8 @@ class BlockGraph:
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
+        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
+        show_correlation_surface: CorrelationSurface | None = None,
     ) -> ColladaHTMLViewer:
         """Display the block graph in 3D."""
         from tqec.interop.collada import write_block_graph_to_dae_file
@@ -273,7 +277,12 @@ class BlockGraph:
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(
-            self, bytes_buffer, pipe_length, pop_faces_at_direction
+            self,
+            bytes_buffer,
+            pipe_length,
+            pop_faces_at_direction,
+            custom_face_colors,
+            show_correlation_surface,
         )
         return display_collada_model(
             filepath_or_bytes=bytes_buffer.getvalue(),

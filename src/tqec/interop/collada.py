@@ -11,6 +11,8 @@ import collada.source
 import numpy as np
 import numpy.typing as npt
 
+from tqec.computation.correlation import CorrelationSurface
+from tqec.computation.zx_graph import ZXKind
 from tqec.computation.cube import Port, CubeKind, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
@@ -21,6 +23,7 @@ from tqec.interop.geometry import (
     Face,
     FaceKind,
     BlockGeometries,
+    get_correlation_surface_geometry,
 )
 from tqec.scale import round_or_fail
 
@@ -149,6 +152,7 @@ def write_block_graph_to_dae_file(
     pipe_length: float = 2.0,
     pop_faces_at_direction: SignedDirection3D | None = None,
     custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
+    show_correlation_surface: CorrelationSurface | None = None,
 ) -> None:
     """Write the block graph to a Collada DAE file.
 
@@ -159,7 +163,6 @@ def write_block_graph_to_dae_file(
         pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.
     """
     base = _BaseColladaData(pop_faces_at_direction, custom_face_colors)
-    instance_id = 0
 
     def scale_position(pos: Position3D) -> FloatPosition3D:
         return FloatPosition3D(*(p * (1 + pipe_length) for p in pos.as_tuple()))
@@ -173,30 +176,30 @@ def write_block_graph_to_dae_file(
         ):
             scaled_position = scaled_position.shift_by(dz=0.5)
         matrix = np.eye(4, dtype=np.float32)
-        matrix[:3, 3] = scaled_position.as_tuple()
+        matrix[:3, 3] = scaled_position.as_array()
         pop_faces_at_directions = []
         for pipe in block_graph.pipes_at(cube.position):
             pop_faces_at_directions.append(
                 SignedDirection3D(pipe.direction, cube == pipe.u)
             )
-        base.add_instance_node(instance_id, matrix, cube.kind, pop_faces_at_directions)
-        instance_id += 1
+        base.add_block_instance(matrix, cube.kind, pop_faces_at_directions)
     for pipe in block_graph.pipes:
         head_pos = scale_position(pipe.u.position)
         pipe_pos = head_pos.shift_in_direction(pipe.direction, 1.0)
         matrix = np.eye(4, dtype=np.float32)
-        matrix[:3, 3] = pipe_pos.as_tuple()
+        matrix[:3, 3] = pipe_pos.as_array()
         scales = [1.0, 1.0, 1.0]
         # We divide the scaling by 2.0 because the pipe's default length is 2.0.
         scales[pipe.direction.value] = pipe_length / 2.0
         matrix[:3, :3] = np.diag(scales)
-        base.add_instance_node(instance_id, matrix, pipe.kind)
-        instance_id += 1
+        base.add_block_instance(matrix, pipe.kind)
+    if show_correlation_surface is not None:
+        base.add_correlation_surface(block_graph, show_correlation_surface, pipe_length)
     base.mesh.write(file_like)
 
 
 @dataclass(frozen=True)
-class LibraryNodeKey:
+class BlockLibraryKey:
     """The key to access the library node in the Collada DAE file."""
 
     kind: BlockKind
@@ -224,7 +227,8 @@ class _BaseColladaData:
         self.materials: dict[FaceKind, collada.material.Material] = {}
         self.geometry_nodes: dict[Face, collada.scene.GeometryNode] = {}
         self.root_node = collada.scene.Node("SketchUp", name="SketchUp")
-        self.library_nodes: dict[LibraryNodeKey, collada.scene.Node] = {}
+        self.block_library: dict[BlockLibraryKey, collada.scene.Node] = {}
+        self.surface_library: dict[ZXKind, collada.scene.Node] = {}
         self._pop_faces_at_direction: frozenset[SignedDirection3D] = (
             frozenset({pop_faces_at_direction})
             if pop_faces_at_direction
@@ -235,6 +239,7 @@ class _BaseColladaData:
         )
 
         self._face_colors = DEFAULT_FACE_COLORS | custom_face_colors
+        self._num_instances: int = 0
 
         self._create_scene()
         self._add_asset_info()
@@ -268,23 +273,23 @@ class _BaseColladaData:
                 diffuse=rgba,
                 emission=None,
                 specular=None,
-                transparent=None,
+                transparent=rgba,
+                transparency=rgba[3],
                 ambient=None,
                 reflective=None,
                 double_sided=True,
             )
             self.mesh.effects.append(effect)
 
-            effect.transparency = None
             material = collada.material.Material(
                 f"{face_type.value}_material", f"{face_type.value}_material", effect
             )
             self.mesh.materials.append(material)
             self.materials[face_type] = material
 
-    def _add_face_geometry_node(self, face: Face) -> None:
+    def _add_face_geometry_node(self, face: Face) -> collada.scene.GeometryNode:
         if face in self.geometry_nodes:
-            return
+            return self.geometry_nodes[face]
         # Create geometry
         id_str = f"FaceID{len(self.geometry_nodes)}"
         positions = collada.source.FloatSource(
@@ -312,46 +317,88 @@ class _BaseColladaData:
             geom, [collada.scene.MaterialNode(MATERIAL_SYMBOL, material, inputs)]
         )
         self.geometry_nodes[face] = geom_node
+        return geom_node
 
-    def _add_library_node(
+    def _add_block_library_node(
         self,
         block_kind: BlockKind,
         pop_faces_at_directions: Iterable[SignedDirection3D] = (),
-    ) -> LibraryNodeKey:
+    ) -> BlockLibraryKey:
         pop_faces_at_directions = (
             frozenset(pop_faces_at_directions) | self._pop_faces_at_direction
         )
-        key = LibraryNodeKey(block_kind, pop_faces_at_directions)
-        if key in self.library_nodes:
+        key = BlockLibraryKey(block_kind, pop_faces_at_directions)
+        if key in self.block_library:
             return key
         faces = self.geometries.get_geometry(block_kind, pop_faces_at_directions)
-        for face in faces:
-            self._add_face_geometry_node(face)
-        children = [self.geometry_nodes[face] for face in faces]
+        children = [self._add_face_geometry_node(face) for face in faces]
         key_str = str(key)
         node = collada.scene.Node(key_str, children, name=str(key.kind))
         self.mesh.nodes.append(node)
-        self.library_nodes[key] = node
+        self.block_library[key] = node
         return key
 
-    def add_instance_node(
+    def add_block_instance(
         self,
-        instance_id: int,
         transform_matrix: npt.NDArray[np.float32],
         block_kind: BlockKind,
         pop_faces_at_directions: Iterable[SignedDirection3D] = (),
     ) -> None:
         """Add an instance node to the root node."""
-        key = self._add_library_node(block_kind, pop_faces_at_directions)
+        key = self._add_block_library_node(block_kind, pop_faces_at_directions)
         child_node = collada.scene.Node(
-            f"ID{instance_id}",
-            name=f"instance_{instance_id}",
+            f"ID{self._num_instances}",
+            name=f"instance_{self._num_instances}",
             transforms=[collada.scene.MatrixTransform(transform_matrix.flatten())],
         )
-        point_to_node = self.library_nodes[key]
+        point_to_node = self.block_library[key]
         instance_node = collada.scene.NodeNode(point_to_node)
         child_node.children.append(instance_node)
         self.root_node.children.append(child_node)
+        self._num_instances += 1
+
+    def _add_surface_library_node(self, kind: ZXKind) -> None:
+        if kind in self.surface_library:
+            return
+        surface = get_correlation_surface_geometry(kind)
+        geometry_node = self._add_face_geometry_node(surface)
+        node = collada.scene.Node(
+            str(surface.kind), [geometry_node], name=str(surface.kind)
+        )
+        self.mesh.nodes.append(node)
+        self.surface_library[kind] = node
+
+    def add_correlation_surface(
+        self,
+        block_graph: BlockGraph,
+        correlation_surface: CorrelationSurface,
+        pipe_length: float = 2.0,
+    ) -> None:
+        from tqec.interop.correlation import (
+            get_transformations_for_correlation_surface,
+        )
+
+        for (
+            kind,
+            transformation,
+        ) in get_transformations_for_correlation_surface(
+            block_graph, correlation_surface, pipe_length
+        ):
+            self._add_surface_library_node(kind)
+            child_node = collada.scene.Node(
+                f"ID{self._num_instances}",
+                name=f"instance_{self._num_instances}_correlation_surface",
+                transforms=[
+                    collada.scene.MatrixTransform(
+                        transformation.to_4d_affine_matrix().flatten()
+                    )
+                ],
+            )
+            point_to_node = self.surface_library[kind]
+            instance_node = collada.scene.NodeNode(point_to_node)
+            child_node.children.append(instance_node)
+            self.root_node.children.append(child_node)
+            self._num_instances += 1
 
 
 @dataclass(frozen=True)
@@ -365,17 +412,22 @@ class Transformation:
         translation: The length-3 translation vector.
         scale: The length-3 scaling vector, which is the scaling factor along each axis.
         rotation: The 3x3 rotation matrix.
-        affine_matrix: The 4x4 affine matrix composed of the translation, scaling, and rotation.
     """
 
     translation: npt.NDArray[np.float32]
     scale: npt.NDArray[np.float32]
     rotation: npt.NDArray[np.float32]
-    affine_matrix: npt.NDArray[np.float32]
 
     @staticmethod
     def from_4d_affine_matrix(mat: npt.NDArray[np.float32]) -> Transformation:
         translation = mat[:3, 3]
         scale = np.linalg.norm(mat[:3, :3], axis=1)
+        # TODO: CHECK THIS
         rotation = mat[:3, :3] / scale[:, None]
-        return Transformation(translation, scale, rotation, mat)
+        return Transformation(translation, scale, rotation)
+
+    def to_4d_affine_matrix(self) -> npt.NDArray[np.float32]:
+        mat = np.eye(4, dtype=np.float32)
+        mat[:3, :3] = self.rotation * self.scale[None, :]
+        mat[:3, 3] = self.translation
+        return mat

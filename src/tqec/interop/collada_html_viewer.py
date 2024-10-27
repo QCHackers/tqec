@@ -113,6 +113,9 @@ class ColladaHTMLViewer:
         if (node.isMesh) {
           node.material.side = THREE.DoubleSide;
 
+          if (node.name.endsWith("correlation_surface")) {
+            return;
+          }
           // Add edges for better visibility
           const edgesGeometry = new THREE.EdgesGeometry(node.geometry);
           const edgesMaterial = new THREE.LineBasicMaterial({

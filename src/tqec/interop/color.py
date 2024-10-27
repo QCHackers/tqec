@@ -24,6 +24,6 @@ DEFAULT_FACE_COLORS: dict[FaceKind, RGBA] = {
     FaceKind.Y: RGBA(99, 198, 118, 1.0),
     FaceKind.Z: RGBA(115, 150, 255, 1.0),
     FaceKind.H: RGBA(255, 255, 101, 1.0),
-    FaceKind.X_CORRELATION: RGBA(255, 0, 0, 0.5),
-    FaceKind.Z_CORRELATION: RGBA(0, 0, 255, 0.5),
+    FaceKind.X_CORRELATION: RGBA(255, 0, 0, 0.8),
+    FaceKind.Z_CORRELATION: RGBA(0, 0, 255, 0.8),
 }

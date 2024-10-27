@@ -3,6 +3,9 @@ from __future__ import annotations
 from dataclasses import astuple, dataclass
 from enum import Enum
 
+import numpy as np
+import numpy.typing as npt
+
 from tqec.exceptions import TQECException
 
 
@@ -172,6 +175,6 @@ class FloatPosition3D:
         else:
             return self.shift_by(dz=shift)
 
-    def as_tuple(self) -> tuple[float, float, float]:
-        """Return the position as a tuple."""
-        return astuple(self)
+    def as_array(self) -> npt.NDArray[np.float32]:
+        """Return the position as a numpy array."""
+        return np.asarray(astuple(self), dtype=np.float32)

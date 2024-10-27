@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 from dataclasses import astuple, dataclass
 from enum import Enum
 
@@ -8,8 +9,12 @@ import numpy.typing as npt
 
 from tqec.computation.cube import YCube, ZXCube
 from tqec.computation.pipe import PipeKind
+from tqec.computation.zx_graph import ZXKind
+from tqec.exceptions import TQECException
 from tqec.position import Direction3D, FloatPosition3D, SignedDirection3D
-from tqec.computation.block_graph import BlockKind
+
+if TYPE_CHECKING:
+    from tqec.computation.block_graph import BlockKind
 
 
 class FaceKind(Enum):
@@ -17,12 +22,18 @@ class FaceKind(Enum):
     Y = "Y"
     Z = "Z"
     H = "H"
+    X_CORRELATION = "X_CORRELATION"
+    Z_CORRELATION = "Z_CORRELATION"
 
     def with_zx_flipped(self) -> FaceKind:
         if self == FaceKind.X:
             return FaceKind.Z
         if self == FaceKind.Z:
             return FaceKind.X
+        if self == FaceKind.X_CORRELATION:
+            return FaceKind.Z_CORRELATION
+        if self == FaceKind.Z_CORRELATION:
+            return FaceKind.X_CORRELATION
         return self
 
 
@@ -90,11 +101,11 @@ class Face:
         )
 
 
-class Geometries:
+class BlockGeometries:
     """A collection of geometries of blocks."""
 
     def __init__(self) -> None:
-        self.base_geometries: dict[BlockKind, list[Face]] = {}
+        self.geometries: dict[BlockKind, list[Face]] = {}
         # 6 x/z cube blocks
         self._load_zx_cube_geometries()
         # 1 y cube block
@@ -110,7 +121,7 @@ class Geometries:
         pop_faces_at_directions: frozenset[SignedDirection3D] = frozenset(),
     ) -> list[Face]:
         """Get the geometry of a block kind, possibly with some faces popped out."""
-        faces = self.base_geometries[kind]
+        faces = self.geometries[kind]
         return [
             face
             for face in faces
@@ -136,7 +147,7 @@ class Geometries:
                 faces.append(
                     face.shift_by(*translation).with_negated_normal_direction()
                 )
-            self.base_geometries[kind] = faces
+            self.geometries[kind] = faces
 
     def _load_y_cube_geometry(self) -> None:
         """Geometry for the y cube."""
@@ -153,7 +164,7 @@ class Geometries:
             translation = [0.0, 0.0, 0.0]
             translation[direction.value] = 1.0 if direction != Direction3D.Z else 0.5
             faces.append(face.shift_by(*translation).with_negated_normal_direction())
-        self.base_geometries[YCube()] = faces
+        self.geometries[YCube()] = faces
 
     def _load_pipe_without_hadamard_geometries(self) -> None:
         """Geometries for ozx, oxz, xoz, zox, xzo, zxo pipes."""
@@ -180,7 +191,7 @@ class Geometries:
                 faces.append(
                     face.shift_by(*translation).with_negated_normal_direction()
                 )
-            self.base_geometries[kind] = faces
+            self.geometries[kind] = faces
 
     def _load_pipe_with_hadamard_geometries(self) -> None:
         """Geometries for ozxh, oxzh, zoxh, xozh, zxoh, xzoh pipes."""
@@ -230,4 +241,17 @@ class Geometries:
                     face.shift_by(*translation).with_negated_normal_direction()
                     for face in [face1, face2, face3]
                 )
-            self.base_geometries[kind] = faces
+            self.geometries[kind] = faces
+
+    def _load_correlation_surface_geometries(self) -> None:
+        """Geometries for horizontal, vertical and inclined surfaces."""
+        # horizontal surface
+        self.geometries
+
+
+def get_correlation_surface_geometry(zx_kind: ZXKind) -> Face:
+    """Get the face representing the correlation surface."""
+    if zx_kind not in [ZXKind.X, ZXKind.Z]:
+        raise TQECException("Invalid ZX kind for correlation surface.")
+    normal_direction = SignedDirection3D(Direction3D.Z, True)
+    return Face(FaceKind(zx_kind.value + "_CORRELATION"), 1.0, 1.0, normal_direction)

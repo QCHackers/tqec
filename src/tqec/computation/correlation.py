@@ -28,6 +28,10 @@ class CorrelationSurface:
             raise TQECException(
                 "The correlation surface must contain at least one edge."
             )
+        if any(not node.is_zx_node for edge in self.span for node in edge):
+            raise TQECException(
+                "The correlation surface must contain only Z/X type nodes."
+            )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, CorrelationSurface):
@@ -36,6 +40,11 @@ class CorrelationSurface:
 
     def __hash__(self) -> int:
         return hash(self.span)
+
+    @property
+    def spanning_positions(self) -> set[Position3D]:
+        """Get the positions spanned by the correlation surface."""
+        return {node.position for edge in self.span for node in edge}
 
     def get_node_correlation_types(self) -> dict[Position3D, ZXKind]:
         """Get the correlation type of the nodes in the correlation surface.
