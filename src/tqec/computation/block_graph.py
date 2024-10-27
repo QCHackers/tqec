@@ -248,12 +248,19 @@ class BlockGraph:
         filename: str | pathlib.Path,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
+        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
+        show_correlation_surface: CorrelationSurface | None = None,
     ) -> None:
         """Export the block graph to a DAE file."""
         from tqec.interop.collada import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(
-            self, filename, pipe_length, pop_faces_at_direction
+            self,
+            filename,
+            pipe_length,
+            pop_faces_at_direction,
+            custom_face_colors,
+            show_correlation_surface,
         )
 
     @staticmethod
@@ -295,14 +302,10 @@ class BlockGraph:
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
         """Get all the abstract observables from the block graph."""
         from tqec.computation.abstract_observable import (
-            AbstractObservable,
             correlation_surface_to_abstract_observable,
         )
 
         self.validate()
-        # Edge case: only one cube in the graph
-        if self.num_cubes == 1:
-            return [AbstractObservable(frozenset(self.cubes), frozenset())], []
 
         if correlation_surfaces is None:
             correlation_surfaces = self.to_zx_graph().find_correration_surfaces()

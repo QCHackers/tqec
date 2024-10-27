@@ -17,13 +17,16 @@ if TYPE_CHECKING:
     from tqec.computation.block_graph import BlockKind
 
 
+CORRELATION_SUFFIX: str = "_CORRELATION"
+
+
 class FaceKind(Enum):
     X = "X"
     Y = "Y"
     Z = "Z"
     H = "H"
-    X_CORRELATION = "X_CORRELATION"
-    Z_CORRELATION = "Z_CORRELATION"
+    X_CORRELATION = "X" + CORRELATION_SUFFIX
+    Z_CORRELATION = "Z" + CORRELATION_SUFFIX
 
     def with_zx_flipped(self) -> FaceKind:
         if self == FaceKind.X:

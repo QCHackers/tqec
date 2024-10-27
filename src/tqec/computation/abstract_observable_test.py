@@ -12,8 +12,7 @@ def test_abstract_observable_for_single_cube() -> None:
     g = BlockGraph()
     g.add_cube(Position3D(0, 0, 0), ZXCube.from_str("ZXZ"))
     observables, correlation_surfaces = g.get_abstract_observables()
-    assert len(observables) == 1
-    assert len(correlation_surfaces) == 0
+    assert len(observables) == len(correlation_surfaces) == 1
     assert observables[0] == AbstractObservable(
         top_lines=frozenset({Cube(Position3D(0, 0, 0), ZXCube.from_str("ZXZ"))}),
         bottom_regions=frozenset(),

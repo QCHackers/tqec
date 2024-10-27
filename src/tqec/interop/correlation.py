@@ -23,9 +23,8 @@ def get_transformations_for_correlation_surface(
         )
 
     # Surfaces in the cubes
-    correlation_types = correlation_surface.get_node_correlation_types()
-    for pos in correlation_surface.spanning_positions:
-        cube = block_graph[pos]
+    for node in correlation_surface.nodes:
+        cube = block_graph[node.position]
         # Do not add surfaces in ports or Y-cubes
         if cube.is_port or cube.is_y_cube:
             continue
@@ -34,7 +33,7 @@ def get_transformations_for_correlation_surface(
                 block_graph,
                 cube,
                 correlation_surface,
-                correlation_types[pos],
+                node.kind,
                 pipe_length,
             )
         )

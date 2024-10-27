@@ -20,6 +20,7 @@ from tqec.interop.color import DEFAULT_FACE_COLORS, RGBA
 from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.computation.block_graph import BlockGraph, BlockKind
 from tqec.interop.geometry import (
+    CORRELATION_SUFFIX,
     Face,
     FaceKind,
     BlockGeometries,
@@ -82,7 +83,11 @@ def read_block_graph_from_dae_file(
         ):
             instance = cast(collada.scene.NodeNode, node.children[0])
             library_node: collada.scene.Node = instance.node
-            kind = _block_kind_from_str(library_node.name)
+            name: str = library_node.name
+            # Skip the correlation surface nodes
+            if name.endswith(CORRELATION_SUFFIX):
+                continue
+            kind = _block_kind_from_str(name)
             transformation = Transformation.from_4d_affine_matrix(node.matrix)
             translation = FloatPosition3D(*transformation.translation)
             if not np.allclose(transformation.rotation, np.eye(3), atol=1e-9):
@@ -363,7 +368,7 @@ class _BaseColladaData:
         surface = get_correlation_surface_geometry(kind)
         geometry_node = self._add_face_geometry_node(surface)
         node = collada.scene.Node(
-            str(surface.kind), [geometry_node], name=str(surface.kind)
+            surface.kind.value, [geometry_node], name=surface.kind.value
         )
         self.mesh.nodes.append(node)
         self.surface_library[kind] = node
@@ -422,8 +427,7 @@ class Transformation:
     def from_4d_affine_matrix(mat: npt.NDArray[np.float32]) -> Transformation:
         translation = mat[:3, 3]
         scale = np.linalg.norm(mat[:3, :3], axis=1)
-        # TODO: CHECK THIS
-        rotation = mat[:3, :3] / scale[:, None]
+        rotation = mat[:3, :3] / scale[None, :]
         return Transformation(translation, scale, rotation)
 
     def to_4d_affine_matrix(self) -> npt.NDArray[np.float32]:

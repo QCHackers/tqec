@@ -1,19 +1,17 @@
-import pytest
-
 from tqec.computation.correlation import CorrelationSurface
 from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
-from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
 
 def test_correlation_single_xz_node() -> None:
     g = ZXGraph()
     g.add_node(Position3D(0, 0, 0), ZXKind.X)
-    with pytest.raises(
-        TQECException,
-        match="The graph must contain at least two nodes to find correlation surfaces.",
-    ):
-        g.find_correration_surfaces()
+    correlation_surfaces = g.find_correration_surfaces()
+    assert len(correlation_surfaces) == 1
+    surface = correlation_surfaces[0]
+    assert surface.has_single_node
+    assert surface.external_stabilizer == {}
+    assert surface.node_correlation_types == {Position3D(0, 0, 0): ZXKind.Z}
 
 
 def test_correlation_two_xz_node() -> None:
@@ -24,7 +22,8 @@ def test_correlation_two_xz_node() -> None:
             ZXNode(Position3D(0, 0, 1), kind),
         )
         assert g.find_correration_surfaces() == [
-            CorrelationSurface(
+            CorrelationSurface.from_span(
+                g,
                 frozenset(
                     [
                         ZXEdge(
@@ -33,7 +32,6 @@ def test_correlation_two_xz_node() -> None:
                         )
                     ]
                 ),
-                {},
             )
         ]
 
@@ -53,7 +51,8 @@ def test_correlation_hadamard() -> None:
         has_hadamard=True,
     )
     assert g.find_correration_surfaces() == [
-        CorrelationSurface(
+        CorrelationSurface.from_span(
+            g,
             frozenset(
                 [
                     ZXEdge(
@@ -63,7 +62,6 @@ def test_correlation_hadamard() -> None:
                     )
                 ]
             ),
-            {},
         )
     ]
 
@@ -74,8 +72,10 @@ def test_correlation_y_node() -> None:
         ZXNode(Position3D(0, 0, 0), ZXKind.Y),
         ZXNode(Position3D(0, 0, 1), ZXKind.P, "out"),
     )
-    assert g.find_correration_surfaces() == [
-        CorrelationSurface(
+    correlation_surfaces = g.find_correration_surfaces()
+    assert correlation_surfaces == [
+        CorrelationSurface.from_span(
+            g,
             frozenset(
                 [
                     ZXEdge(
@@ -88,9 +88,9 @@ def test_correlation_y_node() -> None:
                     ),
                 ]
             ),
-            {"out": "Y"},
         )
     ]
+    assert correlation_surfaces[0].external_stabilizer == {"out": "Y"}
 
 
 def test_correlation_port_passthrough() -> None:
@@ -121,10 +121,13 @@ def test_correlation_port_passthrough() -> None:
     x_span = _span(ZXKind.X)
     z_span = _span(ZXKind.Z)
 
-    assert set(g.find_correration_surfaces()) == {
-        CorrelationSurface(x_span, {"in": "X", "out": "X"}),
-        CorrelationSurface(z_span, {"in": "Z", "out": "Z"}),
+    correlation_surfaces = g.find_correration_surfaces()
+    assert set(correlation_surfaces) == {
+        CorrelationSurface.from_span(g, x_span),
+        CorrelationSurface.from_span(g, z_span),
     }
+    assert correlation_surfaces[0].external_stabilizer == {"in": "X", "out": "X"}
+    assert correlation_surfaces[1].external_stabilizer == {"in": "Z", "out": "Z"}
 
 
 def test_correlation_logical_s_via_gate_teleportation() -> None:

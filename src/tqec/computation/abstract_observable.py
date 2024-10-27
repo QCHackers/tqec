@@ -38,13 +38,27 @@ def correlation_surface_to_abstract_observable(
     correlation_surface: CorrelationSurface,
     validate_graph: bool = True,
 ) -> AbstractObservable:
-    """Convert a correlation surface to an abstract observable."""
+    """Convert a correlation surface to an abstract observable.
+
+    You need to provide a correlation surface that is valid in the corresponding `ZXGraph`
+    of the block graph. Otherwise, the behavior is undefined.
+    """
     if validate_graph:
         if block_graph.num_ports != 0:
             raise TQECException(
                 "The block graph must have no open ports to support observables."
             )
         block_graph.validate()
+
+    if correlation_surface.has_single_node:
+        if block_graph.num_cubes != 1:
+            raise TQECException(
+                "The block graph must have exactly one cube to support the single-node correlation surface."
+            )
+        return AbstractObservable(
+            frozenset(block_graph.cubes),
+            frozenset(),
+        )
 
     def has_obs_include(cube: Cube, correlation: ZXKind) -> bool:
         if cube.is_y_cube:

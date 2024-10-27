@@ -7,7 +7,7 @@ from tqec.computation.block_graph import BlockGraph
 from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
 from tqec.gallery.logical_cnot import logical_cnot_block_graph, logical_cnot_zx_graph
 from tqec.gallery.three_cnots import three_cnots_block_graph, three_cnots_zx_graph
-from tqec.position import Position3D
+from tqec.position import Direction3D, Position3D, SignedDirection3D
 
 
 @pytest.mark.parametrize("pipe_length", [0.5, 1.0, 2.0, 10.0])
@@ -58,4 +58,23 @@ def test_y_cube_positioning_during_roundtrip() -> None:
         block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
         assert block_graph_from_file == block_graph
         assert block_graph_from_file.to_zx_graph() == g
+    os.remove(temp_file.name)
+
+
+def test_collada_write_read_with_correlation_surface() -> None:
+    block_graph = logical_cnot_block_graph("x")
+    correlation_surfaces = block_graph.to_zx_graph().find_correration_surfaces()
+
+    with tempfile.NamedTemporaryFile(suffix=".dae", delete=False) as temp_file:
+        for correlation_surface in correlation_surfaces:
+            block_graph.to_dae_file(
+                temp_file.name,
+                2.0,
+                pop_faces_at_direction=SignedDirection3D(Direction3D.X, True),
+                show_correlation_surface=correlation_surface,
+            )
+            block_graph_from_file = BlockGraph.from_dae_file(temp_file.name)
+            assert block_graph_from_file == block_graph
+            assert block_graph_from_file.to_zx_graph() == logical_cnot_zx_graph("x")
+
     os.remove(temp_file.name)
