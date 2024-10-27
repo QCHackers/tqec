@@ -139,7 +139,7 @@ def _try_to_handle_edges(
             continue
         infer_from, other_node = (u, v) if can_infer_from_u else (v, u)
         cube_kind = cast(ZXCube, block_graph[infer_from.position].kind)
-        pipe_kind = _infer_pipe_kind_from_endpoint(
+        pipe_kind = PipeKind.from_cube_kind(
             cube_kind, edge.direction, can_infer_from_u, edge.has_hadamard
         )
         other_cube_kind: CubeKind
@@ -212,25 +212,6 @@ def _choose_arbitrary_pipe_kind(edge: ZXEdge) -> PipeKind:
     if edge.has_hadamard:
         bases.append("H")
     return PipeKind.from_str("".join(bases))
-
-
-def _infer_pipe_kind_from_endpoint(
-    endpoint_kind: ZXCube,
-    pipe_direction: Direction3D,
-    at_pipe_head: bool,
-    has_hadamard: bool = False,
-) -> PipeKind:
-    """Infer the pipe kind from the endpoint cube kind and the pipe direction."""
-    bases: list[ZXBasis]
-    if not at_pipe_head and has_hadamard:
-        bases = [basis.with_zx_flipped() for basis in endpoint_kind.as_tuple()]
-    else:
-        bases = list(endpoint_kind.as_tuple())
-    bases_str = [basis.value for basis in bases]
-    bases_str[pipe_direction.value] = "O"
-    if has_hadamard:
-        bases_str.append("H")
-    return PipeKind.from_str("".join(bases_str))
 
 
 def _infer_cube_kind_from_pipe(

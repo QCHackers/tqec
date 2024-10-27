@@ -75,13 +75,29 @@ class PipeKind:
         """Check if the pipe is spatial."""
         return not self.is_temporal
 
+    @staticmethod
+    def from_cube_kind(
+        cube_kind: ZXCube,
+        direction: Direction3D,
+        cube_at_head: bool,
+        has_hadamard: bool = False,
+    ) -> PipeKind:
+        """Infer the pipe kind from the endpoint cube kind and the pipe direction."""
+        bases: list[ZXBasis]
+        if not cube_at_head and has_hadamard:
+            bases = [basis.with_zx_flipped() for basis in cube_kind.as_tuple()]
+        else:
+            bases = list(cube_kind.as_tuple())
+        bases_str = [basis.value for basis in bases]
+        bases_str[direction.value] = "O"
+        if has_hadamard:
+            bases_str.append("H")
+        return PipeKind.from_str("".join(bases_str))
+
 
 @dataclass(frozen=True)
 class Pipe:
     """A block connecting two cubes in a 3D spacetime diagram.
-
-    The pipe represents the idle or merge/split lattice surgery
-    operation on logical qubits depending on its direction.
 
     Attributes:
         u: The first cube. The position of u will be guaranteed to be less than v.
@@ -107,6 +123,42 @@ class Pipe:
         if p1 > p2:
             object.__setattr__(self, "u", v)
             object.__setattr__(self, "v", u)
+
+    @staticmethod
+    def from_cubes(u: Cube, v: Cube) -> Pipe:
+        """Create a pipe connecting two cubes and infer the pipe kind."""
+        if not u.is_zx_cube and not v.is_zx_cube:
+            raise TQECException(
+                "At least one cube must be a ZX cube to infer the pipe kind."
+            )
+        u, v = (u, v) if u.position < v.position else (v, u)
+        if not u.position.is_neighbour(v.position):
+            raise TQECException("The cubes must be neighbours to create a pipe.")
+        direction = next(
+            d
+            for d in Direction3D.all_directions()
+            if u.position.shift_in_direction(d, 1) == v.position
+        )
+
+        # One cube is not a ZX cube
+        if not u.is_zx_cube or not v.is_zx_cube:
+            infer_from = u if u.is_zx_cube else v
+            cube_kind = infer_from.kind
+            assert isinstance(cube_kind, ZXCube)
+            pipe_kind = PipeKind.from_cube_kind(cube_kind, direction, infer_from == u)
+            return Pipe(u, v, pipe_kind)
+
+        # Both cubes are ZX cubes
+        assert isinstance(u.kind, ZXCube) and isinstance(v.kind, ZXCube)
+        has_hadamard = {
+            u.kind.get_basis_along(d) != v.kind.get_basis_along(d)
+            for d in Direction3D.all_directions()
+            if d != direction
+        }
+        if len(has_hadamard) == 2:
+            raise TQECException("Cannot infer a valid pipe kind from the cubes.")
+        pipe_kind = PipeKind.from_cube_kind(u.kind, direction, True, has_hadamard.pop())
+        return Pipe(u, v, pipe_kind)
 
     @property
     def direction(self) -> Direction3D:

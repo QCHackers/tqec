@@ -35,6 +35,7 @@ def test_zx_cube_kind() -> None:
 
 def test_zx_cube() -> None:
     cube = Cube(Position3D(0, 0, 0), ZXCube.from_str("ZXZ"))
+    assert cube.is_zx_cube
     assert cube.is_regular
     assert not cube.is_spatial_junction
     assert not cube.is_port

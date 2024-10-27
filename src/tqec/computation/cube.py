@@ -152,6 +152,11 @@ class Cube:
         return f"{self.kind}{self.position}"
 
     @property
+    def is_zx_cube(self) -> bool:
+        """Check if the cube is a ZX cube."""
+        return isinstance(self.kind, ZXCube)
+
+    @property
     def is_port(self) -> bool:
         """Check if the cube is an open port."""
         return isinstance(self.kind, Port)

@@ -29,6 +29,24 @@ def test_pipe_kind() -> None:
     assert kind.is_temporal
 
 
+def test_pipe_kind_from_cube_kind() -> None:
+    assert PipeKind.from_cube_kind(
+        ZXCube.from_str("XXZ"), Direction3D.X, True
+    ) == PipeKind.from_str("OXZ")
+    assert PipeKind.from_cube_kind(
+        ZXCube.from_str("XXZ"), Direction3D.Y, True
+    ) == PipeKind.from_str("XOZ")
+    assert PipeKind.from_cube_kind(
+        ZXCube.from_str("XXZ"), Direction3D.Y, False
+    ) == PipeKind.from_str("XOZ")
+    assert PipeKind.from_cube_kind(
+        ZXCube.from_str("ZXZ"), Direction3D.Z, True, True
+    ) == PipeKind.from_str("ZXOH")
+    assert PipeKind.from_cube_kind(
+        ZXCube.from_str("ZXZ"), Direction3D.Z, False, True
+    ) == PipeKind.from_str("XZOH")
+
+
 def test_pipe() -> None:
     with pytest.raises(
         Exception, match="The pipe must connect two nearby cubes in direction Y."
