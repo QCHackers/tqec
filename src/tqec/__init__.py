@@ -36,7 +36,14 @@ from .plaquette import (
     SquarePlaquetteQubits,
 )
 from .plaquette.enums import PlaquetteOrientation
-from .position import Direction3D, Displacement, Position2D, Position3D, Shape2D
+from .position import (
+    Direction3D,
+    Displacement,
+    Position2D,
+    Position3D,
+    Shape2D,
+    SignedDirection3D,
+)
 from .scale import LinearFunction, Scalable2D, ScalableInterval, round_or_fail
 from .templates import Template
 from .templates.enums import (
