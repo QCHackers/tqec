@@ -164,10 +164,20 @@ def write_block_graph_to_dae_file(
     Args:
         block_graph: The block graph to write.
         file: The output file path or file-like object that supports binary write.
-        pipe_length: The length of the pipe blocks. Default is 2.0.
-        pop_faces_at_direction: The direction to pop the faces of the blocks. Default is None.
+        pipe_length: The length of the pipes. Default is 2.0.
+        pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
+            This is useful for visualizing the internal structure of the blocks. Default is None.
+        custom_face_colors: A mapping from the face kind to the RGBA color to override the default
+            face colors.
+        show_correlation_surface: The correlation surface to show in the block graph. Default is None.
+
     """
-    base = _BaseColladaData(pop_faces_at_direction, custom_face_colors)
+
+    custom_face_colors = (
+        dict(custom_face_colors) if custom_face_colors is not None else dict()
+    )
+    face_colors = DEFAULT_FACE_COLORS | custom_face_colors
+    base = _BaseColladaData(face_colors, pop_faces_at_direction)
 
     def scale_position(pos: Position3D) -> FloatPosition3D:
         return FloatPosition3D(*(p * (1 + pipe_length) for p in pos.as_tuple()))
@@ -221,8 +231,8 @@ class BlockLibraryKey:
 class _BaseColladaData:
     def __init__(
         self,
+        face_colors: dict[FaceKind, RGBA],
         pop_faces_at_direction: SignedDirection3D | None = None,
-        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
     ) -> None:
         """The base model template including the definition of all the library
         nodes and the necessary material, geometry definitions."""
@@ -239,11 +249,7 @@ class _BaseColladaData:
             if pop_faces_at_direction
             else frozenset()
         )
-        custom_face_colors = (
-            dict(custom_face_colors) if custom_face_colors is not None else dict()
-        )
-
-        self._face_colors = DEFAULT_FACE_COLORS | custom_face_colors
+        self._face_colors = face_colors
         self._num_instances: int = 0
 
         self._create_scene()

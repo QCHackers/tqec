@@ -1,4 +1,4 @@
-"""Graph representation of a 3D spacetime defect diagram by explicit blocks."""
+"""Graph representation of a 3D logical computation by explicit blocks."""
 
 from __future__ import annotations
 
@@ -32,8 +32,12 @@ BlockKind = CubeKind | PipeKind
 
 class BlockGraph:
     def __init__(self, name: str = "") -> None:
-        """An undirected graph representation of a 3D spacetime defect diagram
-        with the block structures explicitly defined."""
+        """An undirected graph representation of a 3D logical computation.
+
+        The nodes of the graph are the cubes, which are the computational units of the logical
+        computation. The edges of the graph are the pipes connecting the cubes, which guides
+        the computation through the spacetime.
+        """
         self._name = name
         self._graph = nx.Graph()
         self._ports: dict[str, Position3D] = {}
@@ -81,7 +85,7 @@ class BlockGraph:
         check_conflict: bool = True,
     ) -> None:
         """Add a cube to the graph. If a cube already exists at the position, the
-        cube kind will be updated.
+        kind of the cube will be updated.
 
         Args:
             position: The 3D position of the cube.
@@ -115,17 +119,21 @@ class BlockGraph:
                 f"There is already a different port with label {cube.label} in the graph."
             )
 
-    def add_pipe(self, u: Cube, v: Cube, kind: PipeKind) -> None:
+    def add_pipe(self, u: Cube, v: Cube, kind: PipeKind | None = None) -> None:
         """Add a pipe to the graph. If the cubes do not exist in the graph,
         the cubes will be created.
 
         Args:
             u: The first cube of the edge.
             v: The second cube of the edge.
-            pipe_type: The kind of the pipe
+            pipe_type: The kind of the pipe. If None, the pipe kind will be inferred
+                from the cubes. Default is None.
 
         """
-        pipe = Pipe(u, v, kind)
+        if kind is None:
+            pipe = Pipe.from_cubes(u, v)
+        else:
+            pipe = Pipe(u, v, kind)
         # Check before adding the cubes to avoid rolling back the changes
         self._check_cube_conflict(u)
         self._check_cube_conflict(v)
@@ -245,18 +253,29 @@ class BlockGraph:
 
     def to_dae_file(
         self,
-        filename: str | pathlib.Path,
+        file_path: str | pathlib.Path,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
         custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
     ) -> None:
-        """Export the block graph to a DAE file."""
+        """Write the block graph to a Collada DAE file.
+
+        Args:
+            file_path: The output file path.
+            pipe_length: The length of the pipes. Default is 2.0.
+            pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
+                This is useful for visualizing the internal structure of the blocks. Default is None.
+            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
+                face colors.
+            show_correlation_surface: The correlation surface to show in the block graph. Default is None.
+
+        """
         from tqec.interop.collada import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(
             self,
-            filename,
+            file_path,
             pipe_length,
             pop_faces_at_direction,
             custom_face_colors,
@@ -270,7 +289,7 @@ class BlockGraph:
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
-    def display(
+    def view_as_html(
         self,
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
@@ -278,7 +297,24 @@ class BlockGraph:
         custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
     ) -> ColladaHTMLViewer:
-        """Display the block graph in 3D."""
+        """View COLLADA model in html with the help of `three.js`.
+
+        This can display a COLLADA model interactively in IPython compatible environments.
+
+        Args:
+            write_html_filepath: The output html file path to write the generated html content
+                if provided. Default is None.
+            pipe_length: The length of the pipes. Default is 2.0.
+            pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
+                This is useful for visualizing the internal structure of the blocks. Default is None.
+            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
+                face colors.
+            show_correlation_surface: The correlation surface to show in the block graph. Default is None.
+
+        Returns:
+            A helper class to display the 3D model, which implements the `_repr_html_` method and
+            can be directly displayed in IPython compatible environments.
+        """
         from tqec.interop.collada import write_block_graph_to_dae_file
         from tqec.interop.collada_html_viewer import display_collada_model
 

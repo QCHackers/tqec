@@ -42,6 +42,14 @@ def correlation_surface_to_abstract_observable(
 
     You need to provide a correlation surface that is valid in the corresponding `ZXGraph`
     of the block graph. Otherwise, the behavior is undefined.
+
+    Args:
+        block_graph: The block graph containing the correlation surface.
+        correlation_surface: The correlation surface to convert.
+        validate_graph: Whether to validate the block graph before conversion.
+
+    Returns:
+        The abstract observable derived from the correlation surface.
     """
     if validate_graph:
         if block_graph.num_ports != 0:

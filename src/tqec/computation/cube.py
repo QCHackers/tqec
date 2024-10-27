@@ -137,8 +137,7 @@ class YCube(CubeKind):
 
 @dataclass(frozen=True)
 class Cube:
-    """A block representing the computational unit in a 3D spacetime
-    diagram."""
+    """A block representing the computational unit in a 3D logical computation."""
 
     position: Position3D
     kind: CubeKind

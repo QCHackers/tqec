@@ -52,7 +52,6 @@ def test_block_graph_add_pipe() -> None:
     g.add_pipe(
         Cube(Position3D(1, 0, 0), ZXCube.from_str("XZX")),
         Cube(Position3D(2, 0, 0), Port(), label="out"),
-        PipeKind.from_str("OZX"),
     )
     assert g.num_cubes == 4
     assert g.num_pipes == 3
