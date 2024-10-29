@@ -12,7 +12,7 @@ of the :py:class:`~tqec.templates.base.Template` class) that can be
 :math:`k`.
 
 A subtemplate is a constant-size sub-array of a template instantiation. For the
-moment, a subtemplate is always a square sub-array of odd-sized sides.
+moment, a subtemplate is always a square sub-array with odd-sized sides.
 
 The scaling parameter :math:`k` directly relates to the code distance :math:`d`
 (at least for regular surface code) where :math:`d = 2 k + 1`.
@@ -111,7 +111,7 @@ using a distance :math:`d = 2 k + 1 = 2 \\times 5 + 1 = 11` code:
     .   13  .   13  .   13  .   13  .   13  .   .
 
 This ability to scale to arbitrarily large values of :math:`k` (as long as your
-computed can store a matrix of shape :math:`(2k+1, 2k+1)`) is exactly the reason
+computer can store a matrix of shape :math:`(2k+1, 2k+1)`) is exactly the reason
 of existence of the :py:class:`~tqec.templates.base.Template` class.
 
 This module also includes a few sub-classes implementing the
@@ -131,7 +131,7 @@ This module also implements helpers to list and represent sub-templates. A
 sub-template is basically a sub-array of a given template instantiation.
 Sub-templates are all of known constant size and cannot be scaled. Sub-templates
 are represented as an array of integers with a square shape (i.e., 2-dimensional
-with the same number of elements in each dimension) of odd0sized sides.
+with the same number of elements in each dimension) with odd-sized sides.
 
 The module :py:mod:`tqec.templates.subtemplates` provides functions to compute
 all the subtemplates for given template instantiation and subtemplate size along
