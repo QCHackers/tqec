@@ -45,6 +45,6 @@ def get_template_representation_from_instantiation(
     max_integer = numpy.max(instantiation)
     pad = len(str(max_integer)) + 1
     return "\n".join(
-        " ".join((str(num) if num != 0 else ".").ljust(pad) for num in line)
+        " ".join((str(num) if num != 0 else ".").rjust(pad) for num in line)
         for line in instantiation
     )
