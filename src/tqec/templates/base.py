@@ -130,8 +130,9 @@ class Template(ABC):
                 distance. Only squares with sides of ``2*manhattan_radius+1``
                 plaquettes will be considered.
             avoid_zero_plaquettes: ``True`` if sub-templates with an empty plaquette
-                (i.e., 0 value in the instantiation of the :py:class:`Template`
-                instance) at its center should be ignored. Default to ``True``.
+                (i.e., 0 value in the instantiation of the
+                :class:`~tqec.templates.base.Template` instance) at its center
+                should be ignored. Default to ``True``.
 
         Returns:
             a representation of all the sub-templates found.
@@ -146,7 +147,7 @@ class Template(ABC):
         This property returns the coordinates of the origin of the plaquette
         (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds
         to the top-left entry of the array returned by
-        :py:meth:`Template.instantiate`.
+        :meth:`~tqec.templates.base.Template.instantiate`.
 
         Note:
             the returned coordinates are in plaquette coordinates. That means
@@ -159,8 +160,9 @@ class Template(ABC):
 
         Returns:
             the coordinates of the origin of the plaquette
-            (:class:`Plaquette.origin`) that corresponds to the top-left entry
-            of the array returned by :meth:`Template.instantiate`.
+            (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds
+            to the top-left entry of the array returned by
+            :meth:`~tqec.templates.base.Template.instantiate`.
         """
         return Position2D(0, 0)
 
