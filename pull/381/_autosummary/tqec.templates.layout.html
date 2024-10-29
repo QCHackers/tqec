@@ -17,6 +17,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -77,6 +79,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.display.html">tqec.templates.display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.enums.html">tqec.templates.enums</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.templates.layout</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.templates.layout.LayoutTemplate.html">tqec.templates.layout.LayoutTemplate</a></li>
 </ul>
 </li>
@@ -116,7 +119,63 @@
              
   <section id="module-tqec.templates.layout">
 <span id="tqec-templates-layout"></span><h1>tqec.templates.layout<a class="headerlink" href="#module-tqec.templates.layout" title="Link to this heading"></a></h1>
-<p>Defines a high-level template composing several sub-templates.</p>
+<p>Defines a high-level template composing several sub-templates:
+<a class="reference internal" href="tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate" title="tqec.templates.layout.LayoutTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">LayoutTemplate</span></code></a>.</p>
+<p>This module defines a <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> child class that
+is able to represent several <a class="reference internal" href="tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">RectangularTemplate</span></code></a>
+instances with the same scalable shape. Each of the managed
+<a class="reference internal" href="tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">RectangularTemplate</span></code></a> instance is linked to a unique
+2-dimensional position on an infinite 2-dimensional grid.</p>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<p>A grid of <span class="math notranslate nohighlight">\(2 \times 2\)</span> logical qubits can be represented with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position2D</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.layout</span> <span class="kn">import</span> <span class="n">LayoutTemplate</span>
+<span class="kn">from</span> <span class="nn">tqec.templates.qubit</span> <span class="kn">import</span> <span class="n">QubitTemplate</span>
+
+<span class="n">qubit</span> <span class="o">=</span> <span class="n">QubitTemplate</span><span class="p">()</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">LayoutTemplate</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="n">qubit</span><span class="p">,</span>
+        <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="n">qubit</span><span class="p">,</span>
+        <span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="n">qubit</span><span class="p">,</span>
+        <span class="n">Position2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="n">qubit</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Being a <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance, the above constructed
+<code class="docutils literal notranslate"><span class="pre">grid</span></code> can be displayed with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.templates.display</span> <span class="kn">import</span> <span class="n">display_template</span>
+
+<span class="n">display_template</span><span class="p">(</span><span class="n">qubit</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">display_template</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which outputs</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1   5   6   5   6   2
+7   9  10   9  10  11
+8  10   9  10   9  12
+7   9  10   9  10  11
+8  10   9  10   9  12
+3  13  14  13  14   4
+==================================================
+ 1   5   6   5   6   2  29  33  34  33  34  30
+ 7   9  10   9  10  11  35  37  38  37  38  39
+ 8  10   9  10   9  12  36  38  37  38  37  40
+ 7   9  10   9  10  11  35  37  38  37  38  39
+ 8  10   9  10   9  12  36  38  37  38  37  40
+ 3  13  14  13  14   4  31  41  42  41  42  32
+15  19  20  19  20  16  43  47  48  47  48  44
+21  23  24  23  24  25  49  51  52  51  52  53
+22  24  23  24  23  26  50  52  51  52  51  54
+21  23  24  23  24  25  49  51  52  51  52  53
+22  24  23  24  23  26  50  52  51  52  51  54
+17  27  28  27  28  18  45  55  56  55  56  46
+</pre></div>
+</div>
+</section>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>

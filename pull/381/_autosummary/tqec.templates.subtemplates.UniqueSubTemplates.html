@@ -132,52 +132,55 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UniqueSubTemplates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtemplate_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtemplates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/templates/subtemplates.html#UniqueSubTemplates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.subtemplates.UniqueSubTemplates" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stores information on the sub-templates of a specific radius present on
-a larger <cite>Template</cite> instance.</p>
-<p>A sub-template is defined here as a portion of a <cite>Template</cite> instantiation.
-In other words, a sub-template is a sub-array of the array resulting from
-calling the method <cite>Template.instantiate</cite> on any <cite>Template</cite> instance.
-The size of this sub-array is defined by its <cite>radius</cite>, which is computed
-according to the Manhattan distance.</p>
+a larger <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance.</p>
+<p>A sub-template is defined here as a portion of a
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instantiation. In other words, a
+sub-template is a sub-array of the array resulting from calling the method
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template.instantiate" title="tqec.templates.base.Template.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">instantiate()</span></code></a> on any
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance. The size of this sub-array
+is defined by its <cite>radius</cite>, which is computed according to the Manhattan
+distance.</p>
 <p>For example, let’s say you have the following array from calling
-<cite>Template.instantiate</cite> on a <cite>Template</cite> instance:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">1</span>&#160; <span class="pre">5</span>&#160; <span class="pre">6</span>&#160; <span class="pre">5</span>&#160; <span class="pre">6</span>&#160; <span class="pre">2</span>
-<span class="pre">7</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">10</span> <span class="pre">11</span>
-<span class="pre">8</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">12</span>
-<span class="pre">7</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">10</span> <span class="pre">11</span>
-<span class="pre">8</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">12</span>
-<span class="pre">3</span> <span class="pre">13</span> <span class="pre">14</span> <span class="pre">13</span> <span class="pre">14</span>&#160; <span class="pre">4</span>
-<span class="pre">`</span></code></p>
-<p>Focusing on the top-left <cite>9</cite> (coordinates <cite>(1, 1)</cite> in the array), the
-following sub-array is a sub-template of radius <cite>1</cite>, centered on the
-<cite>(1, 1)</cite> coordinate of the above instantiation:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">1</span>&#160; <span class="pre">5</span>&#160; <span class="pre">6</span>
-<span class="pre">7</span>&#160; <span class="pre">9</span> <span class="pre">10</span>
-<span class="pre">8</span> <span class="pre">10</span>&#160; <span class="pre">9</span>
-<span class="pre">`</span></code></p>
-<p>Still focusing on the top-left <cite>9</cite>, the following sub-array is a
-sub-template of radius <cite>2</cite>, centered on the <cite>(1, 1)</cite> coordinate of the
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template.instantiate" title="tqec.templates.base.Template.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">instantiate()</span></code></a> on a
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">2</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">12</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">12</span>
+<span class="mi">3</span> <span class="mi">13</span> <span class="mi">14</span> <span class="mi">13</span> <span class="mi">14</span>  <span class="mi">4</span>
+</pre></div>
+</div>
+<p>Focusing on the top-left <code class="docutils literal notranslate"><span class="pre">9</span></code> (coordinates <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code> in the array), the
+following sub-array is a sub-template of radius <code class="docutils literal notranslate"><span class="pre">1</span></code>, centered on the
+<code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code> coordinate of the above instantiation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span>
+</pre></div>
+</div>
+<p>Still focusing on the top-left <code class="docutils literal notranslate"><span class="pre">9</span></code>, the following sub-array is a
+sub-template of radius <code class="docutils literal notranslate"><span class="pre">2</span></code>, centered on the <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code> coordinate of the
 above instantiation:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">.</span>&#160; <span class="pre">.</span>&#160; <span class="pre">.</span>&#160; <span class="pre">.</span>&#160; <span class="pre">.</span>
-<span class="pre">.</span>&#160; <span class="pre">1</span>&#160; <span class="pre">5</span>&#160; <span class="pre">6</span>&#160; <span class="pre">5</span>
-<span class="pre">.</span>&#160; <span class="pre">7</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span>
-<span class="pre">.</span>&#160; <span class="pre">8</span> <span class="pre">10</span>&#160; <span class="pre">9</span> <span class="pre">10</span>
-<span class="pre">.</span>&#160; <span class="pre">7</span>&#160; <span class="pre">9</span> <span class="pre">10</span>&#160; <span class="pre">9</span>
-<span class="pre">`</span></code></p>
-<p>Note the inclusion of <cite>.</cite> that are here to represent <cite>0</cite> (i.e., the
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>
+<span class="o">.</span>  <span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">5</span>
+<span class="o">.</span>  <span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>
+<span class="o">.</span>  <span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>
+<span class="o">.</span>  <span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>
+</pre></div>
+</div>
+<p>Note the inclusion of <code class="docutils literal notranslate"><span class="pre">.</span></code> that are here to represent <code class="docutils literal notranslate"><span class="pre">0</span></code> (i.e., the
 absence of plaquette at that particular point) because there is no
-plaquette in the original <cite>Template</cite> instantiation.</p>
+plaquette in the original <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instantiation.</p>
 <p>This dataclass efficiently stores all the sub-templates of a given
-<cite>Template</cite> instantiation and of a given <cite>radius</cite>.</p>
+<cite>:class:`~tqec.templates.base.Template</cite> instantiation and of a given <code class="docutils literal notranslate"><span class="pre">radius</span></code>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.templates.subtemplates.UniqueSubTemplates.subtemplate_indices">
 <span class="sig-name descname"><span class="pre">subtemplate_indices</span></span><a class="headerlink" href="#tqec.templates.subtemplates.UniqueSubTemplates.subtemplate_indices" title="Link to this definition"></a></dt>
 <dd><p>an array that has the same shape as the
-original <cite>Template</cite> instantiation but stores sub-template
-indices referencing sub-templates from the <cite>subtemplates</cite>
-attribute. The integers in this array do NOT represent
+original <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instantiation but
+stores sub-template indices referencing sub-templates from the
+<code class="docutils literal notranslate"><span class="pre">subtemplates</span></code> attribute. The integers in this array do NOT represent
 plaquette indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -191,7 +194,7 @@ plaquette indices.</p>
 <span class="sig-name descname"><span class="pre">subtemplates</span></span><a class="headerlink" href="#tqec.templates.subtemplates.UniqueSubTemplates.subtemplates" title="Link to this definition"></a></dt>
 <dd><p>a store of sub-template (values) indexed by integers
 (keys) that link the sub-template center to the original
-template instantiation thanks to <cite>subtemplate_indices</cite>.</p>
+template instantiation thanks to <code class="docutils literal notranslate"><span class="pre">subtemplate_indices</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict[int, numpy.ndarray[Any, numpy.dtype[numpy.int64]]]</p>
@@ -202,12 +205,12 @@ template instantiation thanks to <cite>subtemplate_indices</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any index in <cite>self.subtemplate_indices</cite> is
-    not present in <cite>self.subtemplates.keys()</cite>.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any index in <code class="docutils literal notranslate"><span class="pre">self.subtemplate_indices</span></code> is
+    not present in <code class="docutils literal notranslate"><span class="pre">self.subtemplates.keys()</span></code>.</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any of the sub-template shapes is non-square
     or of even width or length.</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if not all the sub-template shapes in
-    <cite>self.subtemplates.values()</cite> are equal.</p></li>
+    <code class="docutils literal notranslate"><span class="pre">self.subtemplates.values()</span></code> are equal.</p></li>
 </ul>
 </dd>
 </dl>

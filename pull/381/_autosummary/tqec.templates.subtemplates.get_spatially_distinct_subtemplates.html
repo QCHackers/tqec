@@ -17,6 +17,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -131,47 +133,48 @@ provided manhattan radius.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function will likely be inefficient for large templates (i.e.,
-large values of <cite>k</cite>) or for large Manhattan radiuses, both in terms of
-memory used and computation time.</p>
+large values of <span class="math notranslate nohighlight">\(k\)</span>) or for large Manhattan radiuses, both in
+terms of memory used and computation time.</p>
 <p>Right now, with</p>
 <ul class="simple">
-<li><p><cite>n</cite> the width of the provided <cite>instantiation</cite> array,</p></li>
-<li><p><cite>m</cite> the height of the provided <cite>instantiation</cite> array,</p></li>
-<li><p><cite>r</cite> the provided Manhattan radius,</p></li>
+<li><p><span class="math notranslate nohighlight">\(n\)</span> the width of the provided <code class="docutils literal notranslate"><span class="pre">instantiation</span></code> array,</p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span> the height of the provided <code class="docutils literal notranslate"><span class="pre">instantiation</span></code> array,</p></li>
+<li><p><span class="math notranslate nohighlight">\(r\)</span> the provided Manhattan radius,</p></li>
 </ul>
-<p>it takes of the order of <cite>n*m*(2*r+1)²</cite> memory and has to sort an
-array of <cite>n*m</cite> elements of size <cite>(2*r+1)²</cite> in lexicographic order so
-require, in the worst case, <cite>O(n*m*log(n*m)*(2*r+1)²)</cite> runtime.</p>
+<p>it takes of the order of <span class="math notranslate nohighlight">\(n m (2r+1)^2\)</span> memory and has to sort an
+array of <span class="math notranslate nohighlight">\(nm\)</span> elements of size <span class="math notranslate nohighlight">\((2r+1)^2\)</span> in lexicographic
+order so require, in the worst case,
+<span class="math notranslate nohighlight">\(O\left(nm\log(nm) (2r+1)^2\right)\)</span> runtime.</p>
 <p>Subclasses are invited to reimplement that method using a specialized
 algorithm (or hard-coded values) to speed things up.</p>
 <p>Some timings obtained on an AMD Ryzen 9 5950X:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">k</span> <span class="pre">=</span> <span class="pre">10</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
-<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160; <span class="pre">0.000776</span> <span class="pre">|</span>&#160; <span class="pre">0.000992</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00151</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00227</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00321</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">k</span> <span class="pre">=</span> <span class="pre">20</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
-<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160; <span class="pre">0.00202</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00356</span> <span class="pre">|</span>&#160;&#160; <span class="pre">0.00672</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0116</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0173</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">k</span> <span class="pre">=</span> <span class="pre">40</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
-<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160; <span class="pre">0.00778</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0156</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0326</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0574</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0889</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">k</span> <span class="pre">=</span> <span class="pre">80</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
-<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160;&#160; <span class="pre">0.0318</span> <span class="pre">|</span>&#160;&#160;&#160; <span class="pre">0.0706</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.147</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">0.27</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.426</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">k</span> <span class="pre">=</span> <span class="pre">160</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">radius</span>&#160;&#160; <span class="pre">=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">2</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">3</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">4</span>
-<span class="pre">time</span> <span class="pre">(s)</span> <span class="pre">=</span>&#160;&#160;&#160;&#160; <span class="pre">0.139</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.309</span> <span class="pre">|</span>&#160;&#160;&#160;&#160; <span class="pre">0.651</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">1.25</span> <span class="pre">|</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">1.98</span>
-<span class="pre">----------------------------------------------------------------------</span>
-<span class="pre">`</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">radius</span>   <span class="o">=</span>         <span class="mi">0</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">4</span>
+<span class="n">time</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">=</span>  <span class="mf">0.000776</span> <span class="o">|</span>  <span class="mf">0.000992</span> <span class="o">|</span>   <span class="mf">0.00151</span> <span class="o">|</span>   <span class="mf">0.00227</span> <span class="o">|</span>   <span class="mf">0.00321</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">radius</span>   <span class="o">=</span>         <span class="mi">0</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">4</span>
+<span class="n">time</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">=</span>   <span class="mf">0.00202</span> <span class="o">|</span>   <span class="mf">0.00356</span> <span class="o">|</span>   <span class="mf">0.00672</span> <span class="o">|</span>    <span class="mf">0.0116</span> <span class="o">|</span>    <span class="mf">0.0173</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">radius</span>   <span class="o">=</span>         <span class="mi">0</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">4</span>
+<span class="n">time</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">=</span>   <span class="mf">0.00778</span> <span class="o">|</span>    <span class="mf">0.0156</span> <span class="o">|</span>    <span class="mf">0.0326</span> <span class="o">|</span>    <span class="mf">0.0574</span> <span class="o">|</span>    <span class="mf">0.0889</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">80</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">radius</span>   <span class="o">=</span>         <span class="mi">0</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">4</span>
+<span class="n">time</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">=</span>    <span class="mf">0.0318</span> <span class="o">|</span>    <span class="mf">0.0706</span> <span class="o">|</span>     <span class="mf">0.147</span> <span class="o">|</span>      <span class="mf">0.27</span> <span class="o">|</span>     <span class="mf">0.426</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">160</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">radius</span>   <span class="o">=</span>         <span class="mi">0</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>         <span class="mi">4</span>
+<span class="n">time</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">=</span>     <span class="mf">0.139</span> <span class="o">|</span>     <span class="mf">0.309</span> <span class="o">|</span>     <span class="mf">0.651</span> <span class="o">|</span>      <span class="mf">1.25</span> <span class="o">|</span>      <span class="mf">1.98</span>
+<span class="o">----------------------------------------------------------------------</span>
+</pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -179,11 +182,11 @@ algorithm (or hard-coded values) to speed things up.</p>
 <li><p><strong>instantiation</strong> – a 2-dimensional array representing the instantiated
 template on which sub-templates should be computed.</p></li>
 <li><p><strong>manhattan_radius</strong> – radius of the considered ball using the Manhattan
-distance. Only squares with sides of <cite>2*manhattan_radius+1</cite>
+distance. Only squares with sides of <code class="docutils literal notranslate"><span class="pre">2*manhattan_radius+1</span></code>
 plaquettes will be considered.</p></li>
-<li><p><strong>avoid_zero_plaquettes</strong> – <cite>True</cite> if sub-templates with an empty plaquette
+<li><p><strong>avoid_zero_plaquettes</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if sub-templates with an empty plaquette
 (i.e., 0 value in the instantiation of the Template instance) at
-its center should be ignored. Default to <cite>True</cite>.</p></li>
+its center should be ignored. Default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

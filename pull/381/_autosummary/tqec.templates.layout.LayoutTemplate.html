@@ -77,6 +77,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.display.html">tqec.templates.display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.templates.enums.html">tqec.templates.enums</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="tqec.templates.layout.html">tqec.templates.layout</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tqec.templates.layout.html#example">Example</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.templates.layout.LayoutTemplate</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#tqec.templates.layout.LayoutTemplate"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate</span></code></a><ul>
 <li class="toctree-l6"><a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.__init__"><code class="docutils literal notranslate"><span class="pre">LayoutTemplate.__init__()</span></code></a></li>
@@ -169,7 +170,7 @@ to <code class="docutils literal notranslate"><span class="pre">Displacement(2,<
 <td><p>Get the default increments of the template.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation" title="tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indices_map_for_instantiation</span></code></a>([...])</p></td>
-<td><p></p></td>
+<td><p>Get one index map for each of the templates in the layout.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.get_midline_plaquettes" title="tqec.templates.layout.LayoutTemplate.get_midline_plaquettes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_midline_plaquettes</span></code></a>(k[, orientation])</p></td>
 <td><p>Returns the default observable qubits for the template.</p></td>
@@ -195,7 +196,7 @@ to <code class="docutils literal notranslate"><span class="pre">Displacement(2,<
 <td><p>Returns the number of plaquettes expected from the <cite>instantiate</cite> method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin_shift</span></code></p></td>
-<td><p></p></td>
+<td><p>Returns the shift that should be applied to the global origin to become the template origin.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scalable_shape</span></code></p></td>
 <td><p>Returns a scalable version of the template shape.</p></td>
@@ -249,7 +250,29 @@ to <code class="docutils literal notranslate"><span class="pre">Displacement(2,<
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation">
 <span class="sig-name descname"><span class="pre">get_indices_map_for_instantiation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instantiate_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.position.Position2D.html#tqec.position.Position2D" title="tqec.position.Position2D"><span class="pre">Position2D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/templates/layout.html#LayoutTemplate.get_indices_map_for_instantiation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get one index map for each of the templates in the layout.</p>
+<p>This method is used internally by <a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.instantiate" title="tqec.templates.layout.LayoutTemplate.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LayoutTemplate.instantiate()</span></code></a> and
+can be used externally to get a map from the instantiation indices used by
+each of the individual <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instances
+stored in <code class="docutils literal notranslate"><span class="pre">self</span></code> to the global instantiation index used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instantiate_indices</strong> – global indices used to instantiate <code class="docutils literal notranslate"><span class="pre">self</span></code>.
+Have the same meaning and defaults as the <code class="docutils literal notranslate"><span class="pre">plaquette_indices</span></code>
+parameter in <a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.instantiate" title="tqec.templates.layout.LayoutTemplate.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LayoutTemplate.instantiate()</span></code></a>.
+Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a map from positions to instantiation index maps. Each instantiation
+index map is a bijection from the template instantiation indices (going
+from <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">template.expected_plaquettes_number</span></code>) to the global
+indices that are used in <a class="reference internal" href="#tqec.templates.layout.LayoutTemplate.instantiate" title="tqec.templates.layout.LayoutTemplate.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LayoutTemplate.instantiate()</span></code></a> (going
+from <code class="docutils literal notranslate"><span class="pre">N</span></code> to <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">+</span> <span class="pre">template.expected_plaquettes_number</span> <span class="pre">-</span> <span class="pre">1</span></code> where
+<code class="docutils literal notranslate"><span class="pre">N</span></code> depends on the other <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a>
+instances managed by <code class="docutils literal notranslate"><span class="pre">self</span></code>).</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.templates.layout.LayoutTemplate.get_midline_plaquettes">
@@ -293,8 +316,9 @@ algorithm (or hard-coded values) to speed things up.</p>
 distance. Only squares with sides of <code class="docutils literal notranslate"><span class="pre">2*manhattan_radius+1</span></code>
 plaquettes will be considered.</p></li>
 <li><p><strong>avoid_zero_plaquettes</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if sub-templates with an empty plaquette
-(i.e., 0 value in the instantiation of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code>
-instance) at its center should be ignored. Default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+(i.e., 0 value in the instantiation of the
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance) at its center
+should be ignored. Default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -330,7 +354,7 @@ the underlying shape of the template.</p>
 <p>This property returns the coordinates of the origin of the plaquette
 (<code class="xref py py-class docutils literal notranslate"><span class="pre">origin</span></code>) that corresponds
 to the top-left entry of the array returned by
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">Template.instantiate()</span></code>.</p>
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template.instantiate" title="tqec.templates.base.Template.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">instantiate()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>the returned coordinates are in plaquette coordinates. That means
@@ -344,8 +368,9 @@ returned by this method by the tiling increments.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the coordinates of the origin of the plaquette
-(<code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette.origin</span></code>) that corresponds to the top-left entry
-of the array returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Template.instantiate()</span></code>.</p>
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">origin</span></code>) that corresponds
+to the top-left entry of the array returned by
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template.instantiate" title="tqec.templates.base.Template.instantiate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">instantiate()</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>

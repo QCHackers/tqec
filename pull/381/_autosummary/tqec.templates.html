@@ -124,7 +124,7 @@ of the <a class="reference internal" href="tqec.templates.base.Template.html#tqe
 “instantiated” into an array of integers from an input integer scaling parameter
 <span class="math notranslate nohighlight">\(k\)</span>.</p>
 <p>A subtemplate is a constant-size sub-array of a template instantiation. For the
-moment, a subtemplate is always a square sub-array of odd-sized sides.</p>
+moment, a subtemplate is always a square sub-array with odd-sized sides.</p>
 <p>The scaling parameter <span class="math notranslate nohighlight">\(k\)</span> directly relates to the code distance <span class="math notranslate nohighlight">\(d\)</span>
 (at least for regular surface code) where <span class="math notranslate nohighlight">\(d = 2 k + 1\)</span>.</p>
 </section>
@@ -205,7 +205,7 @@ using a distance <span class="math notranslate nohighlight">\(d = 2 k + 1 = 2 \t
 </pre></div>
 </div>
 <p>This ability to scale to arbitrarily large values of <span class="math notranslate nohighlight">\(k\)</span> (as long as your
-computed can store a matrix of shape <span class="math notranslate nohighlight">\((2k+1, 2k+1)\)</span>) is exactly the reason
+computer can store a matrix of shape <span class="math notranslate nohighlight">\((2k+1, 2k+1)\)</span>) is exactly the reason
 of existence of the <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> class.</p>
 <p>This module also includes a few sub-classes implementing the
 <a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> interface:</p>
@@ -224,7 +224,7 @@ layout of other templates arranged on a regular grid.</p></li>
 sub-template is basically a sub-array of a given template instantiation.
 Sub-templates are all of known constant size and cannot be scaled. Sub-templates
 are represented as an array of integers with a square shape (i.e., 2-dimensional
-with the same number of elements in each dimension) of odd0sized sides.</p>
+with the same number of elements in each dimension) with odd-sized sides.</p>
 <p>The module <a class="reference internal" href="tqec.templates.subtemplates.html#module-tqec.templates.subtemplates" title="tqec.templates.subtemplates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec.templates.subtemplates</span></code></a> provides functions to compute
 all the subtemplates for given template instantiation and subtemplate size along
 with some data-structure to represent efficiently this collection of
@@ -251,7 +251,7 @@ observed above.</p>
 <td><p>Defines a few enumerations related to templates.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.templates.layout.html#module-tqec.templates.layout" title="tqec.templates.layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layout</span></code></a></p></td>
-<td><p>Defines a high-level template composing several sub-templates.</p></td>
+<td><p>Defines a high-level template composing several sub-templates: <code class="xref py py-class docutils literal notranslate"><span class="pre">LayoutTemplate</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.templates.qubit.html#module-tqec.templates.qubit" title="tqec.templates.qubit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit</span></code></a></p></td>
 <td><p>Defines templates representing logical qubits and its constituent parts.</p></td>

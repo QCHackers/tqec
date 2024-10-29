@@ -17,6 +17,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -131,22 +133,23 @@ of the provided manhattan radius.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function will likely be inefficient for large templates (i.e.,
-large values of <cite>k</cite>) or for large Manhattan radiuses, both in terms of
-memory used and computation time.</p>
+large values of <span class="math notranslate nohighlight">\(k\)</span>) or for large Manhattan radiuses, both in
+terms of memory used and computation time.</p>
 <p>Right now, with</p>
 <ul class="simple">
-<li><p><cite>n</cite> the width of the provided <cite>instantiations</cite> array,</p></li>
-<li><p><cite>m</cite> the height of the provided <cite>instantiations</cite> array,</p></li>
-<li><p><cite>t</cite> the number of time slices (<cite>len(instantiations)</cite>),</p></li>
-<li><p><cite>r</cite> the provided Manhattan radius,</p></li>
+<li><p><span class="math notranslate nohighlight">\(n\)</span> the width of the <code class="docutils literal notranslate"><span class="pre">instantiations</span></code> array entries,</p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span> the height of the <code class="docutils literal notranslate"><span class="pre">instantiations</span></code> array entries,</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span> the number of time slices (<code class="docutils literal notranslate"><span class="pre">len(instantiations)</span></code>),</p></li>
+<li><p><span class="math notranslate nohighlight">\(r\)</span> the provided Manhattan radius,</p></li>
 </ul>
-<p>it takes of the order of up to <cite>n*m*t*(2*r+1)²</cite> memory, has to sort <cite>t</cite>
-arrays of <cite>n*m</cite> elements of size <cite>(2*r+1)²</cite> in lexicographic order, so
-require, in the worst case, <cite>O(t*n*m*log(n*m)*(2*r+1)²)</cite> runtime.</p>
+<p>it takes of the order of up to <span class="math notranslate nohighlight">\(nmt(2r+1)^2\)</span> memory, has to sort
+<span class="math notranslate nohighlight">\(t\)</span> arrays of <span class="math notranslate nohighlight">\(nm\)</span> elements of size <span class="math notranslate nohighlight">\((2r+1)^2\)</span> in
+lexicographic order, so require, in the worst case,
+<span class="math notranslate nohighlight">\(O\left(tnm\log(nm)(2r+1)^2\right)\)</span> runtime.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This function assumes that the provided <cite>instantiations</cite> are compatible
+<p>This function assumes that the provided <code class="docutils literal notranslate"><span class="pre">instantiations</span></code> are compatible
 with each other. That means that they should all have the same shape and
 they should all be defined with respect to the same origin in order to
 ensure that stacking all the instantiations result in a 3-dimensional
@@ -160,11 +163,11 @@ instantiated templates on which sub-templates should be computed.
 They should all be “compatible” with each other. See warning in the
 function documentation.</p></li>
 <li><p><strong>manhattan_radius</strong> – radius of the considered ball using the Manhattan
-distance. Only squares with sides of <cite>2*manhattan_radius+1</cite>
+distance. Only squares with sides of <code class="docutils literal notranslate"><span class="pre">2*manhattan_radius+1</span></code>
 plaquettes will be considered.</p></li>
-<li><p><strong>avoid_zero_plaquettes</strong> – <cite>True</cite> if sub-templates with an empty plaquette
+<li><p><strong>avoid_zero_plaquettes</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if sub-templates with an empty plaquette
 (i.e., 0 value in the instantiation of the Template instance) at
-its center should be ignored. Default to <cite>True</cite>.</p></li>
+its center should be ignored. Default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

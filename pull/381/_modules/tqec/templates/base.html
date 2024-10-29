@@ -232,8 +232,9 @@
 <span class="sd">                distance. Only squares with sides of ``2*manhattan_radius+1``</span>
 <span class="sd">                plaquettes will be considered.</span>
 <span class="sd">            avoid_zero_plaquettes: ``True`` if sub-templates with an empty plaquette</span>
-<span class="sd">                (i.e., 0 value in the instantiation of the :py:class:`Template`</span>
-<span class="sd">                instance) at its center should be ignored. Default to ``True``.</span>
+<span class="sd">                (i.e., 0 value in the instantiation of the</span>
+<span class="sd">                :class:`~tqec.templates.base.Template` instance) at its center</span>
+<span class="sd">                should be ignored. Default to ``True``.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            a representation of all the sub-templates found.</span>
@@ -251,7 +252,7 @@
 <span class="sd">        This property returns the coordinates of the origin of the plaquette</span>
 <span class="sd">        (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds</span>
 <span class="sd">        to the top-left entry of the array returned by</span>
-<span class="sd">        :py:meth:`Template.instantiate`.</span>
+<span class="sd">        :meth:`~tqec.templates.base.Template.instantiate`.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            the returned coordinates are in plaquette coordinates. That means</span>
@@ -264,8 +265,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            the coordinates of the origin of the plaquette</span>
-<span class="sd">            (:class:`Plaquette.origin`) that corresponds to the top-left entry</span>
-<span class="sd">            of the array returned by :meth:`Template.instantiate`.</span>
+<span class="sd">            (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds</span>
+<span class="sd">            to the top-left entry of the array returned by</span>
+<span class="sd">            :meth:`~tqec.templates.base.Template.instantiate`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Position2D</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 </div>
