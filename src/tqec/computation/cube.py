@@ -89,14 +89,9 @@ class ZXCube(CubeKind):
         return ZXCube(*bases)
 
     @property
-    def is_regular(self) -> bool:
-        """Check if the cube is a regular cube."""
-        return self.x != self.y
-
-    @property
     def is_spatial_junction(self) -> bool:
         """Check if the cube is a spatial junction."""
-        return not self.is_regular
+        return self.x == self.y
 
     def get_basis_along(self, direction: Direction3D) -> ZXBasis:
         """Get the basis of the wall in the given direction."""
@@ -104,7 +99,12 @@ class ZXCube(CubeKind):
 
 
 class Port(CubeKind):
-    """Cube kind representing the open ports in the block graph."""
+    """Cube kind representing the open ports in the block graph.
+
+    The open ports correspond to the input/output of the computation represented by the block graph.
+    They will have no effect on the functionality of the logical computation itself and should be
+    invisible when visualizing the computation model.
+    """
 
     def __str__(self) -> str:
         return "PORT"
@@ -163,11 +163,6 @@ class Cube:
     @property
     def is_y_cube(self) -> bool:
         return isinstance(self.kind, YCube)
-
-    @property
-    def is_regular(self) -> bool:
-        """Check if the cube is a regular ZX cube."""
-        return isinstance(self.kind, ZXCube) and self.kind.is_regular
 
     @property
     def is_spatial_junction(self) -> bool:

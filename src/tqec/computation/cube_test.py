@@ -20,7 +20,6 @@ def test_zx_cube_kind() -> None:
     assert kind.cube_basis == ZXBasis.X
     assert kind.to_zx_kind() == ZXKind.X
     assert kind.normal_direction == Direction3D.Y
-    assert kind.is_regular
     assert not kind.is_spatial_junction
     assert kind.get_basis_along(Direction3D.X) == ZXBasis.Z
     assert kind.get_basis_along(Direction3D.Y) == ZXBasis.X
@@ -36,7 +35,6 @@ def test_zx_cube_kind() -> None:
 def test_zx_cube() -> None:
     cube = Cube(Position3D(0, 0, 0), ZXCube.from_str("ZXZ"))
     assert cube.is_zx_cube
-    assert cube.is_regular
     assert not cube.is_spatial_junction
     assert not cube.is_port
     assert not cube.is_y_cube

@@ -208,7 +208,7 @@ class ZXGraph:
         check_conflict: bool = True,
     ) -> None:
         """Add a node to the graph. If a node already exists at the position, the
-        node kind will be updated.
+        exception will be raised.
 
         Args:
             position: The 3D position of the node.

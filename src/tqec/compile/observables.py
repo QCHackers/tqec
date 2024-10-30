@@ -39,9 +39,9 @@ def get_midline_qubits_for_cube(
     cube: Cube, block_shape: Shape2D, template_increments: Displacement
 ) -> list[GridQubit]:
     """Get the midline qubits for a cube."""
-    if not cube.is_regular:
+    if cube.is_spatial_junction or cube.is_port:
         raise TQECException(
-            "Cannot get midline qubits for a spatial junction cube or a virtual cube."
+            "Cannot get midline qubits for a spatial junction cube or a port."
         )
     kind = cube.kind
     assert isinstance(kind, ZXCube)

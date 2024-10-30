@@ -234,6 +234,8 @@ def _find_spans_with_flood_fill(
         correlation_frontier: The set of correlation nodes to be explored at this step.
         correlation_span: The current correlation span.
 
+    Returns:
+        A list of correlation spans, or None if no correlation spans can be found.
     """
     # The ZX node type mismatches the correlation type, then we can flood
     # through all the edges connected to the current node.

@@ -84,8 +84,8 @@ class BlockGraph:
         label: str | None = None,
         check_conflict: bool = True,
     ) -> None:
-        """Add a cube to the graph. If a cube already exists at the position, the
-        kind of the cube will be updated.
+        """Add a cube to the graph. If there is already a different cube at the position,
+        an exception will be raised.
 
         Args:
             position: The 3D position of the cube.
@@ -129,6 +129,9 @@ class BlockGraph:
             pipe_type: The kind of the pipe. If None, the pipe kind will be inferred
                 from the cubes. Default is None.
 
+        Raises:
+            TQECException: If there are already cubes at the positions of the given cubes and
+                they are different from the given cubes.
         """
         if kind is None:
             pipe = Pipe.from_cubes(u, v)
@@ -353,7 +356,12 @@ class BlockGraph:
         return abstract_observables, correlation_surfaces
 
     def shift_min_z_to_zero(self) -> BlockGraph:
-        """Shift the whole graph in the z direction to make the minimum z equal zero."""
+        """Shift the whole graph in the z direction to make the minimum z equal zero.
+
+        Returns:
+            A new graph with the minimum z position of the cubes equal to zero. The new graph
+            will share no data with the original graph.
+        """
         minz = min(cube.position.z for cube in self.cubes)
         if minz == 0:
             return deepcopy(self)
