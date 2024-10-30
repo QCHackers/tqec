@@ -254,7 +254,7 @@ def display_collada_model(
 ) -> ColladaHTMLViewer:
     """Display a 3D model from a Collada DAE file in IPython compatible environments.
 
-    This function references the the code snippet from the `stim.Circuit().diagram()` method.
+    This function references the code snippet from the `stim.Circuit().diagram()` method.
 
     Args:
         filepath_or_bytes: The input dae file path or bytes of the dae file.

@@ -22,7 +22,7 @@ class PipeKind:
             raise TQECException("Pipe must have different basis walls.")
 
     def __str__(self) -> str:
-        return "".join(
+        return sum(
             basis.value if basis is not None else "O"
             for basis in (self.x, self.y, self.z)
         ) + ("H" if self.has_hadamard else "")

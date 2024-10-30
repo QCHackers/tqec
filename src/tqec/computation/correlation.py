@@ -32,7 +32,6 @@ class CorrelationSurface:
         external_stabilizer: A mapping from the port label to the Pauli operator at the port, which
             represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer
             is neglected.
-
     """
 
     nodes: frozenset[ZXNode]
