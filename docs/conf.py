@@ -48,6 +48,9 @@ extensions = [
     # An extension allowing the inclusion of Jupyter notebooks.
     # https://nbsphinx.readthedocs.io/en/0.9.3/
     "nbsphinx",
+    # Include Mermaid diagrams in the documentation
+    # https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest/
+    "sphinxcontrib.mermaid",
 ]
 
 templates_path = ["_templates"]

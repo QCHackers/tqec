@@ -15,6 +15,7 @@ TQEC
    Installation <installation>
    Quick start <quick_start>
    Contributing <contributing>
+   Architecture <architecture>
    Automatic detector computation <detectors>
 
 .. toctree::
