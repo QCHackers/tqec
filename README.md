@@ -20,12 +20,10 @@ Download the example file [logical_cnot.dae](https://github.com/QCHackers/tqec/t
 You can generate `stim.Circuit` instances representing that computation using
 
 ```py
-from tqec import (
-    BlockGraph, compile_block_graph, annotate_detectors_automatically,
-)
+from tqec import BlockGraph, compile_block_graph
 from tqec.noise_models import NoiseModel
 
-block_graph = BlockGraph.from_dae_file("logical_cnot.dae")
+block_graph = BlockGraph.from_dae_file("assets/logical_cnot.dae")
 observables, _ = block_graph.get_abstract_observables()
 compiled_computation = compile_block_graph(block_graph, observables=[observables[1]])
 
@@ -36,8 +34,7 @@ circuit = compiled_computation.generate_stim_circuit(
     # The noise applied and noise levels can be changed.
     noise_model=NoiseModel.uniform_depolarizing(0.001),
 )
-circuit_with_detectors = annotate_detectors_automatically(circuit)
-print(circuit_with_detectors)
+print(circuit)
 ```
 
 See the [quick start tutorial](https://qchackers.github.io/tqec/quick_start.html) for a
