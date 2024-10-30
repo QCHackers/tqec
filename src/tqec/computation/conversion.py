@@ -37,7 +37,7 @@ def convert_zx_graph_to_block_graph(
     """Convert the ZX graph to a block graph.
 
     The ZX graph includes the minimal information required to construct the block graph,
-    but not guaranteed to admit a valid block structure. The block structure will be inferred
+    but is not guaranteed to admit a valid block structure. The block structure will be inferred
     from the ZX graph and validated.
 
     The conversion process is as follows:
