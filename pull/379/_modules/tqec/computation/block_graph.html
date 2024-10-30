@@ -172,8 +172,8 @@
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">check_conflict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a cube to the graph. If a cube already exists at the position, the</span>
-<span class="sd">        kind of the cube will be updated.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a cube to the graph. If there is already a different cube at the position,</span>
+<span class="sd">        an exception will be raised.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            position: The 3D position of the cube.</span>
@@ -217,6 +217,9 @@
 <span class="sd">            pipe_type: The kind of the pipe. If None, the pipe kind will be inferred</span>
 <span class="sd">                from the cubes. Default is None.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If there are already cubes at the positions of the given cubes and</span>
+<span class="sd">                they are different from the given cubes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipe</span><span class="o">.</span><span class="n">from_cubes</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -441,7 +444,12 @@
         <span class="k">return</span> <span class="n">abstract_observables</span><span class="p">,</span> <span class="n">correlation_surfaces</span>
 
     <span class="k">def</span> <span class="nf">shift_min_z_to_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the whole graph in the z direction to make the minimum z equal zero.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the whole graph in the z direction to make the minimum z equal zero.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new graph with the minimum z position of the cubes equal to zero. The new graph</span>
+<span class="sd">            will share no data with the original graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">minz</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span> <span class="k">for</span> <span class="n">cube</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cubes</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">minz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

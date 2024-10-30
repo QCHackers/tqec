@@ -117,7 +117,6 @@
 <span class="sd">        external_stabilizer: A mapping from the port label to the Pauli operator at the port, which</span>
 <span class="sd">            represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer</span>
 <span class="sd">            is neglected.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">nodes</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]</span>
@@ -326,6 +325,8 @@
 <span class="sd">        correlation_frontier: The set of correlation nodes to be explored at this step.</span>
 <span class="sd">        correlation_span: The current correlation span.</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of correlation spans, or None if no correlation spans can be found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The ZX node type mismatches the correlation type, then we can flood</span>
     <span class="c1"># through all the edges connected to the current node.</span>

@@ -127,9 +127,9 @@
     <span class="n">cube</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">block_shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span> <span class="n">template_increments</span><span class="p">:</span> <span class="n">Displacement</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the midline qubits for a cube.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_regular</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_spatial_junction</span> <span class="ow">or</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_port</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot get midline qubits for a spatial junction cube or a virtual cube.&quot;</span>
+            <span class="s2">&quot;Cannot get midline qubits for a spatial junction cube or a port.&quot;</span>
         <span class="p">)</span>
     <span class="n">kind</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">kind</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span>

@@ -26,7 +26,6 @@ tqec.computation.cube.Cube
    .. autosummary::
    
       ~Cube.is_port
-      ~Cube.is_regular
       ~Cube.is_spatial_junction
       ~Cube.is_y_cube
       ~Cube.is_zx_cube

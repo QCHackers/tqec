@@ -180,14 +180,9 @@
         <span class="k">return</span> <span class="n">ZXCube</span><span class="p">(</span><span class="o">*</span><span class="n">bases</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is a regular cube.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is a spatial junction.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_regular</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
 
     <span class="k">def</span> <span class="nf">get_basis_along</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXBasis</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis of the wall in the given direction.&quot;&quot;&quot;</span>
@@ -198,7 +193,12 @@
 <div class="viewcode-block" id="Port">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.Port.html#tqec.computation.cube.Port">[docs]</a>
 <span class="k">class</span> <span class="nc">Port</span><span class="p">(</span><span class="n">CubeKind</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cube kind representing the open ports in the block graph.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cube kind representing the open ports in the block graph.</span>
+
+<span class="sd">    The open ports correspond to the input/output of the computation represented by the block graph.</span>
+<span class="sd">    They will have no effect on the functionality of the logical computation itself and should be</span>
+<span class="sd">    invisible when visualizing the computation model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;PORT&quot;</span>
@@ -263,11 +263,6 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_y_cube</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">YCube</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is a regular ZX cube.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">is_regular</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

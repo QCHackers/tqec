@@ -30,7 +30,6 @@ tqec.computation.cube.ZXCube
    .. autosummary::
    
       ~ZXCube.cube_basis
-      ~ZXCube.is_regular
       ~ZXCube.is_spatial_junction
       ~ZXCube.normal_direction
       ~ZXCube.x
