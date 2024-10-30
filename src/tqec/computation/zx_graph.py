@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Generator, cast
 
+from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 import networkx as nx
 
@@ -378,7 +379,7 @@ class ZXGraph:
 
         return find_correlation_surfaces(self)
 
-    def draw(self) -> Axes3D:
+    def draw(self) -> tuple[Figure, Axes3D]:
         """Draw the graph using matplotlib."""
         from tqec.computation.zx_plot import plot_zx_graph
 
@@ -391,8 +392,8 @@ class ZXGraph:
         To represent a valid computation, the graph must have:
             - the graph is a single connected component
             - the graph has no 3D corner
-            - the port node is a leaf node
-            - Y nodes is a leaf node and is time-like, i.e. only have Z-direction edges
+            - port nodes are leaf nodes
+            - Y nodes is are leaf nodes and are time-like, i.e. only have Z-direction edges
 
         Raises:
             TQECException: If the graph is not a single connected component.

@@ -1,6 +1,7 @@
 from dataclasses import astuple
 from typing import cast
 
+from matplotlib.figure import Figure
 import numpy
 import numpy.typing as npt
 from mpl_toolkits.mplot3d.axes3d import Axes3D
@@ -161,7 +162,7 @@ def plot_zx_graph(
     node_size: int = 400,
     hadamard_size: int = 200,
     edge_width: int = 1,
-) -> Axes3D:
+) -> tuple[Figure, Axes3D]:
     """Draw the 3D graph using matplotlib.
 
     Args:
@@ -186,4 +187,4 @@ def plot_zx_graph(
 
     ax.set_title(title or graph.name)
     fig.tight_layout()
-    return ax
+    return fig, ax
