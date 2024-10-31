@@ -1,0 +1,6 @@
+tqec.compile.compile.compile\_block\_graph
+==========================================
+
+.. currentmodule:: tqec.compile.compile
+
+.. autofunction:: compile_block_graph

@@ -1,0 +1,6 @@
+tqec.circuit.schedule.manipulation.merge\_scheduled\_circuits
+=============================================================
+
+.. currentmodule:: tqec.circuit.schedule.manipulation
+
+.. autofunction:: merge_scheduled_circuits
