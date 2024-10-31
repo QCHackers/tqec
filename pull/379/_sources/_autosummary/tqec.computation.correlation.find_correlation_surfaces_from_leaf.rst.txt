@@ -1,6 +1,0 @@
-tqec.computation.correlation.find\_correlation\_surfaces\_from\_leaf
-====================================================================
-
-.. currentmodule:: tqec.computation.correlation
-
-.. autofunction:: find_correlation_surfaces_from_leaf

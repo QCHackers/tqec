@@ -1,6 +1,0 @@
-tqec.noise\_model.occurs\_in\_classical\_control\_system
-========================================================
-
-.. currentmodule:: tqec.noise_model
-
-.. autofunction:: occurs_in_classical_control_system

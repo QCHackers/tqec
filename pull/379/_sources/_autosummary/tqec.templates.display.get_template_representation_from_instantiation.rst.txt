@@ -1,6 +1,0 @@
-tqec.templates.display.get\_template\_representation\_from\_instantiation
-=========================================================================
-
-.. currentmodule:: tqec.templates.display
-
-.. autofunction:: get_template_representation_from_instantiation
