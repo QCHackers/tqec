@@ -312,7 +312,7 @@ def compile_block_graph(
             "Can not compile a block graph with open ports into circuits."
         )
     cube_specs = {
-        cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.cubes
+        cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.nodes
     }
 
     # 0. Set the minimum z of block graph to 0.(time starts from zero)
@@ -320,12 +320,12 @@ def compile_block_graph(
 
     # 1. Get the base compiled blocks before applying the substitution rules.
     blocks: dict[Position3D, CompiledBlock] = {}
-    for cube in block_graph.cubes:
+    for cube in block_graph.nodes:
         spec = cube_specs[cube]
         blocks[cube.position] = block_builder(spec)
 
     # 2. Apply the substitution rules to the compiled blocks inplace.
-    pipes = block_graph.pipes
+    pipes = block_graph.edges
     time_pipes = [pipe for pipe in pipes if pipe.direction == Direction3D.Z]
     space_pipes = [pipe for pipe in pipes if pipe.direction != Direction3D.Z]
     # Note that the order of the pipes to apply the substitution rules is important.

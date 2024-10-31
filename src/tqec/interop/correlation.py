@@ -217,7 +217,7 @@ def _surface_normal_direction(
 ) -> Direction3D:
     """Get the correlation surface normal direction in the pipe."""
     u, v = correlation_edge
-    pipe = block_graph.get_pipe(u.position, v.position)
+    pipe = block_graph.get_edge(u.position, v.position)
     correlation_basis = ZXBasis(u.kind.value)
     return next(
         d

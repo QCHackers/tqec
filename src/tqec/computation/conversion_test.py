@@ -10,24 +10,6 @@ from tqec.gallery.three_cnots import three_cnots_block_graph, three_cnots_zx_gra
 from tqec.position import Position3D
 
 
-def test_conversion_single_node() -> None:
-    zx = ZXGraph("single node")
-    zx.add_node(Position3D(0, 0, 0), ZXKind.Z)
-    block = zx.to_block_graph()
-    expected_block = BlockGraph("single node")
-    expected_block.add_cube(Position3D(0, 0, 0), ZXCube.from_str("ZXX"))
-    assert block == expected_block
-    assert block.to_zx_graph() == zx
-
-    zx = ZXGraph("single")
-    zx.add_node(Position3D(1, 0, 0), ZXKind.X)
-    block = zx.to_block_graph()
-    expected_block = BlockGraph("single")
-    expected_block.add_cube(Position3D(1, 0, 0), ZXCube.from_str("ZXZ"))
-    assert block == expected_block
-    assert block.to_zx_graph() == zx
-
-
 def test_conversion_single_zx_edge() -> None:
     zx = ZXGraph()
     zx.add_edge(
@@ -36,7 +18,7 @@ def test_conversion_single_zx_edge() -> None:
     )
     block = zx.to_block_graph()
     expected_block = BlockGraph()
-    expected_block.add_pipe(
+    expected_block.add_edge(
         Cube(Position3D(0, 0, 0), ZXCube.from_str("XXZ")),
         Cube(Position3D(1, 0, 0), ZXCube.from_str("ZXZ")),
         PipeKind.from_str("OXZ"),
@@ -51,7 +33,7 @@ def test_conversion_single_zx_edge() -> None:
     )
     block = zx.to_block_graph()
     expected_block = BlockGraph("single edge")
-    expected_block.add_pipe(
+    expected_block.add_edge(
         Cube(Position3D(0, 0, 0), ZXCube.from_str("XZX")),
         Cube(Position3D(0, 0, 1), ZXCube.from_str("XZX")),
         PipeKind.from_str("XZO"),
@@ -68,7 +50,7 @@ def test_conversion_single_y_p_edge() -> None:
     )
     block = zx.to_block_graph()
     expected_block = BlockGraph()
-    expected_block.add_pipe(
+    expected_block.add_edge(
         Cube(Position3D(0, 0, 0), YCube()),
         Cube(Position3D(0, 0, 1), Port(), "out"),
         PipeKind.from_str("XZO"),
@@ -89,12 +71,12 @@ def test_conversion_L_shape() -> None:
     )
     block = zx.to_block_graph()
     expected_block = BlockGraph()
-    expected_block.add_pipe(
+    expected_block.add_edge(
         Cube(Position3D(0, 0, 0), ZXCube.from_str("XZX")),
         Cube(Position3D(0, 0, 1), Port(), "p1"),
         PipeKind.from_str("XZO"),
     )
-    expected_block.add_pipe(
+    expected_block.add_edge(
         Cube(Position3D(0, 0, 0), ZXCube.from_str("XZX")),
         Cube(Position3D(1, 0, 0), Port(), "p2"),
         PipeKind.from_str("OZX"),

@@ -141,11 +141,11 @@ class Cube:
 
     position: Position3D
     kind: CubeKind
-    label: str | None = None
+    label: str = ""
 
     def __post_init__(self) -> None:
-        if self.is_port and self.label is None:
-            raise TQECException("A port cube must have a port label.")
+        if self.is_port and not self.label:
+            raise TQECException("A port cube must have a non-empty port label.")
 
     def __str__(self) -> str:
         return f"{self.kind}{self.position}"

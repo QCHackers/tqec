@@ -15,7 +15,7 @@ def test_zx_node() -> None:
     assert node.is_port
     assert str(node) == "PORT(0,1,4)"
 
-    with pytest.raises(TQECException, match="A port node must have a port label."):
+    with pytest.raises(TQECException, match="A port node must have a non-empty label."):
         ZXNode(Position3D(0, 0, 0), ZXKind.P)
 
     node = ZXNode(Position3D(1, 0, 0), ZXKind.Y)
@@ -58,15 +58,15 @@ def test_zx_graph_construction() -> None:
 
 def test_zx_graph_add_node() -> None:
     g = ZXGraph()
-    g.add_node(Position3D(0, 0, 0), ZXKind.Z)
+    g.add_node(ZXNode(Position3D(0, 0, 0), ZXKind.Z))
     assert g.num_nodes == 1
     assert g[Position3D(0, 0, 0)].kind == ZXKind.Z
     assert Position3D(0, 0, 0) in g
 
     with pytest.raises(TQECException, match="The graph already has a different node"):
-        g.add_node(Position3D(0, 0, 0), ZXKind.X)
+        g.add_node(ZXNode(Position3D(0, 0, 0), ZXKind.X))
 
-    g.add_node(Position3D(1, 0, 0), ZXKind.P, label="test")
+    g.add_node(ZXNode(Position3D(1, 0, 0), ZXKind.P, label="test"))
     assert g.num_nodes == 2
     assert g.num_ports == 1
     assert g[Position3D(1, 0, 0)].kind == ZXKind.P
@@ -76,7 +76,7 @@ def test_zx_graph_add_node() -> None:
         TQECException,
         match="There is already a different port with label test in the graph",
     ):
-        g.add_node(Position3D(2, 0, 0), ZXKind.P, label="test")
+        g.add_node(ZXNode(Position3D(2, 0, 0), ZXKind.P, label="test"))
 
 
 def test_zx_graph_add_edge() -> None:
@@ -184,8 +184,8 @@ def test_zx_graph_with_zx_flipped() -> None:
 
 def test_zx_graph_validity() -> None:
     g = ZXGraph()
-    g.add_node(Position3D(0, 0, 0), ZXKind.Z)
-    g.add_node(Position3D(1, 0, 0), ZXKind.X)
+    g.add_node(ZXNode(Position3D(0, 0, 0), ZXKind.Z))
+    g.add_node(ZXNode(Position3D(1, 0, 0), ZXKind.X))
     with pytest.raises(
         TQECException,
         match="The graph must be a single connected component to represent a computation.",

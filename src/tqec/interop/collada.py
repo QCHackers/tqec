@@ -13,7 +13,7 @@ import numpy.typing as npt
 
 from tqec.computation.correlation import CorrelationSurface
 from tqec.computation.zx_graph import ZXKind
-from tqec.computation.cube import Port, CubeKind, YCube, ZXCube
+from tqec.computation.cube import Cube, Port, CubeKind, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
 from tqec.interop.color import DEFAULT_FACE_COLORS, RGBA
@@ -134,7 +134,7 @@ def read_block_graph_from_dae_file(
     for pos, cube_kind in parsed_cubes:
         if isinstance(cube_kind, YCube):
             pos = offset_y_cube_position(pos)
-        graph.add_cube(int_position_before_scale(pos), cube_kind)
+        graph.add_node(Cube(int_position_before_scale(pos), cube_kind))
     port_index = 0
     for pos, pipe_kind in parsed_pipes:
         head_pos = int_position_before_scale(
@@ -142,12 +142,12 @@ def read_block_graph_from_dae_file(
         )
         tail_pos = head_pos.shift_in_direction(pipe_kind.direction, 1)
         if head_pos not in graph:
-            graph.add_cube(head_pos, Port(), label=f"Port{port_index}")
+            graph.add_node(Cube(head_pos, Port(), label=f"Port{port_index}"))
             port_index += 1
         if tail_pos not in graph:
-            graph.add_cube(tail_pos, Port(), label=f"Port{port_index}")
+            graph.add_node(Cube(tail_pos, Port(), label=f"Port{port_index}"))
             port_index += 1
-        graph.add_pipe(graph[head_pos], graph[tail_pos], pipe_kind)
+        graph.add_edge(graph[head_pos], graph[tail_pos], pipe_kind)
     return graph
 
 
@@ -182,23 +182,23 @@ def write_block_graph_to_dae_file(
     def scale_position(pos: Position3D) -> FloatPosition3D:
         return FloatPosition3D(*(p * (1 + pipe_length) for p in pos.as_tuple()))
 
-    for cube in block_graph.cubes:
+    for cube in block_graph.nodes:
         if cube.is_port:
             continue
         scaled_position = scale_position(cube.position)
-        if cube.is_y_cube and block_graph.has_pipe_between(
+        if cube.is_y_cube and block_graph.has_edge_between(
             cube.position, cube.position.shift_by(dz=1)
         ):
             scaled_position = scaled_position.shift_by(dz=0.5)
         matrix = np.eye(4, dtype=np.float32)
         matrix[:3, 3] = scaled_position.as_array()
         pop_faces_at_directions = []
-        for pipe in block_graph.pipes_at(cube.position):
+        for pipe in block_graph.edges_at(cube.position):
             pop_faces_at_directions.append(
                 SignedDirection3D(pipe.direction, cube == pipe.u)
             )
         base.add_block_instance(matrix, cube.kind, pop_faces_at_directions)
-    for pipe in block_graph.pipes:
+    for pipe in block_graph.edges:
         head_pos = scale_position(pipe.u.position)
         pipe_pos = head_pos.shift_in_direction(pipe.direction, 1.0)
         matrix = np.eye(4, dtype=np.float32)

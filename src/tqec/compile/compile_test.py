@@ -30,7 +30,7 @@ SPECS: dict[str, tuple[BlockBuilder, SubstitutionBuilder]] = {
 def test_compile_single_block_memory(spec: str, kind: str, k: int) -> None:
     d = 2 * k + 1
     g = BlockGraph("Single Block Memory Experiment")
-    g.add_cube(Position3D(0, 0, 0), ZXCube.from_str(kind))
+    g.add_node(Cube(Position3D(0, 0, 0), ZXCube.from_str(kind)))
     block_builder, substitution_builder = SPECS[spec]
     observables, _ = g.get_abstract_observables()
     assert len(observables) == 1
@@ -59,7 +59,7 @@ def test_compile_two_same_blocks_connected_in_time(
     cube1 = Cube(p1, ZXCube.from_str(kind))
     cube2 = Cube(p2, ZXCube.from_str(kind))
     pipe_kind = PipeKind.from_str(kind[:2] + "O")
-    g.add_pipe(cube1, cube2, pipe_kind)
+    g.add_edge(cube1, cube2, pipe_kind)
 
     block_builder, substitution_builder = SPECS[spec]
     observables, _ = g.get_abstract_observables()
@@ -102,7 +102,7 @@ def test_compile_two_same_blocks_connected_in_space(
     p2 = p1.shift_by(*shift)
     cube1 = Cube(p1, cube_kind)
     cube2 = Cube(p2, cube_kind)
-    g.add_pipe(cube1, cube2, pipe_kind)
+    g.add_edge(cube1, cube2, pipe_kind)
 
     block_builder, substitution_builder = SPECS[spec]
     observables, _ = g.get_abstract_observables()
@@ -148,8 +148,8 @@ def test_compile_L_shape_in_space_time(
     cube1 = Cube(p1, cube_kind)
     cube2 = Cube(p2, cube_kind)
     cube3 = Cube(p3, cube_kind)
-    g.add_pipe(cube1, cube2, space_pipe_kind)
-    g.add_pipe(cube2, cube3, time_pipe_type)
+    g.add_edge(cube1, cube2, space_pipe_kind)
+    g.add_edge(cube2, cube3, time_pipe_type)
 
     block_builder, substitution_builder = SPECS[spec]
     observables, _ = g.get_abstract_observables()

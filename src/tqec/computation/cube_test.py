@@ -47,7 +47,9 @@ def test_port() -> None:
     assert cube.is_port
     assert str(cube) == "PORT(0,0,0)"
 
-    with pytest.raises(TQECException, match="A port cube must have a port label."):
+    with pytest.raises(
+        TQECException, match="A port cube must have a non-empty port label."
+    ):
         Cube(Position3D(0, 0, 0), Port())
 
     assert cube == Cube(Position3D(0, 0, 0), Port(), "p")

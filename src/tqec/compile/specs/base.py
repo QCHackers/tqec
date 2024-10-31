@@ -53,7 +53,7 @@ class CubeSpec:
         pos = cube.position
         junction_arms = JunctionArms.NONE
         for flag, shift in JunctionArms.get_map_from_arm_to_shift().items():
-            if graph.get_pipe(pos, pos.shift_by(*shift)) is not None:
+            if graph.get_edge(pos, pos.shift_by(*shift)) is not None:
                 junction_arms |= flag
         return CubeSpec(cube.kind, junction_arms)
 

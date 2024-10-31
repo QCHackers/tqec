@@ -59,12 +59,12 @@ def correlation_surface_to_abstract_observable(
         block_graph.validate()
 
     if correlation_surface.has_single_node:
-        if block_graph.num_cubes != 1:
+        if block_graph.num_nodes != 1:
             raise TQECException(
                 "The block graph must have exactly one cube to support the single-node correlation surface."
             )
         return AbstractObservable(
-            frozenset(block_graph.cubes),
+            frozenset(block_graph.nodes),
             frozenset(),
         )
 
@@ -73,7 +73,7 @@ def correlation_surface_to_abstract_observable(
             return True
         assert isinstance(cube.kind, ZXCube)
         # No pipe at the top
-        if block_graph.has_pipe_between(cube.position, cube.position.shift_by(0, 0, 1)):
+        if block_graph.has_edge_between(cube.position, cube.position.shift_by(0, 0, 1)):
             return False
         # The correlation surface must be attached to the top face
         return cube.kind.z.value == correlation.value
@@ -81,7 +81,7 @@ def correlation_surface_to_abstract_observable(
     top_lines: set[Cube | Pipe] = set()
     bottom_regions: set[Pipe] = set()
     for edge in correlation_surface.span:
-        pipe = block_graph.get_pipe(edge.u.position, edge.v.position)
+        pipe = block_graph.get_edge(edge.u.position, edge.v.position)
         if pipe.direction == Direction3D.Z:
             if has_obs_include(pipe.v, edge.v.kind):
                 top_lines.add(pipe.v)

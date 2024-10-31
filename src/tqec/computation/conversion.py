@@ -21,10 +21,9 @@ def convert_block_graph_to_zx_graph(
 ) -> ZXGraph:
     """Convert the block graph to a ZX graph."""
     zx_graph = ZXGraph(name or block_graph.name)
-    for cube in block_graph.cubes:
-        node = cube.to_zx_node()
-        zx_graph.add_node(node.position, node.kind, node.label)
-    for pipe in block_graph.pipes:
+    for cube in block_graph.nodes:
+        zx_graph.add_node(cube.to_zx_node())
+    for pipe in block_graph.edges:
         zx_graph.add_edge(
             pipe.u.to_zx_node(), pipe.v.to_zx_node(), pipe.kind.has_hadamard
         )
@@ -89,7 +88,7 @@ def _handle_corners(
             set(Direction3D.all_directions()).difference(directions).pop()
         )
         kind = ZXCube.from_normal_basis(ZXBasis(node.kind.value), normal_direction)
-        block_graph.add_cube(node.position, kind, node.label)
+        block_graph.add_node(Cube(node.position, kind, node.label))
         nodes_to_handle.remove(node)
 
 
@@ -103,7 +102,7 @@ def _handle_special_pipes(
         if u.is_zx_node or v.is_zx_node:
             continue
         pipe_kind = _choose_arbitrary_pipe_kind(edge)
-        block_graph.add_pipe(
+        block_graph.add_edge(
             Cube(u.position, Port() if u.is_port else YCube(), u.label),
             Cube(v.position, Port() if v.is_port else YCube(), v.label),
             pipe_kind,
@@ -158,7 +157,7 @@ def _try_to_handle_edges(
                     )
         else:
             other_cube_kind = Port() if other_node.is_port else YCube()
-        block_graph.add_pipe(
+        block_graph.add_edge(
             block_graph[infer_from.position],
             Cube(other_node.position, other_cube_kind, other_node.label),
             pipe_kind,
@@ -191,7 +190,9 @@ def _fix_kind_for_one_node(
             fix_kind_node.kind.with_zx_flipped().value,
         )
         specified_kind = ZXCube.from_str("".join(basis))
-    block_graph.add_cube(fix_kind_node.position, specified_kind, fix_kind_node.label)
+    block_graph.add_node(
+        Cube(fix_kind_node.position, specified_kind, fix_kind_node.label)
+    )
     nodes_to_handle.remove(fix_kind_node)
 
 

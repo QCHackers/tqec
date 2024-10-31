@@ -1,11 +1,11 @@
 from tqec.computation.correlation import CorrelationSurface
 from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
+from tqec.gallery.solo_node import solo_node_zx_graph
 from tqec.position import Position3D
 
 
 def test_correlation_single_xz_node() -> None:
-    g = ZXGraph()
-    g.add_node(Position3D(0, 0, 0), ZXKind.X)
+    g = solo_node_zx_graph("X")
     correlation_surfaces = g.find_correration_surfaces()
     assert len(correlation_surfaces) == 1
     surface = correlation_surfaces[0]

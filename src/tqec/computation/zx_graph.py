@@ -5,12 +5,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Generator, cast
+from typing import TYPE_CHECKING, Generator
 
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 import networkx as nx
 
+from tqec.computation.base_graph import ComputationGraph
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
@@ -53,11 +54,11 @@ class ZXNode:
 
     position: Position3D
     kind: ZXKind
-    label: str | None = None
+    label: str = ""
 
     def __post_init__(self) -> None:
-        if self.kind == ZXKind.P and self.label is None:
-            raise TQECException("A port node must have a port label.")
+        if self.kind == ZXKind.P and not self.label:
+            raise TQECException("A port node must have a non-empty label.")
 
     @property
     def is_port(self) -> bool:
@@ -141,107 +142,8 @@ class ZXEdge:
         )
 
 
-_NODE_DATA_KEY = "tqec_zx_node_data"
-_EDGE_DATA_KEY = "tqec_zx_edge_data"
-
-
-class ZXGraph:
-    def __init__(self, name: str = "") -> None:
-        """A ZX-diagram like graph representation of the logical computation."""
-        self._name = name
-        # Internal undirected graph representation
-        self._graph = nx.Graph()
-        self._ports: dict[str, Position3D] = {}
-
-    @property
-    def name(self) -> str:
-        """The name of the graph."""
-        return self._name
-
-    @property
-    def nx_graph(self) -> nx.Graph:
-        """The internal networkx graph representation."""
-        return self._graph
-
-    @property
-    def num_nodes(self) -> int:
-        """The number of nodes in the graph."""
-        return cast(int, self._graph.number_of_nodes())
-
-    @property
-    def num_ports(self) -> int:
-        """The number of open ports in the graph."""
-        return len(self._ports)
-
-    @property
-    def num_edges(self) -> int:
-        """The number of edges in the graph."""
-        return cast(int, self._graph.number_of_edges())
-
-    @property
-    def nodes(self) -> list[ZXNode]:
-        """Return a list of `ZXNode`s in the graph."""
-        return [data[_NODE_DATA_KEY] for _, data in self._graph.nodes(data=True)]
-
-    @property
-    def edges(self) -> list[ZXEdge]:
-        """Return a list of edges in the graph."""
-        return [data[_EDGE_DATA_KEY] for _, _, data in self._graph.edges(data=True)]
-
-    @property
-    def leaf_nodes(self) -> list[ZXNode]:
-        """Get the leaf nodes of the graph, including the ports."""
-        return [node for node in self.nodes if self.node_degree(node) == 1]
-
-    @property
-    def ports(self) -> dict[str, Position3D]:
-        """Get the position of open ports of the graph."""
-        return self._ports
-
-    def node_degree(self, node: ZXNode) -> int:
-        return self._graph.degree(node.position)  # type: ignore
-
-    def add_node(
-        self,
-        position: Position3D,
-        kind: ZXKind,
-        label: str | None = None,
-        check_conflict: bool = True,
-    ) -> None:
-        """Add a node to the graph. If a node already exists at the position, the
-        exception will be raised.
-
-        Args:
-            position: The 3D position of the node.
-            kind: The kind of the node.
-            label: The label of the port node if the node is a port.
-            check_conflict: Whether to check for node conflict.
-
-        Raises:
-            TQECException: If a different node already exists at the position.
-            TQECException: If the port label is already used.
-        """
-        node = ZXNode(position, kind, label)
-        if check_conflict:
-            self._check_node_conflict(node)
-        self._graph.add_node(position, **{_NODE_DATA_KEY: node})
-        if node.is_port:
-            assert node.label is not None, "A port node is guaranteed to have a label."
-            self._ports[node.label] = position
-
-    def _check_node_conflict(self, node: ZXNode) -> None:
-        """Check whether a new node can be added to the graph without conflict."""
-        position = node.position
-        if position in self:
-            if self[position] == node:
-                return
-            raise TQECException(
-                f"The graph already has a different node {self[position]} at this position."
-            )
-        if node.is_port and node.label in self._ports:
-            raise TQECException(
-                f"There is already a different port with label {node.label} in the graph."
-            )
+class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
+    """ZX graph representation of a logical computation."""
 
     def add_edge(
         self,
@@ -249,52 +151,18 @@ class ZXGraph:
         v: ZXNode,
         has_hadamard: bool = False,
     ) -> None:
-        """Add an edge to the graph. If the nodes do not exist in the graph,
-        the nodes will be created.
+        """Add an edge to the graph. If the nodes do not exist in the graph, the nodes will be
+        created.
 
         Args:
-            u: The first node of the edge.
-            v: The second node of the edge.
-            has_hadamard: Whether the edge has a Hadamard transition.
-
-        """
-        edge = ZXEdge(u, v, has_hadamard)
-        # Check before adding the nodes to avoid rolling back the changes
-        self._check_node_conflict(u)
-        self._check_node_conflict(v)
-        self.add_node(u.position, u.kind, u.label, check_conflict=False)
-        self.add_node(v.position, v.kind, v.label, check_conflict=False)
-        self._graph.add_edge(u.position, v.position, **{_EDGE_DATA_KEY: edge})
-
-    def has_edge_between(self, pos1: Position3D, pos2: Position3D) -> bool:
-        """Check if there is an edge between two positions."""
-        return cast(bool, self._graph.has_edge(pos1, pos2))
-
-    def get_edge(self, pos1: Position3D, pos2: Position3D) -> ZXEdge:
-        """Get the edge by its endpoint positions.
-
-        Args:
-            pos1: The first endpoint position.
-            pos2: The second endpoint position.
-
-        Returns:
-            The edge between the two positions.
+            edge: The edge to add to the graph.
 
         Raises:
-            TQECException: If there is no edge between the given positions.
+            TQECException: For each node in the edge, if there is already a node which is not
+                equal to it at the same position, or the node is a port but there is already a
+                different port with the same label in the graph.
         """
-        if not self.has_edge_between(pos1, pos2):
-            raise TQECException("No edge between the given positions in the graph.")
-        return cast(ZXEdge, self._graph.edges[pos1, pos2][_EDGE_DATA_KEY])
-
-    def edges_at(self, position: Position3D) -> list[ZXEdge]:
-        """Get the edges incident to a position."""
-        if position not in self:
-            return []
-        return [
-            data[_EDGE_DATA_KEY]
-            for _, _, data in self._graph.edges(position, data=True)
-        ]
+        self._add_edge_and_nodes_with_checks(u, v, ZXEdge(u, v, has_hadamard))
 
     def fill_ports(self, fill: Mapping[str, ZXKind] | ZXKind) -> None:
         """Fill the ports at specified position with a node with the given kind.
@@ -316,14 +184,16 @@ class ZXGraph:
             pos = self._ports[label]
             fill_node = ZXNode(pos, kind)
             # Overwrite the node at the port position
-            self._graph.add_node(pos, **{_NODE_DATA_KEY: fill_node})
+            self._graph.add_node(pos, **{self._NODE_DATA_KEY: fill_node})
             for edge in self.edges_at(pos):
                 self._graph.remove_edge(edge.u.position, edge.v.position)
                 other = edge.u if edge.v.position == pos else edge.v
                 self._graph.add_edge(
                     other.position,
                     pos,
-                    **{_EDGE_DATA_KEY: ZXEdge(other, fill_node, edge.has_hadamard)},
+                    **{
+                        self._EDGE_DATA_KEY: ZXEdge(other, fill_node, edge.has_hadamard)
+                    },
                 )
             # Delete the port label
             self._ports.pop(label)
@@ -346,20 +216,6 @@ class ZXGraph:
         )
 
         return convert_zx_graph_to_block_graph(self, name)
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ZXGraph):
-            return False
-        return (
-            cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
-            and self._ports == other._ports
-        )
-
-    def __contains__(self, position: Position3D) -> bool:
-        return position in self._graph
-
-    def __getitem__(self, position: Position3D) -> ZXNode:
-        return cast(ZXNode, self._graph.nodes[position][_NODE_DATA_KEY])
 
     def with_zx_flipped(self, name: str | None = None) -> ZXGraph:
         """Get a new ZX graph with the node kind flipped."""
@@ -409,7 +265,7 @@ class ZXGraph:
         for node in self.nodes:
             if len({e.direction for e in self.edges_at(node.position)}) == 3:
                 raise TQECException(f"ZX graph has a 3D corner at {node.position}.")
-            if not node.is_zx_node and self.node_degree(node) != 1:
+            if not node.is_zx_node and self.get_degree(node.position) != 1:
                 raise TQECException("The port/Y node must be a leaf node.")
             if node.is_y_node:
                 (edge,) = self.edges_at(node.position)
