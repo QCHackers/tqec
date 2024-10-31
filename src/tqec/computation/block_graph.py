@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import pathlib
-from typing import Mapping, cast, TYPE_CHECKING
+from typing import Mapping, TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
-
-import networkx as nx
 
 from tqec.computation.base_graph import ComputationGraph
 from tqec.exceptions import TQECException
