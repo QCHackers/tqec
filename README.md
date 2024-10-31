@@ -21,7 +21,7 @@ You can generate `stim.Circuit` instances representing that computation using
 
 ```py
 from tqec import BlockGraph, compile_block_graph
-from tqec.noise_models import NoiseModel
+from tqec.noise_model import NoiseModel
 
 block_graph = BlockGraph.from_dae_file("assets/logical_cnot.dae")
 observables, _ = block_graph.get_abstract_observables()

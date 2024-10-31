@@ -89,7 +89,7 @@ From this compiled computation, the final ``stim.Circuit`` instance can be gener
 
 .. code-block:: python
 
-    from tqec.noise_models import NoiseModel
+    from tqec.noise_model import NoiseModel
 
     circuit = compiled_computation.generate_stim_circuit(
         k=2,

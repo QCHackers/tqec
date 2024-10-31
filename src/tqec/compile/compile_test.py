@@ -12,7 +12,7 @@ from tqec.compile.specs.library.zxxz import (
 from tqec.computation.block_graph.enums import CubeType, PipeType
 from tqec.computation.block_graph.graph import BlockGraph
 from tqec.gallery.logical_cnot import logical_cnot_block_graph
-from tqec.noise_models.noise_model import NoiseModel
+from tqec.noise_model import NoiseModel
 from tqec.position import Position3D
 
 SPECS: dict[str, tuple[BlockBuilder, SubstitutionBuilder]] = {

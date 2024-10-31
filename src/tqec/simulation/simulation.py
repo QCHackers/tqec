@@ -7,7 +7,7 @@ from tqec.compile.compile import compile_block_graph
 from tqec.compile.specs.base import BlockBuilder, SubstitutionBuilder
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.computation.block_graph import AbstractObservable, BlockGraph
-from tqec.noise_models.noise_model import NoiseModel
+from tqec.noise_model import NoiseModel
 from tqec.simulation.generation import generate_sinter_tasks
 
 

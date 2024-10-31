@@ -25,7 +25,7 @@ from .computation import (
 )
 from .exceptions import TQECException
 from .interval import Interval
-from .noise_models import NoiseModel
+from .noise_model import NoiseModel
 from .plaquette import (
     Plaquette,
     PlaquetteQubits,
