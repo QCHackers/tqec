@@ -91,7 +91,7 @@ class ZXGraph:
         """
         self._name = name
         # Internal undirected graph representation
-        self._graph = nx.Graph()
+        self._graph: nx.Graph[Position3D] = nx.Graph()
 
     @property
     def name(self) -> str:
@@ -99,19 +99,19 @@ class ZXGraph:
         return self._name
 
     @property
-    def nx_graph(self) -> nx.Graph:
+    def nx_graph(self) -> nx.Graph[Position3D]:
         """The internal networkx graph representation."""
         return self._graph
 
     @property
     def num_nodes(self) -> int:
         """The number of nodes in the graph."""
-        return cast(int, self._graph.number_of_nodes())
+        return self._graph.number_of_nodes()
 
     @property
     def num_edges(self) -> int:
         """The number of edges in the graph."""
-        return cast(int, self._graph.number_of_edges())
+        return self._graph.number_of_edges()
 
     @property
     def nodes(self) -> list[ZXNode]:
@@ -137,10 +137,7 @@ class ZXGraph:
         return self._graph.degree(node.position)  # type: ignore
 
     def add_node(
-        self,
-        position: Position3D,
-        node_type: NodeType,
-        raise_if_exist: bool = True,
+        self, position: Position3D, node_type: NodeType, raise_if_exist: bool = True
     ) -> None:
         """Add a node to the graph.
 
@@ -168,10 +165,7 @@ class ZXGraph:
         self.add_node(position, NodeType.V)
 
     def add_edge(
-        self,
-        u: Position3D,
-        v: Position3D,
-        has_hadamard: bool = False,
+        self, u: Position3D, v: Position3D, has_hadamard: bool = False
     ) -> None:
         """Add an edge to the graph.
 
@@ -227,7 +221,7 @@ class ZXGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ZXGraph):
             return False
-        return cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+        return nx.utils.graphs_equal(self._graph, other._graph)  # type: ignore
 
     def _find_correlation_subgraphs_dfs(
         self,
