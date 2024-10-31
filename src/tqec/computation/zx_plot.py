@@ -7,13 +7,14 @@ import numpy.typing as npt
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 from tqec.computation.correlation import CorrelationSurface
+from tqec.interop.color import RGBA
 from tqec.position import Position3D
 from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
 
-NODE_COLOR: dict[ZXKind, str] = {
-    ZXKind.X: "#FF7F7F",  # (255, 127, 127)
-    ZXKind.Y: "#63C676",  # (99, 198, 118)
-    ZXKind.Z: "#7396FF",  # (115, 150, 255)
+NODE_COLOR: dict[ZXKind, RGBA] = {
+    ZXKind.X: RGBA.x_color(),
+    ZXKind.Y: RGBA.y_color(),
+    ZXKind.Z: RGBA.z_color(),
 }
 
 
@@ -46,7 +47,7 @@ def draw_zx_graph_on(
         ax.scatter(
             *vis_nodes_array,
             s=node_size,
-            c=[NODE_COLOR[n.kind] for n in vis_nodes],
+            c=[NODE_COLOR[n.kind].as_floats() for n in vis_nodes],
             alpha=1.0,
             edgecolors="black",
         )
@@ -131,7 +132,7 @@ def draw_correlation_surface_on(
                 correlation = ZXKind.Y
             ax.plot(
                 *pos_array,
-                color=NODE_COLOR[correlation],
+                color=NODE_COLOR[correlation].as_floats(),
                 linewidth=correlation_edge_width,
             )
         else:
@@ -148,7 +149,7 @@ def draw_correlation_surface_on(
                             _positions_array(positions[i]),
                         ]
                     ),
-                    color=NODE_COLOR[correlation],
+                    color=NODE_COLOR[correlation].as_floats(),
                     linewidth=correlation_edge_width,
                 )
         processed_edges.add(positions)

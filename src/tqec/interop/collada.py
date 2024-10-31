@@ -16,7 +16,7 @@ from tqec.computation.zx_graph import ZXKind
 from tqec.computation.cube import Cube, Port, CubeKind, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.exceptions import TQECException
-from tqec.interop.color import DEFAULT_FACE_COLORS, RGBA
+from tqec.interop.color import RGBA
 from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.computation.block_graph import BlockGraph, BlockKind
 from tqec.interop.geometry import (
@@ -226,6 +226,16 @@ class BlockLibraryKey:
             string += " without "
             string += " ".join(str(d) for d in self.pop_faces_at_directions)
         return string
+
+
+DEFAULT_FACE_COLORS: dict[FaceKind, RGBA] = {
+    FaceKind.X: RGBA.x_color(),
+    FaceKind.Y: RGBA.y_color(),
+    FaceKind.Z: RGBA.z_color(),
+    FaceKind.H: RGBA.h_color(),
+    FaceKind.X_CORRELATION: RGBA.x_correlation_color(),
+    FaceKind.Z_CORRELATION: RGBA.z_correlation_color(),
+}
 
 
 class _BaseColladaData:
