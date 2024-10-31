@@ -1,0 +1,6 @@
+tqec.gallery.three\_cnots.three\_cnots\_block\_graph
+====================================================
+
+.. currentmodule:: tqec.gallery.three_cnots
+
+.. autofunction:: three_cnots_block_graph

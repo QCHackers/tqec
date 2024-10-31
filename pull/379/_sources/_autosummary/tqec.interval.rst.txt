@@ -1,0 +1,30 @@
+tqec.interval
+=============
+
+.. automodule:: tqec.interval
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Interval
+   
+   
+
+   
+   
+   
+
+
+

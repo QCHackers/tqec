@@ -1,0 +1,30 @@
+tqec.templates.subtemplates.Unique3DSubTemplates
+================================================
+
+.. currentmodule:: tqec.templates.subtemplates
+
+.. autoclass:: Unique3DSubTemplates
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Unique3DSubTemplates.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Unique3DSubTemplates.manhattan_radius
+      ~Unique3DSubTemplates.subtemplate_indices
+      ~Unique3DSubTemplates.subtemplates
+   
+   

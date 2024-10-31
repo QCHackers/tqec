@@ -1,0 +1,30 @@
+tqec.position.Direction3D
+=========================
+
+.. currentmodule:: tqec.position
+
+.. autoclass:: Direction3D
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Direction3D.all_directions
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Direction3D.X
+      ~Direction3D.Y
+      ~Direction3D.Z
+   
+   
