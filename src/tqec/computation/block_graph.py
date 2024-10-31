@@ -122,14 +122,6 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
 
         return convert_zx_graph_to_block_graph(zx_graph, name)
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, BlockGraph):
-            return False
-        return (
-            cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
-            and self._ports == other._ports
-        )
-
     def to_dae_file(
         self,
         file_path: str | pathlib.Path,

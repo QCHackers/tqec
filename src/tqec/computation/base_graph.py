@@ -35,7 +35,7 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
 
     def __init__(self, name: str = "") -> None:
         self._name = name
-        self._graph = nx.Graph()
+        self._graph: nx.Graph[Position3D] = nx.Graph()
         self._ports: dict[str, Position3D] = {}
 
     @property
@@ -50,12 +50,12 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
     @property
     def num_nodes(self) -> int:
         """The number of nodes in the graph."""
-        return int(self._graph.number_of_nodes())
+        return self._graph.number_of_nodes()
 
     @property
     def num_edges(self) -> int:
         """The number of edges in the graph."""
-        return int(self._graph.number_of_edges())
+        return self._graph.number_of_edges()
 
     @property
     def num_ports(self) -> int:
@@ -140,7 +140,7 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
 
     def has_edge_between(self, pos1: Position3D, pos2: Position3D) -> bool:
         """Check if there is an edge between two positions."""
-        return bool(self._graph.has_edge(pos1, pos2))
+        return self._graph.has_edge(pos1, pos2)
 
     def get_edge(self, pos1: Position3D, pos2: Position3D) -> _EDGE:
         """Get the edge by its endpoint positions.
@@ -178,6 +178,6 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
         if not isinstance(other, self.__class__):
             return False
         return (
-            nx.utils.graphs_equal(self._graph, other._graph)
+            nx.utils.graphs_equal(self._graph, other._graph)  # type: ignore
             and self._ports == other._ports
         )
