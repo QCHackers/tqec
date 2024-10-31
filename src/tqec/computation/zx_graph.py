@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class ZXKind(Enum):
-    """Valid node kind in a ZX graph."""
+    """The kind of the node in the ZX graph."""
 
     X = "X"
     Y = "Y"
@@ -48,8 +48,10 @@ class ZXNode:
     """A node in the ZX graph.
 
     Attributes:
-        position: The 3D position of the node.
+        position: The position of the node in the 3D spacetime.
         kind: The kind of the node.
+        label: The label of the node. The label of a port node must be non-empty. Default to an
+            empty string.
     """
 
     position: Position3D
@@ -86,11 +88,14 @@ class ZXNode:
 
 @dataclass(frozen=True, order=True)
 class ZXEdge:
-    """An edge in the ZX graph.
+    """An edge connecting two nodes in the ZX graph.
+
+    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`
+    is less than `v`.
 
     Attributes:
-        u: The first node of the edge, which has smaller position than `v`.
-        v: The second node of the edge, which has larger position than `u`.
+        u: The first node of the edge. The position of `u` is guaranteed to be less than `v`.
+        v: The second node of the edge. The position of `v` is guaranteed to be greater than `u`.
         has_hadamard: Whether the edge has a Hadamard transition.
     """
 
@@ -143,7 +148,11 @@ class ZXEdge:
 
 
 class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
-    """ZX graph representation of a logical computation."""
+    """ZX graph representation of a logical computation.
+
+    The ZX graph is in the form of a ZX-calculus graph and the representation is based on the
+    correspondence between the ZX-calculus and the lattice surgery.
+    """
 
     def add_edge(
         self,
@@ -241,9 +250,10 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
 
         return plot_zx_graph(self)
 
-    def validate(self) -> None:
-        """Check the validity of the graph to represent a computation.
-        This method performs a necessary but not sufficient check.
+    def raise_if_cannot_be_valid_computation(self) -> None:
+        """Check the validity of the graph to represent a computation. And raise an exception if
+        the graph cannot represent a valid computation. This method performs a necessary but not
+        sufficient check.
 
         To represent a valid computation, the graph must have:
             - the graph is a single connected component

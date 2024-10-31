@@ -27,16 +27,21 @@ BlockKind = CubeKind | PipeKind
 
 
 class BlockGraph(ComputationGraph[Cube, Pipe]):
-    """An undirected graph representation of a 3D logical computation.
+    """An undirected graph representation of a logical computation.
 
-    The nodes of the graph are the cubes, which are the computational units of the logical
-    computation. The edges of the graph are the pipes connecting the cubes, which guides
-    the computation through the spacetime.
+    The block graph specifies the explicit block structures of the spacetime diagram, including
+    the layout of the code patches, the boundary types and the connectivity of the patches
+    across the spacetime. The block graph can be compiled and used to generate the concrete
+    circuits that implement the logical computation.
+
+    The nodes in the graph are the cubes that represent a unit of code patch in the spacetime.
+    The edges in the graph are the pipes that connect the cubes. The pipes guide the logical
+    computation and the information flow between the code patches over spacetime.
     """
 
     def add_edge(self, u: Cube, v: Cube, kind: PipeKind | None = None) -> None:
         """Add an edge to the graph. If the nodes do not exist in the graph, the nodes will be
-        created.
+        created and added to the graph.
 
         Args:
             edge: The edge to add to the graph.
@@ -205,7 +210,17 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         self,
         correlation_surfaces: list[CorrelationSurface] | None = None,
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
-        """Get all the abstract observables from the block graph."""
+        """Get all the abstract observables from the block graph.
+
+        Args:
+            correlation_surfaces: The correlation surfaces to convert to abstract observables. If not
+                provided, the correlation surfaces will be constructed from the corresponding ZX graph
+                of the block graph.
+
+        Returns:
+            The list of abstract observables and the list of correlation surfaces corresponding to the
+            observables.
+        """
         from tqec.computation.abstract_observable import (
             correlation_surface_to_abstract_observable,
         )

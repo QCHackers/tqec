@@ -28,7 +28,7 @@ _EDGE = TypeVar("_EDGE")
 
 
 class ComputationGraph(Generic[_NODE, _EDGE]):
-    """Base class for graph data structures representing logical computations."""
+    """Base class for graph data structures representing a logical computation."""
 
     _NODE_DATA_KEY: str = "tqec_node_data"
     _EDGE_DATA_KEY: str = "tqec_edge_data"
@@ -59,7 +59,8 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
 
     @property
     def num_ports(self) -> int:
-        """The number of ports in the graph."""
+        """The number of ports in the graph. A port is a virtual node that represents the
+        input/output of the computation."""
         return len(self._ports)
 
     @property
@@ -80,12 +81,12 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
         return self._ports
 
     def get_degree(self, position: Position3D) -> int:
-        """Get the degree of a node in the graph."""
+        """Get the degree of a node in the graph, i.e. the number of edges incident to it."""
         return self._graph.degree(position)  # type: ignore
 
     @property
     def leaf_nodes(self) -> list[_NODE]:
-        """Get the leaf nodes of the graph."""
+        """Get the leaf nodes of the graph, i.e. the nodes with degree 1."""
         return [node for node in self.nodes if self.get_degree(node.position) == 1]
 
     def _check_node_conflict(self, node: _NODE) -> None:

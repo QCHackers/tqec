@@ -10,6 +10,15 @@ from tqec.computation.cube import Cube, ZXBasis, ZXCube
 
 @dataclass(frozen=True)
 class PipeKind:
+    """The kind of a pipe connecting two cubes in spacetime.
+
+    Attributes:
+        x: The basis of the walls of the pipe in the X direction.
+        y: The basis of the walls of the pipe in the Y direction.
+        z: The basis of the walls of the pipe in the Z direction.
+        has_hadamard: If True, the pipe has a hadamard transition.
+    """
+
     x: ZXBasis | None
     y: ZXBasis | None
     z: ZXBasis | None
@@ -97,12 +106,18 @@ class PipeKind:
 
 @dataclass(frozen=True)
 class Pipe:
-    """A block connecting two cubes in a 3D spacetime diagram.
+    """A block connecting two cubes in spacetime.
+
+    The pipes guide the logical computation and the information flow between the code
+    patches over spacetime.
+
+    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`
+    is less than `v`.
 
     Attributes:
-        u: The first cube. The position of u will be guaranteed to be less than v.
-        v: The second cube. The position of v will be guaranteed to be greater than u.
-        kind: The type of the pipe.
+        u: The first cube of the pipe. The position of u will be guaranteed to be less than v.
+        v: The second cube of the pipe. The position of v will be guaranteed to be greater than u.
+        kind: The kind of the pipe.
     """
 
     u: Cube
@@ -126,7 +141,19 @@ class Pipe:
 
     @staticmethod
     def from_cubes(u: Cube, v: Cube) -> Pipe:
-        """Create a pipe connecting two cubes and infer the pipe kind."""
+        """Create a pipe connecting two cubes and infer the pipe kind.
+
+        Args:
+            u: The first cube of the pipe.
+            v: The second cube of the pipe.
+
+        Returns:
+            The pipe connecting the two cubes.
+
+        Raises:
+            TQECException: If the cubes are not neighbours or both of them are not ZX cubes.
+            TQECException: If kind of the pipe cannot be inferred from the cubes.
+        """
         if not u.is_zx_cube and not v.is_zx_cube:
             raise TQECException(
                 "At least one cube must be a ZX cube to infer the pipe kind."
@@ -184,11 +211,3 @@ class Pipe:
     def __iter__(self) -> Generator[Cube]:
         yield self.u
         yield self.v
-
-    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Pipe:
-        """Shift the position of the pipe by the given displacement."""
-        return Pipe(
-            self.u.shift_position_by(dx, dy, dz),
-            self.v.shift_position_by(dx, dy, dz),
-            self.kind,
-        )

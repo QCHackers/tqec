@@ -54,7 +54,7 @@ def convert_zx_graph_to_block_graph(
         The constructed block graph.
     """
     # validate the ZX graph before constructing the block graph
-    zx_graph.validate()
+    zx_graph.raise_if_cannot_be_valid_computation()
 
     nodes_to_handle = set(zx_graph.nodes)
     edges_to_handle = set(zx_graph.edges)

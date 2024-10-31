@@ -137,7 +137,14 @@ class YCube(CubeKind):
 
 @dataclass(frozen=True)
 class Cube:
-    """A block representing the computational unit in a 3D logical computation."""
+    """A block representing a unit of code patch in the spacetime.
+
+    Attributes:
+        position: The position of the cube in the 3D spacetime.
+        kind: The kind of the cube. It specifies the functionality of the cube.
+        label: The label of the cube. If the cube is a port, the label must be non-empty.
+            Default to an empty string.
+    """
 
     position: Position3D
     kind: CubeKind
@@ -172,7 +179,3 @@ class Cube:
     def to_zx_node(self) -> ZXNode:
         """Convert the cube to a ZX node."""
         return ZXNode(self.position, self.kind.to_zx_kind(), self.label)
-
-    def shift_position_by(self, dx: int = 0, dy: int = 0, dz: int = 0) -> Cube:
-        """Shift the position of the cube."""
-        return Cube(self.position.shift_by(dx, dy, dz), self.kind, self.label)

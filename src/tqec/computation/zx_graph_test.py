@@ -190,7 +190,7 @@ def test_zx_graph_validity() -> None:
         TQECException,
         match="The graph must be a single connected component to represent a computation.",
     ):
-        g.validate()
+        g.raise_if_cannot_be_valid_computation()
 
     g = ZXGraph()
     g.add_edge(
@@ -202,7 +202,7 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(1, 0, 0), ZXKind.P, "test"),
     )
     with pytest.raises(TQECException, match="The port/Y node must be a leaf node."):
-        g.validate()
+        g.raise_if_cannot_be_valid_computation()
 
     g = ZXGraph()
     g.add_edge(
@@ -212,7 +212,7 @@ def test_zx_graph_validity() -> None:
     with pytest.raises(
         TQECException, match="The Y node must only has Z-direction edge."
     ):
-        g.validate()
+        g.raise_if_cannot_be_valid_computation()
 
     g = ZXGraph()
     g.add_edge(
@@ -223,10 +223,10 @@ def test_zx_graph_validity() -> None:
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
         ZXNode(Position3D(0, 1, 0), ZXKind.Z),
     )
-    g.validate()
+    g.raise_if_cannot_be_valid_computation()
     g.add_edge(
         ZXNode(Position3D(0, 0, 0), ZXKind.Z),
         ZXNode(Position3D(0, 0, 1), ZXKind.Z),
     )
     with pytest.raises(TQECException, match="ZX graph has a 3D corne"):
-        g.validate()
+        g.raise_if_cannot_be_valid_computation()

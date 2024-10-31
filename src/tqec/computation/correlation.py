@@ -120,7 +120,7 @@ def find_correlation_surfaces(
     Returns:
         A list of `CorrelationSurface` in the graph.
     """
-    zx_graph.validate()
+    zx_graph.raise_if_cannot_be_valid_computation()
     # Edge case: single node graph
     if zx_graph.num_nodes == 1:
         return [
