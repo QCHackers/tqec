@@ -184,16 +184,3 @@ class Scalable2D:
                 "not implemented."
             )
         return Scalable2D(self.x + other.x, self.y + other.y)
-
-
-@dataclass(frozen=True)
-class ScalableInterval:
-    start: LinearFunction
-    end: LinearFunction
-
-    @property
-    def width(self) -> LinearFunction:
-        return self.end - self.start
-
-    def is_empty(self) -> bool:
-        return not (self.width < 0).is_empty()
