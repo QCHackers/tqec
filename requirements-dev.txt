@@ -8,6 +8,7 @@ nbsphinx
 sphinxcontrib-mermaid
 pytest
 mypy
+types-networkx
 pytest-cov
 pandoc
 pre-commit
