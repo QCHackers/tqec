@@ -116,6 +116,8 @@ window.addEventListener("load", () => mermaid.run());
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
  
 </div>
@@ -165,9 +167,9 @@ window.addEventListener("load", () => mermaid.run());
 </li>
         <li><a href="_autosummary/tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment.__init__">(Moment method)</a>
 </li>
-        <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseModel.html#tqec.noise_models.noise_model.NoiseModel.__init__">(NoiseModel method)</a>
+        <li><a href="_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.__init__">(NoiseModel method)</a>
 </li>
-        <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseRule.html#tqec.noise_models.noise_model.NoiseRule.__init__">(NoiseRule method)</a>
+        <li><a href="_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule.__init__">(NoiseRule method)</a>
 </li>
         <li><a href="_autosummary/tqec.computation.block_graph.pipe.Pipe.html#tqec.computation.block_graph.pipe.Pipe.__init__">(Pipe method)</a>
 </li>
@@ -198,8 +200,6 @@ window.addEventListener("load", () => mermaid.run());
         <li><a href="_autosummary/tqec.plaquette.plaquette.RepeatedPlaquettes.html#tqec.plaquette.plaquette.RepeatedPlaquettes.__init__">(RepeatedPlaquettes method)</a>
 </li>
         <li><a href="_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D.__init__">(Scalable2D method)</a>
-</li>
-        <li><a href="_autosummary/tqec.scale.ScalableInterval.html#tqec.scale.ScalableInterval.__init__">(ScalableInterval method)</a>
 </li>
         <li><a href="_autosummary/tqec.circuit.schedule.Schedule.html#tqec.circuit.schedule.Schedule.__init__">(Schedule method)</a>
 </li>
@@ -278,7 +278,7 @@ window.addEventListener("load", () => mermaid.run());
       </ul></li>
       <li><a href="_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit.append_new_moment">append_new_moment() (ScheduledCircuit method)</a>
 </li>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseRule.html#tqec.noise_models.noise_model.NoiseRule.append_noisy_version_of">append_noisy_version_of() (NoiseRule method)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule.append_noisy_version_of">append_noisy_version_of() (NoiseRule method)</a>
 </li>
       <li><a href="_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit.append_observable">append_observable() (ScheduledCircuit method)</a>
 </li>
@@ -382,13 +382,17 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       <li><a href="_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.element_shape">element_shape() (LayoutTemplate method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.circuit.schedule.ScheduledCircuit.html#tqec.circuit.schedule.ScheduledCircuit.empty">empty() (ScheduledCircuit static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.plaquette.library.empty.empty_plaquette.html#tqec.plaquette.library.empty.empty_plaquette">empty_plaquette() (in module tqec.plaquette.library.empty)</a>
 </li>
       <li><a href="_autosummary/tqec.plaquette.library.empty.empty_square_plaquette.html#tqec.plaquette.library.empty.empty_square_plaquette">empty_square_plaquette() (in module tqec.plaquette.library.empty)</a>
+</li>
+      <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.end">end (Interval attribute)</a>
+</li>
+      <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.end_excluded">end_excluded (Interval attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -637,11 +641,7 @@ window.addEventListener("load", () => mermaid.run());
       <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.is_disjoint">is_disjoint() (Interval method)</a>
 </li>
       <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.is_empty">is_empty() (Interval method)</a>
-
-      <ul>
-        <li><a href="_autosummary/tqec.scale.ScalableInterval.html#tqec.scale.ScalableInterval.is_empty">(ScalableInterval method)</a>
 </li>
-      </ul></li>
       <li><a href="_autosummary/tqec.circuit.instructions.is_measurement_instruction.html#tqec.circuit.instructions.is_measurement_instruction">is_measurement_instruction() (in module tqec.circuit.instructions)</a>
 </li>
       <li><a href="_autosummary/tqec.circuit.instructions.is_multi_qubit_measurement_instruction.html#tqec.circuit.instructions.is_multi_qubit_measurement_instruction">is_multi_qubit_measurement_instruction() (in module tqec.circuit.instructions)</a>
@@ -826,9 +826,7 @@ window.addEventListener("load", () => mermaid.run());
 </li>
         <li><a href="_autosummary/tqec.interval.html#module-tqec.interval">tqec.interval</a>
 </li>
-        <li><a href="_autosummary/tqec.noise_models.html#module-tqec.noise_models">tqec.noise_models</a>
-</li>
-        <li><a href="_autosummary/tqec.noise_models.noise_model.html#module-tqec.noise_models.noise_model">tqec.noise_models.noise_model</a>
+        <li><a href="_autosummary/tqec.noise_model.html#module-tqec.noise_model">tqec.noise_model</a>
 </li>
         <li><a href="_autosummary/tqec.plaquette.html#module-tqec.plaquette">tqec.plaquette</a>
 </li>
@@ -895,13 +893,13 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       <li><a href="_autosummary/tqec.computation.zx_graph.NodeType.html#tqec.computation.zx_graph.NodeType">NodeType (class in tqec.computation.zx_graph)</a>
 </li>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseModel.html#tqec.noise_models.noise_model.NoiseModel">NoiseModel (class in tqec.noise_models.noise_model)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel">NoiseModel (class in tqec.noise_model)</a>
 </li>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseRule.html#tqec.noise_models.noise_model.NoiseRule">NoiseRule (class in tqec.noise_models.noise_model)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule">NoiseRule (class in tqec.noise_model)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseModel.html#tqec.noise_models.noise_model.NoiseModel.noisy_circuit">noisy_circuit() (NoiseModel method)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.noisy_circuit">noisy_circuit() (NoiseModel method)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.geometry.Face.html#tqec.computation.geometry.Face.normal_direction">normal_direction (Face attribute)</a>
 </li>
@@ -921,7 +919,7 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       <li><a href="_autosummary/tqec.compile.compile.CompiledGraph.html#tqec.compile.compile.CompiledGraph.observables">observables (CompiledGraph attribute)</a>
 </li>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.occurs_in_classical_control_system.html#tqec.noise_models.noise_model.occurs_in_classical_control_system">occurs_in_classical_control_system() (in module tqec.noise_models.noise_model)</a>
+      <li><a href="_autosummary/tqec.noise_model.occurs_in_classical_control_system.html#tqec.noise_model.occurs_in_classical_control_system">occurs_in_classical_control_system() (in module tqec.noise_model)</a>
 </li>
       <li><a href="_autosummary/tqec.circuit.measurement.Measurement.html#tqec.circuit.measurement.Measurement.offset">offset (Measurement attribute)</a>
 </li>
@@ -1069,8 +1067,6 @@ window.addEventListener("load", () => mermaid.run());
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D">Scalable2D (class in tqec.scale)</a>
 </li>
-      <li><a href="_autosummary/tqec.scale.ScalableInterval.html#tqec.scale.ScalableInterval">ScalableInterval (class in tqec.scale)</a>
-</li>
       <li><a href="_autosummary/tqec.computation.collada.Transformation.html#tqec.computation.collada.Transformation.scale">scale (Transformation attribute)</a>
 </li>
       <li><a href="_autosummary/tqec.circuit.schedule.Schedule.html#tqec.circuit.schedule.Schedule">Schedule (class in tqec.circuit.schedule)</a>
@@ -1103,7 +1099,7 @@ window.addEventListener("load", () => mermaid.run());
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseModel.html#tqec.noise_models.noise_model.NoiseModel.si1000">si1000() (NoiseModel static method)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.si1000">si1000() (NoiseModel static method)</a>
 </li>
       <li><a href="_autosummary/tqec.compile.specs.base.PipeSpec.html#tqec.compile.specs.base.PipeSpec.spec1">spec1 (PipeSpec attribute)</a>
 </li>
@@ -1112,6 +1108,10 @@ window.addEventListener("load", () => mermaid.run());
       <li><a href="_autosummary/tqec.plaquette.qubit.SquarePlaquetteQubits.html#tqec.plaquette.qubit.SquarePlaquetteQubits">SquarePlaquetteQubits (class in tqec.plaquette.qubit)</a>
 </li>
       <li><a href="_autosummary/tqec.compile.specs.base.Substitution.html#tqec.compile.specs.base.Substitution.src">src (Substitution attribute)</a>
+</li>
+      <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.start">start (Interval attribute)</a>
+</li>
+      <li><a href="_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.start_excluded">start_excluded (Interval attribute)</a>
 </li>
       <li><a href="_autosummary/tqec.simulation.simulation.start_simulation_using_sinter.html#tqec.simulation.simulation.start_simulation_using_sinter">start_simulation_using_sinter() (in module tqec.simulation.simulation)</a>
 </li>
@@ -1448,17 +1448,10 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       </ul></li>
       <li>
-    tqec.noise_models
+    tqec.noise_model
 
       <ul>
-        <li><a href="_autosummary/tqec.noise_models.html#module-tqec.noise_models">module</a>
-</li>
-      </ul></li>
-      <li>
-    tqec.noise_models.noise_model
-
-      <ul>
-        <li><a href="_autosummary/tqec.noise_models.noise_model.html#module-tqec.noise_models.noise_model">module</a>
+        <li><a href="_autosummary/tqec.noise_model.html#module-tqec.noise_model">module</a>
 </li>
       </ul></li>
       <li>
@@ -1649,7 +1642,7 @@ window.addEventListener("load", () => mermaid.run());
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/tqec.noise_models.noise_model.NoiseModel.html#tqec.noise_models.noise_model.NoiseModel.uniform_depolarizing">uniform_depolarizing() (NoiseModel static method)</a>
+      <li><a href="_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.uniform_depolarizing">uniform_depolarizing() (NoiseModel static method)</a>
 </li>
       <li><a href="_autosummary/tqec.templates.subtemplates.Unique3DSubTemplates.html#tqec.templates.subtemplates.Unique3DSubTemplates">Unique3DSubTemplates (class in tqec.templates.subtemplates)</a>
 </li>
@@ -1694,6 +1687,22 @@ window.addEventListener("load", () => mermaid.run());
       <li><a href="_autosummary/tqec.computation.block_graph.graph.BlockGraph.html#tqec.computation.block_graph.graph.BlockGraph.with_zero_min_z">with_zero_min_z() (BlockGraph method)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.collada.write_block_graph_to_dae_file.html#tqec.computation.collada.write_block_graph_to_dae_file">write_block_graph_to_dae_file() (in module tqec.computation.collada)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D.x">x (Scalable2D attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D.y">y (Scalable2D attribute)</a>
 </li>
   </ul></td>
 </tr></table>

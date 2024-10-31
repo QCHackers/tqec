@@ -1,7 +1,7 @@
-tqec.noise\_models.noise\_model.NoiseModel
-==========================================
+tqec.noise\_model.NoiseModel
+============================
 
-.. currentmodule:: tqec.noise_models.noise_model
+.. currentmodule:: tqec.noise_model
 
 .. autoclass:: NoiseModel
 

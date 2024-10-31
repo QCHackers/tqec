@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.noise_models.noise_model.occurs_in_classical_control_system &mdash; TQEC  documentation</title>
+  <title>tqec.noise_model &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.noise_models.noise_model.NoiseModel" href="tqec.noise_models.noise_model.NoiseModel.html" />
-    <link rel="prev" title="tqec.noise_models.noise_model" href="tqec.noise_models.noise_model.html" /> 
+    <link rel="next" title="tqec.noise_model.occurs_in_classical_control_system" href="tqec.noise_model.occurs_in_classical_control_system.html" />
+    <link rel="prev" title="tqec.interval.Interval" href="tqec.interval.Interval.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -64,16 +64,11 @@
 <li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.interval.html">tqec.interval</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="tqec.noise_models.html">tqec.noise_models</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.noise_models.noise_model.html">tqec.noise_models.noise_model</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.noise_models.noise_model.occurs_in_classical_control_system</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#tqec.noise_models.noise_model.occurs_in_classical_control_system"><code class="docutils literal notranslate"><span class="pre">occurs_in_classical_control_system()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.noise_models.noise_model.NoiseModel.html">tqec.noise_models.noise_model.NoiseModel</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.noise_models.noise_model.NoiseRule.html">tqec.noise_models.noise_model.NoiseRule</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tqec.noise_model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#important-note">Important note:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_model.occurs_in_classical_control_system.html">tqec.noise_model.occurs_in_classical_control_system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_model.NoiseModel.html">tqec.noise_model.NoiseModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.noise_model.NoiseRule.html">tqec.noise_model.NoiseRule</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
@@ -100,11 +95,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
-          <li class="breadcrumb-item"><a href="tqec.noise_models.html">tqec.noise_models</a></li>
-          <li class="breadcrumb-item"><a href="tqec.noise_models.noise_model.html">tqec.noise_models.noise_model</a></li>
-      <li class="breadcrumb-item active">tqec.noise_models.noise_model.occurs_in_classical_control_system</li>
+      <li class="breadcrumb-item active">tqec.noise_model</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.noise_models.noise_model.occurs_in_classical_control_system.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.noise_model.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -112,23 +105,57 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-noise-models-noise-model-occurs-in-classical-control-system">
-<h1>tqec.noise_models.noise_model.occurs_in_classical_control_system<a class="headerlink" href="#tqec-noise-models-noise-model-occurs-in-classical-control-system" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tqec.noise_models.noise_model.occurs_in_classical_control_system">
-<span class="sig-name descname"><span class="pre">occurs_in_classical_control_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CircuitInstruction</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/noise_models/noise_model.html#occurs_in_classical_control_system"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.noise_models.noise_model.occurs_in_classical_control_system" title="Link to this definition"></a></dt>
-<dd><p>Determines if an operation is an annotation or a classical control
-system update.</p>
-</dd></dl>
-
+  <section id="module-tqec.noise_model">
+<span id="tqec-noise-model"></span><h1>tqec.noise_model<a class="headerlink" href="#module-tqec.noise_model" title="Link to this heading"></a></h1>
+<p>Implementation of different noise models for Stim.</p>
+<section id="important-note">
+<h2>Important note:<a class="headerlink" href="#important-note" title="Link to this heading"></a></h2>
+<p>This file has been recovered from <a class="reference external" href="https://zenodo.org/records/7487893">https://zenodo.org/records/7487893</a>
+and is under CC BY 4.0 (<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/legalcode">https://creativecommons.org/licenses/by/4.0/legalcode</a>).
+It is part of the code from the paper</p>
+<blockquote>
+<div><p>Gidney, C. (2022). Data for “Inplace Access to the Surface Code Y Basis”.
+<a class="reference external" href="https://doi.org/10.5281/zenodo.7487893">https://doi.org/10.5281/zenodo.7487893</a></p>
+</div></blockquote>
+<p>Modifications to the original code:</p>
+<ol class="arabic simple">
+<li><p>Formatting with ruff.</p></li>
+<li><p>Fixing typing issues and adapting a few imports to personal taste.</p></li>
+<li><p>A minor adjustment to the measurement noise rules of <code class="docutils literal notranslate"><span class="pre">uniform_depolarizing</span></code>
+and <code class="docutils literal notranslate"><span class="pre">si1000</span></code> noise models: the depolarizing error on the measured qubits
+after measurement is removed because, in our library, all measurements are
+immediately followed by resets. As a result, the depolarizing error has no
+effect.</p></li>
+<li><p>Remove the <code class="docutils literal notranslate"><span class="pre">depolarizing_two_body_measurement_noise</span></code> noise model.</p></li>
+</ol>
+</section>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.noise_model.occurs_in_classical_control_system.html#tqec.noise_model.occurs_in_classical_control_system" title="tqec.noise_model.occurs_in_classical_control_system"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occurs_in_classical_control_system</span></code></a>(op)</p></td>
+<td><p>Determines if an operation is an annotation or a classical control system update.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel" title="tqec.noise_model.NoiseModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoiseModel</span></code></a>(idle_depolarization[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule" title="tqec.noise_model.NoiseRule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoiseRule</span></code></a>(*, after[, flip_result])</p></td>
+<td><p>Describes how to add noise to an operation.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.noise_models.noise_model.html" class="btn btn-neutral float-left" title="tqec.noise_models.noise_model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.noise_models.noise_model.NoiseModel.html" class="btn btn-neutral float-right" title="tqec.noise_models.noise_model.NoiseModel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.interval.Interval.html" class="btn btn-neutral float-left" title="tqec.interval.Interval" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.noise_model.occurs_in_classical_control_system.html" class="btn btn-neutral float-right" title="tqec.noise_model.occurs_in_classical_control_system" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

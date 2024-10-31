@@ -41,7 +41,8 @@
    interval
 
 
-   noise_models
+   noise_model
+
 
    plaquette
 

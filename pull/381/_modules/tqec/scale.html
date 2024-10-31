@@ -90,7 +90,22 @@ window.addEventListener("load", () => mermaid.run());
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.scale</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines several scalable classes such as :class:`LinearFunction` or</span>
+<span class="sd">:class:`Scalable2D`.</span>
+
+<span class="sd">This module defines the necessary classes to help with scalable structures.</span>
+<span class="sd">:class:`LinearFunction` simply represents a linear function ``a * k + b`` where</span>
+<span class="sd">``a`` and ``b`` are floating-point quantities.</span>
+
+<span class="sd">This :class:`LinearFunction` class is for example used to represent the shape</span>
+<span class="sd">of a :class:`~tqec.templates.base.Template` for any input value ``k``. More</span>
+<span class="sd">specifically, :class:`~tqec.templates.qubit.QubitTemplate` has a shape that should</span>
+<span class="sd">exactly match a pair of ``LinearFunction(2, 2)`` which is basically ``2k + 2``.</span>
+
+<span class="sd">:class:`Scalable2D` is exactly made to represent such pairs of scalable quantities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span>
@@ -259,9 +274,24 @@ window.addEventListener("load", () => mermaid.run());
 
 <div class="viewcode-block" id="round_or_fail">
 <a class="viewcode-back" href="../../_autosummary/tqec.scale.round_or_fail.html#tqec.scale.round_or_fail">[docs]</a>
-<span class="k">def</span> <span class="nf">round_or_fail</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">round_or_fail</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Try to round the provided ``f`` to the nearest integer and raise if ``f``</span>
+<span class="sd">    was not close enough to this integer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f: a floating-point value that should be close (absolute tolerance of</span>
+<span class="sd">            ``atol``) to its nearest integer number.</span>
+<span class="sd">        atol: absolute tolerance between the provided ``f`` and ``round(f)`` that</span>
+<span class="sd">            is acceptable.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if abs(f - round(f)) &gt; atol</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``int(round(f))``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rounded_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">rounded_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-8</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">rounded_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">atol</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rounding from </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> to integer failed.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rounded_value</span></div>
 
@@ -271,18 +301,47 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Scalable2D</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A pair of scalable quantities.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        x: a linear function representing the value of the ``x`` coordinate.</span>
+<span class="sd">        y: a linear function representing the value of the ``y`` coordinate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">x</span><span class="p">:</span> <span class="n">LinearFunction</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">LinearFunction</span>
 
 <div class="viewcode-block" id="Scalable2D.to_shape_2d">
 <a class="viewcode-back" href="../../_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D.to_shape_2d">[docs]</a>
     <span class="k">def</span> <span class="nf">to_shape_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the represented value for a given scaling parameter ``k``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k: scaling parameter to use to get a value from the scalable</span>
+<span class="sd">                quantities stored in ``self``.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if any of ``self.x(k)`` or ``self.y(k)`` returns a</span>
+<span class="sd">                number that is not an integer (or very close to an integer).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``Shape2D(round_or_fail(self.x(k)), round_or_fail(self.y(k)))``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Shape2D</span><span class="p">(</span><span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="Scalable2D.to_numpy_shape">
 <a class="viewcode-back" href="../../_autosummary/tqec.scale.Scalable2D.html#tqec.scale.Scalable2D.to_numpy_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a tuple of coordinates in ``numpy``-coordinates.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if any of ``self.x(k)`` or ``self.y(k)`` returns a</span>
+<span class="sd">                number that is not an integer (or very close to an integer).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a tuple of coordinates in ``numpy``-coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">()</span></div>
 
 
@@ -293,25 +352,6 @@ window.addEventListener("load", () => mermaid.run());
                 <span class="s2">&quot;not implemented.&quot;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="ScalableInterval">
-<a class="viewcode-back" href="../../_autosummary/tqec.scale.ScalableInterval.html#tqec.scale.ScalableInterval">[docs]</a>
-<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ScalableInterval</span><span class="p">:</span>
-    <span class="n">start</span><span class="p">:</span> <span class="n">LinearFunction</span>
-    <span class="n">end</span><span class="p">:</span> <span class="n">LinearFunction</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearFunction</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
-
-<div class="viewcode-block" id="ScalableInterval.is_empty">
-<a class="viewcode-back" href="../../_autosummary/tqec.scale.ScalableInterval.html#tqec.scale.ScalableInterval.is_empty">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span></div>
-</div>
 
 </pre></div>
 

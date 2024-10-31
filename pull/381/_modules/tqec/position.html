@@ -90,7 +90,33 @@ window.addEventListener("load", () => mermaid.run());
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.position</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines 2D and 3D data-structures storing vectors of integers.</span>
+
+<span class="sd">This module defines several classes to store pairs (2D) or 3-tuples (3D) of</span>
+<span class="sd">integers representing coordinates. They are used all over the code base to avoid</span>
+<span class="sd">any coordinate system mess and to explicitly annotate each coordinate with its</span>
+<span class="sd">significance. Basically, instead of having</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    coords = (0, 4)  # Is it (y, x) or (x, y)?</span>
+<span class="sd">    # 0 used below, but if the coords tuple was obtained from a call to</span>
+<span class="sd">    # `.shape` from a numpy array it should rather be a 1.</span>
+<span class="sd">    x = coords[0]</span>
+
+<span class="sd">we have</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    coords = Position2D(0, 4)</span>
+<span class="sd">    x = coords.x</span>
+
+<span class="sd">This is particularly useful when we, as humans, are mostly used to always have</span>
+<span class="sd">(x, y) coordinates but some libraries (such as numpy) reverse that order for</span>
+<span class="sd">indexing.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>

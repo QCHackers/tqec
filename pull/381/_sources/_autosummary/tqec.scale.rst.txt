@@ -27,7 +27,6 @@ tqec.scale
    
       LinearFunction
       Scalable2D
-      ScalableInterval
    
    
 
