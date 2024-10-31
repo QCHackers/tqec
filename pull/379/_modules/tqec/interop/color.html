@@ -85,8 +85,6 @@
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="kn">from</span> <span class="nn">tqec.interop.geometry</span> <span class="kn">import</span> <span class="n">FaceKind</span>
-
 
 <div class="viewcode-block" id="RGBA">
 <a class="viewcode-back" href="../../../_autosummary/tqec.interop.color.RGBA.html#tqec.interop.color.RGBA">[docs]</a>
@@ -101,18 +99,32 @@
         <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">as_floats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">x_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">y_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">198</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-<span class="n">DEFAULT_FACE_COLORS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">198</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">H</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">X_CORRELATION</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
-    <span class="n">FaceKind</span><span class="o">.</span><span class="n">Z_CORRELATION</span><span class="p">:</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
-<span class="p">}</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">z_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">h_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">x_correlation_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">z_correlation_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

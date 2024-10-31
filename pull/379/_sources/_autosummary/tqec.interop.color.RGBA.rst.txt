@@ -15,7 +15,13 @@ tqec.interop.color.RGBA
    
       ~RGBA.__init__
       ~RGBA.as_floats
+      ~RGBA.h_color
       ~RGBA.with_alpha
+      ~RGBA.x_color
+      ~RGBA.x_correlation_color
+      ~RGBA.y_color
+      ~RGBA.z_color
+      ~RGBA.z_correlation_color
    
    
 
