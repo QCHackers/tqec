@@ -9,13 +9,13 @@ from io import BytesIO
 
 import networkx as nx
 
-from tqec.exceptions import TQECException
-from tqec.position import Direction3D, Position3D
 from tqec.computation.block_graph.cube import Cube
 from tqec.computation.block_graph.enums import CubeType, PipeType
 from tqec.computation.block_graph.observable import AbstractObservable
 from tqec.computation.block_graph.pipe import Pipe
 from tqec.computation.zx_graph import NodeType, ZXGraph, ZXNode
+from tqec.exceptions import TQECException
+from tqec.position import Direction3D, Position3D
 
 if ty.TYPE_CHECKING:
     from tqec.computation.collada import ColladaDisplayHelper
@@ -30,7 +30,7 @@ class BlockGraph:
         """An undirected graph representation of a 3D spacetime defect diagram
         with the block structures explicitly defined."""
         self._name = name
-        self._graph = nx.Graph()
+        self._graph: nx.Graph[Position3D] = nx.Graph()
 
     @property
     def name(self) -> str:
@@ -40,12 +40,12 @@ class BlockGraph:
     @property
     def num_cubes(self) -> int:
         """The number of cubes in the graph."""
-        return ty.cast(int, self._graph.number_of_nodes())
+        return self._graph.number_of_nodes()
 
     @property
     def num_pipes(self) -> int:
         """The number of pipes in the graph."""
-        return ty.cast(int, self._graph.number_of_edges())
+        return self._graph.number_of_edges()
 
     @property
     def num_open_ports(self) -> int:
@@ -62,11 +62,7 @@ class BlockGraph:
         """Return a list of pipes in the graph."""
         return [data[_PIPE_DATA_KEY] for _, _, data in self._graph.edges(data=True)]
 
-    def add_cube(
-        self,
-        position: Position3D,
-        cube_type: CubeType,
-    ) -> None:
+    def add_cube(self, position: Position3D, cube_type: CubeType) -> None:
         """Add a cube to the graph.
 
         Args:
@@ -181,7 +177,7 @@ class BlockGraph:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BlockGraph):
             return False
-        return ty.cast(bool, nx.utils.graphs_equal(self._graph, other._graph))
+        return nx.utils.graphs_equal(self._graph, other._graph)  # type: ignore
 
     @staticmethod
     def from_zx_graph(zx_graph: ZXGraph, name: str = "") -> BlockGraph:

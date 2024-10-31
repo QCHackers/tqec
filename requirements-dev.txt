@@ -7,6 +7,7 @@ sphinx-rtd-theme
 nbsphinx
 pytest
 mypy
+types-networkx
 pytest-cov
 pandoc
 pre-commit
