@@ -125,7 +125,41 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><span class="pre">CubeKind</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/cube.html#Cube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.Cube" title="Link to this definition"></a></dt>
-<dd><p>A block representing the computational unit in a 3D logical computation.</p>
+<dd><p>A block representing a unit of code patch in the spacetime.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.Cube.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.position" title="Link to this definition"></a></dt>
+<dd><p>The position of the cube in the 3D spacetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D">tqec.position.Position3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.Cube.kind">
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.kind" title="Link to this definition"></a></dt>
+<dd><p>The kind of the cube. It specifies the functionality of the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind">tqec.computation.cube.CubeKind</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.Cube.label">
+<span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.label" title="Link to this definition"></a></dt>
+<dd><p>The label of the cube. If the cube is a port, the label must be non-empty.
+Default to an empty string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><span class="pre">CubeKind</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.computation.cube.Cube.__init__" title="Link to this definition"></a></dt>
@@ -137,10 +171,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.__init__" title="tqec.computation.cube.Cube.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(position, kind[, label])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_position_by</span></code>([dx, dy, dz])</p></td>
-<td><p>Shift the position of the cube.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_node</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_node</span></code>()</p></td>
 <td><p>Convert the cube to a ZX node.</p></td>
 </tr>
 </tbody>
@@ -160,13 +191,13 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_zx_cube</span></code></p></td>
 <td><p>Check if the cube is a ZX cube.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.label" title="tqec.computation.cube.Cube.label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.position" title="tqec.computation.cube.Cube.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kind</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.kind" title="tqec.computation.cube.Cube.kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kind</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

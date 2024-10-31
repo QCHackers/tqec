@@ -121,10 +121,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.computation.block_graph.BlockGraph">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BlockGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/block_graph.html#BlockGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.block_graph.BlockGraph" title="Link to this definition"></a></dt>
-<dd><p>An undirected graph representation of a 3D logical computation.</p>
-<p>The nodes of the graph are the cubes, which are the computational units of the logical
-computation. The edges of the graph are the pipes connecting the cubes, which guides
-the computation through the spacetime.</p>
+<dd><p>An undirected graph representation of a logical computation.</p>
+<p>The block graph specifies the explicit block structures of the spacetime diagram, including
+the layout of the code patches, the boundary types and the connectivity of the patches
+across the spacetime. The block graph can be compiled and used to generate the concrete
+circuits that implement the logical computation.</p>
+<p>The nodes in the graph are the cubes that represent a unit of code patch in the spacetime.
+The edges in the graph are the pipes that connect the cubes. The pipes guide the logical
+computation and the information flow between the code patches over spacetime.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.block_graph.BlockGraph.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.computation.block_graph.BlockGraph.__init__" title="Link to this definition"></a></dt>
@@ -155,7 +159,7 @@ the computation through the spacetime.</p>
 <td><p>Get all the abstract observables from the block graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_degree</span></code>(position)</p></td>
-<td><p>Get the degree of a node in the graph.</p></td>
+<td><p>Get the degree of a node in the graph, i.e. the number of edges incident to it.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edge</span></code>(pos1, pos2)</p></td>
 <td><p>Get the edge by its endpoint positions.</p></td>
@@ -187,7 +191,7 @@ the computation through the spacetime.</p>
 <td><p>Return a list of edges in the graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">leaf_nodes</span></code></p></td>
-<td><p>Get the leaf nodes of the graph.</p></td>
+<td><p>Get the leaf nodes of the graph, i.e. the nodes with degree 1.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
 <td><p>The name of the graph.</p></td>

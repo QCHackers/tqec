@@ -208,7 +208,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        A list of `CorrelationSurface` in the graph.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">zx_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    <span class="n">zx_graph</span><span class="o">.</span><span class="n">raise_if_cannot_be_valid_computation</span><span class="p">()</span>
     <span class="c1"># Edge case: single node graph</span>
     <span class="k">if</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span>

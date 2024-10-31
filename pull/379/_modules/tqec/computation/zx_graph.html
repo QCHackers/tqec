@@ -106,7 +106,7 @@
 <div class="viewcode-block" id="ZXKind">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind">[docs]</a>
 <span class="k">class</span> <span class="nc">ZXKind</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid node kind in a ZX graph.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The kind of the node in the ZX graph.&quot;&quot;&quot;</span>
 
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
@@ -136,8 +136,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A node in the ZX graph.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        position: The 3D position of the node.</span>
+<span class="sd">        position: The position of the node in the 3D spacetime.</span>
 <span class="sd">        kind: The kind of the node.</span>
+<span class="sd">        label: The label of the node. The label of a port node must be non-empty. Default to an</span>
+<span class="sd">            empty string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span>
@@ -177,11 +179,14 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ZXEdge</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An edge in the ZX graph.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An edge connecting two nodes in the ZX graph.</span>
+
+<span class="sd">    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`</span>
+<span class="sd">    is less than `v`.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        u: The first node of the edge, which has smaller position than `v`.</span>
-<span class="sd">        v: The second node of the edge, which has larger position than `u`.</span>
+<span class="sd">        u: The first node of the edge. The position of `u` is guaranteed to be less than `v`.</span>
+<span class="sd">        v: The second node of the edge. The position of `v` is guaranteed to be greater than `u`.</span>
 <span class="sd">        has_hadamard: Whether the edge has a Hadamard transition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -237,7 +242,11 @@
 <div class="viewcode-block" id="ZXGraph">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph">[docs]</a>
 <span class="k">class</span> <span class="nc">ZXGraph</span><span class="p">(</span><span class="n">ComputationGraph</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">,</span> <span class="n">ZXEdge</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;ZX graph representation of a logical computation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ZX graph representation of a logical computation.</span>
+
+<span class="sd">    The ZX graph is in the form of a ZX-calculus graph and the representation is based on the</span>
+<span class="sd">    correspondence between the ZX-calculus and the lattice surgery.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -335,9 +344,10 @@
 
         <span class="k">return</span> <span class="n">plot_zx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the validity of the graph to represent a computation.</span>
-<span class="sd">        This method performs a necessary but not sufficient check.</span>
+    <span class="k">def</span> <span class="nf">raise_if_cannot_be_valid_computation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the validity of the graph to represent a computation. And raise an exception if</span>
+<span class="sd">        the graph cannot represent a valid computation. This method performs a necessary but not</span>
+<span class="sd">        sufficient check.</span>
 
 <span class="sd">        To represent a valid computation, the graph must have:</span>
 <span class="sd">            - the graph is a single connected component</span>

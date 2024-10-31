@@ -95,6 +95,15 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PipeKind</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The kind of a pipe connecting two cubes in spacetime.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        x: The basis of the walls of the pipe in the X direction.</span>
+<span class="sd">        y: The basis of the walls of the pipe in the Y direction.</span>
+<span class="sd">        z: The basis of the walls of the pipe in the Z direction.</span>
+<span class="sd">        has_hadamard: If True, the pipe has a hadamard transition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">x</span><span class="p">:</span> <span class="n">ZXBasis</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">ZXBasis</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">z</span><span class="p">:</span> <span class="n">ZXBasis</span> <span class="o">|</span> <span class="kc">None</span>
@@ -185,12 +194,18 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two cubes in a 3D spacetime diagram.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two cubes in spacetime.</span>
+
+<span class="sd">    The pipes guide the logical computation and the information flow between the code</span>
+<span class="sd">    patches over spacetime.</span>
+
+<span class="sd">    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`</span>
+<span class="sd">    is less than `v`.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        u: The first cube. The position of u will be guaranteed to be less than v.</span>
-<span class="sd">        v: The second cube. The position of v will be guaranteed to be greater than u.</span>
-<span class="sd">        kind: The type of the pipe.</span>
+<span class="sd">        u: The first cube of the pipe. The position of u will be guaranteed to be less than v.</span>
+<span class="sd">        v: The second cube of the pipe. The position of v will be guaranteed to be greater than u.</span>
+<span class="sd">        kind: The kind of the pipe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">u</span><span class="p">:</span> <span class="n">Cube</span>
@@ -214,7 +229,19 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_cubes</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Cube</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipe</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe connecting two cubes and infer the pipe kind.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe connecting two cubes and infer the pipe kind.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            u: The first cube of the pipe.</span>
+<span class="sd">            v: The second cube of the pipe.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The pipe connecting the two cubes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If the cubes are not neighbours or both of them are not ZX cubes.</span>
+<span class="sd">            TQECException: If kind of the pipe cannot be inferred from the cubes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">u</span><span class="o">.</span><span class="n">is_zx_cube</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_zx_cube</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
                 <span class="s2">&quot;At least one cube must be a ZX cube to infer the pipe kind.&quot;</span>
@@ -271,15 +298,7 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Cube</span><span class="p">]:</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
-        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
-
-    <span class="k">def</span> <span class="nf">shift_position_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipe</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the position of the pipe by the given displacement.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Pipe</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">shift_position_by</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">shift_position_by</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span></div>
 
 </pre></div>
 

@@ -237,7 +237,14 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.Cube.html#tqec.computation.cube.Cube">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Cube</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block representing the computational unit in a 3D logical computation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block representing a unit of code patch in the spacetime.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        position: The position of the cube in the 3D spacetime.</span>
+<span class="sd">        kind: The kind of the cube. It specifies the functionality of the cube.</span>
+<span class="sd">        label: The label of the cube. If the cube is a port, the label must be non-empty.</span>
+<span class="sd">            Default to an empty string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span>
     <span class="n">kind</span><span class="p">:</span> <span class="n">CubeKind</span>
@@ -271,11 +278,7 @@
 
     <span class="k">def</span> <span class="nf">to_zx_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXNode</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube to a ZX node.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ZXNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">to_zx_kind</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">shift_position_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cube</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the position of the cube.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Cube</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ZXNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">to_zx_kind</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span></div>
 
 </pre></div>
 

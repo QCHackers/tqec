@@ -15,7 +15,6 @@ tqec.computation.pipe.Pipe
    
       ~Pipe.__init__
       ~Pipe.from_cubes
-      ~Pipe.shift_position_by
       ~Pipe.validate
    
    

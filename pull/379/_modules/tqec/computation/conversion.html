@@ -142,7 +142,7 @@
 <span class="sd">        The constructed block graph.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># validate the ZX graph before constructing the block graph</span>
-    <span class="n">zx_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    <span class="n">zx_graph</span><span class="o">.</span><span class="n">raise_if_cannot_be_valid_computation</span><span class="p">()</span>
 
     <span class="n">nodes_to_handle</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">zx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
     <span class="n">edges_to_handle</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">zx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>

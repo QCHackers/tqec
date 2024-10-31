@@ -112,16 +112,21 @@
 <div class="viewcode-block" id="BlockGraph">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph">[docs]</a>
 <span class="k">class</span> <span class="nc">BlockGraph</span><span class="p">(</span><span class="n">ComputationGraph</span><span class="p">[</span><span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of a 3D logical computation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An undirected graph representation of a logical computation.</span>
 
-<span class="sd">    The nodes of the graph are the cubes, which are the computational units of the logical</span>
-<span class="sd">    computation. The edges of the graph are the pipes connecting the cubes, which guides</span>
-<span class="sd">    the computation through the spacetime.</span>
+<span class="sd">    The block graph specifies the explicit block structures of the spacetime diagram, including</span>
+<span class="sd">    the layout of the code patches, the boundary types and the connectivity of the patches</span>
+<span class="sd">    across the spacetime. The block graph can be compiled and used to generate the concrete</span>
+<span class="sd">    circuits that implement the logical computation.</span>
+
+<span class="sd">    The nodes in the graph are the cubes that represent a unit of code patch in the spacetime.</span>
+<span class="sd">    The edges in the graph are the pipes that connect the cubes. The pipes guide the logical</span>
+<span class="sd">    computation and the information flow between the code patches over spacetime.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="n">PipeKind</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an edge to the graph. If the nodes do not exist in the graph, the nodes will be</span>
-<span class="sd">        created.</span>
+<span class="sd">        created and added to the graph.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            edge: The edge to add to the graph.</span>
@@ -290,7 +295,17 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">correlation_surfaces</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AbstractObservable</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all the abstract observables from the block graph.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all the abstract observables from the block graph.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            correlation_surfaces: The correlation surfaces to convert to abstract observables. If not</span>
+<span class="sd">                provided, the correlation surfaces will be constructed from the corresponding ZX graph</span>
+<span class="sd">                of the block graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The list of abstract observables and the list of correlation surfaces corresponding to the</span>
+<span class="sd">            observables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="p">(</span>
             <span class="n">correlation_surface_to_abstract_observable</span><span class="p">,</span>
         <span class="p">)</span>
