@@ -43,7 +43,7 @@ Repository = "https://github.com/QCHackers/tqec"
 Issues = "https://github.com/QCHackers/tqec/issues"
 
 [project.optional-dependencies]
-test = ["pytest", "mypy", "pytest-cov"]
+test = ["pytest", "mypy", "pytest-cov", "types-networkx"]
 dev = [
     "sinter>=1.14",
     "pymatching",
