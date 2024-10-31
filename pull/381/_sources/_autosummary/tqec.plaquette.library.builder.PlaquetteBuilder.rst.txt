@@ -1,0 +1,29 @@
+tqec.plaquette.library.builder.PlaquetteBuilder
+===============================================
+
+.. currentmodule:: tqec.plaquette.library.builder
+
+.. autoclass:: PlaquetteBuilder
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PlaquetteBuilder.__init__
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   
+   

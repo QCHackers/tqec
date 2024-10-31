@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqec.interval.Interval &mdash; TQEC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tqec.noise_model" href="tqec.noise_model.html" />
+    <link rel="prev" title="tqec.interval" href="tqec.interval.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TQEC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../detectors.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../media/detectors/detector_computation_illustration.html">Automatic detector computation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.computation.html">tqec.computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.exceptions.html">tqec.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.gallery.html">tqec.gallery</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tqec.interval.html">tqec.interval</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tqec.interval.Interval</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tqec.interval.Interval"><code class="docutils literal notranslate"><span class="pre">Interval</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.start"><code class="docutils literal notranslate"><span class="pre">Interval.start</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.end"><code class="docutils literal notranslate"><span class="pre">Interval.end</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.start_excluded"><code class="docutils literal notranslate"><span class="pre">Interval.start_excluded</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.end_excluded"><code class="docutils literal notranslate"><span class="pre">Interval.end_excluded</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.__init__"><code class="docutils literal notranslate"><span class="pre">Interval.__init__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.contains"><code class="docutils literal notranslate"><span class="pre">Interval.contains()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.intersection"><code class="docutils literal notranslate"><span class="pre">Interval.intersection()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.is_disjoint"><code class="docutils literal notranslate"><span class="pre">Interval.is_disjoint()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.is_empty"><code class="docutils literal notranslate"><span class="pre">Interval.is_empty()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.iter_integers"><code class="docutils literal notranslate"><span class="pre">Interval.iter_integers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tqec.interval.Interval.overlaps_with"><code class="docutils literal notranslate"><span class="pre">Interval.overlaps_with()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.noise_model.html">tqec.noise_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.plaquette.html">tqec.plaquette</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.position.html">tqec.position</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.scale.html">tqec.scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.simulation.html">tqec.simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tqec.templates.html">tqec.templates</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TQEC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
+          <li class="breadcrumb-item"><a href="tqec.interval.html">tqec.interval</a></li>
+      <li class="breadcrumb-item active">tqec.interval.Interval</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/tqec.interval.Interval.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tqec-interval-interval">
+<h1>tqec.interval.Interval<a class="headerlink" href="#tqec-interval-interval" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tqec.interval.Interval">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/interval.html#Interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A subset of the mathematical space representing real numbers:
+<span class="math notranslate nohighlight">\(\mathbb{R}\)</span>.</p>
+<p>This class represents the mathematical object called interval. It stores
+two floating-point numbers representing the bounds of the interval as
+well as two booleans (one for each bound) to know if the corresponding
+bound is included in the interval or excluded from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any bound is NaN.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">start</span></code> value is strictly larger than
+    the provided <code class="docutils literal notranslate"><span class="pre">end</span></code> value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interval.Interval.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#tqec.interval.Interval.start" title="Link to this definition"></a></dt>
+<dd><p>beginning of the interval. Included in the interval iff
+<code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">self.start_excluded</span></code>, else it is excluded from the interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interval.Interval.end">
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#tqec.interval.Interval.end" title="Link to this definition"></a></dt>
+<dd><p>end of the interval. Included in the interval iff
+<code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">self.end_excluded</span></code>, else it is excluded from the interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float | int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interval.Interval.start_excluded">
+<span class="sig-name descname"><span class="pre">start_excluded</span></span><a class="headerlink" href="#tqec.interval.Interval.start_excluded" title="Link to this definition"></a></dt>
+<dd><p>controls if <code class="docutils literal notranslate"><span class="pre">self.start</span></code> is included in the represented
+interval or not. Default to <code class="docutils literal notranslate"><span class="pre">False</span></code> which means that <code class="docutils literal notranslate"><span class="pre">self.start</span></code>
+is included.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interval.Interval.end_excluded">
+<span class="sig-name descname"><span class="pre">end_excluded</span></span><a class="headerlink" href="#tqec.interval.Interval.end_excluded" title="Link to this definition"></a></dt>
+<dd><p>controls if <code class="docutils literal notranslate"><span class="pre">self.end</span></code> is included in the represented
+interval or not. Default to <code class="docutils literal notranslate"><span class="pre">True</span></code> which means that <code class="docutils literal notranslate"><span class="pre">self.end</span></code>
+is excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.__init__" title="tqec.interval.Interval.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(start, end[, start_excluded, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interval.Interval.contains" title="tqec.interval.Interval.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(value)</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> contains the provided <code class="docutils literal notranslate"><span class="pre">value</span></code>, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.intersection" title="tqec.interval.Interval.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(other)</p></td>
+<td><p>Compute and return the intersection of <code class="docutils literal notranslate"><span class="pre">self</span></code> and <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interval.Interval.is_disjoint" title="tqec.interval.Interval.is_disjoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_disjoint</span></code></a>(other)</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> does not overlap with the provided interval, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.is_empty" title="tqec.interval.Interval.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>()</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> is the empty interval, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interval.Interval.iter_integers" title="tqec.interval.Interval.iter_integers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_integers</span></code></a>()</p></td>
+<td><p>Iterate over all the integers strictly contained in <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.overlaps_with" title="tqec.interval.Interval.overlaps_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlaps_with</span></code></a>(other)</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> overlaps with the provided interval, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.end_excluded" title="tqec.interval.Interval.end_excluded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_excluded</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interval.Interval.start_excluded" title="tqec.interval.Interval.start_excluded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_excluded</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interval.Interval.start" title="tqec.interval.Interval.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interval.Interval.end" title="tqec.interval.Interval.end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Detailed methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.interval.Interval.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.contains" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> contains the provided <code class="docutils literal notranslate"><span class="pre">value</span></code>, else
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.intersection" title="Link to this definition"></a></dt>
+<dd><p>Compute and return the intersection of <code class="docutils literal notranslate"><span class="pre">self</span></code> and <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.is_disjoint">
+<span class="sig-name descname"><span class="pre">is_disjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.is_disjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.is_disjoint" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> does not overlap with the provided
+interval, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> is the empty interval, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.iter_integers">
+<span class="sig-name descname"><span class="pre">iter_integers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.iter_integers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.iter_integers" title="Link to this definition"></a></dt>
+<dd><p>Iterate over all the integers strictly contained in <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.interval.Interval.overlaps_with">
+<span class="sig-name descname"><span class="pre">overlaps_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.interval.Interval" title="tqec.interval.Interval"><span class="pre">Interval</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tqec/interval.html#Interval.overlaps_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interval.Interval.overlaps_with" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> overlaps with the provided interval, else
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tqec.interval.html" class="btn btn-neutral float-left" title="tqec.interval" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.noise_model.html" class="btn btn-neutral float-right" title="tqec.noise_model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, TQEC Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

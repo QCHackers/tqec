@@ -1,0 +1,44 @@
+tqec.circuit.measurement.RepeatedMeasurement
+============================================
+
+.. currentmodule:: tqec.circuit.measurement
+
+.. autoclass:: RepeatedMeasurement
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RepeatedMeasurement.__init__
+      ~RepeatedMeasurement.map_qubit
+      ~RepeatedMeasurement.measurements
+      ~RepeatedMeasurement.offset_spatially_by
+      ~RepeatedMeasurement.offset_temporally_by
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RepeatedMeasurement.qubit
+      ~RepeatedMeasurement.offsets
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: map_qubit
+   .. automethod:: measurements
+   .. automethod:: offset_spatially_by
+   .. automethod:: offset_temporally_by
+   
+   

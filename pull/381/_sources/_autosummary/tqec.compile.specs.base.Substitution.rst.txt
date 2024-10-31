@@ -1,0 +1,36 @@
+tqec.compile.specs.base.Substitution
+====================================
+
+.. currentmodule:: tqec.compile.specs.base
+
+.. autoclass:: Substitution
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Substitution.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Substitution.src
+      ~Substitution.dst
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   
+   

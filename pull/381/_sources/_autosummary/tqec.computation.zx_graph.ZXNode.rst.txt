@@ -1,0 +1,37 @@
+tqec.computation.zx\_graph.ZXNode
+=================================
+
+.. currentmodule:: tqec.computation.zx_graph
+
+.. autoclass:: ZXNode
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ZXNode.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ZXNode.is_virtual
+      ~ZXNode.position
+      ~ZXNode.node_type
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   
+   

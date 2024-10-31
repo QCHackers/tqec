@@ -1,0 +1,6 @@
+tqec.simulation.plotting.inset.add\_inset\_axes3d
+=================================================
+
+.. currentmodule:: tqec.simulation.plotting.inset
+
+.. autofunction:: add_inset_axes3d
