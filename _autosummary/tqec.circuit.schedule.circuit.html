@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tqec.circuit.generation.generate_circuit &mdash; TQEC  documentation</title>
+  <title>tqec.circuit.schedule.circuit &mdash; TQEC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.circuit.generation.generate_circuit_from_instantiation" href="tqec.circuit.generation.generate_circuit_from_instantiation.html" />
-    <link rel="prev" title="tqec.circuit.generation" href="tqec.circuit.generation.html" /> 
+    <link rel="next" title="tqec.circuit.schedule.circuit.ScheduledCircuit" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html" />
+    <link rel="prev" title="tqec.circuit.schedule" href="tqec.circuit.schedule.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,11 +59,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="tqec.html">tqec</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.coordinates.html">tqec.circuit.coordinates</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.generation.generate_circuit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.instructions.html">tqec.circuit.instructions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement.html">tqec.circuit.measurement</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.measurement_map.html">tqec.circuit.measurement_map</a></li>
@@ -71,7 +67,13 @@
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.observable_qubits.html">tqec.circuit.observable_qubits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit.html">tqec.circuit.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tqec.circuit.qubit_map.html">tqec.circuit.qubit_map</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tqec.circuit.schedule.html">tqec.circuit.schedule</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="tqec.circuit.schedule.html">tqec.circuit.schedule</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tqec.circuit.schedule.circuit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.exception.html">tqec.circuit.schedule.exception</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.manipulation.html">tqec.circuit.schedule.manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.schedule.schedule.html">tqec.circuit.schedule.schedule</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tqec.compile.html">tqec.compile</a></li>
@@ -105,10 +107,10 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tqec.html">tqec</a></li>
           <li class="breadcrumb-item"><a href="tqec.circuit.html">tqec.circuit</a></li>
-          <li class="breadcrumb-item"><a href="tqec.circuit.generation.html">tqec.circuit.generation</a></li>
-      <li class="breadcrumb-item active">tqec.circuit.generation.generate_circuit</li>
+          <li class="breadcrumb-item"><a href="tqec.circuit.schedule.html">tqec.circuit.schedule</a></li>
+      <li class="breadcrumb-item active">tqec.circuit.schedule.circuit</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/tqec.circuit.generation.generate_circuit.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/tqec.circuit.schedule.circuit.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -116,51 +118,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tqec-circuit-generation-generate-circuit">
-<h1>tqec.circuit.generation.generate_circuit<a class="headerlink" href="#tqec-circuit-generation-generate-circuit" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tqec.circuit.generation.generate_circuit">
-<span class="sig-name descname"><span class="pre">generate_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plaquettes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><span class="pre">Plaquettes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/generation.html#generate_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.generation.generate_circuit" title="Link to this definition"></a></dt>
-<dd><p>Generate a quantum circuit from a template and its plaquettes.</p>
-<p>This is one of the core methods of the <cite>tqec</cite> package. It generates a
-quantum circuit from the description of the template that should be
-implemented as well as the plaquettes that should be used to instantiate the
-provided template.</p>
-<p>This function requires that a few pre-conditions on the inputs are met:</p>
-<ol class="arabic simple">
-<li><p>the number of plaquettes provided should match the number of plaquettes
-required by the provided template.</p></li>
-<li><p>all the provided plaquettes should be implemented on <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code>
-instances <strong>only</strong>.</p></li>
-</ol>
-<p>If any of the above pre-conditions is not met, the inputs are considered
-invalid, in which case this function <strong>might</strong> raise an error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>template</strong> – spatial description of the quantum error correction experiment
-we want to implement.</p></li>
-<li><p><strong>k</strong> – scaling parameter used to instantiate the provided <cite>template</cite>.</p></li>
-<li><p><strong>plaquettes</strong> – description of the computation that should happen at
-different time-slices of the quantum error correction experiment (or
-at least part of it).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <cite>ScheduledCircuit</cite> instance implementing the (part of) quantum error
-correction experiment represented by the provided inputs.</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="module-tqec.circuit.schedule.circuit">
+<span id="tqec-circuit-schedule-circuit"></span><h1>tqec.circuit.schedule.circuit<a class="headerlink" href="#module-tqec.circuit.schedule.circuit" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>(moments, schedule, qubit_map)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tqec.circuit.generation.html" class="btn btn-neutral float-left" title="tqec.circuit.generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tqec.circuit.generation.generate_circuit_from_instantiation.html" class="btn btn-neutral float-right" title="tqec.circuit.generation.generate_circuit_from_instantiation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tqec.circuit.schedule.html" class="btn btn-neutral float-left" title="tqec.circuit.schedule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tqec.circuit.schedule.circuit.ScheduledCircuit.html" class="btn btn-neutral float-right" title="tqec.circuit.schedule.circuit.ScheduledCircuit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

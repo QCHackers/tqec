@@ -9,39 +9,33 @@ tqec.circuit.schedule
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
    
-      merge_scheduled_circuits
-      relabel_circuits_qubit_indices
-      remove_duplicate_instructions
+
+   
    
    
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-   
-      Schedule
-      ScheduledCircuit
-   
    
 
-   
-   
-   .. rubric:: Exceptions
 
-   .. autosummary::
-      :toctree:
-   
-      ScheduleException
-   
-   
 
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   circuit
+
+
+   exception
+
+   manipulation
+
+
+   schedule
 
 
