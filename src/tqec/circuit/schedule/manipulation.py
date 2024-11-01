@@ -1,17 +1,7 @@
-"""Defines the :class:`ScheduledCircuit` class.
+"""Defines functions to modify or merge :class:`ScheduledCircuit` instances.
 
-This module is central to the `tqec` library because it implements one of the
-most used class of the library: :class:`ScheduledCircuit`.
+This module implement a few central functions for the ``tqec`` library:
 
-A :class:`ScheduledCircuit` is "simply" a `stim.Circuit` that have all its
-moments (portions of computation between two `TICK` instructions) assigned to
-a unique positive integer representing the time slice at which the moment should
-be scheduled.
-
-Alongside :class:`ScheduledCircuit`, this module defines:
-
-- :class:`Schedule` that is a thin wrapper around `list[int]` to represent a
-  schedule (a sorted list of non-duplicated positive integers).
 - :func:`remove_duplicate_instructions` to remove some instructions appearing
   twice in a single moment (most of the time due to data qubit
   reset/measurements that are defined by each plaquette, even on qubits shared
