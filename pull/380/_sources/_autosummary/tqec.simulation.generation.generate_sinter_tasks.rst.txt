@@ -1,6 +1,0 @@
-tqec.simulation.generation.generate\_sinter\_tasks
-==================================================
-
-.. currentmodule:: tqec.simulation.generation
-
-.. autofunction:: generate_sinter_tasks
