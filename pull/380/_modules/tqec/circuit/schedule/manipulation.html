@@ -81,20 +81,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.circuit.schedule.manipulation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Defines the :class:`ScheduledCircuit` class.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines functions to modify or merge :class:`ScheduledCircuit` instances.</span>
 
-<span class="sd">This module is central to the `tqec` library because it implements one of the</span>
-<span class="sd">most used class of the library: :class:`ScheduledCircuit`.</span>
+<span class="sd">This module implement a few central functions for the ``tqec`` library:</span>
 
-<span class="sd">A :class:`ScheduledCircuit` is &quot;simply&quot; a `stim.Circuit` that have all its</span>
-<span class="sd">moments (portions of computation between two `TICK` instructions) assigned to</span>
-<span class="sd">a unique positive integer representing the time slice at which the moment should</span>
-<span class="sd">be scheduled.</span>
-
-<span class="sd">Alongside :class:`ScheduledCircuit`, this module defines:</span>
-
-<span class="sd">- :class:`Schedule` that is a thin wrapper around `list[int]` to represent a</span>
-<span class="sd">  schedule (a sorted list of non-duplicated positive integers).</span>
 <span class="sd">- :func:`remove_duplicate_instructions` to remove some instructions appearing</span>
 <span class="sd">  twice in a single moment (most of the time due to data qubit</span>
 <span class="sd">  reset/measurements that are defined by each plaquette, even on qubits shared</span>

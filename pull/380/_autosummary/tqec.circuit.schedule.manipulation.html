@@ -120,17 +120,9 @@
              
   <section id="module-tqec.circuit.schedule.manipulation">
 <span id="tqec-circuit-schedule-manipulation"></span><h1>tqec.circuit.schedule.manipulation<a class="headerlink" href="#module-tqec.circuit.schedule.manipulation" title="Link to this heading"></a></h1>
-<p>Defines the <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> class.</p>
-<p>This module is central to the <cite>tqec</cite> library because it implements one of the
-most used class of the library: <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code>.</p>
-<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> is “simply” a <cite>stim.Circuit</cite> that have all its
-moments (portions of computation between two <cite>TICK</cite> instructions) assigned to
-a unique positive integer representing the time slice at which the moment should
-be scheduled.</p>
-<p>Alongside <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code>, this module defines:</p>
+<p>Defines functions to modify or merge <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instances.</p>
+<p>This module implement a few central functions for the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library:</p>
 <ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Schedule</span></code> that is a thin wrapper around <cite>list[int]</cite> to represent a
-schedule (a sorted list of non-duplicated positive integers).</p></li>
 <li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.remove_duplicate_instructions.html#tqec.circuit.schedule.manipulation.remove_duplicate_instructions" title="tqec.circuit.schedule.manipulation.remove_duplicate_instructions"><code class="xref py py-func docutils literal notranslate"><span class="pre">remove_duplicate_instructions()</span></code></a> to remove some instructions appearing
 twice in a single moment (most of the time due to data qubit
 reset/measurements that are defined by each plaquette, even on qubits shared
