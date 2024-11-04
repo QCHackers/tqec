@@ -1,0 +1,54 @@
+tqec.interop.color.RGBA
+=======================
+
+.. currentmodule:: tqec.interop.color
+
+.. autoclass:: RGBA
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RGBA.__init__
+      ~RGBA.as_floats
+      ~RGBA.h_color
+      ~RGBA.with_alpha
+      ~RGBA.x_color
+      ~RGBA.x_correlation_color
+      ~RGBA.y_color
+      ~RGBA.z_color
+      ~RGBA.z_correlation_color
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RGBA.r
+      ~RGBA.g
+      ~RGBA.b
+      ~RGBA.a
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: as_floats
+   .. automethod:: h_color
+   .. automethod:: with_alpha
+   .. automethod:: x_color
+   .. automethod:: x_correlation_color
+   .. automethod:: y_color
+   .. automethod:: z_color
+   .. automethod:: z_correlation_color
+   
+   

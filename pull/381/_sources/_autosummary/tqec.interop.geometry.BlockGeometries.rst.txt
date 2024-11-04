@@ -1,0 +1,31 @@
+tqec.interop.geometry.BlockGeometries
+=====================================
+
+.. currentmodule:: tqec.interop.geometry
+
+.. autoclass:: BlockGeometries
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BlockGeometries.__init__
+      ~BlockGeometries.get_geometry
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: get_geometry
+   
+   

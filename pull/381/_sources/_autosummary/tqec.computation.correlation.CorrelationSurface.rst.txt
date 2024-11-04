@@ -1,0 +1,43 @@
+tqec.computation.correlation.CorrelationSurface
+===============================================
+
+.. currentmodule:: tqec.computation.correlation
+
+.. autoclass:: CorrelationSurface
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CorrelationSurface.__init__
+      ~CorrelationSurface.from_span
+      ~CorrelationSurface.get_correlation_types
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CorrelationSurface.has_single_node
+      ~CorrelationSurface.node_correlation_types
+      ~CorrelationSurface.span
+      ~CorrelationSurface.nodes
+      ~CorrelationSurface.external_stabilizer
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: from_span
+   .. automethod:: get_correlation_types
+   
+   

@@ -1,0 +1,40 @@
+tqec.interop.geometry.FaceKind
+==============================
+
+.. currentmodule:: tqec.interop.geometry
+
+.. autoclass:: FaceKind
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FaceKind.with_zx_flipped
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~FaceKind.X
+      ~FaceKind.Y
+      ~FaceKind.Z
+      ~FaceKind.H
+      ~FaceKind.X_CORRELATION
+      ~FaceKind.Z_CORRELATION
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: with_zx_flipped
+   
+   

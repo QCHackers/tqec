@@ -1,0 +1,31 @@
+tqec.computation.cube.Port
+==========================
+
+.. currentmodule:: tqec.computation.cube
+
+.. autoclass:: Port
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Port.__init__
+      ~Port.to_zx_kind
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: to_zx_kind
+   
+   

@@ -1,0 +1,6 @@
+tqec.computation.block\_graph.BlockKind
+=======================================
+
+.. currentmodule:: tqec.computation.block_graph
+
+.. autodata:: BlockKind

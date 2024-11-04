@@ -1,0 +1,38 @@
+tqec.scale
+==========
+
+.. automodule:: tqec.scale
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      round_or_fail
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      LinearFunction
+      Scalable2D
+   
+   
+
+   
+   
+   
+
+
+

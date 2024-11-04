@@ -1,0 +1,41 @@
+tqec.interop.collada.Transformation
+===================================
+
+.. currentmodule:: tqec.interop.collada
+
+.. autoclass:: Transformation
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Transformation.__init__
+      ~Transformation.from_4d_affine_matrix
+      ~Transformation.to_4d_affine_matrix
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Transformation.translation
+      ~Transformation.scale
+      ~Transformation.rotation
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: from_4d_affine_matrix
+   .. automethod:: to_4d_affine_matrix
+   
+   

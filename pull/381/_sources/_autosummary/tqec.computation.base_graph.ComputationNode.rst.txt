@@ -1,0 +1,37 @@
+tqec.computation.base\_graph.ComputationNode
+============================================
+
+.. currentmodule:: tqec.computation.base_graph
+
+.. autoclass:: ComputationNode
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ComputationNode.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ComputationNode.is_port
+      ~ComputationNode.label
+      ~ComputationNode.position
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   
+   

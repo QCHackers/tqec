@@ -1,0 +1,52 @@
+tqec.computation.base\_graph.ComputationGraph
+=============================================
+
+.. currentmodule:: tqec.computation.base_graph
+
+.. autoclass:: ComputationGraph
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ComputationGraph.__init__
+      ~ComputationGraph.add_node
+      ~ComputationGraph.edges_at
+      ~ComputationGraph.get_degree
+      ~ComputationGraph.get_edge
+      ~ComputationGraph.has_edge_between
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ComputationGraph.edges
+      ~ComputationGraph.leaf_nodes
+      ~ComputationGraph.name
+      ~ComputationGraph.nodes
+      ~ComputationGraph.num_edges
+      ~ComputationGraph.num_nodes
+      ~ComputationGraph.num_ports
+      ~ComputationGraph.ports
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: add_node
+   .. automethod:: edges_at
+   .. automethod:: get_degree
+   .. automethod:: get_edge
+   .. automethod:: has_edge_between
+   
+   

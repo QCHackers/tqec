@@ -1,0 +1,42 @@
+tqec.computation.zx\_graph.ZXEdge
+=================================
+
+.. currentmodule:: tqec.computation.zx_graph
+
+.. autoclass:: ZXEdge
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ZXEdge.__init__
+      ~ZXEdge.get_node_kind_at
+      ~ZXEdge.with_zx_flipped
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ZXEdge.direction
+      ~ZXEdge.has_hadamard
+      ~ZXEdge.u
+      ~ZXEdge.v
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: get_node_kind_at
+   .. automethod:: with_zx_flipped
+   
+   
