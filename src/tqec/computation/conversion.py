@@ -40,7 +40,7 @@ def convert_zx_graph_to_block_graph(
     from the ZX graph and validated.
 
     The conversion process is as follows:
-    
+
     1. Construct cubes for all the corner nodes in the ZX graph.
     2. Construct pipes connecting ports/Y to ports/Y nodes.
     3. Greedily construct the pipes until no more pipes can be inferred.

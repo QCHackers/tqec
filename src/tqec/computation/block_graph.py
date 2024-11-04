@@ -64,7 +64,7 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
 
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we ignore the b) and e),
         only check the following conditions:
-        
+
         a) no fanout: ports can only have one pipe connected to them.
         c) time-like Y: Y cubes can only have time-like pipes connected to them.
         d) no 3D corner: a cube cannot have pipes in all three directions.

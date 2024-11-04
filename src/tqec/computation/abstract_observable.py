@@ -15,7 +15,7 @@ class AbstractObservable:
 
     In a **closed** 3D spacetime diagram, the abstract observable can be derived from
     the corresponding correlation surface:
-    
+
     1. When the correlation surface attaches to the top/bottom faces of a block in
        the diagram, the measurements of the line of qubits on the top face are included
        in the observable.
