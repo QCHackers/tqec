@@ -1,6 +1,0 @@
-tqec.gallery.solo\_node.solo\_node\_zx\_graph
-=============================================
-
-.. currentmodule:: tqec.gallery.solo_node
-
-.. autofunction:: solo_node_zx_graph

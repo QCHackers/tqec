@@ -1,6 +1,0 @@
-tqec.compile.observables.get\_stabilizer\_region\_qubits\_for\_pipe
-===================================================================
-
-.. currentmodule:: tqec.compile.observables
-
-.. autofunction:: get_stabilizer_region_qubits_for_pipe

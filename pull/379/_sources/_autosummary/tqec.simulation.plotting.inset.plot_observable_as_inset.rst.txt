@@ -1,6 +1,0 @@
-tqec.simulation.plotting.inset.plot\_observable\_as\_inset
-==========================================================
-
-.. currentmodule:: tqec.simulation.plotting.inset
-
-.. autofunction:: plot_observable_as_inset
