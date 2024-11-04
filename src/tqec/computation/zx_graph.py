@@ -150,8 +150,9 @@ class ZXEdge:
 class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
     """ZX graph representation of a logical computation.
 
-    The ZX graph is in the form of a ZX-calculus graph and the representation is based on the
-    correspondence between the ZX-calculus and the lattice surgery.
+    The ZX graph is in the form of a ZX-calculus graph and the
+    representation is based on the correspondence between the ZX-
+    calculus and the lattice surgery.
     """
 
     def add_edge(
@@ -160,8 +161,8 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         v: ZXNode,
         has_hadamard: bool = False,
     ) -> None:
-        """Add an edge to the graph. If the nodes do not exist in the graph, the nodes will be
-        created.
+        """Add an edge to the graph. If the nodes do not exist in the graph,
+        the nodes will be created.
 
         Args:
             edge: The edge to add to the graph.
@@ -174,7 +175,8 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         self._add_edge_and_nodes_with_checks(u, v, ZXEdge(u, v, has_hadamard))
 
     def fill_ports(self, fill: Mapping[str, ZXKind] | ZXKind) -> None:
-        """Fill the ports at specified position with a node with the given kind.
+        """Fill the ports at specified position with a node with the given
+        kind.
 
         Args:
             fill: A mapping from the label of the ports to the node kind to fill.
@@ -237,8 +239,8 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
     def find_correration_surfaces(self) -> list[CorrelationSurface]:
         """Find the correlation surfaces in the ZX graph.
 
-        A recursive depth-first search algorithm is used to find the correlation
-        surfaces starting from each leaf node.
+        A recursive depth-first search algorithm is used to find the
+        correlation surfaces starting from each leaf node.
         """
         from tqec.computation.correlation import find_correlation_surfaces
 
@@ -251,9 +253,9 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         return plot_zx_graph(self)
 
     def raise_if_cannot_be_valid_computation(self) -> None:
-        """Check the validity of the graph to represent a computation. And raise an exception if
-        the graph cannot represent a valid computation. This method performs a necessary but not
-        sufficient check.
+        """Check the validity of the graph to represent a computation. And
+        raise an exception if the graph cannot represent a valid computation.
+        This method performs a necessary but not sufficient check.
 
         To represent a valid computation, the graph must have:
             - the graph is a single connected component

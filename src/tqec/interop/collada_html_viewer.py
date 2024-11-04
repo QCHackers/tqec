@@ -8,7 +8,8 @@ class ColladaHTMLViewer:
     """Helper class to view COLLADA model in html with the help of `three.js`.
 
     This can display a COLLADA model in IPython compatible environments with the
-    implementation of `_repr_html_` method."""
+    implementation of `_repr_html_` method.
+    """
 
     HTML_TEMPLATE = Template("""
 <!doctype html>
@@ -252,7 +253,8 @@ def display_collada_model(
     filepath_or_bytes: str | pathlib.Path | bytes,
     write_html_filepath: str | pathlib.Path | None = None,
 ) -> ColladaHTMLViewer:
-    """Display a 3D model from a Collada DAE file in IPython compatible environments.
+    """Display a 3D model from a Collada DAE file in IPython compatible
+    environments.
 
     This function references the code snippet from the `stim.Circuit().diagram()` method.
 

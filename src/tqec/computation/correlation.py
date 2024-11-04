@@ -71,10 +71,11 @@ class CorrelationSurface:
     def get_correlation_types(span: Iterable[ZXEdge]) -> dict[Position3D, ZXKind]:
         """Get the correlation types at the nodes in the correlation span.
 
-        The correlation type at the node is determined by the correlation types of the edges
-        connected to the node. If the node is connected to both X and Z type edges, the correlation
-        is Y type. If the node is connected to only one type of edge, the correlation is Z/X type.
-
+        The correlation type at the node is determined by the
+        correlation types of the edges connected to the node. If the
+        node is connected to both X and Z type edges, the correlation is
+        Y type. If the node is connected to only one type of edge, the
+        correlation is Z/X type.
         """
         correlations_at_position: dict[Position3D, set[ZXKind]] = {}
         for edge in span:
@@ -92,8 +93,8 @@ class CorrelationSurface:
 
     @property
     def node_correlation_types(self) -> dict[Position3D, ZXKind]:
-        """Return a mapping from the position of the node to the correlation type supported at
-        the node."""
+        """Return a mapping from the position of the node to the correlation
+        type supported at the node."""
         return {node.position: node.kind for node in self.nodes}
 
     @property
@@ -143,7 +144,8 @@ def find_correlation_surfaces_from_leaf(
     zx_graph: ZXGraph,
     leaf: ZXNode,
 ) -> list[CorrelationSurface]:
-    """Find the correlation surfaces starting from a leaf node in the ZX graph."""
+    """Find the correlation surfaces starting from a leaf node in the ZX
+    graph."""
     # Z/X type node can only support the correlation surface with the opposite type.
     if leaf.is_zx_node:
         spans = (
@@ -172,13 +174,13 @@ def _construct_compatible_correlation_surfaces(
     zx_graph: ZXGraph,
     spans: Iterable[frozenset[ZXEdge]],
 ) -> list[CorrelationSurface]:
-    """From the correlation spans, construct the correlation surfaces that are compatible
-    with the ZX graph.
+    """From the correlation spans, construct the correlation surfaces that are
+    compatible with the ZX graph.
 
-    The compatibility is determined by comparing the correlation type and the node type
-    of the leaf nodes in the graph. If the node type is not P, the correlation type must
-    be the same as the node type. If the node type is P, the correlation type can be any
-    type.
+    The compatibility is determined by comparing the correlation type
+    and the node type of the leaf nodes in the graph. If the node type
+    is not P, the correlation type must be the same as the node type. If
+    the node type is P, the correlation type can be any type.
     """
     correlation_surfaces = []
 
@@ -216,7 +218,8 @@ def _find_spans_with_flood_fill(
     correlation_frontier: set[ZXNode],
     correlation_span: set[ZXEdge],
 ) -> list[frozenset[ZXEdge]] | None:
-    """Find the correlation spans in the ZX graph using the flood fill like algorithm.
+    """Find the correlation spans in the ZX graph using the flood fill like
+    algorithm.
 
     matched correlation node: Node at which the correlation type matches the node type.
     mismatched correlation node: Node at which the correlation type mismatches the node type.

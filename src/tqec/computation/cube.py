@@ -101,8 +101,9 @@ class ZXCube(CubeKind):
 class Port(CubeKind):
     """Cube kind representing the open ports in the block graph.
 
-    The open ports correspond to the input/output of the computation represented by the block graph.
-    They will have no effect on the functionality of the logical computation itself and should be
+    The open ports correspond to the input/output of the computation
+    represented by the block graph. They will have no effect on the
+    functionality of the logical computation itself and should be
     invisible when visualizing the computation model.
     """
 

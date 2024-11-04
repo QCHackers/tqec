@@ -170,7 +170,6 @@ def write_block_graph_to_dae_file(
         custom_face_colors: A mapping from the face kind to the RGBA color to override the default
             face colors.
         show_correlation_surface: The correlation surface to show in the block graph. Default is None.
-
     """
 
     custom_face_colors = (

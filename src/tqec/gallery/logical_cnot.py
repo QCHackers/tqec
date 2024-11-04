@@ -5,7 +5,8 @@ from tqec.position import Position3D
 
 
 def logical_cnot_zx_graph(port_type: Literal["Z", "X", "OPEN"]) -> ZXGraph:
-    """Create the `ZXGraph` for the logical CNOT gate with the given port type."""
+    """Create the `ZXGraph` for the logical CNOT gate with the given port
+    type."""
     if port_type != "OPEN":
         name = f"Logical CNOT with {port_type}-basis ports"
     else:
@@ -54,6 +55,7 @@ def logical_cnot_zx_graph(port_type: Literal["Z", "X", "OPEN"]) -> ZXGraph:
 
 
 def logical_cnot_block_graph(port_type: Literal["Z", "X", "OPEN"]) -> BlockGraph:
-    """Create the `BlockGraph` for the logical CNOT gate with the given port type."""
+    """Create the `BlockGraph` for the logical CNOT gate with the given port
+    type."""
     zx_graph = logical_cnot_zx_graph(port_type)
     return zx_graph.to_block_graph(zx_graph.name)

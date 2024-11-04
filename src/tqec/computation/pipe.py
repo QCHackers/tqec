@@ -91,7 +91,8 @@ class PipeKind:
         cube_at_head: bool,
         has_hadamard: bool = False,
     ) -> PipeKind:
-        """Infer the pipe kind from the endpoint cube kind and the pipe direction."""
+        """Infer the pipe kind from the endpoint cube kind and the pipe
+        direction."""
         bases: list[ZXBasis]
         if not cube_at_head and has_hadamard:
             bases = [basis.with_zx_flipped() for basis in cube_kind.as_tuple()]

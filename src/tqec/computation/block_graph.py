@@ -29,19 +29,21 @@ BlockKind = CubeKind | PipeKind
 class BlockGraph(ComputationGraph[Cube, Pipe]):
     """An undirected graph representation of a logical computation.
 
-    The block graph specifies the explicit block structures of the spacetime diagram, including
-    the layout of the code patches, the boundary types and the connectivity of the patches
-    across the spacetime. The block graph can be compiled and used to generate the concrete
-    circuits that implement the logical computation.
+    The block graph specifies the explicit block structures of the
+    spacetime diagram, including the layout of the code patches, the
+    boundary types and the connectivity of the patches across the
+    spacetime. The block graph can be compiled and used to generate the
+    concrete circuits that implement the logical computation.
 
-    The nodes in the graph are the cubes that represent a unit of code patch in spacetime.
-    The edges in the graph are the pipes that connect the cubes. The pipes guide the logical
-    computation and the information flow between the code patches over spacetime.
+    The nodes in the graph are the cubes that represent a unit of code
+    patch in the spacetime. The edges in the graph are the pipes that
+    connect the cubes. The pipes guide the logical computation and the
+    information flow between the code patches over spacetime.
     """
 
     def add_edge(self, u: Cube, v: Cube, kind: PipeKind | None = None) -> None:
-        """Add an edge to the graph. If the nodes do not exist in the graph, the nodes will be
-        created and added to the graph.
+        """Add an edge to the graph. If the nodes do not exist in the graph,
+        the nodes will be created and added to the graph.
 
         Args:
             edge: The edge to add to the graph.
@@ -144,7 +146,6 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             custom_face_colors: A mapping from the face kind to the RGBA color to override the default
                 face colors.
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
-
         """
         from tqec.interop.collada import write_block_graph_to_dae_file
 
@@ -238,7 +239,8 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         return abstract_observables, correlation_surfaces
 
     def shift_min_z_to_zero(self) -> BlockGraph:
-        """Shift the whole graph in the z direction to make the minimum z equal zero.
+        """Shift the whole graph in the z direction to make the minimum z equal
+        zero.
 
         Returns:
             A new graph with the minimum z position of the cubes equal to zero. The new graph

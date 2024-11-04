@@ -123,7 +123,8 @@ class BlockGeometries:
         kind: BlockKind,
         pop_faces_at_directions: frozenset[SignedDirection3D] = frozenset(),
     ) -> list[Face]:
-        """Get the geometry of a block kind, possibly with some faces popped out."""
+        """Get the geometry of a block kind, possibly with some faces popped
+        out."""
         faces = self.geometries[kind]
         return [
             face

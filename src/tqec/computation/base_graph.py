@@ -28,7 +28,8 @@ _EDGE = TypeVar("_EDGE")
 
 
 class ComputationGraph(Generic[_NODE, _EDGE]):
-    """Base class for graph data structures representing a logical computation."""
+    """Base class for graph data structures representing a logical
+    computation."""
 
     _NODE_DATA_KEY: str = "tqec_node_data"
     _EDGE_DATA_KEY: str = "tqec_edge_data"
@@ -59,8 +60,11 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
 
     @property
     def num_ports(self) -> int:
-        """The number of ports in the graph. A port is a virtual node that represents the
-        input/output of the computation."""
+        """The number of ports in the graph.
+
+        A port is a virtual node that represents the input/output of the
+        computation.
+        """
         return len(self._ports)
 
     @property
@@ -77,11 +81,13 @@ class ComputationGraph(Generic[_NODE, _EDGE]):
 
     @property
     def ports(self) -> dict[str, Position3D]:
-        """Get a mapping from the labels of the ports in the graph to their positions."""
+        """Get a mapping from the labels of the ports in the graph to their
+        positions."""
         return self._ports
 
     def get_degree(self, position: Position3D) -> int:
-        """Get the degree of a node in the graph, i.e. the number of edges incident to it."""
+        """Get the degree of a node in the graph, i.e. the number of edges
+        incident to it."""
         return self._graph.degree(position)  # type: ignore
 
     @property

@@ -13,7 +13,6 @@ of the logical computation:
   including the layout of the code patches, the boundary types and the connectivity of the
   patches across the spacetime. The block graph can be compiled and used to generate the
   concrete circuits that implement the logical computation.
-
 """
 
 from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
