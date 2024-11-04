@@ -73,8 +73,8 @@ class _DetectorDatabaseKey:
 
     @cached_property
     def plaquette_names(self) -> tuple[tuple[tuple[str, ...], ...], ...]:
-        """Cached property that returns nested tuples such that
-        `ret[t][y][x] == self.plaquettes_by_timestep[t][self.subtemplates[t][y, x]].name`.
+        """Cached property that returns nested tuples such that `ret[t][y][x]
+        == self.plaquettes_by_timestep[t][self.subtemplates[t][y, x]].name`.
 
         The returned object can be iterated on using:
 
@@ -217,8 +217,8 @@ class DetectorDatabase:
         subtemplates: Sequence[SubTemplateType],
         plaquettes_by_timestep: Sequence[Plaquettes],
     ) -> frozenset[Detector] | None:
-        """Return the detectors associated with the provided situation or `None`
-        if the situation is not in the database.
+        """Return the detectors associated with the provided situation or
+        `None` if the situation is not in the database.
 
         Args:
             subtemplate: a sequence of 2-dimensional arrays of integers

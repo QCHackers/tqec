@@ -3,7 +3,9 @@ import stim
 from tqec.circuit.measurement_map import MeasurementRecordsMap
 from tqec.circuit.qubit import GridQubit
 from tqec.circuit.schedule import ScheduledCircuit
-from tqec.computation.block_graph import AbstractObservable, Cube, Pipe
+from tqec.computation.block_graph import Cube, Pipe
+from tqec.computation.abstract_observable import AbstractObservable
+from tqec.computation.cube import ZXCube
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Displacement, Shape2D
 from tqec.scale import round_or_fail
@@ -37,16 +39,13 @@ def get_midline_qubits_for_cube(
     cube: Cube, block_shape: Shape2D, template_increments: Displacement
 ) -> list[GridQubit]:
     """Get the midline qubits for a cube."""
-    if cube.cube_type.is_spatial_junction or cube.is_virtual:
+    if cube.is_spatial_junction or cube.is_port:
         raise TQECException(
-            "Cannot get midline qubits for a spatial junction cube or a virtual cube."
+            "Cannot get midline qubits for a spatial junction cube or a port."
         )
-    cube_type = cube.cube_type.value
-    time_boundary_basis = cube_type[2]
-    midline_orientation = Direction3D.from_axis_index(
-        cube_type.index(time_boundary_basis)
-    )
-    assert midline_orientation != Direction3D.Z
+    kind = cube.kind
+    assert isinstance(kind, ZXCube)
+    midline_orientation = Direction3D(int(kind.y == kind.z))
 
     width = block_shape.x * template_increments.x
     height = block_shape.y * template_increments.y
@@ -79,7 +78,7 @@ def get_stabilizer_region_qubits_for_pipe(
     template_increments: Displacement,
 ) -> list[GridQubit]:
     stabilizer_qubits: list[GridQubit] = []
-    if pipe.pipe_type.direction == Direction3D.Z:
+    if pipe.direction == Direction3D.Z:
         raise TQECException(
             "Can only get stabilizer region qubits for horizontal pipes."
         )
@@ -89,7 +88,7 @@ def get_stabilizer_region_qubits_for_pipe(
     half_increment_x = template_increments.x // 2
     half_increment_y = template_increments.y // 2
     u_pos = pipe.u.position
-    if pipe.pipe_type.direction == Direction3D.X:
+    if pipe.direction == Direction3D.X:
         block_border_x = (u_pos.x + 1) * width - half_increment_x
         for i in range(block_shape.x // 2):
             x1 = block_border_x - template_increments.x * i - half_increment_x

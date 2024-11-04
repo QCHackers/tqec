@@ -27,7 +27,7 @@ def generate_stim_circuit(
 
 def generate_cnot_circuits(*ks: int):
     # 1 Create `BlockGraph` representing the computation
-    block_graph = logical_cnot_block_graph()
+    block_graph = logical_cnot_block_graph("X")
 
     # 2. (Optional) Find and choose the logical observables
     observables, _ = block_graph.get_abstract_observables()

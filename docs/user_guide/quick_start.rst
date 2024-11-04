@@ -7,7 +7,7 @@ Quick start using ``tqec``
 The first step should be to define the error-corrected computation you want
 to implement. For the sake of simplicity, we will take an error-corrected CNOT
 implementation that has been defined using SketchUp and available at
-:download:`media/quick_start/logical_cnot.dae <./media/quick_start/logical_cnot.dae>`.
+:download:`media/quick_start/logical_cnot.dae <../media/quick_start/logical_cnot.dae>`.
 
 .. only:: builder_html
 
@@ -16,7 +16,7 @@ implementation that has been defined using SketchUp and available at
     .. raw:: html
 
         <iframe
-        src="_static/media/quick_start/logical_cnot.html"
+        src="../../_static/media/quick_start/logical_cnot.html"
         title="Interactive visualisation of an error-corrected topological CNOT implementation"
         width=100%
         height=500
@@ -108,7 +108,7 @@ And that's all! You now have a quantum circuit representing the topological
 error-corrected implementation of a CNOT gate shown at the beginning of this page.
 
 You can download the circuit in a ``stim`` format here:
-:download:`media/quick_start/logical_cnot.stim <./media/quick_start/logical_cnot.stim>`.
+:download:`media/quick_start/logical_cnot.stim <../media/quick_start/logical_cnot.stim>`.
 
 6. Simulate multiple experiments
 --------------------------------
@@ -143,10 +143,9 @@ The compilation of the block graph is done automatically based on the inputs.
         print_progress=True,
     )
 
-
-Full interoperability with ``sinter`` is not yet implemented, but several of the most
-important parameters given to ``sinter`` are exposed by ``start_simulation_using_sinter``
-and forwarded to ``sinter``.
+.. note::
+   While ``sinter`` can be supplied with additional simulation parameters, full interoperability with it is not yet implemented.
+   See `Sinter API Reference <https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md>`_ for more information.
 
 .. warning::
 
