@@ -1,0 +1,36 @@
+tqec.simulation
+===============
+
+.. automodule:: tqec.simulation
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   generation
+
+   plotting
+
+   simulation
+

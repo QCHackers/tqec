@@ -1,0 +1,31 @@
+tqec.computation.conversion
+===========================
+
+.. automodule:: tqec.computation.conversion
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      convert_block_graph_to_zx_graph
+      convert_zx_graph_to_block_graph
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

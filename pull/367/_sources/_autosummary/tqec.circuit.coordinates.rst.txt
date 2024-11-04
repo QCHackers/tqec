@@ -1,0 +1,30 @@
+tqec.circuit.coordinates
+========================
+
+.. automodule:: tqec.circuit.coordinates
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      StimCoordinates
+   
+   
+
+   
+   
+   
+
+
+
