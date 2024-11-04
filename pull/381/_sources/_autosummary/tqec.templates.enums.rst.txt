@@ -1,0 +1,30 @@
+tqec.templates.enums
+====================
+
+.. automodule:: tqec.templates.enums
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      TemplateOrientation
+   
+   
+
+   
+   
+   
+
+
+

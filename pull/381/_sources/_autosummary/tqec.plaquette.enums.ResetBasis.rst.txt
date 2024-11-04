@@ -1,0 +1,26 @@
+tqec.plaquette.enums.ResetBasis
+===============================
+
+.. currentmodule:: tqec.plaquette.enums
+
+.. autoclass:: ResetBasis
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ResetBasis.instruction_name
+      ~ResetBasis.X
+      ~ResetBasis.Z
+   
+   
+
+   
+   
+   

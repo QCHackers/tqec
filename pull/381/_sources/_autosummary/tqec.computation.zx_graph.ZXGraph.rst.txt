@@ -1,0 +1,62 @@
+tqec.computation.zx\_graph.ZXGraph
+==================================
+
+.. currentmodule:: tqec.computation.zx_graph
+
+.. autoclass:: ZXGraph
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ZXGraph.__init__
+      ~ZXGraph.add_edge
+      ~ZXGraph.add_node
+      ~ZXGraph.add_virtual_node
+      ~ZXGraph.add_x_node
+      ~ZXGraph.add_z_node
+      ~ZXGraph.edges_at
+      ~ZXGraph.find_correlation_subgraphs
+      ~ZXGraph.get_edge
+      ~ZXGraph.get_node
+      ~ZXGraph.to_block_graph
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ZXGraph.edges
+      ~ZXGraph.isolated_nodes
+      ~ZXGraph.leaf_nodes
+      ~ZXGraph.name
+      ~ZXGraph.nodes
+      ~ZXGraph.num_edges
+      ~ZXGraph.num_nodes
+      ~ZXGraph.nx_graph
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: add_edge
+   .. automethod:: add_node
+   .. automethod:: add_virtual_node
+   .. automethod:: add_x_node
+   .. automethod:: add_z_node
+   .. automethod:: edges_at
+   .. automethod:: find_correlation_subgraphs
+   .. automethod:: get_edge
+   .. automethod:: get_node
+   .. automethod:: to_block_graph
+   
+   

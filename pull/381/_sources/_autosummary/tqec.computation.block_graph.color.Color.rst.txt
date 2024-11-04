@@ -1,0 +1,27 @@
+tqec.computation.block\_graph.color.Color
+=========================================
+
+.. currentmodule:: tqec.computation.block_graph.color
+
+.. autoclass:: Color
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Color.is_null
+      ~Color.X
+      ~Color.Z
+      ~Color.NULL
+   
+   
+
+   
+   
+   

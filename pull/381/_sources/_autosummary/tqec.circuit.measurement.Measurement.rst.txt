@@ -1,0 +1,42 @@
+tqec.circuit.measurement.Measurement
+====================================
+
+.. currentmodule:: tqec.circuit.measurement
+
+.. autoclass:: Measurement
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Measurement.__init__
+      ~Measurement.map_qubit
+      ~Measurement.offset_spatially_by
+      ~Measurement.offset_temporally_by
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Measurement.qubit
+      ~Measurement.offset
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: map_qubit
+   .. automethod:: offset_spatially_by
+   .. automethod:: offset_temporally_by
+   
+   
