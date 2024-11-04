@@ -21,7 +21,8 @@ from tqec.compile.specs.base import (
     SubstitutionBuilder,
 )
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
-from tqec.computation.block_graph import AbstractObservable, BlockGraph
+from tqec.computation.block_graph import BlockGraph
+from tqec.computation.abstract_observable import AbstractObservable
 from tqec.exceptions import TQECException, TQECWarning
 from tqec.noise_models import NoiseModel
 from tqec.plaquette.plaquette import Plaquettes, RepeatedPlaquettes
@@ -306,34 +307,34 @@ def compile_block_graph(
         A `CompiledGraph` object that can be used to generate a cirq/stim circuit and
         scale easily.
     """
-    if block_graph.num_open_ports != 0:
+    if block_graph.num_ports != 0:
         raise TQECException(
             "Can not compile a block graph with open ports into circuits."
         )
     cube_specs = {
-        cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.cubes
+        cube: CubeSpec.from_cube(cube, block_graph) for cube in block_graph.nodes
     }
 
     # 0. Set the minimum z of block graph to 0.(time starts from zero)
-    block_graph = block_graph.with_zero_min_z()
+    block_graph = block_graph.shift_min_z_to_zero()
 
     # 1. Get the base compiled blocks before applying the substitution rules.
     blocks: dict[Position3D, CompiledBlock] = {}
-    for cube in block_graph.cubes:
+    for cube in block_graph.nodes:
         spec = cube_specs[cube]
         blocks[cube.position] = block_builder(spec)
 
     # 2. Apply the substitution rules to the compiled blocks inplace.
-    pipes = block_graph.pipes
-    time_pipes = [pipe for pipe in pipes if pipe.pipe_type.direction == Direction3D.Z]
-    space_pipes = [pipe for pipe in pipes if pipe.pipe_type.direction != Direction3D.Z]
+    pipes = block_graph.edges
+    time_pipes = [pipe for pipe in pipes if pipe.direction == Direction3D.Z]
+    space_pipes = [pipe for pipe in pipes if pipe.direction != Direction3D.Z]
     # Note that the order of the pipes to apply the substitution rules is important.
     # To keep the time-direction substitution rules from removing the extra resets
     # added by the space-direction substitution rules, we first apply the time-direction
     # substitution rules.
     for pipe in time_pipes + space_pipes:
         pos1, pos2 = pipe.u.position, pipe.v.position
-        key = PipeSpec(cube_specs[pipe.u], cube_specs[pipe.v], pipe.pipe_type)
+        key = PipeSpec(cube_specs[pipe.u], cube_specs[pipe.v], pipe.kind)
         substitution = substitution_builder(key)
         blocks[pos1].update_layers(substitution.src)
         blocks[pos2].update_layers(substitution.dst)

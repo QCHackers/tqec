@@ -2,50 +2,103 @@
 
 from __future__ import annotations
 
-import itertools
-from copy import copy
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Generator
 
+from matplotlib.figure import Figure
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import networkx as nx
 
+from tqec.computation.base_graph import ComputationGraph
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
 if TYPE_CHECKING:
+    from tqec.computation.correlation import CorrelationSurface
     from tqec.computation.block_graph import BlockGraph
 
 
-class NodeType(Enum):
-    """Valid node types in a ZX graph."""
+class ZXKind(Enum):
+    """The kind of the node in the ZX graph."""
 
-    X = "x"  # X-type node
-    Z = "z"  # Z-type node
-    V = "v"  # Virtual node that represents an open port
+    X = "X"
+    Y = "Y"
+    Z = "Z"
+    P = "PORT"  # Open port for the input/ouput of the computation
 
-    def dual(self) -> NodeType:
-        if self == NodeType.X:
-            return NodeType.Z
-        elif self == NodeType.Z:
-            return NodeType.X
+    def with_zx_flipped(self) -> ZXKind:
+        if self == ZXKind.X:
+            return ZXKind.Z
+        elif self == ZXKind.Z:
+            return ZXKind.X
         else:
             return self
 
+    def __str__(self) -> str:
+        return self.value
 
-@dataclass(frozen=True)
+    def __lt__(self, other: ZXKind) -> bool:
+        return self.value < other.value
+
+
+@dataclass(frozen=True, order=True)
 class ZXNode:
+    """A node in the ZX graph.
+
+    Attributes:
+        position: The position of the node in the 3D spacetime.
+        kind: The kind of the node.
+        label: The label of the node. The label of a port node must be non-empty. Default to an
+            empty string.
+    """
+
     position: Position3D
-    node_type: NodeType
+    kind: ZXKind
+    label: str = ""
+
+    def __post_init__(self) -> None:
+        if self.kind == ZXKind.P and not self.label:
+            raise TQECException("A port node must have a non-empty label.")
 
     @property
-    def is_virtual(self) -> bool:
-        """Check if the node is virtual."""
-        return self.node_type == NodeType.V
+    def is_port(self) -> bool:
+        """Check if the node is an open port, i.e. represents the input/output
+        of the computation."""
+        return self.kind == ZXKind.P
+
+    @property
+    def is_y_node(self) -> bool:
+        """Check if the node is a Y node."""
+        return self.kind == ZXKind.Y
+
+    @property
+    def is_zx_node(self) -> bool:
+        """Check if the node is an X or Z node."""
+        return self.kind in [ZXKind.X, ZXKind.Z]
+
+    def with_zx_flipped(self) -> ZXNode:
+        """Get a new node with the ZX kind flipped."""
+        return ZXNode(self.position, self.kind.with_zx_flipped(), self.label)
+
+    def __str__(self) -> str:
+        return f"{self.kind}{self.position}"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class ZXEdge:
+    """An edge connecting two nodes in the ZX graph.
+
+    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`
+    is less than `v`.
+
+    Attributes:
+        u: The first node of the edge. The position of `u` is guaranteed to be less than `v`.
+        v: The second node of the edge. The position of `v` is guaranteed to be greater than `u`.
+        has_hadamard: Whether the edge has a Hadamard transition.
+    """
+
     u: ZXNode
     v: ZXNode
     has_hadamard: bool = False
@@ -61,7 +114,7 @@ class ZXEdge:
 
     @property
     def direction(self) -> Direction3D:
-        """Get the direction of the edge."""
+        """Get the 3D direction of the edge."""
         u, v = self.u.position, self.v.position
         if u.x != v.x:
             return Direction3D.X
@@ -69,137 +122,92 @@ class ZXEdge:
             return Direction3D.Y
         return Direction3D.Z
 
+    def get_node_kind_at(self, position: Position3D) -> ZXKind:
+        """Get the node kind at the given position of the edge."""
+        if self.u.position == position:
+            return self.u.kind
+        if self.v.position == position:
+            return self.v.kind
+        raise TQECException("The position is not an endpoint of the edge.")
 
-_NODE_DATA_KEY = "tqec_zx_node_data"
-_EDGE_DATA_KEY = "tqec_zx_edge_data"
+    def __iter__(self) -> Generator[ZXNode]:
+        yield self.u
+        yield self.v
 
+    def __str__(self) -> str:
+        strs = [str(self.u), str(self.v)]
+        if self.has_hadamard:
+            strs.insert(1, "H")
+        return "-".join(strs)
 
-class ZXGraph:
-    def __init__(self, name: str) -> None:
-        """An undirected graph representation of a 3D spacetime defect diagram.
-
-        Despite the name, the graph is not exactly the ZX-calculus graph
-        as rewrite rules can not be applied to the graph arbitrarily.
-        The graph must correspond to a valid 3D spacetime diagram, which
-        can be realized with the lattice surgery on the 2D patches of
-        surface code. And rewrite rules can only be applied with respect
-        to a valid physical realization of the spacetime diagram.
-
-        Note that not all ZX graph admits a valid spacetime diagram
-        representation. And the graph construction **does not check**
-        the validity constraints.
-        """
-        self._name = name
-        # Internal undirected graph representation
-        self._graph: nx.Graph[Position3D] = nx.Graph()
-
-    @property
-    def name(self) -> str:
-        """The name of the graph."""
-        return self._name
-
-    @property
-    def nx_graph(self) -> nx.Graph[Position3D]:
-        """The internal networkx graph representation."""
-        return self._graph
-
-    @property
-    def num_nodes(self) -> int:
-        """The number of nodes in the graph."""
-        return self._graph.number_of_nodes()
-
-    @property
-    def num_edges(self) -> int:
-        """The number of edges in the graph."""
-        return self._graph.number_of_edges()
-
-    @property
-    def nodes(self) -> list[ZXNode]:
-        """Return a list of nodes in the graph."""
-        return [data[_NODE_DATA_KEY] for _, data in self._graph.nodes(data=True)]
-
-    @property
-    def edges(self) -> list[ZXEdge]:
-        """Return a list of edges in the graph."""
-        return [data[_EDGE_DATA_KEY] for _, _, data in self._graph.edges(data=True)]
-
-    @property
-    def leaf_nodes(self) -> list[ZXNode]:
-        """Get the leaf nodes of the graph."""
-        return [node for node in self.nodes if self._node_degree(node) == 1]
-
-    @property
-    def isolated_nodes(self) -> list[ZXNode]:
-        """Get the isolated nodes of the graph."""
-        return [node for node in self.nodes if self._node_degree(node) == 0]
-
-    def _node_degree(self, node: ZXNode) -> int:
-        return self._graph.degree(node.position)  # type: ignore
-
-    def add_node(
-        self, position: Position3D, node_type: NodeType, raise_if_exist: bool = True
-    ) -> None:
-        """Add a node to the graph.
-
-        Args:
-            position: The 3D position of the node.
-            node_type: The type of the node.
-            raise_if_exist: Whether to raise an exception if the position already exists
-                in the graph. If set to False, when the position already exists, the node
-                type will be updated to the new type. Default is True.
-        """
-        if raise_if_exist and position in self._graph:
-            raise TQECException(f"Node {position} already exists in the graph.")
-        self._graph.add_node(position, **{_NODE_DATA_KEY: ZXNode(position, node_type)})
-
-    def add_z_node(self, position: Position3D) -> None:
-        """Add a Z-type node to the graph."""
-        self.add_node(position, NodeType.Z)
-
-    def add_x_node(self, position: Position3D) -> None:
-        """Add an X-type node to the graph."""
-        self.add_node(position, NodeType.X)
-
-    def add_virtual_node(self, position: Position3D) -> None:
-        """Add a virtual node to the graph."""
-        self.add_node(position, NodeType.V)
-
-    def add_edge(
-        self, u: Position3D, v: Position3D, has_hadamard: bool = False
-    ) -> None:
-        """Add an edge to the graph.
-
-        Args:
-            u: The position of the first node.
-            v: The position of the second node.
-            has_hadamard: Whether the edge has a Hadamard transition.
-        """
-        if u not in self._graph or v not in self._graph:
-            raise TQECException("Both nodes must exist in the graph.")
-        u_node: ZXNode = self._graph.nodes[u][_NODE_DATA_KEY]
-        v_node: ZXNode = self._graph.nodes[v][_NODE_DATA_KEY]
-        self._graph.add_edge(
-            u, v, **{_EDGE_DATA_KEY: ZXEdge(u_node, v_node, has_hadamard)}
+    def with_zx_flipped(self) -> ZXEdge:
+        """Get a new edge with the node kind flipped."""
+        return ZXEdge(
+            self.u.with_zx_flipped(), self.v.with_zx_flipped(), self.has_hadamard
         )
 
-    def get_node(self, position: Position3D) -> ZXNode | None:
-        """Get the node by position."""
-        if position not in self._graph:
-            return None
-        return cast(ZXNode, self._graph.nodes[position][_NODE_DATA_KEY])
 
-    def get_edge(self, u: Position3D, v: Position3D) -> ZXEdge | None:
-        """Get the edge by its endpoint positions."""
-        if not self._graph.has_edge(u, v):
-            return None
-        return cast(ZXEdge, self._graph.edges[u, v][_EDGE_DATA_KEY])
+class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
+    """ZX graph representation of a logical computation.
 
-    def edges_at(self, position: Position3D) -> list[ZXEdge]:
-        """Get the edges incident to a node."""
-        return [
-            data[_EDGE_DATA_KEY]
-            for _, _, data in self._graph.edges(position, data=True)
-        ]
+    The ZX graph is in the form of a ZX-calculus graph and the
+    representation is based on the correspondence between the ZX-
+    calculus and the lattice surgery.
+    """
+
+    def add_edge(
+        self,
+        u: ZXNode,
+        v: ZXNode,
+        has_hadamard: bool = False,
+    ) -> None:
+        """Add an edge to the graph. If the nodes do not exist in the graph,
+        the nodes will be created.
+
+        Args:
+            edge: The edge to add to the graph.
+
+        Raises:
+            TQECException: For each node in the edge, if there is already a node which is not
+                equal to it at the same position, or the node is a port but there is already a
+                different port with the same label in the graph.
+        """
+        self._add_edge_and_nodes_with_checks(u, v, ZXEdge(u, v, has_hadamard))
+
+    def fill_ports(self, fill: Mapping[str, ZXKind] | ZXKind) -> None:
+        """Fill the ports at specified position with a node with the given
+        kind.
+
+        Args:
+            fill: A mapping from the label of the ports to the node kind to fill.
+
+        Raises:
+            TQECException: if there is no port with the given label.
+            TQECException: if try to fill the port with port kind.
+        """
+        if isinstance(fill, ZXKind):
+            fill = {label: fill for label in self._ports}
+        for label, kind in fill.items():
+            if label not in self._ports:
+                raise TQECException(f"There is no port with label {label}.")
+            if kind == ZXKind.P:
+                raise TQECException("Cannot fill the ports with port kind.")
+            pos = self._ports[label]
+            fill_node = ZXNode(pos, kind)
+            # Overwrite the node at the port position
+            self._graph.add_node(pos, **{self._NODE_DATA_KEY: fill_node})
+            for edge in self.edges_at(pos):
+                self._graph.remove_edge(edge.u.position, edge.v.position)
+                other = edge.u if edge.v.position == pos else edge.v
+                self._graph.add_edge(
+                    other.position,
+                    pos,
+                    **{
+                        self._EDGE_DATA_KEY: ZXEdge(other, fill_node, edge.has_hadamard)
+                    },
+                )
+            # Delete the port label
+            self._ports.pop(label)
 
     def to_block_graph(self, name: str = "") -> BlockGraph:
         """Construct a block graph from a ZX graph.
@@ -214,149 +222,64 @@ class ZXGraph:
         Returns:
             The constructed block graph.
         """
-        from tqec.computation.block_graph import BlockGraph
-
-        return BlockGraph.from_zx_graph(self, name=name)
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ZXGraph):
-            return False
-        return nx.utils.graphs_equal(self._graph, other._graph)  # type: ignore
-
-    def _find_correlation_subgraphs_dfs(
-        self,
-        parent_corr_node: ZXNode,
-        parent_zx_node_type: NodeType,
-        visited_positions: set[Position3D],
-    ) -> list[set[ZXEdge]]:
-        """Recursively find all the correlation subgraphs starting from a node,
-        represented by the correlation edges in the subgraph.
-
-        The algorithm is as follows:
-        1. Initialization
-            - Initialize the `correlation_subgraphs` as an empty list.
-            - Add the parent to the `visited_positions`.
-            - Initialize a list `branched_subgraph` to hold subgraphs constructed
-            from the neighbors of the parent.
-        2. Iterate through all edges connected to parent. For each edge:
-            - If the child node is already visited, skip the edge.
-            - Determine the correlation type of the child node based on the correlation
-            type of the parent and the Hadamard transition.
-            - Create a new correlation node for the child and the correlation edge
-            between the parent and the child.
-            - Recursively call this method to find the correlation subgraphs starting
-            from the child. Then add the edge in the last step to each of the subgraphs.
-            Append the subgraphs to the `branched_subgraph`.
-        3. Post-processing
-            - If no subgraphs are found, return a single empty subgraph.
-            - If the color of the node matches the correlation type, all the children
-            should be traversed. Iterate through all the combinations where exactly one
-            subgraph is selected from each child, and union them to form a new subgraph.
-            Append the new subgraph to the `correlation_subgraphs`.
-            - If the color of the node does not match the correlation type, only one
-            child can be traversed. Append all the subgraphs in the `branched_subgraph`
-            to the `correlation_subgraphs`.
-        """
-        correlation_subgraphs: list[set[ZXEdge]] = []
-        parent_position = parent_corr_node.position
-        parent_corr_type = parent_corr_node.node_type
-        visited_positions.add(parent_position)
-
-        branched_subgraphs: list[list[set[ZXEdge]]] = []
-        for edge in self.edges_at(parent_position):
-            cur_zx_node = edge.u if edge.v.position == parent_position else edge.v
-            if cur_zx_node.position in visited_positions:
-                continue
-            cur_corr_type = (
-                parent_corr_type.dual() if edge.has_hadamard else parent_corr_type
-            )
-            cur_corr_node = ZXNode(cur_zx_node.position, cur_corr_type)
-            edge_between_cur_parent = ZXEdge(
-                parent_corr_node, cur_corr_node, edge.has_hadamard
-            )
-            branched_subgraphs.append(
-                [
-                    subgraph | {edge_between_cur_parent}
-                    for subgraph in self._find_correlation_subgraphs_dfs(
-                        cur_corr_node,
-                        cur_zx_node.node_type,
-                        copy(visited_positions),
-                    )
-                ]
-            )
-        if not branched_subgraphs:
-            return [set()]
-        # the color of node matches the correlation type
-        # broadcast the correlation type to all the neighbors
-        if parent_zx_node_type == parent_corr_type:
-            for prod in itertools.product(*branched_subgraphs):
-                correlation_subgraphs.append(set(itertools.chain(*prod)))
-            return correlation_subgraphs
-
-        # the color of node does not match the correlation type
-        # only one of the neighbors can be the correlation path
-        correlation_subgraphs.extend(itertools.chain(*branched_subgraphs))
-        return correlation_subgraphs
-
-    def find_correlation_subgraphs(self) -> list[ZXGraph]:
-        """Find the correlation subgraphs of the ZX graph.
-
-        Here a correlation subgraph is defined as a subgraph of the `ZXGraph`
-        that represents the correlation surface within a 3D spacetime diagram.
-        Each node in the correlation subgraph is composed of its position and
-        the correlation surface type, which is either `NodeType.X` or `NodeType.Z`.
-
-        For the closed diagram, the correlation subgraph represents the correlation
-        between the measured logical observables. For the open diagram, the
-        correlation subgraph represents the correlation between the measured logical
-        observables and the input/output observables, which can be combined with
-        the expected stabilizer flow to verify the correctness of the computation.
-
-        A recursive depth-first search algorithm is used to find the correlation
-        subgraphs starting from each leaf node. The algorithm is described in the
-        method `_find_correlation_subgraphs_dfs`.
-        """
-        single_node_correlation_subgraphs: list[ZXGraph] = []
-        multi_edges_correlation_subgraphs: dict[frozenset[ZXEdge], ZXGraph] = {}
-        num_subgraphs = 0
-        for node in self.isolated_nodes:
-            if node.is_virtual:
-                continue
-            subgraph = ZXGraph(f"Correlation subgraph {num_subgraphs}")
-            subgraph.add_node(node.position, node.node_type)
-            single_node_correlation_subgraphs.append(subgraph)
-            num_subgraphs += 1
-
-        def add_subgraphs(node: ZXNode, correlation_type: NodeType) -> None:
-            nonlocal num_subgraphs
-            root_corr_node = ZXNode(node.position, correlation_type)
-            for edges in self._find_correlation_subgraphs_dfs(
-                root_corr_node, node.node_type, set()
-            ):
-                if frozenset(edges) in multi_edges_correlation_subgraphs:
-                    continue
-                subgraph = ZXGraph(
-                    f"Correlation subgraph {num_subgraphs} of {self.name}"
-                )
-                for edge in edges:
-                    subgraph.add_node(
-                        edge.u.position, edge.u.node_type, raise_if_exist=False
-                    )
-                    subgraph.add_node(
-                        edge.v.position, edge.v.node_type, raise_if_exist=False
-                    )
-                    subgraph.add_edge(
-                        edge.u.position, edge.v.position, edge.has_hadamard
-                    )
-                multi_edges_correlation_subgraphs[frozenset(edges)] = subgraph
-                num_subgraphs += 1
-
-        for node in self.leaf_nodes:
-            if node.is_virtual:
-                for correlation_type in [NodeType.X, NodeType.Z]:
-                    add_subgraphs(node, correlation_type)
-            else:
-                add_subgraphs(node, node.node_type)
-        return single_node_correlation_subgraphs + list(
-            multi_edges_correlation_subgraphs.values()
+        from tqec.computation.conversion import (
+            convert_zx_graph_to_block_graph,
         )
+
+        return convert_zx_graph_to_block_graph(self, name)
+
+    def with_zx_flipped(self, name: str | None = None) -> ZXGraph:
+        """Get a new ZX graph with the node kind flipped."""
+        flipped = ZXGraph(name or self.name)
+        for edge in self.edges:
+            u, v = edge.u.with_zx_flipped(), edge.v.with_zx_flipped()
+            flipped.add_edge(u, v, edge.has_hadamard)
+        return flipped
+
+    def find_correration_surfaces(self) -> list[CorrelationSurface]:
+        """Find the correlation surfaces in the ZX graph.
+
+        A recursive depth-first search algorithm is used to find the
+        correlation surfaces starting from each leaf node.
+        """
+        from tqec.computation.correlation import find_correlation_surfaces
+
+        return find_correlation_surfaces(self)
+
+    def draw(self) -> tuple[Figure, Axes3D]:
+        """Draw the graph using matplotlib."""
+        from tqec.computation.zx_plot import plot_zx_graph
+
+        return plot_zx_graph(self)
+
+    def raise_if_cannot_be_valid_computation(self) -> None:
+        """Check the validity of the graph to represent a computation. And
+        raise an exception if the graph cannot represent a valid computation.
+        This method performs a necessary but not sufficient check.
+
+        To represent a valid computation, the graph must have:
+            - the graph is a single connected component
+            - the graph has no 3D corner
+            - port nodes are leaf nodes
+            - Y nodes is are leaf nodes and are time-like, i.e. only have Z-direction edges
+
+        Raises:
+            TQECException: If the graph is not a single connected component.
+            TQECException: If the port node is not a leaf node.
+            TQECException: If the Y node is not a leaf node.
+            TQECException: If the Y node has an edge not in Z direction.
+        """
+        if nx.number_connected_components(self._graph) != 1:
+            raise TQECException(
+                "The graph must be a single connected component to represent a computation."
+            )
+
+        for node in self.nodes:
+            if len({e.direction for e in self.edges_at(node.position)}) == 3:
+                raise TQECException(f"ZX graph has a 3D corner at {node.position}.")
+            if not node.is_zx_node and self.get_degree(node.position) != 1:
+                raise TQECException("The port/Y node must be a leaf node.")
+            if node.is_y_node:
+                (edge,) = self.edges_at(node.position)
+                if not edge.direction == Direction3D.Z:
+                    raise TQECException("The Y node must only has Z-direction edge.")
