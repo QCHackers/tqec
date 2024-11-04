@@ -1,0 +1,30 @@
+tqec.compile.specs.base.PipeSpec
+================================
+
+.. currentmodule:: tqec.compile.specs.base
+
+.. autoclass:: PipeSpec
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PipeSpec.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PipeSpec.spec1
+      ~PipeSpec.spec2
+      ~PipeSpec.pipe_kind
+   
+   

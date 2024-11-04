@@ -1,0 +1,38 @@
+tqec.computation.correlation
+============================
+
+.. automodule:: tqec.computation.correlation
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      find_correlation_surfaces
+      find_correlation_surfaces_from_leaf
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      CorrelationSurface
+   
+   
+
+   
+   
+   
+
+
+

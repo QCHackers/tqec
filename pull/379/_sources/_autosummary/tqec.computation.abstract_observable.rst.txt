@@ -1,0 +1,37 @@
+tqec.computation.abstract\_observable
+=====================================
+
+.. automodule:: tqec.computation.abstract_observable
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      correlation_surface_to_abstract_observable
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      AbstractObservable
+   
+   
+
+   
+   
+   
+
+
+
