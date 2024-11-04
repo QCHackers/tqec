@@ -1,0 +1,30 @@
+tqec.circuit.schedule.exception
+===============================
+
+.. automodule:: tqec.circuit.schedule.exception
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      ScheduleException
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+tqec.plaquette.library.css.make\_css\_surface\_code\_plaquette
+==============================================================
+
+.. currentmodule:: tqec.plaquette.library.css
+
+.. autofunction:: make_css_surface_code_plaquette

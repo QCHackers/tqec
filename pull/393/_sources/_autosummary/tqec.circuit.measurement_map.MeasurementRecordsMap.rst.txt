@@ -1,0 +1,31 @@
+tqec.circuit.measurement\_map.MeasurementRecordsMap
+===================================================
+
+.. currentmodule:: tqec.circuit.measurement_map
+
+.. autoclass:: MeasurementRecordsMap
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MeasurementRecordsMap.__init__
+      ~MeasurementRecordsMap.from_circuit
+      ~MeasurementRecordsMap.from_scheduled_circuit
+      ~MeasurementRecordsMap.with_added_measurements
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MeasurementRecordsMap.mapping
+   
+   
