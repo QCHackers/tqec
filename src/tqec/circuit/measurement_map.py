@@ -18,7 +18,8 @@ from tqec.exceptions import TQECException
 
 @dataclass(frozen=True)
 class MeasurementRecordsMap:
-    """A mapping from measurements appearing in a circuit and their record offsets.
+    """A mapping from measurements appearing in a circuit and their record
+    offsets.
 
     This class stores record offsets which are, by essence, relative to a certain
     position in a circuit. This means that this class and the measurement offsets
@@ -155,3 +156,35 @@ class MeasurementRecordsMap:
 
     def __contains__(self, qubit: GridQubit) -> bool:
         return qubit in self.mapping
+
+    def with_added_measurements(
+        self, mrecords_map: MeasurementRecordsMap, repetitions: int = 1
+    ) -> MeasurementRecordsMap:
+        """Build a new :class:`MeasurementRecordsMap` with measurements from
+        `self` appearing before measurements from the provided `mrecords_map`.
+
+        Args:
+            mrecords_map: records of measurements happening after the measurements
+                represented by `self`.
+            repetitions: number of time the measurements from `mrecords_map` are
+                repeated. Default to 1.
+
+        Returns:
+            a new instance containing valid offsets for each measurement in `self`
+            and `mrecords_map`.
+        """
+        num_measurements_without_repetition = sum(
+            len(offsets) for offsets in mrecords_map.mapping.values()
+        )
+        num_added_measurements = repetitions * num_measurements_without_repetition
+        records = {
+            q: [o - num_added_measurements for o in offsets]
+            for q, offsets in self.mapping.items()
+        }
+        for q, offsets in mrecords_map.mapping.items():
+            record = records.setdefault(q, [])
+            for i in range(repetitions - 1, -1, -1):
+                record.extend(
+                    [o - i * num_measurements_without_repetition for o in offsets]
+                )
+        return MeasurementRecordsMap(records)

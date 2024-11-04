@@ -1,4 +1,5 @@
-"""Implements a wrapper to standardise stim coordinate system across the code base."""
+"""Implements a wrapper to standardise stim coordinate system across the code
+base."""
 
 from __future__ import annotations
 
@@ -45,3 +46,6 @@ class StimCoordinates:
                 )
             )
         )
+
+    def __lt__(self, other: StimCoordinates) -> bool:
+        return self.to_stim_coordinates() < other.to_stim_coordinates()

@@ -43,7 +43,7 @@ Repository = "https://github.com/QCHackers/tqec"
 Issues = "https://github.com/QCHackers/tqec/issues"
 
 [project.optional-dependencies]
-test = ["pytest", "mypy", "pytest-cov"]
+test = ["pytest", "mypy", "pytest-cov", "types-networkx"]
 dev = [
     "sinter>=1.14",
     "pymatching",
@@ -51,7 +51,7 @@ dev = [
     "tqec[test, doc, bench]",
     "pre-commit",
 ]
-doc = ["sphinx", "myst-parser", "sphinx-rtd-theme", "nbsphinx", "pandoc"]
+doc = ["sphinx", "myst-parser", "pydata-sphinx-theme", "nbsphinx", "pandoc"]
 bench = ["pyinstrument"]
 all = ["tqec[test, dev, doc, bench]"]
 
@@ -117,10 +117,6 @@ module = [
     "pysat.solvers",
     "collada",
     "collada.source",
-    "networkx",
-    "stimcirq",
-    # Added due to missing stubs for last version (1.13.1)
-    "sympy",
     "mpl_toolkits.mplot3d.axes3d",
 ]
 ignore_missing_imports = true

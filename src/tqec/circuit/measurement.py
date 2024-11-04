@@ -7,9 +7,9 @@ measurement within a `REPEAT` instruction in a quantum circuit.
 
 from __future__ import annotations
 
-import typing
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Mapping, cast
 
 import stim
 from typing_extensions import override
@@ -55,7 +55,7 @@ class AbstractMeasurement(ABC):
 
     @abstractmethod
     def map_qubit(
-        self, qubit_map: typing.Mapping[GridQubit, GridQubit]
+        self, qubit_map: Mapping[GridQubit, GridQubit]
     ) -> AbstractMeasurement:
         """Returns a new instance representing a measurement on the qubit
         obtained from `self.qubit` and the provided `qubit_map`.
@@ -113,7 +113,7 @@ class Measurement(AbstractMeasurement):
         return f"M[{self.qubit},{self.offset}]"
 
     @override
-    def map_qubit(self, qubit_map: typing.Mapping[GridQubit, GridQubit]) -> Measurement:
+    def map_qubit(self, qubit_map: Mapping[GridQubit, GridQubit]) -> Measurement:
         return Measurement(qubit_map[self.qubit], self.offset)
 
 
@@ -166,7 +166,7 @@ class RepeatedMeasurement(AbstractMeasurement):
 
     @override
     def map_qubit(
-        self, qubit_map: typing.Mapping[GridQubit, GridQubit]
+        self, qubit_map: Mapping[GridQubit, GridQubit]
     ) -> RepeatedMeasurement:
         return RepeatedMeasurement(qubit_map[self.qubit], self.offsets)
 
@@ -177,9 +177,26 @@ class RepeatedMeasurement(AbstractMeasurement):
 
 
 def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
+    """Get all the measurements found in the provided circuit.
+
+    Args:
+        circuit: circuit to extract measurements from.
+
+    Raises:
+        TQECException: if the provided circuit contains a `REPEAT` block.
+        TQECException: if the provided circuit contains a multi-qubit measurement
+            gate such as MXX or MPP.
+        TQECException: if the provided circuit contains a single-qubit
+            measurement gate with a non-qubit target.
+
+    Returns:
+        all the measurements present in the provided `circuit`, in their order
+        of appearance (so in increasing order of measurement record offsets).
+    """
     qubit_map = QubitMap.from_circuit(circuit)
     num_measurements: dict[GridQubit, int] = {}
-    for instruction in circuit:
+    measurements_reverse_order: list[Measurement] = []
+    for instruction in reversed(circuit):
         if isinstance(instruction, stim.CircuitRepeatBlock):
             raise TQECException(
                 "Found a REPEAT block in get_measurements_from_circuit. This "
@@ -191,17 +208,17 @@ def get_measurements_from_circuit(circuit: stim.Circuit) -> list[Measurement]:
                 "but multi-qubit measurements are not supported yet."
             )
         if is_single_qubit_measurement_instruction(instruction):
-            for (target,) in instruction.target_groups():
+            for (target,) in reversed(instruction.target_groups()):
                 if not target.is_qubit_target:
                     raise TQECException(
                         "Found a measurement instruction with a target that is "
                         f"not a qubit target: {instruction}."
                     )
-                qi: int = typing.cast(int, target.qubit_value)
+                qi: int = cast(int, target.qubit_value)
                 qubit = qubit_map.i2q[qi]
-                num_measurements[qubit] = num_measurements.get(qubit, 0) + 1
-    return [
-        Measurement(q, -i)
-        for q, num_measurement in num_measurements.items()
-        for i in range(1, num_measurement + 1)
-    ]
+                meas_index_on_qubit = num_measurements.get(qubit, 0) + 1
+                num_measurements[qubit] = meas_index_on_qubit
+                measurements_reverse_order.append(
+                    Measurement(qubit, -meas_index_on_qubit)
+                )
+    return measurements_reverse_order[::-1]

@@ -4,9 +4,10 @@ import pytest
 from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
-from tqec.compile.detectors.database import DetectorDatabase, DetectorDatabaseKey
+from tqec.compile.detectors.database import DetectorDatabase, _DetectorDatabaseKey
 from tqec.compile.detectors.detector import Detector
 from tqec.compile.specs.library._utils import _build_plaquettes_for_rotated_surface_code
+from tqec.computation.cube import ZXBasis
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.css import make_css_surface_code_plaquette
 from tqec.plaquette.library.zxxz import make_zxxz_surface_code_plaquette
@@ -33,13 +34,13 @@ PLAQUETTE_COLLECTIONS: list[Plaquettes] = [
     _build_plaquettes_for_rotated_surface_code(
         builder=make_css_surface_code_plaquette,
         x_boundary_orientation="VERTICAL",
-        temporal_basis="X",
+        temporal_basis=ZXBasis.X,
         data_init=True,
     ),
     _build_plaquettes_for_rotated_surface_code(
         builder=make_css_surface_code_plaquette,
         x_boundary_orientation="VERTICAL",
-        temporal_basis="Z",
+        temporal_basis=ZXBasis.Z,
         data_meas=True,
     ),
     _build_plaquettes_for_rotated_surface_code(
@@ -51,13 +52,13 @@ PLAQUETTE_COLLECTIONS: list[Plaquettes] = [
     _build_plaquettes_for_rotated_surface_code(
         builder=make_zxxz_surface_code_plaquette,
         x_boundary_orientation="VERTICAL",
-        temporal_basis="X",
+        temporal_basis=ZXBasis.X,
         data_init=True,
     ),
     _build_plaquettes_for_rotated_surface_code(
         builder=make_zxxz_surface_code_plaquette,
         x_boundary_orientation="VERTICAL",
-        temporal_basis="Z",
+        temporal_basis=ZXBasis.Z,
         data_meas=True,
     ),
 ]
@@ -71,7 +72,6 @@ SUBTEMPLATES: list[SubTemplateType] = list(
                 QubitTemplate().instantiate(k=10), manhattan_radius=2
             ).subtemplates.values()
         ),
-        axis=0,
     )
 )
 
@@ -118,20 +118,20 @@ DETECTORS: list[frozenset[Detector]] = [
 
 
 def test_detector_database_key_creation() -> None:
-    DetectorDatabaseKey((SUBTEMPLATES[0],), (PLAQUETTE_COLLECTIONS[0],))
-    DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
+    _DetectorDatabaseKey((SUBTEMPLATES[0],), (PLAQUETTE_COLLECTIONS[0],))
+    _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
     with pytest.raises(
         TQECException,
         match="^DetectorDatabaseKey can only store an equal number of "
         "subtemplates and plaquettes. Got 4 subtemplates and 3 plaquettes.$",
     ):
-        DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:4])
+        _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:4])
 
 
 def test_detector_database_key_num_timeslices() -> None:
     for i in range(min(len(PLAQUETTE_COLLECTIONS), len(SUBTEMPLATES))):
         assert (
-            DetectorDatabaseKey(
+            _DetectorDatabaseKey(
                 SUBTEMPLATES[:i], PLAQUETTE_COLLECTIONS[:i]
             ).num_timeslices
             == i
@@ -139,19 +139,19 @@ def test_detector_database_key_num_timeslices() -> None:
 
 
 def test_detector_database_key_hash() -> None:
-    dbkey = DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
+    dbkey = _DetectorDatabaseKey(SUBTEMPLATES[1:5], PLAQUETTE_COLLECTIONS[1:5])
     assert hash(dbkey) == hash(dbkey)
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
     # on the Python interpreter, Python version, host OS, process ID, ...
-    assert hash(dbkey) == 6635855037027289589
+    assert hash(dbkey) == 1085786788918911944
 
-    dbkey = DetectorDatabaseKey(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1])
+    dbkey = _DetectorDatabaseKey(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1])
     assert hash(dbkey) == hash(dbkey)
     # This is a value that has been pre-computed locally. It is hard-coded here
     # to check that the hash of a dbkey is reliable and does not change depending
     # on the Python interpreter, Python version, host OS, process ID, ...
-    assert hash(dbkey) == -8009786746945676048
+    assert hash(dbkey) == 1699471538780763110
 
 
 def test_detector_database_creation() -> None:
@@ -210,3 +210,15 @@ def test_detector_database_freeze() -> None:
     detectors2 = db.get_detectors(SUBTEMPLATES[:4], PLAQUETTE_COLLECTIONS[:4])
     assert detectors2 is not None
     assert detectors2 == DETECTORS[1]
+
+
+def test_detector_database_translation_invariance() -> None:
+    db = DetectorDatabase()
+    db.add_situation(SUBTEMPLATES[:1], PLAQUETTE_COLLECTIONS[:1], DETECTORS[0])
+
+    offset = 36
+    translated_subtemplate = SUBTEMPLATES[0] + offset
+    translated_plaquettes = PLAQUETTE_COLLECTIONS[0].map_indices(lambda i: i + offset)
+    detectors = db.get_detectors((translated_subtemplate,), (translated_plaquettes,))
+    assert detectors is not None
+    assert detectors == DETECTORS[0]

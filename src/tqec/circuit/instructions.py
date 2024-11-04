@@ -1,4 +1,5 @@
-"""Defines a few functions to analyse and create `stim.CircuitInstruction` instances."""
+"""Defines a few functions to analyse and create `stim.CircuitInstruction`
+instances."""
 
 import stim
 

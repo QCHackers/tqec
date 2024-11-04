@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Iterable
+from typing import Callable, Iterable
 
 import stim
 
@@ -38,6 +38,8 @@ class QubitMap:
 
     @staticmethod
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
+        """Creates a qubit map from the provided `qubits`, associating indices
+        using the order in which qubits are provided."""
         return QubitMap(dict(enumerate(qubits)))
 
     @staticmethod
@@ -56,8 +58,11 @@ class QubitMap:
     def qubits(self) -> Iterable[GridQubit]:
         return self.i2q.values()
 
-    def with_mapped_qubits(self, qubit_map: dict[GridQubit, GridQubit]) -> QubitMap:
-        """Change the qubits involved in `self` without changing the associated indices.
+    def with_mapped_qubits(
+        self, qubit_map: Callable[[GridQubit], GridQubit]
+    ) -> QubitMap:
+        """Change the qubits involved in `self` without changing the associated
+        indices.
 
         Args:
             qubit_map: a map from qubits to qubits that should associate a qubit
@@ -70,7 +75,7 @@ class QubitMap:
         Returns:
             a new instance representing the updated mapping.
         """
-        return QubitMap({i: qubit_map[q] for i, q in self.i2q.items()})
+        return QubitMap({i: qubit_map(q) for i, q in self.i2q.items()})
 
     def items(self) -> Iterable[tuple[int, GridQubit]]:
         return self.i2q.items()
@@ -90,7 +95,8 @@ class QubitMap:
         return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
 
     def to_circuit(self) -> stim.Circuit:
-        """Get a circuit with only `QUBIT_COORDS` instructions representing `self`."""
+        """Get a circuit with only `QUBIT_COORDS` instructions representing
+        `self`."""
         ret = stim.Circuit()
         for qi, qubit in sorted(self.i2q.items(), key=lambda t: t[0]):
             ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))

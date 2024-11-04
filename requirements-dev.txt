@@ -3,10 +3,11 @@ pymatching
 jupyterlab
 sphinx
 myst-parser
-sphinx-rtd-theme
+pydata-sphinx-theme
 nbsphinx
 pytest
 mypy
+types-networkx
 pytest-cov
 pandoc
 pre-commit

@@ -22,9 +22,9 @@ def make_zxxz_surface_code_plaquette(
     init_meas_only_on_side: PlaquetteSide | None = None,
 ) -> Plaquette:
     """Create a ZXXZ-type surface code plaquette. The circuit is adapted to
-    superconducting qubits architecture s.t. all CNOTs are compiled to the
-    CZ gates and additional Hadamard gates. Only Z basis reset and measurement
-    are supported.
+    superconducting qubits architecture s.t. all CNOTs are compiled to the CZ
+    gates and additional Hadamard gates. Only Z basis reset and measurement are
+    supported.
 
     Args:
         basis: the basis of the plaquette.

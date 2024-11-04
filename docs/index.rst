@@ -1,6 +1,3 @@
-TQEC
-====
-
 .. See https://stackoverflow.com/a/69134918 and
 .. https://myst-parser.readthedocs.io/en/latest/faq/index.html#include-markdown-files-into-an-rst-file
 .. include:: ../README.md
@@ -12,20 +9,6 @@ TQEC
    :hidden:
 
    Introduction <self>
-   Installation <installation>
-   Quick start <quick_start>
-   Contributing <contributing>
-   Automatic detector computation <detectors>
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Notebooks:
-
-   Automatic detector computation <media/detectors/detector_computation_illustration>
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: API documentation
-   :recursive:
-
-   tqec
+   User Guide <user_guide/index>
+   Contributor Guide <contributor_guide>
+   API Reference <api>
