@@ -1,4 +1,5 @@
-"""Implements a wrapper to standardise stim coordinate system across the code base."""
+"""Implements a wrapper to standardise stim coordinate system across the code
+base."""
 
 from __future__ import annotations
 

@@ -86,8 +86,8 @@ def _matched_detectors_to_detectors(
 def _center_plaquette_syndrome_qubits(
     subtemplate: SubTemplateType, plaquettes: Plaquettes, increments: Displacement
 ) -> list[GridQubit]:
-    """Return a collection of qubits that are used as syndrome qubits by the central
-    plaquette of the provided `subtemplate`.
+    """Return a collection of qubits that are used as syndrome qubits by the
+    central plaquette of the provided `subtemplate`.
 
     The qubits are returned in the sub-template coordinates (i.e., origin at
     top-left corner of the provided `subtemplate`).
@@ -278,7 +278,8 @@ def compute_detectors_at_end_of_situation(
     database: DetectorDatabase | None = None,
     only_use_database: bool = False,
 ) -> frozenset[Detector]:
-    """Returns detectors that should be added at the end of the provided situation.
+    """Returns detectors that should be added at the end of the provided
+    situation.
 
     Args:
         subtemplates: a sequence of sub-template(s), each entry consisting of
@@ -348,8 +349,8 @@ def compute_detectors_at_end_of_situation(
 def _get_or_default(
     array: npt.NDArray[numpy.int_], slices: Sequence[tuple[int, int]], default: int = 0
 ) -> npt.NDArray[numpy.int_]:
-    """Get slices of a `numpy` array, returning the provided `default` value for
-    out-of-bound accesses.
+    """Get slices of a `numpy` array, returning the provided `default` value
+    for out-of-bound accesses.
 
     Args:
         array: `numpy` array to recover values from.
@@ -475,8 +476,8 @@ def compute_detectors_for_fixed_radius(
     database: DetectorDatabase | None = None,
     only_use_database: bool = False,
 ) -> list[Detector]:
-    """Returns detectors that should be added at the end of the circuit that would
-    be obtained from the provided `template_at_timestep` and
+    """Returns detectors that should be added at the end of the circuit that
+    would be obtained from the provided `template_at_timestep` and
     `plaquettes_at_timestep`.
 
     Args:

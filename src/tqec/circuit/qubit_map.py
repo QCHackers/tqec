@@ -61,7 +61,8 @@ class QubitMap:
     def with_mapped_qubits(
         self, qubit_map: Callable[[GridQubit], GridQubit]
     ) -> QubitMap:
-        """Change the qubits involved in `self` without changing the associated indices.
+        """Change the qubits involved in `self` without changing the associated
+        indices.
 
         Args:
             qubit_map: a map from qubits to qubits that should associate a qubit
@@ -94,7 +95,8 @@ class QubitMap:
         return QubitMap({i: q for i, q in self.i2q.items() if q in kept_qubits})
 
     def to_circuit(self) -> stim.Circuit:
-        """Get a circuit with only `QUBIT_COORDS` instructions representing `self`."""
+        """Get a circuit with only `QUBIT_COORDS` instructions representing
+        `self`."""
         ret = stim.Circuit()
         for qi, qubit in sorted(self.i2q.items(), key=lambda t: t[0]):
             ret.append("QUBIT_COORDS", qi, (float(qubit.x), float(qubit.y)))
