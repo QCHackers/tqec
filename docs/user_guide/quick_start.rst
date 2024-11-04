@@ -7,7 +7,7 @@ Quick start using ``tqec``
 The first step should be to define the error-corrected computation you want
 to implement. For the sake of simplicity, we will take an error-corrected CNOT
 implementation that has been defined using SketchUp and available at
-:download:`media/quick_start/logical_cnot.dae <./media/quick_start/logical_cnot.dae>`.
+:download:`media/quick_start/logical_cnot.dae <../media/quick_start/logical_cnot.dae>`.
 
 .. only:: builder_html
 
@@ -16,7 +16,7 @@ implementation that has been defined using SketchUp and available at
     .. raw:: html
 
         <iframe
-        src="_static/media/quick_start/logical_cnot.html"
+        src="../../_static/media/quick_start/logical_cnot.html"
         title="Interactive visualisation of an error-corrected topological CNOT implementation"
         width=100%
         height=500
@@ -97,7 +97,7 @@ And that's all! You now have a quantum circuit representing the topological
 error-corrected implementation of a CNOT gate shown at the beginning of this page.
 
 You can download the circuit in a ``stim`` format here:
-:download:`media/quick_start/logical_cnot.stim <./media/quick_start/logical_cnot.stim>`.
+:download:`media/quick_start/logical_cnot.stim <../media/quick_start/logical_cnot.stim>`.
 
 6. Simulate multiple experiments
 --------------------------------
@@ -129,8 +129,9 @@ The compilation of the block graph is done automatically based on the inputs.
         print_progress=True,
     )
 
-``Sinter`` can be additionally supplied with simulation parameters, full interoperability with ``sinter`` is not yet implemented.
-`sinter_api https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md`_
+.. note::
+   While ``sinter`` can be supplied with additional simulation parameters, full interoperability with it is not yet implemented.
+   See `Sinter API Reference <https://github.com/quantumlib/Stim/blob/main/doc/sinter_api.md>`_ for more information.
 
 
 7. Plot the results
@@ -164,7 +165,7 @@ This quick start guide has shown how to use the ``tqec`` library to define a com
 import it into the library, compile it to stim circuits.
 Simulations are run and visualized for multiple error rates and code distances.
 For an extensive example, see also the
-`tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py`_.
+`tqec_example <https://github.com/QCHackers/tqec/blob/main/examples/logical_cnot.py>`_.
 
 The process can be repeated through the cli using
 

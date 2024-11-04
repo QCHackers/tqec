@@ -77,8 +77,8 @@ class Plaquette:
     def project_on_boundary(
         self, projected_orientation: PlaquetteOrientation
     ) -> Plaquette:
-        """Project the plaquette on boundary and return a new plaquette with the
-        remaining qubits and circuit.
+        """Project the plaquette on boundary and return a new plaquette with
+        the remaining qubits and circuit.
 
         This method is useful for deriving a boundary plaquette from a integral
         plaquette.
@@ -123,13 +123,14 @@ class Plaquettes:
     """Represent a collection of plaquettes that might be applied to a
     :class:`Template` instance.
 
-    The goal of this class is to abstract away how a "collection of plaquettes"
-    is represented and to provide a unique interface in order to retrieve
-    plaquettes when building a quantum circuit from a template and plaquettes.
+    The goal of this class is to abstract away how a "collection of
+    plaquettes" is represented and to provide a unique interface in
+    order to retrieve plaquettes when building a quantum circuit from a
+    template and plaquettes.
 
-    It also checks that the represented collection is valid, which means that it
-    does not include any plaquette associated with index 0 (that is internally
-    and conventionally reserved for the empty plaquette).
+    It also checks that the represented collection is valid, which means
+    that it does not include any plaquette associated with index 0 (that
+    is internally and conventionally reserved for the empty plaquette).
     """
 
     collection: FrozenDefaultDict[int, Plaquette]
@@ -163,8 +164,11 @@ class Plaquettes:
         return isinstance(rhs, Plaquettes) and self.collection == rhs.collection
 
     def __hash__(self) -> int:
-        """Implementation for Python's hash(). The returned value is reliable
-        across runs, interpreters and OSes."""
+        """Implementation for Python's hash().
+
+        The returned value is reliable across runs, interpreters and
+        OSes.
+        """
         return hash(
             tuple(
                 sorted(

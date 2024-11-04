@@ -463,9 +463,9 @@ class ScheduledCircuit:
         return sum(m.num_measurements for m in self._moments)
 
     def filter_by_qubits(self, qubits_to_keep: Iterable[GridQubit]) -> ScheduledCircuit:
-        """Filter the circuit to keep only the instructions that are applied on the
-        provided qubits. If an instruction is applied on a qubit that is not in the
-        provided list, it is removed.
+        """Filter the circuit to keep only the instructions that are applied on
+        the provided qubits. If an instruction is applied on a qubit that is
+        not in the provided list, it is removed.
 
         After filtering, the empty moments as well as the corresponding schedules are
         removed.

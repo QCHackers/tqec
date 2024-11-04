@@ -14,7 +14,8 @@ from tqec.exceptions import TQECException
 
 @dataclass(frozen=True)
 class Detector:
-    """Represent a detector as a set of measurements and optional coordinates."""
+    """Represent a detector as a set of measurements and optional
+    coordinates."""
 
     measurements: frozenset[Measurement]
     coordinates: StimCoordinates

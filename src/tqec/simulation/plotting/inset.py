@@ -1,4 +1,4 @@
-"""Defines some helper functions to plot into insets"""
+"""Defines some helper functions to plot into insets."""
 
 # required for "3d" projection even though not explicitly used
 from matplotlib.axes import Axes
@@ -12,8 +12,7 @@ def add_inset_axes3d(
     ax_target: Axes, bounds: tuple[float, float, float, float]
 ) -> Axes3D:
     """Wrapper around `fig.add_axes` to achieve `ax.inset_axes` functionality
-    that works also for insetting 3D plot on 2D ax/figures
-    """
+    that works also for insetting 3D plot on 2D ax/figures."""
     ax = ax_target.inset_axes(bounds, projection="3d")
     assert isinstance(ax, Axes3D)
     return ax
