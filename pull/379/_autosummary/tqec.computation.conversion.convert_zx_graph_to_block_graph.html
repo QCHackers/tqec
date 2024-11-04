@@ -125,12 +125,14 @@
 <p>The ZX graph includes the minimal information required to construct the block graph,
 but is not guaranteed to admit a valid block structure. The block structure will be inferred
 from the ZX graph and validated.</p>
-<p>The conversion process is as follows:
-1. Construct cubes for all the corner nodes in the ZX graph.
-2. Construct pipes connecting ports/Y to ports/Y nodes.
-3. Greedily construct the pipes until no more pipes can be inferred.
-4. If there are still nodes left, then choose orientation for an arbitrary node
-and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.</p>
+<p>The conversion process is as follows:</p>
+<ol class="arabic simple">
+<li><p>Construct cubes for all the corner nodes in the ZX graph.</p></li>
+<li><p>Construct pipes connecting ports/Y to ports/Y nodes.</p></li>
+<li><p>Greedily construct the pipes until no more pipes can be inferred.</p></li>
+<li><p>If there are still nodes left, then choose orientation for an arbitrary node
+and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

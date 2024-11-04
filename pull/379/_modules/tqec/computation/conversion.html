@@ -81,7 +81,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tqec.computation.conversion</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Conversion between `ZXGraph` and `BlockGraph`.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Conversion between ``ZXGraph`` and ``BlockGraph``.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="p">(</span>
@@ -128,11 +128,12 @@
 <span class="sd">    from the ZX graph and validated.</span>
 
 <span class="sd">    The conversion process is as follows:</span>
+<span class="sd">    </span>
 <span class="sd">    1. Construct cubes for all the corner nodes in the ZX graph.</span>
 <span class="sd">    2. Construct pipes connecting ports/Y to ports/Y nodes.</span>
 <span class="sd">    3. Greedily construct the pipes until no more pipes can be inferred.</span>
 <span class="sd">    4. If there are still nodes left, then choose orientation for an arbitrary node</span>
-<span class="sd">    and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.</span>
+<span class="sd">       and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        zx_graph: The base ZX graph to construct the block graph.</span>

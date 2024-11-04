@@ -100,12 +100,13 @@
 
 <span class="sd">    In a **closed** 3D spacetime diagram, the abstract observable can be derived from</span>
 <span class="sd">    the corresponding correlation surface:</span>
+<span class="sd">    </span>
 <span class="sd">    1. When the correlation surface attaches to the top/bottom faces of a block in</span>
-<span class="sd">    the diagram, the measurements of the line of qubits on the top face are included</span>
-<span class="sd">    in the observable.</span>
+<span class="sd">       the diagram, the measurements of the line of qubits on the top face are included</span>
+<span class="sd">       in the observable.</span>
 <span class="sd">    2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer</span>
-<span class="sd">    measurements at the start of the pipe and part of the stabilizer measurements within</span>
-<span class="sd">    the cubes connected by the pipe are included in the observable.</span>
+<span class="sd">       measurements at the start of the pipe and part of the stabilizer measurements within</span>
+<span class="sd">       the cubes connected by the pipe are included in the observable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">top_lines</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">Cube</span> <span class="o">|</span> <span class="n">Pipe</span><span class="p">]</span>
@@ -128,7 +129,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractObservable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a correlation surface to an abstract observable.</span>
 
-<span class="sd">    You need to provide a correlation surface that is valid in the corresponding `ZXGraph`</span>
+<span class="sd">    You need to provide a correlation surface that is valid in the corresponding ``ZXGraph``</span>
 <span class="sd">    of the block graph. Otherwise, the behavior is undefined.</span>
 
 <span class="sd">    Args:</span>
