@@ -34,7 +34,7 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
     across the spacetime. The block graph can be compiled and used to generate the concrete
     circuits that implement the logical computation.
 
-    The nodes in the graph are the cubes that represent a unit of code patch in the spacetime.
+    The nodes in the graph are the cubes that represent a unit of code patch in spacetime.
     The edges in the graph are the pipes that connect the cubes. The pipes guide the logical
     computation and the information flow between the code patches over spacetime.
     """
@@ -62,12 +62,13 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
 
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we ignore the b) and e),
         only check the following conditions:
-        a). no fanout: ports can only have one pipe connected to them.
-        c). time-like Y: Y cubes can only have time-like pipes connected to them.
-        d). no 3D corner: a cube cannot have pipes in all three directions.
-        f). match color at passthrough: two pipes in a "pass-through" should have the same
+        
+        a) no fanout: ports can only have one pipe connected to them.
+        c) time-like Y: Y cubes can only have time-like pipes connected to them.
+        d) no 3D corner: a cube cannot have pipes in all three directions.
+        f) match color at passthrough: two pipes in a "pass-through" should have the same
         color orientation.
-        g). match color at turn: two pipes in a "turn" should have the matching colors on
+        g) match color at turn: two pipes in a "turn" should have the matching colors on
         faces that are touching.
 
         Args:
@@ -171,7 +172,7 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
     ) -> ColladaHTMLViewer:
-        """View COLLADA model in html with the help of `three.js`.
+        """View COLLADA model in html with the help of ``three.js``.
 
         This can display a COLLADA model interactively in IPython compatible environments.
 
@@ -186,7 +187,7 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
 
         Returns:
-            A helper class to display the 3D model, which implements the `_repr_html_` method and
+            A helper class to display the 3D model, which implements the ``_repr_html_`` method and
             can be directly displayed in IPython compatible environments.
         """
         from tqec.interop.collada import write_block_graph_to_dae_file

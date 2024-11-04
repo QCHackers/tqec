@@ -24,10 +24,10 @@ class CorrelationSurface:
 
 
     Attributes:
-        nodes: A set of `ZXNode` representing the nodes in the correlation surface. The kind of
+        nodes: A set of ``ZXNode`` representing the nodes in the correlation surface. The kind of
             the node is determined by what kinds of correlation the node supports. If both X and
             Z correlation are supported, the node is a Y type node.
-        span: A set of `ZXEdge` representing the correlation between logical operators spanning
+        span: A set of ``ZXEdge`` representing the correlation between logical operators spanning
             in the 3D space. The edges in the span must be between Z/X type nodes.
         external_stabilizer: A mapping from the port label to the Pauli operator at the port, which
             represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer

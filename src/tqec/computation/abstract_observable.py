@@ -15,12 +15,13 @@ class AbstractObservable:
 
     In a **closed** 3D spacetime diagram, the abstract observable can be derived from
     the corresponding correlation surface:
+    
     1. When the correlation surface attaches to the top/bottom faces of a block in
-    the diagram, the measurements of the line of qubits on the top face are included
-    in the observable.
+       the diagram, the measurements of the line of qubits on the top face are included
+       in the observable.
     2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer
-    measurements at the start of the pipe and part of the stabilizer measurements within
-    the cubes connected by the pipe are included in the observable.
+       measurements at the start of the pipe and part of the stabilizer measurements within
+       the cubes connected by the pipe are included in the observable.
     """
 
     top_lines: frozenset[Cube | Pipe]
@@ -40,7 +41,7 @@ def correlation_surface_to_abstract_observable(
 ) -> AbstractObservable:
     """Convert a correlation surface to an abstract observable.
 
-    You need to provide a correlation surface that is valid in the corresponding `ZXGraph`
+    You need to provide a correlation surface that is valid in the corresponding ``ZXGraph``
     of the block graph. Otherwise, the behavior is undefined.
 
     Args:

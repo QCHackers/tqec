@@ -1,4 +1,4 @@
-"""Conversion between `ZXGraph` and `BlockGraph`."""
+"""Conversion between ``ZXGraph`` and ``BlockGraph``."""
 
 from typing import cast
 from tqec.computation.cube import (
@@ -40,11 +40,12 @@ def convert_zx_graph_to_block_graph(
     from the ZX graph and validated.
 
     The conversion process is as follows:
+    
     1. Construct cubes for all the corner nodes in the ZX graph.
     2. Construct pipes connecting ports/Y to ports/Y nodes.
     3. Greedily construct the pipes until no more pipes can be inferred.
     4. If there are still nodes left, then choose orientation for an arbitrary node
-    and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.
+       and repeat 3. Repeat 4 until all nodes are handled or conflicts are detected.
 
     Args:
         zx_graph: The base ZX graph to construct the block graph.

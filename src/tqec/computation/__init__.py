@@ -8,11 +8,11 @@ This package defines the two main graph data structure to represent the spacetim
 of the logical computation:
 
 - The :class:`ZXGraph` is in the form of a ZX-calculus graph and the representation is
-based on the correspondence between the ZX-calculus and the lattice surgery.
+  based on the correspondence between the ZX-calculus and the lattice surgery.
 - The :class:`BlockGraph` specifies the explicit block structures of the spacetime diagram,
-including the layout of the code patches, the boundary types and the connectivity of the
-patches across the spacetime. The block graph can be compiled and used to generate the
-concrete circuits that implement the logical computation.
+  including the layout of the code patches, the boundary types and the connectivity of the
+  patches across the spacetime. The block graph can be compiled and used to generate the
+  concrete circuits that implement the logical computation.
 
 """
 
