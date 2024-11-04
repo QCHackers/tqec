@@ -146,7 +146,8 @@
     <span class="k">def</span> <span class="nf">with_mapped_qubits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">GridQubit</span><span class="p">],</span> <span class="n">GridQubit</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QubitMap</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the qubits involved in `self` without changing the associated indices.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the qubits involved in `self` without changing the associated</span>
+<span class="sd">        indices.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            qubit_map: a map from qubits to qubits that should associate a qubit</span>
@@ -179,7 +180,8 @@
         <span class="k">return</span> <span class="n">QubitMap</span><span class="p">({</span><span class="n">i</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">i2q</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">kept_qubits</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">to_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a circuit with only `QUBIT_COORDS` instructions representing `self`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a circuit with only `QUBIT_COORDS` instructions representing</span>
+<span class="sd">        `self`.&quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">qi</span><span class="p">,</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i2q</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span> <span class="n">qi</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>

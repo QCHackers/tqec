@@ -156,10 +156,11 @@
     <span class="k">def</span> <span class="nf">get_correlation_types</span><span class="p">(</span><span class="n">span</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation types at the nodes in the correlation span.</span>
 
-<span class="sd">        The correlation type at the node is determined by the correlation types of the edges</span>
-<span class="sd">        connected to the node. If the node is connected to both X and Z type edges, the correlation</span>
-<span class="sd">        is Y type. If the node is connected to only one type of edge, the correlation is Z/X type.</span>
-
+<span class="sd">        The correlation type at the node is determined by the</span>
+<span class="sd">        correlation types of the edges connected to the node. If the</span>
+<span class="sd">        node is connected to both X and Z type edges, the correlation is</span>
+<span class="sd">        Y type. If the node is connected to only one type of edge, the</span>
+<span class="sd">        correlation is Z/X type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">correlations_at_position</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">ZXKind</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">span</span><span class="p">:</span>
@@ -177,8 +178,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">node_correlation_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a mapping from the position of the node to the correlation type supported at</span>
-<span class="sd">        the node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a mapping from the position of the node to the correlation</span>
+<span class="sd">        type supported at the node.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">kind</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
 
     <span class="nd">@property</span>
@@ -234,7 +235,8 @@
     <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
     <span class="n">leaf</span><span class="p">:</span> <span class="n">ZXNode</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation surfaces starting from a leaf node in the ZX graph.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation surfaces starting from a leaf node in the ZX</span>
+<span class="sd">    graph.&quot;&quot;&quot;</span>
     <span class="c1"># Z/X type node can only support the correlation surface with the opposite type.</span>
     <span class="k">if</span> <span class="n">leaf</span><span class="o">.</span><span class="n">is_zx_node</span><span class="p">:</span>
         <span class="n">spans</span> <span class="o">=</span> <span class="p">(</span>
@@ -264,13 +266,13 @@
     <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
     <span class="n">spans</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;From the correlation spans, construct the correlation surfaces that are compatible</span>
-<span class="sd">    with the ZX graph.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;From the correlation spans, construct the correlation surfaces that are</span>
+<span class="sd">    compatible with the ZX graph.</span>
 
-<span class="sd">    The compatibility is determined by comparing the correlation type and the node type</span>
-<span class="sd">    of the leaf nodes in the graph. If the node type is not P, the correlation type must</span>
-<span class="sd">    be the same as the node type. If the node type is P, the correlation type can be any</span>
-<span class="sd">    type.</span>
+<span class="sd">    The compatibility is determined by comparing the correlation type</span>
+<span class="sd">    and the node type of the leaf nodes in the graph. If the node type</span>
+<span class="sd">    is not P, the correlation type must be the same as the node type. If</span>
+<span class="sd">    the node type is P, the correlation type can be any type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">correlation_surfaces</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -308,7 +310,8 @@
     <span class="n">correlation_frontier</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">],</span>
     <span class="n">correlation_span</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation spans in the ZX graph using the flood fill like algorithm.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation spans in the ZX graph using the flood fill like</span>
+<span class="sd">    algorithm.</span>
 
 <span class="sd">    matched correlation node: Node at which the correlation type matches the node type.</span>
 <span class="sd">    mismatched correlation node: Node at which the correlation type mismatches the node type.</span>

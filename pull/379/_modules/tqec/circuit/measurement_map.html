@@ -103,7 +103,8 @@
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement_map.MeasurementRecordsMap.html#tqec.circuit.measurement_map.MeasurementRecordsMap">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MeasurementRecordsMap</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mapping from measurements appearing in a circuit and their record offsets.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mapping from measurements appearing in a circuit and their record</span>
+<span class="sd">    offsets.</span>
 
 <span class="sd">    This class stores record offsets which are, by essence, relative to a certain</span>
 <span class="sd">    position in a circuit. This means that this class and the measurement offsets</span>
@@ -244,8 +245,8 @@
     <span class="k">def</span> <span class="nf">with_added_measurements</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">mrecords_map</span><span class="p">:</span> <span class="n">MeasurementRecordsMap</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a new :class:`MeasurementRecordsMap` with measurements from `self`</span>
-<span class="sd">        appearing before measurements from the provided `mrecords_map`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a new :class:`MeasurementRecordsMap` with measurements from</span>
+<span class="sd">        `self` appearing before measurements from the provided `mrecords_map`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            mrecords_map: records of measurements happening after the measurements</span>

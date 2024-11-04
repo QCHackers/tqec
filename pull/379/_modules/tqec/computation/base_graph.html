@@ -116,7 +116,8 @@
 <div class="viewcode-block" id="ComputationGraph">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.base_graph.ComputationGraph.html#tqec.computation.base_graph.ComputationGraph">[docs]</a>
 <span class="k">class</span> <span class="nc">ComputationGraph</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">_NODE</span><span class="p">,</span> <span class="n">_EDGE</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for graph data structures representing a logical computation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for graph data structures representing a logical</span>
+<span class="sd">    computation.&quot;&quot;&quot;</span>
 
     <span class="n">_NODE_DATA_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tqec_node_data&quot;</span>
     <span class="n">_EDGE_DATA_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tqec_edge_data&quot;</span>
@@ -150,8 +151,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of ports in the graph. A port is a virtual node that represents the</span>
-<span class="sd">        input/output of the computation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of ports in the graph.</span>
+
+<span class="sd">        A port is a virtual node that represents the input/output of the</span>
+<span class="sd">        computation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ports</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -168,11 +172,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Position3D</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping from the labels of the ports in the graph to their positions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping from the labels of the ports in the graph to their</span>
+<span class="sd">        positions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ports</span>
 
     <span class="k">def</span> <span class="nf">get_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the degree of a node in the graph, i.e. the number of edges incident to it.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the degree of a node in the graph, i.e. the number of edges</span>
+<span class="sd">        incident to it.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="nd">@property</span>

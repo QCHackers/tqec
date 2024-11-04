@@ -120,12 +120,13 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plaquettes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.frozendefaultdict.FrozenDefaultDict.html#tqec.plaquette.frozendefaultdict.FrozenDefaultDict" title="tqec.plaquette.frozendefaultdict.FrozenDefaultDict"><span class="pre">FrozenDefaultDict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.plaquette.plaquette.Plaquette.html#tqec.plaquette.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><span class="pre">Plaquette</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/plaquette/plaquette.html#Plaquettes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquettes" title="Link to this definition"></a></dt>
 <dd><p>Represent a collection of plaquettes that might be applied to a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instance.</p>
-<p>The goal of this class is to abstract away how a “collection of plaquettes”
-is represented and to provide a unique interface in order to retrieve
-plaquettes when building a quantum circuit from a template and plaquettes.</p>
-<p>It also checks that the represented collection is valid, which means that it
-does not include any plaquette associated with index 0 (that is internally
-and conventionally reserved for the empty plaquette).</p>
+<p>The goal of this class is to abstract away how a “collection of
+plaquettes” is represented and to provide a unique interface in
+order to retrieve plaquettes when building a quantum circuit from a
+template and plaquettes.</p>
+<p>It also checks that the represented collection is valid, which means
+that it does not include any plaquette associated with index 0 (that
+is internally and conventionally reserved for the empty plaquette).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.plaquette.plaquette.Plaquettes.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.frozendefaultdict.FrozenDefaultDict.html#tqec.plaquette.frozendefaultdict.FrozenDefaultDict" title="tqec.plaquette.frozendefaultdict.FrozenDefaultDict"><span class="pre">FrozenDefaultDict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.plaquette.plaquette.Plaquette.html#tqec.plaquette.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><span class="pre">Plaquette</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tqec.plaquette.plaquette.Plaquettes.__init__" title="Link to this definition"></a></dt>

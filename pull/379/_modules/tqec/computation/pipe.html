@@ -176,7 +176,8 @@
         <span class="n">cube_at_head</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeKind</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe kind from the endpoint cube kind and the pipe direction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe kind from the endpoint cube kind and the pipe</span>
+<span class="sd">        direction.&quot;&quot;&quot;</span>
         <span class="n">bases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXBasis</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cube_at_head</span> <span class="ow">and</span> <span class="n">has_hadamard</span><span class="p">:</span>
             <span class="n">bases</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">with_zx_flipped</span><span class="p">()</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">cube_kind</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()]</span>

@@ -551,9 +551,9 @@
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">num_measurements</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter_by_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubits_to_keep</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the circuit to keep only the instructions that are applied on the</span>
-<span class="sd">        provided qubits. If an instruction is applied on a qubit that is not in the</span>
-<span class="sd">        provided list, it is removed.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the circuit to keep only the instructions that are applied on</span>
+<span class="sd">        the provided qubits. If an instruction is applied on a qubit that is</span>
+<span class="sd">        not in the provided list, it is removed.</span>
 
 <span class="sd">        After filtering, the empty moments as well as the corresponding schedules are</span>
 <span class="sd">        removed.</span>

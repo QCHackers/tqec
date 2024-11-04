@@ -217,7 +217,8 @@
         <span class="n">kind</span><span class="p">:</span> <span class="n">BlockKind</span><span class="p">,</span>
         <span class="n">pop_faces_at_directions</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">SignedDirection3D</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Face</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the geometry of a block kind, possibly with some faces popped out.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the geometry of a block kind, possibly with some faces popped</span>
+<span class="sd">        out.&quot;&quot;&quot;</span>
         <span class="n">faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">face</span>
