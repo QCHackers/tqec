@@ -18,6 +18,7 @@ tqec.position.Position3D
       ~Position3D.as_tuple
       ~Position3D.is_neighbour
       ~Position3D.shift_by
+      ~Position3D.shift_in_direction
    
    
 

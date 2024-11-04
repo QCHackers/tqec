@@ -28,15 +28,28 @@ tqec.computation
    :recursive:
 
 
+   abstract_observable
+
+
+   base_graph
+
    block_graph
 
-   collada
+
+   conversion
 
 
-   geometry
+   correlation
 
-   plot
+
+   cube
+
+
+   pipe
+
 
    zx_graph
 
+
+   zx_plot
 

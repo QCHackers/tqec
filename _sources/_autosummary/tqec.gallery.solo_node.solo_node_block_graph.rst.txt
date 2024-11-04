@@ -1,0 +1,6 @@
+tqec.gallery.solo\_node.solo\_node\_block\_graph
+================================================
+
+.. currentmodule:: tqec.gallery.solo_node
+
+.. autofunction:: solo_node_block_graph

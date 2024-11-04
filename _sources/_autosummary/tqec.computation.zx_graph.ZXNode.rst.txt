@@ -14,6 +14,7 @@ tqec.computation.zx\_graph.ZXNode
    .. autosummary::
    
       ~ZXNode.__init__
+      ~ZXNode.with_zx_flipped
    
    
 
@@ -23,8 +24,11 @@ tqec.computation.zx\_graph.ZXNode
 
    .. autosummary::
    
-      ~ZXNode.is_virtual
+      ~ZXNode.is_port
+      ~ZXNode.is_y_node
+      ~ZXNode.is_zx_node
+      ~ZXNode.label
       ~ZXNode.position
-      ~ZXNode.node_type
+      ~ZXNode.kind
    
    

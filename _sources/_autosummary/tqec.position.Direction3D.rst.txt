@@ -13,8 +13,7 @@ tqec.position.Direction3D
 
    .. autosummary::
    
-      ~Direction3D.all
-      ~Direction3D.from_axis_index
+      ~Direction3D.all_directions
    
    
 
@@ -24,7 +23,6 @@ tqec.position.Direction3D
 
    .. autosummary::
    
-      ~Direction3D.axis_index
       ~Direction3D.X
       ~Direction3D.Y
       ~Direction3D.Z

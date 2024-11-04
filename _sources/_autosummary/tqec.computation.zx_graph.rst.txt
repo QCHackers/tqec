@@ -18,9 +18,9 @@ tqec.computation.zx\_graph
    .. autosummary::
       :toctree:
    
-      NodeType
       ZXEdge
       ZXGraph
+      ZXKind
       ZXNode
    
    

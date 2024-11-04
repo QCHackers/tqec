@@ -1,0 +1,39 @@
+tqec.interop.collada
+====================
+
+.. automodule:: tqec.interop.collada
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      read_block_graph_from_dae_file
+      write_block_graph_to_dae_file
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockLibraryKey
+      Transformation
+   
+   
+
+   
+   
+   
+
+
+

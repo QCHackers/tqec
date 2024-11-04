@@ -1,0 +1,6 @@
+tqec.interop.geometry.get\_correlation\_surface\_geometry
+=========================================================
+
+.. currentmodule:: tqec.interop.geometry
+
+.. autofunction:: get_correlation_surface_geometry

@@ -30,3 +30,10 @@ tqec.gallery
 
    logical_cnot
 
+
+   solo_node
+
+
+   three_cnots
+
+

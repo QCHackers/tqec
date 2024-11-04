@@ -1,0 +1,31 @@
+tqec.gallery.solo\_node
+=======================
+
+.. automodule:: tqec.gallery.solo_node
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      solo_node_block_graph
+      solo_node_zx_graph
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

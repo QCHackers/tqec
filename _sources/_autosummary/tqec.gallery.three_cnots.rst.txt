@@ -1,0 +1,31 @@
+tqec.gallery.three\_cnots
+=========================
+
+.. automodule:: tqec.gallery.three_cnots
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      three_cnots_block_graph
+      three_cnots_zx_graph
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

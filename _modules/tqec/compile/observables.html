@@ -381,7 +381,9 @@
 <span class="kn">from</span> <span class="nn">tqec.circuit.measurement_map</span> <span class="kn">import</span> <span class="n">MeasurementRecordsMap</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.schedule</span> <span class="kn">import</span> <span class="n">ScheduledCircuit</span>
-<span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">AbstractObservable</span><span class="p">,</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">Pipe</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="n">AbstractObservable</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="n">ZXCube</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">Displacement</span><span class="p">,</span> <span class="n">Shape2D</span>
 <span class="kn">from</span> <span class="nn">tqec.scale</span> <span class="kn">import</span> <span class="n">round_or_fail</span>
@@ -420,16 +422,13 @@
     <span class="n">cube</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">block_shape</span><span class="p">:</span> <span class="n">Shape2D</span><span class="p">,</span> <span class="n">template_increments</span><span class="p">:</span> <span class="n">Displacement</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the midline qubits for a cube.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">cube_type</span><span class="o">.</span><span class="n">is_spatial_junction</span> <span class="ow">or</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_spatial_junction</span> <span class="ow">or</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_port</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot get midline qubits for a spatial junction cube or a virtual cube.&quot;</span>
+            <span class="s2">&quot;Cannot get midline qubits for a spatial junction cube or a port.&quot;</span>
         <span class="p">)</span>
-    <span class="n">cube_type</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">cube_type</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">time_boundary_basis</span> <span class="o">=</span> <span class="n">cube_type</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">midline_orientation</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">from_axis_index</span><span class="p">(</span>
-        <span class="n">cube_type</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">time_boundary_basis</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="k">assert</span> <span class="n">midline_orientation</span> <span class="o">!=</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">kind</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span>
+    <span class="n">midline_orientation</span> <span class="o">=</span> <span class="n">Direction3D</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">kind</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">kind</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
 
     <span class="n">width</span> <span class="o">=</span> <span class="n">block_shape</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">template_increments</span><span class="o">.</span><span class="n">x</span>
     <span class="n">height</span> <span class="o">=</span> <span class="n">block_shape</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">template_increments</span><span class="o">.</span><span class="n">y</span>
@@ -465,7 +464,7 @@
     <span class="n">template_increments</span><span class="p">:</span> <span class="n">Displacement</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]:</span>
     <span class="n">stabilizer_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">pipe_type</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
             <span class="s2">&quot;Can only get stabilizer region qubits for horizontal pipes.&quot;</span>
         <span class="p">)</span>
@@ -475,7 +474,7 @@
     <span class="n">half_increment_x</span> <span class="o">=</span> <span class="n">template_increments</span><span class="o">.</span><span class="n">x</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">half_increment_y</span> <span class="o">=</span> <span class="n">template_increments</span><span class="o">.</span><span class="n">y</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">u_pos</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">position</span>
-    <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">pipe_type</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
         <span class="n">block_border_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">width</span> <span class="o">-</span> <span class="n">half_increment_x</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_shape</span><span class="o">.</span><span class="n">x</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">x1</span> <span class="o">=</span> <span class="n">block_border_x</span> <span class="o">-</span> <span class="n">template_increments</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="n">half_increment_x</span>

@@ -25,6 +25,6 @@ tqec.compile.specs.base.PipeSpec
    
       ~PipeSpec.spec1
       ~PipeSpec.spec2
-      ~PipeSpec.pipe_type
+      ~PipeSpec.pipe_kind
    
    

@@ -5,39 +5,33 @@ tqec.computation.block\_graph
 
    
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockKind
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockGraph
+   
    
 
    
    
    
 
-   
-   
-   
 
-   
-   
-   
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   color
-
-   cube
-
-   enums
-
-   graph
-
-
-   observable
-
-   pipe
 

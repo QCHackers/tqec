@@ -14,6 +14,8 @@ tqec.computation.zx\_graph.ZXEdge
    .. autosummary::
    
       ~ZXEdge.__init__
+      ~ZXEdge.get_node_kind_at
+      ~ZXEdge.with_zx_flipped
    
    
 
