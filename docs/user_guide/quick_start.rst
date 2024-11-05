@@ -16,7 +16,7 @@ implementation that has been defined using SketchUp and available at
     .. raw:: html
 
         <iframe
-        src="../../_static/media/quick_start/logical_cnot.html"
+        src="../_static/media/quick_start/logical_cnot.html"
         title="Interactive visualisation of an error-corrected topological CNOT implementation"
         width=100%
         height=500
