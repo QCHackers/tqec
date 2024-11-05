@@ -25,7 +25,7 @@ Currently, you need to install `tqec` from source:
 python -m pip install git+https://github.com/QCHackers/tqec.git
 ```
 
-For a more in-depth installation guide and common trouble-shootingm, see the [installation page](https://qchackers.github.io/tqec/user_guide/installation.html) in the documentation.
+For a more detailed installation guide and common troubleshooting tips, see the [installation page](https://qchackers.github.io/tqec/user_guide/installation.html) in the documentation.
 
 ## Basic Usage
 
