@@ -45,8 +45,7 @@ using ``tqec.BlockGraph``:
 
         from tqec.gallery.logical_cnot import logical_cnot_block_graph
 
-        z_basis_init_meas = True
-        block_graph = logical_cnot_block_graph(z_basis_init_meas)
+        block_graph = logical_cnot_block_graph(port_type="Z")
 
 
 3. Choose the observable(s) of interest
