@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -724,7 +736,7 @@
 <dt class="sig sig-object py" id="tqec.circuit.generation.generate_circuit">
 <span class="sig-name descname"><span class="pre">generate_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><span class="pre">Template</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plaquettes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><span class="pre">Plaquettes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/generation.html#generate_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.generation.generate_circuit" title="Link to this definition">#</a></dt>
 <dd><p>Generate a quantum circuit from a template and its plaquettes.</p>
-<p>This is one of the core methods of the <cite>tqec</cite> package. It generates a
+<p>This is one of the core methods of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package. It generates a
 quantum circuit from the description of the template that should be
 implemented as well as the plaquettes that should be used to instantiate the
 provided template.</p>
@@ -732,8 +744,8 @@ provided template.</p>
 <ol class="arabic simple">
 <li><p>the number of plaquettes provided should match the number of plaquettes
 required by the provided template.</p></li>
-<li><p>all the provided plaquettes should be implemented on <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code>
-instances <strong>only</strong>.</p></li>
+<li><p>all the provided plaquettes should be implemented on
+<a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code></a> instances <strong>only</strong>.</p></li>
 </ol>
 <p>If any of the above pre-conditions is not met, the inputs are considered
 invalid, in which case this function <strong>might</strong> raise an error.</p>
@@ -742,15 +754,16 @@ invalid, in which case this function <strong>might</strong> raise an error.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>template</strong> – spatial description of the quantum error correction experiment
 we want to implement.</p></li>
-<li><p><strong>k</strong> – scaling parameter used to instantiate the provided <cite>template</cite>.</p></li>
+<li><p><strong>k</strong> – scaling parameter used to instantiate the provided <code class="docutils literal notranslate"><span class="pre">template</span></code>.</p></li>
 <li><p><strong>plaquettes</strong> – description of the computation that should happen at
 different time-slices of the quantum error correction experiment (or
 at least part of it).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a <cite>ScheduledCircuit</cite> instance implementing the (part of) quantum error
-correction experiment represented by the provided inputs.</p>
+<dd class="field-even"><p>a <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance implementing the
+(part of) quantum error correction experiment represented by the
+provided inputs.</p>
 </dd>
 </dl>
 </dd></dl>

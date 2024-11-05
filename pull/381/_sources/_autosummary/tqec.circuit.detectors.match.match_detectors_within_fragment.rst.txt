@@ -1,0 +1,6 @@
+tqec.circuit.detectors.match.match\_detectors\_within\_fragment
+===============================================================
+
+.. currentmodule:: tqec.circuit.detectors.match
+
+.. autofunction:: match_detectors_within_fragment

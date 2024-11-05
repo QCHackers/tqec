@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -735,7 +747,7 @@ instance at hand is valid.</p>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if at least one of the provided measurement record offsets
-    is non-negative (<cite>&gt;=0</cite>).</p></li>
+    is non-negative (<code class="docutils literal notranslate"><span class="pre">&gt;=0</span></code>).</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if, for any of the provided qubits, the provided offsets
     are not sorted.</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if any measurement offset is duplicated.</p></li>
@@ -749,13 +761,13 @@ instance at hand is valid.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.from_circuit" title="tqec.circuit.measurement_map.MeasurementRecordsMap.from_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_circuit</span></code></a>(circuit[, qubit_map])</p></td>
-<td><p>Build a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> from a circuit.</p></td>
+<td><p>Build a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> from a circuit.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.from_scheduled_circuit" title="tqec.circuit.measurement_map.MeasurementRecordsMap.from_scheduled_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_scheduled_circuit</span></code></a>(circuit)</p></td>
-<td><p>Build a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> from a scheduled circuit.</p></td>
+<td><p>Build a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> from a scheduled circuit.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.with_added_measurements" title="tqec.circuit.measurement_map.MeasurementRecordsMap.with_added_measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_added_measurements</span></code></a>(mrecords_map[, ...])</p></td>
-<td><p>Build a new <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> with measurements from <cite>self</cite> appearing before measurements from the provided <cite>mrecords_map</cite>.</p></td>
+<td><p>Build a new <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> with measurements from <code class="docutils literal notranslate"><span class="pre">self</span></code> appearing before measurements from the provided <code class="docutils literal notranslate"><span class="pre">mrecords_map</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -778,32 +790,32 @@ instance at hand is valid.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.measurement_map.MeasurementRecordsMap.from_circuit">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><span class="pre">MeasurementRecordsMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/measurement_map.html#MeasurementRecordsMap.from_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.from_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> from a circuit.</p>
+<dd><p>Build a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> from a circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>circuit</strong> – circuit containing the measurements to map.</p></li>
-<li><p><strong>qubit_map</strong> – qubit map of the provided circuit. If <cite>None</cite>, the
+<li><p><strong>qubit_map</strong> – qubit map of the provided circuit. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
 qubit map is computed from the provided circuit. Default to
-<cite>None</cite>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains a <cite>REPEAT</cite> block.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains an unsupported
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains an unsupported
     measurement instruction. Currently, this method supports all
     single-qubit measurement instructions (see the value of
-    <cite>SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</cite>).</p></li>
+    <code class="docutils literal notranslate"><span class="pre">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span></code>).</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if one of the measurement counted in
-    <cite>circuit.num_measurements</cite> was not processed (this should never
+    <code class="docutils literal notranslate"><span class="pre">circuit.num_measurements</span></code> was not processed (this should never
     raise, but the post-condition is easy to check so this method
     performs the check just in case).</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> linking measurements in the provided
-<cite>circuit</cite> to their offset.</p>
+<dd class="field-odd"><p>a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> linking measurements in the provided
+<code class="docutils literal notranslate"><span class="pre">circuit</span></code> to their offset.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -811,27 +823,27 @@ qubit map is computed from the provided circuit. Default to
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.measurement_map.MeasurementRecordsMap.from_scheduled_circuit">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_scheduled_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><span class="pre">MeasurementRecordsMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/measurement_map.html#MeasurementRecordsMap.from_scheduled_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.from_scheduled_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> from a scheduled circuit.</p>
+<dd><p>Build a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> from a scheduled circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>circuit</strong> – circuit containing the measurements to map.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains a <cite>REPEAT</cite> block.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains an unsupported
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains an unsupported
     measurement instruction. Currently, this method supports all
     single-qubit measurement instructions (see the value of
-    <cite>SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</cite>).</p></li>
+    <code class="docutils literal notranslate"><span class="pre">SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES</span></code>).</p></li>
 <li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if one of the measurement counted in
-    <cite>circuit.num_measurements</cite> was not processed (this should never
+    <code class="docutils literal notranslate"><span class="pre">circuit.num_measurements</span></code> was not processed (this should never
     raise, but the post-condition is easy to check so this method
     performs the check just in case).</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementMap</span></code> linking measurements in the provided
-<cite>circuit</cite> to their offset.</p>
+<dd class="field-odd"><p>a <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> linking measurements in the provided
+<code class="docutils literal notranslate"><span class="pre">circuit</span></code> to their offset.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -840,19 +852,19 @@ qubit map is computed from the provided circuit. Default to
 <dt class="sig sig-object py" id="tqec.circuit.measurement_map.MeasurementRecordsMap.with_added_measurements">
 <span class="sig-name descname"><span class="pre">with_added_measurements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mrecords_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><span class="pre">MeasurementRecordsMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><span class="pre">MeasurementRecordsMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/measurement_map.html#MeasurementRecordsMap.with_added_measurements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement_map.MeasurementRecordsMap.with_added_measurements" title="Link to this definition">#</a></dt>
 <dd><p>Build a new <a class="reference internal" href="#tqec.circuit.measurement_map.MeasurementRecordsMap" title="tqec.circuit.measurement_map.MeasurementRecordsMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code></a> with measurements from
-<cite>self</cite> appearing before measurements from the provided <cite>mrecords_map</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">self</span></code> appearing before measurements from the provided <code class="docutils literal notranslate"><span class="pre">mrecords_map</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mrecords_map</strong> – records of measurements happening after the measurements
-represented by <cite>self</cite>.</p></li>
-<li><p><strong>repetitions</strong> – number of time the measurements from <cite>mrecords_map</cite> are
+represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></li>
+<li><p><strong>repetitions</strong> – number of time the measurements from <code class="docutils literal notranslate"><span class="pre">mrecords_map</span></code> are
 repeated. Default to 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a new instance containing valid offsets for each measurement in <cite>self</cite>
-and <cite>mrecords_map</cite>.</p>
+<dd class="field-even"><p>a new instance containing valid offsets for each measurement in <code class="docutils literal notranslate"><span class="pre">self</span></code>
+and <code class="docutils literal notranslate"><span class="pre">mrecords_map</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

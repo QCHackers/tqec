@@ -31,6 +31,8 @@ tqec.circuit
    coordinates
 
 
+   detectors
+
    generation
 
 

@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -717,11 +729,17 @@
                   
   <section id="module-tqec.circuit.qubit_map">
 <span id="tqec-circuit-qubit-map"></span><h1>tqec.circuit.qubit_map<a class="headerlink" href="#module-tqec.circuit.qubit_map" title="Link to this heading">#</a></h1>
+<p>Defines core data-structures to handle the mapping between qubit coordinates
+(as <a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code></a> instances) and qubit indices.</p>
+<p>A bijection from qubit coordinates to qubit indices is represented by
+<a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">QubitMap</span></code></a> defined in this module.</p>
+<p>This bijection can be obtained from a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance by using
+<a class="reference internal" href="tqec.circuit.qubit_map.get_qubit_map.html#tqec.circuit.qubit_map.get_qubit_map" title="tqec.circuit.qubit_map.get_qubit_map"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_qubit_map()</span></code></a>.</p>
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.qubit_map.get_qubit_map.html#tqec.circuit.qubit_map.get_qubit_map" title="tqec.circuit.qubit_map.get_qubit_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qubit_map</span></code></a>(circuit)</p></td>
-<td><p>Returns the existing qubits and their coordinates at the end of the provided <cite>circuit</cite>.</p></td>
+<td><p>Returns the existing qubits and their coordinates at the end of the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -730,7 +748,7 @@
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QubitMap</span></code></a>(i2q, ~tqec.circuit.qubit.GridQubit] =)</p></td>
-<td><p>Represent a bijection between <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code> instances and indices.</p></td>
+<td><p>Represent a bijection between <a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code></a> instances and indices.</p></td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.detector\_to\_targets\_tuple
+=========================================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: detector_to_targets_tuple

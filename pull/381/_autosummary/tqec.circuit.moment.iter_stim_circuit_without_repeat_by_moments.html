@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -723,31 +735,31 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.circuit.moment.iter_stim_circuit_without_repeat_by_moments">
 <span class="sig-name descname"><span class="pre">iter_stim_circuit_without_repeat_by_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collected_before_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/moment.html#iter_stim_circuit_without_repeat_by_moments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.moment.iter_stim_circuit_without_repeat_by_moments" title="Link to this definition">#</a></dt>
-<dd><p>Iterate over the <cite>stim.Circuit</cite> by moments.</p>
-<p>A moment in a <cite>stim.Circuit</cite> is a sequence of instructions between two <cite>TICK</cite>
-instructions. Note that <cite>stim.CircuitRepeatBlock</cite> instances are explicitly not
+<dd><p>Iterate over the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> by moments.</p>
+<p>A moment in a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> is a sequence of instructions between two <code class="docutils literal notranslate"><span class="pre">TICK</span></code>
+instructions. Note that <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> instances are explicitly not
 supported and no such instance should appear in the provided circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit</strong> – circuit to iterate over. Should not contain any REPEAT block.</p></li>
-<li><p><strong>collected_before_use</strong> – if <cite>True</cite>, the returned <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instances
-will contain a copy of the temporary <cite>stim.Circuit</cite> instance
+<li><p><strong>circuit</strong> – circuit to iterate over. Should not contain any <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p></li>
+<li><p><strong>collected_before_use</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the returned <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instances
+will contain a copy of the temporary <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance
 representing the moment. This is needed if the yielded
 <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instances are not used directly because the
-underlying <cite>stim.Circuit</cite> instance is cleared when resuming the
+underlying <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance is cleared when resuming the
 generator.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <cite>Moment</cite> instance.</p>
+<dd class="field-even"><p>class`Moment` instances.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>stim.CircuitRepeatBlock</cite> instance.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> <cite>TICK</cite> instructions are not
-    inserted such that instructions between two <cite>TICK</cite> instructions
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> instance.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instructions are not
+    inserted such that instructions between two <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instructions
     are always applied on disjoint sets of qubits.</p></li>
 </ul>
 </dd>

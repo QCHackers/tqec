@@ -1,0 +1,38 @@
+tqec.circuit.detectors.pauli
+============================
+
+.. automodule:: tqec.circuit.detectors.pauli
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      pauli_literal_to_bools
+      pauli_product
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      PauliString
+   
+   
+
+   
+   
+   
+
+
+

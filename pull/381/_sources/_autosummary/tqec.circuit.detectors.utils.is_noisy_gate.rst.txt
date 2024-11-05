@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.is\_noisy\_gate
+============================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: is_noisy_gate

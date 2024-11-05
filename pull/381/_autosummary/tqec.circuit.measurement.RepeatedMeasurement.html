@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -727,11 +739,11 @@
 <p>A unique representation for a repeated measurement in a quantum circuit.</p>
 <p>This class aims at being able to represent a repeated measurement in a
 quantum circuit in a unique and easily usable way.
-Repeated measurements can be found when a <code class="xref py py-class docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code>
+Repeated measurements can be found when a <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code>
 contains measurements.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is not a global representation as the <cite>offsets</cite> is always
+<p>This is not a global representation as the <code class="docutils literal notranslate"><span class="pre">offsets</span></code> is always
 relative to the end of the quantum circuit considered.</p>
 </div>
 <dl class="py attribute">
@@ -751,8 +763,8 @@ relative to the end of the quantum circuit considered.</p>
 <dd><p>an interval only containing negative offsets representing the
 number of measurements performed on the provided qubit after the
 represented measurement.
-A value of <cite>-1</cite> means that the represented measurement is the
-last one applied on <cite>qubit</cite>.</p>
+A value of <code class="docutils literal notranslate"><span class="pre">-1</span></code> means that the represented measurement is the
+last one applied on <code class="docutils literal notranslate"><span class="pre">qubit</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="tqec.interval.Interval.html#tqec.interval.Interval" title="tqec.interval.Interval">tqec.interval.Interval</a></p>
@@ -762,7 +774,7 @@ last one applied on <cite>qubit</cite>.</p>
 
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>offsetd</cite> contains positive entries.</p>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">offset</span></code> contains positive entries.</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -772,7 +784,7 @@ last one applied on <cite>qubit</cite>.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.measurement.RepeatedMeasurement.map_qubit" title="tqec.circuit.measurement.RepeatedMeasurement.map_qubit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_qubit</span></code></a>(qubit_map)</p></td>
-<td><p>Returns a new instance representing a measurement on the qubit obtained from <cite>self.qubit</cite> and the provided <cite>qubit_map</cite>.</p></td>
+<td><p>Returns a new instance representing a measurement on the qubit obtained from <code class="docutils literal notranslate"><span class="pre">self.qubit</span></code> and the provided <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.measurement.RepeatedMeasurement.measurements" title="tqec.circuit.measurement.RepeatedMeasurement.measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurements</span></code></a>()</p></td>
 <td><p></p></td>
@@ -808,7 +820,7 @@ last one applied on <cite>qubit</cite>.</p>
 <dt class="sig sig-object py" id="tqec.circuit.measurement.RepeatedMeasurement.map_qubit">
 <span class="sig-name descname"><span class="pre">map_qubit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.measurement.RepeatedMeasurement" title="tqec.circuit.measurement.RepeatedMeasurement"><span class="pre">RepeatedMeasurement</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/measurement.html#RepeatedMeasurement.map_qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.measurement.RepeatedMeasurement.map_qubit" title="Link to this definition">#</a></dt>
 <dd><p>Returns a new instance representing a measurement on the qubit
-obtained from <cite>self.qubit</cite> and the provided <cite>qubit_map</cite>.</p>
+obtained from <code class="docutils literal notranslate"><span class="pre">self.qubit</span></code> and the provided <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubit_map</strong> – a correspondence map for qubits.</p>
@@ -836,7 +848,7 @@ obtained from <cite>self.qubit</cite> and the provided <cite>qubit_map</cite>.</
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a new instance with the specified offset from <cite>self</cite>.</p>
+<dd class="field-even"><p>a new instance with the specified offset from <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -850,7 +862,7 @@ obtained from <cite>self.qubit</cite> and the provided <cite>qubit_map</cite>.</
 <dd class="field-odd"><p><strong>t</strong> – temporal offset.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a new instance with the specified offset from <cite>self</cite>.</p>
+<dd class="field-even"><p>a new instance with the specified offset from <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

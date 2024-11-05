@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -716,53 +728,60 @@
 <span id="tqec-circuit"></span><h1>tqec.circuit<a class="headerlink" href="#module-tqec.circuit" title="Link to this heading">#</a></h1>
 <p>Defines core classes and functions to represent and manipulate quantum
 circuits.</p>
-<p>This package defines the core class <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> that is used to
-represent a quantum circuit in the <cite>tqec</cite> library. It also defines a few core
-functions:</p>
+<p>This package defines the core class <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>
+that is used to represent a quantum circuit in the <cite>tqec</cite> library. It also
+defines a few core functions:</p>
 <ul class="simple">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">annotate_detectors_automatically()</span></code> that takes a quantum circuit implementing
-a complete QEC circuit and adds <cite>DETECTOR</cite> annotations.</p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_circuit()</span></code> that takes a <code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code> instance and a description
-of plaquettes via a <code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquettes</span></code> instance and generates a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instance that corresponds to the circuit described.</p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code> that is a function that helps merging several
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instances containing gates that are potentially scheduled
-at the same time (but not on the same qubits).</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.detectors.construction.annotate_detectors_automatically.html#tqec.circuit.detectors.construction.annotate_detectors_automatically" title="tqec.circuit.detectors.construction.annotate_detectors_automatically"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotate_detectors_automatically()</span></code></a>
+that takes a quantum circuit implementing a complete QEC circuit and adds
+<code class="docutils literal notranslate"><span class="pre">DETECTOR</span></code> annotations.</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a> that takes a
+<a class="reference internal" href="tqec.templates.base.Template.html#tqec.templates.base.Template" title="tqec.templates.base.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> instance and a description of
+plaquettes via a <a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquettes</span></code></a> instance and
+generates a <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance that
+corresponds to the circuit described.</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> that is a function
+that helps merging several <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>
+instances containing gates that are potentially scheduled at the same time
+(but not on the same qubits).</p></li>
 </ul>
-<p>Functions from this package are really the backbone of the <cite>tqec</cite> library and are
-re-used in higher-level packages (such as <cite>tqec.compile</cite>).</p>
+<p>Functions from this package are really the backbone of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a>
+library and are re-used in higher-level packages (such as <a class="reference internal" href="tqec.compile.html#module-tqec.compile" title="tqec.compile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec.compile</span></code></a>).</p>
 <p class="rubric">Modules</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.coordinates.html#module-tqec.circuit.coordinates" title="tqec.circuit.coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coordinates</span></code></a></p></td>
 <td><p>Implements a wrapper to standardise stim coordinate system across the code base.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.generation.html#module-tqec.circuit.generation" title="tqec.circuit.generation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generation</span></code></a></p></td>
-<td><p>Defines <code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code>, one of the core method of the <cite>tqec</cite> package.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.detectors.html#module-tqec.circuit.detectors" title="tqec.circuit.detectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detectors</span></code></a></p></td>
+<td><p>Sub-package to compute automatically detectors in circuits.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.instructions.html#module-tqec.circuit.instructions" title="tqec.circuit.instructions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instructions</span></code></a></p></td>
-<td><p>Defines a few functions to analyse and create <cite>stim.CircuitInstruction</cite> instances.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.generation.html#module-tqec.circuit.generation" title="tqec.circuit.generation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generation</span></code></a></p></td>
+<td><p>Defines <code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code>, one of the core method of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.measurement.html#module-tqec.circuit.measurement" title="tqec.circuit.measurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurement</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.instructions.html#module-tqec.circuit.instructions" title="tqec.circuit.instructions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instructions</span></code></a></p></td>
+<td><p>Defines a few functions to analyse and create <code class="docutils literal notranslate"><span class="pre">stim.CircuitInstruction</span></code> instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.measurement.html#module-tqec.circuit.measurement" title="tqec.circuit.measurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurement</span></code></a></p></td>
 <td><p>Defines two classes to represent measurements in a quantum circuit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.measurement_map.html#module-tqec.circuit.measurement_map" title="tqec.circuit.measurement_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurement_map</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.measurement_map.html#module-tqec.circuit.measurement_map" title="tqec.circuit.measurement_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measurement_map</span></code></a></p></td>
+<td><p>Defines <code class="xref py py-class docutils literal notranslate"><span class="pre">MeasurementRecordsMap</span></code>, the class used to represent and query measurement offsets in a circuit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.moment.html#module-tqec.circuit.moment" title="tqec.circuit.moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moment</span></code></a></p></td>
+<td><p>Defines a class analogous to <code class="docutils literal notranslate"><span class="pre">cirq.Moment</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.observable_qubits.html#module-tqec.circuit.observable_qubits" title="tqec.circuit.observable_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">observable_qubits</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.moment.html#module-tqec.circuit.moment" title="tqec.circuit.moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moment</span></code></a></p></td>
-<td><p>Defines a class analogous to <cite>cirq.Moment</cite></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.observable_qubits.html#module-tqec.circuit.observable_qubits" title="tqec.circuit.observable_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">observable_qubits</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.qubit.html#module-tqec.circuit.qubit" title="tqec.circuit.qubit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.qubit.html#module-tqec.circuit.qubit" title="tqec.circuit.qubit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit</span></code></a></p></td>
 <td><p>Defines <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code> and helper functions to manage qubits.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.qubit_map.html#module-tqec.circuit.qubit_map" title="tqec.circuit.qubit_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit_map</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.qubit_map.html#module-tqec.circuit.qubit_map" title="tqec.circuit.qubit_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit_map</span></code></a></p></td>
+<td><p>Defines core data-structures to handle the mapping between qubit coordinates (as <a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code></a> instances) and qubit indices.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.schedule.html#module-tqec.circuit.schedule" title="tqec.circuit.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.schedule.html#module-tqec.circuit.schedule" title="tqec.circuit.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
+<td><p>Defines <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>, used to represent quantum circuits all over the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package.</p></td>
 </tr>
 </tbody>
 </table>

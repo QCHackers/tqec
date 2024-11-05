@@ -398,14 +398,14 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.moment</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Defines a class analogous to `cirq.Moment`</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines a class analogous to ``cirq.Moment``.</span>
 
 <span class="sd">This module defines :class:`Moment` that is very close to the external</span>
-<span class="sd">[`cirq.Moment`](https://quantumai.google/reference/python/cirq/Moment)</span>
+<span class="sd">`cirq.Moment &lt;https://quantumai.google/reference/python/cirq/Moment&gt;`_</span>
 <span class="sd">class.</span>
 
-<span class="sd">Internally, :class:`Moment` stores the instructions using `stim.Circuit`</span>
-<span class="sd">instead of using `cirq` data-structures.</span>
+<span class="sd">Internally, :class:`Moment` stores the instructions using ``stim.Circuit``</span>
+<span class="sd">instead of using ``cirq`` data-structures.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
@@ -424,21 +424,21 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">class</span> <span class="nc">Moment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of instructions that can be executed in parallel.</span>
 
-<span class="sd">    This class is a collection of `stim.CircuitInstruction` instances that</span>
+<span class="sd">    This class is a collection of ``stim.CircuitInstruction`` instances that</span>
 <span class="sd">    can all be executed in parallel. That means that it maintains the following</span>
 <span class="sd">    invariant:</span>
 
 <span class="sd">    For each instruction contained in any instance of this class, exactly</span>
 <span class="sd">    one of the following assertions is true:</span>
 
-<span class="sd">    1. The instruction is an annotation (e.g., `QUBIT_COORDS`, `DETECTOR`, ...),</span>
-<span class="sd">    2. It is the only instruction of the `Moment` instance to be applied</span>
-<span class="sd">        on its targets. In other words, no other instructions in the `Moment`</span>
+<span class="sd">    1. The instruction is an annotation (e.g., ``QUBIT_COORDS``, ``DETECTOR``, ...),</span>
+<span class="sd">    2. It is the only instruction of the :class:`Moment` instance to be applied</span>
+<span class="sd">        on its targets. In other words, no other instructions in the :class:`Moment`</span>
 <span class="sd">        instance can be applied on the targets this instruction is applied to.</span>
 
 <span class="sd">    In practice, that means that this class match closely the definition of</span>
-<span class="sd">    [`cirq.Moment`](https://quantumai.google/reference/python/cirq/Moment).</span>
-<span class="sd">    The only minor different is that `cirq` only uses the second assertion</span>
+<span class="sd">    `cirq.Moment &lt;https://quantumai.google/reference/python/cirq/Moment&gt;`_.</span>
+<span class="sd">    The only minor different is that ``cirq`` only uses the second assertion</span>
 <span class="sd">    above (meaning that an annotation might push a quantum gate to the next</span>
 <span class="sd">    moment, even though the annotation is never executed in hardware).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -451,29 +451,32 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">used_qubits</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_avoid_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `Moment` instance.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a :class:`Moment` instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            circuit: collection of instructions representing the `Moment`. It</span>
-<span class="sd">                should represent a valid moment, see the class documentation for</span>
-<span class="sd">                a detailed explanation of the pre-conditions.</span>
-<span class="sd">            used_qubits: a set of qubit indices used in the provided `circuit`.</span>
+<span class="sd">            circuit: collection of instructions representing the :class:`Moment`.</span>
+<span class="sd">                It should represent a valid moment, see the class documentation</span>
+<span class="sd">                for a detailed explanation of the pre-conditions.</span>
+<span class="sd">            used_qubits: a set of qubit indices used in the provided ``circuit``.</span>
 <span class="sd">                It is the user responsibility to ensure that this input is</span>
-<span class="sd">                correct if it is provided, as any non-None input will not be</span>
-<span class="sd">                checked. Defaults to None, which triggers a call to</span>
-<span class="sd">                :func:`get_used_qubit_indices` to initialise the indices.</span>
-<span class="sd">            _avoid_checks: avoid checking the validity of the provided `circuit`.</span>
+<span class="sd">                correct if it is provided, as any non-``None`` input will not be</span>
+<span class="sd">                checked. Defaults to ``None``, which triggers a call to</span>
+<span class="sd">                :func:`.get_used_qubit_indices` to initialise the indices.</span>
+<span class="sd">            _avoid_checks: avoid checking the validity of the provided ``circuit``.</span>
 <span class="sd">                This parameter can be used when the user knows that the provided</span>
-<span class="sd">                `circuit` is a valid moment (and so checks the pre-conditions</span>
-<span class="sd">                listed in the class documentation). Defaults to False, which</span>
+<span class="sd">                ``circuit`` is a valid moment (and so checks the pre-conditions</span>
+<span class="sd">                listed in the class documentation). Defaults to ``False``, which</span>
 <span class="sd">                triggers a systematic check and might raise if the provided</span>
-<span class="sd">                circuit is not a valid moment.</span>
+<span class="sd">                ``circuit`` is not a valid moment.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the circuit contains one or more `TICK` instruction.</span>
-<span class="sd">            TQECException: if the circuit contains at least 2 non-annotation</span>
-<span class="sd">                instructions that are applied on the same qubit target.</span>
-<span class="sd">            TQECException: if the circuit contains a `REPEAT` block instruction.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains one or more</span>
+<span class="sd">                ``TICK`` instruction.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains at least 2</span>
+<span class="sd">                non-annotation instructions that are applied on the same qubit</span>
+<span class="sd">                target.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains a ``REPEAT``</span>
+<span class="sd">                block instruction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_avoid_checks</span><span class="p">:</span>
             <span class="n">Moment</span><span class="o">.</span><span class="n">check_is_valid_moment</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
@@ -499,10 +502,13 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">            circuit: instance to check.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the circuit contains one or more `TICK` instruction.</span>
-<span class="sd">            TQECException: if the circuit contains at least 2 non-annotation</span>
-<span class="sd">                instructions that are applied on the same qubit target.</span>
-<span class="sd">            TQECException: if the circuit contains a `REPEAT` block instruction.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains one or more</span>
+<span class="sd">                ``TICK`` instruction.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains at least 2</span>
+<span class="sd">                non-annotation instructions that are applied on the same qubit</span>
+<span class="sd">                target.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains a ``REPEAT``</span>
+<span class="sd">                block instruction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_ticks</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -527,8 +533,8 @@ window.addEventListener("load", () => mermaid.run());
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the qubit indices this moment operates on.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            Some instructions are considered annotations (e.g., `QUBIT_COORDS`,</span>
-<span class="sd">            see `tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an</span>
+<span class="sd">            Some instructions are considered annotations (e.g., ``QUBIT_COORDS``,</span>
+<span class="sd">            see :data:`~tqec.circuit.qubit.NON_COMPUTATION_INSTRUCTIONS` for an</span>
 <span class="sd">            exhaustive list). These instructions are ignored by this property,</span>
 <span class="sd">            meaning that the qubits they operate on will only be returned by</span>
 <span class="sd">            this property iff another non-annotation instruction is applied on</span>
@@ -539,7 +545,7 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="Moment.contains_instruction">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment.contains_instruction">[docs]</a>
     <span class="k">def</span> <span class="nf">contains_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return `True` if `self` contains at least one operation with the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if ``self`` contains at least one operation with the</span>
 <span class="sd">        provided name.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">instruction_name</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span></div>
 
@@ -550,7 +556,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="bp">self</span><span class="p">,</span> <span class="n">instructions_to_remove</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove in-place all the instructions that have their name in the</span>
-<span class="sd">        provided `instructions_to_remove`.&quot;&quot;&quot;</span>
+<span class="sd">        provided ``instructions_to_remove``.&quot;&quot;&quot;</span>
         <span class="n">new_circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">instructions_to_remove</span><span class="p">:</span>
@@ -560,7 +566,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
     <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add instructions in-place in `self`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add instructions in-place in ``self``.&quot;&quot;&quot;</span>
         <span class="n">both_sides_used_qubits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_qubits</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_used_qubits</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">both_sides_used_qubits</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -595,18 +601,18 @@ window.addEventListener("load", () => mermaid.run());
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an instruction to the :class:`Moment`.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            if you append an annotation (e.g., `DETECTOR` or `QUBIT_COORDS`) then</span>
-<span class="sd">            you should use :meth:`append_annotation` that is more efficient.</span>
+<span class="sd">            if you append an annotation (e.g., ``DETECTOR`` or ``QUBIT_COORDS``)</span>
+<span class="sd">            then you should use :meth:`append_annotation` that is more efficient.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name_or_instr: either the name of the instruction to append or the</span>
-<span class="sd">                actual instruction. If the name is provided, `targets` and `args`</span>
-<span class="sd">                are used to build the `stim.CircuitInstruction` instance that</span>
-<span class="sd">                will be appended. Else, they are not accessed.</span>
-<span class="sd">            targets: if `name_or_instr` is a string representing the instruction</span>
+<span class="sd">                actual instruction. If the name is provided, ``targets`` and</span>
+<span class="sd">                ``args`` are used to build the ``stim.CircuitInstruction``</span>
+<span class="sd">                instance that will be appended. Else, they are not accessed.</span>
+<span class="sd">            targets: if ``name_or_instr`` is a string representing the instruction</span>
 <span class="sd">                name, this argument represent the targets the instruction should</span>
 <span class="sd">                be applied on. Else, it is not used.</span>
-<span class="sd">            args: if `name_or_instr` is a string representing the instruction</span>
+<span class="sd">            args: if ``name_or_instr`` is a string representing the instruction</span>
 <span class="sd">                name, this argument represent the arguments the instruction</span>
 <span class="sd">                should be applied with. Else, it is not used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,19 +650,19 @@ window.addEventListener("load", () => mermaid.run());
     <span class="k">def</span> <span class="nf">append_annotation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">annotation_instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an annotation instruction to the Moment.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an annotation instruction to ``self``.</span>
 
-<span class="sd">        This method is way more efficient than :meth:`append_instruction` to</span>
-<span class="sd">        append an annotation. This is thanks to the fact that annotations are</span>
-<span class="sd">        not using any qubit and so can be appended without checking that the</span>
-<span class="sd">        instruction does not apply on already used qubits.</span>
+<span class="sd">        This method is way more efficient than :meth:`append` to append an</span>
+<span class="sd">        annotation. This is thanks to the fact that annotations are not using</span>
+<span class="sd">        any qubit and so can be appended without checking that the instruction</span>
+<span class="sd">        does not apply on already used qubits.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_instruction: an annotation to append to the moment</span>
-<span class="sd">                represented by `self`.</span>
+<span class="sd">                represented by ``self``.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if `not is_annotation_instruction(annotation_instruction)`.</span>
+<span class="sd">            TQECException: if ``not is_annotation_instruction(annotation_instruction)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_annotation_instruction</span><span class="p">(</span><span class="n">annotation_instruction</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
@@ -670,7 +676,7 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over all the instructions contained in the moment.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over all the instructions contained in ``self``.&quot;&quot;&quot;</span>
         <span class="c1"># We can ignore the type error below because:</span>
         <span class="c1"># 1. if a Moment instance is created with a stim.CircuitRepeatBlock</span>
         <span class="c1">#    instance, it will raise an exception.</span>
@@ -718,7 +724,7 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return `True` if the :class:`Moment` instance is empty.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the :class:`Moment` instance is empty.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
@@ -738,18 +744,18 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="Moment.with_mapped_qubit_indices">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment.with_mapped_qubit_indices">[docs]</a>
     <span class="k">def</span> <span class="nf">with_mapped_qubit_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubit_index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map the qubits **indices** the `Moment` instance is applied on.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map the qubits **indices** the :class:`Moment` instance is applied on.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            This method has to iterate over all the instructions in `self` and</span>
+<span class="sd">            This method has to iterate over all the instructions in ``self`` and</span>
 <span class="sd">            change the gate target they are applied on.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            qubit_index_map: the map used to modify the qubit targets.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a modified copy of `self` with the qubit gate targets mapped according</span>
-<span class="sd">            to the provided `qubit_index_map`.</span>
+<span class="sd">            a modified copy of ``self`` with the qubit gate targets mapped according</span>
+<span class="sd">            to the provided ``qubit_index_map``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
@@ -781,29 +787,29 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">def</span> <span class="nf">iter_stim_circuit_without_repeat_by_moments</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">collected_before_use</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Moment</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate over the `stim.Circuit` by moments.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate over the ``stim.Circuit`` by moments.</span>
 
-<span class="sd">    A moment in a `stim.Circuit` is a sequence of instructions between two `TICK`</span>
-<span class="sd">    instructions. Note that `stim.CircuitRepeatBlock` instances are explicitly not</span>
+<span class="sd">    A moment in a ``stim.Circuit`` is a sequence of instructions between two ``TICK``</span>
+<span class="sd">    instructions. Note that ``stim.CircuitRepeatBlock`` instances are explicitly not</span>
 <span class="sd">    supported and no such instance should appear in the provided circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        circuit: circuit to iterate over. Should not contain any REPEAT block.</span>
-<span class="sd">        collected_before_use: if `True`, the returned :class:`Moment` instances</span>
-<span class="sd">            will contain a copy of the temporary `stim.Circuit` instance</span>
+<span class="sd">        circuit: circuit to iterate over. Should not contain any ``REPEAT`` block.</span>
+<span class="sd">        collected_before_use: if ``True``, the returned :class:`Moment` instances</span>
+<span class="sd">            will contain a copy of the temporary ``stim.Circuit`` instance</span>
 <span class="sd">            representing the moment. This is needed if the yielded</span>
 <span class="sd">            :class:`Moment` instances are not used directly because the</span>
-<span class="sd">            underlying `stim.Circuit` instance is cleared when resuming the</span>
+<span class="sd">            underlying ``stim.Circuit`` instance is cleared when resuming the</span>
 <span class="sd">            generator.</span>
 
 <span class="sd">    Yields:</span>
-<span class="sd">        A `Moment` instance.</span>
+<span class="sd">        :class`Moment` instances.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if the provided `circuit` contains at least one</span>
-<span class="sd">            `stim.CircuitRepeatBlock` instance.</span>
-<span class="sd">        TQECException: if the provided `circuit` `TICK` instructions are not</span>
-<span class="sd">            inserted such that instructions between two `TICK` instructions</span>
+<span class="sd">        TQECException: if the provided ``circuit`` contains at least one</span>
+<span class="sd">            ``stim.CircuitRepeatBlock`` instance.</span>
+<span class="sd">        TQECException: if the provided ``circuit`` ``TICK`` instructions are not</span>
+<span class="sd">            inserted such that instructions between two ``TICK`` instructions</span>
 <span class="sd">            are always applied on disjoint sets of qubits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">copy_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">],</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>

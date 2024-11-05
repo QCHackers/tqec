@@ -1,0 +1,38 @@
+tqec.circuit.detectors.fragment
+===============================
+
+.. automodule:: tqec.circuit.detectors.fragment
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      split_stim_circuit_into_fragments
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Fragment
+      FragmentLoop
+   
+   
+
+   
+   
+   
+
+
+

@@ -398,7 +398,15 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.measurement_map</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines :class:`MeasurementRecordsMap`, the class used to represent and query</span>
+<span class="sd">measurement offsets in a circuit.</span>
+
+<span class="sd">This module defines :class:`MeasurementRecordsMap`. This class implements the</span>
+<span class="sd">necessary interface to register, modify and query measurement offsets from a</span>
+<span class="sd">``stim.Circuit``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
@@ -431,7 +439,7 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">    Raises:</span>
 <span class="sd">        TQECException: if at least one of the provided measurement record offsets</span>
-<span class="sd">            is non-negative (`&gt;=0`).</span>
+<span class="sd">            is non-negative (``&gt;=0``).</span>
 <span class="sd">        TQECException: if, for any of the provided qubits, the provided offsets</span>
 <span class="sd">            are not sorted.</span>
 <span class="sd">        TQECException: if any measurement offset is duplicated.</span>
@@ -471,25 +479,25 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement_map.MeasurementRecordsMap.html#tqec.circuit.measurement_map.MeasurementRecordsMap.from_scheduled_circuit">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_scheduled_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">ScheduledCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementMap` from a scheduled circuit.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementRecordsMap` from a scheduled circuit.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            circuit: circuit containing the measurements to map.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the provided `circuit` contains a `REPEAT` block.</span>
-<span class="sd">            TQECException: if the provided `circuit` contains an unsupported</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains a ``REPEAT`` block.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains an unsupported</span>
 <span class="sd">                measurement instruction. Currently, this method supports all</span>
 <span class="sd">                single-qubit measurement instructions (see the value of</span>
-<span class="sd">                `SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES`).</span>
+<span class="sd">                ``SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES``).</span>
 <span class="sd">            TQECException: if one of the measurement counted in</span>
-<span class="sd">                `circuit.num_measurements` was not processed (this should never</span>
+<span class="sd">                ``circuit.num_measurements`` was not processed (this should never</span>
 <span class="sd">                raise, but the post-condition is easy to check so this method</span>
 <span class="sd">                performs the check just in case).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a :class:`MeasurementMap` linking measurements in the provided</span>
-<span class="sd">            `circuit` to their offset.</span>
+<span class="sd">            a :class:`MeasurementRecordsMap` linking measurements in the provided</span>
+<span class="sd">            ``circuit`` to their offset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MeasurementRecordsMap</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">(</span><span class="n">include_qubit_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">circuit</span><span class="o">.</span><span class="n">qubit_map</span>
@@ -502,27 +510,27 @@ window.addEventListener("load", () => mermaid.run());
     <span class="k">def</span> <span class="nf">from_circuit</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementMap` from a circuit.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`MeasurementRecordsMap` from a circuit.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            circuit: circuit containing the measurements to map.</span>
-<span class="sd">            qubit_map: qubit map of the provided circuit. If `None`, the</span>
+<span class="sd">            qubit_map: qubit map of the provided circuit. If ``None``, the</span>
 <span class="sd">                qubit map is computed from the provided circuit. Default to</span>
-<span class="sd">                `None`.</span>
+<span class="sd">                ``None``.</span>
 <span class="sd">        Raises:</span>
-<span class="sd">            TQECException: if the provided `circuit` contains a `REPEAT` block.</span>
-<span class="sd">            TQECException: if the provided `circuit` contains an unsupported</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains a ``REPEAT`` block.</span>
+<span class="sd">            TQECException: if the provided ``circuit`` contains an unsupported</span>
 <span class="sd">                measurement instruction. Currently, this method supports all</span>
 <span class="sd">                single-qubit measurement instructions (see the value of</span>
-<span class="sd">                `SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES`).</span>
+<span class="sd">                ``SINGLE_QUBIT_MEASUREMENT_INSTRUCTION_NAMES``).</span>
 <span class="sd">            TQECException: if one of the measurement counted in</span>
-<span class="sd">                `circuit.num_measurements` was not processed (this should never</span>
+<span class="sd">                ``circuit.num_measurements`` was not processed (this should never</span>
 <span class="sd">                raise, but the post-condition is easy to check so this method</span>
 <span class="sd">                performs the check just in case).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a :class:`MeasurementMap` linking measurements in the provided</span>
-<span class="sd">            `circuit` to their offset.</span>
+<span class="sd">            a :class:`MeasurementRecordsMap` linking measurements in the provided</span>
+<span class="sd">            ``circuit`` to their offset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We iterate the circuit in forward order, which means that the first</span>
         <span class="c1"># measurement we will encounter will have a record offset of</span>
@@ -571,17 +579,17 @@ window.addEventListener("load", () => mermaid.run());
         <span class="bp">self</span><span class="p">,</span> <span class="n">mrecords_map</span><span class="p">:</span> <span class="n">MeasurementRecordsMap</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementRecordsMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a new :class:`MeasurementRecordsMap` with measurements from</span>
-<span class="sd">        `self` appearing before measurements from the provided `mrecords_map`.</span>
+<span class="sd">        ``self`` appearing before measurements from the provided ``mrecords_map``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            mrecords_map: records of measurements happening after the measurements</span>
-<span class="sd">                represented by `self`.</span>
-<span class="sd">            repetitions: number of time the measurements from `mrecords_map` are</span>
+<span class="sd">                represented by ``self``.</span>
+<span class="sd">            repetitions: number of time the measurements from ``mrecords_map`` are</span>
 <span class="sd">                repeated. Default to 1.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a new instance containing valid offsets for each measurement in `self`</span>
-<span class="sd">            and `mrecords_map`.</span>
+<span class="sd">            a new instance containing valid offsets for each measurement in ``self``</span>
+<span class="sd">            and ``mrecords_map``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_measurements_without_repetition</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span> <span class="k">for</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="n">mrecords_map</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>

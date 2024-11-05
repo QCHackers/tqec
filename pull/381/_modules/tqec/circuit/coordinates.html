@@ -412,20 +412,29 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">class</span> <span class="nc">StimCoordinates</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around a tuple of coordinates.</span>
 
-<span class="sd">    This class should be used whenever a `stim.CircuitInstruction` that expects</span>
+<span class="sd">    This class should be used whenever a ``stim.CircuitInstruction`` that expects</span>
 <span class="sd">    arguments that are interpreted by stim as coordinates is built. This is the</span>
-<span class="sd">    case of the `DETECTOR` instruction for example.</span>
+<span class="sd">    case of the ``DETECTOR`` instruction for example.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_ABS_TOL</span> <span class="o">=</span> <span class="mf">1e-10</span>
 
     <span class="n">x</span><span class="p">:</span> <span class="nb">float</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First spatial coordinate.&quot;&quot;&quot;</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">float</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Second spatial coordinate.&quot;&quot;&quot;</span>
     <span class="n">t</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Third coordinate, most of the time associated to time, but might be</span>
+<span class="sd">    associated to the third spatial coordinate in some contexts.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="StimCoordinates.to_stim_coordinates">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.coordinates.StimCoordinates.html#tqec.circuit.coordinates.StimCoordinates.to_stim_coordinates">[docs]</a>
     <span class="k">def</span> <span class="nf">to_stim_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tuple that can be used as ``stim`` coordinates.</span>
+
+<span class="sd">        The output of this method is intended to be forwarded to the third</span>
+<span class="sd">        argument of ``stim.CircuitInstruction``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
@@ -437,6 +446,7 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="StimCoordinates.offset_spatially_by">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.coordinates.StimCoordinates.html#tqec.circuit.coordinates.StimCoordinates.offset_spatially_by">[docs]</a>
     <span class="k">def</span> <span class="nf">offset_spatially_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StimCoordinates</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new instance with offset spatial coordinates.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">StimCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div>
 
 

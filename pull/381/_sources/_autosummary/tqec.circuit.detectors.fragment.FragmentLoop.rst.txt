@@ -1,0 +1,38 @@
+tqec.circuit.detectors.fragment.FragmentLoop
+============================================
+
+.. currentmodule:: tqec.circuit.detectors.fragment
+
+.. autoclass:: FragmentLoop
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FragmentLoop.__init__
+      ~FragmentLoop.with_repetitions
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~FragmentLoop.fragments
+      ~FragmentLoop.repetitions
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: with_repetitions
+   
+   

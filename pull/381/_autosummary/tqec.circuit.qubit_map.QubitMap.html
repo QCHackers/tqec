@@ -356,6 +356,18 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html">tqec.circuit.generation.generate_circuit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html">tqec.circuit.generation.generate_circuit_from_instantiation</a></li>
@@ -724,7 +736,8 @@
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QubitMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i2q:</span> <span class="pre">dict[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~tqec.circuit.qubit.GridQubit]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represent a bijection between <code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code> instances and indices.</p>
+<p>Represent a bijection between <a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridQubit</span></code></a>
+instances and indices.</p>
 <p>This class aims at representing a bidirectional mapping (hence the
 “bijection”) between qubits and their associated indices.</p>
 <dl class="field-list simple">
@@ -740,22 +753,22 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.filter_by_qubits" title="tqec.circuit.qubit_map.QubitMap.filter_by_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code></a>(qubits_to_keep)</p></td>
-<td><p>Filter the qubit map to only keep qubits present in the provided <cite>qubits_to_keep</cite>.</p></td>
+<td><p>Filter the qubit map to only keep qubits present in the provided <code class="docutils literal notranslate"><span class="pre">qubits_to_keep</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.from_circuit" title="tqec.circuit.qubit_map.QubitMap.from_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_circuit</span></code></a>(circuit)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.from_qubits" title="tqec.circuit.qubit_map.QubitMap.from_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_qubits</span></code></a>(qubits)</p></td>
-<td><p>Creates a qubit map from the provided <cite>qubits</cite>, associating indices using the order in which qubits are provided.</p></td>
+<td><p>Creates a qubit map from the provided <code class="docutils literal notranslate"><span class="pre">qubits</span></code>, associating indices using the order in which qubits are provided.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.items" title="tqec.circuit.qubit_map.QubitMap.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.to_circuit" title="tqec.circuit.qubit_map.QubitMap.to_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_circuit</span></code></a>()</p></td>
-<td><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions representing <cite>self</cite>.</p></td>
+<td><p>Get a circuit with only <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions representing <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap.with_mapped_qubits" title="tqec.circuit.qubit_map.QubitMap.with_mapped_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_mapped_qubits</span></code></a>(qubit_map)</p></td>
-<td><p>Change the qubits involved in <cite>self</cite> without changing the associated indices.</p></td>
+<td><p>Change the qubits involved in <code class="docutils literal notranslate"><span class="pre">self</span></code> without changing the associated indices.</p></td>
 </tr>
 </tbody>
 </table>
@@ -788,14 +801,14 @@
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.filter_by_qubits">
 <span class="sig-name descname"><span class="pre">filter_by_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits_to_keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.filter_by_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.filter_by_qubits" title="Link to this definition">#</a></dt>
 <dd><p>Filter the qubit map to only keep qubits present in the provided
-<cite>qubits_to_keep</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">qubits_to_keep</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubits_to_keep</strong> – the qubits to keep in the circuit.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a copy of <cite>self</cite> for which the assertion
-<cite>set(return_value.qubits).issubset(qubits_to_keep)</cite> is <cite>True</cite>.</p>
+<dd class="field-even"><p>a copy of <code class="docutils literal notranslate"><span class="pre">self</span></code> for which the assertion
+<code class="docutils literal notranslate"><span class="pre">set(return_value.qubits).issubset(qubits_to_keep)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -808,7 +821,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.from_qubits">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.from_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.from_qubits" title="Link to this definition">#</a></dt>
-<dd><p>Creates a qubit map from the provided <cite>qubits</cite>, associating indices
+<dd><p>Creates a qubit map from the provided <code class="docutils literal notranslate"><span class="pre">qubits</span></code>, associating indices
 using the order in which qubits are provided.</p>
 </dd></dl>
 
@@ -820,23 +833,23 @@ using the order in which qubits are provided.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.to_circuit">
 <span class="sig-name descname"><span class="pre">to_circuit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.to_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.to_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions representing
-<cite>self</cite>.</p>
+<dd><p>Get a circuit with only <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions representing
+<code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.with_mapped_qubits">
 <span class="sig-name descname"><span class="pre">with_mapped_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.with_mapped_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.with_mapped_qubits" title="Link to this definition">#</a></dt>
-<dd><p>Change the qubits involved in <cite>self</cite> without changing the associated
+<dd><p>Change the qubits involved in <code class="docutils literal notranslate"><span class="pre">self</span></code> without changing the associated
 indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubit_map</strong> – a map from qubits to qubits that should associate a qubit
-to each of the qubits represented by <cite>self</cite>.</p>
+to each of the qubits represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>KeyError</strong> – if any qubit in <cite>self.qubits</cite> is not present in the keys of
-    the provided <cite>qubit_map</cite>.</p>
+<dd class="field-even"><p><strong>KeyError</strong> – if any qubit in <code class="docutils literal notranslate"><span class="pre">self.qubits</span></code> is not present in the keys of
+    the provided <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code>.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a new instance representing the updated mapping.</p>

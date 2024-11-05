@@ -1,0 +1,41 @@
+tqec.circuit.detectors.match.MatchedDetector
+============================================
+
+.. currentmodule:: tqec.circuit.detectors.match
+
+.. autoclass:: MatchedDetector
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MatchedDetector.__init__
+      ~MatchedDetector.to_instruction
+      ~MatchedDetector.with_time_coordinate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MatchedDetector.coords
+      ~MatchedDetector.measurements
+      ~MatchedDetector.resets
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: to_instruction
+   .. automethod:: with_time_coordinate
+   
+   

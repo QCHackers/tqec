@@ -402,7 +402,7 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">This module defines a central class to represent a qubit placed on a</span>
 <span class="sd">2-dimensional grid, :class:`GridQubit`, and a few functions to extract</span>
-<span class="sd">qubit-related information from `stim.Circuit` instances.</span>
+<span class="sd">qubit-related information from ``stim.Circuit`` instances.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
@@ -430,17 +430,19 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coordinate of the qubit in the first spatial dimension.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coordinate of the qubit in the second spatial dimension.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
 
 <div class="viewcode-block" id="GridQubit.to_qubit_coords_instruction">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit.to_qubit_coords_instruction">[docs]</a>
     <span class="k">def</span> <span class="nf">to_qubit_coords_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the `QUBIT_COORDS` `stim.CircuitInstruction` needed to define</span>
-<span class="sd">        `self` in a `stim.Circuit`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``QUBIT_COORDS`` ``stim.CircuitInstruction`` needed to define</span>
+<span class="sd">        ``self`` in a ``stim.Circuit``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>
             <span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="n">index</span><span class="p">],</span>
@@ -513,7 +515,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    is not an annotation.</span>
 
 <span class="sd">    Note:</span>
-<span class="sd">        If a `REPEAT` instruction is found, each qubit access within the</span>
+<span class="sd">        If a ``REPEAT`` instruction is found, each qubit access within the</span>
 <span class="sd">        repeated block will be multiplied by the number of time the block is</span>
 <span class="sd">        repeated.</span>
 

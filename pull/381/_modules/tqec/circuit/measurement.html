@@ -428,6 +428,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="AbstractMeasurement">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement.AbstractMeasurement.html#tqec.circuit.measurement.AbstractMeasurement">[docs]</a>
 <span class="k">class</span> <span class="nc">AbstractMeasurement</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class to represent a measurement.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="AbstractMeasurement.offset_spatially_by">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.measurement.AbstractMeasurement.html#tqec.circuit.measurement.AbstractMeasurement.offset_spatially_by">[docs]</a>
     <span class="nd">@abstractmethod</span>
@@ -439,7 +441,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">            y: second spatial dimension offset.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a new instance with the specified offset from `self`.</span>
+<span class="sd">            a new instance with the specified offset from ``self``.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
@@ -453,7 +455,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">            t: temporal offset.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a new instance with the specified offset from `self`.</span>
+<span class="sd">            a new instance with the specified offset from ``self``.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
@@ -468,7 +470,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="bp">self</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="n">GridQubit</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractMeasurement</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new instance representing a measurement on the qubit</span>
-<span class="sd">        obtained from `self.qubit` and the provided `qubit_map`.</span>
+<span class="sd">        obtained from ``self.qubit`` and the provided ``qubit_map``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            qubit_map: a correspondence map for qubits.</span>
@@ -490,18 +492,18 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    in a unique and easily usable way.</span>
 
 <span class="sd">    Note:</span>
-<span class="sd">        This is not a global representation as the `offset` is always</span>
+<span class="sd">        This is not a global representation as the ``offset`` is always</span>
 <span class="sd">        relative to the end of the quantum circuit considered.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        qubit: qubit on which the represented measurement is performed.</span>
 <span class="sd">        offset: negative offset representing the number of measurements</span>
 <span class="sd">            performed on the provided qubit after the represented measurement.</span>
-<span class="sd">            A value of `-1` means that the represented measurement is the</span>
-<span class="sd">            last one applied on `qubit`.</span>
+<span class="sd">            A value of ``-1`` means that the represented measurement is the</span>
+<span class="sd">            last one applied on ``qubit``.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if the provided `offset` is not strictly negative.</span>
+<span class="sd">        TQECException: if the provided ``offset`` is not strictly negative.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span>
@@ -549,11 +551,11 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">    This class aims at being able to represent a repeated measurement in a</span>
 <span class="sd">    quantum circuit in a unique and easily usable way.</span>
-<span class="sd">    Repeated measurements can be found when a :class:`stim.CircuitRepeatBlock`</span>
+<span class="sd">    Repeated measurements can be found when a ``stim.CircuitRepeatBlock``</span>
 <span class="sd">    contains measurements.</span>
 
 <span class="sd">    Note:</span>
-<span class="sd">        This is not a global representation as the `offsets` is always</span>
+<span class="sd">        This is not a global representation as the ``offsets`` is always</span>
 <span class="sd">        relative to the end of the quantum circuit considered.</span>
 
 <span class="sd">    Attributes:</span>
@@ -561,11 +563,11 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        offsets: an interval only containing negative offsets representing the</span>
 <span class="sd">            number of measurements performed on the provided qubit after the</span>
 <span class="sd">            represented measurement.</span>
-<span class="sd">            A value of `-1` means that the represented measurement is the</span>
-<span class="sd">            last one applied on `qubit`.</span>
+<span class="sd">            A value of ``-1`` means that the represented measurement is the</span>
+<span class="sd">            last one applied on ``qubit``.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if the provided `offsetd` contains positive entries.</span>
+<span class="sd">        TQECException: if the provided ``offset`` contains positive entries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">qubit</span><span class="p">:</span> <span class="n">GridQubit</span>
@@ -624,14 +626,14 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        circuit: circuit to extract measurements from.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if the provided circuit contains a `REPEAT` block.</span>
+<span class="sd">        TQECException: if the provided circuit contains a ``REPEAT`` block.</span>
 <span class="sd">        TQECException: if the provided circuit contains a multi-qubit measurement</span>
-<span class="sd">            gate such as MXX or MPP.</span>
+<span class="sd">            gate such as ``MXX`` or ``MPP``.</span>
 <span class="sd">        TQECException: if the provided circuit contains a single-qubit</span>
 <span class="sd">            measurement gate with a non-qubit target.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        all the measurements present in the provided `circuit`, in their order</span>
+<span class="sd">        all the measurements present in the provided ``circuit``, in their order</span>
 <span class="sd">        of appearance (so in increasing order of measurement record offsets).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">qubit_map</span> <span class="o">=</span> <span class="n">QubitMap</span><span class="o">.</span><span class="n">from_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>

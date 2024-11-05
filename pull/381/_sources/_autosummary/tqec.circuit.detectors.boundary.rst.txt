@@ -1,0 +1,37 @@
+tqec.circuit.detectors.boundary
+===============================
+
+.. automodule:: tqec.circuit.detectors.boundary
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      manhattan_distance
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BoundaryStabilizer
+   
+   
+
+   
+   
+   
+
+
+

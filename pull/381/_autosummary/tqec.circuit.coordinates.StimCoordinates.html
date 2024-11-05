@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/tqec.circuit.coordinates.StimCoordinates';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.circuit.generation" href="tqec.circuit.generation.html" />
+    <link rel="next" title="tqec.circuit.detectors" href="tqec.circuit.detectors.html" />
     <link rel="prev" title="tqec.circuit.coordinates" href="tqec.circuit.coordinates.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -354,6 +354,18 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="tqec.circuit.coordinates.html">tqec.circuit.coordinates</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.circuit.coordinates.StimCoordinates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.generation.html">tqec.circuit.generation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -725,9 +737,9 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StimCoordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/coordinates.html#StimCoordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.coordinates.StimCoordinates" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Wrapper around a tuple of coordinates.</p>
-<p>This class should be used whenever a <cite>stim.CircuitInstruction</cite> that expects
+<p>This class should be used whenever a <code class="docutils literal notranslate"><span class="pre">stim.CircuitInstruction</span></code> that expects
 arguments that are interpreted by stim as coordinates is built. This is the
-case of the <cite>DETECTOR</cite> instruction for example.</p>
+case of the <code class="docutils literal notranslate"><span class="pre">DETECTOR</span></code> instruction for example.</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -735,10 +747,10 @@ case of the <cite>DETECTOR</cite> instruction for example.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.coordinates.StimCoordinates.offset_spatially_by" title="tqec.circuit.coordinates.StimCoordinates.offset_spatially_by"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset_spatially_by</span></code></a>(x, y)</p></td>
-<td><p></p></td>
+<td><p>Return a new instance with offset spatial coordinates.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.coordinates.StimCoordinates.to_stim_coordinates" title="tqec.circuit.coordinates.StimCoordinates.to_stim_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_stim_coordinates</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Returns a tuple that can be used as <code class="docutils literal notranslate"><span class="pre">stim</span></code> coordinates.</p></td>
 </tr>
 </tbody>
 </table>
@@ -747,13 +759,13 @@ case of the <cite>DETECTOR</cite> instruction for example.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">t</span></code></p></td>
-<td><p></p></td>
+<td><p>Third coordinate, most of the time associated to time, but might be associated to the third spatial coordinate in some contexts.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
-<td><p></p></td>
+<td><p>First spatial coordinate.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
-<td><p></p></td>
+<td><p>Second spatial coordinate.</p></td>
 </tr>
 </tbody>
 </table>
@@ -767,12 +779,16 @@ case of the <cite>DETECTOR</cite> instruction for example.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.coordinates.StimCoordinates.offset_spatially_by">
 <span class="sig-name descname"><span class="pre">offset_spatially_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.coordinates.StimCoordinates" title="tqec.circuit.coordinates.StimCoordinates"><span class="pre">StimCoordinates</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/coordinates.html#StimCoordinates.offset_spatially_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.coordinates.StimCoordinates.offset_spatially_by" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a new instance with offset spatial coordinates.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.coordinates.StimCoordinates.to_stim_coordinates">
 <span class="sig-name descname"><span class="pre">to_stim_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/coordinates.html#StimCoordinates.to_stim_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.coordinates.StimCoordinates.to_stim_coordinates" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a tuple that can be used as <code class="docutils literal notranslate"><span class="pre">stim</span></code> coordinates.</p>
+<p>The output of this method is intended to be forwarded to the third
+argument of <code class="docutils literal notranslate"><span class="pre">stim.CircuitInstruction</span></code>.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -798,11 +814,11 @@ case of the <cite>DETECTOR</cite> instruction for example.</p>
       </div>
     </a>
     <a class="right-next"
-       href="tqec.circuit.generation.html"
+       href="tqec.circuit.detectors.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">tqec.circuit.generation</p>
+        <p class="prev-next-title">tqec.circuit.detectors</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

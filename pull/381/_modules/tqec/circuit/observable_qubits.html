@@ -424,13 +424,16 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    Args:</span>
 <span class="sd">        template: The template to get the default observable qubits from.</span>
 <span class="sd">        k: scaling parameter used to instantiate the provided template.</span>
-<span class="sd">        plaquettes: The plaquettes to use to get the accurate positions of the observable qubits.</span>
-<span class="sd">        orientation: Whether to get the observable qubits from</span>
-<span class="sd">            the horizontal or vertical midline. Defaults to horizontal.</span>
+<span class="sd">        plaquettes: The plaquettes to use to get the accurate positions of the</span>
+<span class="sd">            observable qubits.</span>
+<span class="sd">        orientation: Whether to get the observable qubits from the horizontal or</span>
+<span class="sd">            vertical midline. Defaults to horizontal.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: If the number of plaquettes does not match the expected number.</span>
-<span class="sd">        TQECException: If the plaquettes are provided as a dictionary and 0 is in the keys.</span>
+<span class="sd">        TQECException: If the number of plaquettes does not match the expected</span>
+<span class="sd">            number.</span>
+<span class="sd">        TQECException: If the plaquettes are provided as a dictionary and 0 is</span>
+<span class="sd">            in the keys.</span>
 <span class="sd">        TQECException: If the template does not have a definable midline.</span>
 
 <span class="sd">    Returns:</span>

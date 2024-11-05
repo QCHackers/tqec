@@ -1,0 +1,6 @@
+tqec.circuit.detectors.match.match\_boundary\_stabilizers
+=========================================================
+
+.. currentmodule:: tqec.circuit.detectors.match
+
+.. autofunction:: match_boundary_stabilizers

@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.collapse\_pauli\_strings\_at\_moment
+=================================================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: collapse_pauli_strings_at_moment

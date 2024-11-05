@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tqec.circuit.generation.generate_circuit" href="tqec.circuit.generation.generate_circuit.html" />
-    <link rel="prev" title="tqec.circuit.coordinates.StimCoordinates" href="tqec.circuit.coordinates.StimCoordinates.html" />
+    <link rel="prev" title="tqec.circuit.detectors.utils.remove_annotations" href="tqec.circuit.detectors.utils.remove_annotations.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -354,6 +354,18 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="tqec.circuit.html">tqec.circuit</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.coordinates.html">tqec.circuit.coordinates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.circuit.coordinates.StimCoordinates.html">tqec.circuit.coordinates.StimCoordinates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.circuit.detectors.html">tqec.circuit.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.boundary.html">tqec.circuit.detectors.boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.construction.html">tqec.circuit.detectors.construction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.flow.html">tqec.circuit.detectors.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.fragment.html">tqec.circuit.detectors.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.match.html">tqec.circuit.detectors.match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.measurement.html">tqec.circuit.detectors.measurement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.pauli.html">tqec.circuit.detectors.pauli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.predicates.html">tqec.circuit.detectors.predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.circuit.detectors.utils.html">tqec.circuit.detectors.utils</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">tqec.circuit.generation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -717,20 +729,20 @@
                   
   <section id="module-tqec.circuit.generation">
 <span id="tqec-circuit-generation"></span><h1>tqec.circuit.generation<a class="headerlink" href="#module-tqec.circuit.generation" title="Link to this heading">#</a></h1>
-<p>Defines <a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a>, one of the core method of the <cite>tqec</cite>
+<p>Defines <a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a>, one of the core method of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a>
 package.</p>
-<p>This module defines two of core methods of the <cite>tqec</cite> package:</p>
+<p>This module defines two of core methods of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a> that is the most convenient method for external users.</p></li>
 <li><p><a class="reference internal" href="tqec.circuit.generation.generate_circuit_from_instantiation.html#tqec.circuit.generation.generate_circuit_from_instantiation" title="tqec.circuit.generation.generate_circuit_from_instantiation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit_from_instantiation()</span></code></a> that gives more freedom to the
 user (and is used internally by <a class="reference internal" href="tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit" title="tqec.circuit.generation.generate_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_circuit()</span></code></a>) at the expense of
 often less convenient inputs.</p></li>
 </ul>
-<p>Both of these methods are used to generate the <cite>stim.Circuit</cite> instance
+<p>Both of these methods are used to generate the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance
 representing <strong>one</strong> time slice (often equivalent to “one QEC round”). Users are
 expected to call these methods several times and concatenate the output
-<cite>stim.Circuit</cite> instances in time to obtain a full QEC implementation.</p>
-<p>Note that these methods do not work with <cite>REPEAT</cite> instructions.</p>
+<code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instances in time to obtain a full QEC implementation.</p>
+<p>Note that these methods do not work with <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> instructions.</p>
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -756,12 +768,12 @@ expected to call these methods several times and concatenate the output
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="tqec.circuit.coordinates.StimCoordinates.html"
+       href="tqec.circuit.detectors.utils.remove_annotations.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">tqec.circuit.coordinates.StimCoordinates</p>
+        <p class="prev-next-title">tqec.circuit.detectors.utils.remove_annotations</p>
       </div>
     </a>
     <a class="right-next"
