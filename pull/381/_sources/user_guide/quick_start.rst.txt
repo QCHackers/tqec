@@ -7,7 +7,7 @@ Quick start using ``tqec``
 The first step should be to define the error-corrected computation you want
 to implement. For the sake of simplicity, we will take an error-corrected CNOT
 implementation that has been defined using SketchUp and available at
-:download:`media/user_guide/quick_start/logical_cnot.dae <../media/user_guide/quick_start/logical_cnot.dae>`.
+:download:`media/user_guide/logical_cnot.dae <../media/user_guide/logical_cnot.dae>`.
 
 .. only:: builder_html
 
