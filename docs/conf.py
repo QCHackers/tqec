@@ -157,6 +157,7 @@ nbsphinx_prolog = """
 """
 nbsphinx_thumbnails = {
     "media/gallery/logical_cnot/notebook": "_static/media/gallery/cnot.png",
+    "media/gallery/memory/notebook": "_static/media/gallery/memory.png",
 }
 
 # -- Options for autosummary extension ---------------------------------------
