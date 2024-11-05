@@ -6,7 +6,7 @@ constructing and compiling large-scale fault-tolerant quantum computations based
 In the past decade, there have been significant advancements in surface code quantum computation based on lattice surgery.
 However, the circuits required to implement these protocols are highly complex. To combine these protocols for constructing larger-scale computation,
 a substantial amount of effort is needed to manually encode the circuits, and it is extremely challenging to ensure their correctness.
-As a result, many complex logical computations have not been practically simulated. `tqec` provides numerous building blocks based on state-of-the-art protocls,
+As a result, many complex logical computations have not been practically simulated. `tqec` provides numerous building blocks based on state-of-the-art protocols,
 with verified correct circuits implementation for each block. These blocks can then be combined to construct large-scale logical computations,
 enabling the automatic compilation of large-scale computational circuits.
 
