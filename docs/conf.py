@@ -155,6 +155,9 @@ nbsphinx_prolog = """
         }
     </style>
 """
+nbsphinx_thumbnails = {
+    'media/gallery/logical_cnot/notebook': '_static/media/gallery/cnot.png',
+}
 
 # -- Options for autosummary extension ---------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
