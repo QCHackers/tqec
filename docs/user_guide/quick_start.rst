@@ -7,7 +7,7 @@ Quick start using ``tqec``
 The first step should be to define the error-corrected computation you want
 to implement. For the sake of simplicity, we will take an error-corrected CNOT
 implementation that has been defined using SketchUp and available at
-:download:`media/quick_start/logical_cnot.dae <../media/quick_start/logical_cnot.dae>`.
+:download:`media/user_guide/quick_start/logical_cnot.dae <../media/user_guide/quick_start/logical_cnot.dae>`.
 
 .. only:: builder_html
 
@@ -16,7 +16,7 @@ implementation that has been defined using SketchUp and available at
     .. raw:: html
 
         <iframe
-        src="../_static/media/quick_start/logical_cnot.html"
+        src="../_static/media/user_guide/quick_start/logical_cnot.html"
         title="Interactive visualisation of an error-corrected topological CNOT implementation"
         width=100%
         height=500
@@ -107,7 +107,7 @@ And that's all! You now have a quantum circuit representing the topological
 error-corrected implementation of a CNOT gate shown at the beginning of this page.
 
 You can download the circuit in a ``stim`` format here:
-:download:`media/quick_start/logical_cnot.stim <../media/quick_start/logical_cnot.stim>`.
+:download:`media/user_guide/quick_start/logical_cnot.stim <../media/user_guide/quick_start/logical_cnot.stim>`.
 
 6. Simulate multiple experiments
 --------------------------------
