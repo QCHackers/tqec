@@ -1,5 +1,5 @@
-"""Defines :class:`MeasurementRecordsMap`, the class used to represent and query
-measurement offsets in a circuit.
+"""Defines :class:`~tqec.circuit.measurement_map.MeasurementRecordsMap`, the
+class used to represent and query measurement offsets in a circuit.
 
 This module defines :class:`MeasurementRecordsMap`. This class implements the
 necessary interface to register, modify and query measurement offsets from a

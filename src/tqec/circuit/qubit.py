@@ -1,4 +1,5 @@
-"""Defines :class:`GridQubit` and helper functions to manage qubits.
+"""Defines :class:`~tqec.circuit.qubit.GridQubit` and helper functions to manage
+qubits.
 
 This module defines a central class to represent a qubit placed on a
 2-dimensional grid, :class:`GridQubit`, and a few functions to extract
