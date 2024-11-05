@@ -740,36 +740,36 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScheduledCircuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.schedule.Schedule.html#tqec.circuit.schedule.schedule.Schedule" title="tqec.circuit.schedule.schedule.Schedule"><span class="pre">Schedule</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">_avoid_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represent a quantum circuit with scheduled moments.</p>
-<p>This class aims at representing a <cite>stim.Circuit</cite> instance that has all
+<p>This class aims at representing a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance that has all
 its moments scheduled, i.e., associated with a time slice.</p>
-<p>This class explicitly does not support <cite>stim.CircuitRepeatBlock</cite> (i.e.,
-<cite>REPEAT</cite> instruction). It will raise an exception if such an instruction is
-found.</p>
+<p>This class explicitly does not support <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> (i.e.,
+<code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> instruction). It will raise an exception if such an
+instruction is found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>moments</strong> – moments representing the computation that is scheduled.
-The provided <cite>moments</cite> should not contain any <cite>QUBIT_COORDS</cite>
+The provided <code class="docutils literal notranslate"><span class="pre">moments</span></code> should not contain any <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code>
 instructions. Instead, the qubit coordinates should be provided
-through the <cite>qubit_map</cite> parameter.</p></li>
-<li><p><strong>schedule</strong> – schedule of the provided <cite>moments</cite>. If an integer is
-provided, each moment of the provided <cite>stim.Circuit</cite> is
+through the <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code> parameter.</p></li>
+<li><p><strong>schedule</strong> – schedule of the provided <code class="docutils literal notranslate"><span class="pre">moments</span></code>. If an integer is
+provided, each moment of the provided <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> is
 scheduled sequentially, starting by the provided integer.</p></li>
 <li><p><strong>qubit_map</strong> – a map from indices to qubits that is used to re-create
-<cite>QUBIT_COORDS</cite> instructions when generating a <cite>stim.Circuit</cite>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions when generating a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code>.</p></li>
 <li><p><strong>_avoid_checks</strong> – if True, the inputs are not checked for pre-condition
 violation and it is up to the user to ensure that
-ScheduledCircuit pre-conditions are checked by the provided
-input.</p></li>
+<a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> pre-conditions are checked by the
+provided input.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ScheduleError</strong> – if the provided schedule is invalid.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>stim.CircuitRepeatBlock</cite> instance.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>QUBIT_COORDS</cite> instruction after the first <cite>TICK</cite> instruction.</p></li>
+<li><p><strong>ScheduleError</strong> – if the provided <code class="docutils literal notranslate"><span class="pre">schedule</span></code> is invalid.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> instance.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instruction after the first <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instruction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -780,19 +780,19 @@ input.</p></li>
 <td><p>Represent a quantum circuit with scheduled moments.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index" title="tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_to_schedule_index</span></code></a>(schedule, moment)</p></td>
-<td><p>Add the operations contained in the provided moment at the provided schedule.</p></td>
+<td><p>Add the operations contained in the provided <code class="docutils literal notranslate"><span class="pre">moment</span></code> to the provided schedule.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.append_annotation" title="tqec.circuit.schedule.circuit.ScheduledCircuit.append_annotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_annotation</span></code></a>(instruction)</p></td>
 <td><p>Append an annotation to the last moment.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.append_new_moment" title="tqec.circuit.schedule.circuit.ScheduledCircuit.append_new_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_new_moment</span></code></a>(moment)</p></td>
-<td><p>Schedule the provided Moment instance at the end of the circuit.</p></td>
+<td><p>Schedule the provided <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance at the end of the circuit.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.append_observable" title="tqec.circuit.schedule.circuit.ScheduledCircuit.append_observable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_observable</span></code></a>(index, targets)</p></td>
-<td><p>Append an <cite>OBSERVABLE_INCLUDE</cite> instruction to the last moment.</p></td>
+<td><p>Append an <code class="docutils literal notranslate"><span class="pre">OBSERVABLE_INCLUDE</span></code> instruction to the last moment.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.empty" title="tqec.circuit.schedule.circuit.ScheduledCircuit.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Returns an empty <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.filter_by_qubits" title="tqec.circuit.schedule.circuit.ScheduledCircuit.filter_by_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_qubits</span></code></a>(qubits_to_keep)</p></td>
 <td><p>Filter the circuit to keep only the instructions that are applied on the provided qubits.</p></td>
@@ -801,22 +801,22 @@ input.</p></li>
 <td><p>Build a <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance from a circuit and a schedule.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_circuit</span></code></a>([include_qubit_coords])</p></td>
-<td><p>Build and return the <cite>stim.Circuit</cite> instance represented by self.</p></td>
+<td><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble" title="tqec.circuit.schedule.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qubit_coords_definition_preamble</span></code></a>()</p></td>
-<td><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions.</p></td>
+<td><p>Get a circuit with only <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_repeated_circuit</span></code></a>(repetitions[, ...])</p></td>
-<td><p>Build and return the <cite>stim.Circuit</cite> instance represented by self encapsulated in a <cite>REPEAT</cite> block.</p></td>
+<td><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code> encapsulated in a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_qubit_indices" title="tqec.circuit.schedule.circuit.ScheduledCircuit.map_qubit_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_qubit_indices</span></code></a>(qubit_index_map[, inplace])</p></td>
-<td><p>Map the qubits <strong>indices</strong> the <cite>ScheduledCircuit</cite> instance is applied on.</p></td>
+<td><p>Map the qubits <strong>indices</strong> the <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance is applied on.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits" title="tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_to_qubits</span></code></a>(qubit_map[, inplace_qubit_map])</p></td>
-<td><p>Map the qubits the <cite>ScheduledCircuit</cite> instance is applied on.</p></td>
+<td><p>Map the qubits the <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance is applied on.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.moment_at_schedule" title="tqec.circuit.schedule.circuit.ScheduledCircuit.moment_at_schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moment_at_schedule</span></code></a>(schedule)</p></td>
-<td><p>Get the Moment instance scheduled at the provided schedule.</p></td>
+<td><p>Get the <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance scheduled at the provided schedule.</p></td>
 </tr>
 </tbody>
 </table>
@@ -825,22 +825,22 @@ input.</p></li>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">moments</span></code></p></td>
-<td><p></p></td>
+<td><p>Iterator over the internal moments representing the computation.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_measurements</span></code></p></td>
-<td><p></p></td>
+<td><p>Number of measurements in the represented computation.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit_map</span></code></p></td>
-<td><p></p></td>
+<td><p>Qubit map of the circuit.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubits</span></code></p></td>
-<td><p></p></td>
+<td><p>Set of qubits on which the circuit is applied.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
-<td><p></p></td>
+<td><p>Schedule of the internal moments.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scheduled_moments</span></code></p></td>
-<td><p>Yields <cite>stim.Circuit</cite> instances representing a moment with their computed schedule.</p></td>
+<td><p>Yields <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instances representing a moment with their computed schedule.</p></td>
 </tr>
 </tbody>
 </table>
@@ -850,36 +850,36 @@ input.</p></li>
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.schedule.schedule.Schedule.html#tqec.circuit.schedule.schedule.Schedule" title="tqec.circuit.schedule.schedule.Schedule"><span class="pre">Schedule</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">_avoid_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.__init__" title="Link to this definition">#</a></dt>
 <dd><p>Represent a quantum circuit with scheduled moments.</p>
-<p>This class aims at representing a <cite>stim.Circuit</cite> instance that has all
+<p>This class aims at representing a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance that has all
 its moments scheduled, i.e., associated with a time slice.</p>
-<p>This class explicitly does not support <cite>stim.CircuitRepeatBlock</cite> (i.e.,
-<cite>REPEAT</cite> instruction). It will raise an exception if such an instruction is
-found.</p>
+<p>This class explicitly does not support <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> (i.e.,
+<code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> instruction). It will raise an exception if such an
+instruction is found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>moments</strong> – moments representing the computation that is scheduled.
-The provided <cite>moments</cite> should not contain any <cite>QUBIT_COORDS</cite>
+The provided <code class="docutils literal notranslate"><span class="pre">moments</span></code> should not contain any <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code>
 instructions. Instead, the qubit coordinates should be provided
-through the <cite>qubit_map</cite> parameter.</p></li>
-<li><p><strong>schedule</strong> – schedule of the provided <cite>moments</cite>. If an integer is
-provided, each moment of the provided <cite>stim.Circuit</cite> is
+through the <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code> parameter.</p></li>
+<li><p><strong>schedule</strong> – schedule of the provided <code class="docutils literal notranslate"><span class="pre">moments</span></code>. If an integer is
+provided, each moment of the provided <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> is
 scheduled sequentially, starting by the provided integer.</p></li>
 <li><p><strong>qubit_map</strong> – a map from indices to qubits that is used to re-create
-<cite>QUBIT_COORDS</cite> instructions when generating a <cite>stim.Circuit</cite>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions when generating a <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code>.</p></li>
 <li><p><strong>_avoid_checks</strong> – if True, the inputs are not checked for pre-condition
 violation and it is up to the user to ensure that
-ScheduledCircuit pre-conditions are checked by the provided
-input.</p></li>
+<a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> pre-conditions are checked by the
+provided input.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ScheduleError</strong> – if the provided schedule is invalid.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>stim.CircuitRepeatBlock</cite> instance.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>QUBIT_COORDS</cite> instruction after the first <cite>TICK</cite> instruction.</p></li>
+<li><p><strong>ScheduleError</strong> – if the provided <code class="docutils literal notranslate"><span class="pre">schedule</span></code> is invalid.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> instance.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instruction after the first <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instruction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -888,15 +888,16 @@ input.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index">
 <span class="sig-name descname"><span class="pre">add_to_schedule_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.add_to_schedule_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index" title="Link to this definition">#</a></dt>
-<dd><p>Add the operations contained in the provided moment at the provided
+<dd><p>Add the operations contained in the provided <code class="docutils literal notranslate"><span class="pre">moment</span></code> to the provided
 schedule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>schedule</strong> – schedule at which operations in <cite>moment</cite> should be added.
+<li><p><strong>schedule</strong> – schedule at which operations in <code class="docutils literal notranslate"><span class="pre">moment</span></code> should be added.
 If the schedule is negative, it is considered as an index from
-the end. For example, -1 is the last schedule and -2 is the
-last schedule - 1 (which might not be the second to last schedule).</p></li>
+the end. For example, <code class="docutils literal notranslate"><span class="pre">-1</span></code> is the last schedule and <code class="docutils literal notranslate"><span class="pre">-2</span></code> is the
+<code class="docutils literal notranslate"><span class="pre">last</span> <span class="pre">schedule</span> <span class="pre">-</span> <span class="pre">1</span></code> (which might not be the second to last
+schedule).</p></li>
 <li><p><strong>moment</strong> – operations that should be added.</p></li>
 </ul>
 </dd>
@@ -910,7 +911,7 @@ last schedule - 1 (which might not be the second to last schedule).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>instruction</strong> – an annotation that will be added to the last moment of
-<cite>self</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided instruction is not an annotation.</p>
@@ -921,8 +922,9 @@ last schedule - 1 (which might not be the second to last schedule).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.append_new_moment">
 <span class="sig-name descname"><span class="pre">append_new_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.append_new_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.append_new_moment" title="Link to this definition">#</a></dt>
-<dd><p>Schedule the provided Moment instance at the end of the circuit. The
-new schedule will be the last schedule plus one.</p>
+<dd><p>Schedule the provided <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance
+at the end of the circuit. The new schedule will be the last schedule
+plus one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>moment</strong> – the moment to schedule.</p>
@@ -933,7 +935,7 @@ new schedule will be the last schedule plus one.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.append_observable">
 <span class="sig-name descname"><span class="pre">append_observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">GateTarget</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.append_observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.append_observable" title="Link to this definition">#</a></dt>
-<dd><p>Append an <cite>OBSERVABLE_INCLUDE</cite> instruction to the last moment.</p>
+<dd><p>Append an <code class="docutils literal notranslate"><span class="pre">OBSERVABLE_INCLUDE</span></code> instruction to the last moment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -947,7 +949,8 @@ new schedule will be the last schedule plus one.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.empty">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.empty" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Returns an empty <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.filter_by_qubits">
@@ -955,15 +958,15 @@ new schedule will be the last schedule plus one.</p>
 <dd><p>Filter the circuit to keep only the instructions that are applied on
 the provided qubits. If an instruction is applied on a qubit that is
 not in the provided list, it is removed.</p>
-<p>After filtering, the empty moments as well as the corresponding schedules are
-removed.</p>
+<p>After filtering, the empty moments as well as the corresponding schedules
+are removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubits_to_keep</strong> – the qubits to keep in the circuit.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a new instance of <cite>ScheduledCircuit</cite> with the filtered circuit and
-schedules.</p>
+<dd class="field-even"><p>a new instance of <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> with the filtered
+circuit and schedules.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -976,25 +979,26 @@ schedule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit</strong> – the instance of Circuit that is scheduled. Should not contain
-any instance of <cite>stim.CircuitRepeatBlock</cite>.</p></li>
-<li><p><strong>schedule</strong> – a sorted list of positive integers or a positive integer. If a
-list is given, it should contain as many values as there are moments
-in the provided <cite>stim.Circuit</cite> instance. If an integer is provided,
-each moment of the provided <cite>stim.Circuit</cite> is scheduled sequentially,
-starting by the provided schedule.</p></li>
-<li><p><strong>qubit_map</strong> – a map from indices to qubits. If None, this function will try to
-extract the qubit coordinates from the <cite>QUBIT_COORDS</cite> instructions
-found in the provided <cite>circuit</cite>. Else, the provided map will be used.</p></li>
+<li><p><strong>circuit</strong> – the instance of <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> that is scheduled. Should
+not contain any instance of <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code>.</p></li>
+<li><p><strong>schedule</strong> – a sorted list of positive integers or a positive integer.
+If a list is given, it should contain as many values as there
+are moments in the provided <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance. If an
+integer is provided, each moment of the provided <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code>
+is scheduled sequentially, starting by the provided schedule.</p></li>
+<li><p><strong>qubit_map</strong> – a map from indices to qubits. If None, this function will
+try to extract the qubit coordinates from the <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code>
+instructions found in the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code>. Else, the
+provided map will be used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ScheduleError</strong> – if the provided schedule is invalid.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>stim.CircuitRepeatBlock</cite> instance.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <cite>circuit</cite> contains at least one
-    <cite>QUBIT_COORDS</cite> instruction after the first <cite>TICK</cite> instruction.</p></li>
+<li><p><strong>ScheduleError</strong> – if the provided <code class="docutils literal notranslate"><span class="pre">schedule</span></code> is invalid.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">stim.CircuitRepeatBlock</span></code> instance.</p></li>
+<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if the provided <code class="docutils literal notranslate"><span class="pre">circuit</span></code> contains at least one
+    <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instruction after the first <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instruction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1003,14 +1007,14 @@ found in the provided <cite>circuit</cite>. Else, the provided map will be used.
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit">
 <span class="sig-name descname"><span class="pre">get_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_qubit_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.get_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build and return the <cite>stim.Circuit</cite> instance represented by self.</p>
+<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The circuit is re-built at each call! Use that function wisely.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>stim.Circuit</cite> instance represented by self.</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1018,44 +1022,44 @@ found in the provided <cite>circuit</cite>. Else, the provided map will be used.
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble">
 <span class="sig-name descname"><span class="pre">get_qubit_coords_definition_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.get_qubit_coords_definition_preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble" title="Link to this definition">#</a></dt>
-<dd><p>Get a circuit with only <cite>QUBIT_COORDS</cite> instructions.</p>
+<dd><p>Get a circuit with only <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit">
 <span class="sig-name descname"><span class="pre">get_repeated_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_qubit_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_additional_tick_in_body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.get_repeated_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build and return the <cite>stim.Circuit</cite> instance represented by self
-encapsulated in a <cite>REPEAT</cite> block.</p>
+<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>
+encapsulated in a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The circuit is re-built at each call! Use that function wisely.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>An extra <cite>TICK</cite> instruction is appended by default at the end of the
-body of the <cite>REPEAT</cite> block to mimic <cite>stim</cite> way of doing. You can
-control that behaviour with the <cite>include_additional_tick_in_body</cite>
+<p>An extra <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instruction is appended by default at the end of the
+body of the <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block to mimic <code class="docutils literal notranslate"><span class="pre">stim</span></code> way of doing. You can
+control that behaviour with the <code class="docutils literal notranslate"><span class="pre">include_additional_tick_in_body</span></code>
 parameter.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>repetitions</strong> – argument to the enclosing <cite>REPEAT</cite> block representing
+<li><p><strong>repetitions</strong> – argument to the enclosing <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block representing
 the number of repetitions that should be used in the returned
 circuit.</p></li>
-<li><p><strong>include_qubit_coords</strong> – if <cite>True</cite>, <cite>QUBIT_COORDS</cite> instructions are
+<li><p><strong>include_qubit_coords</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions are
 inserted at the beginning of the returned circuit (before the
-<cite>REPEAT</cite> block).</p></li>
-<li><p><strong>include_additional_tick_in_body</strong> – if <cite>True</cite>, an additional <cite>TICK</cite>
+<code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block).</p></li>
+<li><p><strong>include_additional_tick_in_body</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, an additional <code class="docutils literal notranslate"><span class="pre">TICK</span></code>
 instruction is appended to the <strong>body</strong> (i.e., the circuit
-inside the <cite>REPEAT</cite> block) of the returned circuit. This is the
-default behaviour as <cite>stim</cite> does that in its code and adding
-the <cite>TICK</cite> here makes more sense than after the <cite>REPEAT</cite> block.</p></li>
+inside the <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block) of the returned circuit. This is the
+default behaviour as <code class="docutils literal notranslate"><span class="pre">stim</span></code> does that in its code and adding
+the <code class="docutils literal notranslate"><span class="pre">TICK</span></code> here makes more sense than after the <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><cite>stim.Circuit</cite> instance represented by self encapsulated in a
-<cite>REPEAT</cite> block.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by self encapsulated in a
+<code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1063,11 +1067,11 @@ the <cite>TICK</cite> here makes more sense than after the <cite>REPEAT</cite> b
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.map_qubit_indices">
 <span class="sig-name descname"><span class="pre">map_qubit_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_index_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.map_qubit_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_qubit_indices" title="Link to this definition">#</a></dt>
-<dd><p>Map the qubits <strong>indices</strong> the <cite>ScheduledCircuit</cite> instance is
+<dd><p>Map the qubits <strong>indices</strong> the <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance is
 applied on.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method differs from <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits" title="tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ScheduledCircuit.map_to_qubits()</span></code></a>
+<p>This method differs from <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits" title="tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_to_qubits()</span></code></a>
 because it changes the qubit indices, which requires to iterate the
 whole circuit and change every instruction target.</p>
 <p>This method should be used before combining several
@@ -1078,15 +1082,15 @@ other.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qubit_index_map</strong> – the map used to modify the qubit targets.</p></li>
-<li><p><strong>inplace</strong> – if True, perform the modification in place and return self.
-Else, perform the modification in a copy and return the copy.
-Note that the runtime cost of this method should be the same
-independently of the value provided here.</p></li>
+<li><p><strong>inplace</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, perform the modification in place and return
+<code class="docutils literal notranslate"><span class="pre">self</span></code>. Else, perform the modification in a copy and return
+the copy. Note that the runtime cost of this method should be
+the same independently of the value provided here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a modified instance of <cite>ScheduledCircuit</cite> (a copy if inplace is
-<cite>True</cite>, else <cite>self</cite>).</p>
+<dd class="field-even"><p>a modified instance of <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> (a copy if
+<code class="docutils literal notranslate"><span class="pre">inplace</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, else <code class="docutils literal notranslate"><span class="pre">self</span></code>).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1094,19 +1098,19 @@ independently of the value provided here.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits">
 <span class="sig-name descname"><span class="pre">map_to_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace_qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.map_to_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits" title="Link to this definition">#</a></dt>
-<dd><p>Map the qubits the <cite>ScheduledCircuit</cite> instance is applied on.</p>
+<dd><p>Map the qubits the <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instance is applied on.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method only changes the <cite>QUBIT_COORDS</cite> instructions at the
+<p>This method only changes the <code class="docutils literal notranslate"><span class="pre">QUBIT_COORDS</span></code> instructions at the
 beginning of the circuit. As such, it never has to iterate on the
 whole quantum circuit and so this method is very efficient.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The underlying quantum circuit data-structure is never copied (even
-if <cite>inplace_qubit_map == True</cite>), so the returned instance should be
+if <code class="docutils literal notranslate"><span class="pre">inplace_qubit_map</span> <span class="pre">==</span> <span class="pre">True</span></code>), so the returned instance should be
 used with care, in particular if any method mutating the underlying
-circuit is called on <cite>self</cite> or the returned instance after calling
+circuit is called on <code class="docutils literal notranslate"><span class="pre">self</span></code> or the returned instance after calling
 that method.</p>
 </div>
 <dl class="field-list simple">
@@ -1114,13 +1118,13 @@ that method.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qubit_map</strong> – the map used to modify the qubits.</p></li>
 <li><p><strong>inplace_qubit_map</strong> – if True, replaces the qubit map directly in
-<cite>self</cite> and return <cite>self</cite>. Else, create a new instance from
-<cite>self</cite> <strong>without copying the underlying moments</strong>, simply
+<code class="docutils literal notranslate"><span class="pre">self</span></code> and return <code class="docutils literal notranslate"><span class="pre">self</span></code>. Else, create a new instance from
+<code class="docutils literal notranslate"><span class="pre">self</span></code> <strong>without copying the underlying moments</strong>, simply
 replacing the qubit map.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>an instance of <cite>ScheduledCircuit</cite> with a new qubit map.</p>
+<dd class="field-even"><p>an instance of <a class="reference internal" href="#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> with a new qubit map.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1128,16 +1132,18 @@ replacing the qubit map.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.moment_at_schedule">
 <span class="sig-name descname"><span class="pre">moment_at_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.moment_at_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.moment_at_schedule" title="Link to this definition">#</a></dt>
-<dd><p>Get the Moment instance scheduled at the provided schedule.</p>
+<dd><p>Get the <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a> instance scheduled at
+the provided schedule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>schedule</strong> – the schedule at which the Moment instance should be returned.
-If the schedule is negative, it is considered as an index from
-the end. For example, -1 is the last schedule and -2 is the
-last schedule - 1 (which might not be the second to last schedule).</p>
+<dd class="field-odd"><p><strong>schedule</strong> – the schedule at which the <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a>
+instance should be returned. If the <code class="docutils literal notranslate"><span class="pre">schedule</span></code> is negative, it
+is considered as an index from the end. For example, <code class="docutils literal notranslate"><span class="pre">-1</span></code> is the
+last schedule and <code class="docutils literal notranslate"><span class="pre">-2</span></code> is the <code class="docutils literal notranslate"><span class="pre">last</span> <span class="pre">schedule</span> <span class="pre">-</span> <span class="pre">1</span></code> (which
+might not be the second to last schedule).</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>TQECException if no moment exist at the provided schedule.</strong> – </p>
+<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if no moment exist at the provided <code class="docutils literal notranslate"><span class="pre">schedule</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

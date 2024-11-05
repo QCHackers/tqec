@@ -732,25 +732,26 @@
                   
   <section id="module-tqec.circuit.schedule.manipulation">
 <span id="tqec-circuit-schedule-manipulation"></span><h1>tqec.circuit.schedule.manipulation<a class="headerlink" href="#module-tqec.circuit.schedule.manipulation" title="Link to this heading">#</a></h1>
-<p>Defines functions to modify or merge <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instances.</p>
-<p>This module implement a few central functions for the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library:</p>
+<p>Defines functions to modify or merge
+<a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instances.</p>
+<p>This module implement a few central functions for the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> library:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.remove_duplicate_instructions.html#tqec.circuit.schedule.manipulation.remove_duplicate_instructions" title="tqec.circuit.schedule.manipulation.remove_duplicate_instructions"><code class="xref py py-func docutils literal notranslate"><span class="pre">remove_duplicate_instructions()</span></code></a> to remove some instructions appearing
 twice in a single moment (most of the time due to data qubit
 reset/measurements that are defined by each plaquette, even on qubits shared
 with other plaquettes, leading to duplicates).</p></li>
-<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> that merge several <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code>
-instances into one.</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> that merge several
+<a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instances into one.</p></li>
 <li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices.html#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices" title="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices"><code class="xref py py-func docutils literal notranslate"><span class="pre">relabel_circuits_qubit_indices()</span></code></a> to prepare several
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> before merging them. This function is called
-internally by <a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> but might be useful at other
-places and so is kept public.</p></li>
+<a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> before merging them.
+This function is called internally by <a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> but
+might be useful at other places and so is kept public.</p></li>
 </ul>
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_scheduled_circuits</span></code></a>(circuits, ...[, ...])</p></td>
-<td><p>Merge several ScheduledCircuit instances into one instance.</p></td>
+<td><p>Merge several <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instances into one instance.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices.html#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices" title="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relabel_circuits_qubit_indices</span></code></a>(circuits)</p></td>
 <td><p>Relabel the qubit indices of the provided circuits to avoid collision.</p></td>

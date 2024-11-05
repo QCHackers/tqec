@@ -744,12 +744,12 @@
 <p>This function guarantees the following post-conditions on the returned
 results:</p>
 <ul class="simple">
-<li><p>Instructions with a name that is not in <cite>mergeable_instruction_names</cite>
+<li><p>Instructions with a name that is not in <code class="docutils literal notranslate"><span class="pre">mergeable_instruction_names</span></code>
 are returned at the front of the returned list, in the same relative
-ordering as provided in <cite>instructions</cite> input.</p></li>
-<li><p>Instructions with a name that is in <cite>mergeable_instruction_names</cite> will
-be returned after all the instructions with a name that does not
-appear in <cite>mergeable_instruction_names</cite>. The order in which these
+ordering as provided in <code class="docutils literal notranslate"><span class="pre">instructions</span></code> input.</p></li>
+<li><p>Instructions with a name that is in <code class="docutils literal notranslate"><span class="pre">mergeable_instruction_names</span></code>
+will be returned after all the instructions with a name that does not
+appear in <code class="docutils literal notranslate"><span class="pre">mergeable_instruction_names</span></code>. The order in which these
 instructions are returned is not guaranteed and can change between
 executions.</p></li>
 </ul>
@@ -757,7 +757,7 @@ executions.</p></li>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>this function <strong>does not keep instruction ordering</strong>. It is intended to
-be used with input <cite>instructions</cite> that, once de-duplication has been
+be used with input <code class="docutils literal notranslate"><span class="pre">instructions</span></code> that, once de-duplication has been
 applied, form a valid moment, which means that each instruction can be
 executed in parallel, and so their order in the returned list does not
 matter.</p>
@@ -768,8 +768,8 @@ a warning if it happens.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a list containing a copy of the stim.CircuitInstruction instances from
-the given instructions but without any duplicate.</p>
+<dd class="field-odd"><p>a list containing a copy of the <code class="docutils literal notranslate"><span class="pre">stim.CircuitInstruction</span></code> instances
+from the given instructions but without any duplicate.</p>
 </dd>
 </dl>
 </dd></dl>

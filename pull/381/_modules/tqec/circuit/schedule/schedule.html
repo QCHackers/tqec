@@ -398,7 +398,10 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.schedule.schedule</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines the :class:`~.schedule.Schedule` class, a thin wrapper around ``list[int]``</span>
+<span class="sd">to represent a schedule.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Sequence</span>
@@ -410,7 +413,7 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.schedule.Schedule.html#tqec.circuit.schedule.schedule.Schedule">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Schedule</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thin wrapper around `list[int]` to represent a schedule.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thin wrapper around ``list[int]`` to represent a schedule.</span>
 
 <span class="sd">    This class ensures that the list of integers provided is a valid</span>
 <span class="sd">    schedule by checking that all entries are positive integers, that</span>
@@ -418,8 +421,10 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">schedule</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of integers representing the schedule.&quot;&quot;&quot;</span>
 
     <span class="n">_INITIAL_SCHEDULE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First entry of a default-constructed schedule.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Schedule</span><span class="o">.</span><span class="n">_check_schedule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">)</span>
@@ -431,7 +436,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a valid schedule from offsets.</span>
 
 <span class="sd">        This method should be used to avoid any dependency on</span>
-<span class="sd">        `Schedule._INITIAL_SCHEDULE` in user code.</span>
+<span class="sd">        :py:const:`Schedule._INITIAL_SCHEDULE` in user code.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Schedule</span><span class="p">([</span><span class="n">Schedule</span><span class="o">.</span><span class="n">_INITIAL_SCHEDULE</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">schedule_offsets</span><span class="p">])</span></div>
 
@@ -465,7 +470,7 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">        If inserting the integer results in an invalid schedule, the schedule is</span>
 <span class="sd">        brought back to its (valid) original state before calling this function</span>
-<span class="sd">        and a `ScheduleException` is raised.</span>
+<span class="sd">        and a :py:exc:`~.schedule.exception.ScheduleException` is raised.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            i: index at which the provided value should be inserted.</span>
@@ -490,7 +495,7 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">        If appending the integer results in an invalid schedule, the schedule is</span>
 <span class="sd">        brought back to its (valid) original state before calling this function</span>
-<span class="sd">        and a `ScheduleException` is raised.</span>
+<span class="sd">        and a :py:exc:`~.schedule.exception.ScheduleException` is raised.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: value to insert.</span>
@@ -513,9 +518,8 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">starting_index</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="k">else</span> <span class="n">Schedule</span><span class="o">.</span><span class="n">_INITIAL_SCHEDULE</span>
         <span class="p">)</span>
-        <span class="c1"># Note: not using a generator here but explicitly constructing a list</span>
-        <span class="c1">#       because if `schedule == self` a generator would induce an</span>
-        <span class="c1">#       infinite loop.</span>
+        <span class="c1"># Not using a generator here but explicitly constructing a list because</span>
+        <span class="c1"># if `schedule == self` a generator would induce an infinite loop.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">starting_index</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">schedule</span><span class="o">.</span><span class="n">schedule</span><span class="p">])</span></div>
 </div>
 

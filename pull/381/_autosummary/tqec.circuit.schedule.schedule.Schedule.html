@@ -739,7 +739,7 @@
 <dt class="sig sig-object py" id="tqec.circuit.schedule.schedule.Schedule">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/circuit/schedule/schedule.html#Schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.schedule.Schedule" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Thin wrapper around <cite>list[int]</cite> to represent a schedule.</p>
+<p>Thin wrapper around <code class="docutils literal notranslate"><span class="pre">list[int]</span></code> to represent a schedule.</p>
 <p>This class ensures that the list of integers provided is a valid
 schedule by checking that all entries are positive integers, that
 the list is sorted and that it does not contain any duplicate.</p>
@@ -768,7 +768,7 @@ the list is sorted and that it does not contain any duplicate.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
-<td><p></p></td>
+<td><p>List of integers representing the schedule.</p></td>
 </tr>
 </tbody>
 </table>
@@ -785,7 +785,7 @@ the list is sorted and that it does not contain any duplicate.</p>
 <dd><p>Append an integer to the schedule.</p>
 <p>If appending the integer results in an invalid schedule, the schedule is
 brought back to its (valid) original state before calling this function
-and a <cite>ScheduleException</cite> is raised.</p>
+and a <a class="reference internal" href="tqec.circuit.schedule.exception.ScheduleException.html#tqec.circuit.schedule.exception.ScheduleException" title="tqec.circuit.schedule.exception.ScheduleException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ScheduleException</span></code></a> is raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – value to insert.</p>
@@ -807,7 +807,7 @@ and a <cite>ScheduleException</cite> is raised.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.schedule.schedule.Schedule" title="tqec.circuit.schedule.schedule.Schedule"><span class="pre">Schedule</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/schedule.html#Schedule.from_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.schedule.Schedule.from_offsets" title="Link to this definition">#</a></dt>
 <dd><p>Get a valid schedule from offsets.</p>
 <p>This method should be used to avoid any dependency on
-<cite>Schedule._INITIAL_SCHEDULE</cite> in user code.</p>
+<code class="xref py py-const docutils literal notranslate"><span class="pre">Schedule._INITIAL_SCHEDULE</span></code> in user code.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -816,7 +816,7 @@ and a <cite>ScheduleException</cite> is raised.</p>
 <dd><p>Insert an integer to the schedule.</p>
 <p>If inserting the integer results in an invalid schedule, the schedule is
 brought back to its (valid) original state before calling this function
-and a <cite>ScheduleException</cite> is raised.</p>
+and a <a class="reference internal" href="tqec.circuit.schedule.exception.ScheduleException.html#tqec.circuit.schedule.exception.ScheduleException" title="tqec.circuit.schedule.exception.ScheduleException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ScheduleException</span></code></a> is raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

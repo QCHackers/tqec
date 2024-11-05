@@ -731,22 +731,33 @@
 <span id="tqec-circuit-schedule"></span><h1>tqec.circuit.schedule<a class="headerlink" href="#module-tqec.circuit.schedule" title="Link to this heading">#</a></h1>
 <p>Defines <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>, used to represent quantum circuits
 all over the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package.</p>
-<p>This module defines some of the most used classes across the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> code
-base.</p>
+<p>This module defines one of the main class of the <a class="reference internal" href="tqec.html#module-tqec" title="tqec"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tqec</span></code></a> package,
+<a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a>, and several functions to modify or create
+instances:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits" title="tqec.circuit.schedule.manipulation.merge_scheduled_circuits"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_scheduled_circuits()</span></code></a> that takes several instances of
+<a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> and merge them into one instance,</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices.html#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices" title="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices"><code class="xref py py-func docutils literal notranslate"><span class="pre">relabel_circuits_qubit_indices()</span></code></a> that takes several
+instances of <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> and relabel their qubits to
+avoid any index clash when merging,</p></li>
+<li><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.remove_duplicate_instructions.html#tqec.circuit.schedule.manipulation.remove_duplicate_instructions" title="tqec.circuit.schedule.manipulation.remove_duplicate_instructions"><code class="xref py py-func docutils literal notranslate"><span class="pre">remove_duplicate_instructions()</span></code></a> that removes some
+instructions when they are duplicated in a <a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Moment</span></code></a>
+instance.</p></li>
+</ul>
 <p class="rubric">Modules</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.schedule.circuit.html#module-tqec.circuit.schedule.circuit" title="tqec.circuit.schedule.circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">circuit</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Defines <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> that represents a quantum circuit with a specific schedule.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.schedule.exception.html#module-tqec.circuit.schedule.exception" title="tqec.circuit.schedule.exception"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exception</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Defines <a class="reference internal" href="tqec.circuit.schedule.exception.ScheduleException.html#tqec.circuit.schedule.exception.ScheduleException" title="tqec.circuit.schedule.exception.ScheduleException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduleException</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.circuit.schedule.manipulation.html#module-tqec.circuit.schedule.manipulation" title="tqec.circuit.schedule.manipulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">manipulation</span></code></a></p></td>
-<td><p>Defines functions to modify or merge <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> instances.</p></td>
+<td><p>Defines functions to modify or merge <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> instances.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.circuit.schedule.schedule.html#module-tqec.circuit.schedule.schedule" title="tqec.circuit.schedule.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Defines the <a class="reference internal" href="tqec.circuit.schedule.schedule.Schedule.html#tqec.circuit.schedule.schedule.Schedule" title="tqec.circuit.schedule.schedule.Schedule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Schedule</span></code></a> class, a thin wrapper around <code class="docutils literal notranslate"><span class="pre">list[int]</span></code> to represent a schedule.</p></td>
 </tr>
 </tbody>
 </table>

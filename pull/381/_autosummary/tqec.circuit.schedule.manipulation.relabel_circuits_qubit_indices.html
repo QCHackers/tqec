@@ -739,18 +739,18 @@
 <dt class="sig sig-object py" id="tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices">
 <span class="sig-name descname"><span class="pre">relabel_circuits_qubit_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><span class="pre">ScheduledCircuit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.qubit_map.QubitMap.html#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/manipulation.html#relabel_circuits_qubit_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices" title="Link to this definition">#</a></dt>
 <dd><p>Relabel the qubit indices of the provided circuits to avoid collision.</p>
-<p>When several <code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code> are constructed without a global
-knowledge of all the qubits, qubit indices used by each instance likely
-overlap. This is an issue when we try to merge such circuits because one
-index might represent a different qubit depending on the circuit it is used
-in.</p>
+<p>When several <a class="reference internal" href="tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit" title="tqec.circuit.schedule.circuit.ScheduledCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScheduledCircuit</span></code></a> are
+constructed without a global knowledge of all the qubits, qubit indices used
+by each instance likely overlap. This is an issue when we try to merge such
+circuits because one index might represent a different qubit depending on
+the circuit it is used in.</p>
 <p>This function takes a sequence of circuits and relabel their qubits to avoid
 such collisions.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>all the qubit targets used in each of the provided circuits should have
 a corresponding entry in the circuit qubit map for this function to work
-correctly. If that is not the case, a KeyError will be raised.</p>
+correctly. If that is not the case, a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> will be raised.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -762,11 +762,11 @@ correctly. If that is not the case, a KeyError will be raised.</p>
 this function and is only used in read-only mode.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>the same circuits with update qubit indices as well as the global qubit
+<dd class="field-odd"><p><p>the same circuits with updated qubit indices as well as the global qubit
 indices map that has been used. Qubits in the returned global qubit map
 are assigned to an index such that:</p>
 <ol class="arabic simple">
-<li><p>the sequence of indices is <cite>range(0, len(qubit_map))</cite>.</p></li>
+<li><p>the sequence of indices is <code class="docutils literal notranslate"><span class="pre">range(0,</span> <span class="pre">len(qubit_map))</span></code>.</p></li>
 <li><p>qubits are assigned indices in sorted order.</p></li>
 </ol>
 </p>
