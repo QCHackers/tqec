@@ -11,4 +11,5 @@
    Introduction <self>
    User Guide <user_guide/index>
    Contributor Guide <contributor_guide>
+   Gallery <gallery>
    API Reference <api>

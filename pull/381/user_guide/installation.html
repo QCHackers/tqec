@@ -147,6 +147,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../api.html">
     API Reference
   </a>
@@ -270,6 +277,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
   </a>
 </li>
 
@@ -403,11 +417,11 @@
                   
   <section id="how-to-install-tqec">
 <h1>How to install <code class="docutils literal notranslate"><span class="pre">tqec</span></code><a class="headerlink" href="#how-to-install-tqec" title="Link to this heading">#</a></h1>
-<section id="requirements-before-installing">
-<h2>Requirements before installing<a class="headerlink" href="#requirements-before-installing" title="Link to this heading">#</a></h2>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
 <section id="python-version">
 <h3>Python version<a class="headerlink" href="#python-version" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package only supports Python 3.10 and onward. If you have Python 3.9 or below,
+<p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package only supports Python 3.10 and later. If you have Python 3.9 or earlier,
 please update your Python installation.</p>
 </section>
 <section id="additional-toolchains">
@@ -416,9 +430,9 @@ please update your Python installation.</p>
 example the case of the <a class="reference external" href="https://pypi.org/project/pycryptosat/">pycryptosat</a> dependency.
 Pre-compiled Python packages that should be compatible with any GNU/Linux are provided
 by the author, but no pre-compiled package exist for Windows or MacOS.</p>
-<p>This means that, if you try to install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package on Windows or MacOS, a working
+<p>This means that if you try to install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package on Windows or MacOS, a working
 C++ toolchain should also be installed on your system.</p>
-<p>Here is a list of potential issues you might encounter and how to solve them:</p>
+<p>Here are some potential issues you might encounter and their solutions:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/QCHackers/tqec/issues/311">Failed building wheel for pycryptosat</a></p></li>
 </ul>
@@ -428,16 +442,16 @@ C++ toolchain should also be installed on your system.</p>
 <h2>Installation procedure<a class="headerlink" href="#installation-procedure" title="Link to this heading">#</a></h2>
 <section id="optional-create-a-new-environment">
 <h3>(optional) Create a new environment<a class="headerlink" href="#optional-create-a-new-environment" title="Link to this heading">#</a></h3>
-<p>It is a good practice to create a specific virtual environment for the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package.</p>
+<p>It is a good practice to create a new virtual environment for mananging the dependencies of the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package.</p>
 <p>One way of doing that is using the native <code class="docutils literal notranslate"><span class="pre">venv</span></code> package of your python installation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span><span class="o">[</span>path<span class="w"> </span>to<span class="w"> </span>where<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>your<span class="w"> </span>virtual<span class="w"> </span>environment<span class="o">]</span>/tqec
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
 <span class="c1"># On GNU/Linux and MacOS</span>
-<span class="nb">source</span><span class="w"> </span><span class="o">[</span>path<span class="w"> </span>to<span class="w"> </span>where<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>your<span class="w"> </span>virtual<span class="w"> </span>environment<span class="o">]</span>/tqec/bin/activate
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 <span class="c1"># On Windows</span>
 <span class="c1">## In cmd.exe</span>
-<span class="o">[</span>path<span class="w"> </span>to<span class="w"> </span>where<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>your<span class="w"> </span>virtual<span class="w"> </span>environment<span class="o">]</span><span class="se">\t</span>qec<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
+.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
 <span class="c1">## In PowerShell</span>
-<span class="o">[</span>path<span class="w"> </span>to<span class="w"> </span>where<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>your<span class="w"> </span>virtual<span class="w"> </span>environment<span class="o">]</span><span class="se">\t</span>qec<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
+.venv<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
 </pre></div>
 </div>
 </section>
@@ -512,7 +526,7 @@ Else, a message like</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements-before-installing">Requirements before installing</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version">Python version</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-toolchains">Additional toolchains</a></li>
 </ul>
