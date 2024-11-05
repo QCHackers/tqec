@@ -13,5 +13,5 @@ User Guide
    :maxdepth: 1
    :caption: Tutorials
 
-   ../media/user_guide/collada/notebook.ipynb
-   Detectors Computation <detectors>
+   collada_interop.ipynb
+   Detectors Computation <detectors/index>
