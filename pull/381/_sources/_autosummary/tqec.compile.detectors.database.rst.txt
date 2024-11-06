@@ -1,0 +1,30 @@
+tqec.compile.detectors.database
+===============================
+
+.. automodule:: tqec.compile.detectors.database
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      DetectorDatabase
+   
+   
+
+   
+   
+   
+
+
+

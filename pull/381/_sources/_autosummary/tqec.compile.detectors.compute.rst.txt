@@ -1,0 +1,31 @@
+tqec.compile.detectors.compute
+==============================
+
+.. automodule:: tqec.compile.detectors.compute
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compute_detectors_at_end_of_situation
+      compute_detectors_for_fixed_radius
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -33,6 +33,8 @@ tqec.compile
    compile
 
 
+   detectors
+
    observables
 
    specs

@@ -1,0 +1,52 @@
+tqec.compile.detectors.database.DetectorDatabase
+================================================
+
+.. currentmodule:: tqec.compile.detectors.database
+
+.. autoclass:: DetectorDatabase
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DetectorDatabase.__init__
+      ~DetectorDatabase.add_situation
+      ~DetectorDatabase.freeze
+      ~DetectorDatabase.from_file
+      ~DetectorDatabase.get_detectors
+      ~DetectorDatabase.remove_situation
+      ~DetectorDatabase.to_crumble_urls
+      ~DetectorDatabase.to_file
+      ~DetectorDatabase.unfreeze
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DetectorDatabase.frozen
+      ~DetectorDatabase.mapping
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: add_situation
+   .. automethod:: freeze
+   .. automethod:: from_file
+   .. automethod:: get_detectors
+   .. automethod:: remove_situation
+   .. automethod:: to_crumble_urls
+   .. automethod:: to_file
+   .. automethod:: unfreeze
+   
+   

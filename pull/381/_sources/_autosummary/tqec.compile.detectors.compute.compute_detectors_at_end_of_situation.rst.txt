@@ -1,0 +1,6 @@
+tqec.compile.detectors.compute.compute\_detectors\_at\_end\_of\_situation
+=========================================================================
+
+.. currentmodule:: tqec.compile.detectors.compute
+
+.. autofunction:: compute_detectors_at_end_of_situation

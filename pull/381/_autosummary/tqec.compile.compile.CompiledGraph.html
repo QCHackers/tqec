@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/tqec.compile.compile.CompiledGraph';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.compile.observables" href="tqec.compile.observables.html" />
+    <link rel="next" title="tqec.compile.detectors" href="tqec.compile.detectors.html" />
     <link rel="prev" title="tqec.compile.compile.compile_block_graph" href="tqec.compile.compile.compile_block_graph.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -431,6 +431,12 @@
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.compile.compile.CompiledGraph</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.detectors.html">tqec.compile.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.compute.html">tqec.compile.detectors.compute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.database.html">tqec.compile.detectors.database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.detector.html">tqec.compile.detectors.detector</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.observables.html">tqec.compile.observables</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_center_qubit_at_horizontal_pipe.html">tqec.compile.observables.get_center_qubit_at_horizontal_pipe</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_midline_qubits_for_cube.html">tqec.compile.observables.get_midline_qubits_for_cube</a></li>
@@ -741,8 +747,9 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.compile.compile.CompiledGraph.layout_slices">
 <span class="sig-name descname"><span class="pre">layout_slices</span></span><a class="headerlink" href="#tqec.compile.compile.CompiledGraph.layout_slices" title="Link to this definition">#</a></dt>
-<dd><p>a list of <cite>BlockLayout</cite> objects that represent the compiled blocks
-at contiguous time slices.</p>
+<dd><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">BlockLayout</span></code>
+instances that represent the compiled blocks at contiguous time
+slices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[<a class="reference internal" href="tqec.compile.block.BlockLayout.html#tqec.compile.block.BlockLayout" title="tqec.compile.block.BlockLayout">tqec.compile.block.BlockLayout</a>]</p>
@@ -753,8 +760,10 @@ at contiguous time slices.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.compile.compile.CompiledGraph.observables">
 <span class="sig-name descname"><span class="pre">observables</span></span><a class="headerlink" href="#tqec.compile.compile.CompiledGraph.observables" title="Link to this definition">#</a></dt>
-<dd><p>a list of <cite>AbstractObservable</cite> objects that represent the observables
-to be included in the compiled circuit.</p>
+<dd><p>a list of
+<a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable" title="tqec.computation.abstract_observable.AbstractObservable"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractObservable</span></code></a>
+instances that represent the observables to be included in the
+compiled circuit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[<a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable" title="tqec.computation.abstract_observable.AbstractObservable">tqec.computation.abstract_observable.AbstractObservable</a>]</p>
@@ -769,7 +778,7 @@ to be included in the compiled circuit.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.compile.compile.CompiledGraph.generate_stim_circuit" title="tqec.compile.compile.CompiledGraph.generate_stim_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_stim_circuit</span></code></a>(k[, noise_model, ...])</p></td>
-<td><p>Generate the stim circuit from the compiled graph.</p></td>
+<td><p>Generate the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> from the compiled graph.</p></td>
 </tr>
 </tbody>
 </table>
@@ -778,10 +787,10 @@ to be included in the compiled circuit.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.compile.compile.CompiledGraph.layout_slices" title="tqec.compile.compile.CompiledGraph.layout_slices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layout_slices</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Timeslices of compiled blocks arranged as 2-dimensional slices.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.compile.compile.CompiledGraph.observables" title="tqec.compile.compile.CompiledGraph.observables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">observables</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Observables to be included in the final <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance.</p></td>
 </tr>
 </tbody>
 </table>
@@ -794,20 +803,20 @@ to be included in the compiled circuit.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.compile.compile.CompiledGraph.generate_stim_circuit">
-<span class="sig-name descname"><span class="pre">generate_stim_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel" title="tqec.noise_model.NoiseModel"><span class="pre">NoiseModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manhattan_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DetectorDatabase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_use_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/compile/compile.html#CompiledGraph.generate_stim_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.compile.CompiledGraph.generate_stim_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Generate the stim circuit from the compiled graph.</p>
+<span class="sig-name descname"><span class="pre">generate_stim_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel" title="tqec.noise_model.NoiseModel"><span class="pre">NoiseModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manhattan_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.compile.detectors.database.DetectorDatabase.html#tqec.compile.detectors.database.DetectorDatabase" title="tqec.compile.detectors.database.DetectorDatabase"><span class="pre">DetectorDatabase</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_use_database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/compile/compile.html#CompiledGraph.generate_stim_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.compile.CompiledGraph.generate_stim_circuit" title="Link to this definition">#</a></dt>
+<dd><p>Generate the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> from the compiled graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> – The scale factor of the templates.</p></li>
-<li><p><strong>noise_models</strong> – The noise models to be applied to the circuit.</p></li>
-<li><p><strong>manhattan_radius</strong> – the radius considered to compute detectors.
+<li><p><strong>k</strong> – scale factor of the templates.</p></li>
+<li><p><strong>noise_models</strong> – noise models to be applied to the circuit.</p></li>
+<li><p><strong>manhattan_radius</strong> – radius considered to compute detectors.
 Detectors are not computed and added to the circuit if this
 argument is negative.</p></li>
 <li><p><strong>detector_database</strong> – an instance to retrieve from / store in detectors
 that are computed as part of the circuit generation.</p></li>
-<li><p><strong>only_use_database</strong> – if True, only detectors from the database will be
-used. An error will be raised if a situation that is not
+<li><p><strong>only_use_database</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, only detectors from the database
+will be used. An error will be raised if a situation that is not
 registered in the database is encountered.</p></li>
 </ul>
 </dd>
@@ -841,11 +850,11 @@ registered in the database is encountered.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="tqec.compile.observables.html"
+       href="tqec.compile.detectors.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">tqec.compile.observables</p>
+        <p class="prev-next-title">tqec.compile.detectors</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -431,6 +431,12 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.compile.CompiledGraph.html">tqec.compile.compile.CompiledGraph</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.detectors.html">tqec.compile.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.compute.html">tqec.compile.detectors.compute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.database.html">tqec.compile.detectors.database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.detector.html">tqec.compile.detectors.detector</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.observables.html">tqec.compile.observables</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_center_qubit_at_horizontal_pipe.html">tqec.compile.observables.get_center_qubit_at_horizontal_pipe</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_midline_qubits_for_cube.html">tqec.compile.observables.get_midline_qubits_for_cube</a></li>
@@ -736,7 +742,8 @@
 <dt class="sig sig-object py" id="tqec.compile.block.CompiledBlock">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CompiledBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate" title="tqec.templates.base.RectangularTemplate"><span class="pre">RectangularTemplate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><span class="pre">Plaquettes</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/compile/block.html#CompiledBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.block.CompiledBlock" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents a specific implementation of a cube in a <cite>BlockGraph</cite>.</p>
+<p>Represents a specific implementation of a cube in a
+<a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.compile.block.CompiledBlock.template">
 <span class="sig-name descname"><span class="pre">template</span></span><a class="headerlink" href="#tqec.compile.block.CompiledBlock.template" title="Link to this definition">#</a></dt>
@@ -751,9 +758,10 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.compile.block.CompiledBlock.layers">
 <span class="sig-name descname"><span class="pre">layers</span></span><a class="headerlink" href="#tqec.compile.block.CompiledBlock.layers" title="Link to this definition">#</a></dt>
-<dd><p>a list of <cite>Plaquettes</cite> that represent different functional layers of the
-cube. When aligning two <cite>CompiledBlock</cite> instances, the layers are aligned in
-order. Typically, there are three layers in most cube implementations:
+<dd><p>a list of <a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquettes</span></code></a> that
+represent different functional layers of the cube. When aligning two
+<a class="reference internal" href="#tqec.compile.block.CompiledBlock" title="tqec.compile.block.CompiledBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledBlock</span></code></a> instances, the layers are aligned in order.
+Typically, there are three layers in most cube implementations:
 Initialization, Repetitions, and Measurement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -778,13 +786,13 @@ Initialization, Repetitions, and Measurement.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_layers</span></code></p></td>
-<td><p></p></td>
+<td><p>Number of layers in the block.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.compile.block.CompiledBlock.template" title="tqec.compile.block.CompiledBlock.template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">template</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Template representing the 2-dimensional footprint of the block.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.compile.block.CompiledBlock.layers" title="tqec.compile.block.CompiledBlock.layers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layers</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Different functional layers of the block.</p></td>
 </tr>
 </tbody>
 </table>
@@ -799,12 +807,15 @@ Initialization, Repetitions, and Measurement.</p>
 <dt class="sig sig-object py" id="tqec.compile.block.CompiledBlock.update_layers">
 <span class="sig-name descname"><span class="pre">update_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">substitution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes" title="tqec.plaquette.plaquette.Plaquettes"><span class="pre">Plaquettes</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/compile/block.html#CompiledBlock.update_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.compile.block.CompiledBlock.update_layers" title="Link to this definition">#</a></dt>
 <dd><p>Update the plaquettes in a specific layer of the block.</p>
-<p>Warning: This method modifies the <cite>layers</cite> attribute in place.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method modifies the <a class="reference internal" href="#tqec.compile.block.CompiledBlock.layers" title="tqec.compile.block.CompiledBlock.layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layers</span></code></a> attribute in place.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>substitution</strong> – a mapping from the layer index to the plaquettes that should
-be used to update the layer. The index can be negative, which means the
-layer is counted from the end of the layers list.</p>
+<dd class="field-odd"><p><strong>substitution</strong> – a mapping from the layer index to the plaquettes that
+should be used to update the layer. The index can be negative,
+which means the layer is counted from the end of the layers list.</p>
 </dd>
 </dl>
 </dd></dl>

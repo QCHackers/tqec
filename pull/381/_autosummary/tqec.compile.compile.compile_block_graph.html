@@ -431,6 +431,12 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.compile.CompiledGraph.html">tqec.compile.compile.CompiledGraph</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.detectors.html">tqec.compile.detectors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.compute.html">tqec.compile.detectors.compute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.database.html">tqec.compile.detectors.database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.compile.detectors.detector.html">tqec.compile.detectors.detector</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.compile.observables.html">tqec.compile.observables</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_center_qubit_at_horizontal_pipe.html">tqec.compile.observables.get_center_qubit_at_horizontal_pipe</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.compile.observables.get_midline_qubits_for_cube.html">tqec.compile.observables.get_midline_qubits_for_cube</a></li>
@@ -740,23 +746,26 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>block_graph</strong> – The block graph to compile.</p></li>
-<li><p><strong>block_builder</strong> – A callable that specifies how to build the <cite>CompiledBlock</cite> from
-the specified <cite>CubeSpecs</cite>. Defaults to the block builder for the css type
-surface code.</p></li>
-<li><p><strong>substitution_builder</strong> – A callable that specifies how to build the substitution
-plaquettes from the specified <cite>PipeSpec</cite>. Defaults to the substitution
-builder for the css type surface code.</p></li>
+<li><p><strong>block_builder</strong> – A callable that specifies how to build the
+<a class="reference internal" href="tqec.compile.block.CompiledBlock.html#tqec.compile.block.CompiledBlock" title="tqec.compile.block.CompiledBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledBlock</span></code></a> from the specified
+<code class="xref py py-class docutils literal notranslate"><span class="pre">CubeSpecs</span></code>. Defaults to the block builder for
+the CSS type surface code.</p></li>
+<li><p><strong>substitution_builder</strong> – A callable that specifies how to build the
+substitution plaquettes from the specified
+<a class="reference internal" href="tqec.compile.specs.base.PipeSpec.html#tqec.compile.specs.base.PipeSpec" title="tqec.compile.specs.base.PipeSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipeSpec</span></code></a>. Defaults to the substitution builder
+for the CSS type surface code.</p></li>
 <li><p><strong>observables</strong> – The abstract observables to be included in the compiled
 circuit.
-If set to “auto”, the observables will be automatically determined from
-the block graph. If a list of abstract observables is provided, only
-those observables will be included in the compiled circuit. If set to
-None, no observables will be included in the compiled circuit.</p></li>
+If set to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, the observables will be automatically
+determined from the block graph. If a list of abstract observables
+is provided, only those observables will be included in the compiled
+circuit. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, no observables will be included in the
+compiled circuit.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <cite>CompiledGraph</cite> object that can be used to generate a cirq/stim circuit and
-scale easily.</p>
+<dd class="field-even"><p>A <a class="reference internal" href="tqec.compile.compile.CompiledGraph.html#tqec.compile.compile.CompiledGraph" title="tqec.compile.compile.CompiledGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledGraph</span></code></a> object that can be used to generate a
+<code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> and scale easily.</p>
 </dd>
 </dl>
 </dd></dl>
