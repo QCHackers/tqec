@@ -7,14 +7,14 @@ import numpy.typing as npt
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 from tqec.computation.correlation import CorrelationSurface
-from tqec.interop.color import RGBA
+from tqec.interop.color import RGBA, TQECColor
 from tqec.position import Position3D
 from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
 
 NODE_COLOR: dict[ZXKind, RGBA] = {
-    ZXKind.X: RGBA.x_color(),
-    ZXKind.Y: RGBA.y_color(),
-    ZXKind.Z: RGBA.z_color(),
+    ZXKind.X: TQECColor.X.rgba,
+    ZXKind.Y: TQECColor.Y.rgba,
+    ZXKind.Z: TQECColor.Z.rgba,
 }
 
 

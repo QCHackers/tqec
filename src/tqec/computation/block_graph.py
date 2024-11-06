@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pathlib
-from typing import Mapping, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
@@ -16,10 +16,8 @@ from tqec.computation.zx_graph import ZXGraph
 from tqec.computation.correlation import CorrelationSurface
 
 if TYPE_CHECKING:
-    from tqec.interop.collada_html_viewer import ColladaHTMLViewer
+    from tqec.interop.collada.html_viewer import _ColladaHTMLViewer
     from tqec.computation.abstract_observable import AbstractObservable
-    from tqec.interop.color import RGBA
-    from tqec.interop.geometry import FaceKind
 
 
 BlockKind = CubeKind | PipeKind
@@ -133,7 +131,6 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         file_path: str | pathlib.Path,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
-        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
     ) -> None:
         """Write the block graph to a Collada DAE file.
@@ -143,25 +140,22 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipe_length: The length of the pipes. Default is 2.0.
             pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
                 This is useful for visualizing the internal structure of the blocks. Default is None.
-            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
-                face colors.
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
         """
-        from tqec.interop.collada import write_block_graph_to_dae_file
+        from tqec.interop.collada.read_write import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(
             self,
             file_path,
             pipe_length,
             pop_faces_at_direction,
-            custom_face_colors,
             show_correlation_surface,
         )
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
         """Construct a block graph from a DAE file."""
-        from tqec.interop.collada import read_block_graph_from_dae_file
+        from tqec.interop.collada.read_write import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
@@ -170,9 +164,8 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
-        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
-    ) -> ColladaHTMLViewer:
+    ) -> _ColladaHTMLViewer:
         """View COLLADA model in html with the help of ``three.js``.
 
         This can display a COLLADA model interactively in IPython compatible environments.
@@ -183,16 +176,14 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipe_length: The length of the pipes. Default is 2.0.
             pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
                 This is useful for visualizing the internal structure of the blocks. Default is None.
-            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
-                face colors.
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
 
         Returns:
             A helper class to display the 3D model, which implements the ``_repr_html_`` method and
             can be directly displayed in IPython compatible environments.
         """
-        from tqec.interop.collada import write_block_graph_to_dae_file
-        from tqec.interop.collada_html_viewer import display_collada_model
+        from tqec.interop.collada.read_write import write_block_graph_to_dae_file
+        from tqec.interop.collada.html_viewer import display_collada_model
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(
@@ -200,7 +191,6 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             bytes_buffer,
             pipe_length,
             pop_faces_at_direction,
-            custom_face_colors,
             show_correlation_surface,
         )
         return display_collada_model(
