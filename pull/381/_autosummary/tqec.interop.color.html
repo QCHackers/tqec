@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tqec.interop.color.RGBA" href="tqec.interop.color.RGBA.html" />
-    <link rel="prev" title="tqec.interop.collada_html_viewer.ColladaHTMLViewer" href="tqec.interop.collada_html_viewer.ColladaHTMLViewer.html" />
+    <link rel="prev" title="tqec.interop.collada.read_write.write_block_graph_to_dae_file" href="tqec.interop.collada.read_write.write_block_graph_to_dae_file.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -533,30 +533,13 @@
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="tqec.interop.html">tqec.interop</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.collada.html">tqec.interop.collada</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.read_block_graph_from_dae_file.html">tqec.interop.collada.read_block_graph_from_dae_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.write_block_graph_to_dae_file.html">tqec.interop.collada.write_block_graph_to_dae_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.BlockLibraryKey.html">tqec.interop.collada.BlockLibraryKey</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.Transformation.html">tqec.interop.collada.Transformation</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.collada_html_viewer.html">tqec.interop.collada_html_viewer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada_html_viewer.display_collada_model.html">tqec.interop.collada_html_viewer.display_collada_model</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada_html_viewer.ColladaHTMLViewer.html">tqec.interop.collada_html_viewer.ColladaHTMLViewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.html_viewer.html">tqec.interop.collada.html_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.read_write.html">tqec.interop.collada.read_write</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">tqec.interop.color</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.interop.color.RGBA.html">tqec.interop.color.RGBA</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.correlation.html">tqec.interop.correlation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.correlation.get_transformations_for_correlation_surface.html">tqec.interop.correlation.get_transformations_for_correlation_surface</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.geometry.html">tqec.interop.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.get_correlation_surface_geometry.html">tqec.interop.geometry.get_correlation_surface_geometry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.BlockGeometries.html">tqec.interop.geometry.BlockGeometries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.Face.html">tqec.interop.geometry.Face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.FaceKind.html">tqec.interop.geometry.FaceKind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.color.TQECColor.html">tqec.interop.color.TQECColor</a></li>
 </ul>
 </details></li>
 </ul>
@@ -735,11 +718,15 @@
                   
   <section id="module-tqec.interop.color">
 <span id="tqec-interop-color"></span><h1>tqec.interop.color<a class="headerlink" href="#module-tqec.interop.color" title="Link to this heading">#</a></h1>
+<p>Defines the color representation used in the TQEC interop layer.</p>
 <p class="rubric">Classes</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.interop.color.RGBA.html#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RGBA</span></code></a>(r, g, b, a)</p></td>
-<td><p></p></td>
+<td><p>RGBA representation of a color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.interop.color.TQECColor.html#tqec.interop.color.TQECColor" title="tqec.interop.color.TQECColor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TQECColor</span></code></a>(value[, names, module, qualname, ...])</p></td>
+<td><p>Predefined and commonly used colors in TQEC.</p></td>
 </tr>
 </tbody>
 </table>
@@ -757,12 +744,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="tqec.interop.collada_html_viewer.ColladaHTMLViewer.html"
+       href="tqec.interop.collada.read_write.write_block_graph_to_dae_file.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">tqec.interop.collada_html_viewer.ColladaHTMLViewer</p>
+        <p class="prev-next-title">tqec.interop.collada.read_write.write_block_graph_to_dae_file</p>
       </div>
     </a>
     <a class="right-next"

@@ -30,12 +30,5 @@ tqec.interop
 
    collada
 
-   collada_html_viewer
-
-
    color
-
-   correlation
-
-   geometry
 

@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/tqec.interop.color.RGBA';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.interop.correlation" href="tqec.interop.correlation.html" />
+    <link rel="next" title="tqec.interop.color.TQECColor" href="tqec.interop.color.TQECColor.html" />
     <link rel="prev" title="tqec.interop.color" href="tqec.interop.color.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -533,30 +533,13 @@
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="tqec.interop.html">tqec.interop</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.collada.html">tqec.interop.collada</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.read_block_graph_from_dae_file.html">tqec.interop.collada.read_block_graph_from_dae_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.write_block_graph_to_dae_file.html">tqec.interop.collada.write_block_graph_to_dae_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.BlockLibraryKey.html">tqec.interop.collada.BlockLibraryKey</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.Transformation.html">tqec.interop.collada.Transformation</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.collada_html_viewer.html">tqec.interop.collada_html_viewer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada_html_viewer.display_collada_model.html">tqec.interop.collada_html_viewer.display_collada_model</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada_html_viewer.ColladaHTMLViewer.html">tqec.interop.collada_html_viewer.ColladaHTMLViewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.html_viewer.html">tqec.interop.collada.html_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.collada.read_write.html">tqec.interop.collada.read_write</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="tqec.interop.color.html">tqec.interop.color</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.interop.color.RGBA</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.correlation.html">tqec.interop.correlation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.correlation.get_transformations_for_correlation_surface.html">tqec.interop.correlation.get_transformations_for_correlation_surface</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.interop.geometry.html">tqec.interop.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.get_correlation_surface_geometry.html">tqec.interop.geometry.get_correlation_surface_geometry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.BlockGeometries.html">tqec.interop.geometry.BlockGeometries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.Face.html">tqec.interop.geometry.Face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.interop.geometry.FaceKind.html">tqec.interop.geometry.FaceKind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tqec.interop.color.TQECColor.html">tqec.interop.color.TQECColor</a></li>
 </ul>
 </details></li>
 </ul>
@@ -740,8 +723,53 @@
 <h1>tqec.interop.color.RGBA<a class="headerlink" href="#tqec-interop-color-rgba" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.interop.color.RGBA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RGBA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'int'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'int'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'int'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'float'</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RGBA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>RGBA representation of a color.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interop.color.RGBA.r">
+<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#tqec.interop.color.RGBA.r" title="Link to this definition">#</a></dt>
+<dd><p>Red component of the color, in the range [0, 255].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interop.color.RGBA.g">
+<span class="sig-name descname"><span class="pre">g</span></span><a class="headerlink" href="#tqec.interop.color.RGBA.g" title="Link to this definition">#</a></dt>
+<dd><p>Green component of the color, in the range [0, 255].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interop.color.RGBA.b">
+<span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#tqec.interop.color.RGBA.b" title="Link to this definition">#</a></dt>
+<dd><p>Blue component of the color, in the range [0, 255].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.interop.color.RGBA.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#tqec.interop.color.RGBA.a" title="Link to this definition">#</a></dt>
+<dd><p>Alpha component of the color, in the range [0, 1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -749,28 +777,10 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.as_floats" title="tqec.interop.color.RGBA.as_floats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_floats</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Returns the color as a tuple of floats.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.h_color" title="tqec.interop.color.RGBA.h_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_color</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.with_alpha" title="tqec.interop.color.RGBA.with_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_alpha</span></code></a>(a)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.x_color" title="tqec.interop.color.RGBA.x_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_color</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.x_correlation_color" title="tqec.interop.color.RGBA.x_correlation_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_correlation_color</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.y_color" title="tqec.interop.color.RGBA.y_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y_color</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.z_color" title="tqec.interop.color.RGBA.z_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">z_color</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.z_correlation_color" title="tqec.interop.color.RGBA.z_correlation_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">z_correlation_color</span></code></a>()</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.with_alpha" title="tqec.interop.color.RGBA.with_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_alpha</span></code></a>(a)</p></td>
+<td><p>Returns a new RGBA with the same color but a different alpha value.</p></td>
 </tr>
 </tbody>
 </table>
@@ -778,16 +788,16 @@
 <p class="rubric">Attributes</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">r</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.r" title="tqec.interop.color.RGBA.r"><code class="xref py py-obj docutils literal notranslate"><span class="pre">r</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">g</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.g" title="tqec.interop.color.RGBA.g"><code class="xref py py-obj docutils literal notranslate"><span class="pre">g</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.b" title="tqec.interop.color.RGBA.b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.interop.color.RGBA.a" title="tqec.interop.color.RGBA.a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -802,42 +812,27 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.interop.color.RGBA.as_floats">
 <span class="sig-name descname"><span class="pre">as_floats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.as_floats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.as_floats" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.h_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.h_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.h_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the color as a tuple of floats. The RGB values are normalized to the range [0, 1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Length 4 tuple of floats representing the color.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.interop.color.RGBA.with_alpha">
 <span class="sig-name descname"><span class="pre">with_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.with_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.with_alpha" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.x_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.x_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.x_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.x_correlation_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x_correlation_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.x_correlation_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.x_correlation_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.y_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.y_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.y_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.z_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.z_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.z_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.interop.color.RGBA.z_correlation_color">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z_correlation_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.interop.color.RGBA" title="tqec.interop.color.RGBA"><span class="pre">RGBA</span></a></span></span><a class="reference internal" href="../_modules/tqec/interop/color.html#RGBA.z_correlation_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.interop.color.RGBA.z_correlation_color" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a new RGBA with the same color but a different alpha value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a</strong> – The new alpha value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new RGBA with the same color but a different alpha value.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -863,11 +858,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="tqec.interop.correlation.html"
+       href="tqec.interop.color.TQECColor.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">tqec.interop.correlation</p>
+        <p class="prev-next-title">tqec.interop.color.TQECColor</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -891,15 +886,13 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA"><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.r"><code class="docutils literal notranslate"><span class="pre">RGBA.r</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.g"><code class="docutils literal notranslate"><span class="pre">RGBA.g</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.b"><code class="docutils literal notranslate"><span class="pre">RGBA.b</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.a"><code class="docutils literal notranslate"><span class="pre">RGBA.a</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.__init__"><code class="docutils literal notranslate"><span class="pre">RGBA.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.as_floats"><code class="docutils literal notranslate"><span class="pre">RGBA.as_floats()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.h_color"><code class="docutils literal notranslate"><span class="pre">RGBA.h_color()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.with_alpha"><code class="docutils literal notranslate"><span class="pre">RGBA.with_alpha()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.x_color"><code class="docutils literal notranslate"><span class="pre">RGBA.x_color()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.x_correlation_color"><code class="docutils literal notranslate"><span class="pre">RGBA.x_correlation_color()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.y_color"><code class="docutils literal notranslate"><span class="pre">RGBA.y_color()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.z_color"><code class="docutils literal notranslate"><span class="pre">RGBA.z_color()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.interop.color.RGBA.z_correlation_color"><code class="docutils literal notranslate"><span class="pre">RGBA.z_correlation_color()</span></code></a></li>
 </ul>
 </li>
 </ul>

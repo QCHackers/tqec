@@ -403,7 +403,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
@@ -416,10 +416,8 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">from</span> <span class="nn">tqec.computation.correlation</span> <span class="kn">import</span> <span class="n">CorrelationSurface</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">tqec.interop.collada_html_viewer</span> <span class="kn">import</span> <span class="n">ColladaHTMLViewer</span>
+    <span class="kn">from</span> <span class="nn">tqec.interop.collada.html_viewer</span> <span class="kn">import</span> <span class="n">_ColladaHTMLViewer</span>
     <span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="n">AbstractObservable</span>
-    <span class="kn">from</span> <span class="nn">tqec.interop.color</span> <span class="kn">import</span> <span class="n">RGBA</span>
-    <span class="kn">from</span> <span class="nn">tqec.interop.geometry</span> <span class="kn">import</span> <span class="n">FaceKind</span>
 
 
 <span class="n">BlockKind</span> <span class="o">=</span> <span class="n">CubeKind</span> <span class="o">|</span> <span class="n">PipeKind</span>
@@ -549,7 +547,6 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
         <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">show_correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the block graph to a Collada DAE file.</span>
@@ -559,18 +556,15 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">            pipe_length: The length of the pipes. Default is 2.0.</span>
 <span class="sd">            pop_faces_at_direction: Remove the faces at the given direction for all the blocks.</span>
 <span class="sd">                This is useful for visualizing the internal structure of the blocks. Default is None.</span>
-<span class="sd">            custom_face_colors: A mapping from the face kind to the RGBA color to override the default</span>
-<span class="sd">                face colors.</span>
 <span class="sd">            show_correlation_surface: The correlation surface to show in the block graph. Default is None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada.read_write</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
 
         <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">file_path</span><span class="p">,</span>
             <span class="n">pipe_length</span><span class="p">,</span>
             <span class="n">pop_faces_at_direction</span><span class="p">,</span>
-            <span class="n">custom_face_colors</span><span class="p">,</span>
             <span class="n">show_correlation_surface</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -580,7 +574,7 @@ window.addEventListener("load", () => mermaid.run());
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_dae_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a block graph from a DAE file.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">read_block_graph_from_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada.read_write</span> <span class="kn">import</span> <span class="n">read_block_graph_from_dae_file</span>
 
         <span class="k">return</span> <span class="n">read_block_graph_from_dae_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">graph_name</span><span class="p">)</span></div>
 
@@ -592,9 +586,8 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">write_html_filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pipe_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
         <span class="n">pop_faces_at_direction</span><span class="p">:</span> <span class="n">SignedDirection3D</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">custom_face_colors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">FaceKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">show_correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColladaHTMLViewer</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ColladaHTMLViewer</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;View COLLADA model in html with the help of ``three.js``.</span>
 
 <span class="sd">        This can display a COLLADA model interactively in IPython compatible environments.</span>
@@ -605,16 +598,14 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">            pipe_length: The length of the pipes. Default is 2.0.</span>
 <span class="sd">            pop_faces_at_direction: Remove the faces at the given direction for all the blocks.</span>
 <span class="sd">                This is useful for visualizing the internal structure of the blocks. Default is None.</span>
-<span class="sd">            custom_face_colors: A mapping from the face kind to the RGBA color to override the default</span>
-<span class="sd">                face colors.</span>
 <span class="sd">            show_correlation_surface: The correlation surface to show in the block graph. Default is None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A helper class to display the 3D model, which implements the ``_repr_html_`` method and</span>
 <span class="sd">            can be directly displayed in IPython compatible environments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tqec.interop.collada</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
-        <span class="kn">from</span> <span class="nn">tqec.interop.collada_html_viewer</span> <span class="kn">import</span> <span class="n">display_collada_model</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada.read_write</span> <span class="kn">import</span> <span class="n">write_block_graph_to_dae_file</span>
+        <span class="kn">from</span> <span class="nn">tqec.interop.collada.html_viewer</span> <span class="kn">import</span> <span class="n">display_collada_model</span>
 
         <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
         <span class="n">write_block_graph_to_dae_file</span><span class="p">(</span>
@@ -622,7 +613,6 @@ window.addEventListener("load", () => mermaid.run());
             <span class="n">bytes_buffer</span><span class="p">,</span>
             <span class="n">pipe_length</span><span class="p">,</span>
             <span class="n">pop_faces_at_direction</span><span class="p">,</span>
-            <span class="n">custom_face_colors</span><span class="p">,</span>
             <span class="n">show_correlation_surface</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">display_collada_model</span><span class="p">(</span>

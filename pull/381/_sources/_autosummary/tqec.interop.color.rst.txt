@@ -19,6 +19,7 @@ tqec.interop.color
       :toctree:
    
       RGBA
+      TQECColor
    
    
 

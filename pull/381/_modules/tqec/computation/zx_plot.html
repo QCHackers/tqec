@@ -407,14 +407,14 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
 <span class="kn">from</span> <span class="nn">tqec.computation.correlation</span> <span class="kn">import</span> <span class="n">CorrelationSurface</span>
-<span class="kn">from</span> <span class="nn">tqec.interop.color</span> <span class="kn">import</span> <span class="n">RGBA</span>
+<span class="kn">from</span> <span class="nn">tqec.interop.color</span> <span class="kn">import</span> <span class="n">RGBA</span><span class="p">,</span> <span class="n">TQECColor</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXKind</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">ZXNode</span>
 
 <span class="n">NODE_COLOR</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">ZXKind</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">ZXKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">RGBA</span><span class="o">.</span><span class="n">x_color</span><span class="p">(),</span>
-    <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span> <span class="n">RGBA</span><span class="o">.</span><span class="n">y_color</span><span class="p">(),</span>
-    <span class="n">ZXKind</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="n">RGBA</span><span class="o">.</span><span class="n">z_color</span><span class="p">(),</span>
+    <span class="n">ZXKind</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">TQECColor</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span>
+    <span class="n">ZXKind</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span> <span class="n">TQECColor</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span>
+    <span class="n">ZXKind</span><span class="o">.</span><span class="n">Z</span><span class="p">:</span> <span class="n">TQECColor</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">rgba</span><span class="p">,</span>
 <span class="p">}</span>
 
 

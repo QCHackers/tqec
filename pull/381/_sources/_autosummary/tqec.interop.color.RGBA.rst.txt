@@ -13,13 +13,7 @@ tqec.interop.color.RGBA
    
       ~RGBA.__init__
       ~RGBA.as_floats
-      ~RGBA.h_color
       ~RGBA.with_alpha
-      ~RGBA.x_color
-      ~RGBA.x_correlation_color
-      ~RGBA.y_color
-      ~RGBA.z_color
-      ~RGBA.z_correlation_color
    
    
 
@@ -43,12 +37,6 @@ tqec.interop.color.RGBA
    
    .. automethod:: __init__
    .. automethod:: as_floats
-   .. automethod:: h_color
    .. automethod:: with_alpha
-   .. automethod:: x_color
-   .. automethod:: x_correlation_color
-   .. automethod:: y_color
-   .. automethod:: z_color
-   .. automethod:: z_correlation_color
    
    
