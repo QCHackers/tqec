@@ -43,6 +43,8 @@ class RGBA:
 
 
 class TQECColor(Enum):
+    """Predefined and commonly used colors in TQEC."""
+
     X = "X"
     Y = "Y"
     Z = "Z"
@@ -52,6 +54,7 @@ class TQECColor(Enum):
 
     @property
     def rgba(self) -> RGBA:
+        """Returns the RGBA representation of the color."""
         if self == TQECColor.X:
             return RGBA(255, 127, 127, 1.0)
         if self == TQECColor.Y:
@@ -66,6 +69,7 @@ class TQECColor(Enum):
             return RGBA(0, 0, 255, 0.8)
 
     def with_zx_flipped(self) -> TQECColor:
+        """Returns a ``X`` or ``Z`` color from a ``Z`` or ``X`` color and vice versa."""
         if self == TQECColor.X:
             return TQECColor.Z
         if self == TQECColor.Z:
