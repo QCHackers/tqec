@@ -1,4 +1,5 @@
-"""Provides interoperability between ``tqec`` and external frameworks / formats."""
+"""Provides interoperability between ``tqec`` and external frameworks /
+formats."""
 
 from tqec.interop.color import RGBA, TQECColor
 from tqec.interop.collada.read_write import (

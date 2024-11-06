@@ -39,7 +39,8 @@ class CompiledBlock:
     def num_layers(self) -> int:
         """Number of layers in the block.
 
-        Temporal pipes have 2 layers, spatial pipes and blocks have 3 layers.
+        Temporal pipes have 2 layers, spatial pipes and blocks have 3
+        layers.
         """
         return len(self.layers)
 
@@ -141,7 +142,8 @@ class BlockLayout:
     def num_layers(self) -> int:
         """Number of layers in the block.
 
-        Temporal pipes have 2 layers, spatial pipes and blocks have 3 layers.
+        Temporal pipes have 2 layers, spatial pipes and blocks have 3
+        layers.
         """
         return len(self._layers)
 

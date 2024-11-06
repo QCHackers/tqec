@@ -266,8 +266,9 @@ class CompiledGraph:
         detectors: Sequence[Detector],
         shift_coords_by: StimCoordinates | None = None,
     ) -> None:
-        """Add the provided ``detectors`` to the provided ``circuits``, inserting a
-        ``SHIFT_COORDS`` instruction before ``DETECTOR`` instructions if required.
+        """Add the provided ``detectors`` to the provided ``circuits``,
+        inserting a ``SHIFT_COORDS`` instruction before ``DETECTOR``
+        instructions if required.
 
         Args:
             circuit: circuit to modify in-place.

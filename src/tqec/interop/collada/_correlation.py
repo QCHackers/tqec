@@ -17,7 +17,8 @@ def get_transformations_for_correlation_surface(
     correlation_surface: CorrelationSurface,
     pipe_length: float,
 ) -> list[tuple[ZXKind, _Transformation]]:
-    """Get the transformations of each piece of a correlation surface for representing it in a COLLADA model."""
+    """Get the transformations of each piece of a correlation surface for
+    representing it in a COLLADA model."""
     transformations: list[tuple[ZXKind, _Transformation]] = []
     # Surfaces in the pipes
     for edge in correlation_surface.span:
