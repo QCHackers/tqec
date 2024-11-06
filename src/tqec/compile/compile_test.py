@@ -171,16 +171,18 @@ def test_compile_L_shape_in_space_time(
 
 
 @pytest.mark.parametrize(
-    ("spec", "port_type", "k"),
+    ("spec", "support_observable_basis", "k"),
     itertools.product(
         SPECS.keys(),
-        ("Z", "X"),
+        ("X", "Z"),
         (1,),
     ),
 )
-def test_compile_logical_cnot(spec: str, port_type: Literal["Z", "X"], k: int) -> None:
+def test_compile_logical_cnot(
+    spec: str, support_observable_basis: Literal["Z", "X"], k: int
+) -> None:
     d = 2 * k + 1
-    g = logical_cnot_block_graph(port_type)
+    g = logical_cnot_block_graph(support_observable_basis)
 
     block_builder, substitution_builder = SPECS[spec]
     observables, _ = g.get_abstract_observables()
