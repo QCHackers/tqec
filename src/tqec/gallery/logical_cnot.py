@@ -1,6 +1,6 @@
 """Build computation graphs that represent a logical CNOT gate."""
 
-from typing import Literal
+from typing import Literal, cast
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.zx_graph import ZXKind, ZXGraph, ZXNode
 from tqec.position import Position3D
@@ -87,5 +87,5 @@ def logical_cnot_block_graph(
         port_kind = "X"
     else:
         port_kind = "Z"
-    zx_graph = logical_cnot_zx_graph(port_kind)
+    zx_graph = logical_cnot_zx_graph(cast(Literal["Z", "X", "OPEN"], port_kind))
     return zx_graph.to_block_graph("Logical CNOT")

@@ -1,7 +1,7 @@
 """Build the computation graphs that represent three logical CNOT gates
 compressed in spacetime."""
 
-from typing import Literal
+from typing import Literal, cast
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
 from tqec.position import Position3D
@@ -107,5 +107,5 @@ def three_cnots_block_graph(
         port_kind = "X"
     else:
         port_kind = "Z"
-    zx_graph = three_cnots_zx_graph(port_kind)
+    zx_graph = three_cnots_zx_graph(cast(Literal["Z", "X", "OPEN"], port_kind))
     return zx_graph.to_block_graph("Three CNOTs")
