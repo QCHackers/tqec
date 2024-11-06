@@ -734,14 +734,27 @@
 <h1>tqec.gallery.three_cnots.three_cnots_zx_graph<a class="headerlink" href="#tqec-gallery-three-cnots-three-cnots-zx-graph" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.gallery.three_cnots.three_cnots_zx_graph">
-<span class="sig-name descname"><span class="pre">three_cnots_zx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'OPEN'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/three_cnots.html#three_cnots_zx_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.three_cnots.three_cnots_zx_graph" title="Link to this definition">#</a></dt>
-<dd><p>Three CNOT ZX graph.</p>
-<p>Implement the following circuit:
-<code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">CNOT</span> <span class="pre">0</span> <span class="pre">1</span>
-<span class="pre">CNOT</span> <span class="pre">1</span> <span class="pre">2</span>
-<span class="pre">CNOT</span> <span class="pre">0</span> <span class="pre">2</span>
-<span class="pre">`</span></code></p>
+<span class="sig-name descname"><span class="pre">three_cnots_zx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'OPEN'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/three_cnots.html#three_cnots_zx_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.three_cnots.three_cnots_zx_graph" title="Link to this definition">#</a></dt>
+<dd><p>Create a ZX graph for three logical CNOT gates compressed in spacetime.</p>
+<p>The three CNOT gates are applied in the following order:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>q0: -@---@-
+     |   |
+q1: -X-@-|-
+       | |
+q2: ---X-X-
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>port_kind</strong> – The node kind to fill the six ports of the ZX graph
+It can be either “Z”, “X”, or “OPEN”. If “OPEN”, the ports are
+left open. Otherwise, the ports are filled with the given node kind.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a> instance representing the
+three logical CNOT gates compressed in spacetime.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

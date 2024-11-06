@@ -734,9 +734,21 @@
 <h1>tqec.gallery.logical_cnot.logical_cnot_block_graph<a class="headerlink" href="#tqec-gallery-logical-cnot-logical-cnot-block-graph" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.gallery.logical_cnot.logical_cnot_block_graph">
-<span class="sig-name descname"><span class="pre">logical_cnot_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'OPEN'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/logical_cnot.html#logical_cnot_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.logical_cnot.logical_cnot_block_graph" title="Link to this definition">#</a></dt>
-<dd><p>Create the <cite>BlockGraph</cite> for the logical CNOT gate with the given port
-type.</p>
+<span class="sig-name descname"><span class="pre">logical_cnot_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">support_observable_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'BOTH'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/logical_cnot.html#logical_cnot_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.logical_cnot.logical_cnot_block_graph" title="Link to this definition">#</a></dt>
+<dd><p>Create a block graph for the logical CNOT gate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>support_observable_basis</strong> – The observable basis that the block graph can support.
+It can be either “Z”, “X”, or “BOTH”. Note that a cube at the port can only
+support the observable basis opposite to the cube. If “Z”, the four ports of
+the block graph are filled with X basis cubes. If “X”, the four ports are
+filled with Z basis cubes. If “BOTH”, the four ports are left open.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> instance representing
+the logical CNOT gate.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

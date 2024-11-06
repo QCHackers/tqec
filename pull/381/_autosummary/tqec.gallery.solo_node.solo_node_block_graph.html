@@ -734,8 +734,21 @@
 <h1>tqec.gallery.solo_node.solo_node_block_graph<a class="headerlink" href="#tqec-gallery-solo-node-solo-node-block-graph" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.gallery.solo_node.solo_node_block_graph">
-<span class="sig-name descname"><span class="pre">solo_node_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/solo_node.html#solo_node_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.solo_node.solo_node_block_graph" title="Link to this definition">#</a></dt>
-<dd><p>Get a block graph with a single node of the given basis.</p>
+<span class="sig-name descname"><span class="pre">solo_node_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">support_observable_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'Z'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'X'</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/gallery/solo_node.html#solo_node_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.gallery.solo_node.solo_node_block_graph" title="Link to this definition">#</a></dt>
+<dd><p>Create a block graph with a single cube that can support the given
+observable basis.</p>
+<p>A single cube represents a simple logical memory experiment. When the supported observable basis is “Z”,
+it corresponds to preserving a logical qubit in the zero state. When the supported observable basis is “X”,
+it corresponds to preserving a logical qubit in the plus state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>support_observable_basis</strong> – The observable basis that the block graph can support. Either “Z” or “X”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> instance with a single cube that can support the
+given observable basis.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

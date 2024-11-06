@@ -821,8 +821,8 @@ instances and indices.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.from_qubits">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.from_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.from_qubits" title="Link to this definition">#</a></dt>
-<dd><p>Creates a qubit map from the provided <code class="docutils literal notranslate"><span class="pre">qubits</span></code>, associating indices
-using the order in which qubits are provided.</p>
+<dd><p>Creates a qubit map from the provided <code class="docutils literal notranslate"><span class="pre">qubits</span></code>, associating
+indices using the order in which qubits are provided.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -840,8 +840,8 @@ using the order in which qubits are provided.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.qubit_map.QubitMap.with_mapped_qubits">
 <span class="sig-name descname"><span class="pre">with_mapped_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit" title="tqec.circuit.qubit.GridQubit"><span class="pre">GridQubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.circuit.qubit_map.QubitMap" title="tqec.circuit.qubit_map.QubitMap"><span class="pre">QubitMap</span></a></span></span><a class="reference internal" href="../_modules/tqec/circuit/qubit_map.html#QubitMap.with_mapped_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.qubit_map.QubitMap.with_mapped_qubits" title="Link to this definition">#</a></dt>
-<dd><p>Change the qubits involved in <code class="docutils literal notranslate"><span class="pre">self</span></code> without changing the associated
-indices.</p>
+<dd><p>Change the qubits involved in <code class="docutils literal notranslate"><span class="pre">self</span></code> without changing the
+associated indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubit_map</strong> – a map from qubits to qubits that should associate a qubit

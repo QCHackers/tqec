@@ -398,8 +398,8 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.qubit</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Defines :class:`~tqec.circuit.qubit.GridQubit` and helper functions to manage</span>
-<span class="sd">qubits.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines :class:`~tqec.circuit.qubit.GridQubit` and helper functions to</span>
+<span class="sd">manage qubits.</span>
 
 <span class="sd">This module defines a central class to represent a qubit placed on a</span>
 <span class="sd">2-dimensional grid, :class:`GridQubit`, and a few functions to extract</span>
@@ -442,8 +442,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="GridQubit.to_qubit_coords_instruction">
 <a class="viewcode-back" href="../../../_autosummary/tqec.circuit.qubit.GridQubit.html#tqec.circuit.qubit.GridQubit.to_qubit_coords_instruction">[docs]</a>
     <span class="k">def</span> <span class="nf">to_qubit_coords_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``QUBIT_COORDS`` ``stim.CircuitInstruction`` needed to define</span>
-<span class="sd">        ``self`` in a ``stim.Circuit``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``QUBIT_COORDS`` ``stim.CircuitInstruction`` needed to</span>
+<span class="sd">        define ``self`` in a ``stim.Circuit``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">(</span>
             <span class="s2">&quot;QUBIT_COORDS&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="n">index</span><span class="p">],</span>

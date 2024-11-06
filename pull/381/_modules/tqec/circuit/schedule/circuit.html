@@ -584,7 +584,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="ScheduledCircuit.get_circuit">
 <a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">get_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_qubit_coords</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the ``stim.Circuit`` instance represented by ``self``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the ``stim.Circuit`` instance represented by</span>
+<span class="sd">        ``self``.</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            The circuit is re-built at each call! Use that function wisely.</span>
@@ -622,8 +623,8 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">include_qubit_coords</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">include_additional_tick_in_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the ``stim.Circuit`` instance represented by ``self``</span>
-<span class="sd">        encapsulated in a ``REPEAT`` block.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the ``stim.Circuit`` instance represented by</span>
+<span class="sd">        ``self`` encapsulated in a ``REPEAT`` block.</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            The circuit is re-built at each call! Use that function wisely.</span>
@@ -862,8 +863,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="ScheduledCircuit.add_to_schedule_index">
 <a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index">[docs]</a>
     <span class="k">def</span> <span class="nf">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the operations contained in the provided ``moment`` to the provided</span>
-<span class="sd">        schedule.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the operations contained in the provided ``moment`` to the</span>
+<span class="sd">        provided schedule.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            schedule: schedule at which operations in ``moment`` should be added.</span>

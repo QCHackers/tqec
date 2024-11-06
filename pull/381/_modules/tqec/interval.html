@@ -496,8 +496,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="Interval.overlaps_with">
 <a class="viewcode-back" href="../../_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.overlaps_with">[docs]</a>
     <span class="k">def</span> <span class="nf">overlaps_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if ``self`` overlaps with the provided interval, else</span>
-<span class="sd">        ``False``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if ``self`` overlaps with the provided interval,</span>
+<span class="sd">        else ``False``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_disjoint</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
 
@@ -518,7 +518,8 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="Interval.is_empty">
 <a class="viewcode-back" href="../../_autosummary/tqec.interval.Interval.html#tqec.interval.Interval.is_empty">[docs]</a>
     <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if ``self`` is the empty interval, else ``False``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if ``self`` is the empty interval, else</span>
+<span class="sd">        ``False``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_excluded</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_excluded</span><span class="p">)</span></div>
 
 

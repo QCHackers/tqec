@@ -888,8 +888,8 @@ provided input.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index">
 <span class="sig-name descname"><span class="pre">add_to_schedule_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.circuit.moment.Moment.html#tqec.circuit.moment.Moment" title="tqec.circuit.moment.Moment"><span class="pre">Moment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.add_to_schedule_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index" title="Link to this definition">#</a></dt>
-<dd><p>Add the operations contained in the provided <code class="docutils literal notranslate"><span class="pre">moment</span></code> to the provided
-schedule.</p>
+<dd><p>Add the operations contained in the provided <code class="docutils literal notranslate"><span class="pre">moment</span></code> to the
+provided schedule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1007,7 +1007,8 @@ provided map will be used.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit">
 <span class="sig-name descname"><span class="pre">get_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_qubit_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.get_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by
+<code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The circuit is re-built at each call! Use that function wisely.</p>
@@ -1028,8 +1029,8 @@ provided map will be used.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit">
 <span class="sig-name descname"><span class="pre">get_repeated_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_qubit_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_additional_tick_in_body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Circuit</span></span></span><a class="reference internal" href="../_modules/tqec/circuit/schedule/circuit.html#ScheduledCircuit.get_repeated_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit" title="Link to this definition">#</a></dt>
-<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by <code class="docutils literal notranslate"><span class="pre">self</span></code>
-encapsulated in a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p>
+<dd><p>Build and return the <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instance represented by
+<code class="docutils literal notranslate"><span class="pre">self</span></code> encapsulated in a <code class="docutils literal notranslate"><span class="pre">REPEAT</span></code> block.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The circuit is re-built at each call! Use that function wisely.</p>
