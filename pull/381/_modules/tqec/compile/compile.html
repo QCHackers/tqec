@@ -671,8 +671,9 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Detector</span><span class="p">],</span>
         <span class="n">shift_coords_by</span><span class="p">:</span> <span class="n">StimCoordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided ``detectors`` to the provided ``circuits``, inserting a</span>
-<span class="sd">        ``SHIFT_COORDS`` instruction before ``DETECTOR`` instructions if required.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided ``detectors`` to the provided ``circuits``,</span>
+<span class="sd">        inserting a ``SHIFT_COORDS`` instruction before ``DETECTOR``</span>
+<span class="sd">        instructions if required.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            circuit: circuit to modify in-place.</span>
