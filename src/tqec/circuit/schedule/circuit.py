@@ -168,7 +168,8 @@ class ScheduledCircuit:
         return self._qubit_map.to_circuit()
 
     def get_circuit(self, include_qubit_coords: bool = True) -> stim.Circuit:
-        """Build and return the ``stim.Circuit`` instance represented by ``self``.
+        """Build and return the ``stim.Circuit`` instance represented by
+        ``self``.
 
         Warning:
             The circuit is re-built at each call! Use that function wisely.
@@ -203,8 +204,8 @@ class ScheduledCircuit:
         include_qubit_coords: bool = True,
         include_additional_tick_in_body: bool = True,
     ) -> stim.Circuit:
-        """Build and return the ``stim.Circuit`` instance represented by ``self``
-        encapsulated in a ``REPEAT`` block.
+        """Build and return the ``stim.Circuit`` instance represented by
+        ``self`` encapsulated in a ``REPEAT`` block.
 
         Warning:
             The circuit is re-built at each call! Use that function wisely.
@@ -428,8 +429,8 @@ class ScheduledCircuit:
         self.add_to_schedule_index(schedule, moment)
 
     def add_to_schedule_index(self, schedule: int, moment: Moment) -> None:
-        """Add the operations contained in the provided ``moment`` to the provided
-        schedule.
+        """Add the operations contained in the provided ``moment`` to the
+        provided schedule.
 
         Args:
             schedule: schedule at which operations in ``moment`` should be added.

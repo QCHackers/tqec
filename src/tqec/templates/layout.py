@@ -166,8 +166,8 @@ class LayoutTemplate(RectangularTemplate):
 
     @property
     def origin_shift(self) -> Displacement:
-        """Returns the shift that should be applied to the global origin to become
-        the template origin.
+        """Returns the shift that should be applied to the global origin to
+        become the template origin.
 
         Due to how :class:`LayoutTemplate` organizes the
         :class:`~tqec.templates.base.Template` instances it manages, it is entirely

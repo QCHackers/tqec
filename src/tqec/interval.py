@@ -89,8 +89,8 @@ class Interval:
         return self._is_over_start(value) and self._is_below_end(value)
 
     def overlaps_with(self, other: Interval) -> bool:
-        """Returns ``True`` if ``self`` overlaps with the provided interval, else
-        ``False``."""
+        """Returns ``True`` if ``self`` overlaps with the provided interval,
+        else ``False``."""
         return not self.is_disjoint(other)
 
     def is_disjoint(self, other: Interval) -> bool:
@@ -105,7 +105,8 @@ class Interval:
         return other_end_lt_self_start or self_end_lt_other_start
 
     def is_empty(self) -> bool:
-        """Returns ``True`` if ``self`` is the empty interval, else ``False``."""
+        """Returns ``True`` if ``self`` is the empty interval, else
+        ``False``."""
         return self.start == self.end and (self.start_excluded or self.end_excluded)
 
     def intersection(self, other: Interval) -> Interval:

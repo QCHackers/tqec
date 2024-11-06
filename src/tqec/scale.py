@@ -175,8 +175,8 @@ class LinearFunction:
 
 
 def round_or_fail(f: float, atol: float = 1e-8) -> int:
-    """Try to round the provided ``f`` to the nearest integer and raise if ``f``
-    was not close enough to this integer.
+    """Try to round the provided ``f`` to the nearest integer and raise if
+    ``f`` was not close enough to this integer.
 
     Args:
         f: a floating-point value that should be close (absolute tolerance of

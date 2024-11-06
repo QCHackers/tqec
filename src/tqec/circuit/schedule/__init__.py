@@ -1,5 +1,5 @@
-"""Defines :class:`~.circuit.ScheduledCircuit`, used to represent quantum circuits
-all over the :mod:`tqec` package.
+"""Defines :class:`~.circuit.ScheduledCircuit`, used to represent quantum
+circuits all over the :mod:`tqec` package.
 
 This module defines one of the main class of the :mod:`tqec` package,
 :class:`~.circuit.ScheduledCircuit`, and several functions to modify or create

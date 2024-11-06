@@ -49,8 +49,8 @@ class QubitMap:
 
     @staticmethod
     def from_qubits(qubits: Iterable[GridQubit]) -> QubitMap:
-        """Creates a qubit map from the provided ``qubits``, associating indices
-        using the order in which qubits are provided."""
+        """Creates a qubit map from the provided ``qubits``, associating
+        indices using the order in which qubits are provided."""
         return QubitMap(dict(enumerate(qubits)))
 
     @staticmethod
@@ -72,8 +72,8 @@ class QubitMap:
     def with_mapped_qubits(
         self, qubit_map: Callable[[GridQubit], GridQubit]
     ) -> QubitMap:
-        """Change the qubits involved in ``self`` without changing the associated
-        indices.
+        """Change the qubits involved in ``self`` without changing the
+        associated indices.
 
         Args:
             qubit_map: a map from qubits to qubits that should associate a qubit

@@ -21,7 +21,6 @@ Modifications to the original code:
    immediately followed by resets. As a result, the depolarizing error has no
    effect.
 4. Remove the ``depolarizing_two_body_measurement_noise`` noise model.
-
 """
 
 from collections import Counter, defaultdict

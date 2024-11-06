@@ -21,8 +21,9 @@ from tqec.templates.subtemplates import (
 class Template(ABC):
     """Base class for all the templates.
 
-    This class is the base of all templates and provide the necessary interface
-    that all templates should implement to be usable by the library.
+    This class is the base of all templates and provide the necessary
+    interface that all templates should implement to be usable by the
+    library.
     """
 
     def __init__(self, default_increments: Displacement | None = None) -> None:
@@ -96,8 +97,8 @@ class Template(ABC):
     @property
     @abstractmethod
     def expected_plaquettes_number(self) -> int:
-        """Returns the number of plaquettes expected from the :py:meth:`instantiate`
-        method.
+        """Returns the number of plaquettes expected from the
+        :py:meth:`instantiate` method.
 
         Returns:
             the number of plaquettes expected from the :py:meth:`instantiate` method.

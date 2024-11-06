@@ -169,7 +169,8 @@ class MeasurementRecordsMap:
         self, mrecords_map: MeasurementRecordsMap, repetitions: int = 1
     ) -> MeasurementRecordsMap:
         """Build a new :class:`MeasurementRecordsMap` with measurements from
-        ``self`` appearing before measurements from the provided ``mrecords_map``.
+        ``self`` appearing before measurements from the provided
+        ``mrecords_map``.
 
         Args:
             mrecords_map: records of measurements happening after the measurements
