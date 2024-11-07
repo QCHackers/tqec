@@ -5,9 +5,38 @@ from tqec.computation.block_graph import BlockGraph
 from tqec.computation.cube import Cube, Port, YCube, ZXCube
 from tqec.computation.pipe import PipeKind
 from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode
+from tqec.exceptions import TQECException
 from tqec.gallery.logical_cnot import logical_cnot_block_graph, logical_cnot_zx_graph
 from tqec.gallery.three_cnots import three_cnots_block_graph, three_cnots_zx_graph
 from tqec.position import Position3D
+
+
+def test_conversion_invalid_zx_graph() -> None:
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Y),
+    )
+    with pytest.raises(
+        TQECException, match="The Y node must only has Z-direction edge."
+    ):
+        g.to_block_graph()
+
+    g = ZXGraph()
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(1, 0, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 1, 0), ZXKind.Z),
+    )
+    g.add_edge(
+        ZXNode(Position3D(0, 0, 0), ZXKind.Z),
+        ZXNode(Position3D(0, 0, 1), ZXKind.Z),
+    )
+    with pytest.raises(TQECException, match="ZX graph has a 3D corner"):
+        g.to_block_graph()
 
 
 def test_conversion_single_zx_edge() -> None:

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
-from tqec.computation.base_graph import ComputationGraph
+from tqec.computation._base_graph import ComputationGraph
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, SignedDirection3D
 from tqec.computation.cube import Cube, CubeKind
@@ -110,21 +110,26 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipe.validate()
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
-        """Convert the block graph to a ZX graph."""
+        """Convert the block graph to a
+        :py:class:`~tqec.computation.zx_graph.ZXGraph`.
+
+        The conversion process is as follows:
+
+        1. For each cube in the block graph, convert it to a ZX node by calling :py:meth:`~tqec.computation.cube.Cube.to_zx_node`.
+        2. For each pipe in the block graph, add an edge to the ZX graph with the corresponding endpoints and Hadamard flag.
+
+        Args:
+            block_graph: The block graph to be converted to a ZX graph.
+            name: The name of the new ZX graph. If None, the name of the block graph will be used.
+
+        Returns:
+            The :py:class:`~tqec.computation.zx_graph.ZXGraph` object converted from the block graph.
+        """
         from tqec.computation.conversion import (
             convert_block_graph_to_zx_graph,
         )
 
         return convert_block_graph_to_zx_graph(self, name)
-
-    @staticmethod
-    def from_zx_graph(zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
-        """Construct the block graph from a ZX graph."""
-        from tqec.computation.conversion import (
-            convert_zx_graph_to_block_graph,
-        )
-
-        return convert_zx_graph_to_block_graph(zx_graph, name)
 
     def to_dae_file(
         self,
