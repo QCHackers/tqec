@@ -458,11 +458,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html">tqec.computation.abstract_observable.AbstractObservable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.base_graph.html">tqec.computation.base_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationGraph.html">tqec.computation.base_graph.ComputationGraph</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationNode.html">tqec.computation.base_graph.ComputationNode</a></li>
-</ul>
-</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
@@ -724,7 +719,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="tqec.computation.conversion.convert_block_graph_to_zx_graph">
 <span class="sig-name descname"><span class="pre">convert_block_graph_to_zx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/conversion.html#convert_block_graph_to_zx_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.conversion.convert_block_graph_to_zx_graph" title="Link to this definition">#</a></dt>
-<dd><p>Convert the block graph to a ZX graph.</p>
+<dd><p>Convert a <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> to a
+<a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a>.</p>
+<p>The conversion process is as follows:</p>
+<ol class="arabic simple">
+<li><p>For each cube in the block graph, convert it to a ZX node by calling <a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube.to_zx_node" title="tqec.computation.cube.Cube.to_zx_node"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_zx_node()</span></code></a>.</p></li>
+<li><p>For each pipe in the block graph, add an edge to the ZX graph with the corresponding endpoints and Hadamard flag.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block_graph</strong> – The block graph to be converted to a ZX graph.</p></li>
+<li><p><strong>name</strong> – The name of the new ZX graph. If None, the name of the block graph will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The <a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a> object converted from the block graph.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

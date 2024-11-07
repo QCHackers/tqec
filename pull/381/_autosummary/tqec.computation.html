@@ -458,11 +458,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html">tqec.computation.abstract_observable.AbstractObservable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.base_graph.html">tqec.computation.base_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationGraph.html">tqec.computation.base_graph.ComputationGraph</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationNode.html">tqec.computation.base_graph.ComputationNode</a></li>
-</ul>
-</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
@@ -715,19 +710,18 @@
                   
   <section id="module-tqec.computation">
 <span id="tqec-computation"></span><h1>tqec.computation<a class="headerlink" href="#module-tqec.computation" title="Link to this heading">#</a></h1>
-<p>Define the main data structures to represent the logical computation.</p>
-<p>Under the context of topological quantum error correction, the logical computations
-can be represented by the spacetime defect diagrams. The topological structure of the
-spacetime diagram guides the computation and implements the desired logical subroutines.</p>
-<p>This package defines the two main graph data structure to represent the spacetime diagram
-of the logical computation:</p>
+<p>Defines the data structures to represent the logical computations.</p>
+<p>This module provides high-level abstractions to represent the fault-tolerant logical
+computations protected by surface code. There are two representations of the logical
+computation:</p>
 <ul class="simple">
-<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code> is in the form of a ZX-calculus graph and the representation is
-based on the correspondence between the ZX-calculus and the lattice surgery.</p></li>
-<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code> specifies the explicit block structures of the spacetime diagram,
-including the layout of the code patches, the boundary types and the connectivity of the
-patches across the spacetime. The block graph can be compiled and used to generate the
-concrete circuits that implement the logical computation.</p></li>
+<li><p><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a>: A restricted form of the ZX graph from
+the ZX-calculus. Rewriting rules from the ZX-calculus can be applied to the graph to
+verify the functionality of the computation.</p></li>
+<li><p><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a>: A graph consisting of individual
+building blocks that fully specify the boundary conditions and topological structures
+of the logical computation. It corresponds to the commonly used 3D spacetime diagram
+representation of a surface code logical computation.</p></li>
 </ul>
 <p class="rubric">Modules</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
@@ -735,29 +729,26 @@ concrete circuits that implement the logical computation.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.abstract_observable.html#module-tqec.computation.abstract_observable" title="tqec.computation.abstract_observable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abstract_observable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.base_graph.html#module-tqec.computation.base_graph" title="tqec.computation.base_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_graph</span></code></a></p></td>
-<td><p>Base class for graph data structures representing logical computations.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.block_graph.html#module-tqec.computation.block_graph" title="tqec.computation.block_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_graph</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.block_graph.html#module-tqec.computation.block_graph" title="tqec.computation.block_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_graph</span></code></a></p></td>
 <td><p>Graph representation of a 3D logical computation by explicit blocks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.conversion.html#module-tqec.computation.conversion" title="tqec.computation.conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conversion</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.conversion.html#module-tqec.computation.conversion" title="tqec.computation.conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conversion</span></code></a></p></td>
 <td><p>Conversion between <code class="docutils literal notranslate"><span class="pre">ZXGraph</span></code> and <code class="docutils literal notranslate"><span class="pre">BlockGraph</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.correlation.html#module-tqec.computation.correlation" title="tqec.computation.correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.correlation.html#module-tqec.computation.correlation" title="tqec.computation.correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation</span></code></a></p></td>
+<td><p>Defines the <a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationSurface</span></code></a> and the functions to find the correlation surfaces in the ZX graph.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.cube.html#module-tqec.computation.cube" title="tqec.computation.cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.cube.html#module-tqec.computation.cube" title="tqec.computation.cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.pipe.html#module-tqec.computation.pipe" title="tqec.computation.pipe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.pipe.html#module-tqec.computation.pipe" title="tqec.computation.pipe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.zx_graph.html#module-tqec.computation.zx_graph" title="tqec.computation.zx_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zx_graph</span></code></a></p></td>
+<td><p>ZX graph representation of a logical computation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.zx_graph.html#module-tqec.computation.zx_graph" title="tqec.computation.zx_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zx_graph</span></code></a></p></td>
-<td><p>ZX graph representation of a 3D spacetime defect diagram.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.zx_plot.html#module-tqec.computation.zx_plot" title="tqec.computation.zx_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zx_plot</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.zx_plot.html#module-tqec.computation.zx_plot" title="tqec.computation.zx_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zx_plot</span></code></a></p></td>
+<td><p>Defines functions to plot ZX graphs and correlation surfaces on 3D axes with <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p></td>
 </tr>
 </tbody>
 </table>

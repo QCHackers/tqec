@@ -398,7 +398,10 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.computation.zx_plot</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines functions to plot ZX graphs and correlation surfaces on 3D axes with</span>
+<span class="sd">``matplotlib``.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
@@ -433,7 +436,8 @@ window.addEventListener("load", () => mermaid.run());
     <span class="n">edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">annotate_ports</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib on the provided figure.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw the :py:class:`~tqec.computation.zx_graph.ZXGraph` on the provided</span>
+<span class="sd">    axes.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        graph: The ZX graph to draw.</span>
@@ -515,7 +519,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    Args:</span>
 <span class="sd">        correlation_surface: The correlation surface to draw.</span>
 <span class="sd">        ax: The 3-dimensional ax to draw on.</span>
-<span class="sd">        correlation_edge_width: The width of the correlation edge. Default is 3.</span>
+<span class="sd">        correlation_edge_width: The width of the correlation edges. Default is 3.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">span</span> <span class="o">=</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">span</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="n">ZXNode</span><span class="p">):</span>
@@ -571,15 +575,22 @@ window.addEventListener("load", () => mermaid.run());
     <span class="n">node_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
     <span class="n">hadamard_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
     <span class="n">edge_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">annotate_ports</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes3D</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw the 3D graph using matplotlib.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the :py:class:`~tqec.computation.zx_graph.ZXGraph` using</span>
+<span class="sd">    matplotlib.</span>
 
 <span class="sd">    Args:</span>
+<span class="sd">        graph: The ZX graph to plot.</span>
 <span class="sd">        figsize: The figure size. Default is (5, 6).</span>
-<span class="sd">        title: The title of the plot. Default is the name of the graph.</span>
-<span class="sd">        node_size: The size of the node. Default is 400.</span>
-<span class="sd">        hadamard_size: The size of the Hadamard transition. Default is 200.</span>
-<span class="sd">        edge_width: The width of the edge. Default is 1.</span>
+<span class="sd">        title: The title of the plot. Default to the name of the graph.</span>
+<span class="sd">        node_size: The size of the node in the plot. Default is 400.</span>
+<span class="sd">        hadamard_size: The size of the Hadamard square in the plot. Default is 200.</span>
+<span class="sd">        edge_width: The width of the edge in the plot. Default is 1.</span>
+<span class="sd">        annotate_ports: Whether to annotate the ports if they are present. Default is True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple of the figure and the axes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -592,6 +603,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">node_size</span><span class="o">=</span><span class="n">node_size</span><span class="p">,</span>
         <span class="n">hadamard_size</span><span class="o">=</span><span class="n">hadamard_size</span><span class="p">,</span>
         <span class="n">edge_width</span><span class="o">=</span><span class="n">edge_width</span><span class="p">,</span>
+        <span class="n">annotate_ports</span><span class="o">=</span><span class="n">annotate_ports</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span> <span class="ow">or</span> <span class="n">graph</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>

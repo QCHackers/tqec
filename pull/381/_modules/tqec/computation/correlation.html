@@ -398,7 +398,10 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.computation.correlation</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines the :py:class:`~tqec.computation.correlation.CorrelationSurface` and</span>
+<span class="sd">the functions to find the correlation surfaces in the ZX graph.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -517,12 +520,13 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">def</span> <span class="nf">find_correlation_surfaces</span><span class="p">(</span>
     <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the correlation surfaces in the ZX graph.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find all the</span>
+<span class="sd">    :py:class:`~tqec.computation.correlation.CorrelationSurface` in a ZX graph.</span>
 
-<span class="sd">    The algorithm starts from each leaf node in the graph, and find the correlation surfaces</span>
-<span class="sd">    using the flood fill like algorithm.</span>
+<span class="sd">    It starts from each leaf node in the graph, and finds the correlation surfaces using a variant</span>
+<span class="sd">    of flood-fill algorithm.</span>
 
-<span class="sd">    For Z/X type node, the correlation surface must start from the opposite type node. For the</span>
+<span class="sd">    For Z/X type correlation surface, the correlation surface must start from the opposite type node. For the</span>
 <span class="sd">    Port, the correlation surface can start from both X/Z type node. For the Y type node, the</span>
 <span class="sd">    correlation surface must be the product of the X and Z type.</span>
 
@@ -532,7 +536,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    Returns:</span>
 <span class="sd">        A list of `CorrelationSurface` in the graph.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">zx_graph</span><span class="o">.</span><span class="n">raise_if_cannot_be_valid_computation</span><span class="p">()</span>
+    <span class="n">zx_graph</span><span class="o">.</span><span class="n">check_invariants</span><span class="p">()</span>
     <span class="c1"># Edge case: single node graph</span>
     <span class="k">if</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span>

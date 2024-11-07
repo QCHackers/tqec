@@ -458,11 +458,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html">tqec.computation.abstract_observable.AbstractObservable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.base_graph.html">tqec.computation.base_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationGraph.html">tqec.computation.base_graph.ComputationGraph</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationNode.html">tqec.computation.base_graph.ComputationNode</a></li>
-</ul>
-</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
@@ -718,11 +713,13 @@
                   
   <section id="module-tqec.computation.correlation">
 <span id="tqec-computation-correlation"></span><h1>tqec.computation.correlation<a class="headerlink" href="#module-tqec.computation.correlation" title="Link to this heading">#</a></h1>
+<p>Defines the <a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationSurface</span></code></a> and
+the functions to find the correlation surfaces in the ZX graph.</p>
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces.html#tqec.computation.correlation.find_correlation_surfaces" title="tqec.computation.correlation.find_correlation_surfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_correlation_surfaces</span></code></a>(zx_graph)</p></td>
-<td><p>Find the correlation surfaces in the ZX graph.</p></td>
+<td><p>Find all the <a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationSurface</span></code></a> in a ZX graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html#tqec.computation.correlation.find_correlation_surfaces_from_leaf" title="tqec.computation.correlation.find_correlation_surfaces_from_leaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_correlation_surfaces_from_leaf</span></code></a>(...)</p></td>
 <td><p>Find the correlation surfaces starting from a leaf node in the ZX graph.</p></td>

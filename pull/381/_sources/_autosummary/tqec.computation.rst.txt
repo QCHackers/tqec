@@ -31,8 +31,6 @@ tqec.computation
    abstract_observable
 
 
-   base_graph
-
    block_graph
 
 

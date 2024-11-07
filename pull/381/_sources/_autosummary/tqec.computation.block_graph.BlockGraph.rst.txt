@@ -16,7 +16,6 @@ tqec.computation.block\_graph.BlockGraph
       ~BlockGraph.add_node
       ~BlockGraph.edges_at
       ~BlockGraph.from_dae_file
-      ~BlockGraph.from_zx_graph
       ~BlockGraph.get_abstract_observables
       ~BlockGraph.get_degree
       ~BlockGraph.get_edge
@@ -56,7 +55,6 @@ tqec.computation.block\_graph.BlockGraph
    .. automethod:: add_node
    .. automethod:: edges_at
    .. automethod:: from_dae_file
-   .. automethod:: from_zx_graph
    .. automethod:: get_abstract_observables
    .. automethod:: get_degree
    .. automethod:: get_edge

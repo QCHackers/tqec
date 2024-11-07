@@ -458,11 +458,6 @@
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html">tqec.computation.abstract_observable.AbstractObservable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.base_graph.html">tqec.computation.base_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationGraph.html">tqec.computation.base_graph.ComputationGraph</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.base_graph.ComputationNode.html">tqec.computation.base_graph.ComputationNode</a></li>
-</ul>
-</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
@@ -724,11 +719,25 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ZXGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="tqec.computation.base_graph.ComputationGraph.html#tqec.computation.base_graph.ComputationGraph" title="tqec.computation.base_graph.ComputationGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationGraph</span></code></a>[<a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXNode</span></code></a>, <a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXEdge</span></code></a>]</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationGraph</span></code>[<a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXNode</span></code></a>, <a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXEdge</span></code></a>]</p>
 <p>ZX graph representation of a logical computation.</p>
-<p>The ZX graph is in the form of a ZX-calculus graph and the
-representation is based on the correspondence between the ZX-
-calculus and the lattice surgery.</p>
+<p>This is a restricted form of the ZX graph from the ZX-calculus.
+Currently, the restriction includes:</p>
+<ol class="arabic simple">
+<li><p>Every node is positioned at an integer 3D position.</p></li>
+<li><p>Only nearest-neighbor nodes can be connected by an edge.</p></li>
+<li><p>X/Z spiders are phase-free.</p></li>
+<li><p>There are the <code class="docutils literal notranslate"><span class="pre">Y</span></code> kind nodes representing the Y basis initialization/measurement. It’s
+different from the traditional phased X/Z spider representation in ZX-calculus.</p></li>
+</ol>
+<p>The restrictions are needed because in the end, we need to convert the graph to a
+<a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> and compile to circuits. The block graph
+poses restrictions on the graph structure. An automatic compilation from a simplified or a
+more general ZX diagram to a block graph can relax some of the restrictions. But this is
+a future work.</p>
+<p>In principle, the rewriting rules from the ZX-calculus can be applied to simplify the graph
+and verify the functionality of the computation. This is not implemented yet but might be
+added in the future.</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -741,35 +750,32 @@ calculus and the lattice surgery.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.add_node" title="tqec.computation.zx_graph.ZXGraph.add_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_node</span></code></a>(node[, check_conflict])</p></td>
 <td><p>Add a node to the graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.draw" title="tqec.computation.zx_graph.ZXGraph.draw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw</span></code></a>()</p></td>
-<td><p>Draw the graph using matplotlib.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.check_invariants" title="tqec.computation.zx_graph.ZXGraph.check_invariants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_invariants</span></code></a>()</p></td>
+<td><p>Check the invariants of a valid ZX graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.edges_at" title="tqec.computation.zx_graph.ZXGraph.edges_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_at</span></code></a>(position)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.draw" title="tqec.computation.zx_graph.ZXGraph.draw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw</span></code></a>(*[, figsize, title, node_size, ...])</p></td>
+<td><p>Plot the <a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a> using matplotlib.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.edges_at" title="tqec.computation.zx_graph.ZXGraph.edges_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_at</span></code></a>(position)</p></td>
 <td><p>Get the edges incident to a position.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.fill_ports" title="tqec.computation.zx_graph.ZXGraph.fill_ports"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_ports</span></code></a>(fill)</p></td>
-<td><p>Fill the ports at specified position with a node with the given kind.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.fill_ports" title="tqec.computation.zx_graph.ZXGraph.fill_ports"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_ports</span></code></a>(fill)</p></td>
+<td><p>Fill the ports at specified positions with nodes of the given kind.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.find_correration_surfaces" title="tqec.computation.zx_graph.ZXGraph.find_correration_surfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_correration_surfaces</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.find_correration_surfaces" title="tqec.computation.zx_graph.ZXGraph.find_correration_surfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_correration_surfaces</span></code></a>()</p></td>
 <td><p>Find the correlation surfaces in the ZX graph.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.get_degree" title="tqec.computation.zx_graph.ZXGraph.get_degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_degree</span></code></a>(position)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.get_degree" title="tqec.computation.zx_graph.ZXGraph.get_degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_degree</span></code></a>(position)</p></td>
 <td><p>Get the degree of a node in the graph, i.e. the number of edges incident to it.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.get_edge" title="tqec.computation.zx_graph.ZXGraph.get_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edge</span></code></a>(pos1, pos2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.get_edge" title="tqec.computation.zx_graph.ZXGraph.get_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edge</span></code></a>(pos1, pos2)</p></td>
 <td><p>Get the edge by its endpoint positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.has_edge_between" title="tqec.computation.zx_graph.ZXGraph.has_edge_between"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_edge_between</span></code></a>(pos1, pos2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.has_edge_between" title="tqec.computation.zx_graph.ZXGraph.has_edge_between"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_edge_between</span></code></a>(pos1, pos2)</p></td>
 <td><p>Check if there is an edge between two positions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.raise_if_cannot_be_valid_computation" title="tqec.computation.zx_graph.ZXGraph.raise_if_cannot_be_valid_computation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raise_if_cannot_be_valid_computation</span></code></a>()</p></td>
-<td><p>Check the validity of the graph to represent a computation.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.to_block_graph" title="tqec.computation.zx_graph.ZXGraph.to_block_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_block_graph</span></code></a>([name])</p></td>
-<td><p>Construct a block graph from a ZX graph.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.with_zx_flipped" title="tqec.computation.zx_graph.ZXGraph.with_zx_flipped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_zx_flipped</span></code></a>([name])</p></td>
-<td><p>Get a new ZX graph with the node kind flipped.</p></td>
+<td><p>Convert the ZX graph to a <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -778,28 +784,28 @@ calculus and the lattice surgery.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></p></td>
-<td><p>Return a list of edges in the graph.</p></td>
+<td><p>The list of edges in the graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">leaf_nodes</span></code></p></td>
 <td><p>Get the leaf nodes of the graph, i.e. the nodes with degree 1.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
-<td><p>The name of the graph.</p></td>
+<td><p>Name of the graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></p></td>
-<td><p>Return a list of nodes in the graph.</p></td>
+<td><p>The list of nodes in the graph.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_edges</span></code></p></td>
-<td><p>The number of edges in the graph.</p></td>
+<td><p>Number of edges in the graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_nodes</span></code></p></td>
-<td><p>The number of nodes in the graph.</p></td>
+<td><p>Number of nodes in the graph.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_ports</span></code></p></td>
-<td><p>The number of ports in the graph.</p></td>
+<td><p>Number of ports in the graph.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ports</span></code></p></td>
-<td><p>Get a mapping from the labels of the ports in the graph to their positions.</p></td>
+<td><p>Mapping from port labels to their positions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -817,7 +823,11 @@ calculus and the lattice surgery.</p>
 the nodes will be created.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>edge</strong> – The edge to add to the graph.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> – The first node of the edge.</p></li>
+<li><p><strong>v</strong> – The second node of the edge.</p></li>
+<li><p><strong>has_hadamard</strong> – Whether the edge is a Hadamard edge. Default to</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – For each node in the edge, if there is already a node which is not
@@ -835,23 +845,62 @@ the nodes will be created.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>node</strong> – The node to add to the graph.</p></li>
-<li><p><strong>check_conflict</strong> – Whether to check for conflicts before adding the node. If set to
-False, the node may replace an existing node at the same position. Defaults to
-True.</p></li>
+<li><p><strong>check_conflict</strong> – <p>Whether to check for conflicts before adding the node. If set to
+True, either one of the following two circumstances will raise an exception:</p>
+<ol class="arabic simple">
+<li><p>There is already a node which is not equal to this one at the same position.</p></li>
+<li><p>The node is a port but there is already a different port with the same label
+in the graph.</p></li>
+</ol>
+<p>Otherwise, an existing node at the same position will be overwritten. Defaults to
+True.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – There is already a node which is not equal to this one at the same
-    position, or the node is a port but there is already a different port with the
-    same label in the graph.</p>
+<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If <code class="docutils literal notranslate"><span class="pre">check_conflict</span></code> is True and there is a conflict when adding the
+    node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.check_invariants">
+<span class="sig-name descname"><span class="pre">check_invariants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.check_invariants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.check_invariants" title="Link to this definition">#</a></dt>
+<dd><p>Check the invariants of a valid ZX graph.</p>
+<p>To represent a valid ZX graph, the graph must fulfill the following conditions:</p>
+<ul class="simple">
+<li><p>The graph is a single connected component.</p></li>
+<li><p>The ports and Y nodes are leaf nodes.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the invariants are not satisfied.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.draw">
-<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Figure</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Axes3D</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.draw" title="Link to this definition">#</a></dt>
-<dd><p>Draw the graph using matplotlib.</p>
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hadamard_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate_ports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Figure</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Axes3D</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.draw" title="Link to this definition">#</a></dt>
+<dd><p>Plot the <a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGraph</span></code></a> using
+matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> – The ZX graph to plot.</p></li>
+<li><p><strong>figsize</strong> – The figure size. Default is (5, 6).</p></li>
+<li><p><strong>title</strong> – The title of the plot. Default to the name of the graph.</p></li>
+<li><p><strong>node_size</strong> – The size of the node in the plot. Default is 400.</p></li>
+<li><p><strong>hadamard_size</strong> – The size of the Hadamard square in the plot. Default is 200.</p></li>
+<li><p><strong>edge_width</strong> – The width of the edge in the plot. Default is 1.</p></li>
+<li><p><strong>annotate_ports</strong> – Whether to annotate the ports if they are present. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of the figure and the axes.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -863,17 +912,15 @@ True.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.fill_ports">
 <span class="sig-name descname"><span class="pre">fill_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><span class="pre">ZXKind</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><span class="pre">ZXKind</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.fill_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.fill_ports" title="Link to this definition">#</a></dt>
-<dd><p>Fill the ports at specified position with a node with the given
-kind.</p>
+<dd><p>Fill the ports at specified positions with nodes of the given kind.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fill</strong> – A mapping from the label of the ports to the node kind to fill.</p>
+<dd class="field-odd"><p><strong>fill</strong> – A mapping from the label of the ports to the node kind to fill. If a single
+kind is given, all the ports will be filled with the same kind.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if there is no port with the given label.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if try to fill the port with port kind.</p></li>
-</ul>
+<dd class="field-even"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – if there is no port with the given label or the specified kind
+    is <code class="docutils literal notranslate"><span class="pre">P</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -896,7 +943,8 @@ incident to it.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.get_edge">
 <span class="sig-name descname"><span class="pre">get_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_EDGE</span></span></span><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.get_edge" title="Link to this definition">#</a></dt>
-<dd><p>Get the edge by its endpoint positions.</p>
+<dd><p>Get the edge by its endpoint positions. If there is no edge between
+the given positions, an exception will be raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -917,31 +965,15 @@ incident to it.</p>
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.has_edge_between">
 <span class="sig-name descname"><span class="pre">has_edge_between</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.has_edge_between" title="Link to this definition">#</a></dt>
 <dd><p>Check if there is an edge between two positions.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.raise_if_cannot_be_valid_computation">
-<span class="sig-name descname"><span class="pre">raise_if_cannot_be_valid_computation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.raise_if_cannot_be_valid_computation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.raise_if_cannot_be_valid_computation" title="Link to this definition">#</a></dt>
-<dd><p>Check the validity of the graph to represent a computation. And
-raise an exception if the graph cannot represent a valid computation.
-This method performs a necessary but not sufficient check.</p>
-<dl class="simple">
-<dt>To represent a valid computation, the graph must have:</dt><dd><ul class="simple">
-<li><p>the graph is a single connected component</p></li>
-<li><p>the graph has no 3D corner</p></li>
-<li><p>port nodes are leaf nodes</p></li>
-<li><p>Y nodes is are leaf nodes and are time-like, i.e. only have Z-direction edges</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos1</strong> – The first endpoint position.</p></li>
+<li><p><strong>pos2</strong> – The second endpoint position.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the graph is not a single connected component.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the port node is not a leaf node.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the Y node is not a leaf node.</p></li>
-<li><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the Y node has an edge not in Z direction.</p></li>
-</ul>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if there is an edge between the two positions, False otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -949,24 +981,39 @@ This method performs a necessary but not sufficient check.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.to_block_graph">
 <span class="sig-name descname"><span class="pre">to_block_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><span class="pre">BlockGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.to_block_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.to_block_graph" title="Link to this definition">#</a></dt>
-<dd><p>Construct a block graph from a ZX graph.</p>
-<p>The ZX graph includes the minimal information required to construct the block graph,
-but not guaranteed to admit a valid block structure. The block structure will be inferred
-from the ZX graph and validated.</p>
+<dd><p>Convert the ZX graph to a
+<a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a>.</p>
+<p>Currently, the conversion respects the explicit 3D structure of the ZX graph. And convert node by node, edge by edge.
+Future work may include automatic compilation from a simplified or a more general ZX diagram to a block graph implementation.</p>
+<p>To successfully convert a ZX graph to a block graph, the following necessary conditions must be satisfied:</p>
+<ul class="simple">
+<li><p>The ZX graph itself is a valid representation, i.e. <a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph.check_invariants" title="tqec.computation.zx_graph.ZXGraph.check_invariants"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_invariants()</span></code></a> does not raise an exception.</p></li>
+<li><p>Every nodes in the ZX graph connects to edges at most in two directions, i.e. there is no 3D corner node.</p></li>
+<li><p>Y nodes in the ZX graph can only have edges in time direction.</p></li>
+</ul>
+<p>The conversion process is as follows:</p>
+<ol class="arabic simple">
+<li><p>Construct cubes for all the corner nodes in the ZX graph.</p></li>
+<li><p>Construct pipes connecting ports/Y to ports/Y nodes.</p></li>
+<li><p>Greedily construct the pipes until no more pipes can be inferred.</p></li>
+</ol>
+<p>4. If there are still nodes left, then choose orientation for an arbitrary node
+and repeat step 3 and 4 until all nodes are handled or conflicts are detected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> – The name of the new block graph.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zx_graph</strong> – The ZX graph to be converted to a block graph.</p></li>
+<li><p><strong>name</strong> – The name of the new block graph. If None, the name of the ZX graph will be used.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The constructed block graph.</p>
+<dd class="field-even"><p>The <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> object converted from the ZX graph.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the ZX graph does not satisfy the necessary conditions
+    or there are inference conflicts during the conversion.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.computation.zx_graph.ZXGraph.with_zx_flipped">
-<span class="sig-name descname"><span class="pre">with_zx_flipped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph.with_zx_flipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph.with_zx_flipped" title="Link to this definition">#</a></dt>
-<dd><p>Get a new ZX graph with the node kind flipped.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1024,6 +1071,7 @@ from the ZX graph and validated.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.__init__"><code class="docutils literal notranslate"><span class="pre">ZXGraph.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.add_edge"><code class="docutils literal notranslate"><span class="pre">ZXGraph.add_edge()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.add_node"><code class="docutils literal notranslate"><span class="pre">ZXGraph.add_node()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.check_invariants"><code class="docutils literal notranslate"><span class="pre">ZXGraph.check_invariants()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.draw"><code class="docutils literal notranslate"><span class="pre">ZXGraph.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.edges_at"><code class="docutils literal notranslate"><span class="pre">ZXGraph.edges_at()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.fill_ports"><code class="docutils literal notranslate"><span class="pre">ZXGraph.fill_ports()</span></code></a></li>
@@ -1031,9 +1079,7 @@ from the ZX graph and validated.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.get_degree"><code class="docutils literal notranslate"><span class="pre">ZXGraph.get_degree()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.get_edge"><code class="docutils literal notranslate"><span class="pre">ZXGraph.get_edge()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.has_edge_between"><code class="docutils literal notranslate"><span class="pre">ZXGraph.has_edge_between()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.raise_if_cannot_be_valid_computation"><code class="docutils literal notranslate"><span class="pre">ZXGraph.raise_if_cannot_be_valid_computation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.to_block_graph"><code class="docutils literal notranslate"><span class="pre">ZXGraph.to_block_graph()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.zx_graph.ZXGraph.with_zx_flipped"><code class="docutils literal notranslate"><span class="pre">ZXGraph.with_zx_flipped()</span></code></a></li>
 </ul>
 </li>
 </ul>
