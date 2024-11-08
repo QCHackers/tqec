@@ -22,15 +22,15 @@ Documentation is available at <https://qchackers.github.io/tqec/>
 Currently, you need to install `tqec` from source:
 
 ```sh
-python -m pip install git+https://github.com/QCHackers/tqec.git
+python -m pip install git+https://github.com/tqec/tqec.git
 ```
 
-For a more detailed installation guide and common troubleshooting tips, see the [installation page](https://qchackers.github.io/tqec/user_guide/installation.html) in the documentation.
+For a more detailed installation guide and common troubleshooting tips, see the [installation page](https://tqec.github.io/tqec/user_guide/installation.html) in the documentation.
 
 ## Basic Usage
 
 Here we generate the circuits for a logical CNOT between two logical qubits to demonstrate how to use the tool.
-Refer to [quick start](https://qchackers.github.io/tqec/user_guide/quick_start.html) in the documentation for more detailed explanation.
+Refer to [quick start](https://tqec.github.io/tqec/user_guide/quick_start.html) in the documentation for more detailed explanation.
 
 ```py
 from tqec import BlockGraph, compile_block_graph
@@ -53,11 +53,14 @@ circuit = compiled_computation.generate_stim_circuit(
 )
 ```
 
+See the [quick start tutorial](https://tqec.github.io/tqec/quick_start.html) for a
+more in-depth explanation.
+
 ## Contributing
 
 Pull requests and issues are more than welcomed!
 
-See the [contributor guide](https://qchackers.github.io/tqec/contributor_guide.html) for specific instructions to start contributing.
+See the [contributing page](https://tqec.github.io/tqec/contributor_guide.html) for for specific instructions to start contributing.
 
 ## Community
 

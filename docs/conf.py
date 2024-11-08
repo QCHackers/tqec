@@ -78,7 +78,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/QCHackers/tqec",
+            "url": "https://github.com/tqec/tqec",
             "icon": "fa-brands fa-github",
         },
         {

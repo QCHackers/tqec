@@ -3,32 +3,31 @@
 from __future__ import annotations
 
 import pathlib
-from typing import BinaryIO, Iterable, cast
 from dataclasses import dataclass
+from typing import BinaryIO, Iterable, cast
 
 import collada
 import collada.source
 import numpy as np
 import numpy.typing as npt
 
-from tqec.computation.correlation import CorrelationSurface
-from tqec.computation.zx_graph import ZXKind
-from tqec.computation.cube import Cube, Port, CubeKind, YCube, ZXCube
-from tqec.computation.pipe import PipeKind
-from tqec.exceptions import TQECException
-from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.computation.block_graph import BlockGraph, BlockKind
+from tqec.computation.correlation import CorrelationSurface
+from tqec.computation.cube import Cube, CubeKind, Port, YCube, ZXCube
+from tqec.computation.pipe import PipeKind
+from tqec.computation.zx_graph import ZXKind
+from tqec.exceptions import TQECException
 from tqec.interop.collada._geometry import (
+    BlockGeometries,
     Face,
     TQECColor,
-    BlockGeometries,
     get_correlation_surface_geometry,
 )
+from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.scale import round_or_fail
 
-
 _ASSET_AUTHOR = "TQEC Community"
-_ASSET_AUTHORING_TOOL_TQEC = "https://github.com/QCHackers/tqec"
+_ASSET_AUTHORING_TOOL_TQEC = "https://github.com/tqec/tqec"
 _ASSET_UNIT_NAME = "inch"
 _ASSET_UNIT_METER = 0.02539999969303608
 

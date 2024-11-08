@@ -55,6 +55,6 @@ jobs:
           message: |
             A preview of ${{ github.event.after }} is uploaded and can be seen here:
 
-            ✨ https://qchackers.github.io/tqec/pull/${{github.event.number}}/ ✨
+            ✨ https://tqec.github.io/tqec/pull/${{github.event.number}}/ ✨
 
             Changes may take a few minutes to propagate.

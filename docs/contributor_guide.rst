@@ -19,7 +19,7 @@ recommended to use an editable installation.
 .. code-block:: bash
 
     # Clone the repository to have local files to work on
-    git clone https://github.com/QCHackers/tqec.git
+    git clone https://github.com/tqec/tqec.git
     # Install the library with developer dependencies
     python -m pip install -e 'tqec[all]'
     # Go in the tqec directory and enable pre-commit
@@ -34,12 +34,12 @@ How to contribute
 1. Look at issues
 ~~~~~~~~~~~~~~~~~
 
-Start by looking at the `issues list <https://github.com/QCHackers/tqec/issues>`_.
+Start by looking at the `issues list <https://github.com/tqec/tqec/issues>`_.
 Issues can be filtered by tags. Below are a few of the most interesting tags:
 
-- `good first issue <https://github.com/QCHackers/tqec/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22>`_
+- `good first issue <https://github.com/tqec/tqec/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22>`_
   for issues that have been judged easy to address without prior knowledge on the code base.
-- `backend <https://github.com/QCHackers/tqec/issues?q=is%3Aissue+is%3Aopen+label%3Abackend>`_
+- `backend <https://github.com/tqec/tqec/issues?q=is%3Aissue+is%3Aopen+label%3Abackend>`_
   for issues related to the Python code.
 
 Pick one issue that you **want** to work on. We emphasize on **want**: this is an open
@@ -68,7 +68,7 @@ If you are part of the QCHacker community, you will be able to
 directly in the QCHacker/tqec repository. If you are not, you can
 `fork <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo>`_
 the QCHacker/tqec repository on your own account
-(`click here <https://github.com/QCHackers/tqec/fork>`_) and create a branch there.
+(`click here <https://github.com/tqec/tqec/fork>`_) and create a branch there.
 
 4. Work in your branch and submit a pull request
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
