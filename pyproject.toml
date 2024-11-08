@@ -39,8 +39,8 @@ dynamic = ["dependencies"]
 [project.urls]
 Website = "https://tqec.app"
 Documentation = "https://qchackers.github.io/tqec/"
-Repository = "https://github.com/QCHackers/tqec"
-Issues = "https://github.com/QCHackers/tqec/issues"
+Repository = "https://github.com/tqec/tqec"
+Issues = "https://github.com/tqec/tqec/issues"
 
 [project.optional-dependencies]
 test = ["pytest", "mypy", "pytest-cov", "types-networkx"]

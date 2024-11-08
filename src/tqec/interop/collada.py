@@ -30,7 +30,7 @@ from tqec.scale import round_or_fail
 
 
 ASSET_AUTHOR = "TQEC Community"
-ASSET_AUTHORING_TOOL_TQEC = "https://github.com/QCHackers/tqec"
+ASSET_AUTHORING_TOOL_TQEC = "https://github.com/tqec/tqec"
 ASSET_UNIT_NAME = "inch"
 ASSET_UNIT_METER = 0.02539999969303608
 

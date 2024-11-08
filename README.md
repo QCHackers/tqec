@@ -8,14 +8,14 @@ Design automation software tools for Topological Quantum Error Correction
 ## Installation
 
 ```sh
-python -m pip install git+https://github.com/QCHackers/tqec.git
+python -m pip install git+https://github.com/tqec/tqec.git
 ```
 
 For a more in-depth explanation, see the [installation procedure](https://qchackers.github.io/tqec/installation.html).
 
 ## Quick start
 
-Download the example file [logical_cnot.dae](https://github.com/QCHackers/tqec/tree/main/docs/media/quick_start/logical_cnot.dae).
+Download the example file [logical_cnot.dae](https://github.com/tqec/tqec/tree/main/docs/media/quick_start/logical_cnot.dae).
 
 You can generate `stim.Circuit` instances representing that computation using
 
