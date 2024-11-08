@@ -11,7 +11,7 @@ Design automation software tools for Topological Quantum Error Correction
 python -m pip install git+https://github.com/tqec/tqec.git
 ```
 
-For a more in-depth explanation, see the [installation procedure](https://qchackers.github.io/tqec/installation.html).
+For a more in-depth explanation, see the [installation procedure](https://tqec.github.io/tqec/installation.html).
 
 ## Quick start
 
@@ -40,19 +40,19 @@ circuit_with_detectors = annotate_detectors_automatically(circuit)
 print(circuit_with_detectors)
 ```
 
-See the [quick start tutorial](https://qchackers.github.io/tqec/quick_start.html) for a
+See the [quick start tutorial](https://tqec.github.io/tqec/quick_start.html) for a
 more in-depth explanation.
 
 ## Contributing
 
 Pull requests and issues are more than welcomed!
 
-See the [contributing page](https://qchackers.github.io/tqec/contributing.html) for specific instructions to start contributing.
+See the [contributing page](https://tqec.github.io/tqec/contributing.html) for specific instructions to start contributing.
 
 ## Helpful Links
 
 1. [Google group](https://groups.google.com/g/tqec-design-automation)
-2. [Developer documentation for the `tqec` project](https://qchackers.github.io/tqec/)
+2. [Developer documentation for the `tqec` project](https://tqec.github.io/tqec/)
 3. [Introduction to TQEC](https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing)
 4. [Overview of state of the art 2D QEC](https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing)
 5. [Backend deep dive](https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view)

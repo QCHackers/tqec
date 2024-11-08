@@ -38,7 +38,7 @@ dynamic = ["dependencies"]
 
 [project.urls]
 Website = "https://tqec.app"
-Documentation = "https://qchackers.github.io/tqec/"
+Documentation = "https://tqec.github.io/tqec/"
 Repository = "https://github.com/tqec/tqec"
 Issues = "https://github.com/tqec/tqec/issues"
 
