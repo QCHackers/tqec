@@ -1,6 +1,0 @@
-tqec.circuit.detectors.utils.has\_circuit\_repeat\_block
-========================================================
-
-.. currentmodule:: tqec.circuit.detectors.utils
-
-.. autofunction:: has_circuit_repeat_block

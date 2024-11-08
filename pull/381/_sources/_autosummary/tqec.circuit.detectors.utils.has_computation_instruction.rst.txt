@@ -1,6 +1,0 @@
-tqec.circuit.detectors.utils.has\_computation\_instruction
-==========================================================
-
-.. currentmodule:: tqec.circuit.detectors.utils
-
-.. autofunction:: has_computation_instruction

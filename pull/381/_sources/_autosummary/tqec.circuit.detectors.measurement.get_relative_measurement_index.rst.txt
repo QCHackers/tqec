@@ -1,6 +1,0 @@
-tqec.circuit.detectors.measurement.get\_relative\_measurement\_index
-====================================================================
-
-.. currentmodule:: tqec.circuit.detectors.measurement
-
-.. autofunction:: get_relative_measurement_index

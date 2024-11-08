@@ -1,6 +1,0 @@
-tqec.circuit.detectors.predicates.does\_not\_contain\_combined\_gates
-=====================================================================
-
-.. currentmodule:: tqec.circuit.detectors.predicates
-
-.. autofunction:: does_not_contain_combined_gates

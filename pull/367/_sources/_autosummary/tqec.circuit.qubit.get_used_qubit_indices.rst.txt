@@ -1,6 +1,0 @@
-tqec.circuit.qubit.get\_used\_qubit\_indices
-============================================
-
-.. currentmodule:: tqec.circuit.qubit
-
-.. autofunction:: get_used_qubit_indices

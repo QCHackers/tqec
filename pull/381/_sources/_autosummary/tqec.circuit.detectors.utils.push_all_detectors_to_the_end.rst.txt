@@ -1,6 +1,0 @@
-tqec.circuit.detectors.utils.push\_all\_detectors\_to\_the\_end
-===============================================================
-
-.. currentmodule:: tqec.circuit.detectors.utils
-
-.. autofunction:: push_all_detectors_to_the_end

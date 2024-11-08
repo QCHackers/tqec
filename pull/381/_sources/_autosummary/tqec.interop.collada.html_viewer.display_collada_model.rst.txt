@@ -1,6 +1,0 @@
-tqec.interop.collada.html\_viewer.display\_collada\_model
-=========================================================
-
-.. currentmodule:: tqec.interop.collada.html_viewer
-
-.. autofunction:: display_collada_model

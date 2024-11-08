@@ -1,6 +1,0 @@
-tqec.circuit.detectors.fragment.split\_stim\_circuit\_into\_fragments
-=====================================================================
-
-.. currentmodule:: tqec.circuit.detectors.fragment
-
-.. autofunction:: split_stim_circuit_into_fragments

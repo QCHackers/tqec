@@ -1,6 +1,0 @@
-tqec.interop.correlation.get\_transformations\_for\_correlation\_surface
-========================================================================
-
-.. currentmodule:: tqec.interop.correlation
-
-.. autofunction:: get_transformations_for_correlation_surface

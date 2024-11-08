@@ -1,6 +1,0 @@
-tqec.templates.display.display\_template
-========================================
-
-.. currentmodule:: tqec.templates.display
-
-.. autofunction:: display_template

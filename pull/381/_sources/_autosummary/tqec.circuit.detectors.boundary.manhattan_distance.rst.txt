@@ -1,6 +1,0 @@
-tqec.circuit.detectors.boundary.manhattan\_distance
-===================================================
-
-.. currentmodule:: tqec.circuit.detectors.boundary
-
-.. autofunction:: manhattan_distance

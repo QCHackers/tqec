@@ -1,6 +1,0 @@
-tqec.compile.detectors.compute.compute\_detectors\_for\_fixed\_radius
-=====================================================================
-
-.. currentmodule:: tqec.compile.detectors.compute
-
-.. autofunction:: compute_detectors_for_fixed_radius

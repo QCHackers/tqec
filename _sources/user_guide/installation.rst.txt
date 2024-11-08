@@ -23,7 +23,7 @@ C++ toolchain should also be installed on your system.
 
 Here is a list of potential issues you might encounter and how to solve them:
 
-- `Failed building wheel for pycryptosat <https://github.com/QCHackers/tqec/issues/311>`_
+- `Failed building wheel for pycryptosat <https://github.com/tqec/tqec/issues/311>`_
 
 Installation procedure
 ----------------------
@@ -56,7 +56,7 @@ to manually provide the URL to install the package:
 
 .. code-block:: bash
 
-    python -m pip install git+https://github.com/QCHackers/tqec.git
+    python -m pip install git+https://github.com/tqec/tqec.git
 
 And that's it! You can test the installation by running
 

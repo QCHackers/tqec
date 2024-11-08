@@ -1,6 +1,0 @@
-tqec.circuit.detectors.utils.iter\_stim\_circuit\_by\_moments
-=============================================================
-
-.. currentmodule:: tqec.circuit.detectors.utils
-
-.. autofunction:: iter_stim_circuit_by_moments
