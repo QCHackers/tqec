@@ -93,3 +93,22 @@ jobs:
           header: code-coverage
           recreate: true
           path: code-coverage-results.md
+  check-branch-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch protection
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{owner}/{repo}/branches/{branch}/protection
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify branch protection
+        run: |
+          if [ ${{ steps.check-branch-protection.outputs.status }} != 200 ]; then
+            echo "Branch protection rules are not set up correctly for the main branch."
+            exit 1
+          fi
+
