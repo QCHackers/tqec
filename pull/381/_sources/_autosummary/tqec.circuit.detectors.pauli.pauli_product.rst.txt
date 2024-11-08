@@ -1,0 +1,6 @@
+tqec.circuit.detectors.pauli.pauli\_product
+===========================================
+
+.. currentmodule:: tqec.circuit.detectors.pauli
+
+.. autofunction:: pauli_product

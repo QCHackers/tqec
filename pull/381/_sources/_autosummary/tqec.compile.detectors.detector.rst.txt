@@ -1,0 +1,30 @@
+tqec.compile.detectors.detector
+===============================
+
+.. automodule:: tqec.compile.detectors.detector
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      Detector
+   
+   
+
+   
+   
+   
+
+
+

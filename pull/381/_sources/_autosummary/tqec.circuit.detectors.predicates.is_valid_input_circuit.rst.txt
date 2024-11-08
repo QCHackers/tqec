@@ -1,0 +1,6 @@
+tqec.circuit.detectors.predicates.is\_valid\_input\_circuit
+===========================================================
+
+.. currentmodule:: tqec.circuit.detectors.predicates
+
+.. autofunction:: is_valid_input_circuit

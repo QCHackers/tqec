@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tqec.circuit.detectors.boundary &#8212; TQEC  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/circuit/detectors/boundary';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">TQEC  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">tqec.circuit.detectors.boundary</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for tqec.circuit.detectors.boundary</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.measurement</span> <span class="kn">import</span> <span class="n">RelativeMeasurementLocation</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.pauli</span> <span class="kn">import</span> <span class="n">PauliString</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+
+<div class="viewcode-block" id="BoundaryStabilizer">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer">[docs]</a>
+<span class="k">class</span> <span class="nc">BoundaryStabilizer</span><span class="p">:</span>
+<div class="viewcode-block" id="BoundaryStabilizer.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">stabilizer</span><span class="p">:</span> <span class="n">PauliString</span><span class="p">,</span>
+        <span class="n">collapsing_operations</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PauliString</span><span class="p">],</span>
+        <span class="n">measurements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementLocation</span><span class="p">],</span>
+        <span class="n">reset_qubits</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">forward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents a stabilizer that has been propagated and is now at the</span>
+<span class="sd">        boundary of a Fragment.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if `source_qubits` is empty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stabilizer: The propagated stabilizer **before** any collapsing operation</span>
+<span class="sd">                has been applied.</span>
+<span class="sd">            collapsing_operations: The collapsing operations the stabilizer will have to</span>
+<span class="sd">                go through to exit the Fragment.</span>
+<span class="sd">            measurements: measurement offsets relative to the **end** of the</span>
+<span class="sd">                fragment (even if the created BoundaryStabilizer instance represents a</span>
+<span class="sd">                stabilizer on the beginning boundary) of measurements that are involved</span>
+<span class="sd">                in this stabilizer.</span>
+<span class="sd">            reset_qubits: index of the qubit on which reset operations touching the</span>
+<span class="sd">                flow are applied. Depending on the value of `forward`, these indices can</span>
+<span class="sd">                either be sources of the stabilizer (if `forward` is True) or sinks that</span>
+<span class="sd">                may or may not commute with the resulting stabilizer.</span>
+<span class="sd">            forward:</span>
+<span class="sd">                True if the stabilizer propagated forward (i.e., ends on measurements),</span>
+<span class="sd">                else False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span> <span class="o">=</span> <span class="n">stabilizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span> <span class="o">=</span> <span class="n">measurements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collapsing_operations</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">collapsing_operations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_anticommuting_collapsing_operations</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">co</span><span class="o">.</span><span class="n">anticommutes</span><span class="p">(</span><span class="n">stabilizer</span><span class="p">)</span> <span class="k">for</span> <span class="n">co</span> <span class="ow">in</span> <span class="n">collapsing_operations</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_qubits</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">reset_qubits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span> <span class="o">=</span> <span class="n">forward</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_anticommuting_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the instance represents a stabilizer that anti-commutes</span>
+<span class="sd">        with at least one of its collapsing operations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if at least one collapsing operation anti-commutes with the stabilizer,</span>
+<span class="sd">            else `False`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_anticommuting_collapsing_operations</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">after_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliString</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the stabilizer obtained after applying the collapsing</span>
+<span class="sd">        operations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If any of the collapsing operation anti-commutes with the</span>
+<span class="sd">                stored stabilizer.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The collapsed Pauli string that goes out of the Fragment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_anticommuting_operations</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot collapse a BoundaryStabilizer if it has &quot;</span>
+                <span class="s2">&quot;anticommuting operations.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span><span class="o">.</span><span class="n">collapse_by</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_collapsing_operations</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">before_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliString</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stabilizer obtained before applying the collapsing</span>
+<span class="sd">        operations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The Pauli string that goes out of the Fragment, before applying any</span>
+<span class="sd">            collapsing operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">collapsing_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PauliString</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator on all the collapsing operations defining the boundary this</span>
+<span class="sd">        stabilizer is applied to.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapsing_operations</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementLocation</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">resets_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_qubits</span>
+
+<div class="viewcode-block" id="BoundaryStabilizer.merge">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer.merge">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BoundaryStabilizer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoundaryStabilizer</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two boundary stabilizers together.</span>
+
+<span class="sd">        The two merged stabilizers should be defined on the same boundaries. In particular,</span>
+<span class="sd">        they should have the same set of collapsing operations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: the other BoundaryStabilizer to merge with self. Should have</span>
+<span class="sd">                exactly the same set of collapsing operations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: if `self` and `other` are not defined on exactly the same</span>
+<span class="sd">                collapsing operations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the merged boundary stabilizer, defined on the same set of collapsing</span>
+<span class="sd">            operations (i.e., the same boundary), but with the two pre-collapsing</span>
+<span class="sd">            stabilizers multiplied together.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">self_collapsing_operations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collapsing_operations</span><span class="p">)</span>
+        <span class="n">other_collapsing_operations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">collapsing_operations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">self_collapsing_operations</span> <span class="o">!=</span> <span class="n">other_collapsing_operations</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Breaking pre-condition: trying to merge two BoundaryStabilizer &quot;</span>
+                <span class="s2">&quot;instances that are not defined on the same boundary.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Collapsing operations for left-hand side: </span><span class="si">{</span><span class="n">self_collapsing_operations</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Collapsing operations for right-hand side: </span><span class="si">{</span><span class="n">other_collapsing_operations</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_forward</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot merge a forward boundary stabilizer with a backward one.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">is_forward_merge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span>
+        <span class="n">stabilizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">_stabilizer</span>
+        <span class="n">non_trivial_stabilizer_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">stabilizer</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="c1"># When merging 2 boundary stabilizers, particular care should be taken to merge</span>
+        <span class="c1"># the measurements and resets.</span>
+        <span class="c1"># The merged stabilizers might cancel out on some of the involved collapsing</span>
+        <span class="c1"># operations, leading to collapsing operations that are in `self` and `other`</span>
+        <span class="c1"># but that should not be in the merged result.</span>
+        <span class="c1"># This does not happen everytime a collapsing operation is found in both</span>
+        <span class="c1"># `self` and `other` as:</span>
+        <span class="c1"># - merging anti-commuting stabilizer (which is the primary purpose of this</span>
+        <span class="c1">#   method) might lead to a commuting stabilizer, still involving the collapsing</span>
+        <span class="c1">#   operation they were previously anti-commuting with.</span>
+        <span class="c1"># - sources (i.e., resets in forward boundary stabilizers and measurements in</span>
+        <span class="c1">#   backward boundary operations) do not cancel each other out.</span>
+        <span class="c1"># In the end, the end collapsing operations (resets for backward propagation,</span>
+        <span class="c1"># measurements for forward propagation) need to be re-computed from the</span>
+        <span class="c1"># merged stabilizer.</span>
+        <span class="n">reset_qubits</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="n">measurements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelativeMeasurementLocation</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">is_forward_merge</span><span class="p">:</span>
+            <span class="n">reset_qubits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resets_qubits</span> <span class="o">|</span> <span class="n">other</span><span class="o">.</span><span class="n">resets_qubits</span>
+            <span class="n">candidate_measurements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span>
+            <span class="n">measurements</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">m</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">candidate_measurements</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">qubit_index</span> <span class="ow">in</span> <span class="n">non_trivial_stabilizer_qubits</span>
+            <span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">measurements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">frozenset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span> <span class="o">|</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">candidate_resets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resets_qubits</span> <span class="o">|</span> <span class="n">other</span><span class="o">.</span><span class="n">resets_qubits</span>
+            <span class="n">reset_qubits</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+                <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">candidate_resets</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">non_trivial_stabilizer_qubits</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">BoundaryStabilizer</span><span class="p">(</span>
+            <span class="n">stabilizer</span><span class="p">,</span>
+            <span class="n">self_collapsing_operations</span><span class="p">,</span>
+            <span class="n">measurements</span><span class="p">,</span>
+            <span class="n">reset_qubits</span><span class="p">,</span>
+            <span class="n">is_forward_merge</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;BoundaryStabilizers(stabilizer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span><span class="si">}</span><span class="s2">, &quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;collapsing_operations=[&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapsing_operations</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;], measurements=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_measurements</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, resets=</span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reset_qubits</span><span class="p">)</span><span class="si">}</span><span class="s2">, is_forward=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+<div class="viewcode-block" id="BoundaryStabilizer.coordinates">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer.coordinates">[docs]</a>
+    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">qubit_coordinates</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute and return the coordinates of the boundary stabilizer.</span>
+
+<span class="sd">        The coordinates of a given boundary stabilizer is defined as the average of</span>
+<span class="sd">        the coordinates of each collapsing operations it represents.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            qubit_coordinates: mapping from qubit indices to coordinates</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the boundary stabilizer coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">measurement_coordinates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">qubit_coordinates</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_qubits</span>
+        <span class="p">]</span>
+        <span class="c1"># Avoid returning numpy.float64 type returned by numpy.mean by</span>
+        <span class="c1"># explicitly calling float() on it.</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">measurement_coordinates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BoundaryStabilizer.with_measurement_offset">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer.with_measurement_offset">[docs]</a>
+    <span class="k">def</span> <span class="nf">with_measurement_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoundaryStabilizer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BoundaryStabilizer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collapsing_operations</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">offset_by</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurements</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_qubits</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BoundaryStabilizer.is_trivial">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.BoundaryStabilizer.html#tqec.circuit.detectors.boundary.BoundaryStabilizer.is_trivial">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_anticommuting_operations</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_collapse</span><span class="o">.</span><span class="n">non_trivial_pauli_count</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stabilizer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">source_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_qubits</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_forward</span>
+            <span class="k">else</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">qubit_index</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurements</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="manhattan_distance">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.boundary.manhattan_distance.html#tqec.circuit.detectors.boundary.manhattan_distance">[docs]</a>
+<span class="k">def</span> <span class="nf">manhattan_distance</span><span class="p">(</span>
+    <span class="n">lhs</span><span class="p">:</span> <span class="n">BoundaryStabilizer</span><span class="p">,</span>
+    <span class="n">rhs</span><span class="p">:</span> <span class="n">BoundaryStabilizer</span><span class="p">,</span>
+    <span class="n">qubit_coordinates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">lhs_coords</span> <span class="o">=</span> <span class="n">lhs</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(</span><span class="n">qubit_coordinates</span><span class="p">)</span>
+    <span class="n">rhs_coords</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(</span><span class="n">qubit_coordinates</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lhs_coords</span><span class="p">,</span> <span class="n">rhs_coords</span><span class="p">))</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, TQEC Community.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

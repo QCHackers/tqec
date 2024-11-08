@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.is\_reset
+======================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: is_reset

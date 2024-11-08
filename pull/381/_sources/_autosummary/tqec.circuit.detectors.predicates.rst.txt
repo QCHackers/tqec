@@ -1,0 +1,32 @@
+tqec.circuit.detectors.predicates
+=================================
+
+.. automodule:: tqec.circuit.detectors.predicates
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      does_not_contain_combined_gates
+      has_well_defined_moments
+      is_valid_input_circuit
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

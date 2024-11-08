@@ -1,0 +1,54 @@
+tqec.circuit.detectors
+======================
+
+.. automodule:: tqec.circuit.detectors
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   boundary
+
+
+   construction
+
+
+   flow
+
+   fragment
+
+
+   match
+
+   measurement
+
+
+   pauli
+
+
+   predicates
+
+   utils
+
+

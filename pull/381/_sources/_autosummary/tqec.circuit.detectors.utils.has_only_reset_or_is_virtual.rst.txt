@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.has\_only\_reset\_or\_is\_virtual
+==============================================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: has_only_reset_or_is_virtual

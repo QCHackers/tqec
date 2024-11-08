@@ -1,0 +1,37 @@
+tqec.computation.block\_graph
+=============================
+
+.. automodule:: tqec.computation.block_graph
+
+   
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockKind
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockGraph
+   
+   
+
+   
+   
+   
+
+
+

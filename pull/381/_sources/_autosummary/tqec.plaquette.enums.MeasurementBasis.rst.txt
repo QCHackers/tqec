@@ -1,0 +1,26 @@
+tqec.plaquette.enums.MeasurementBasis
+=====================================
+
+.. currentmodule:: tqec.plaquette.enums
+
+.. autoclass:: MeasurementBasis
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MeasurementBasis.instruction_name
+      ~MeasurementBasis.X
+      ~MeasurementBasis.Z
+   
+   
+
+   
+   
+   

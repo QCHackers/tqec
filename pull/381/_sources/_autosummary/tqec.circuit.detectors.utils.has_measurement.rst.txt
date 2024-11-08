@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.has\_measurement
+=============================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: has_measurement

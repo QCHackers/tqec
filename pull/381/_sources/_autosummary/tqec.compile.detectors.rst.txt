@@ -1,0 +1,39 @@
+tqec.compile.detectors
+======================
+
+.. automodule:: tqec.compile.detectors
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   compute
+
+
+   database
+
+
+   detector
+
+

@@ -1,0 +1,6 @@
+tqec.circuit.detectors.flow.build\_flows\_from\_fragments
+=========================================================
+
+.. currentmodule:: tqec.circuit.detectors.flow
+
+.. autofunction:: build_flows_from_fragments

@@ -1,0 +1,53 @@
+tqec.circuit.detectors.pauli.PauliString
+========================================
+
+.. currentmodule:: tqec.circuit.detectors.pauli
+
+.. autoclass:: PauliString
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PauliString.__init__
+      ~PauliString.after
+      ~PauliString.anticommutes
+      ~PauliString.collapse_by
+      ~PauliString.commutes
+      ~PauliString.contains
+      ~PauliString.from_stim_pauli_string
+      ~PauliString.overlaps
+      ~PauliString.to_stim_pauli_string
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PauliString.non_trivial_pauli_count
+      ~PauliString.qubit
+      ~PauliString.qubits
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: after
+   .. automethod:: anticommutes
+   .. automethod:: collapse_by
+   .. automethod:: commutes
+   .. automethod:: contains
+   .. automethod:: from_stim_pauli_string
+   .. automethod:: overlaps
+   .. automethod:: to_stim_pauli_string
+   
+   

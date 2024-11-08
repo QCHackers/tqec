@@ -1,0 +1,49 @@
+tqec.circuit.detectors.boundary.BoundaryStabilizer
+==================================================
+
+.. currentmodule:: tqec.circuit.detectors.boundary
+
+.. autoclass:: BoundaryStabilizer
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BoundaryStabilizer.__init__
+      ~BoundaryStabilizer.coordinates
+      ~BoundaryStabilizer.is_trivial
+      ~BoundaryStabilizer.merge
+      ~BoundaryStabilizer.with_measurement_offset
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BoundaryStabilizer.after_collapse
+      ~BoundaryStabilizer.before_collapse
+      ~BoundaryStabilizer.collapsing_operations
+      ~BoundaryStabilizer.has_anticommuting_operations
+      ~BoundaryStabilizer.measurements
+      ~BoundaryStabilizer.resets_qubits
+      ~BoundaryStabilizer.source_qubits
+   
+   
+
+   
+   
+   .. rubric:: Detailed methods
+
+   
+   .. automethod:: __init__
+   .. automethod:: coordinates
+   .. automethod:: is_trivial
+   .. automethod:: merge
+   .. automethod:: with_measurement_offset
+   
+   

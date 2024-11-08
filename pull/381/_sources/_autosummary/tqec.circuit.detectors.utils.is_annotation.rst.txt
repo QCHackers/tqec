@@ -1,0 +1,6 @@
+tqec.circuit.detectors.utils.is\_annotation
+===========================================
+
+.. currentmodule:: tqec.circuit.detectors.utils
+
+.. autofunction:: is_annotation

@@ -1,0 +1,845 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tqec.circuit.detectors.flow &#8212; TQEC  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/circuit/detectors/flow';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">TQEC  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">tqec.circuit.detectors.flow</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for tqec.circuit.detectors.flow</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">ty</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.boundary</span> <span class="kn">import</span> <span class="n">BoundaryStabilizer</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.fragment</span> <span class="kn">import</span> <span class="n">Fragment</span><span class="p">,</span> <span class="n">FragmentLoop</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.match_utils.cover</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">find_commuting_cover_on_target_qubits_sat</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.measurement</span> <span class="kn">import</span> <span class="n">get_relative_measurement_index</span>
+<span class="kn">from</span> <span class="nn">tqec.circuit.detectors.pauli</span> <span class="kn">import</span> <span class="n">PauliString</span><span class="p">,</span> <span class="n">pauli_product</span>
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+
+
+<span class="k">def</span> <span class="nf">_anti_commuting_stabilizers_indices</span><span class="p">(</span><span class="n">flows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flows</span><span class="p">))</span> <span class="k">if</span> <span class="n">flows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">has_anticommuting_operations</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_try_merge_anticommuting_flows_inplace</span><span class="p">(</span><span class="n">flows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge as much anti-commuting flows as possible from the provided flows.</span>
+
+<span class="sd">    This function try to merge together several :class:`BoundaryStabilizer`</span>
+<span class="sd">    instances that anti-commute with their collapsing operations and provided</span>
+<span class="sd">    in `flows`. It **modifies in-place the provided parameter**, removing</span>
+<span class="sd">    anti-commuting flows and replacing them with the resulting commuting</span>
+<span class="sd">    flow when found.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        flows: a list of flows that might or might not contains flows that</span>
+<span class="sd">            anti-commute with its collapsing operations.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: if the provided flows have different collapsing</span>
+<span class="sd">            operations, hinting that they are not part of the same boundary,</span>
+<span class="sd">            in which case it makes no sense to try to merge them together.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Filtering out commuting operations as they cannot make anti-commuting</span>
+    <span class="c1"># operations commuting.</span>
+    <span class="n">anti_commuting_index_to_flows_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_anti_commuting_stabilizers_indices</span><span class="p">(</span><span class="n">flows</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Early exit if there are no anti-commuting collapsing operations</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">anti_commuting_index_to_flows_index</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">collapsing_operations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">PauliString</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">flows</span><span class="p">[</span><span class="n">fi</span><span class="p">]</span><span class="o">.</span><span class="n">collapsing_operations</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">anti_commuting_index_to_flows_index</span>
+    <span class="p">]</span>
+    <span class="c1"># Checking that all the provided flows are defined on the same boundary.</span>
+    <span class="c1"># This is checked by comparing the collapsing operations for each</span>
+    <span class="c1"># anti-commuting stabilizer and asserting that they are all equal.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">collapsing_operations</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">collapsing_operations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">collapsing_operations</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot merge anti-commuting flows defined on different collapsing &quot;</span>
+                <span class="s2">&quot;operations. Found the following difference:</span><span class="se">\n</span><span class="s2">Flow 0 has the &quot;</span>
+                <span class="s2">&quot;collapsing operations:</span><span class="se">\n\t</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collapsing_operations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Flow </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has the collapsing operations:</span><span class="se">\n\t</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collapsing_operations</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Computation of the Pauli string representing all the collapsing operations.</span>
+    <span class="c1"># The goal of this method will be to find a cover from the provided flows such</span>
+    <span class="c1"># as the resulting propagated Pauli string commutes with this one.</span>
+    <span class="n">collapsing_pauli</span> <span class="o">=</span> <span class="n">pauli_product</span><span class="p">(</span><span class="n">collapsing_operations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Now, we want to find flows in anticommuting_stabilizers that, when taken</span>
+    <span class="c1"># into account together, commute with collapsing_pauli.</span>
+    <span class="n">anticommuting_stabilizers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PauliString</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">flows</span><span class="p">[</span><span class="n">fi</span><span class="p">]</span><span class="o">.</span><span class="n">before_collapse</span> <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">anti_commuting_index_to_flows_index</span>
+    <span class="p">]</span>
+    <span class="n">indices_of_anti_commuting_stabilizers_to_merge</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">find_commuting_cover_on_target_qubits_sat</span><span class="p">(</span>
+            <span class="n">collapsing_pauli</span><span class="p">,</span> <span class="n">anticommuting_stabilizers</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># While there are anti-commuting stabilizers that can be merged.</span>
+    <span class="k">while</span> <span class="n">indices_of_anti_commuting_stabilizers_to_merge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Recover all the stabilizers that should be merged together.</span>
+        <span class="n">flows_indices_of_stabilizers_to_merge</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">anti_commuting_index_to_flows_index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_of_anti_commuting_stabilizers_to_merge</span>
+        <span class="p">]</span>
+        <span class="n">stabilizers_to_merge</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">flows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">flows_indices_of_stabilizers_to_merge</span>
+        <span class="p">]</span>
+        <span class="c1"># Update the flows by removing the entries related to stabilizers that</span>
+        <span class="c1"># will be merged and re-compute the anti-commuting stabilizers and map.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">flows_indices_of_stabilizers_to_merge</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">flows</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">anti_commuting_index_to_flows_index</span> <span class="o">=</span> <span class="n">_anti_commuting_stabilizers_indices</span><span class="p">(</span><span class="n">flows</span><span class="p">)</span>
+        <span class="n">anticommuting_stabilizers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">flows</span><span class="p">[</span><span class="n">fi</span><span class="p">]</span><span class="o">.</span><span class="n">before_collapse</span> <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">anti_commuting_index_to_flows_index</span>
+        <span class="p">]</span>
+        <span class="c1"># Compute the resulting commuting stabilizer.</span>
+        <span class="n">new_commuting_stabilizer</span> <span class="o">=</span> <span class="n">stabilizers_to_merge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">removed_stabilizer</span> <span class="ow">in</span> <span class="n">stabilizers_to_merge</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">new_commuting_stabilizer</span> <span class="o">=</span> <span class="n">new_commuting_stabilizer</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">removed_stabilizer</span>
+            <span class="p">)</span>
+        <span class="c1"># 3. Add the resulting commuting stabilizer to the flows.</span>
+        <span class="n">flows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_commuting_stabilizer</span><span class="p">)</span>
+        <span class="c1"># Update for loop condition</span>
+        <span class="n">indices_of_anti_commuting_stabilizers_to_merge</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">find_commuting_cover_on_target_qubits_sat</span><span class="p">(</span>
+                <span class="n">collapsing_pauli</span><span class="p">,</span> <span class="n">anticommuting_stabilizers</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="FragmentFlows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">FragmentFlows</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores stabilizer flows for a :class:`Fragment` instance.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        creation: stabilizer flows that are created by the :class:`Fragment`.</span>
+<span class="sd">            These flows originate from a single reset instruction contained</span>
+<span class="sd">            in the :class:`Fragment` instance.</span>
+<span class="sd">        destruction: stabilizer flows that end in the :class:`Fragment`. These</span>
+<span class="sd">            flows are generated by propagating backwards the Pauli string stabilized</span>
+<span class="sd">            by a measurement operation contained in the :class:`Fragment`.</span>
+<span class="sd">        total_number_of_measurements: the total number of measurements contained</span>
+<span class="sd">            in the represented :class:`Fragment`. Might be used to offset measurement</span>
+<span class="sd">            offsets by this amount when the measurement is located on a :class:`Fragment`</span>
+<span class="sd">            instance before the one represented by self.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">creation</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]</span>
+    <span class="n">destruction</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]</span>
+    <span class="n">total_number_of_measurements</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]:</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">creation</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">destruction</span>
+
+<div class="viewcode-block" id="FragmentFlows.remove_creation">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.remove_creation">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentFlows.remove_destruction">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.remove_destruction">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_destruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destruction</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentFlows.remove_creations">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.remove_creations">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_creations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_creation</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentFlows.remove_destructions">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.remove_destructions">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_destructions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_destruction</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentFlows.without_trivial_flows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.without_trivial_flows">[docs]</a>
+    <span class="k">def</span> <span class="nf">without_trivial_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FragmentFlows</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FragmentFlows</span><span class="p">(</span>
+            <span class="n">creation</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span> <span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">creation</span> <span class="k">if</span> <span class="n">bs</span><span class="o">.</span><span class="n">is_trivial</span><span class="p">()],</span>
+            <span class="n">destruction</span><span class="o">=</span><span class="p">[</span><span class="n">bs</span> <span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">destruction</span> <span class="k">if</span> <span class="n">bs</span><span class="o">.</span><span class="n">is_trivial</span><span class="p">()],</span>
+            <span class="n">total_number_of_measurements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">total_number_of_measurements</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentFlows.try_merge_anticommuting_flows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentFlows.html#tqec.circuit.detectors.flow.FragmentFlows.try_merge_anticommuting_flows">[docs]</a>
+    <span class="k">def</span> <span class="nf">try_merge_anticommuting_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_try_merge_anticommuting_flows_inplace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creation</span><span class="p">)</span>
+        <span class="n">_try_merge_anticommuting_flows_inplace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destruction</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FragmentLoopFlows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">FragmentLoopFlows</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Store stabilizer flows for a FragmentLoop instance.</span>
+
+<span class="sd">    This class is currently quite dumb and does not provide a sufficient</span>
+<span class="sd">    API for generic stabilizer matching, but is enough for detectors</span>
+<span class="sd">    that only include measurements from the current round and from the</span>
+<span class="sd">    previous round.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fragment_flows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FragmentFlows</span> <span class="o">|</span> <span class="n">FragmentLoopFlows</span><span class="p">]</span>
+    <span class="n">repeat</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">creation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragment_flows</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">creation</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">destruction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragment_flows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">destruction</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]:</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">creation</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">destruction</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_number_of_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">flow</span><span class="o">.</span><span class="n">total_number_of_measurements</span> <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragment_flows</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FragmentLoopFlows.remove_creation">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.remove_creation">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentLoopFlows.remove_destruction">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.remove_destruction">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_destruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destruction</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentLoopFlows.remove_creations">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.remove_creations">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_creations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_creation</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentLoopFlows.remove_destructions">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.remove_destructions">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_destructions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_destruction</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentLoopFlows.without_trivial_flows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.without_trivial_flows">[docs]</a>
+    <span class="k">def</span> <span class="nf">without_trivial_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FragmentLoopFlows</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FragmentLoopFlows</span><span class="p">(</span>
+            <span class="n">fragment_flows</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">flow</span><span class="o">.</span><span class="n">without_trivial_flows</span><span class="p">()</span> <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragment_flows</span>
+            <span class="p">],</span>
+            <span class="n">repeat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FragmentLoopFlows.try_merge_anticommuting_flows">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.FragmentLoopFlows.html#tqec.circuit.detectors.flow.FragmentLoopFlows.try_merge_anticommuting_flows">[docs]</a>
+    <span class="k">def</span> <span class="nf">try_merge_anticommuting_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_try_merge_anticommuting_flows_inplace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creation</span><span class="p">)</span>
+        <span class="n">_try_merge_anticommuting_flows_inplace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destruction</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="build_flows_from_fragments">
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.flow.build_flows_from_fragments.html#tqec.circuit.detectors.flow.build_flows_from_fragments">[docs]</a>
+<span class="k">def</span> <span class="nf">build_flows_from_fragments</span><span class="p">(</span>
+    <span class="n">fragments</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Fragment</span> <span class="o">|</span> <span class="n">FragmentLoop</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FragmentFlows</span> <span class="o">|</span> <span class="n">FragmentLoopFlows</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute and return the stabilizer flows of the provided fragments.</span>
+
+<span class="sd">    This function ensures that the returned list will have the same &quot;shape&quot;</span>
+<span class="sd">    as the input one. In more details, that means that the following property</span>
+<span class="sd">    should be checked (recursively if there is any FragmentLoop instance in</span>
+<span class="sd">    the provided fragments):</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        fragments: list[Fragment | FragmentLoop] = []  # anything here</span>
+<span class="sd">        flows = build_flows_from_fragments(fragments)</span>
+<span class="sd">        for frag, flow in zip(fragments, flows):</span>
+<span class="sd">            assert (isinstance(frag, Fragment) and isinstance(flow, FragmentFlow)) or (</span>
+<span class="sd">                isinstance(frag, FragmentLoop) and isinstance(flow, FragmentLoopFlow)</span>
+<span class="sd">            )</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fragments: the fragments composing the circuit to study and for which this</span>
+<span class="sd">            function should compute flows.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the computed flows for each of the provided fragments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">_build_flows_from_fragment</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fragment</span><span class="p">,</span> <span class="n">Fragment</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">_build_flows_from_fragment_loop</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fragment</span> <span class="ow">in</span> <span class="n">fragments</span>
+    <span class="p">]</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_build_flows_from_fragment</span><span class="p">(</span><span class="n">fragment</span><span class="p">:</span> <span class="n">Fragment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FragmentFlows</span><span class="p">:</span>
+    <span class="n">tableau</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">get_tableau</span><span class="p">()</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tableau</span><span class="p">)))</span>
+    <span class="n">sorted_qubit_involved_in_measurements</span> <span class="o">=</span> <span class="n">fragment</span><span class="o">.</span><span class="n">measurements_qubits</span>
+
+    <span class="c1"># First compute the flows created within the Fragment (i.e., originating from</span>
+    <span class="c1"># reset instructions).</span>
+    <span class="n">creation_flows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">reset_stabilizer</span> <span class="ow">in</span> <span class="n">fragment</span><span class="o">.</span><span class="n">resets</span><span class="p">:</span>
+        <span class="n">final_stabilizer</span> <span class="o">=</span> <span class="n">reset_stabilizer</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">tableau</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        <span class="n">involved_measurements_offsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">get_relative_measurement_index</span><span class="p">(</span>
+                <span class="n">sorted_qubit_involved_in_measurements</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">qubit</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">fragment</span><span class="o">.</span><span class="n">measurements</span>
+            <span class="k">if</span> <span class="n">final_stabilizer</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">involved_resets_qubits</span> <span class="o">=</span> <span class="p">[</span><span class="n">reset_stabilizer</span><span class="o">.</span><span class="n">qubit</span><span class="p">]</span>
+        <span class="n">creation_flows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">BoundaryStabilizer</span><span class="p">(</span>
+                <span class="n">final_stabilizer</span><span class="p">,</span>
+                <span class="n">fragment</span><span class="o">.</span><span class="n">measurements</span><span class="p">,</span>
+                <span class="n">involved_measurements_offsets</span><span class="p">,</span>
+                <span class="nb">frozenset</span><span class="p">(</span><span class="n">involved_resets_qubits</span><span class="p">),</span>
+                <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Then, compute the flows destructed by the Fragment (i.e., if that flow is</span>
+    <span class="c1"># given as input, a set of measurements from the Fragment will commute with</span>
+    <span class="c1"># the entire flow and collapse it to &quot;no flow&quot;).</span>
+    <span class="n">tableau_inv</span> <span class="o">=</span> <span class="n">tableau</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+    <span class="n">destruction_flows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundaryStabilizer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">fragment</span><span class="o">.</span><span class="n">measurements</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">measurement</span><span class="o">.</span><span class="n">non_trivial_pauli_count</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+                <span class="s2">&quot;Found a measurement applied on several qubits. &quot;</span>
+                <span class="s2">&quot;This is not implemented (yet?).&quot;</span>
+            <span class="p">)</span>
+        <span class="n">initial_stabilizer</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">tableau_inv</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        <span class="n">involved_measurements_offsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">get_relative_measurement_index</span><span class="p">(</span>
+                <span class="n">sorted_qubit_involved_in_measurements</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">qubit</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">involved_resets_qubits</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">qubit</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">fragment</span><span class="o">.</span><span class="n">resets</span> <span class="k">if</span> <span class="n">initial_stabilizer</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">destruction_flows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">BoundaryStabilizer</span><span class="p">(</span>
+                <span class="n">initial_stabilizer</span><span class="p">,</span>
+                <span class="n">fragment</span><span class="o">.</span><span class="n">resets</span><span class="p">,</span>
+                <span class="n">involved_measurements_offsets</span><span class="p">,</span>
+                <span class="nb">frozenset</span><span class="p">(</span><span class="n">involved_resets_qubits</span><span class="p">),</span>
+                <span class="n">forward</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">FragmentFlows</span><span class="p">(</span>
+        <span class="n">creation</span><span class="o">=</span><span class="n">creation_flows</span><span class="p">,</span>
+        <span class="n">destruction</span><span class="o">=</span><span class="n">destruction_flows</span><span class="p">,</span>
+        <span class="n">total_number_of_measurements</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">measurements</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_build_flows_from_fragment_loop</span><span class="p">(</span><span class="n">fragment_loop</span><span class="p">:</span> <span class="n">FragmentLoop</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FragmentLoopFlows</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">FragmentLoopFlows</span><span class="p">(</span>
+        <span class="n">build_flows_from_fragments</span><span class="p">(</span><span class="n">fragment_loop</span><span class="o">.</span><span class="n">fragments</span><span class="p">),</span> <span class="n">fragment_loop</span><span class="o">.</span><span class="n">repetitions</span>
+    <span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, TQEC Community.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
