@@ -7,17 +7,17 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Generator
 
+import networkx as nx
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.axes3d import Axes3D
-import networkx as nx
 
 from tqec.computation._base_graph import ComputationGraph
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
 if TYPE_CHECKING:
-    from tqec.computation.correlation import CorrelationSurface
     from tqec.computation.block_graph import BlockGraph
+    from tqec.computation.correlation import CorrelationSurface
 
 
 class ZXKind(Enum):
@@ -58,7 +58,8 @@ class ZXNode:
     Attributes:
         position: The 3D position of the node.
         kind: The kind of the node.
-        label: The label of the node. The label of a port must be non-empty. Default to an empty string.
+        label: The label of the node. The label of a port must be non-empty.
+            Default to an empty string.
     """
 
     position: Position3D
@@ -97,13 +98,15 @@ class ZXEdge:
     """An edge connecting two neighboring nodes in the ZX graph.
 
     .. warning::
-        The attributes ``u`` and ``v`` will be ordered to ensure the position of ``u``
-        is smaller than ``v``.
+        The attributes ``u`` and ``v`` will be ordered to ensure the position of
+        ``u`` is smaller than ``v``.
 
     Attributes:
-        u: The first node of the edge. The position of ``u`` is guaranteed to be smaller than ``v``.
-        v: The second node of the edge. The position of ``v`` is guaranteed to be greater than ``u``.
-        has_hadamard: Whether the edge is a Hadamard edge. Default to False.
+        u: The first node of the edge. The position of ``u`` is guaranteed to be
+            smaller than ``v``.
+        v: The second node of the edge. The position of ``v`` is guaranteed to
+            be greater than ``u``.
+        has_hadamard: Whether the edge is a Hadamard edge. Default to ``False``.
     """
 
     u: ZXNode
@@ -149,18 +152,19 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
     1. Every node is positioned at an integer 3D position.
     2. Only nearest-neighbor nodes can be connected by an edge.
     3. X/Z spiders are phase-free.
-    4. There are the ``Y`` kind nodes representing the Y basis initialization/measurement. It's
-       different from the traditional phased X/Z spider representation in ZX-calculus.
+    4. There are the ``Y`` kind nodes representing the Y basis
+       initialization/measurement. It is different from the traditional phased
+       X/Z spider representation in ZX-calculus.
 
-    The restrictions are needed because in the end, we need to convert the graph to a
-    :py:class:`~tqec.computation.block_graph.BlockGraph` and compile to circuits. The block graph
-    poses restrictions on the graph structure. An automatic compilation from a simplified or a
-    more general ZX diagram to a block graph can relax some of the restrictions. But this is
-    a future work.
+    The restrictions are needed because in the end, we need to convert the graph
+    to a :py:class:`~tqec.computation.block_graph.BlockGraph` and compile to
+    circuits. The block graph poses restrictions on the graph structure. An
+    automatic compilation from a simplified or a more general ZX diagram to a
+    block graph can relax some of the restrictions. But this is a future work.
 
-    In principle, the rewriting rules from the ZX-calculus can be applied to simplify the graph
-    and verify the functionality of the computation. This is not implemented yet but might be
-    added in the future.
+    In principle, the rewriting rules from the ZX-calculus can be applied to
+    simplify the graph and verify the functionality of the computation. This is
+    not implemented yet but might be added in the future.
     """
 
     def add_edge(
@@ -176,11 +180,13 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
             u: The first node of the edge.
             v: The second node of the edge.
             has_hadamard: Whether the edge is a Hadamard edge. Default to
+                ``False``.
 
         Raises:
-            TQECException: For each node in the edge, if there is already a node which is not
-                equal to it at the same position, or the node is a port but there is already a
-                different port with the same label in the graph.
+            TQECException: For each node in the edge, if there is already a node
+                which is not equal to it at the same position, or the node is a
+                port but there is already a different port with the same label
+                in the graph.
         """
         self._add_edge_and_nodes_with_checks(u, v, ZXEdge(u, v, has_hadamard))
 
@@ -188,12 +194,13 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         """Fill the ports at specified positions with nodes of the given kind.
 
         Args:
-            fill: A mapping from the label of the ports to the node kind to fill. If a single
-                kind is given, all the ports will be filled with the same kind.
+            fill: A mapping from the label of the ports to the node kind to fill.
+                If a single kind is given, all the ports will be filled with the
+                same kind.
 
         Raises:
-            TQECException: if there is no port with the given label or the specified kind
-                is ``P``.
+            TQECException: if there is no port with the given label or the
+                specified kind is ``P``.
         """
         if isinstance(fill, ZXKind):
             fill = {label: fill for label in self._ports}
@@ -223,13 +230,19 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         """Convert the ZX graph to a
         :py:class:`~tqec.computation.block_graph.BlockGraph`.
 
-        Currently, the conversion respects the explicit 3D structure of the ZX graph. And convert node by node, edge by edge.
-        Future work may include automatic compilation from a simplified or a more general ZX diagram to a block graph implementation.
+        Currently, the conversion respects the explicit 3D structure of the ZX
+        graph. And convert node by node, edge by edge. Future work may include
+        automatic compilation from a simplified or a more general ZX diagram to
+        a block graph implementation.
 
-        To successfully convert a ZX graph to a block graph, the following necessary conditions must be satisfied:
+        To successfully convert a ZX graph to a block graph, the following
+        necessary conditions must be satisfied:
 
-        - The ZX graph itself is a valid representation, i.e. :py:meth:`~tqec.computation.zx_graph.ZXGraph.check_invariants` does not raise an exception.
-        - Every nodes in the ZX graph connects to edges at most in two directions, i.e. there is no 3D corner node.
+        - The ZX graph itself is a valid representation, i.e.
+          :py:meth:`~tqec.computation.zx_graph.ZXGraph.check_invariants` does
+          not raise an exception.
+        - Every nodes in the ZX graph connects to edges at most in two
+          directions, i.e. there is no 3D corner node.
         - Y nodes in the ZX graph can only have edges in time direction.
 
         The conversion process is as follows:
@@ -237,15 +250,18 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         1. Construct cubes for all the corner nodes in the ZX graph.
         2. Construct pipes connecting ports/Y to ports/Y nodes.
         3. Greedily construct the pipes until no more pipes can be inferred.
-        4. If there are still nodes left, then choose orientation for an arbitrary node
-        and repeat step 3 and 4 until all nodes are handled or conflicts are detected.
+        4. If there are still nodes left, then choose orientation for an
+           arbitrary node and repeat step 3 and 4 until all nodes are handled or
+           conflicts are detected.
 
         Args:
             zx_graph: The ZX graph to be converted to a block graph.
-            name: The name of the new block graph. If None, the name of the ZX graph will be used.
+            name: The name of the new block graph. If None, the name of the ZX
+                graph will be used.
 
         Returns:
-            The :py:class:`~tqec.computation.block_graph.BlockGraph` object converted from the ZX graph.
+            The :py:class:`~tqec.computation.block_graph.BlockGraph` object
+            converted from the ZX graph.
 
         Raises:
             TQECException: If the ZX graph does not satisfy the necessary conditions
@@ -282,12 +298,14 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
 
         Args:
             graph: The ZX graph to plot.
-            figsize: The figure size. Default is (5, 6).
+            figsize: The figure size. Default is ``(5, 6)``.
             title: The title of the plot. Default to the name of the graph.
-            node_size: The size of the node in the plot. Default is 400.
-            hadamard_size: The size of the Hadamard square in the plot. Default is 200.
-            edge_width: The width of the edge in the plot. Default is 1.
-            annotate_ports: Whether to annotate the ports if they are present. Default is True.
+            node_size: The size of the node in the plot. Default is ``400``.
+            hadamard_size: The size of the Hadamard square in the plot. Default
+                is ``200``.
+            edge_width: The width of the edge in the plot. Default is ``1``.
+            annotate_ports: Whether to annotate the ports if they are present.
+                Default is ``True``.
 
         Returns:
             A tuple of the figure and the axes.
@@ -307,7 +325,8 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
     def check_invariants(self) -> None:
         """Check the invariants of a valid ZX graph.
 
-        To represent a valid ZX graph, the graph must fulfill the following conditions:
+        To represent a valid ZX graph, the graph must fulfill the following
+        conditions:
 
         - The graph is a single connected component.
         - The ports and Y nodes are leaf nodes.
