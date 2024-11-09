@@ -420,7 +420,7 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="ZXBasis.with_zx_flipped">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis.with_zx_flipped">[docs]</a>
     <span class="k">def</span> <span class="nf">with_zx_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXBasis</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis with the Z/X flipped.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the flipped basis, i.e. ``Z -&gt; X``, ``X -&gt; Z``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">Z</span> <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">X</span> <span class="k">else</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">X</span></div>
 
 
@@ -432,13 +432,18 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="CubeKind">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind">[docs]</a>
 <span class="k">class</span> <span class="nc">CubeKind</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for the cube types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for the kinds of cubes in the block graph.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CubeKind.to_zx_kind">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind.to_zx_kind">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">to_zx_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXKind</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube kind to a ZX node kind.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the corresponding</span>
+<span class="sd">        :py:class:`~tqec.computation.zx_graph.ZXKind` of the cube kind.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding ZX kind of the cube kind.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -448,17 +453,17 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ZXCube</span><span class="p">(</span><span class="n">CubeKind</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cube kind representing the cube surrounded by all X/Z basis walls.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The kind of cubes consisting of only X or Z basis boundaries.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        x: The basis of the spatial boundaries that intersects the x-axis.</span>
+<span class="sd">        y: The basis of the spatial boundaries that intersects the y-axis.</span>
+<span class="sd">        z: The basis of the time boundaries that intersects the z-axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">x</span><span class="p">:</span> <span class="n">ZXBasis</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">ZXBasis</span>
     <span class="n">z</span><span class="p">:</span> <span class="n">ZXBasis</span>
-
-<div class="viewcode-block" id="ZXCube.as_tuple">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.as_tuple">[docs]</a>
-    <span class="k">def</span> <span class="nf">as_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ZXBasis</span><span class="p">,</span> <span class="n">ZXBasis</span><span class="p">,</span> <span class="n">ZXBasis</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">:</span>
@@ -466,14 +471,29 @@ window.addEventListener("load", () => mermaid.run());
                 <span class="s2">&quot;The cube kind with all the same basis walls is not allowed.&quot;</span>
             <span class="p">)</span>
 
+<div class="viewcode-block" id="ZXCube.as_tuple">
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.as_tuple">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ZXBasis</span><span class="p">,</span> <span class="n">ZXBasis</span><span class="p">,</span> <span class="n">ZXBasis</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a tuple of ``(self.x, self.y, self.z)``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple of the basis of the cube.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">value</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="ZXCube.all_kinds">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.all_kinds">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">all_kinds</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXCube</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all the possible `ZXCube` kinds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all the allowed ``ZXCube`` instances.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The list of all the allowed ``ZXCube`` instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ZXCube</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ZXZ&quot;</span><span class="p">,</span> <span class="s2">&quot;XZZ&quot;</span><span class="p">,</span> <span class="s2">&quot;ZXX&quot;</span><span class="p">,</span> <span class="s2">&quot;XZX&quot;</span><span class="p">,</span> <span class="s2">&quot;XXZ&quot;</span><span class="p">,</span> <span class="s2">&quot;ZZX&quot;</span><span class="p">]]</span></div>
 
 
@@ -481,51 +501,46 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.from_str">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_str</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXCube</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a cube kind from the string representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a cube kind from the string representation.</span>
+
+<span class="sd">        The string must be a 3-character string consisting of ``&#39;X&#39;`` or ``&#39;Z&#39;``,</span>
+<span class="sd">        representing the basis of the cube along the x, y, and z axes. For example,</span>
+<span class="sd">        a cube with left-right walls in the X basis, front-back walls in the Z basis,</span>
+<span class="sd">        and top-bottom walls in the X basis can be constructed from the string ``&#39;XZX&#39;``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            string: The string representation of the cube kind. The string must be</span>
+<span class="sd">                a 3-character string consisting of ``&#39;X&#39;`` or ``&#39;Z&#39;``, e.g. ``&#39;XZX&#39;``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The :py:class:`~tqec.computation.cube.ZXCube` instance constructed from</span>
+<span class="sd">            the string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ZXCube</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">ZXBasis</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span></div>
 
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cube_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXBasis</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the basis of the cube.</span>
-
-<span class="sd">        A cube has only one Z/X basis wall is a Z/X basis cube.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">Z</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">Z</span>
-        <span class="k">return</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">X</span>
 
 <div class="viewcode-block" id="ZXCube.to_zx_kind">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.to_zx_kind">[docs]</a>
     <span class="k">def</span> <span class="nf">to_zx_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXKind</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ZXKind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cube_basis</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">normal_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the direction in which the wall basis is the same as the cube</span>
-<span class="sd">        basis.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Direction3D</span><span class="p">(</span><span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cube_basis</span><span class="p">))</span>
-
-<div class="viewcode-block" id="ZXCube.from_normal_basis">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.from_normal_basis">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_normal_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">:</span> <span class="n">ZXBasis</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXCube</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a cube kind with the given normal basis and direction.&quot;&quot;&quot;</span>
-        <span class="n">bases</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">with_zx_flipped</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-        <span class="n">bases</span><span class="p">[</span><span class="n">direction</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">basis</span>
-        <span class="k">return</span> <span class="n">ZXCube</span><span class="p">(</span><span class="o">*</span><span class="n">bases</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">ZXBasis</span><span class="o">.</span><span class="n">Z</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">Z</span>
+        <span class="k">return</span> <span class="n">ZXKind</span><span class="o">.</span><span class="n">X</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is a spatial junction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether a cube of this kind is a spatial junction.</span>
+
+<span class="sd">        A spatial junction is a cube whose all spatial boundaries are in the same basis.</span>
+<span class="sd">        And there are only two possible spatial junctions: ``XXZ`` and ``ZZX``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
 
 <div class="viewcode-block" id="ZXCube.get_basis_along">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube.get_basis_along">[docs]</a>
     <span class="k">def</span> <span class="nf">get_basis_along</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXBasis</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis of the wall in the given direction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis of the boundaries that intersects the given</span>
+<span class="sd">        direction.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()[</span><span class="n">direction</span><span class="o">.</span><span class="n">value</span><span class="p">]</span></div>
 </div>
 
@@ -585,13 +600,29 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.Cube.html#tqec.computation.cube.Cube">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Cube</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block representing a unit of code patch in the spacetime.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A fundamental building block of the logical computation.</span>
+
+<span class="sd">    A cube is a high-level abstraction of a block of quantum operations within a</span>
+<span class="sd">    specific spacetime volume. These operations preserve or manipulate the quantum</span>
+<span class="sd">    information encoded in the logical qubits.</span>
+
+<span class="sd">    For example, a single ``ZXZ`` kind cube can represent a quantum memory experiment for</span>
+<span class="sd">    a surface code patch that has X boundaries along the x-axis, Z boundaries along</span>
+<span class="sd">    the y-axis. And it&#39;s initialized/measured in the logical Z basis. When compiled</span>
+<span class="sd">    to concrete quantum circuit, it will consist of transversal resets, syndrome</span>
+<span class="sd">    extraction cycles, and finally the transversal measurements. The spatial location</span>
+<span class="sd">    of the code patch and the time when the operations are applied are specified by</span>
+<span class="sd">    the spacetime position of the cube.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        position: The position of the cube in the 3D spacetime.</span>
-<span class="sd">        kind: The kind of the cube. It specifies the functionality of the cube.</span>
-<span class="sd">        label: The label of the cube. If the cube is a port, the label must be non-empty.</span>
-<span class="sd">            Default to an empty string.</span>
+<span class="sd">        position: The position of the cube in the 3D spacetime. The spatial coordinates</span>
+<span class="sd">            determines which code patch the operations are applied to, and the time</span>
+<span class="sd">            coordinate determines when the operations are applied.</span>
+<span class="sd">        kind: The kind of the cube. It determines the basic logical operations represented</span>
+<span class="sd">            by the cube.</span>
+<span class="sd">        label: The label of the cube. It&#39;s mainly used for annotating the input/output</span>
+<span class="sd">            ports of the block graph. If the cube is a port, the label must be non-empty.</span>
+<span class="sd">            Default is an empty string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">position</span><span class="p">:</span> <span class="n">Position3D</span>
@@ -612,22 +643,36 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_port</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is an open port.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the cube is of kind</span>
+<span class="sd">        :py:class:`~tqec.computation.cube.Port`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">Port</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_y_cube</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the cube is of kind</span>
+<span class="sd">        :py:class:`~tqec.computation.cube.YCube`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">YCube</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cube is a spatial junction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the cube is a spatial junction.</span>
+
+<span class="sd">        A spatial junction is of kind :py:class:`~tqec.computation.cube.ZXCube` and its all</span>
+<span class="sd">        spatial boundaries are in the same basis. There are only two possible spatial</span>
+<span class="sd">        junctions: ``XXZ`` and ``ZZX``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">is_spatial_junction</span>
 
 <div class="viewcode-block" id="Cube.to_zx_node">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.cube.Cube.html#tqec.computation.cube.Cube.to_zx_node">[docs]</a>
     <span class="k">def</span> <span class="nf">to_zx_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXNode</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube to a ZX node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the cube to a :py:class:`~tqec.computation.zx_graph.ZXNode`</span>
+<span class="sd">        instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A ZX node with the same position and label as the cube, and the kind of the</span>
+<span class="sd">            node is converted from the cube kind with :py:meth:`~tqec.computation.cube.CubeKind.to_zx_kind`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ZXNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">to_zx_kind</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span></div>
 </div>
 

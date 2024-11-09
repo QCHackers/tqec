@@ -459,7 +459,6 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
 </ul>
 </details></li>
@@ -717,10 +716,10 @@
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube" title="tqec.computation.cube.Cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cube</span></code></a>(position, kind[, label])</p></td>
-<td><p>A block representing a unit of code patch in the spacetime.</p></td>
+<td><p>A fundamental building block of the logical computation.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CubeKind</span></code></a>()</p></td>
-<td><p>Base class for the cube types.</p></td>
+<td><p>Base class for the kinds of cubes in the block graph.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="tqec.computation.cube.Port.html#tqec.computation.cube.Port" title="tqec.computation.cube.Port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Port</span></code></a>()</p></td>
 <td><p>Cube kind representing the open ports in the block graph.</p></td>
@@ -732,7 +731,7 @@
 <td><p>Z or X basis.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ZXCube</span></code></a>(x, y, z)</p></td>
-<td><p>Cube kind representing the cube surrounded by all X/Z basis walls.</p></td>
+<td><p>The kind of cubes consisting of only X or Z basis boundaries.</p></td>
 </tr>
 </tbody>
 </table>

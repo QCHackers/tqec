@@ -563,15 +563,15 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">class</span> <span class="nc">ZXGraph</span><span class="p">(</span><span class="n">ComputationGraph</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">,</span> <span class="n">ZXEdge</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;ZX graph representation of a logical computation.</span>
 
-<span class="sd">    This is a restricted form of the ZX graph from the ZX-calculus.</span>
-<span class="sd">    Currently, the restriction includes:</span>
+<span class="sd">    This is a restricted form of the ZX diagram from the ZX-calculus.</span>
+<span class="sd">    Currently, the restrictions include:</span>
 
 <span class="sd">    1. Every node is positioned at an integer 3D position.</span>
 <span class="sd">    2. Only nearest-neighbor nodes can be connected by an edge.</span>
-<span class="sd">    3. X/Z spiders are phase-free.</span>
-<span class="sd">    4. There are the ``Y`` kind nodes representing the Y basis</span>
-<span class="sd">       initialization/measurement. It is different from the traditional phased</span>
-<span class="sd">       X/Z spider representation in ZX-calculus.</span>
+<span class="sd">    3. Nodes(spiders) are phase-free.</span>
+<span class="sd">    4. There is the additional ``Y`` kind spider representing the Y basis</span>
+<span class="sd">       initialization/measurement. Traditionally, it is represented by a</span>
+<span class="sd">       phased X/Z spider in the ZX-calculus.</span>
 
 <span class="sd">    The restrictions are needed because in the end, we need to convert the graph</span>
 <span class="sd">    to a :py:class:`~tqec.computation.block_graph.BlockGraph` and compile to</span>

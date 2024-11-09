@@ -459,7 +459,6 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
 </ul>
 </details></li>
@@ -720,7 +719,40 @@
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ZXCube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">CubeKind</span></code></a></p>
-<p>Cube kind representing the cube surrounded by all X/Z basis walls.</p>
+<p>The kind of cubes consisting of only X or Z basis boundaries.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.x">
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#tqec.computation.cube.ZXCube.x" title="Link to this definition">#</a></dt>
+<dd><p>The basis of the spatial boundaries that intersects the x-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis">tqec.computation.cube.ZXBasis</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.y">
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#tqec.computation.cube.ZXCube.y" title="Link to this definition">#</a></dt>
+<dd><p>The basis of the spatial boundaries that intersects the y-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis">tqec.computation.cube.ZXBasis</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.z">
+<span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#tqec.computation.cube.ZXCube.z" title="Link to this definition">#</a></dt>
+<dd><p>The basis of the time boundaries that intersects the z-axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis">tqec.computation.cube.ZXBasis</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -728,22 +760,19 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.all_kinds" title="tqec.computation.cube.ZXCube.all_kinds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_kinds</span></code></a>()</p></td>
-<td><p>Return all the possible <cite>ZXCube</cite> kinds.</p></td>
+<td><p>Return all the allowed <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code> instances.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.as_tuple" title="tqec.computation.cube.ZXCube.as_tuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_tuple</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Return a tuple of <code class="docutils literal notranslate"><span class="pre">(self.x,</span> <span class="pre">self.y,</span> <span class="pre">self.z)</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.from_normal_basis" title="tqec.computation.cube.ZXCube.from_normal_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_normal_basis</span></code></a>(basis, direction)</p></td>
-<td><p>Create a cube kind with the given normal basis and direction.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.from_str" title="tqec.computation.cube.ZXCube.from_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_str</span></code></a>(string)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.from_str" title="tqec.computation.cube.ZXCube.from_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_str</span></code></a>(string)</p></td>
 <td><p>Create a cube kind from the string representation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.get_basis_along" title="tqec.computation.cube.ZXCube.get_basis_along"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_basis_along</span></code></a>(direction)</p></td>
-<td><p>Get the basis of the wall in the given direction.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.get_basis_along" title="tqec.computation.cube.ZXCube.get_basis_along"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_basis_along</span></code></a>(direction)</p></td>
+<td><p>Get the basis of the boundaries that intersects the given direction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.to_zx_kind" title="tqec.computation.cube.ZXCube.to_zx_kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_kind</span></code></a>()</p></td>
-<td><p>Convert the cube kind to a ZX node kind.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.to_zx_kind" title="tqec.computation.cube.ZXCube.to_zx_kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_kind</span></code></a>()</p></td>
+<td><p>Return the corresponding <a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXKind</span></code></a> of the cube kind.</p></td>
 </tr>
 </tbody>
 </table>
@@ -751,22 +780,16 @@
 <p class="rubric">Attributes</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube_basis</span></code></p></td>
-<td><p>Return the basis of the cube.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_spatial_junction</span></code></p></td>
+<td><p>Return whether a cube of this kind is a spatial junction.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_spatial_junction</span></code></p></td>
-<td><p>Check if the cube is a spatial junction.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal_direction</span></code></p></td>
-<td><p>Get the direction in which the wall basis is the same as the cube basis.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.x" title="tqec.computation.cube.ZXCube.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.y" title="tqec.computation.cube.ZXCube.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.ZXCube.z" title="tqec.computation.cube.ZXCube.z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">z</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -781,36 +804,62 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.all_kinds">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_kinds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><span class="pre">ZXCube</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.all_kinds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.all_kinds" title="Link to this definition">#</a></dt>
-<dd><p>Return all the possible <cite>ZXCube</cite> kinds.</p>
+<dd><p>Return all the allowed <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code> instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of all the allowed <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code> instances.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.as_tuple">
 <span class="sig-name descname"><span class="pre">as_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.as_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.as_tuple" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.from_normal_basis">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_normal_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Direction3D.html#tqec.position.Direction3D" title="tqec.position.Direction3D"><span class="pre">Direction3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><span class="pre">ZXCube</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.from_normal_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.from_normal_basis" title="Link to this definition">#</a></dt>
-<dd><p>Create a cube kind with the given normal basis and direction.</p>
+<dd><p>Return a tuple of <code class="docutils literal notranslate"><span class="pre">(self.x,</span> <span class="pre">self.y,</span> <span class="pre">self.z)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of the basis of the cube.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.from_str">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><span class="pre">ZXCube</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.from_str" title="Link to this definition">#</a></dt>
 <dd><p>Create a cube kind from the string representation.</p>
+<p>The string must be a 3-character string consisting of <code class="docutils literal notranslate"><span class="pre">'X'</span></code> or <code class="docutils literal notranslate"><span class="pre">'Z'</span></code>,
+representing the basis of the cube along the x, y, and z axes. For example,
+a cube with left-right walls in the X basis, front-back walls in the Z basis,
+and top-bottom walls in the X basis can be constructed from the string <code class="docutils literal notranslate"><span class="pre">'XZX'</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> – The string representation of the cube kind. The string must be
+a 3-character string consisting of <code class="docutils literal notranslate"><span class="pre">'X'</span></code> or <code class="docutils literal notranslate"><span class="pre">'Z'</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">'XZX'</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The <a class="reference internal" href="#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a> instance constructed from
+the string representation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.get_basis_along">
 <span class="sig-name descname"><span class="pre">get_basis_along</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Direction3D.html#tqec.position.Direction3D" title="tqec.position.Direction3D"><span class="pre">Direction3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.cube.ZXBasis.html#tqec.computation.cube.ZXBasis" title="tqec.computation.cube.ZXBasis"><span class="pre">ZXBasis</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.get_basis_along"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.get_basis_along" title="Link to this definition">#</a></dt>
-<dd><p>Get the basis of the wall in the given direction.</p>
+<dd><p>Get the basis of the boundaries that intersects the given
+direction.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.ZXCube.to_zx_kind">
 <span class="sig-name descname"><span class="pre">to_zx_kind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><span class="pre">ZXKind</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#ZXCube.to_zx_kind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.ZXCube.to_zx_kind" title="Link to this definition">#</a></dt>
-<dd><p>Convert the cube kind to a ZX node kind.</p>
+<dd><p>Return the corresponding
+<a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXKind</span></code></a> of the cube kind.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The corresponding ZX kind of the cube kind.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -865,10 +914,12 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube"><code class="docutils literal notranslate"><span class="pre">ZXCube</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.x"><code class="docutils literal notranslate"><span class="pre">ZXCube.x</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.y"><code class="docutils literal notranslate"><span class="pre">ZXCube.y</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.z"><code class="docutils literal notranslate"><span class="pre">ZXCube.z</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.__init__"><code class="docutils literal notranslate"><span class="pre">ZXCube.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.all_kinds"><code class="docutils literal notranslate"><span class="pre">ZXCube.all_kinds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.as_tuple"><code class="docutils literal notranslate"><span class="pre">ZXCube.as_tuple()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.from_normal_basis"><code class="docutils literal notranslate"><span class="pre">ZXCube.from_normal_basis()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.from_str"><code class="docutils literal notranslate"><span class="pre">ZXCube.from_str()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.get_basis_along"><code class="docutils literal notranslate"><span class="pre">ZXCube.get_basis_along()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.cube.ZXCube.to_zx_kind"><code class="docutils literal notranslate"><span class="pre">ZXCube.to_zx_kind()</span></code></a></li>

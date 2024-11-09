@@ -5,13 +5,6 @@ tqec.computation.block\_graph
 
    
    
-   .. rubric:: Module Attributes
-
-   .. autosummary::
-      :toctree:
-   
-      BlockKind
-   
    
 
    

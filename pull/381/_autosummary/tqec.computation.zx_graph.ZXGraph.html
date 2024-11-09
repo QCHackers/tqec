@@ -459,7 +459,6 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
 </ul>
 </details></li>
@@ -721,15 +720,15 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ZXGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/zx_graph.html#ZXGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.zx_graph.ZXGraph" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ComputationGraph</span></code>[<a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXNode</span></code></a>, <a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXEdge</span></code></a>]</p>
 <p>ZX graph representation of a logical computation.</p>
-<p>This is a restricted form of the ZX graph from the ZX-calculus.
-Currently, the restriction includes:</p>
+<p>This is a restricted form of the ZX diagram from the ZX-calculus.
+Currently, the restrictions include:</p>
 <ol class="arabic simple">
 <li><p>Every node is positioned at an integer 3D position.</p></li>
 <li><p>Only nearest-neighbor nodes can be connected by an edge.</p></li>
-<li><p>X/Z spiders are phase-free.</p></li>
-<li><p>There are the <code class="docutils literal notranslate"><span class="pre">Y</span></code> kind nodes representing the Y basis
-initialization/measurement. It is different from the traditional phased
-X/Z spider representation in ZX-calculus.</p></li>
+<li><p>Nodes(spiders) are phase-free.</p></li>
+<li><p>There is the additional <code class="docutils literal notranslate"><span class="pre">Y</span></code> kind spider representing the Y basis
+initialization/measurement. Traditionally, it is represented by a
+phased X/Z spider in the ZX-calculus.</p></li>
 </ol>
 <p>The restrictions are needed because in the end, we need to convert the graph
 to a <a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html#tqec.computation.block_graph.BlockGraph" title="tqec.computation.block_graph.BlockGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code></a> and compile to

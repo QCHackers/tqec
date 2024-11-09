@@ -459,7 +459,6 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="tqec.computation.block_graph.html">tqec.computation.block_graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockKind.html">tqec.computation.block_graph.BlockKind</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.block_graph.BlockGraph.html">tqec.computation.block_graph.BlockGraph</a></li>
 </ul>
 </details></li>
@@ -720,11 +719,23 @@
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind"><span class="pre">CubeKind</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/cube.html#Cube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.Cube" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A block representing a unit of code patch in the spacetime.</p>
+<p>A fundamental building block of the logical computation.</p>
+<p>A cube is a high-level abstraction of a block of quantum operations within a
+specific spacetime volume. These operations preserve or manipulate the quantum
+information encoded in the logical qubits.</p>
+<p>For example, a single <code class="docutils literal notranslate"><span class="pre">ZXZ</span></code> kind cube can represent a quantum memory experiment for
+a surface code patch that has X boundaries along the x-axis, Z boundaries along
+the y-axis. And it’s initialized/measured in the logical Z basis. When compiled
+to concrete quantum circuit, it will consist of transversal resets, syndrome
+extraction cycles, and finally the transversal measurements. The spatial location
+of the code patch and the time when the operations are applied are specified by
+the spacetime position of the cube.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.position">
 <span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.position" title="Link to this definition">#</a></dt>
-<dd><p>The position of the cube in the 3D spacetime.</p>
+<dd><p>The position of the cube in the 3D spacetime. The spatial coordinates
+determines which code patch the operations are applied to, and the time
+coordinate determines when the operations are applied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D">tqec.position.Position3D</a></p>
@@ -735,7 +746,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.kind">
 <span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.kind" title="Link to this definition">#</a></dt>
-<dd><p>The kind of the cube. It specifies the functionality of the cube.</p>
+<dd><p>The kind of the cube. It determines the basic logical operations represented
+by the cube.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind" title="tqec.computation.cube.CubeKind">tqec.computation.cube.CubeKind</a></p>
@@ -746,8 +758,9 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.label">
 <span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.label" title="Link to this definition">#</a></dt>
-<dd><p>The label of the cube. If the cube is a port, the label must be non-empty.
-Default to an empty string.</p>
+<dd><p>The label of the cube. It’s mainly used for annotating the input/output
+ports of the block graph. If the cube is a port, the label must be non-empty.
+Default is an empty string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
@@ -762,7 +775,7 @@ Default to an empty string.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.to_zx_node" title="tqec.computation.cube.Cube.to_zx_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_zx_node</span></code></a>()</p></td>
-<td><p>Convert the cube to a ZX node.</p></td>
+<td><p>Convert the cube to a <a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXNode</span></code></a> instance.</p></td>
 </tr>
 </tbody>
 </table>
@@ -771,13 +784,13 @@ Default to an empty string.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_port</span></code></p></td>
-<td><p>Check if the cube is an open port.</p></td>
+<td><p>Return whether the cube is of kind <a class="reference internal" href="tqec.computation.cube.Port.html#tqec.computation.cube.Port" title="tqec.computation.cube.Port"><code class="xref py py-class docutils literal notranslate"><span class="pre">Port</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_spatial_junction</span></code></p></td>
-<td><p>Check if the cube is a spatial junction.</p></td>
+<td><p>Return whether the cube is a spatial junction.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_y_cube</span></code></p></td>
-<td><p></p></td>
+<td><p>Return whether the cube is of kind <a class="reference internal" href="tqec.computation.cube.YCube.html#tqec.computation.cube.YCube" title="tqec.computation.cube.YCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">YCube</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_zx_cube</span></code></p></td>
 <td><p>Check if the cube is a ZX cube.</p></td>
@@ -803,7 +816,14 @@ Default to an empty string.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.to_zx_node">
 <span class="sig-name descname"><span class="pre">to_zx_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><span class="pre">ZXNode</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/cube.html#Cube.to_zx_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.cube.Cube.to_zx_node" title="Link to this definition">#</a></dt>
-<dd><p>Convert the cube to a ZX node.</p>
+<dd><p>Convert the cube to a <a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXNode</span></code></a>
+instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A ZX node with the same position and label as the cube, and the kind of the
+node is converted from the cube kind with <a class="reference internal" href="tqec.computation.cube.CubeKind.html#tqec.computation.cube.CubeKind.to_zx_kind" title="tqec.computation.cube.CubeKind.to_zx_kind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_zx_kind()</span></code></a>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
