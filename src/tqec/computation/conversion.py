@@ -120,7 +120,10 @@ def _handle_corners(
         normal_direction = (
             set(Direction3D.all_directions()).difference(directions).pop()
         )
-        kind = ZXCube.from_normal_basis(ZXBasis(node.kind.value), normal_direction)
+        normal_direction_basis = ZXBasis(node.kind.value)
+        bases = [normal_direction_basis.with_zx_flipped() for _ in range(3)]
+        bases[normal_direction.value] = normal_direction_basis
+        kind = ZXCube(*bases)
         block_graph.add_node(Cube(node.position, kind, node.label))
         nodes_to_handle.remove(node)
 

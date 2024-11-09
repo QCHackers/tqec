@@ -16,7 +16,7 @@ class ZXBasis(Enum):
     X = "X"
 
     def with_zx_flipped(self) -> ZXBasis:
-        """Get the basis with the Z/X flipped."""
+        """Return the flipped basis, i.e. ``Z -> X``, ``X -> Z``."""
         return ZXBasis.Z if self == ZXBasis.X else ZXBasis.X
 
     def __str__(self) -> str:
@@ -24,24 +24,32 @@ class ZXBasis(Enum):
 
 
 class CubeKind(ABC):
-    """Base class for the cube types."""
+    """Base class for the kinds of cubes in the block graph."""
 
     @abstractmethod
     def to_zx_kind(self) -> ZXKind:
-        """Convert the cube kind to a ZX node kind."""
+        """Return the corresponding
+        :py:class:`~tqec.computation.zx_graph.ZXKind` of the cube kind.
+
+        Returns:
+            The corresponding ZX kind of the cube kind.
+        """
         pass
 
 
 @dataclass(frozen=True)
 class ZXCube(CubeKind):
-    """Cube kind representing the cube surrounded by all X/Z basis walls."""
+    """The kind of cubes consisting of only X or Z basis boundaries.
+
+    Attributes:
+        x: The basis of the spatial boundaries that intersects the x-axis.
+        y: The basis of the spatial boundaries that intersects the y-axis.
+        z: The basis of the time boundaries that intersects the z-axis.
+    """
 
     x: ZXBasis
     y: ZXBasis
     z: ZXBasis
-
-    def as_tuple(self) -> tuple[ZXBasis, ZXBasis, ZXBasis]:
-        return astuple(self)
 
     def __post_init__(self) -> None:
         if self.x == self.y == self.z:
@@ -49,52 +57,62 @@ class ZXCube(CubeKind):
                 "The cube kind with all the same basis walls is not allowed."
             )
 
+    def as_tuple(self) -> tuple[ZXBasis, ZXBasis, ZXBasis]:
+        """Return a tuple of ``(self.x, self.y, self.z)``.
+
+        Returns:
+            A tuple of the basis of the cube.
+        """
+        return astuple(self)
+
     def __str__(self) -> str:
-        return f"{self.x.value}{self.y.value}{self.z.value}"
+        return f"{self.x}{self.y}{self.z}"
 
     @staticmethod
     def all_kinds() -> list[ZXCube]:
-        """Return all the possible `ZXCube` kinds."""
+        """Return all the allowed ``ZXCube`` instances.
+
+        Returns:
+            The list of all the allowed ``ZXCube`` instances.
+        """
         return [ZXCube.from_str(s) for s in ["ZXZ", "XZZ", "ZXX", "XZX", "XXZ", "ZZX"]]
 
     @staticmethod
     def from_str(string: str) -> ZXCube:
-        """Create a cube kind from the string representation."""
+        """Create a cube kind from the string representation.
+
+        The string must be a 3-character string consisting of ``'X'`` or ``'Z'``,
+        representing the basis of the cube along the x, y, and z axes. For example,
+        a cube with left-right walls in the X basis, front-back walls in the Z basis,
+        and top-bottom walls in the X basis can be constructed from the string ``'XZX'``.
+
+        Args:
+            string: The string representation of the cube kind. The string must be
+                a 3-character string consisting of ``'X'`` or ``'Z'``, e.g. ``'XZX'``.
+
+        Returns:
+            The :py:class:`~tqec.computation.cube.ZXCube` instance constructed from
+            the string representation.
+        """
         return ZXCube(*map(ZXBasis, string.upper()))
 
-    @property
-    def cube_basis(self) -> ZXBasis:
-        """Return the basis of the cube.
-
-        A cube has only one Z/X basis wall is a Z/X basis cube.
-        """
-        if sum(basis == ZXBasis.Z for basis in astuple(self)) == 1:
-            return ZXBasis.Z
-        return ZXBasis.X
-
     def to_zx_kind(self) -> ZXKind:
-        return ZXKind(self.cube_basis.value)
-
-    @property
-    def normal_direction(self) -> Direction3D:
-        """Get the direction in which the wall basis is the same as the cube
-        basis."""
-        return Direction3D(astuple(self).index(self.cube_basis))
-
-    @staticmethod
-    def from_normal_basis(basis: ZXBasis, direction: Direction3D) -> ZXCube:
-        """Create a cube kind with the given normal basis and direction."""
-        bases = [basis.with_zx_flipped() for _ in range(3)]
-        bases[direction.value] = basis
-        return ZXCube(*bases)
+        if sum(basis == ZXBasis.Z for basis in astuple(self)) == 1:
+            return ZXKind.Z
+        return ZXKind.X
 
     @property
     def is_spatial_junction(self) -> bool:
-        """Check if the cube is a spatial junction."""
+        """Return whether a cube of this kind is a spatial junction.
+
+        A spatial junction is a cube whose all spatial boundaries are in the same basis.
+        And there are only two possible spatial junctions: ``XXZ`` and ``ZZX``.
+        """
         return self.x == self.y
 
     def get_basis_along(self, direction: Direction3D) -> ZXBasis:
-        """Get the basis of the wall in the given direction."""
+        """Get the basis of the boundaries that intersects the given
+        direction."""
         return self.as_tuple()[direction.value]
 
 
@@ -138,13 +156,29 @@ class YCube(CubeKind):
 
 @dataclass(frozen=True)
 class Cube:
-    """A block representing a unit of code patch in the spacetime.
+    """A fundamental building block of the logical computation.
+
+    A cube is a high-level abstraction of a block of quantum operations within a
+    specific spacetime volume. These operations preserve or manipulate the quantum
+    information encoded in the logical qubits.
+
+    For example, a single ``ZXZ`` kind cube can represent a quantum memory experiment for
+    a surface code patch that has X boundaries along the x-axis, Z boundaries along
+    the y-axis. And it's initialized/measured in the logical Z basis. When compiled
+    to concrete quantum circuit, it will consist of transversal resets, syndrome
+    extraction cycles, and finally the transversal measurements. The spatial location
+    of the code patch and the time when the operations are applied are specified by
+    the spacetime position of the cube.
 
     Attributes:
-        position: The position of the cube in the 3D spacetime.
-        kind: The kind of the cube. It specifies the functionality of the cube.
-        label: The label of the cube. If the cube is a port, the label must be non-empty.
-            Default to an empty string.
+        position: The position of the cube in the 3D spacetime. The spatial coordinates
+            determines which code patch the operations are applied to, and the time
+            coordinate determines when the operations are applied.
+        kind: The kind of the cube. It determines the basic logical operations represented
+            by the cube.
+        label: The label of the cube. It's mainly used for annotating the input/output
+            ports of the block graph. If the cube is a port, the label must be non-empty.
+            Default is an empty string.
     """
 
     position: Position3D
@@ -165,18 +199,32 @@ class Cube:
 
     @property
     def is_port(self) -> bool:
-        """Check if the cube is an open port."""
+        """Return whether the cube is of kind
+        :py:class:`~tqec.computation.cube.Port`."""
         return isinstance(self.kind, Port)
 
     @property
     def is_y_cube(self) -> bool:
+        """Return whether the cube is of kind
+        :py:class:`~tqec.computation.cube.YCube`."""
         return isinstance(self.kind, YCube)
 
     @property
     def is_spatial_junction(self) -> bool:
-        """Check if the cube is a spatial junction."""
+        """Return whether the cube is a spatial junction.
+
+        A spatial junction is of kind :py:class:`~tqec.computation.cube.ZXCube` and its all
+        spatial boundaries are in the same basis. There are only two possible spatial
+        junctions: ``XXZ`` and ``ZZX``.
+        """
         return isinstance(self.kind, ZXCube) and self.kind.is_spatial_junction
 
     def to_zx_node(self) -> ZXNode:
-        """Convert the cube to a ZX node."""
+        """Convert the cube to a :py:class:`~tqec.computation.zx_graph.ZXNode`
+        instance.
+
+        Returns:
+            A ZX node with the same position and label as the cube, and the kind of the
+            node is converted from the cube kind with :py:meth:`~tqec.computation.cube.CubeKind.to_zx_kind`.
+        """
         return ZXNode(self.position, self.kind.to_zx_kind(), self.label)

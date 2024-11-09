@@ -1,4 +1,4 @@
-"""Graph representation of a 3D logical computation by explicit blocks."""
+"""Block graph representation of a logical computation."""
 
 from __future__ import annotations
 
@@ -21,30 +21,40 @@ if TYPE_CHECKING:
 
 
 BlockKind = CubeKind | PipeKind
-"""Valid block types in the library."""
 
 
 class BlockGraph(ComputationGraph[Cube, Pipe]):
-    """An undirected graph representation of a logical computation.
+    """Block graph representation of a logical computation.
 
-    The block graph specifies the explicit block structures of the
-    spacetime diagram, including the layout of the code patches, the
-    boundary types and the connectivity of the patches across the
-    spacetime. The block graph can be compiled and used to generate the
-    concrete circuits that implement the logical computation.
+    A block graph consists of building blocks that fully define the boundary
+    conditions and topological structures of a logical computation. It corresponds
+    to the commonly used 3D spacetime diagram representation of a surface code
+    logical computation.
 
-    The nodes in the graph are the cubes that represent a unit of code
-    patch in the spacetime. The edges in the graph are the pipes that
-    connect the cubes. The pipes guide the logical computation and the
-    information flow between the code patches over spacetime.
+    The graph contains two categories of blocks:
+
+    1. :py:class:`~tqec.computation.cube.Cube`: The fundamental building blocks
+    of the computation. A cube represents a block of quantum operations within
+    a specific spacetime volume. These operations preserve or manipulate the
+    quantum information encoded in the logical qubits. Cubes are represented
+    as nodes in the graph.
+
+    2. :py:class:`~tqec.computation.pipe.Pipe`: Connects cubes to form the
+    topological structure representing the logical computation. A pipe occupies
+    no spacetime volume and only replaces the operations within the cubes it
+    connects. Pipes are represented as edges in the graph.
     """
 
     def add_edge(self, u: Cube, v: Cube, kind: PipeKind | None = None) -> None:
-        """Add an edge to the graph. If the nodes do not exist in the graph,
-        the nodes will be created and added to the graph.
+        """Add an edge to the graph. If the nodes of the edge do not exist in
+        the graph, the nodes will be created and added to the graph.
 
         Args:
-            edge: The edge to add to the graph.
+            u: The cube on one end of the edge.
+            v: The cube on the other end of the edge.
+            kind: The kind of the pipe connecting the cubes. If None, the kind will be
+                automatically determined based on the cubes it connects to make the
+                boundary conditions consistent. Default is None.
 
         Raises:
             TQECException: For each node in the edge, if there is already a node which is not
@@ -58,23 +68,22 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         self._add_edge_and_nodes_with_checks(u, v, pipe)
 
     def validate(self) -> None:
-        """Check the validity of the block structures represented by the graph.
+        """Check the validity of the block graph to represent a logical
+        computation.
 
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we ignore the b) and e),
         only check the following conditions:
 
-        a) no fanout: ports can only have one pipe connected to them.
-        c) time-like Y: Y cubes can only have time-like pipes connected to them.
-        d) no 3D corner: a cube cannot have pipes in all three directions.
-        f) match color at passthrough: two pipes in a "pass-through" should have the same
-        color orientation.
-        g) match color at turn: two pipes in a "turn" should have the matching colors on
-        faces that are touching.
+        - **No fanout:** ports can only have one pipe connected to them.
+        - **Time-like Y:** Y cubes can only have time-like pipes connected to them.
+        - **No 3D corner:** a cube cannot have pipes in all three directions.
+        - **Match color at passthrough:** two pipes in a "pass-through" should have the same
+          color orientation.
+        - **Match color at turn:** two pipes in a "turn" should have the matching colors on
+          faces that are touching.
 
-        Args:
-            allow_virtual_node: Whether to allow the virtual node in the graph. A virtual node is an open
-                port of a pipe. It is not a physical cube but a placeholder for the pipe to connect to the
-                boundary of the graph. Default is True.
+        Raises:
+            TQECException: If the above conditions are not satisfied.
         """
         for cube in self.nodes:
             self._validate_locally_at_cube(cube)
@@ -159,7 +168,15 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
-        """Construct a block graph from a DAE file."""
+        """Construct a block graph from a COLLADA DAE file.
+
+        Args:
+            filename: The input ``.dae`` file path.
+            graph_name: The name of the block graph. Default is an empty string.
+
+        Returns:
+            The :py:class:`~tqec.computation.block_graph.BlockGraph` object constructed from the DAE file.
+        """
         from tqec.interop.collada.read_write import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)

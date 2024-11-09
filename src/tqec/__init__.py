@@ -9,7 +9,6 @@ from .circuit import (
 from .compile import compile_block_graph
 from .computation import (
     BlockGraph,
-    BlockKind,
     Cube,
     CubeKind,
     ZXCube,

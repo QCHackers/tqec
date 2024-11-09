@@ -146,15 +146,15 @@ class ZXEdge:
 class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
     """ZX graph representation of a logical computation.
 
-    This is a restricted form of the ZX graph from the ZX-calculus.
-    Currently, the restriction includes:
+    This is a restricted form of the ZX diagram from the ZX-calculus.
+    Currently, the restrictions include:
 
     1. Every node is positioned at an integer 3D position.
     2. Only nearest-neighbor nodes can be connected by an edge.
-    3. X/Z spiders are phase-free.
-    4. There are the ``Y`` kind nodes representing the Y basis
-       initialization/measurement. It is different from the traditional phased
-       X/Z spider representation in ZX-calculus.
+    3. Nodes(spiders) are phase-free.
+    4. There is the additional ``Y`` kind spider representing the Y basis
+       initialization/measurement. Traditionally, it is represented by a
+       phased X/Z spider in the ZX-calculus.
 
     The restrictions are needed because in the end, we need to convert the graph
     to a :py:class:`~tqec.computation.block_graph.BlockGraph` and compile to

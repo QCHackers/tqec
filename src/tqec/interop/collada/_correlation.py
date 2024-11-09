@@ -97,7 +97,11 @@ def _get_transformations_for_surface_in_cube(
     pos = cube.position
     scaled_pos = _scale_position(pos, pipe_length)
     assert isinstance(cube.kind, ZXCube)
-    cube_normal_direction = cube.kind.normal_direction
+    cube_kind = cube.kind
+    normal_direction_basis = ZXBasis(cube_kind.to_zx_kind().value)
+    cube_normal_direction = Direction3D(
+        cube_kind.as_tuple().index(normal_direction_basis)
+    )
     node = cube.to_zx_node()
     transformations = []
     # Surfaces with even parity constraint
