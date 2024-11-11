@@ -12,7 +12,6 @@ tqec.computation.pipe.PipeKind
    .. autosummary::
    
       ~PipeKind.__init__
-      ~PipeKind.from_cube_kind
       ~PipeKind.from_str
       ~PipeKind.get_basis_along
    
@@ -40,7 +39,6 @@ tqec.computation.pipe.PipeKind
 
    
    .. automethod:: __init__
-   .. automethod:: from_cube_kind
    .. automethod:: from_str
    .. automethod:: get_basis_along
    

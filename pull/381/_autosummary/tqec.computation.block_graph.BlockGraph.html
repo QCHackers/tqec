@@ -753,7 +753,7 @@ connects. Pipes are represented as edges in the graph.</p>
 <td><p>Construct a block graph from a COLLADA DAE file.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.block_graph.BlockGraph.get_abstract_observables" title="tqec.computation.block_graph.BlockGraph.get_abstract_observables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_abstract_observables</span></code></a>([correlation_surfaces])</p></td>
-<td><p>Get all the abstract observables from the block graph.</p></td>
+<td><p>Get the <a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable" title="tqec.computation.abstract_observable.AbstractObservable"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractObservable</span></code></a> in the graph.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.block_graph.BlockGraph.get_degree" title="tqec.computation.block_graph.BlockGraph.get_degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_degree</span></code></a>(position)</p></td>
 <td><p>Get the degree of a node in the graph, i.e. the number of edges incident to it.</p></td>
@@ -894,16 +894,19 @@ True.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.block_graph.BlockGraph.get_abstract_observables">
 <span class="sig-name descname"><span class="pre">get_abstract_observables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correlation_surfaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable" title="tqec.computation.abstract_observable.AbstractObservable"><span class="pre">AbstractObservable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/block_graph.html#BlockGraph.get_abstract_observables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.block_graph.BlockGraph.get_abstract_observables" title="Link to this definition">#</a></dt>
-<dd><p>Get all the abstract observables from the block graph.</p>
+<dd><p>Get the
+<a class="reference internal" href="tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable" title="tqec.computation.abstract_observable.AbstractObservable"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractObservable</span></code></a> in
+the graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>correlation_surfaces</strong> – The correlation surfaces to convert to abstract observables. If not
-provided, the correlation surfaces will be constructed from the corresponding ZX graph
-of the block graph.</p>
+provided, all the possible correlation surfaces will be constructed from the corresponding ZX graph
+of the block graph. Abstract observables will be created for each correlation surface.
+Default is None.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The list of abstract observables and the list of correlation surfaces corresponding to the
-observables.</p>
+<dd class="field-even"><p>A tuple containing the list of abstract observables and the list of correlation surfaces corresponding
+to the observables.</p>
 </dd>
 </dl>
 </dd></dl>

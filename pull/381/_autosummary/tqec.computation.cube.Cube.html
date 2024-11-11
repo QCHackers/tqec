@@ -724,16 +724,15 @@
 specific spacetime volume. These operations preserve or manipulate the quantum
 information encoded in the logical qubits.</p>
 <p>For example, a single <code class="docutils literal notranslate"><span class="pre">ZXZ</span></code> kind cube can represent a quantum memory experiment for
-a surface code patch that has X boundaries along the x-axis, Z boundaries along
-the y-axis. And it’s initialized/measured in the logical Z basis. When compiled
-to concrete quantum circuit, it will consist of transversal resets, syndrome
-extraction cycles, and finally the transversal measurements. The spatial location
-of the code patch and the time when the operations are applied are specified by
-the spacetime position of the cube.</p>
+a surface code patch in logical Z basis. The default circuit implementation of the
+cube will consist of transversal Z basis resets, syndrome extraction cycles, and finally
+the Z basis transversal measurements. The spatial location of the physical qubits in the
+code patch and the time when the operations are applied are specified by the spacetime
+position of the cube.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.cube.Cube.position">
 <span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#tqec.computation.cube.Cube.position" title="Link to this definition">#</a></dt>
-<dd><p>The position of the cube in the 3D spacetime. The spatial coordinates
+<dd><p>The position of the cube in the spacetime. The spatial coordinates
 determines which code patch the operations are applied to, and the time
 coordinate determines when the operations are applied.</p>
 <dl class="field-list simple">
@@ -793,7 +792,7 @@ Default is an empty string.</p>
 <td><p>Return whether the cube is of kind <a class="reference internal" href="tqec.computation.cube.YCube.html#tqec.computation.cube.YCube" title="tqec.computation.cube.YCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">YCube</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_zx_cube</span></code></p></td>
-<td><p>Check if the cube is a ZX cube.</p></td>
+<td><p>Return whether the cube is of kind <a class="reference internal" href="tqec.computation.cube.ZXCube.html#tqec.computation.cube.ZXCube" title="tqec.computation.cube.ZXCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.cube.Cube.label" title="tqec.computation.cube.Cube.label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></a></p></td>
 <td><p></p></td>

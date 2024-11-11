@@ -398,7 +398,9 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.computation.pipe</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines the :py:class:`~tqec.computation.pipe.Pipe` class.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
@@ -412,13 +414,24 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PipeKind</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The kind of a pipe connecting two cubes in spacetime.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The kind of a pipe in the block graph.</span>
+
+<span class="sd">    Looking at the head of the pipe, i.e. the side which has smaller position,</span>
+<span class="sd">    the kind is determined by the wall bases there together with whether the</span>
+<span class="sd">    pipe has a hadamard transition. The basis along the direction of the pipe</span>
+<span class="sd">    should be None.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        x: The basis of the walls of the pipe in the X direction.</span>
-<span class="sd">        y: The basis of the walls of the pipe in the Y direction.</span>
-<span class="sd">        z: The basis of the walls of the pipe in the Z direction.</span>
-<span class="sd">        has_hadamard: If True, the pipe has a hadamard transition.</span>
+<span class="sd">        x: At the head of the pipe, looking at the pipe along the x-axis, the basis</span>
+<span class="sd">           of the walls observed. Can be None if the pipe connects two cubes along</span>
+<span class="sd">           the x-axis.</span>
+<span class="sd">        y: At the head of the pipe, looking at the pipe along the y-axis, the basis</span>
+<span class="sd">           of the walls observed. Can be None if the pipe connects two cubes along</span>
+<span class="sd">           the y-axis.</span>
+<span class="sd">        z: At the head of the pipe, looking at the pipe along the z-axis, the basis</span>
+<span class="sd">           of the walls observed. Can be None if the pipe connects two cubes along</span>
+<span class="sd">           the z-axis.</span>
+<span class="sd">        has_hadamard: Whether the pipe has a hadamard transition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">x</span><span class="p">:</span> <span class="n">ZXBasis</span> <span class="o">|</span> <span class="kc">None</span>
@@ -442,7 +455,21 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind.from_str">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_str</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeKind</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe kind from the string representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe kind from the string representation.</span>
+
+<span class="sd">        The string should be a 3-character or 4-character string. The first 3</span>
+<span class="sd">        characters represent the basis of the walls at the head of the pipe</span>
+<span class="sd">        along the x, y, and z axes. If there is no wall along an axis, i.e.</span>
+<span class="sd">        the pipe connects two cubes along that axis, the character should be</span>
+<span class="sd">        &quot;O&quot; for open boundary. The last character, if exists, should be &quot;H&quot;</span>
+<span class="sd">        to indicate the pipe has a hadamard transition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            string: The string representation of the pipe kind.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The pipe kind represented by the string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">has_hadamard</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span>
         <span class="k">return</span> <span class="n">PipeKind</span><span class="p">(</span>
@@ -453,7 +480,7 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the connection direction of the pipe.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The direction along which the pipe connects the cubes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Direction3D</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="PipeKind.get_basis_along">
@@ -461,18 +488,17 @@ window.addEventListener("load", () => mermaid.run());
     <span class="k">def</span> <span class="nf">get_basis_along</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">at_head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ZXBasis</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis of the kind in the given direction.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the wall basis of the pipe in the specified direction.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            direction: The direction of the basis.</span>
-<span class="sd">            at_head: If True, get the basis at the head side of the pipe. Otherwise,</span>
-<span class="sd">                get the basis at the tail of the pipe. The head side will have the</span>
-<span class="sd">                opposite basis as the tail if the pipe has hadamard transition.</span>
+<span class="sd">            direction: The direction along which to get the basis.</span>
+<span class="sd">            at_head: If True, get the basis at the head of the pipe, i.e. the side</span>
+<span class="sd">                which has smaller position. Otherwise, get the basis at the tail of</span>
+<span class="sd">                the pipe. This matters when the pipe has hadamard transition.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            None if the basis is not defined in the direction, i.e. the direction is</span>
-<span class="sd">            the same as the pipe direction. Otherwise, the basis in the direction at</span>
-<span class="sd">            the specified side.</span>
+<span class="sd">            None if the direction is the same as the pipe direction. Otherwise, the</span>
+<span class="sd">            basis of the wall in the specified direction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -484,25 +510,36 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_temporal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pipe is temporal.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the pipe is temporal, i.e. connects two cubes along the Z</span>
+<span class="sd">        axis.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spatial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pipe is spatial.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the pipe is spatial, i.e. connects two cubes along the X or</span>
+<span class="sd">        Y axis.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_temporal</span>
 
-<div class="viewcode-block" id="PipeKind.from_cube_kind">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.PipeKind.html#tqec.computation.pipe.PipeKind.from_cube_kind">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_cube_kind</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_from_cube_kind</span><span class="p">(</span>
         <span class="n">cube_kind</span><span class="p">:</span> <span class="n">ZXCube</span><span class="p">,</span>
         <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">,</span>
         <span class="n">cube_at_head</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">has_hadamard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeKind</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the pipe kind from the endpoint cube kind and the pipe</span>
-<span class="sd">        direction.&quot;&quot;&quot;</span>
+<span class="sd">        direction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cube_kind: The kind of the cube at the endpoint of the pipe.</span>
+<span class="sd">            direction: The direction of the pipe.</span>
+<span class="sd">            cube_at_head: Whether the cube at the head of the pipe, i.e. the</span>
+<span class="sd">                side with smaller position.</span>
+<span class="sd">            has_hadamard: Whether the pipe has a hadamard transition.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The inferred pipe kind.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ZXBasis</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cube_at_head</span> <span class="ow">and</span> <span class="n">has_hadamard</span><span class="p">:</span>
             <span class="n">bases</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">with_zx_flipped</span><span class="p">()</span> <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">cube_kind</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()]</span>
@@ -513,7 +550,6 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">if</span> <span class="n">has_hadamard</span><span class="p">:</span>
             <span class="n">bases_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bases_str</span><span class="p">))</span></div>
-</div>
 
 
 
@@ -521,17 +557,20 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Pipe</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two cubes in spacetime.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A block connecting two :py:class:`~tqec.computation.cube.Cube` objects.</span>
 
-<span class="sd">    The pipes guide the logical computation and the information flow between the code</span>
-<span class="sd">    patches over spacetime.</span>
+<span class="sd">    The pipes connect the cubes in the block graph. Topologically, the pipes</span>
+<span class="sd">    open the boundaries of the cubes and wire them together to form the topological</span>
+<span class="sd">    structure representing the computation. In the circuit level, the pipes</span>
+<span class="sd">    make modifications to the blocks of operations represented by the cubes.</span>
+<span class="sd">    Importantly, the pipes themselves do not occupy spacetime volume.</span>
 
 <span class="sd">    WARNING: The attributes `u` and `v` will be ordered to ensure the position of `u`</span>
 <span class="sd">    is less than `v`.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        u: The first cube of the pipe. The position of u will be guaranteed to be less than v.</span>
-<span class="sd">        v: The second cube of the pipe. The position of v will be guaranteed to be greater than u.</span>
+<span class="sd">        u: The cube at the head of the pipe. The position of u will be guaranteed to be less than v.</span>
+<span class="sd">        v: The cube at the tail of the pipe. The position of v will be guaranteed to be greater than u.</span>
 <span class="sd">        kind: The kind of the pipe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -558,11 +597,11 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe.from_cubes">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_cubes</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Cube</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipe</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe connecting two cubes and infer the pipe kind.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a pipe connecting two cubes and infer the pipe kind.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            u: The first cube of the pipe.</span>
-<span class="sd">            v: The second cube of the pipe.</span>
+<span class="sd">            u: The first cube.</span>
+<span class="sd">            v: The second cube.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The pipe connecting the two cubes.</span>
@@ -589,7 +628,7 @@ window.addEventListener("load", () => mermaid.run());
             <span class="n">infer_from</span> <span class="o">=</span> <span class="n">u</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_zx_cube</span> <span class="k">else</span> <span class="n">v</span>
             <span class="n">cube_kind</span> <span class="o">=</span> <span class="n">infer_from</span><span class="o">.</span><span class="n">kind</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cube_kind</span><span class="p">,</span> <span class="n">ZXCube</span><span class="p">)</span>
-            <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_cube_kind</span><span class="p">(</span><span class="n">cube_kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">infer_from</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span>
+            <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">_from_cube_kind</span><span class="p">(</span><span class="n">cube_kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">infer_from</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">pipe_kind</span><span class="p">)</span>
 
         <span class="c1"># Both cubes are ZX cubes</span>
@@ -601,19 +640,29 @@ window.addEventListener("load", () => mermaid.run());
         <span class="p">}</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">has_hadamard</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Cannot infer a valid pipe kind from the cubes.&quot;</span><span class="p">)</span>
-        <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">from_cube_kind</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+        <span class="n">pipe_kind</span> <span class="o">=</span> <span class="n">PipeKind</span><span class="o">.</span><span class="n">_from_cube_kind</span><span class="p">(</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">has_hadamard</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">Pipe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">pipe_kind</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction3D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the direction of the pipe.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The direction along which the pipe connects the cubes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">direction</span>
 
-<div class="viewcode-block" id="Pipe.validate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe.validate">[docs]</a>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the color of the pipe can match the cubes at its endpoints.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Pipe.check_compatible_with_cubes">
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe.check_compatible_with_cubes">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_compatible_with_cubes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pipe is compatible with the cubes it connects.</span>
+
+<span class="sd">        For compatibility, each cube (head and tail) must match the pipe&#39;s basis</span>
+<span class="sd">        along each direction, except for the direction of the pipe, if the cube is</span>
+<span class="sd">        of type :py:class:`~tqec.computation.cube.ZXCube`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If the pipe is not compatible with the cubes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">cube</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_port</span> <span class="ow">or</span> <span class="n">cube</span><span class="o">.</span><span class="n">is_y_cube</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -625,7 +674,7 @@ window.addEventListener("load", () => mermaid.run());
                 <span class="n">pipe_basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">.</span><span class="n">get_basis_along</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">cube</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">cube_basis</span> <span class="o">!=</span> <span class="n">pipe_basis</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The pipe has color does not match the cube </span><span class="si">{</span><span class="n">cube</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;The pipe is not compatible with the cube </span><span class="si">{</span><span class="n">cube</span><span class="si">}</span><span class="s2"> along </span><span class="si">{</span><span class="n">direction</span><span class="si">}</span><span class="s2"> direction.&quot;</span>
                     <span class="p">)</span></div>
 
 

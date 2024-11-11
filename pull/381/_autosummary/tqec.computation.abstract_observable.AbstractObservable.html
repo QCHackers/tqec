@@ -719,17 +719,35 @@
 <dt class="sig sig-object py" id="tqec.computation.abstract_observable.AbstractObservable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AbstractObservable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube" title="tqec.computation.cube.Cube"><span class="pre">Cube</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe" title="tqec.computation.pipe.Pipe"><span class="pre">Pipe</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe" title="tqec.computation.pipe.Pipe"><span class="pre">Pipe</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/abstract_observable.html#AbstractObservable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.abstract_observable.AbstractObservable" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>An abstract description of an observable in a 3D spacetime diagram.</p>
-<p>In a <strong>closed</strong> 3D spacetime diagram, the abstract observable can be derived from
-the corresponding correlation surface:</p>
-<ol class="arabic simple">
-<li><p>When the correlation surface attaches to the top/bottom faces of a block in
-the diagram, the measurements of the line of qubits on the top face are included
-in the observable.</p></li>
-<li><p>When the correlation surface lies within XY plane and intersects a pipe, the stabilizer
-measurements at the start of the pipe and part of the stabilizer measurements within
-the cubes connected by the pipe are included in the observable.</p></li>
-</ol>
+<p>An abstract description of a logical observable in the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BlockGraph</span></code>.</p>
+<p>A logical observable corresponds to a <a class="reference external" href="https://github.com/quantumlib/Stim/blob/main/doc/gates.md#OBSERVABLE_INCLUDE">OBSERVABLE_INCLUDE</a>
+instruction in the <code class="docutils literal notranslate"><span class="pre">stim</span></code> circuit and is composed of a set of measurements. Abstract observable specifies where are the measurements
+located in the block graph.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.abstract_observable.AbstractObservable.top_lines">
+<span class="sig-name descname"><span class="pre">top_lines</span></span><a class="headerlink" href="#tqec.computation.abstract_observable.AbstractObservable.top_lines" title="Link to this definition">#</a></dt>
+<dd><p>A set of cubes and pipes of which a line of measurements on the top face should be included
+in the observable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>frozenset[<a class="reference internal" href="tqec.computation.cube.Cube.html#tqec.computation.cube.Cube" title="tqec.computation.cube.Cube">tqec.computation.cube.Cube</a> | <a class="reference internal" href="tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe" title="tqec.computation.pipe.Pipe">tqec.computation.pipe.Pipe</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tqec.computation.abstract_observable.AbstractObservable.bottom_regions">
+<span class="sig-name descname"><span class="pre">bottom_regions</span></span><a class="headerlink" href="#tqec.computation.abstract_observable.AbstractObservable.bottom_regions" title="Link to this definition">#</a></dt>
+<dd><p>A set of pipes of which a region of stabilizer measurements on the bottom face should be included
+in the observable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>frozenset[<a class="reference internal" href="tqec.computation.pipe.Pipe.html#tqec.computation.pipe.Pipe" title="tqec.computation.pipe.Pipe">tqec.computation.pipe.Pipe</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
@@ -742,10 +760,10 @@ the cubes connected by the pipe are included in the observable.</p></li>
 <p class="rubric">Attributes</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">top_lines</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.abstract_observable.AbstractObservable.top_lines" title="tqec.computation.abstract_observable.AbstractObservable.top_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">top_lines</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bottom_regions</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.abstract_observable.AbstractObservable.bottom_regions" title="tqec.computation.abstract_observable.AbstractObservable.bottom_regions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bottom_regions</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -809,6 +827,8 @@ the cubes connected by the pipe are included in the observable.</p></li>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.abstract_observable.AbstractObservable"><code class="docutils literal notranslate"><span class="pre">AbstractObservable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.abstract_observable.AbstractObservable.top_lines"><code class="docutils literal notranslate"><span class="pre">AbstractObservable.top_lines</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.abstract_observable.AbstractObservable.bottom_regions"><code class="docutils literal notranslate"><span class="pre">AbstractObservable.bottom_regions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.abstract_observable.AbstractObservable.__init__"><code class="docutils literal notranslate"><span class="pre">AbstractObservable.__init__()</span></code></a></li>
 </ul>
 </li>

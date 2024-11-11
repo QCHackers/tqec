@@ -12,8 +12,8 @@ tqec.computation.pipe.Pipe
    .. autosummary::
    
       ~Pipe.__init__
+      ~Pipe.check_compatible_with_cubes
       ~Pipe.from_cubes
-      ~Pipe.validate
    
    
 
@@ -36,7 +36,7 @@ tqec.computation.pipe.Pipe
 
    
    .. automethod:: __init__
+   .. automethod:: check_compatible_with_cubes
    .. automethod:: from_cubes
-   .. automethod:: validate
    
    

@@ -398,7 +398,9 @@ window.addEventListener("load", () => mermaid.run());
                 <article class="bd-article">
                   
   <h1>Source code for tqec.computation.abstract_observable</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines the :py:class:`~tqec.computation.AbstractObservable` class.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">from</span> <span class="nn">tqec.computation.cube</span> <span class="kn">import</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">ZXCube</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span>
@@ -413,17 +415,18 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">AbstractObservable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract description of an observable in a 3D spacetime diagram.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract description of a logical observable in the</span>
+<span class="sd">    :py:class:`~tqec.computation.BlockGraph`.</span>
 
-<span class="sd">    In a **closed** 3D spacetime diagram, the abstract observable can be derived from</span>
-<span class="sd">    the corresponding correlation surface:</span>
+<span class="sd">    A logical observable corresponds to a `OBSERVABLE_INCLUDE &lt;https://github.com/quantumlib/Stim/blob/main/doc/gates.md#OBSERVABLE_INCLUDE&gt;`_</span>
+<span class="sd">    instruction in the ``stim`` circuit and is composed of a set of measurements. Abstract observable specifies where are the measurements</span>
+<span class="sd">    located in the block graph.</span>
 
-<span class="sd">    1. When the correlation surface attaches to the top/bottom faces of a block in</span>
-<span class="sd">       the diagram, the measurements of the line of qubits on the top face are included</span>
-<span class="sd">       in the observable.</span>
-<span class="sd">    2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer</span>
-<span class="sd">       measurements at the start of the pipe and part of the stabilizer measurements within</span>
-<span class="sd">       the cubes connected by the pipe are included in the observable.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        top_lines: A set of cubes and pipes of which a line of measurements on the top face should be included</span>
+<span class="sd">            in the observable.</span>
+<span class="sd">        bottom_regions: A set of pipes of which a region of stabilizer measurements on the bottom face should be included</span>
+<span class="sd">            in the observable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">top_lines</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">Cube</span> <span class="o">|</span> <span class="n">Pipe</span><span class="p">]</span>
@@ -442,33 +445,29 @@ window.addEventListener("load", () => mermaid.run());
 <span class="k">def</span> <span class="nf">correlation_surface_to_abstract_observable</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
     <span class="n">correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span><span class="p">,</span>
-    <span class="n">validate_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractObservable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a correlation surface to an abstract observable.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a :py:class:`~tqec.computation.CorrelationSurface` to an</span>
+<span class="sd">    :py:class:`~tqec.computation.AbstractObservable`.</span>
 
-<span class="sd">    You need to provide a correlation surface that is valid in the corresponding ``ZXGraph``</span>
-<span class="sd">    of the block graph. Otherwise, the behavior is undefined.</span>
+<span class="sd">    .. warning::</span>
+<span class="sd">        It is assumed that the corresponding ZX graph of the block graph can support the correlation surface.</span>
+<span class="sd">        Otherwise, the behavior is undefined.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        block_graph: The block graph containing the correlation surface.</span>
-<span class="sd">        correlation_surface: The correlation surface to convert.</span>
-<span class="sd">        validate_graph: Whether to validate the block graph before conversion.</span>
+<span class="sd">        block_graph: The block graph whose corresponding ZX graph supports the correlation surface.</span>
+<span class="sd">        correlation_surface: The correlation surface to convert to an abstract observable.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        The abstract observable derived from the correlation surface.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">validate_graph</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">num_ports</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The block graph must have no open ports to support observables.&quot;</span>
-            <span class="p">)</span>
-        <span class="n">block_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+<span class="sd">        The abstract observable corresponding to the correlation surface in the block graph.</span>
 
+<span class="sd">    Raises:</span>
+<span class="sd">        TQECException: If the block graph has open ports.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">num_ports</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
+            <span class="s2">&quot;The block graph must have no open ports to support observables.&quot;</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">correlation_surface</span><span class="o">.</span><span class="n">has_single_node</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span>
-                <span class="s2">&quot;The block graph must have exactly one cube to support the single-node correlation surface.&quot;</span>
-            <span class="p">)</span>
         <span class="k">return</span> <span class="n">AbstractObservable</span><span class="p">(</span>
             <span class="nb">frozenset</span><span class="p">(</span><span class="n">block_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span>
             <span class="nb">frozenset</span><span class="p">(),</span>
