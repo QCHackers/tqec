@@ -116,7 +116,7 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipes_by_direction.setdefault(pipe.direction, []).append(pipe)
         # d), f), g). Match color
         for pipe in pipes:
-            pipe.validate()
+            pipe.check_compatible_with_cubes()
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
         """Convert the block graph to a
@@ -224,16 +224,19 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         self,
         correlation_surfaces: list[CorrelationSurface] | None = None,
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
-        """Get all the abstract observables from the block graph.
+        """Get the
+        :py:class:`~tqec.computation.abstract_observable.AbstractObservable` in
+        the graph.
 
         Args:
             correlation_surfaces: The correlation surfaces to convert to abstract observables. If not
-                provided, the correlation surfaces will be constructed from the corresponding ZX graph
-                of the block graph.
+                provided, all the possible correlation surfaces will be constructed from the corresponding ZX graph
+                of the block graph. Abstract observables will be created for each correlation surface.
+                Default is None.
 
         Returns:
-            The list of abstract observables and the list of correlation surfaces corresponding to the
-            observables.
+            A tuple containing the list of abstract observables and the list of correlation surfaces corresponding
+            to the observables.
         """
         from tqec.computation.abstract_observable import (
             correlation_surface_to_abstract_observable,

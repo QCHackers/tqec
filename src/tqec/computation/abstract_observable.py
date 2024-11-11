@@ -1,3 +1,5 @@
+"""Defines the :py:class:`~tqec.computation.AbstractObservable` class."""
+
 from dataclasses import dataclass
 
 from tqec.computation.cube import Cube, ZXCube
@@ -11,17 +13,18 @@ from tqec.position import Direction3D
 
 @dataclass(frozen=True)
 class AbstractObservable:
-    """An abstract description of an observable in a 3D spacetime diagram.
+    """An abstract description of a logical observable in the
+    :py:class:`~tqec.computation.BlockGraph`.
 
-    In a **closed** 3D spacetime diagram, the abstract observable can be derived from
-    the corresponding correlation surface:
+    A logical observable corresponds to a `OBSERVABLE_INCLUDE <https://github.com/quantumlib/Stim/blob/main/doc/gates.md#OBSERVABLE_INCLUDE>`_
+    instruction in the ``stim`` circuit and is composed of a set of measurements. Abstract observable specifies where are the measurements
+    located in the block graph.
 
-    1. When the correlation surface attaches to the top/bottom faces of a block in
-       the diagram, the measurements of the line of qubits on the top face are included
-       in the observable.
-    2. When the correlation surface lies within XY plane and intersects a pipe, the stabilizer
-       measurements at the start of the pipe and part of the stabilizer measurements within
-       the cubes connected by the pipe are included in the observable.
+    Attributes:
+        top_lines: A set of cubes and pipes of which a line of measurements on the top face should be included
+            in the observable.
+        bottom_regions: A set of pipes of which a region of stabilizer measurements on the bottom face should be included
+            in the observable.
     """
 
     top_lines: frozenset[Cube | Pipe]
@@ -37,33 +40,29 @@ class AbstractObservable:
 def correlation_surface_to_abstract_observable(
     block_graph: BlockGraph,
     correlation_surface: CorrelationSurface,
-    validate_graph: bool = True,
 ) -> AbstractObservable:
-    """Convert a correlation surface to an abstract observable.
+    """Convert a :py:class:`~tqec.computation.CorrelationSurface` to an
+    :py:class:`~tqec.computation.AbstractObservable`.
 
-    You need to provide a correlation surface that is valid in the corresponding ``ZXGraph``
-    of the block graph. Otherwise, the behavior is undefined.
+    .. warning::
+        It is assumed that the corresponding ZX graph of the block graph can support the correlation surface.
+        Otherwise, the behavior is undefined.
 
     Args:
-        block_graph: The block graph containing the correlation surface.
-        correlation_surface: The correlation surface to convert.
-        validate_graph: Whether to validate the block graph before conversion.
+        block_graph: The block graph whose corresponding ZX graph supports the correlation surface.
+        correlation_surface: The correlation surface to convert to an abstract observable.
 
     Returns:
-        The abstract observable derived from the correlation surface.
-    """
-    if validate_graph:
-        if block_graph.num_ports != 0:
-            raise TQECException(
-                "The block graph must have no open ports to support observables."
-            )
-        block_graph.validate()
+        The abstract observable corresponding to the correlation surface in the block graph.
 
+    Raises:
+        TQECException: If the block graph has open ports.
+    """
+    if block_graph.num_ports != 0:
+        raise TQECException(
+            "The block graph must have no open ports to support observables."
+        )
     if correlation_surface.has_single_node:
-        if block_graph.num_nodes != 1:
-            raise TQECException(
-                "The block graph must have exactly one cube to support the single-node correlation surface."
-            )
         return AbstractObservable(
             frozenset(block_graph.nodes),
             frozenset(),

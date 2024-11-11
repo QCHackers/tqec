@@ -174,7 +174,7 @@ def _try_to_handle_edges(
             continue
         infer_from, other_node = (u, v) if can_infer_from_u else (v, u)
         cube_kind = cast(ZXCube, block_graph[infer_from.position].kind)
-        pipe_kind = PipeKind.from_cube_kind(
+        pipe_kind = PipeKind._from_cube_kind(
             cube_kind, edge.direction, can_infer_from_u, edge.has_hadamard
         )
         other_cube_kind: CubeKind

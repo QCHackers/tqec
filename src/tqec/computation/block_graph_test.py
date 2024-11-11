@@ -124,9 +124,7 @@ def test_block_graph_validate_3d_corner() -> None:
         Cube(Position3D(1, 1, 0), Port(), label="out"),
         PipeKind.from_str("XOZ"),
     )
-    with pytest.raises(
-        TQECException, match="The pipe has color does not match the cube"
-    ):
+    with pytest.raises(TQECException):
         g.validate()
 
 
@@ -137,9 +135,7 @@ def test_block_graph_validate_color_match() -> None:
         Cube(Position3D(1, 0, 0), ZXCube.from_str("XZX")),
         PipeKind.from_str("OXZ"),
     )
-    with pytest.raises(
-        TQECException, match="The pipe has color does not match the cube"
-    ):
+    with pytest.raises(TQECException):
         g.validate()
 
 

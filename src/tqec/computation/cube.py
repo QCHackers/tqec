@@ -1,3 +1,5 @@
+"""Defines the :py:class:`~tqec.computation.cube.Cube` class."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -42,9 +44,9 @@ class ZXCube(CubeKind):
     """The kind of cubes consisting of only X or Z basis boundaries.
 
     Attributes:
-        x: The basis of the spatial boundaries that intersects the x-axis.
-        y: The basis of the spatial boundaries that intersects the y-axis.
-        z: The basis of the time boundaries that intersects the z-axis.
+        x: Looking at the cube along the x-axis, the basis of the walls observed.
+        y: Looking at the cube along the y-axis, the basis of the walls observed.
+        z: Looking at the cube along the z-axis, the basis of the walls observed.
     """
 
     x: ZXBasis
@@ -54,14 +56,14 @@ class ZXCube(CubeKind):
     def __post_init__(self) -> None:
         if self.x == self.y == self.z:
             raise TQECException(
-                "The cube kind with all the same basis walls is not allowed."
+                "The cube with the same basis along all axes is not allowed."
             )
 
     def as_tuple(self) -> tuple[ZXBasis, ZXBasis, ZXBasis]:
         """Return a tuple of ``(self.x, self.y, self.z)``.
 
         Returns:
-            A tuple of the basis of the cube.
+            A tuple of ``(self.x, self.y, self.z)``.
         """
         return astuple(self)
 
@@ -82,13 +84,13 @@ class ZXCube(CubeKind):
         """Create a cube kind from the string representation.
 
         The string must be a 3-character string consisting of ``'X'`` or ``'Z'``,
-        representing the basis of the cube along the x, y, and z axes. For example,
-        a cube with left-right walls in the X basis, front-back walls in the Z basis,
+        representing the basis of the walls along the x, y, and z axes.
+        For example, a cube with left-right walls in the X basis, front-back walls in the Z basis,
         and top-bottom walls in the X basis can be constructed from the string ``'XZX'``.
 
         Args:
-            string: The string representation of the cube kind. The string must be
-                a 3-character string consisting of ``'X'`` or ``'Z'``, e.g. ``'XZX'``.
+            string: A 3-character string consisting of ``'X'`` or ``'Z'``, representing
+                the basis of the walls along the x, y, and z axes.
 
         Returns:
             The :py:class:`~tqec.computation.cube.ZXCube` instance constructed from
@@ -111,8 +113,14 @@ class ZXCube(CubeKind):
         return self.x == self.y
 
     def get_basis_along(self, direction: Direction3D) -> ZXBasis:
-        """Get the basis of the boundaries that intersects the given
-        direction."""
+        """Get the basis of the walls along the given direction axis.
+
+        Args:
+            direction: The direction of the axis along which the basis is queried.
+
+        Returns:
+            The basis of the walls along the given direction axis.
+        """
         return self.as_tuple()[direction.value]
 
 
@@ -163,15 +171,14 @@ class Cube:
     information encoded in the logical qubits.
 
     For example, a single ``ZXZ`` kind cube can represent a quantum memory experiment for
-    a surface code patch that has X boundaries along the x-axis, Z boundaries along
-    the y-axis. And it's initialized/measured in the logical Z basis. When compiled
-    to concrete quantum circuit, it will consist of transversal resets, syndrome
-    extraction cycles, and finally the transversal measurements. The spatial location
-    of the code patch and the time when the operations are applied are specified by
-    the spacetime position of the cube.
+    a surface code patch in logical Z basis. The default circuit implementation of the
+    cube will consist of transversal Z basis resets, syndrome extraction cycles, and finally
+    the Z basis transversal measurements. The spatial location of the physical qubits in the
+    code patch and the time when the operations are applied are specified by the spacetime
+    position of the cube.
 
     Attributes:
-        position: The position of the cube in the 3D spacetime. The spatial coordinates
+        position: The position of the cube in the spacetime. The spatial coordinates
             determines which code patch the operations are applied to, and the time
             coordinate determines when the operations are applied.
         kind: The kind of the cube. It determines the basic logical operations represented
@@ -194,7 +201,8 @@ class Cube:
 
     @property
     def is_zx_cube(self) -> bool:
-        """Check if the cube is a ZX cube."""
+        """Return whether the cube is of kind
+        :py:class:`~tqec.computation.cube.ZXCube`."""
         return isinstance(self.kind, ZXCube)
 
     @property
