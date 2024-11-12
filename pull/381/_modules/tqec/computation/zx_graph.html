@@ -702,10 +702,41 @@ window.addEventListener("load", () => mermaid.run());
 <div class="viewcode-block" id="ZXGraph.find_correration_surfaces">
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph.find_correration_surfaces">[docs]</a>
     <span class="k">def</span> <span class="nf">find_correration_surfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the correlation surfaces in the ZX graph.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all the</span>
+<span class="sd">        :py:class:`~tqec.computation.correlation.CorrelationSurface` in a ZX</span>
+<span class="sd">        graph.</span>
 
-<span class="sd">        A recursive depth-first search algorithm is used to find the</span>
-<span class="sd">        correlation surfaces starting from each leaf node.</span>
+<span class="sd">        Starting from each leaf node in the graph, the function explores how can the X/Z logical observable</span>
+<span class="sd">        move through the graph to form a correlation surface:</span>
+
+<span class="sd">        - For a X/Z kind leaf node, it can only support the logical observable with the opposite type. Only</span>
+<span class="sd">        a single type of logical observable is explored from the leaf node.</span>
+<span class="sd">        - For a Y kind leaf node, it can only support the Y logical observable, i.e. the presence of</span>
+<span class="sd">        both X and Z logical observable. Both X and Z type logical observable are explored from the leaf node.</span>
+<span class="sd">        And the two correlation surfaces are combined to form the Y type correlation surface.</span>
+<span class="sd">        - For the port node, it can support any type of logical observable. Both X and Z type logical observable</span>
+<span class="sd">        are explored from the port node.</span>
+
+<span class="sd">        The function uses a flood fill like recursive algorithm to find the correlation surface in the graph.</span>
+<span class="sd">        Firstly, we define two types of nodes in the graph:</span>
+
+<span class="sd">        - *broadcast node:* A node that has seen logical observable with basis opposite to its own basis.</span>
+<span class="sd">        A logical observable needs to be broadcasted to all the neighbors of the node.</span>
+<span class="sd">        - *passthrough node:* A node that has seen logical observable with the same basis as its own basis.</span>
+<span class="sd">        A logical observable needs to be only supported on an even number of edges connected to the node.</span>
+
+<span class="sd">        The algorithm starts from a set of frontier nodes and greedily expands the correlation</span>
+<span class="sd">        surface until no more broadcast nodes are in the frontier. Then it explore the</span>
+<span class="sd">        passthrough nodes, and select even number of edges to be included in the surface. If</span>
+<span class="sd">        no such selection can be made, the search is pruned. For different choices, the algorithm</span>
+<span class="sd">        recursively explores the next frontier until the search is completed. Finally, the branches</span>
+<span class="sd">        at different nodes are produced to form the correlation surface.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of `CorrelationSurface` in the graph.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TQECException: If the graph does not contain any leaf node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">tqec.computation.correlation</span> <span class="kn">import</span> <span class="n">find_correlation_surfaces</span>
 

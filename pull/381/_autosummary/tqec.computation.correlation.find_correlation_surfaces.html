@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/tqec.computation.correlation.find_correlation_surfaces';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tqec.computation.correlation.find_correlation_surfaces_from_leaf" href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html" />
+    <link rel="next" title="tqec.computation.correlation.CorrelationSurface" href="tqec.computation.correlation.CorrelationSurface.html" />
     <link rel="prev" title="tqec.computation.correlation" href="tqec.computation.correlation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -469,7 +469,6 @@
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.computation.correlation.find_correlation_surfaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html">tqec.computation.correlation.find_correlation_surfaces_from_leaf</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html">tqec.computation.correlation.CorrelationSurface</a></li>
 </ul>
 </details></li>
@@ -720,17 +719,40 @@
 <span class="sig-name descname"><span class="pre">find_correlation_surfaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#find_correlation_surfaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.find_correlation_surfaces" title="Link to this definition">#</a></dt>
 <dd><p>Find all the
 <a class="reference internal" href="tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationSurface</span></code></a> in a ZX graph.</p>
-<p>It starts from each leaf node in the graph, and finds the correlation surfaces using a variant
-of flood-fill algorithm.</p>
-<p>For Z/X type correlation surface, the correlation surface must start from the opposite type node. For the
-Port, the correlation surface can start from both X/Z type node. For the Y type node, the
-correlation surface must be the product of the X and Z type.</p>
+<p>Starting from each leaf node in the graph, the function explores how can the X/Z logical observable
+move through the graph to form a correlation surface:</p>
+<ul class="simple">
+<li><p>For a X/Z kind leaf node, it can only support the logical observable with the opposite type. Only
+a single type of logical observable is explored from the leaf node.</p></li>
+<li><p>For a Y kind leaf node, it can only support the Y logical observable, i.e. the presence of
+both X and Z logical observable. Both X and Z type logical observable are explored from the leaf node.
+And the two correlation surfaces are combined to form the Y type correlation surface.</p></li>
+<li><p>For the port node, it can support any type of logical observable. Both X and Z type logical observable
+are explored from the port node.</p></li>
+</ul>
+<p>The function uses a flood fill like recursive algorithm to find the correlation surface in the graph.
+Firstly, we define two types of nodes in the graph:</p>
+<ul class="simple">
+<li><p><em>broadcast node:</em> A node that has seen logical observable with basis opposite to its own basis.
+A logical observable needs to be broadcasted to all the neighbors of the node.</p></li>
+<li><p><em>passthrough node:</em> A node that has seen logical observable with the same basis as its own basis.
+A logical observable needs to be only supported on an even number of edges connected to the node.</p></li>
+</ul>
+<p>The algorithm starts from a set of frontier nodes and greedily expands the correlation
+surface until no more broadcast nodes are in the frontier. Then it explore the
+passthrough nodes, and select even number of edges to be included in the surface. If
+no such selection can be made, the search is pruned. For different choices, the algorithm
+recursively explores the next frontier until the search is completed. Finally, the branches
+at different nodes are produced to form the correlation surface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>zx_graph</strong> – The ZX graph to find the correlation surfaces.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of <cite>CorrelationSurface</cite> in the graph.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="tqec.exceptions.TQECException.html#tqec.exceptions.TQECException" title="tqec.exceptions.TQECException"><strong>TQECException</strong></a> – If the graph does not contain any leaf node.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -757,11 +779,11 @@ correlation surface must be the product of the X and Z type.</p>
       </div>
     </a>
     <a class="right-next"
-       href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html"
+       href="tqec.computation.correlation.CorrelationSurface.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">tqec.computation.correlation.find_correlation_surfaces_from_leaf</p>
+        <p class="prev-next-title">tqec.computation.correlation.CorrelationSurface</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

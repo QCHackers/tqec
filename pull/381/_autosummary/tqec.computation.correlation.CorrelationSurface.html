@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tqec.computation.cube" href="tqec.computation.cube.html" />
-    <link rel="prev" title="tqec.computation.correlation.find_correlation_surfaces_from_leaf" href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html" />
+    <link rel="prev" title="tqec.computation.correlation.find_correlation_surfaces" href="tqec.computation.correlation.find_correlation_surfaces.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -469,7 +469,6 @@
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="tqec.computation.correlation.html">tqec.computation.correlation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces.html">tqec.computation.correlation.find_correlation_surfaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html">tqec.computation.correlation.find_correlation_surfaces_from_leaf</a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">tqec.computation.correlation.CorrelationSurface</a></li>
 </ul>
 </details></li>
@@ -719,20 +718,40 @@
 <dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CorrelationSurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">nodes:</span> <span class="pre">frozenset[~tqec.computation.zx_graph.ZXNode],</span> <span class="pre">span:</span> <span class="pre">frozenset[~tqec.computation.zx_graph.ZXEdge]</span> <span class="pre">=</span> <span class="pre">frozenset({}),</span> <span class="pre">external_stabilizer:</span> <span class="pre">dict[str,</span> <span class="pre">str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#CorrelationSurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A correlation surface in the logical computation.</p>
-<p>The correlation surface specifies the correlation between the logical operators in the
-spacetime diagram. Logical observable can be derived from the boundaries of the correlation
-surface.</p>
-<p>The correlation surface is defined by the set of edges in the ZX graph. Each edge represents
-a X/Z surface within the pipe in the <cite>BlockGraph</cite> picture. A Y surface is represented by two
-distinct edges, one for the X surface and one for the Z surface. Therefore, the nodes of the
-edges in the correlation surface must be Z/X type nodes.</p>
+<p>A record of how the logical observable moved through a computation.</p>
+<p>A correlation surface of a computation has close correspondence to the <em>spacetime stabilizer</em>
+in the ZX graph. A spacetime stabilizer is a Pauli product observable spread over space and
+time that when applied to the state of the computation, the state is unchanged. In the ZX
+graph, a spacetime stabilizer can be represented by a set of boundary nodes representing the
+Pauli operators and a set of edges representing the interior of the stabilizer.</p>
+<p>A logical observable can be moved by multiplying the spacetime stabilizers. For surface
+code, the logical operator is a 1D line. It forms a 2D surface when moving through spacetime,
+i.e the correlation surface.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For more information about spacetime stabilizers, correlation surface, and their relationship,
+see <a class="reference external" href="https://www.youtube.com/watch?v=1ojXEEm_JiI&amp;t=4673s">this talk</a> by Craig Gidney.</p>
+</div>
+<p>Based on the above relationship, we use the term <em>correlation surface</em> and <em>spacetime stabilizer</em>
+interchangeably. We represent the correlation surface by the set of interior edges of the spacetime
+stabilizer in the ZX graph. Each edge can be seen as a decomposed spacetime stabilizer which has
+Pauli operator specified by the node kinds at the two ends of the edge. For example, an edge
+connecting two X nodes represents a local <code class="docutils literal notranslate"><span class="pre">XX</span></code> spacetime stabilizer. There is also a special kind of
+correlation surface that has no interior edges but represented by a single node. It can be seen as
+applying spider fusion rule to a single edge ZX graph, which results in a correlation surface totally
+compressed in a single node.</p>
+<p>Additionally, we represent the boundary nodes of the spacetime stabilizer by <a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface.external_stabilizer" title="tqec.computation.correlation.CorrelationSurface.external_stabilizer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">external_stabilizer</span></code></a>,
+which is a mapping from the input/output labels to the Pauli operator at the port. If the ZX graph is closed,
+i.e. there is no open port, that means that the stabilizer is terminated with the initialization or
+measurements so has no external stabilizer.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface.nodes">
 <span class="sig-name descname"><span class="pre">nodes</span></span><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface.nodes" title="Link to this definition">#</a></dt>
-<dd><p>A set of <code class="docutils literal notranslate"><span class="pre">ZXNode</span></code> representing the nodes in the correlation surface. The kind of
-the node is determined by what kinds of correlation the node supports. If both X and
-Z correlation are supported, the node is a Y type node.</p>
+<dd><p>A set of <code class="docutils literal notranslate"><span class="pre">ZXNode</span></code> representing the nodes appeared in the correlation surface. The kind of
+the node is determined by which type of logical observable the node supports in the
+correlation surface. For example, if either a logical X observable or Z observable has been
+moved through the node position, then the node is of X or Z kind. If both X and Z observable
+have been moved through the node position, the node is of Y kind.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>frozenset[<a class="reference internal" href="tqec.computation.zx_graph.ZXNode.html#tqec.computation.zx_graph.ZXNode" title="tqec.computation.zx_graph.ZXNode">tqec.computation.zx_graph.ZXNode</a>]</p>
@@ -743,8 +762,8 @@ Z correlation are supported, the node is a Y type node.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface.span">
 <span class="sig-name descname"><span class="pre">span</span></span><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface.span" title="Link to this definition">#</a></dt>
-<dd><p>A set of <code class="docutils literal notranslate"><span class="pre">ZXEdge</span></code> representing the correlation between logical operators spanning
-in the 3D space. The edges in the span must be between Z/X type nodes.</p>
+<dd><p>A set of <code class="docutils literal notranslate"><span class="pre">ZXEdge</span></code> representing the span of the correlation surface in spacetime, i.e. the movement
+of the logical observable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>frozenset[<a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge">tqec.computation.zx_graph.ZXEdge</a>]</p>
@@ -756,8 +775,9 @@ in the 3D space. The edges in the span must be between Z/X type nodes.</p>
 <dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface.external_stabilizer">
 <span class="sig-name descname"><span class="pre">external_stabilizer</span></span><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface.external_stabilizer" title="Link to this definition">#</a></dt>
 <dd><p>A mapping from the port label to the Pauli operator at the port, which
-represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer
-is neglected.</p>
+represents the boundary nodes of the spacetime stabilizer. Sign of the stabilizer is neglected.
+If the ZX graph is closed, i.e. there is no open port, the stabilizer is terminated with the
+initialization or measurements so has no external stabilizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict[str, str]</p>
@@ -772,10 +792,7 @@ is neglected.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface.from_span" title="tqec.computation.correlation.CorrelationSurface.from_span"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_span</span></code></a>(zx_graph, span)</p></td>
-<td><p>Construct a correlation surface from the correlation span.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface.get_correlation_types" title="tqec.computation.correlation.CorrelationSurface.get_correlation_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_correlation_types</span></code></a>(span)</p></td>
-<td><p>Get the correlation types at the nodes in the correlation span.</p></td>
+<td><p>Construct a correlation surface from the set of edges representing the span of the correlation surface.</p></td>
 </tr>
 </tbody>
 </table>
@@ -784,10 +801,10 @@ is neglected.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_single_node</span></code></p></td>
-<td><p>Return True if the correlation surface contains only one node.</p></td>
+<td><p>Whether the correlation surface contains only a single node.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_correlation_types</span></code></p></td>
-<td><p>Return a mapping from the position of the node to the correlation type supported at the node.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">observables_at_nodes</span></code></p></td>
+<td><p>A mapping from the position of the node to the logical observable type that the node supports in the correlation surface.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface.span" title="tqec.computation.correlation.CorrelationSurface.span"><code class="xref py py-obj docutils literal notranslate"><span class="pre">span</span></code></a></p></td>
 <td><p></p></td>
@@ -810,18 +827,19 @@ is neglected.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface.from_span">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_span</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zx_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tqec.computation.zx_graph.ZXGraph.html#tqec.computation.zx_graph.ZXGraph" title="tqec.computation.zx_graph.ZXGraph"><span class="pre">ZXGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge"><span class="pre">ZXEdge</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><span class="pre">CorrelationSurface</span></a></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#CorrelationSurface.from_span"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface.from_span" title="Link to this definition">#</a></dt>
-<dd><p>Construct a correlation surface from the correlation span.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tqec.computation.correlation.CorrelationSurface.get_correlation_types">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_correlation_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.computation.zx_graph.ZXEdge.html#tqec.computation.zx_graph.ZXEdge" title="tqec.computation.zx_graph.ZXEdge"><span class="pre">ZXEdge</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tqec.position.Position3D.html#tqec.position.Position3D" title="tqec.position.Position3D"><span class="pre">Position3D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tqec.computation.zx_graph.ZXKind.html#tqec.computation.zx_graph.ZXKind" title="tqec.computation.zx_graph.ZXKind"><span class="pre">ZXKind</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tqec/computation/correlation.html#CorrelationSurface.get_correlation_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tqec.computation.correlation.CorrelationSurface.get_correlation_types" title="Link to this definition">#</a></dt>
-<dd><p>Get the correlation types at the nodes in the correlation span.</p>
-<p>The correlation type at the node is determined by the
-correlation types of the edges connected to the node. If the
-node is connected to both X and Z type edges, the correlation is
-Y type. If the node is connected to only one type of edge, the
-correlation is Z/X type.</p>
+<dd><p>Construct a correlation surface from the set of edges representing
+the span of the correlation surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zx_graph</strong> – The ZX graph where the correlation surface is extracted.</p></li>
+<li><p><strong>span</strong> – The set of edges representing the span of the correlation surface.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="#tqec.computation.correlation.CorrelationSurface" title="tqec.computation.correlation.CorrelationSurface"><code class="xref py py-class docutils literal notranslate"><span class="pre">CorrelationSurface</span></code></a> object.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -839,12 +857,12 @@ correlation is Z/X type.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="tqec.computation.correlation.find_correlation_surfaces_from_leaf.html"
+       href="tqec.computation.correlation.find_correlation_surfaces.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">tqec.computation.correlation.find_correlation_surfaces_from_leaf</p>
+        <p class="prev-next-title">tqec.computation.correlation.find_correlation_surfaces</p>
       </div>
     </a>
     <a class="right-next"
@@ -881,7 +899,6 @@ correlation is Z/X type.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.correlation.CorrelationSurface.external_stabilizer"><code class="docutils literal notranslate"><span class="pre">CorrelationSurface.external_stabilizer</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.correlation.CorrelationSurface.__init__"><code class="docutils literal notranslate"><span class="pre">CorrelationSurface.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.correlation.CorrelationSurface.from_span"><code class="docutils literal notranslate"><span class="pre">CorrelationSurface.from_span()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tqec.computation.correlation.CorrelationSurface.get_correlation_types"><code class="docutils literal notranslate"><span class="pre">CorrelationSurface.get_correlation_types()</span></code></a></li>
 </ul>
 </li>
 </ul>

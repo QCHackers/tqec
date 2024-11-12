@@ -13,7 +13,6 @@ tqec.computation.correlation.CorrelationSurface
    
       ~CorrelationSurface.__init__
       ~CorrelationSurface.from_span
-      ~CorrelationSurface.get_correlation_types
    
    
 
@@ -24,7 +23,7 @@ tqec.computation.correlation.CorrelationSurface
    .. autosummary::
    
       ~CorrelationSurface.has_single_node
-      ~CorrelationSurface.node_correlation_types
+      ~CorrelationSurface.observables_at_nodes
       ~CorrelationSurface.span
       ~CorrelationSurface.nodes
       ~CorrelationSurface.external_stabilizer
@@ -38,6 +37,5 @@ tqec.computation.correlation.CorrelationSurface
    
    .. automethod:: __init__
    .. automethod:: from_span
-   .. automethod:: get_correlation_types
    
    
