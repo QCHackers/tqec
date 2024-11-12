@@ -11,7 +11,7 @@ def test_correlation_single_xz_node() -> None:
     surface = correlation_surfaces[0]
     assert surface.has_single_node
     assert surface.external_stabilizer == {}
-    assert surface.node_correlation_types == {Position3D(0, 0, 0): ZXKind.Z}
+    assert surface.observables_at_nodes == {Position3D(0, 0, 0): ZXKind.Z}
 
 
 def test_correlation_two_xz_node() -> None:

@@ -119,7 +119,7 @@ def draw_correlation_surface_on(
     span = correlation_surface.span
     if isinstance(span, ZXNode):
         return
-    correlation_types = correlation_surface.node_correlation_types
+    correlation_types = correlation_surface.observables_at_nodes
     processed_edges: set[tuple[Position3D, Position3D]] = set()
     for edge in span:
         positions = (edge.u.position, edge.v.position)

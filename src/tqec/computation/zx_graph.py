@@ -274,10 +274,41 @@ class ZXGraph(ComputationGraph[ZXNode, ZXEdge]):
         return convert_zx_graph_to_block_graph(self, name)
 
     def find_correration_surfaces(self) -> list[CorrelationSurface]:
-        """Find the correlation surfaces in the ZX graph.
+        """Find all the
+        :py:class:`~tqec.computation.correlation.CorrelationSurface` in a ZX
+        graph.
 
-        A recursive depth-first search algorithm is used to find the
-        correlation surfaces starting from each leaf node.
+        Starting from each leaf node in the graph, the function explores how can the X/Z logical observable
+        move through the graph to form a correlation surface:
+
+        - For a X/Z kind leaf node, it can only support the logical observable with the opposite type. Only
+        a single type of logical observable is explored from the leaf node.
+        - For a Y kind leaf node, it can only support the Y logical observable, i.e. the presence of
+        both X and Z logical observable. Both X and Z type logical observable are explored from the leaf node.
+        And the two correlation surfaces are combined to form the Y type correlation surface.
+        - For the port node, it can support any type of logical observable. Both X and Z type logical observable
+        are explored from the port node.
+
+        The function uses a flood fill like recursive algorithm to find the correlation surface in the graph.
+        Firstly, we define two types of nodes in the graph:
+
+        - *broadcast node:* A node that has seen logical observable with basis opposite to its own basis.
+        A logical observable needs to be broadcasted to all the neighbors of the node.
+        - *passthrough node:* A node that has seen logical observable with the same basis as its own basis.
+        A logical observable needs to be only supported on an even number of edges connected to the node.
+
+        The algorithm starts from a set of frontier nodes and greedily expands the correlation
+        surface until no more broadcast nodes are in the frontier. Then it explore the
+        passthrough nodes, and select even number of edges to be included in the surface. If
+        no such selection can be made, the search is pruned. For different choices, the algorithm
+        recursively explores the next frontier until the search is completed. Finally, the branches
+        at different nodes are produced to form the correlation surface.
+
+        Returns:
+            A list of `CorrelationSurface` in the graph.
+
+        Raises:
+            TQECException: If the graph does not contain any leaf node.
         """
         from tqec.computation.correlation import find_correlation_surfaces
 
