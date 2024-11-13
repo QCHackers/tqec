@@ -1,4 +1,3 @@
-sinter
 pymatching
 jupyterlab
 sphinx
