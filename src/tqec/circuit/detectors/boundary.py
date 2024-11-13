@@ -204,9 +204,14 @@ class BoundaryStabilizer:
         Returns:
             the boundary stabilizer coordinates.
         """
-        measurement_coordinates = [
-            qubit_coordinates[source] for source in self.source_qubits
-        ]
+        try:
+            measurement_coordinates = [
+                qubit_coordinates[source] for source in self.source_qubits
+            ]
+        except KeyError as exc:
+            raise TQECException(
+                f"""Qubit index {exc.args[0]} required for detector assignment, but it does not have a valid QUBIT_COORDS statement."""
+            )
         # Avoid returning numpy.float64 type returned by numpy.mean by
         # explicitly calling float() on it.
         return tuple(float(c) for c in numpy.mean(measurement_coordinates, axis=0))
