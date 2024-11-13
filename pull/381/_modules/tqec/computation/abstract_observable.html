@@ -412,7 +412,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="AbstractObservable">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.abstract_observable.AbstractObservable.html#tqec.computation.abstract_observable.AbstractObservable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.AbstractObservable.html#tqec.computation.AbstractObservable">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">AbstractObservable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract description of a logical observable in the</span>
@@ -440,8 +440,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="correlation_surface_to_abstract_observable">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.abstract_observable.correlation_surface_to_abstract_observable.html#tqec.computation.abstract_observable.correlation_surface_to_abstract_observable">[docs]</a>
 <span class="k">def</span> <span class="nf">correlation_surface_to_abstract_observable</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
     <span class="n">correlation_surface</span><span class="p">:</span> <span class="n">CorrelationSurface</span><span class="p">,</span>
@@ -501,8 +499,7 @@ window.addEventListener("load", () => mermaid.run());
                     <span class="n">top_lines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cube</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">bottom_regions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pipe</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">AbstractObservable</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">top_lines</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">bottom_regions</span><span class="p">))</span></div>
-
+    <span class="k">return</span> <span class="n">AbstractObservable</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">top_lines</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">bottom_regions</span><span class="p">))</span>
 </pre></div>
 
                 </article>

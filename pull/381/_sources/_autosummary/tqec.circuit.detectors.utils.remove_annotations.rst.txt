@@ -1,6 +1,0 @@
-tqec.circuit.detectors.utils.remove\_annotations
-================================================
-
-.. currentmodule:: tqec.circuit.detectors.utils
-
-.. autofunction:: remove_annotations

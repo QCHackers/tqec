@@ -1,6 +1,0 @@
-tqec.circuit.schedule.manipulation.remove\_duplicate\_instructions
-==================================================================
-
-.. currentmodule:: tqec.circuit.schedule.manipulation
-
-.. autofunction:: remove_duplicate_instructions

@@ -412,7 +412,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="display_template">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.display.display_template.html#tqec.templates.display.display_template">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.display_template.html#tqec.templates.display_template">[docs]</a>
 <span class="k">def</span> <span class="nf">display_template</span><span class="p">(</span>
     <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">ty</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -431,7 +431,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="display_template_from_instantiation">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.display.display_template_from_instantiation.html#tqec.templates.display.display_template_from_instantiation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.display_template_from_instantiation.html#tqec.templates.display_template_from_instantiation">[docs]</a>
 <span class="k">def</span> <span class="nf">display_template_from_instantiation</span><span class="p">(</span><span class="n">instantiation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display an array representing a template instantiation with ASCII</span>
 <span class="sd">    output.</span>
@@ -444,8 +444,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="get_template_representation_from_instantiation">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.display.get_template_representation_from_instantiation.html#tqec.templates.display.get_template_representation_from_instantiation">[docs]</a>
 <span class="k">def</span> <span class="nf">get_template_representation_from_instantiation</span><span class="p">(</span>
     <span class="n">instantiation</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -455,8 +453,7 @@ window.addEventListener("load", () => mermaid.run());
     <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="n">pad</span><span class="p">)</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">instantiation</span>
-    <span class="p">)</span></div>
-
+    <span class="p">)</span>
 </pre></div>
 
                 </article>

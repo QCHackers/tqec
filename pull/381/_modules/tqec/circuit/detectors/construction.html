@@ -448,7 +448,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="annotate_detectors_automatically">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.construction.annotate_detectors_automatically.html#tqec.circuit.detectors.construction.annotate_detectors_automatically">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.annotate_detectors_automatically.html#tqec.circuit.annotate_detectors_automatically">[docs]</a>
 <span class="k">def</span> <span class="nf">annotate_detectors_automatically</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert detectors into the provided circuit instance.</span>
 
@@ -477,8 +477,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="compile_fragments_to_circuit">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.construction.compile_fragments_to_circuit.html#tqec.circuit.detectors.construction.compile_fragments_to_circuit">[docs]</a>
 <span class="k">def</span> <span class="nf">compile_fragments_to_circuit</span><span class="p">(</span>
     <span class="n">fragments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Fragment</span> <span class="o">|</span> <span class="n">FragmentLoop</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
@@ -490,8 +488,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># isinstance(fragment, FragmentLoop):</span>
             <span class="n">loop_body</span> <span class="o">=</span> <span class="n">compile_fragments_to_circuit</span><span class="p">(</span><span class="n">fragment</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
             <span class="n">circuit</span> <span class="o">+=</span> <span class="n">loop_body</span> <span class="o">*</span> <span class="n">fragment</span><span class="o">.</span><span class="n">repetitions</span>
-    <span class="k">return</span> <span class="n">circuit</span></div>
-
+    <span class="k">return</span> <span class="n">circuit</span>
 
 
 <span class="k">def</span> <span class="nf">_tick_circuit</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
@@ -507,8 +504,6 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="n">circuit</span> <span class="o">+</span> <span class="n">added_circuit</span>
 
 
-<div class="viewcode-block" id="compile_fragments_to_circuit_with_detectors">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.detectors.construction.compile_fragments_to_circuit_with_detectors.html#tqec.circuit.detectors.construction.compile_fragments_to_circuit_with_detectors">[docs]</a>
 <span class="k">def</span> <span class="nf">compile_fragments_to_circuit_with_detectors</span><span class="p">(</span>
     <span class="n">fragments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Fragment</span> <span class="o">|</span> <span class="n">FragmentLoop</span><span class="p">],</span>
     <span class="n">qubit_coords_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
@@ -535,8 +530,7 @@ window.addEventListener("load", () => mermaid.run());
                 <span class="p">)</span>
                 <span class="o">*</span> <span class="n">fragment</span><span class="o">.</span><span class="n">repetitions</span>
             <span class="p">)</span>
-    <span class="k">return</span> <span class="n">circuit</span></div>
-
+    <span class="k">return</span> <span class="n">circuit</span>
 </pre></div>
 
                 </article>

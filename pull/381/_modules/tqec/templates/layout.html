@@ -478,10 +478,10 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="LayoutTemplate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">LayoutTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <div class="viewcode-block" id="LayoutTemplate.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">element_layout</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position2D</span><span class="p">,</span> <span class="n">RectangularTemplate</span><span class="p">],</span>
@@ -532,7 +532,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="LayoutTemplate.get_indices_map_for_instantiation">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.get_indices_map_for_instantiation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.get_indices_map_for_instantiation">[docs]</a>
     <span class="k">def</span> <span class="nf">get_indices_map_for_instantiation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">instantiate_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -605,7 +605,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="p">)</span>
 
 <div class="viewcode-block" id="LayoutTemplate.element_shape">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.element_shape">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.element_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">element_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the uniform shape of the element templates.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_scalable_shape</span><span class="o">.</span><span class="n">to_shape_2d</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
@@ -625,7 +625,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="p">)</span>
 
 <div class="viewcode-block" id="LayoutTemplate.instantiate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.instantiate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -665,7 +665,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="LayoutTemplate.instantiation_origin">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.layout.LayoutTemplate.html#tqec.templates.layout.LayoutTemplate.instantiation_origin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.instantiation_origin">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiation_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position2D</span><span class="p">:</span>
         <span class="n">origin_shift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_shift</span>

@@ -413,7 +413,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="CorrelationSurface">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.CorrelationSurface.html#tqec.computation.CorrelationSurface">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CorrelationSurface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A record of how the logical observable moved through a computation.</span>
@@ -478,7 +478,7 @@ window.addEventListener("load", () => mermaid.run());
             <span class="p">)</span>
 
 <div class="viewcode-block" id="CorrelationSurface.from_span">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.correlation.CorrelationSurface.html#tqec.computation.correlation.CorrelationSurface.from_span">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.CorrelationSurface.html#tqec.computation.CorrelationSurface.from_span">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_span</span><span class="p">(</span><span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">span</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ZXEdge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CorrelationSurface</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a correlation surface from the set of edges representing</span>
@@ -544,7 +544,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="find_correlation_surfaces">
-<a class="viewcode-back" href="../../../_autosummary/tqec.computation.correlation.find_correlation_surfaces.html#tqec.computation.correlation.find_correlation_surfaces">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.computation.find_correlation_surfaces.html#tqec.computation.find_correlation_surfaces">[docs]</a>
 <span class="k">def</span> <span class="nf">find_correlation_surfaces</span><span class="p">(</span>
     <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]:</span>

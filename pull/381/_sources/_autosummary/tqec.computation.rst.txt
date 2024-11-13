@@ -1,5 +1,7 @@
-tqec.computation
-================
+﻿computation
+===========
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.computation
 
@@ -9,45 +11,44 @@ tqec.computation
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      convert_block_graph_to_zx_graph
+      convert_zx_graph_to_block_graph
+      draw_correlation_surface_on
+      draw_zx_graph_on
+      find_correlation_surfaces
+      plot_zx_graph
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      AbstractObservable
+      BlockGraph
+      CorrelationSurface
+      Cube
+      CubeKind
+      Pipe
+      PipeKind
+      Port
+      YCube
+      ZXCube
+      ZXEdge
+      ZXGraph
+      ZXKind
+      ZXNode
+   
    
 
    
    
    
-
-   
-   
-   
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   abstract_observable
-
-
-   block_graph
-
-
-   conversion
-
-
-   correlation
-
-
-   cube
-
-
-   pipe
-
-
-   zx_graph
-
-
-   zx_plot
-

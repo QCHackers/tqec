@@ -1,6 +1,0 @@
-tqec.circuit.detectors.match.match\_detectors\_from\_flows\_shallow
-===================================================================
-
-.. currentmodule:: tqec.circuit.detectors.match
-
-.. autofunction:: match_detectors_from_flows_shallow

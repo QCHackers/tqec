@@ -1,5 +1,7 @@
-tqec.exceptions
-===============
+﻿exceptions
+==========
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.exceptions
 
@@ -26,6 +28,3 @@ tqec.exceptions
       TQECWarning
    
    
-
-
-

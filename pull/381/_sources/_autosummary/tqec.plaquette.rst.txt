@@ -1,5 +1,7 @@
-tqec.plaquette
-==============
+﻿plaquette
+=========
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.plaquette
 
@@ -13,29 +15,24 @@ tqec.plaquette
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      FrozenDefaultDict
+      MeasurementBasis
+      Plaquette
+      PlaquetteOrientation
+      PlaquetteQubits
+      PlaquetteSide
+      Plaquettes
+      RepeatedPlaquettes
+      ResetBasis
+      SquarePlaquetteQubits
+   
    
 
    
    
    
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   enums
-
-   frozendefaultdict
-
-   library
-
-   plaquette
-
-   qubit
-
-

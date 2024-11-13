@@ -523,13 +523,9 @@ window.addEventListener("load", () => mermaid.run());
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="NoiseRule">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule">[docs]</a>
 <span class="k">class</span> <span class="nc">NoiseRule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes how to add noise to an operation.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="NoiseRule.__init__">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">after</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">flip_result</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -549,11 +545,8 @@ window.addEventListener("load", () => mermaid.run());
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;not (0 &lt;= </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2"> &lt;= 1) from </span><span class="si">{</span><span class="n">after</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">after</span> <span class="o">=</span> <span class="n">after</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flip_result</span> <span class="o">=</span> <span class="n">flip_result</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flip_result</span> <span class="o">=</span> <span class="n">flip_result</span>
 
-
-<div class="viewcode-block" id="NoiseRule.append_noisy_version_of">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseRule.html#tqec.noise_model.NoiseRule.append_noisy_version_of">[docs]</a>
     <span class="k">def</span> <span class="nf">append_noisy_version_of</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -581,16 +574,14 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">out_during_moment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split_op</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
         <span class="n">raw_targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">is_combiner</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">after_moments</span><span class="p">[(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">arg</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">raw_targets</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span></div>
-</div>
-
+            <span class="n">after_moments</span><span class="p">[(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">arg</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">raw_targets</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="NoiseModel">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.NoiseModel.html#tqec.NoiseModel">[docs]</a>
 <span class="k">class</span> <span class="nc">NoiseModel</span><span class="p">:</span>
 <div class="viewcode-block" id="NoiseModel.__init__">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.__init__">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.NoiseModel.html#tqec.NoiseModel.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">idle_depolarization</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -611,7 +602,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="NoiseModel.si1000">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.si1000">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.NoiseModel.html#tqec.NoiseModel.si1000">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">si1000</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NoiseModel&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Superconducting inspired noise.</span>
@@ -636,7 +627,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="NoiseModel.uniform_depolarizing">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.uniform_depolarizing">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.NoiseModel.html#tqec.NoiseModel.uniform_depolarizing">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">uniform_depolarizing</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NoiseModel&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Near-standard circuit depolarizing noise.</span>
@@ -779,7 +770,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="p">)</span>
 
 <div class="viewcode-block" id="NoiseModel.noisy_circuit">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.NoiseModel.html#tqec.noise_model.NoiseModel.noisy_circuit">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.NoiseModel.html#tqec.NoiseModel.noisy_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">noisy_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span>
@@ -840,8 +831,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="occurs_in_classical_control_system">
-<a class="viewcode-back" href="../../_autosummary/tqec.noise_model.occurs_in_classical_control_system.html#tqec.noise_model.occurs_in_classical_control_system">[docs]</a>
 <span class="k">def</span> <span class="nf">occurs_in_classical_control_system</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines if an operation is an annotation or a classical control</span>
 <span class="sd">    system update.&quot;&quot;&quot;</span>
@@ -858,8 +847,7 @@ window.addEventListener("load", () => mermaid.run());
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">classical_0</span> <span class="ow">or</span> <span class="n">classical_1</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span></div>
-
+    <span class="k">return</span> <span class="kc">False</span>
 
 
 <span class="k">def</span> <span class="nf">_split_targets_if_needed</span><span class="p">(</span>

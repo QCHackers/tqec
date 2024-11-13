@@ -426,10 +426,10 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduledCircuit</span><span class="p">:</span>
 <div class="viewcode-block" id="ScheduledCircuit.__init__">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">moments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Moment</span><span class="p">],</span>
@@ -494,7 +494,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.empty">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.empty">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.empty">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">empty</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an empty :class:`ScheduledCircuit` instance.&quot;&quot;&quot;</span>
@@ -502,7 +502,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.from_circuit">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.from_circuit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.from_circuit">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_circuit</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">,</span>
@@ -575,14 +575,14 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schedule</span>
 
 <div class="viewcode-block" id="ScheduledCircuit.get_qubit_coords_definition_preamble">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble">[docs]</a>
     <span class="k">def</span> <span class="nf">get_qubit_coords_definition_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a circuit with only ``QUBIT_COORDS`` instructions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qubit_map</span><span class="o">.</span><span class="n">to_circuit</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ScheduledCircuit.get_circuit">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.get_circuit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.get_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">get_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_qubit_coords</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stim</span><span class="o">.</span><span class="n">Circuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and return the ``stim.Circuit`` instance represented by</span>
 <span class="sd">        ``self``.</span>
@@ -616,7 +616,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.get_repeated_circuit">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.get_repeated_circuit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.get_repeated_circuit">[docs]</a>
     <span class="k">def</span> <span class="nf">get_repeated_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -669,7 +669,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.map_qubit_indices">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.map_qubit_indices">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.map_qubit_indices">[docs]</a>
     <span class="k">def</span> <span class="nf">map_qubit_indices</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">qubit_index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
@@ -714,7 +714,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.map_to_qubits">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.map_to_qubits">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.map_to_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">map_to_qubits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">qubit_map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">GridQubit</span><span class="p">],</span> <span class="n">GridQubit</span><span class="p">],</span>
@@ -817,7 +817,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="n">moment_index</span>
 
 <div class="viewcode-block" id="ScheduledCircuit.moment_at_schedule">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.moment_at_schedule">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.moment_at_schedule">[docs]</a>
     <span class="k">def</span> <span class="nf">moment_at_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Moment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the :class:`~tqec.circuit.moment.Moment` instance scheduled at</span>
 <span class="sd">        the provided schedule.</span>
@@ -841,7 +841,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.append_new_moment">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.append_new_moment">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.append_new_moment">[docs]</a>
     <span class="k">def</span> <span class="nf">append_new_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Schedule the provided :class:`~tqec.circuit.moment.Moment` instance</span>
 <span class="sd">        at the end of the circuit. The new schedule will be the last schedule</span>
@@ -861,7 +861,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.add_to_schedule_index">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.add_to_schedule_index">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.add_to_schedule_index">[docs]</a>
     <span class="k">def</span> <span class="nf">add_to_schedule_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schedule</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">moment</span><span class="p">:</span> <span class="n">Moment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the operations contained in the provided ``moment`` to the</span>
 <span class="sd">        provided schedule.</span>
@@ -888,7 +888,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.append_observable">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.append_observable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.append_observable">[docs]</a>
     <span class="k">def</span> <span class="nf">append_observable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">GateTarget</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an ``OBSERVABLE_INCLUDE`` instruction to the last moment.</span>
 
@@ -902,7 +902,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="ScheduledCircuit.append_annotation">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.append_annotation">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.append_annotation">[docs]</a>
     <span class="k">def</span> <span class="nf">append_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Append an annotation to the last moment.</span>
 
@@ -927,7 +927,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">num_measurements</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moments</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ScheduledCircuit.filter_by_qubits">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.circuit.ScheduledCircuit.html#tqec.circuit.schedule.circuit.ScheduledCircuit.filter_by_qubits">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.filter_by_qubits">[docs]</a>
     <span class="k">def</span> <span class="nf">filter_by_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubits_to_keep</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the circuit to keep only the instructions that are applied on</span>
 <span class="sd">        the provided qubits. If an instruction is applied on a qubit that is</span>

@@ -419,7 +419,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="Template">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template">[docs]</a>
 <span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all the templates.</span>
 
@@ -429,7 +429,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Template.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_increments</span><span class="p">:</span> <span class="n">Displacement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct an instance of the template.</span>
 
@@ -442,7 +442,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="Template.instantiate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.instantiate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.instantiate">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -462,7 +462,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="Template.shape">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.shape">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.shape">[docs]</a>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Shape2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current template shape.&quot;&quot;&quot;</span>
         <span class="n">sshape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalable_shape</span>
@@ -475,7 +475,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Template.get_midline_plaquettes">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.get_midline_plaquettes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.get_midline_plaquettes">[docs]</a>
     <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
@@ -519,7 +519,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Template.get_increments">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.get_increments">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.get_increments">[docs]</a>
     <span class="k">def</span> <span class="nf">get_increments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Displacement</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the default increments of the template.</span>
 
@@ -530,7 +530,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="Template.get_spatially_distinct_subtemplates">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.get_spatially_distinct_subtemplates">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.get_spatially_distinct_subtemplates">[docs]</a>
     <span class="k">def</span> <span class="nf">get_spatially_distinct_subtemplates</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">manhattan_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">avoid_zero_plaquettes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UniqueSubTemplates</span><span class="p">:</span>
@@ -563,7 +563,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="Template.instantiation_origin">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.Template.html#tqec.templates.base.Template.instantiation_origin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.Template.html#tqec.templates.Template.instantiation_origin">[docs]</a>
     <span class="k">def</span> <span class="nf">instantiation_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Coordinates of the top-left entry origin.</span>
 
@@ -592,13 +592,9 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="RectangularTemplate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">RectangularTemplate</span><span class="p">(</span><span class="n">Template</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all the templates that have a rectangular shape.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RectangularTemplate.get_midline_plaquettes">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.base.RectangularTemplate.html#tqec.templates.base.RectangularTemplate.get_midline_plaquettes">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">get_midline_plaquettes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">TemplateOrientation</span> <span class="o">=</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">HORIZONTAL</span>
@@ -613,9 +609,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">midline</span> <span class="o">=</span> <span class="n">midline_shape</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">TemplateOrientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">midline</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span></div>
-</div>
-
+        <span class="k">return</span> <span class="p">[(</span><span class="n">midline</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration_shape</span><span class="p">)]</span>
 </pre></div>
 
                 </article>

@@ -538,8 +538,6 @@ window.addEventListener("load", () => mermaid.run());
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_sort_key</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="remove_duplicate_instructions">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.remove_duplicate_instructions.html#tqec.circuit.schedule.manipulation.remove_duplicate_instructions">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_duplicate_instructions</span><span class="p">(</span>
     <span class="n">instructions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">],</span>
     <span class="n">mergeable_instruction_names</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -612,12 +610,11 @@ window.addEventListener("load", () => mermaid.run());
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">circuit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">TQECWarning</span><span class="p">,</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">final_operations</span></div>
-
+    <span class="k">return</span> <span class="n">final_operations</span>
 
 
 <div class="viewcode-block" id="merge_scheduled_circuits">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.merge_scheduled_circuits.html#tqec.circuit.merge_scheduled_circuits">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_scheduled_circuits</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
     <span class="n">global_qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span><span class="p">,</span>
@@ -679,8 +676,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="relabel_circuits_qubit_indices">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices.html#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices">[docs]</a>
 <span class="k">def</span> <span class="nf">relabel_circuits_qubit_indices</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span> <span class="n">QubitMap</span><span class="p">]:</span>
@@ -735,8 +730,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="n">relabeled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">global_qubit_map</span></div>
-
+    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">global_qubit_map</span>
 </pre></div>
 
                 </article>

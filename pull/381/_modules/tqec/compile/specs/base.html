@@ -413,7 +413,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="CubeSpec">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.CubeSpec.html#tqec.compile.specs.base.CubeSpec">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.CubeSpec.html#tqec.compile.CubeSpec">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CubeSpec</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Specification of a cube in a block graph.</span>
@@ -448,7 +448,7 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spatial_junction</span>
 
 <div class="viewcode-block" id="CubeSpec.from_cube">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.CubeSpec.html#tqec.compile.specs.base.CubeSpec.from_cube">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.CubeSpec.html#tqec.compile.CubeSpec.from_cube">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_cube</span><span class="p">(</span><span class="n">cube</span><span class="p">:</span> <span class="n">Cube</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CubeSpec</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the cube spec from a cube in a block graph.&quot;&quot;&quot;</span>
@@ -465,7 +465,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="BlockBuilder">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.BlockBuilder.html#tqec.compile.specs.base.BlockBuilder">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.BlockBuilder.html#tqec.compile.BlockBuilder">[docs]</a>
 <span class="k">class</span> <span class="nc">BlockBuilder</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol for building a `CompiledBlock` based on a `CubeSpec`.&quot;&quot;&quot;</span>
 
@@ -483,7 +483,7 @@ window.addEventListener("load", () => mermaid.run());
 
 
 <div class="viewcode-block" id="PipeSpec">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.PipeSpec.html#tqec.compile.specs.base.PipeSpec">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.PipeSpec.html#tqec.compile.PipeSpec">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PipeSpec</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Specification of a pipe in a block graph.</span>
@@ -507,8 +507,6 @@ window.addEventListener("load", () => mermaid.run());
 
 
 
-<div class="viewcode-block" id="Substitution">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.Substitution.html#tqec.compile.specs.base.Substitution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Substitution</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collection of plaquettes categorized by the layer index.</span>
@@ -529,12 +527,11 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">src</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">]</span>
-    <span class="n">dst</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">]</span></div>
-
+    <span class="n">dst</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="SubstitutionBuilder">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.specs.base.SubstitutionBuilder.html#tqec.compile.specs.base.SubstitutionBuilder">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.compile.SubstitutionBuilder.html#tqec.compile.SubstitutionBuilder">[docs]</a>
 <span class="k">class</span> <span class="nc">SubstitutionBuilder</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol for building the `Substitution` based on a `PipeSpec`.&quot;&quot;&quot;</span>
 

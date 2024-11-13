@@ -1,6 +1,0 @@
-tqec.circuit.detectors.predicates.has\_well\_defined\_moments
-=============================================================
-
-.. currentmodule:: tqec.circuit.detectors.predicates
-
-.. autofunction:: has_well_defined_moments

@@ -1,5 +1,7 @@
-tqec.simulation
-===============
+﻿simulation
+==========
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.simulation
 
@@ -9,6 +11,14 @@ tqec.simulation
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      plot_observable_as_inset
+      start_simulation_using_sinter
+   
    
 
    
@@ -18,19 +28,3 @@ tqec.simulation
    
    
    
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   generation
-
-   plotting
-
-   simulation
-
