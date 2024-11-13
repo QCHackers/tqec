@@ -65,7 +65,7 @@ source_suffix = {
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-maximum_signature_line_length
 # maximum_signature_line_length = 150
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-add_module_names
-add_module_names = False
+# add_module_names = False
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -139,6 +139,7 @@ autoclass_content = "both"
 autodoc_default_options = {
     "show-inheritance": True,
 }
+autodoc_typehints = "description"
 
 # Automatically execute and import some notebooks in the documentation.
 
@@ -165,3 +166,4 @@ nbsphinx_thumbnails = {
 
 autosummary_generate = True
 autosummary_generate_overwrite = True
+autosummary_imported_members = True

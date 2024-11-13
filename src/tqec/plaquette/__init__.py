@@ -11,8 +11,7 @@ the qubits a plaquette is applied to and perform some operations on them (e.g.,
 get the qubits on a specific side of the plaquette).
 """
 
-from .plaquette import Plaquette
-from .qubit import (
-    PlaquetteQubits,
-    SquarePlaquetteQubits,
-)
+from .enums import PlaquetteOrientation, PlaquetteSide, ResetBasis, MeasurementBasis
+from .plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
+from .qubit import PlaquetteQubits, SquarePlaquetteQubits
+from .frozendefaultdict import FrozenDefaultDict

@@ -1,4 +1,15 @@
 from ._version import __version__
+
+from . import circuit
+from . import compile
+from . import computation
+from . import exceptions
+from . import gallery
+from . import simulation
+from . import templates
+from . import plaquette
+
+
 from .circuit import (
     ScheduledCircuit,
     ScheduleException,

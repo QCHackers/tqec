@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import typing as ty
 from dataclasses import dataclass
-from fractions import Fraction
 
 from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteSide

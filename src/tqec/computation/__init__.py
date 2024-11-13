@@ -12,7 +12,11 @@ computation:
   representation of a surface code logical computation.
 """
 
-from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
-from tqec.computation.cube import Cube, CubeKind, ZXCube, Port, YCube
-from tqec.computation.pipe import Pipe, PipeKind
-from tqec.computation.block_graph import BlockGraph
+from .zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
+from .cube import Cube, CubeKind, ZXCube, Port, YCube
+from .pipe import Pipe, PipeKind
+from .block_graph import BlockGraph
+from .abstract_observable import AbstractObservable
+from .conversion import convert_block_graph_to_zx_graph, convert_zx_graph_to_block_graph
+from .correlation import CorrelationSurface, find_correlation_surfaces
+from .zx_plot import plot_zx_graph, draw_zx_graph_on, draw_correlation_surface_on

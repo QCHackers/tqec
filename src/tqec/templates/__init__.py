@@ -149,3 +149,7 @@ observed above.
 """
 
 from .base import Template
+from .display import display_template, display_template_from_instantiation
+from .enums import TemplateOrientation
+from .layout import LayoutTemplate
+from .qubit import QubitTemplate
