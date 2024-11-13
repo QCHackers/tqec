@@ -1,6 +1,0 @@
-plot\_zx\_graph
-===============
-
-.. currentmodule:: tqec.computation
-
-.. autofunction:: plot_zx_graph
