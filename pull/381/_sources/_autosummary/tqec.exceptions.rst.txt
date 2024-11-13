@@ -1,0 +1,30 @@
+﻿exceptions
+==========
+
+.. currentmodule:: tqec
+
+.. automodule:: tqec.exceptions
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      TQECException
+      TQECWarning
+   
+   

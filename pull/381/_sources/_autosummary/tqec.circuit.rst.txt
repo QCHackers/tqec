@@ -1,0 +1,45 @@
+﻿circuit
+=======
+
+.. currentmodule:: tqec
+
+.. automodule:: tqec.circuit
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      annotate_detectors_automatically
+      generate_circuit
+      merge_scheduled_circuits
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      ScheduledCircuit
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      ScheduleException
+   
+   
