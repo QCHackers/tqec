@@ -201,6 +201,10 @@ class BoundaryStabilizer:
         Args:
             qubit_coordinates: mapping from qubit indices to coordinates
 
+        Raises:
+            TQECException: If a qubit in self.source_qubits is not contained
+            in the qubit_coordinates mapping.
+
         Returns:
             the boundary stabilizer coordinates.
         """
