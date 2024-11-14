@@ -6,15 +6,15 @@ should be implemented by subclasses implementing different templates.
 Terminology used
 ================
 
-The "template" terminology is used to describe an object (instance of a subclass
+The **template** terminology is used to describe an object (instance of a subclass
 of the :py:class:`~tqec.templates.base.Template` class) that can be
 "instantiated" into an array of integers from an input integer scaling parameter
 :math:`k`.
 
-A subtemplate is a constant-size sub-array of a template instantiation. For the
+A **subtemplate** is a constant-size sub-array of a template instantiation. For the
 moment, a subtemplate is always a square sub-array with odd-sized sides.
 
-The scaling parameter :math:`k` directly relates to the code distance :math:`d`
+The **scaling parameter** :math:`k` directly relates to the code distance :math:`d`
 (at least for regular surface code) where :math:`d = 2 k + 1`.
 
 Templates

@@ -1,13 +1,13 @@
 API Reference
 =============
 
-This section documents the API of the ``tqec`` package.
+This section documents the API of the :mod:`tqec` package.
 
 Modules
 ------------------
 
 A list of structural modules in the package. Some of the functions and classes in the submodules are imported
-into the ``tqec`` namespace and can be accessed at the top level.
+into the :mod:`tqec` namespace and can be accessed at the top level.
 
 .. currentmodule:: tqec
 
@@ -29,7 +29,7 @@ into the ``tqec`` namespace and can be accessed at the top level.
 Others
 ------
 
-Some other objects that can be accessed from the top level.
+Some other objects that can be accessed from the top level module.
 
 
 .. autosummary::
