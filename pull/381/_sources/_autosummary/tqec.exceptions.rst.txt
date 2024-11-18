@@ -1,5 +1,5 @@
-﻿exceptions
-==========
+﻿tqec.exceptions
+===============
 
 .. currentmodule:: tqec
 

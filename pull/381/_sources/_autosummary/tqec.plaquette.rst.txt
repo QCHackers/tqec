@@ -1,5 +1,5 @@
-﻿plaquette
-=========
+﻿tqec.plaquette
+==============
 
 .. currentmodule:: tqec
 
