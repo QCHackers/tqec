@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How to install tqec &#8212; TQEC  documentation</title>
+    <title>Current known limitations &#8212; TQEC  documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/installation';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/current_limitations';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Quick start using tqec" href="quick_start.html" />
-    <link rel="prev" title="User Guide" href="index.html" />
+    <link rel="next" title="COLLADA Interoperability" href="collada_interop.html" />
+    <link rel="prev" title="Terms used in tqec and their definition" href="terminology.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -351,11 +351,11 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Get started</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_sketchup.html">Using SketchUp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="current_limitations.html">Current limitations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Current limitations</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
@@ -402,7 +402,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">How to install <code class="docutils literal notranslate"><span class="pre">tqec</span></code></span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Current known limitations</span></li>
   </ul>
 </nav>
 </div>
@@ -419,67 +419,34 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="how-to-install-tqec">
-<h1>How to install <code class="docutils literal notranslate"><span class="pre">tqec</span></code><a class="headerlink" href="#how-to-install-tqec" title="Link to this heading">#</a></h1>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
-<section id="python-version">
-<h3>Python version<a class="headerlink" href="#python-version" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package only supports Python 3.10 and later. If you have Python 3.9 or earlier,
-please update your Python installation.</p>
-</section>
-<section id="additional-toolchains">
-<h3>Additional toolchains<a class="headerlink" href="#additional-toolchains" title="Link to this heading">#</a></h3>
-<p>Some of the dependencies of <code class="docutils literal notranslate"><span class="pre">tqec</span></code> are implemented using compiled languages. This is for
-example the case of the <a class="reference external" href="https://pypi.org/project/pycryptosat/">pycryptosat</a> dependency.
-Pre-compiled Python packages that should be compatible with any GNU/Linux are provided
-by the author, but no pre-compiled package exist for Windows or MacOS.</p>
-<p>This means that if you try to install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package on Windows or MacOS, a working
-C++ toolchain should also be installed on your system.</p>
-<p>Here are some potential issues you might encounter and their solutions:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/tqec/tqec/issues/311">Failed building wheel for pycryptosat</a></p></li>
-</ul>
-</section>
-</section>
-<section id="installation-procedure">
-<h2>Installation procedure<a class="headerlink" href="#installation-procedure" title="Link to this heading">#</a></h2>
-<section id="optional-create-a-new-environment">
-<h3>(optional) Create a new environment<a class="headerlink" href="#optional-create-a-new-environment" title="Link to this heading">#</a></h3>
-<p>It is a good practice to create a new virtual environment for mananging the dependencies of the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package.</p>
-<p>One way of doing that is using the native <code class="docutils literal notranslate"><span class="pre">venv</span></code> package of your python installation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-<span class="c1"># On GNU/Linux and MacOS</span>
-<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-<span class="c1"># On Windows</span>
-<span class="c1">## In cmd.exe</span>
-.venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
-<span class="c1">## In PowerShell</span>
-.venv<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
-</pre></div>
+  <section id="current-known-limitations">
+<h1>Current known limitations<a class="headerlink" href="#current-known-limitations" title="Link to this heading">#</a></h1>
+<p>This page lists all the known limitations of the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We aim at making this page as exhaustive as possible, but it will never be 100% exhaustive.
+If you think that this page is missing an important entry, please
+<a class="reference external" href="https://github.com/tqec/tqec/issues/new/choose">raise an issue</a> to let us know.</p>
 </div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If any of the feature discussed below is important to you, please let us know!
+We will try to prioritize depending on community feedback. If you do not want to wait,
+please have a look at the <a class="reference internal" href="../contributor_guide.html"><span class="doc">How to contribute</span></a> and open a pull request.</p>
+</div>
+<section id="spatial-junctions">
+<h2>Spatial junctions<a class="headerlink" href="#spatial-junctions" title="Link to this heading">#</a></h2>
+<p>A spatial junction is any cube that has at least 2 pipes in the spatial (<code class="docutils literal notranslate"><span class="pre">XY</span></code>) plane.
+These kind of computation require special handling that is not currently implemented.</p>
 </section>
-<section id="install-the-tqec-package">
-<h3>Install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package<a class="headerlink" href="#install-the-tqec-package" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package is a regular Python package that can be installed using <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p>
-<p>It is not (yet) available on the official Python Package Index PyPI, so you will have
-to manually provide the URL to install the package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/tqec/tqec.git
-</pre></div>
-</div>
-<p>And that’s it! You can test the installation by running</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import tqec&quot;</span>
-</pre></div>
-</div>
-<p>If the installation succeeded, the command should return without any message displayed.
-Else, a message like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">ModuleNotFoundError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="s1">&#39;tqec&#39;</span>
-</pre></div>
-</div>
-<p>should appear.</p>
+<section id="y-basis-measurements">
+<h2><code class="docutils literal notranslate"><span class="pre">Y</span></code>-basis measurements<a class="headerlink" href="#y-basis-measurements" title="Link to this heading">#</a></h2>
 </section>
+<section id="walking-codes">
+<h2>Walking codes<a class="headerlink" href="#walking-codes" title="Link to this heading">#</a></h2>
+</section>
+<section id="transversal-hadamard-gates-for-surface-code">
+<h2>Transversal Hadamard gates for surface code<a class="headerlink" href="#transversal-hadamard-gates-for-surface-code" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -494,20 +461,20 @@ Else, a message like</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="terminology.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">User Guide</p>
+        <p class="prev-next-title">Terms used in <code class="docutils literal notranslate"><span class="pre">tqec</span></code> and their definition</p>
       </div>
     </a>
     <a class="right-next"
-       href="quick_start.html"
+       href="collada_interop.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Quick start using <code class="docutils literal notranslate"><span class="pre">tqec</span></code></p>
+        <p class="prev-next-title">COLLADA Interoperability</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -530,23 +497,17 @@ Else, a message like</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version">Python version</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-toolchains">Additional toolchains</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-procedure">Installation procedure</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-create-a-new-environment">(optional) Create a new environment</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-tqec-package">Install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-junctions">Spatial junctions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#y-basis-measurements"><code class="docutils literal notranslate"><span class="pre">Y</span></code>-basis measurements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#walking-codes">Walking codes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transversal-hadamard-gates-for-surface-code">Transversal Hadamard gates for surface code</a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/user_guide/installation.rst.txt">
+    <a href="../_sources/user_guide/current_limitations.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
