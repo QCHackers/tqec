@@ -7,7 +7,9 @@ User Guide
 
    Installation <installation>
    Quick start <quick_start>
-
+   Using SketchUp <using_sketchup>
+   Terminology <terminology>
+   Current limitations <current_limitations>
 
 .. toctree::
    :maxdepth: 1
