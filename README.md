@@ -15,7 +15,7 @@ These blocks can then be combined to construct large-scale logical computations,
 
 ## Documentation
 
-Documentation is available at <https://qchackers.github.io/tqec/>
+Documentation is available at <https://tqec.github.io/tqec/index.html>
 
 ## Installation
 
