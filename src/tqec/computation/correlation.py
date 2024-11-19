@@ -14,7 +14,8 @@ from tqec.position import Position3D
 
 @dataclass(frozen=True)
 class CorrelationSurface:
-    """Parity correlation between logical operators at different spacetime locations in a computation.
+    """Parity correlation between logical operators at different spacetime
+    locations in a computation.
 
     A correlation surface in a computation is a set of measurements whose values determine the parity
     of the logical operators at the inputs and outputs associated with the surface.
