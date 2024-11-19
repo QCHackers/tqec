@@ -416,49 +416,37 @@ window.addEventListener("load", () => mermaid.run());
 <a class="viewcode-back" href="../../../_autosummary/tqec.computation.CorrelationSurface.html#tqec.computation.CorrelationSurface">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CorrelationSurface</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A record of how the logical observable moved through a computation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parity correlation between logical operators at different spacetime locations in a computation.</span>
 
-<span class="sd">    A correlation surface of a computation has close correspondence to the *spacetime stabilizer*</span>
-<span class="sd">    in the ZX graph. A spacetime stabilizer is a Pauli product observable spread over space and</span>
-<span class="sd">    time that when applied to the state of the computation, the state is unchanged. In the ZX</span>
-<span class="sd">    graph, a spacetime stabilizer can be represented by a set of boundary nodes representing the</span>
-<span class="sd">    Pauli operators and a set of edges representing the interior of the stabilizer.</span>
+<span class="sd">    A correlation surface in a computation is a set of measurements whose values determine the parity</span>
+<span class="sd">    of the logical operators at the inputs and outputs associated with the surface.</span>
 
-<span class="sd">    A logical observable can be moved by multiplying the spacetime stabilizers. For surface</span>
-<span class="sd">    code, the logical operator is a 1D line. It forms a 2D surface when moving through spacetime,</span>
-<span class="sd">    i.e the correlation surface.</span>
+<span class="sd">    Here we represent the correlation surface in terms of the ZX graph. The insight is that the spiders</span>
+<span class="sd">    pose parity constraints on the operators supported on the incident edges. The flow of the logical</span>
+<span class="sd">    operators through the ZX graph, respecting the parity constraints, forms the correlation between the</span>
+<span class="sd">    inputs and outputs. However, the sign of measurement outcomes is neglected in this representation.</span>
+<span class="sd">    And we need to recover the measurements when instantiating an explicit logical observable from the</span>
+<span class="sd">    correlation surface.</span>
 
-<span class="sd">    .. note::</span>
-<span class="sd">        For more information about spacetime stabilizers, correlation surface, and their relationship,</span>
-<span class="sd">        see `this talk &lt;https://www.youtube.com/watch?v=1ojXEEm_JiI&amp;t=4673s&gt;`_ by Craig Gidney.</span>
+<span class="sd">    More specifically, we represent the correlation surface by the set edges it spans in the ZX graph.</span>
+<span class="sd">    Each edge establishes a correlation between the logical operators at the two ends of the edge. For</span>
+<span class="sd">    example, an edge connecting two Z nodes represents the correlation between the logical Z operators</span>
+<span class="sd">    at the two nodes. There is also a special kind of correlation surface that has no interior edges but</span>
+<span class="sd">    represented by a single node. It can be seen as applying spider fusion rule to a single edge ZX graph,</span>
+<span class="sd">    which results in a correlation surface totally compressed in a single node.</span>
 
-<span class="sd">    Based on the above relationship, we use the term *correlation surface* and *spacetime stabilizer*</span>
-<span class="sd">    interchangeably. We represent the correlation surface by the set of interior edges of the spacetime</span>
-<span class="sd">    stabilizer in the ZX graph. Each edge can be seen as a decomposed spacetime stabilizer which has</span>
-<span class="sd">    Pauli operator specified by the node kinds at the two ends of the edge. For example, an edge</span>
-<span class="sd">    connecting two X nodes represents a local ``XX`` spacetime stabilizer. There is also a special kind of</span>
-<span class="sd">    correlation surface that has no interior edges but represented by a single node. It can be seen as</span>
-<span class="sd">    applying spider fusion rule to a single edge ZX graph, which results in a correlation surface totally</span>
-<span class="sd">    compressed in a single node.</span>
-
-<span class="sd">    Additionally, we represent the boundary nodes of the spacetime stabilizer by :py:attr:`~tqec.computation.correlation.CorrelationSurface.external_stabilizer`,</span>
-<span class="sd">    which is a mapping from the input/output labels to the Pauli operator at the port. If the ZX graph is closed,</span>
-<span class="sd">    i.e. there is no open port, that means that the stabilizer is terminated with the initialization or</span>
-<span class="sd">    measurements so has no external stabilizer.</span>
-
+<span class="sd">    Additionally, the input/output logical operators at the boundary of the correlation surface are</span>
+<span class="sd">    represented as a mapping from the the input/output labels to the logical operator type there.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        nodes: A set of ``ZXNode`` representing the nodes appeared in the correlation surface. The kind of</span>
-<span class="sd">            the node is determined by which type of logical observable the node supports in the</span>
-<span class="sd">            correlation surface. For example, if either a logical X observable or Z observable has been</span>
-<span class="sd">            moved through the node position, then the node is of X or Z kind. If both X and Z observable</span>
-<span class="sd">            have been moved through the node position, the node is of Y kind.</span>
-<span class="sd">        span: A set of ``ZXEdge`` representing the span of the correlation surface in spacetime, i.e. the movement</span>
-<span class="sd">            of the logical observable.</span>
-<span class="sd">        external_stabilizer: A mapping from the port label to the Pauli operator at the port, which</span>
-<span class="sd">            represents the boundary nodes of the spacetime stabilizer. Sign of the stabilizer is neglected.</span>
-<span class="sd">            If the ZX graph is closed, i.e. there is no open port, the stabilizer is terminated with the</span>
-<span class="sd">            initialization or measurements so has no external stabilizer.</span>
+<span class="sd">        nodes: A set of ``ZXNode`` representing the logical operators appeared in the correlation surface.</span>
+<span class="sd">            For example, if either a logical X operator or Z operator has appeared at this node position in</span>
+<span class="sd">            the span, then the node is of X or Z kind. If both X and Z logical operators have appeared at</span>
+<span class="sd">            this node position in the span, then the node is of Y kind.</span>
+<span class="sd">        span: A set of ``ZXEdge`` representing the span of the correlation surface.</span>
+<span class="sd">        external_stabilizer: A mapping from the port label to the logical operator at the port. Sign of the</span>
+<span class="sd">            stabilizer is neglected. If the correlation surface is closed, i.e. the stabilizer is terminated</span>
+<span class="sd">            with the initialization or measurements, the mapping is empty.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">nodes</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">ZXNode</span><span class="p">]</span>
