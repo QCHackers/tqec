@@ -7,7 +7,7 @@ User Guide
 
    Installation <installation>
    Quick start <quick_start>
-   Using SketchUp <using_sketchup>
+   build_computations.ipynb
    Terminology <terminology>
    Current limitations <current_limitations>
 
