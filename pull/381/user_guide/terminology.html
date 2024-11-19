@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Terms used in tqec and their definition &#8212; TQEC  documentation</title>
+    <title>Terminology &#8212; TQEC  documentation</title>
   
   
   
@@ -42,11 +42,13 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/terminology';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Current known limitations" href="current_limitations.html" />
-    <link rel="prev" title="Build Computations" href="build_computations.html" />
+    <link rel="prev" title="Quick start using tqec" href="quick_start.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -353,12 +355,12 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_computations.html">Build Computations</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="current_limitations.html">Current limitations</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="build_computations.html">Build Computations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="collada_interop.html">COLLADA Interoperability</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="detectors/index.html">Detectors Computation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="detectors/detector_computation.html">How to automatically find detectors?</a></li>
@@ -402,7 +404,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Terms used in <code class="docutils literal notranslate"><span class="pre">tqec</span></code> and their definition</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Terminology</span></li>
   </ul>
 </nav>
 </div>
@@ -419,17 +421,76 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="terms-used-in-tqec-and-their-definition">
-<h1>Terms used in <code class="docutils literal notranslate"><span class="pre">tqec</span></code> and their definition<a class="headerlink" href="#terms-used-in-tqec-and-their-definition" title="Link to this heading">#</a></h1>
-<p>This page aims at defining correctly all the terms used in the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> code base.</p>
-<section id="cube">
-<h2>Cube<a class="headerlink" href="#cube" title="Link to this heading">#</a></h2>
+  <section id="terminology">
+<h1>Terminology<a class="headerlink" href="#terminology" title="Link to this heading">#</a></h1>
+<p>This page provides definitions for some important terms used in the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> codebase.
+Also, we highlight and expand on some concepts that can not fit in the <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>.</p>
+<section id="block">
+<span id="id1"></span><h2>Block<a class="headerlink" href="#block" title="Link to this heading">#</a></h2>
+<p>Represents a block of quantum operations that are local in spacetime.
+The quantum operations within the block are carefully designed to map logical operators in spacetime correctly.
+At the same time, these operations generate syndrome information that protects the logical data, ensuring fault tolerance.</p>
+<p>By composing blocks, we can construct the desired mappings between logical operators
+while preserving the protection of the logical information.
+This is the essence of fault-tolerant quantum computation.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">tqec</span></code>, a block is either a <a class="reference internal" href="#cube"><span class="std std-ref">Cube</span></a> or a <a class="reference internal" href="#pipe"><span class="std std-ref">Pipe</span></a>.</p>
 </section>
-<section id="detector">
-<h2>Detector<a class="headerlink" href="#detector" title="Link to this heading">#</a></h2>
+<section id="cube">
+<span id="id2"></span><h2>Cube<a class="headerlink" href="#cube" title="Link to this heading">#</a></h2>
+<p>Represents the fundamental building <a class="reference internal" href="#block"><span class="std std-ref">block</span></a> that occupies certain spacetime volume. The kind of cube determines the
+quantum operations that are applied within the cube. Currently we have the following kinds of cubes, and more cubes can be added in the future:</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/cubes.png"><img alt="../_images/cubes.png" src="../_images/cubes.png" style="width: 400px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Different kinds of cubes</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="zxcube">
+<h3><a class="reference internal" href="../_autosummary/tqec.computation.ZXCube.html#tqec.computation.ZXCube" title="tqec.computation.ZXCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a><a class="headerlink" href="#zxcube" title="Link to this heading">#</a></h3>
+<p>A cube whose all faces are of <code class="docutils literal notranslate"><span class="pre">X</span></code> (red) or <code class="docutils literal notranslate"><span class="pre">Z</span></code> (blue) type. We assume each pair of opposite faces are of the same type.
+Then the kind can be specified by the type of the faces looking from the XYZ directions. For example, the <cite>ZXZ</cite> cube in the
+figure above has <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the X direction, <code class="docutils literal notranslate"><span class="pre">X</span></code> type faces along the Y direction, and <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the Z direction.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code> occupies <span class="math notranslate nohighlight">\(\approx d^3\)</span> spacetime volume, where <span class="math notranslate nohighlight">\(d\)</span> is the code distance.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">ZXZ</span></code>, <code class="docutils literal notranslate"><span class="pre">XZZ</span></code>, <code class="docutils literal notranslate"><span class="pre">ZXX</span></code> and <code class="docutils literal notranslate"><span class="pre">XZX</span></code> cubes can represent a (trivial) logical computation by themselves, i.e. the logical memory experiment.
+For example, the <code class="docutils literal notranslate"><span class="pre">XZX</span></code> cube can be used to represent a logical qubit with <code class="docutils literal notranslate"><span class="pre">Z</span></code>/<code class="docutils literal notranslate"><span class="pre">X</span></code> boundaries parallel to the X/Y axes. And the time boundary
+is of <code class="docutils literal notranslate"><span class="pre">X</span></code> type, which means that the logical qubit is initialized and measured in the logical <code class="docutils literal notranslate"><span class="pre">X</span></code> basis.</p>
+<section id="spatial-junction">
+<h4>Spatial Junction<a class="headerlink" href="#spatial-junction" title="Link to this heading">#</a></h4>
+<p>Unlike the other <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code>, <code class="docutils literal notranslate"><span class="pre">XXZ</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZX</span></code> cubes can not represent a logical computation by themselves. They need to be connected to other cubes
+in space to form part of a logical computation:</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/spatial_junctions.png"><img alt="../_images/spatial_junctions.png" src="../_images/spatial_junctions.png" style="width: 450px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Spatial junctions</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The circuits that implement these spatial junctions are more complex than the circuits for the other cubes, and special care needs to be taken to avoid
+the hook errors from decreasing the circuit-level code distance.</p>
+</section>
+</section>
+<section id="ycube">
+<h3><a class="reference internal" href="../_autosummary/tqec.computation.YCube.html#tqec.computation.YCube" title="tqec.computation.YCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">YCube</span></code></a><a class="headerlink" href="#ycube" title="Link to this heading">#</a></h3>
+<p>A green cube representing inplace Y-basis logical initialization or measurement as proposed in <a class="reference external" href="https://quantum-journal.org/papers/q-2024-04-08-1310/">this paper</a>.
+The cube’s function, whether for initialization or measurement, is determined by its connection to other cubes, either upwards or downwards.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">YCube</span></code> occupies <span class="math notranslate nohighlight">\(\approx d^3 /2\)</span> spacetime volume, where <span class="math notranslate nohighlight">\(d\)</span> is the code distance.</p>
+</section>
+<section id="port">
+<h3><a class="reference internal" href="../_autosummary/tqec.computation.Port.html#tqec.computation.Port" title="tqec.computation.Port"><code class="xref py py-class docutils literal notranslate"><span class="pre">Port</span></code></a><a class="headerlink" href="#port" title="Link to this heading">#</a></h3>
+<p>A port is a special type of cube that represents the input or output of a logical computation.
+It functions as a virtual cube, serving only as a placeholder for other sources or sinks of logical information.
+Therefore, ports are not visualized in spacetime diagrams and occupy zero spacetime volume.</p>
+</section>
 </section>
 <section id="pipe">
-<h2>Pipe<a class="headerlink" href="#pipe" title="Link to this heading">#</a></h2>
+<span id="id3"></span><h2>Pipe<a class="headerlink" href="#pipe" title="Link to this heading">#</a></h2>
+</section>
+<section id="correlation-surface">
+<h2>Correlation Surface<a class="headerlink" href="#correlation-surface" title="Link to this heading">#</a></h2>
+</section>
+<section id="abstract-observable">
+<h2>Abstract Observable<a class="headerlink" href="#abstract-observable" title="Link to this heading">#</a></h2>
 </section>
 <section id="plaquette">
 <h2>Plaquette<a class="headerlink" href="#plaquette" title="Link to this heading">#</a></h2>
@@ -439,6 +500,9 @@
 </section>
 <section id="template">
 <h2>Template<a class="headerlink" href="#template" title="Link to this heading">#</a></h2>
+</section>
+<section id="detector">
+<h2>Detector<a class="headerlink" href="#detector" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -453,12 +517,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="build_computations.html"
+       href="quick_start.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Build Computations</p>
+        <p class="prev-next-title">Quick start using <code class="docutils literal notranslate"><span class="pre">tqec</span></code></p>
       </div>
     </a>
     <a class="right-next"
@@ -489,12 +553,23 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cube">Cube</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector">Detector</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#block">Block</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cube">Cube</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zxcube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-junction">Spatial Junction</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ycube"><code class="xref py py-class docutils literal notranslate"><span class="pre">YCube</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#port"><code class="xref py py-class docutils literal notranslate"><span class="pre">Port</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipe">Pipe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-surface">Correlation Surface</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-observable">Abstract Observable</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plaquette">Plaquette</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subtemplate">Subtemplate</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#template">Template</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector">Detector</a></li>
 </ul>
   </nav></div>
 

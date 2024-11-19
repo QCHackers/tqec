@@ -7,7 +7,6 @@ User Guide
 
    Installation <installation>
    Quick start <quick_start>
-   build_computations.ipynb
    Terminology <terminology>
    Current limitations <current_limitations>
 
@@ -15,5 +14,6 @@ User Guide
    :maxdepth: 1
    :caption: Tutorials
 
+   build_computations.ipynb
    collada_interop.ipynb
    Detectors Computation <detectors/index>
