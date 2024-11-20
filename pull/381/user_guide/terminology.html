@@ -439,15 +439,15 @@ This is the essence of fault-tolerant quantum computation.</p>
 <span id="id2"></span><h2>Cube<a class="headerlink" href="#cube" title="Link to this heading">#</a></h2>
 <p>Represents the fundamental building <a class="reference internal" href="#block"><span class="std std-ref">block</span></a> that occupies certain spacetime volume. The kind of cube determines the
 quantum operations that are applied within the cube. Currently we have the following kinds of cubes, and more cubes can be added in the future:</p>
-<figure class="align-center" id="id4">
+<figure class="align-center" id="id5">
 <a class="reference internal image-reference" href="../_images/cubes.png"><img alt="../_images/cubes.png" src="../_images/cubes.png" style="width: 400px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Different kinds of cubes</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-text">Different kinds of cubes</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <section id="zxcube">
-<h3><a class="reference internal" href="../_autosummary/tqec.computation.ZXCube.html#tqec.computation.ZXCube" title="tqec.computation.ZXCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a><a class="headerlink" href="#zxcube" title="Link to this heading">#</a></h3>
+<span id="id3"></span><h3><a class="reference internal" href="../_autosummary/tqec.computation.ZXCube.html#tqec.computation.ZXCube" title="tqec.computation.ZXCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXCube</span></code></a><a class="headerlink" href="#zxcube" title="Link to this heading">#</a></h3>
 <p>A cube whose all faces are of <code class="docutils literal notranslate"><span class="pre">X</span></code> (red) or <code class="docutils literal notranslate"><span class="pre">Z</span></code> (blue) type. We assume each pair of opposite faces are of the same type.
 Then the kind can be specified by the type of the faces looking from the XYZ directions. For example, the <cite>ZXZ</cite> cube in the
 figure above has <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the X direction, <code class="docutils literal notranslate"><span class="pre">X</span></code> type faces along the Y direction, and <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the Z direction.</p>
@@ -459,11 +459,11 @@ is of <code class="docutils literal notranslate"><span class="pre">X</span></cod
 <h4>Spatial Junction<a class="headerlink" href="#spatial-junction" title="Link to this heading">#</a></h4>
 <p>Unlike the other <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code>, <code class="docutils literal notranslate"><span class="pre">XXZ</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZX</span></code> cubes can not represent a logical computation by themselves. They need to be connected to other cubes
 in space to form part of a logical computation:</p>
-<figure class="align-center" id="id5">
+<figure class="align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/spatial_junctions.png"><img alt="../_images/spatial_junctions.png" src="../_images/spatial_junctions.png" style="width: 450px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Spatial junctions</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-text">Spatial junctions</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The circuits that implement these spatial junctions are more complex than the circuits for the other cubes, and special care needs to be taken to avoid
@@ -484,13 +484,75 @@ Therefore, ports are not visualized in spacetime diagrams and occupy zero spacet
 </section>
 </section>
 <section id="pipe">
-<span id="id3"></span><h2>Pipe<a class="headerlink" href="#pipe" title="Link to this heading">#</a></h2>
+<span id="id4"></span><h2>Pipe<a class="headerlink" href="#pipe" title="Link to this heading">#</a></h2>
+<p>Represents the <a class="reference internal" href="#block"><span class="std std-ref">block</span></a> that maps logical operators between different <a class="reference internal" href="#cube"><span class="std std-ref">cubes</span></a>.
+There are various types of pipes based on the boundary types and connection direction. Additionally,
+Hadamard transitions may occur in the pipe, which changes the basis of the logical operator passing through it.</p>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/pipes.png"><img alt="../_images/pipes.png" src="../_images/pipes.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Different types of pipes</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p><strong>It’s important to note that the pipe does not occupy spacetime volume by itself.</strong>
+Instead, the operations within the pipe replace the operations in the cubes it connects.
+The pipe’s visual representation in the diagram is exaggerated for clarity.</p>
+<figure class="align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/pipe_connects_cubes.png"><img alt="../_images/pipe_connects_cubes.png" src="../_images/pipe_connects_cubes.png" style="width: 400px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Example of pipes connecting cubes</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Each cube in the figure above should initially be thought of as an</p>
+<div class="math notranslate nohighlight">
+\[InitZ_k \rightarrow (2k − 1) \times Mem_k \rightarrow MeasZ_k\]</div>
+<p>memory experiment. The pipes modify the walls of these experiments. The first vertical pipe should be interpreted as a layer of memory circuit <span class="math notranslate nohighlight">\(Mem_k\)</span>.
+It replaces <span class="math notranslate nohighlight">\(MeasZ_k\)</span> in the bottom cube and <span class="math notranslate nohighlight">\(InitZ_k\)</span> in the top cube with <span class="math notranslate nohighlight">\(Mem_k\)</span> layers.
+The horizontal pipe replaces the boundary walls of the two cubes it touches with connecting stabilizer measurements, along with appropriate data qubit initialization and measurement.</p>
 </section>
 <section id="correlation-surface">
 <h2>Correlation Surface<a class="headerlink" href="#correlation-surface" title="Link to this heading">#</a></h2>
-</section>
-<section id="abstract-observable">
-<h2>Abstract Observable<a class="headerlink" href="#abstract-observable" title="Link to this heading">#</a></h2>
+<p>A correlation surface in a computation is a set of measurements whose values determine the parity of the logical operators at the inputs and outputs associated with the surface.</p>
+<p>The correlation surface establishes a mapping from the input logical operators to the output logical operators associated to it.
+And the mapping implements the desired logical computation up to some sign that depends on the parity of the physical initialization,
+measurements and stabilizer measurements included in the correlation surface. In <code class="docutils literal notranslate"><span class="pre">tqec</span></code>, we assume all the qubits are initialized
+to the +1 eigenstate of the operators. Therefore, the sign is determined by the parity of the measurements.</p>
+<p>Here we take the movement of a logical qubit for example:</p>
+<figure class="align-center" id="id9">
+<a class="reference internal image-reference" href="../_images/logical_qubit_movement.png"><img alt="../_images/logical_qubit_movement.png" src="../_images/logical_qubit_movement.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Movement of a logical qubit</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The movement operation maps <span class="math notranslate nohighlight">\(Z_L, X_L\)</span> logical operators at input to <span class="math notranslate nohighlight">\(Z_L^{\prime}, X_L^{\prime}\)</span> at output.
+Firstly, we show in detail why the structure and circuits above implement the movement of a logical qubit.</p>
+<ol class="loweralpha simple">
+<li><p>All data qubits initialized to <span class="math notranslate nohighlight">\(|0\rangle\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(2k + 1\)</span> rounds of stabilizer measurement.</p></li>
+<li><p>Beginning to extend the logical qubit with more data qubits initialized to <span class="math notranslate nohighlight">\(|0\rangle\)</span>. Black dots represent data qubits doing nothing.
+<span class="math notranslate nohighlight">\(Z_L\)</span> can be extended without sign change across these <span class="math notranslate nohighlight">\(|0\rangle\)</span> values.</p></li>
+<li><p><span class="math notranslate nohighlight">\(2k + 1\)</span> rounds of stabilizer measurement during which stabilizers indicated with red dots are used to move <span class="math notranslate nohighlight">\(X_L\)</span>.
+The parity of any chosen round of these measurements sets a sign relationship between <span class="math notranslate nohighlight">\(X_L\)</span> and <span class="math notranslate nohighlight">\(X_L^{\prime}\)</span>.
+Our convention is to choose the earliest round.</p></li>
+<li><p><span class="math notranslate nohighlight">\(Z\)</span> basis measurement of data qubits. The parity of the blue highlighted raw values sets
+a sign relationship between <span class="math notranslate nohighlight">\(Z_L\)</span> and <span class="math notranslate nohighlight">\(Z_L^{\prime}\)</span>.</p></li>
+</ol>
+<p>Note that the sign relationship described above depends on the measurement outcomes, which are error-prone and need
+error correction.</p>
+<p>Tracking the process of logical operator movement above, we can get the following two correlation surfaces:</p>
+<figure class="align-center" id="id10">
+<a class="reference internal image-reference" href="../_images/correlation_surface.png"><img alt="../_images/correlation_surface.png" src="../_images/correlation_surface.png" style="width: 200px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Correlation surfaces, red for X and blue for Z</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>You can think of constructing the correlation surface as moving a line of logical operators through the structure,
+only allowing the logical operators to attach to walls with the same basis.
+The physical qubit measurements and stabilizer measurements in the correlation surface determine the sign relationship between the logical operators at the input and output.</p>
 </section>
 <section id="plaquette">
 <h2>Plaquette<a class="headerlink" href="#plaquette" title="Link to this heading">#</a></h2>
@@ -565,7 +627,6 @@ Therefore, ports are not visualized in spacetime diagrams and occupy zero spacet
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipe">Pipe</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-surface">Correlation Surface</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-observable">Abstract Observable</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plaquette">Plaquette</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subtemplate">Subtemplate</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#template">Template</a></li>

@@ -33,6 +33,8 @@ quantum operations that are applied within the cube. Currently we have the follo
 
    Different kinds of cubes
 
+.. _zxcube:
+
 :py:class:`~tqec.computation.ZXCube`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -81,11 +83,83 @@ Therefore, ports are not visualized in spacetime diagrams and occupy zero spacet
 Pipe
 ----
 
+Represents the :ref:`block <block>` that maps logical operators between different :ref:`cubes <cube>`.
+There are various types of pipes based on the boundary types and connection direction. Additionally,
+Hadamard transitions may occur in the pipe, which changes the basis of the logical operator passing through it.
+
+.. figure:: ../media/user_guide/terminology/pipes.png
+   :width: 500px
+   :align: center
+
+   Different types of pipes
+
+**It's important to note that the pipe does not occupy spacetime volume by itself.**
+Instead, the operations within the pipe replace the operations in the cubes it connects.
+The pipe’s visual representation in the diagram is exaggerated for clarity.
+
+.. figure:: ../media/user_guide/terminology/pipe_connects_cubes.png
+   :width: 400px
+   :align: center
+
+   Example of pipes connecting cubes
+
+Each cube in the figure above should initially be thought of as an
+
+.. math::
+
+   InitZ_k \rightarrow (2k − 1) \times Mem_k \rightarrow MeasZ_k
+
+memory experiment. The pipes modify the walls of these experiments. The first vertical pipe should be interpreted as a layer of memory circuit :math:`Mem_k`.
+It replaces :math:`MeasZ_k` in the bottom cube and :math:`InitZ_k` in the top cube with :math:`Mem_k` layers.
+The horizontal pipe replaces the boundary walls of the two cubes it touches with connecting stabilizer measurements, along with appropriate data qubit initialization and measurement.
+
 Correlation Surface
 -------------------
 
-Abstract Observable
--------------------
+A correlation surface in a computation is a set of measurements whose values determine the parity of the logical operators at the inputs and outputs associated with the surface.
+
+The correlation surface establishes a mapping from the input logical operators to the output logical operators associated to it.
+And the mapping implements the desired logical computation up to some sign that depends on the parity of the physical initialization,
+measurements and stabilizer measurements included in the correlation surface. In ``tqec``, we assume all the qubits are initialized
+to the +1 eigenstate of the operators. Therefore, the sign is determined by the parity of the measurements.
+
+Here we take the movement of a logical qubit for example:
+
+.. figure:: ../media/user_guide/terminology/logical_qubit_movement.png
+   :width: 600px
+   :align: center
+
+   Movement of a logical qubit
+
+
+
+The movement operation maps :math:`Z_L, X_L` logical operators at input to :math:`Z_L^{\prime}, X_L^{\prime}` at output.
+Firstly, we show in detail why the structure and circuits above implement the movement of a logical qubit.
+
+a. All data qubits initialized to :math:`|0\rangle`.
+b. :math:`2k + 1` rounds of stabilizer measurement.
+c. Beginning to extend the logical qubit with more data qubits initialized to :math:`|0\rangle`. Black dots represent data qubits doing nothing.
+   :math:`Z_L` can be extended without sign change across these :math:`|0\rangle` values.
+d. :math:`2k + 1` rounds of stabilizer measurement during which stabilizers indicated with red dots are used to move :math:`X_L`.
+   The parity of any chosen round of these measurements sets a sign relationship between :math:`X_L` and :math:`X_L^{\prime}`.
+   Our convention is to choose the earliest round.
+e. :math:`Z` basis measurement of data qubits. The parity of the blue highlighted raw values sets
+   a sign relationship between :math:`Z_L` and :math:`Z_L^{\prime}`.
+
+Note that the sign relationship described above depends on the measurement outcomes, which are error-prone and need
+error correction.
+
+Tracking the process of logical operator movement above, we can get the following two correlation surfaces:
+
+.. figure:: ../media/user_guide/terminology/correlation_surface.png
+   :width: 200px
+   :align: center
+
+   Correlation surfaces, red for X and blue for Z
+
+You can think of constructing the correlation surface as moving a line of logical operators through the structure,
+only allowing the logical operators to attach to walls with the same basis.
+The physical qubit measurements and stabilizer measurements in the correlation surface determine the sign relationship between the logical operators at the input and output.
 
 Plaquette
 ---------
