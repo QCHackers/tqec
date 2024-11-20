@@ -14,8 +14,9 @@ from tqec.position import Position3D
 
 @dataclass(frozen=True)
 class CorrelationSurface:
-    """A correlation surface in a computation is a set of measurements whose values determine the parity
-    of the logical operators at the inputs and outputs associated with the surface.
+    """A correlation surface in a computation is a set of measurements whose
+    values determine the parity of the logical operators at the inputs and
+    outputs associated with the surface.
 
     Here we represent the correlation surface in terms of the ZX graph. The insight is that the spiders
     pose parity constraints on the operators supported on the incident edges. The flow of the logical

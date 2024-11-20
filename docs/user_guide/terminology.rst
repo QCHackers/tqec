@@ -83,27 +83,27 @@ Therefore, ports are not visualized in spacetime diagrams and occupy zero spacet
 Pipe
 ----
 
-Represents the :ref:`block <block>` that maps logical operators between different :ref:`cubes <cube>`.  
-There are various types of pipes based on the boundary types and connection direction. Additionally,  
+Represents the :ref:`block <block>` that maps logical operators between different :ref:`cubes <cube>`.
+There are various types of pipes based on the boundary types and connection direction. Additionally,
 Hadamard transitions may occur in the pipe, which changes the basis of the logical operator passing through it.
 
-.. figure:: ../media/user_guide/terminology/pipes.png  
-   :width: 500px  
+.. figure:: ../media/user_guide/terminology/pipes.png
+   :width: 500px
    :align: center
 
    Different types of pipes
 
-**It's important to note that the pipe does not occupy spacetime volume by itself.**  
-Instead, the operations within the pipe replace the operations in the cubes it connects.  
+**It's important to note that the pipe does not occupy spacetime volume by itself.**
+Instead, the operations within the pipe replace the operations in the cubes it connects.
 The pipe’s visual representation in the diagram is exaggerated for clarity.
 
-.. figure:: ../media/user_guide/terminology/pipe_connects_cubes.png  
-   :width: 400px  
+.. figure:: ../media/user_guide/terminology/pipe_connects_cubes.png
+   :width: 400px
    :align: center
 
    Example of pipes connecting cubes
 
-Each cube in the figure above should initially be thought of as an 
+Each cube in the figure above should initially be thought of as an
 
 .. math::
 
