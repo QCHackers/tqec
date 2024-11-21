@@ -24,7 +24,7 @@ class FixedTemplate(RectangularTemplate):
 
     @override
     def instantiate(
-        self, _: int = 0, plaquette_indices: Sequence[int] | None = None
+        self, k: int = 0, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
         if plaquette_indices is None:
             plaquette_indices = list(range(1, self.expected_plaquettes_number + 1))

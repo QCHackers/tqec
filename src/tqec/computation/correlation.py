@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import itertools
+from dataclasses import dataclass, field
 from typing import Iterable
 
-from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode, ZXEdge
+from tqec.computation.zx_graph import ZXEdge, ZXGraph, ZXKind, ZXNode
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
@@ -58,7 +58,7 @@ class CorrelationSurface:
         correlation_types = CorrelationSurface.get_correlation_types(span)
         nodes = frozenset(ZXNode(pos, kind) for pos, kind in correlation_types.items())
 
-        external_stabilizer = {}
+        external_stabilizer: dict[str, str] = {}
         for label, port in zx_graph.ports.items():
             correlation_type = correlation_types.get(port)
             if correlation_type is None:
@@ -182,7 +182,7 @@ def _construct_compatible_correlation_surfaces(
     is not P, the correlation type must be the same as the node type. If
     the node type is P, the correlation type can be any type.
     """
-    correlation_surfaces = []
+    correlation_surfaces: list[CorrelationSurface] = []
 
     def _is_compatible(
         correlation_types: dict[Position3D, ZXKind],

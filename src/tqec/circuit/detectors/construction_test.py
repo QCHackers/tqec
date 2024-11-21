@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 import stim
+
 from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.circuit.detectors.utils import (
     detector_to_targets_tuple,
@@ -19,7 +20,7 @@ _INVALID_TEST_FOLDER = _TEST_FOLDER / "invalid"
 
 
 def valid_test_circuits() -> list[tuple[str, stim.Circuit]]:
-    valid_circuits = []
+    valid_circuits: list[tuple[str, stim.Circuit]] = []
     for filepath in _VALID_TEST_FOLDER.iterdir():
         with open(filepath) as f:
             valid_circuits.append(
@@ -43,7 +44,7 @@ def parse_invalid_circuit(text: str) -> tuple[stim.Circuit, str]:
 
 
 def invalid_test_circuits() -> list[tuple[str, stim.Circuit, str]]:
-    invalid_circuits = []
+    invalid_circuits: list[tuple[str, stim.Circuit, str]] = []
     for filepath in _INVALID_TEST_FOLDER.iterdir():
         with open(filepath) as f:
             file_content = f.read()

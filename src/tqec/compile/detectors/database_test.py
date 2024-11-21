@@ -1,3 +1,5 @@
+from typing import Iterable, cast
+
 import numpy
 import pytest
 
@@ -66,11 +68,14 @@ PLAQUETTE_COLLECTIONS: list[Plaquettes] = [
 #       are in the SUBTEMPLATES list. See comment above PLAQUETTE_COLLECTIONS
 #       for more information.
 SUBTEMPLATES: list[SubTemplateType] = list(
-    numpy.sort(
-        list(
-            get_spatially_distinct_subtemplates(
-                QubitTemplate().instantiate(k=10), manhattan_radius=2
-            ).subtemplates.values()
+    cast(
+        Iterable[SubTemplateType],
+        numpy.sort(
+            list(
+                get_spatially_distinct_subtemplates(
+                    QubitTemplate().instantiate(k=10), manhattan_radius=2
+                ).subtemplates.values()
+            ),
         ),
     )
 )

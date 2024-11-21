@@ -1,6 +1,3 @@
-from fractions import Fraction
-
-import pytest
 import stim
 
 from tqec.circuit.qubit import GridQubit, count_qubit_accesses, get_used_qubit_indices
