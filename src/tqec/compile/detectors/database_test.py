@@ -6,9 +6,14 @@ import pytest
 from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
-from tqec.compile.detectors.database import DetectorDatabase, _DetectorDatabaseKey
+from tqec.compile.detectors.database import (
+    DetectorDatabase,
+    _DetectorDatabaseKey,  # pyright: ignore[reportPrivateUsage]
+)
 from tqec.compile.detectors.detector import Detector
-from tqec.compile.specs.library._utils import _build_plaquettes_for_rotated_surface_code
+from tqec.compile.specs.library._utils import (
+    _build_plaquettes_for_rotated_surface_code,  # pyright: ignore[reportPrivateUsage]
+)
 from tqec.computation.cube import ZXBasis
 from tqec.exceptions import TQECException
 from tqec.plaquette.library.css import make_css_surface_code_plaquette

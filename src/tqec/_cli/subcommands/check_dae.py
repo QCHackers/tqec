@@ -13,7 +13,7 @@ class CheckDaeTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
     def add_subcommand(
-        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],  # type: ignore
     ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "check_dae",

@@ -12,15 +12,15 @@ from typing_extensions import override
 from tqec._cli.subcommands.base import TQECSubCommand
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.correlation import CorrelationSurface
-from tqec.computation.zx_plot import draw_correlation_surface_on, draw_zx_graph_on
 from tqec.computation.zx_graph import ZXGraph
+from tqec.computation.zx_plot import draw_correlation_surface_on, draw_zx_graph_on
 
 
 class Dae2ObservablesTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
     def add_subcommand(
-        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],  # type: ignore
     ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "dae2observables",

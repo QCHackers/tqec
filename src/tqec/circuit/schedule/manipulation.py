@@ -189,7 +189,12 @@ def remove_duplicate_instructions(
     # Add the merged operations into the final ones
     final_operations.extend(
         stim.CircuitInstruction(
-            name, sum(_sort_target_groups([list(t) for t in targets]), start=[]), args
+            name,
+            sum(
+                _sort_target_groups([list(t) for t in targets]),
+                start=cast(list[stim.GateTarget], []),
+            ),
+            args,
         )
         for (name, args), targets in mergeable_operations.items()
     )
