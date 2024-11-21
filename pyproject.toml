@@ -183,5 +183,3 @@ pythonVersion = "3.10"
 # setting is "standard". If set to "off", all type-checking rules are disabled, but
 # Python syntax and semantic errors are still reported.
 typeCheckingMode = "standard"
-
-reportIncompleteStub = false
