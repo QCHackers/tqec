@@ -439,11 +439,11 @@ This is the essence of fault-tolerant quantum computation.</p>
 <span id="id2"></span><h2>Cube<a class="headerlink" href="#cube" title="Link to this heading">#</a></h2>
 <p>Represents the fundamental building <a class="reference internal" href="#block"><span class="std std-ref">block</span></a> that occupies certain spacetime volume. The kind of cube determines the
 quantum operations that are applied within the cube. Currently we have the following kinds of cubes, and more cubes can be added in the future:</p>
-<figure class="align-center" id="id5">
+<figure class="align-center" id="id6">
 <a class="reference internal image-reference" href="../_images/cubes.png"><img alt="../_images/cubes.png" src="../_images/cubes.png" style="width: 400px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Different kinds of cubes</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-text">Different kinds of cubes</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <section id="zxcube">
@@ -459,11 +459,11 @@ is of <code class="docutils literal notranslate"><span class="pre">X</span></cod
 <h4>Spatial Junction<a class="headerlink" href="#spatial-junction" title="Link to this heading">#</a></h4>
 <p>Unlike the other <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code>, <code class="docutils literal notranslate"><span class="pre">XXZ</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZX</span></code> cubes can not represent a logical computation by themselves. They need to be connected to other cubes
 in space to form part of a logical computation:</p>
-<figure class="align-center" id="id6">
+<figure class="align-center" id="id7">
 <a class="reference internal image-reference" href="../_images/spatial_junctions.png"><img alt="../_images/spatial_junctions.png" src="../_images/spatial_junctions.png" style="width: 450px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Spatial junctions</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+<p><span class="caption-text">Spatial junctions</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The circuits that implement these spatial junctions are more complex than the circuits for the other cubes, and special care needs to be taken to avoid
@@ -488,21 +488,21 @@ Therefore, ports are not visualized in spacetime diagrams and occupy zero spacet
 <p>Represents the <a class="reference internal" href="#block"><span class="std std-ref">block</span></a> that maps logical operators between different <a class="reference internal" href="#cube"><span class="std std-ref">cubes</span></a>.
 There are various types of pipes based on the boundary types and connection direction. Additionally,
 Hadamard transitions may occur in the pipe, which changes the basis of the logical operator passing through it.</p>
-<figure class="align-center" id="id7">
+<figure class="align-center" id="id8">
 <a class="reference internal image-reference" href="../_images/pipes.png"><img alt="../_images/pipes.png" src="../_images/pipes.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Different types of pipes</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+<p><span class="caption-text">Different types of pipes</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p><strong>It’s important to note that the pipe does not occupy spacetime volume by itself.</strong>
 Instead, the operations within the pipe replace the operations in the cubes it connects.
 The pipe’s visual representation in the diagram is exaggerated for clarity.</p>
-<figure class="align-center" id="id8">
+<figure class="align-center" id="id9">
 <a class="reference internal image-reference" href="../_images/pipe_connects_cubes.png"><img alt="../_images/pipe_connects_cubes.png" src="../_images/pipe_connects_cubes.png" style="width: 400px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Example of pipes connecting cubes</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+<p><span class="caption-text">Example of pipes connecting cubes</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>Each cube in the figure above should initially be thought of as an</p>
@@ -520,11 +520,11 @@ And the mapping implements the desired logical computation up to some sign that 
 measurements and stabilizer measurements included in the correlation surface. In <code class="docutils literal notranslate"><span class="pre">tqec</span></code>, we assume all the qubits are initialized
 to the +1 eigenstate of the operators. Therefore, the sign is determined by the parity of the measurements.</p>
 <p>Here we take the movement of a logical qubit for example:</p>
-<figure class="align-center" id="id9">
+<figure class="align-center" id="id10">
 <a class="reference internal image-reference" href="../_images/logical_qubit_movement.png"><img alt="../_images/logical_qubit_movement.png" src="../_images/logical_qubit_movement.png" style="width: 600px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Movement of a logical qubit</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+<p><span class="caption-text">Movement of a logical qubit</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The movement operation maps <span class="math notranslate nohighlight">\(Z_L, X_L\)</span> logical operators at input to <span class="math notranslate nohighlight">\(Z_L^{\prime}, X_L^{\prime}\)</span> at output.
@@ -543,28 +543,170 @@ a sign relationship between <span class="math notranslate nohighlight">\(Z_L\)</
 <p>Note that the sign relationship described above depends on the measurement outcomes, which are error-prone and need
 error correction.</p>
 <p>Tracking the process of logical operator movement above, we can get the following two correlation surfaces:</p>
-<figure class="align-center" id="id10">
+<figure class="align-center" id="id11">
 <a class="reference internal image-reference" href="../_images/correlation_surface.png"><img alt="../_images/correlation_surface.png" src="../_images/correlation_surface.png" style="width: 200px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Correlation surfaces, red for X and blue for Z</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+<p><span class="caption-text">Correlation surfaces, red for X and blue for Z</span><a class="headerlink" href="#id11" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>You can think of constructing the correlation surface as moving a line of logical operators through the structure,
 only allowing the logical operators to attach to walls with the same basis.
 The physical qubit measurements and stabilizer measurements in the correlation surface determine the sign relationship between the logical operators at the input and output.</p>
 </section>
+<section id="template">
+<span id="id5"></span><h2>Template<a class="headerlink" href="#template" title="Link to this heading">#</a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">tqec</span></code>, a template is an object that can, from an integer value representing the
+scaling factor $k$ (with the code distance $d$ checking $d = 2k + 1$ for the surface code),
+can generate a $2$-dimensional array of positive integers.</p>
+<div class="admonition-example admonition" id="qubit-example">
+<p class="admonition-title">Example</p>
+<p>The following array is an example of what can be generated by a template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">2</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">12</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">12</span>
+<span class="mi">3</span> <span class="mi">13</span> <span class="mi">14</span> <span class="mi">13</span> <span class="mi">14</span>  <span class="mi">4</span>
+</pre></div>
+</div>
+</div>
+<p>The returned $2$-dimensional array entries each represent an index into a user-provided
+mapping associating these indices to <a class="reference internal" href="../_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette" title="tqec.plaquette.plaquette.Plaquette"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plaquette</span></code></a> instances.
+The only exception is the value <code class="docutils literal notranslate"><span class="pre">0</span></code> that is associated to the absence of plaquette
+by convention.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>The $2$-dimensional array given as example above can represent the usual logical qubit
+from surface code research papers:</p>
+<figure class="align-center" id="id12">
+<a class="reference internal image-reference" href="../_images/logical_qubit1.png"><img alt="../_images/logical_qubit1.png" src="../_images/logical_qubit1.png" style="width: 200px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Usual tiling of plaquettes to build a logical qubit using the surface code.</span><a class="headerlink" href="#id12" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>To see the correspondence more clearly, one can map the indices <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">3</span></code>, <code class="docutils literal notranslate"><span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span></code>, <code class="docutils literal notranslate"><span class="pre">8</span></code>, <code class="docutils literal notranslate"><span class="pre">12</span></code> and <code class="docutils literal notranslate"><span class="pre">14</span></code> to the “no plaquette” index <code class="docutils literal notranslate"><span class="pre">0</span></code>
+and print <code class="docutils literal notranslate"><span class="pre">0</span></code> with <code class="docutils literal notranslate"><span class="pre">.</span></code> for visual clarity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span>  <span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>  <span class="mi">6</span>  <span class="o">.</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="o">.</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>  <span class="o">.</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span> <span class="mi">11</span>
+<span class="o">.</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>  <span class="o">.</span>
+<span class="o">.</span> <span class="mi">13</span>  <span class="o">.</span> <span class="mi">13</span>  <span class="o">.</span>  <span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<p>Templates are the abstraction layer that allows most of <code class="docutils literal notranslate"><span class="pre">tqec</span></code> internals to be
+independent of the chosen code distance.</p>
+</section>
+<section id="sub-template">
+<h2>Sub-template<a class="headerlink" href="#sub-template" title="Link to this heading">#</a></h2>
+<p>Sub-templates are defined as square $2$-dimensional arrays of fixed odd size. They are
+systematically extracted from a contiguous portion of a larger template.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>The array:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>
+<span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>
+<span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span>
+</pre></div>
+</div>
+<p>is a valid sub-template of <a class="reference internal" href="#qubit-example"><span class="std std-ref">the full example given in the Template</span></a>
+section.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Sub-templates center (which is always well defined for a odd-sized square) is
+always extracted from a valid entry <strong>within</strong> the original template. The other
+sub-template entries <em>might</em> be extracted from outside the original template.</p>
+<p>The following sub-template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>  <span class="o">.</span>
+<span class="o">.</span>  <span class="mi">1</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">5</span>
+<span class="o">.</span>  <span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>
+<span class="o">.</span>  <span class="mi">8</span> <span class="mi">10</span>  <span class="mi">9</span> <span class="mi">10</span>
+<span class="o">.</span>  <span class="mi">7</span>  <span class="mi">9</span> <span class="mi">10</span>  <span class="mi">9</span>
+</pre></div>
+</div>
+<p>is also a sub-template of <a class="reference internal" href="#qubit-example"><span class="std std-ref">the full example given in the Template</span></a>.
+Its top and left borders are filled with <code class="docutils literal notranslate"><span class="pre">0</span></code> (usually represented by a <code class="docutils literal notranslate"><span class="pre">.</span></code>) because
+out-of-bounds accesses for templates are supposed to be <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</div>
+</section>
 <section id="plaquette">
 <h2>Plaquette<a class="headerlink" href="#plaquette" title="Link to this heading">#</a></h2>
-</section>
-<section id="subtemplate">
-<h2>Subtemplate<a class="headerlink" href="#subtemplate" title="Link to this heading">#</a></h2>
-</section>
-<section id="template">
-<h2>Template<a class="headerlink" href="#template" title="Link to this heading">#</a></h2>
+<p>A plaquette is a specific quantum circuit. There are multiple bells and whistles
+around that simple definition in <code class="docutils literal notranslate"><span class="pre">tqec</span></code> code, but all of them are due to implementation
+details and do not matter here.</p>
+<p>The quantum circuit represented by a plaquette are supposed to be:</p>
+<ol class="arabic simple">
+<li><p>spatially-local,</p></li>
+<li><p>temporally-local,</p></li>
+<li><p>with a fully explicit and precise gate scheduling.</p></li>
+</ol>
+<p>Spatial locality means that the quantum circuit representing any plaquette should only use
+a few qubits that are spatially close on a $2$-dimensional array grid of qubits.</p>
+<p>Temporal locality means that the quantum circuit depth should be constant and short.</p>
+<p>Explicit gate scheduling requires each and every gate in the circuit to be explicitly
+scheduled at a precise time (or moment) in the quantum circuit.</p>
+<p>These condition make plaquettes easily representable as visual $2$-dimensional pictures.</p>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<p>One of the plaquette measuring a <code class="docutils literal notranslate"><span class="pre">XXXX</span></code> stabilizer can be represented as follow</p>
+<figure class="align-center" id="id13">
+<a class="reference internal image-reference" href="../_images/plaquette_xxxx.png"><img alt="../_images/plaquette_xxxx.png" src="../_images/plaquette_xxxx.png" style="width: 100px;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">XXXX</span></code> plaquette.</span><a class="headerlink" href="#id13" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>and corresponds to the following quantum circuit</p>
+<figure class="align-center" id="id14">
+<a class="reference internal image-reference" href="../_images/circuit_xxxx.png"><img alt="../_images/circuit_xxxx.png" src="../_images/circuit_xxxx.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Quantum circuit measuring the <code class="docutils literal notranslate"><span class="pre">XXXX</span></code> stabilizer.</span><a class="headerlink" href="#id14" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>One of the plaquette measuring a <code class="docutils literal notranslate"><span class="pre">ZZZZ</span></code> stabilizer can be represented as follow</p>
+<figure class="align-center" id="id15">
+<a class="reference internal image-reference" href="../_images/plaquette_zzzz.png"><img alt="../_images/plaquette_zzzz.png" src="../_images/plaquette_zzzz.png" style="width: 100px;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">ZZZZ</span></code> plaquette.</span><a class="headerlink" href="#id15" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>and corresponds to the following quantum circuit</p>
+<figure class="align-center" id="id16">
+<a class="reference internal image-reference" href="../_images/circuit_zzzz.png"><img alt="../_images/circuit_zzzz.png" src="../_images/circuit_zzzz.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Quantum circuit measuring the <code class="docutils literal notranslate"><span class="pre">ZZZZ</span></code> stabilizer.</span><a class="headerlink" href="#id16" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>One of the plaquette measuring a <code class="docutils literal notranslate"><span class="pre">XX</span></code> stabilizer can be represented as follow</p>
+<figure class="align-center" id="id17">
+<a class="reference internal image-reference" href="../_images/plaquette_xx_up.png"><img alt="../_images/plaquette_xx_up.png" src="../_images/plaquette_xx_up.png" style="width: 100px;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">XX</span></code> plaquette.</span><a class="headerlink" href="#id17" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>and corresponds to the following quantum circuit</p>
+<figure class="align-center" id="id18">
+<a class="reference internal image-reference" href="../_images/circuit_xx_up.png"><img alt="../_images/circuit_xx_up.png" src="../_images/circuit_xx_up.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Quantum circuit measuring the <code class="docutils literal notranslate"><span class="pre">XX</span></code> stabilizer.</span><a class="headerlink" href="#id18" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="detector">
 <h2>Detector<a class="headerlink" href="#detector" title="Link to this heading">#</a></h2>
+<p>In the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> library, a detector is a set of one or more measurements that are
+supposed to have a deterministic parity in the absence of errors.</p>
 </section>
 </section>
 
@@ -627,9 +769,9 @@ The physical qubit measurements and stabilizer measurements in the correlation s
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipe">Pipe</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-surface">Correlation Surface</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plaquette">Plaquette</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subtemplate">Subtemplate</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#template">Template</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sub-template">Sub-template</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plaquette">Plaquette</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector">Detector</a></li>
 </ul>
   </nav></div>
