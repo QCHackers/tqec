@@ -1,0 +1,31 @@
+tqec.circuit.generation
+=======================
+
+.. automodule:: tqec.circuit.generation
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      generate_circuit
+      generate_circuit_from_instantiation
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,55 @@
+tqec.computation
+================
+
+.. automodule:: tqec.computation
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   abstract_observable
+
+
+   base_graph
+
+   block_graph
+
+
+   conversion
+
+
+   correlation
+
+
+   cube
+
+
+   pipe
+
+
+   zx_graph
+
+
+   zx_plot
+

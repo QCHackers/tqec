@@ -1,0 +1,37 @@
+tqec.interop.geometry.Face
+==========================
+
+.. currentmodule:: tqec.interop.geometry
+
+.. autoclass:: Face
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Face.__init__
+      ~Face.get_normal_vectors
+      ~Face.get_triangle_indices
+      ~Face.get_vertices
+      ~Face.shift_by
+      ~Face.with_negated_normal_direction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Face.position
+      ~Face.kind
+      ~Face.width
+      ~Face.height
+      ~Face.normal_direction
+   
+   
