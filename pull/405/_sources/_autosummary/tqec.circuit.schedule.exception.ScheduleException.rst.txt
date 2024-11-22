@@ -1,6 +1,0 @@
-tqec.circuit.schedule.exception.ScheduleException
-=================================================
-
-.. currentmodule:: tqec.circuit.schedule.exception
-
-.. autoexception:: ScheduleException
