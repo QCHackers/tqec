@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pysat.solvers import CryptoMinisat
+
 from tqec.circuit.detectors.pauli import PauliString, pauli_literal_to_bools
 
 

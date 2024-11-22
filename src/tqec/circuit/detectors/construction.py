@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import cast
+
 import stim
 
 from tqec.circuit.detectors.flow import build_flows_from_fragments
@@ -109,7 +111,9 @@ def compile_fragments_to_circuit_with_detectors(
     detectors_from_flows = match_detectors_from_flows_shallow(flows, qubit_coords_map)
 
     circuit = stim.Circuit()
-    number_of_spatial_coordinates = len(next(iter(qubit_coords_map.values()), []))
+    number_of_spatial_coordinates = len(
+        next(iter(qubit_coords_map.values()), cast(tuple[float, ...], tuple()))
+    )
     for fragment, detectors in zip(fragments, detectors_from_flows):
         detectors_circuit = _detectors_to_circuit(detectors, [0.0])
         if isinstance(fragment, Fragment):
