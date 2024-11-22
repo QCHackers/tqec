@@ -17,7 +17,7 @@ class Dae2CircuitsTQECSubCommand(TQECSubCommand):
     @staticmethod
     @override
     def add_subcommand(
-        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],  # type: ignore
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
     ) -> None:
         parser: argparse.ArgumentParser = main_parser.add_parser(
             "dae2circuits",

@@ -1,3 +1,5 @@
+from typing import Literal
+
 from tqec.computation.zx_graph import ZXKind
 from tqec.gallery.logical_cnot import logical_cnot_zx_graph
 
@@ -19,6 +21,7 @@ def test_logical_cnot_zx_graph_open() -> None:
 
 
 def test_logical_cnot_zx_graph_filled() -> None:
+    port_type: Literal["X", "Z"]
     for port_type in ("X", "Z"):
         g = logical_cnot_zx_graph(port_type)
         assert g.num_ports == 0

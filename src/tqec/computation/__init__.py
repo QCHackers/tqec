@@ -15,7 +15,16 @@ of the logical computation:
   concrete circuits that implement the logical computation.
 """
 
-from tqec.computation.zx_graph import ZXKind, ZXEdge, ZXGraph, ZXNode
-from tqec.computation.cube import Cube, CubeKind, ZXCube, Port, YCube
-from tqec.computation.pipe import Pipe, PipeKind
-from tqec.computation.block_graph import BlockGraph, BlockKind
+from tqec.computation.block_graph import BlockGraph as BlockGraph
+from tqec.computation.block_graph import BlockKind as BlockKind
+from tqec.computation.cube import Cube as Cube
+from tqec.computation.cube import CubeKind as CubeKind
+from tqec.computation.cube import Port as Port
+from tqec.computation.cube import YCube as YCube
+from tqec.computation.cube import ZXCube as ZXCube
+from tqec.computation.pipe import Pipe as Pipe
+from tqec.computation.pipe import PipeKind as PipeKind
+from tqec.computation.zx_graph import ZXEdge as ZXEdge
+from tqec.computation.zx_graph import ZXGraph as ZXGraph
+from tqec.computation.zx_graph import ZXKind as ZXKind
+from tqec.computation.zx_graph import ZXNode as ZXNode

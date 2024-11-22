@@ -1,1 +1,1 @@
-from .noise_model import NoiseModel
+from .noise_model import NoiseModel as NoiseModel

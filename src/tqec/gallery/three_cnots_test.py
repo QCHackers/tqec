@@ -1,3 +1,5 @@
+from typing import Literal
+
 from tqec.computation.zx_graph import ZXKind
 from tqec.gallery.three_cnots import three_cnots_zx_graph
 
@@ -21,6 +23,7 @@ def test_three_cnots_zx_graph_OPEN() -> None:
 
 
 def test_three_cnots_zx_graph_filled() -> None:
+    port_type: Literal["X", "Z"]
     for port_type in ("X", "Z"):
         g = three_cnots_zx_graph(port_type)
         assert g.num_ports == 0

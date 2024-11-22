@@ -10,7 +10,7 @@ class TQECSubCommand(ABC):
     @staticmethod
     @abstractmethod
     def add_subcommand(
-        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],  # type: ignore
+        main_parser: argparse._SubParsersAction[argparse.ArgumentParser],
     ) -> None:
         pass
 

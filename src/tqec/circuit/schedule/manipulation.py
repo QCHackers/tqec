@@ -190,10 +190,7 @@ def remove_duplicate_instructions(
     final_operations.extend(
         stim.CircuitInstruction(
             name,
-            sum(
-                _sort_target_groups([list(t) for t in targets]),
-                start=cast(list[stim.GateTarget], []),
-            ),
+            sum(_sort_target_groups([list(t) for t in targets]), start=[]),
             args,
         )
         for (name, args), targets in mergeable_operations.items()
@@ -255,8 +252,7 @@ def merge_scheduled_circuits(
         schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
         # Flatten the moments into a list of operations to perform some modifications
         instructions: list[stim.CircuitInstruction] = sum(
-            (list(moment.instructions) for moment in moments),
-            start=cast(list[stim.CircuitInstruction], []),
+            (list(moment.instructions) for moment in moments), start=[]
         )
         # Avoid duplicated operations. Any operation that have the Plaquette.get_mergeable_tag() tag
         # is considered mergeable, and can be removed if another operation in the list
@@ -269,10 +265,7 @@ def merge_scheduled_circuits(
         for inst in deduplicated_instructions:
             circuit.append(
                 inst.name,
-                sum(
-                    _sort_target_groups(inst.target_groups()),
-                    start=cast(list[stim.GateTarget], []),
-                ),
+                sum(_sort_target_groups(inst.target_groups()), start=[]),
                 inst.gate_args_copy(),
             )
         all_moments.append(Moment(circuit))
