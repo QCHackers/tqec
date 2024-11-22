@@ -13,7 +13,13 @@ the qubits a plaquette is applied to and perform some operations on them (e.g.,
 get the qubits on a specific side of the plaquette).
 """
 
-from .enums import MeasurementBasis, PlaquetteOrientation, PlaquetteSide, ResetBasis
-from .frozendefaultdict import FrozenDefaultDict
-from .plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
-from .qubit import PlaquetteQubits, SquarePlaquetteQubits
+from .enums import MeasurementBasis as MeasurementBasis
+from .enums import PlaquetteOrientation as PlaquetteOrientation
+from .enums import PlaquetteSide as PlaquetteSide
+from .enums import ResetBasis as ResetBasis
+from .frozendefaultdict import FrozenDefaultDict as FrozenDefaultDict
+from .plaquette import Plaquette as Plaquette
+from .plaquette import Plaquettes as Plaquettes
+from .plaquette import RepeatedPlaquettes as RepeatedPlaquettes
+from .qubit import PlaquetteQubits as PlaquetteQubits
+from .qubit import SquarePlaquetteQubits as SquarePlaquetteQubits

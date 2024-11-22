@@ -4,7 +4,7 @@
 import itertools
 import warnings
 from dataclasses import dataclass
-from typing import Literal, Sequence
+from typing import Literal, Sequence, cast
 
 import stim
 
@@ -113,16 +113,19 @@ class CompiledGraph:
         )
 
         # Compute the detectors and add them in-place in circuits
-        flattened_circuits: list[ScheduledCircuit] = sum(circuits, start=[])
+        flattened_circuits: list[ScheduledCircuit] = sum(
+            circuits, start=cast(list[ScheduledCircuit], [])
+        )
         flattened_templates: list[LayoutTemplate] = sum(
             (
                 [layout.template for _ in range(layout.num_layers)]
                 for layout in self.layout_slices
             ),
-            start=[],
+            start=cast(list[LayoutTemplate], []),
         )
         flattened_plaquettes: list[Plaquettes] = sum(
-            (layout.layers for layout in self.layout_slices), start=[]
+            (layout.layers for layout in self.layout_slices),
+            start=cast(list[Plaquettes], []),
         )
         if manhattan_radius >= 0:
             self._inplace_add_detectors_to_circuits(

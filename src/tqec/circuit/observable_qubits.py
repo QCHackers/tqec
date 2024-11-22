@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from typing import Mapping, Sequence, cast
 
 from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
@@ -49,7 +49,7 @@ def observable_qubits_from_template(
         )
 
     if isinstance(plaquettes, list):
-        plaquettes = {i + 1: plaquette for i, plaquette in enumerate(plaquettes)}
+        plaquettes = {i + 1: p for i, p in enumerate(plaquettes)}
 
     _indices = list(range(1, len(plaquettes) + 1))
     template_plaquettes = template.instantiate(k, _indices)
@@ -63,12 +63,12 @@ def observable_qubits_from_template(
             "The observable qubits cannot be defined."
         ) from e
 
-    observable_qubits = []
+    observable_qubits: list[tuple[GridQubit, int]] = []
     for row_index, column_index in midline_indices:
         plaquette_index = template_plaquettes[row_index][column_index]
         if plaquette_index == 0:
             continue
-        plaquette = plaquettes[plaquette_index]
+        plaquette = cast(Plaquette, plaquettes[plaquette_index])
         # GridQubits are indexed as (row, col), so (y, x)
         offset = Displacement(
             column_index * increments.x + plaquette.origin.x,

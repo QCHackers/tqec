@@ -8,13 +8,13 @@ from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
 from tqec.compile.detectors.compute import (
-    _center_plaquette_syndrome_qubits,
-    _compute_detectors_at_end_of_situation,
-    _compute_superimposed_template_instantiations,
-    _filter_detectors,
-    _get_measurement_offset_mapping,
-    _get_or_default,
-    _matched_detectors_to_detectors,
+    _center_plaquette_syndrome_qubits,  # pyright: ignore[reportPrivateUsage]
+    _compute_detectors_at_end_of_situation,  # pyright: ignore[reportPrivateUsage]
+    _compute_superimposed_template_instantiations,  # pyright: ignore[reportPrivateUsage]
+    _filter_detectors,  # pyright: ignore[reportPrivateUsage]
+    _get_measurement_offset_mapping,  # pyright: ignore[reportPrivateUsage]
+    _get_or_default,  # pyright: ignore[reportPrivateUsage]
+    _matched_detectors_to_detectors,  # pyright: ignore[reportPrivateUsage]
     compute_detectors_at_end_of_situation,
     compute_detectors_for_fixed_radius,
 )

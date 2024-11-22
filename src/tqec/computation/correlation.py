@@ -3,11 +3,11 @@ the functions to find the correlation surfaces in the ZX graph."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import itertools
+from dataclasses import dataclass, field
 from typing import Iterable
 
-from tqec.computation.zx_graph import ZXGraph, ZXKind, ZXNode, ZXEdge
+from tqec.computation.zx_graph import ZXEdge, ZXGraph, ZXKind, ZXNode
 from tqec.exceptions import TQECException
 from tqec.position import Position3D
 
@@ -83,7 +83,7 @@ class CorrelationSurface:
             ZXNode(pos, kind) for pos, kind in supported_observables.items()
         )
 
-        external_stabilizer = {}
+        external_stabilizer: dict[str, str] = {}
         for label, port in zx_graph.ports.items():
             observable_type = supported_observables.get(port)
             if observable_type is None:
@@ -230,7 +230,7 @@ def _construct_compatible_correlation_surfaces(
     - The Y observable can only be supported on the Y type node.
     - The port node can support any type of logical observable.
     """
-    correlation_surfaces = []
+    correlation_surfaces: list[CorrelationSurface] = []
 
     def _is_compatible(
         supported_observables: dict[Position3D, ZXKind],

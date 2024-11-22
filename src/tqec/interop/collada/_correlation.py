@@ -1,8 +1,8 @@
 """Helper functions for representing correlation surfaces in COLLADA model."""
 
+import collada
 import numpy as np
 import numpy.typing as npt
-import collada
 
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.correlation import CorrelationSurface
@@ -49,7 +49,7 @@ def _get_transformations_for_surface_in_pipe(
     edge: ZXEdge,
     pipe_length: float,
 ) -> list[tuple[ZXKind, _Transformation]]:
-    transformations = []
+    transformations: list[tuple[ZXKind, _Transformation]] = []
     normal_direction = _surface_normal_direction(block_graph, edge)
     surface_position = (
         _scale_position(edge.u.position, pipe_length)
@@ -103,7 +103,7 @@ def _get_transformations_for_surface_in_cube(
         cube_kind.as_tuple().index(normal_direction_basis)
     )
     node = cube.to_zx_node()
-    transformations = []
+    transformations: list[tuple[ZXKind, _Transformation]] = []
     # Surfaces with even parity constraint
     if correlation == ZXKind.Y or node.kind == correlation:
         edges = {

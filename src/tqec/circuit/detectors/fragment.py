@@ -5,6 +5,7 @@ import warnings
 from dataclasses import dataclass
 
 import stim
+
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.circuit.detectors.predicates import is_valid_input_circuit
 from tqec.circuit.detectors.utils import (
@@ -124,7 +125,7 @@ class Fragment:
 
     @property
     def measurements_qubits(self) -> list[int]:
-        qubits = []
+        qubits: list[int] = []
         for measurement in self.measurements:
             qubit = measurement.qubit
             qubits.append(qubit)

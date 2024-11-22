@@ -148,8 +148,11 @@ are used in the documentation about templates above, and so their output can be
 observed above.
 """
 
-from .base import Template
-from .display import display_template, display_template_from_instantiation
-from .enums import TemplateOrientation
-from .layout import LayoutTemplate
-from .qubit import QubitTemplate
+from .base import Template as Template
+from .display import display_template as display_template
+from .display import (
+    display_template_from_instantiation as display_template_from_instantiation,
+)
+from .enums import TemplateOrientation as TemplateOrientation
+from .layout import LayoutTemplate as LayoutTemplate
+from .qubit import QubitTemplate as QubitTemplate

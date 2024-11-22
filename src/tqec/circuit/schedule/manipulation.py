@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import itertools
 import warnings
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, cast
 
 import stim
 
@@ -72,10 +72,12 @@ class _ScheduledCircuits:
         operation."""
         return self._current_moments[index] is not None
 
-    def _peek_scheduled_moment(self, index: int) -> tuple[int, Moment] | None:
+    def _peek_scheduled_moment(self, index: int) -> tuple[int, Moment]:
         """Recover **without collecting** the pending operation for the
         instance at the given index."""
-        return self._current_moments[index]
+        ret = self._current_moments[index]
+        assert ret is not None
+        return ret
 
     def _pop_scheduled_moment(self, index: int) -> tuple[int, Moment]:
         """Recover and mark as collected the pending moment for the instance at
@@ -112,7 +114,7 @@ class _ScheduledCircuits:
         for circuit_index in range(self.number_of_circuits):
             if not self._has_pending_moment(circuit_index):
                 continue
-            schedule, _ = self._peek_scheduled_moment(circuit_index)  # type: ignore
+            schedule, _ = self._peek_scheduled_moment(circuit_index)
             circuit_indices_organised_by_schedule.setdefault(schedule, list()).append(
                 circuit_index
             )
@@ -190,16 +192,18 @@ def remove_duplicate_instructions(
     # Add the merged operations into the final ones
     final_operations.extend(
         stim.CircuitInstruction(
-            name, sum(_sort_target_groups([list(t) for t in targets]), start=[]), args
+            name,
+            sum(_sort_target_groups([list(t) for t in targets]), start=[]),
+            args,
         )
         for (name, args), targets in mergeable_operations.items()
     )
     # Warn if the output instructions do not form a valid moment, as this is
     # likely a misuse of this function.
+    circuit = stim.Circuit()
+    for instr in final_operations:
+        circuit.append(instr)
     try:
-        circuit = stim.Circuit()
-        for instr in final_operations:
-            circuit.append(instr)
         Moment.check_is_valid_moment(circuit)
     except TQECException:
         warnings.warn(
@@ -252,7 +256,9 @@ def merge_scheduled_circuits(
     while scheduled_circuits.has_pending_moment():
         schedule, moments = scheduled_circuits.collect_moments_at_minimum_schedule()
         # Flatten the moments into a list of operations to perform some modifications
-        instructions = sum((list(moment.instructions) for moment in moments), start=[])
+        instructions: list[stim.CircuitInstruction] = sum(
+            (list(moment.instructions) for moment in moments), start=[]
+        )
         # Avoid duplicated operations. Any operation that have the Plaquette.get_mergeable_tag() tag
         # is considered mergeable, and can be removed if another operation in the list
         # is considered equal (and has the mergeable tag).
