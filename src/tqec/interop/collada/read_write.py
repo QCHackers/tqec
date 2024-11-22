@@ -20,9 +20,9 @@ from tqec.exceptions import TQECException
 from tqec.interop.collada._geometry import (
     BlockGeometries,
     Face,
-    TQECColor,
     get_correlation_surface_geometry,
 )
+from tqec.interop.color import TQECColor
 from tqec.position import FloatPosition3D, Position3D, SignedDirection3D
 from tqec.scale import round_or_fail
 
