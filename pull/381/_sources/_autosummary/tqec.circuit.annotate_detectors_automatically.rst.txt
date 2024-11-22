@@ -1,6 +1,0 @@
-annotate\_detectors\_automatically
-==================================
-
-.. currentmodule:: tqec.circuit
-
-.. autofunction:: annotate_detectors_automatically

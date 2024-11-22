@@ -1,6 +1,0 @@
-convert\_block\_graph\_to\_zx\_graph
-====================================
-
-.. currentmodule:: tqec.computation
-
-.. autofunction:: convert_block_graph_to_zx_graph

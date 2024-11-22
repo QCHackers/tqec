@@ -378,11 +378,11 @@
   <h1>Source code for tqec.computation.correlation</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">,</span> <span class="n">ZXNode</span><span class="p">,</span> <span class="n">ZXEdge</span>
+<span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXEdge</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">,</span> <span class="n">ZXNode</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 <span class="kn">from</span> <span class="nn">tqec.position</span> <span class="kn">import</span> <span class="n">Position3D</span>
 
@@ -438,7 +438,7 @@
         <span class="n">correlation_types</span> <span class="o">=</span> <span class="n">CorrelationSurface</span><span class="o">.</span><span class="n">get_correlation_types</span><span class="p">(</span><span class="n">span</span><span class="p">)</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">ZXNode</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 
-        <span class="n">external_stabilizer</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">external_stabilizer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">zx_graph</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">correlation_type</span> <span class="o">=</span> <span class="n">correlation_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">correlation_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -569,7 +569,7 @@
 <span class="sd">    is not P, the correlation type must be the same as the node type. If</span>
 <span class="sd">    the node type is P, the correlation type can be any type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">correlation_surfaces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">correlation_surfaces</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CorrelationSurface</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_is_compatible</span><span class="p">(</span>
         <span class="n">correlation_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position3D</span><span class="p">,</span> <span class="n">ZXKind</span><span class="p">],</span>

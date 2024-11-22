@@ -378,7 +378,7 @@
   <h1>Source code for tqec.circuit.observable_qubits</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">tqec.circuit.qubit</span> <span class="kn">import</span> <span class="n">GridQubit</span>
 <span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
@@ -426,7 +426,7 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">plaquettes</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">plaquette</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plaquette</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)}</span>
+        <span class="n">plaquettes</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)}</span>
 
     <span class="n">_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plaquettes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">template_plaquettes</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">_indices</span><span class="p">)</span>
@@ -440,12 +440,12 @@
             <span class="s2">&quot;The observable qubits cannot be defined.&quot;</span>
         <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="n">observable_qubits</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">observable_qubits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">GridQubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">column_index</span> <span class="ow">in</span> <span class="n">midline_indices</span><span class="p">:</span>
         <span class="n">plaquette_index</span> <span class="o">=</span> <span class="n">template_plaquettes</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">column_index</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">plaquette_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">plaquette</span> <span class="o">=</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">]</span>
+        <span class="n">plaquette</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Plaquette</span><span class="p">,</span> <span class="n">plaquettes</span><span class="p">[</span><span class="n">plaquette_index</span><span class="p">])</span>
         <span class="c1"># GridQubits are indexed as (row, col), so (y, x)</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="n">Displacement</span><span class="p">(</span>
             <span class="n">column_index</span> <span class="o">*</span> <span class="n">increments</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">plaquette</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>

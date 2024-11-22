@@ -909,7 +909,7 @@
                 <span class="k">yield</span> <span class="n">cur_moment</span>
                 <span class="n">cur_moment</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">yield</span> <span class="n">op</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">):</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if isinstance(op, stim.CircuitInstruction):</span>
             <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;TICK&quot;</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">cur_moment</span>
                 <span class="n">cur_moment</span> <span class="o">=</span> <span class="p">[]</span>
