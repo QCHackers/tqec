@@ -26,6 +26,8 @@ recommended to use an editable installation.
     cd tqec
     pre-commit install
 
+If you encounter any issue during the installation, please refer to :ref:`installation` for more information.
+
 You can now start contributing, following the rules explained in the next sections.
 
 How to contribute

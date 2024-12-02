@@ -53,8 +53,7 @@ circuit = compiled_computation.generate_stim_circuit(
 )
 ```
 
-See the [quick start tutorial](https://tqec.github.io/tqec/user_guide/index.html) for a
-more in-depth explanation.
+See the [user guide](https://tqec.github.io/tqec/user_guide/index.html) for more tutorials.
 
 ## Contributing
 
