@@ -1,5 +1,5 @@
 import typing
-
+import pytest
 import stim
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.circuit.detectors.utils import (
@@ -23,7 +23,8 @@ def test_iter_by_moment_single_tick() -> None:
 
 
 def test_iter_by_moment_single_qec_round() -> None:
-    circuit = stim.Circuit("""
+    circuit = stim.Circuit(
+        """
         R 0 1 2 3 4
         TICK
         CX 0 1 2 3
@@ -36,7 +37,8 @@ def test_iter_by_moment_single_qec_round() -> None:
         M 0 2 4
         DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
         DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
-        OBSERVABLE_INCLUDE(0) rec[-1]""")
+        OBSERVABLE_INCLUDE(0) rec[-1]"""
+    )
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 4
     moment_iterator = iter_stim_circuit_by_moments(circuit)
     moment = next(moment_iterator)
@@ -54,17 +56,20 @@ def test_iter_by_moment_single_qec_round() -> None:
     moment = next(moment_iterator)
     assert isinstance(moment, stim.Circuit)
     assert len(moment) == 7
-    assert moment == stim.Circuit("""MR 1 3
+    assert moment == stim.Circuit(
+        """MR 1 3
         DETECTOR(1, 0) rec[-2]
         DETECTOR(3, 0) rec[-1]
         M 0 2 4
         DETECTOR(1, 1) rec[-2] rec[-3] rec[-5]
         DETECTOR(3, 1) rec[-1] rec[-2] rec[-4]
-        OBSERVABLE_INCLUDE(0) rec[-1]""")
+        OBSERVABLE_INCLUDE(0) rec[-1]"""
+    )
 
 
 def test_iter_by_moment_repeat_block() -> None:
-    circuit = stim.Circuit("""
+    circuit = stim.Circuit(
+        """
         REPEAT 9 {
             TICK
             CX 0 1 2 3
@@ -75,12 +80,14 @@ def test_iter_by_moment_repeat_block() -> None:
             SHIFT_COORDS(0, 1)
             DETECTOR(1, 0) rec[-2] rec[-4]
             DETECTOR(3, 0) rec[-1] rec[-3]
-        }""")
+        }"""
+    )
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 1
     moment = next(iter_stim_circuit_by_moments(circuit))
     assert isinstance(moment, stim.CircuitRepeatBlock)
     assert len(moment.body_copy()) == 9
-    circuit = stim.Circuit("""
+    circuit = stim.Circuit(
+        """
         R 0 1 2 3 4
         TICK
         CX 0 1 2 3
@@ -98,19 +105,20 @@ def test_iter_by_moment_repeat_block() -> None:
             SHIFT_COORDS(0, 1)
             DETECTOR(1, 0) rec[-2] rec[-4]
             DETECTOR(3, 0) rec[-1] rec[-3]
-        }""")
+        }"""
+    )
     # REPEAT block should NOT be with the last MR before it, even without TICK.
     assert len(list(iter_stim_circuit_by_moments(circuit))) == 5
 
 
-def test_collapse_pauli_strings_at_moment_all_basis() -> None:
-    qubits = list(range(5))
+@pytest.mark.parametrize("basis", ["", "X", "Y", "Z"])
+@pytest.mark.parametrize("qubits", [range(5), [1, 2, 0], [0, 1, 2], [2, 1, 0]])
+def test_collapse_pauli_strings_at_moment_all_basis(basis, qubits) -> None:
     qubits_str = " ".join(map(str, qubits))
-    for basis in ["", "X", "Y", "Z"]:
-        circuit = stim.Circuit(f"R{basis} {qubits_str}")
-        collapsing_operations = collapse_pauli_strings_at_moment(circuit)
-        pauli: typing.Literal["X", "Y", "Z"] = "Z" if basis == "" else basis  # type:ignore
-        assert set(collapsing_operations) == {PauliString({q: pauli}) for q in qubits}
+    circuit = stim.Circuit(f"R{basis} {qubits_str}")
+    collapsing_operations = collapse_pauli_strings_at_moment(circuit)
+    pauli = basis or "Z"
+    assert collapsing_operations == [PauliString({q: pauli}) for q in qubits]
 
 
 def test_collapse_pauli_strings_at_moment_virtual_instruction() -> None:
