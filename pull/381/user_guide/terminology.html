@@ -427,7 +427,7 @@
 Also, we highlight and expand on some concepts that can not fit in the <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>.</p>
 <section id="block">
 <span id="id1"></span><h2>Block<a class="headerlink" href="#block" title="Link to this heading">#</a></h2>
-<p>Represents a block of quantum operations that are local in spacetime.
+<p>Represents quantum operations that encode some logical properties and are local in spacetime.
 The quantum operations within the block are carefully designed to map logical operators in spacetime correctly.
 At the same time, these operations generate syndrome information that protects the logical data, ensuring fault tolerance.</p>
 <p>By composing blocks, we can construct the desired mappings between logical operators
@@ -452,7 +452,7 @@ quantum operations that are applied within the cube. Currently we have the follo
 Then the kind can be specified by the type of the faces looking from the XYZ directions. For example, the <cite>ZXZ</cite> cube in the
 figure above has <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the X direction, <code class="docutils literal notranslate"><span class="pre">X</span></code> type faces along the Y direction, and <code class="docutils literal notranslate"><span class="pre">Z</span></code> type faces along the Z direction.</p>
 <p>A <code class="docutils literal notranslate"><span class="pre">ZXCube</span></code> occupies <span class="math notranslate nohighlight">\(\approx d^3\)</span> spacetime volume, where <span class="math notranslate nohighlight">\(d\)</span> is the code distance.</p>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">ZXZ</span></code>, <code class="docutils literal notranslate"><span class="pre">XZZ</span></code>, <code class="docutils literal notranslate"><span class="pre">ZXX</span></code> and <code class="docutils literal notranslate"><span class="pre">XZX</span></code> cubes can represent a (trivial) logical computation by themselves, i.e. the logical memory experiment.
+<p>Note that <code class="docutils literal notranslate"><span class="pre">ZXZ</span></code>, <code class="docutils literal notranslate"><span class="pre">XZZ</span></code>, <code class="docutils literal notranslate"><span class="pre">ZXX</span></code> and <code class="docutils literal notranslate"><span class="pre">XZX</span></code> cubes can represent a (trivial) logical computation by themselves, i.e. a logical memory experiment.
 For example, the <code class="docutils literal notranslate"><span class="pre">XZX</span></code> cube can be used to represent a logical qubit with <code class="docutils literal notranslate"><span class="pre">Z</span></code>/<code class="docutils literal notranslate"><span class="pre">X</span></code> boundaries parallel to the X/Y axes. And the time boundary
 is of <code class="docutils literal notranslate"><span class="pre">X</span></code> type, which means that the logical qubit is initialized and measured in the logical <code class="docutils literal notranslate"><span class="pre">X</span></code> basis.</p>
 <section id="spatial-junction">
