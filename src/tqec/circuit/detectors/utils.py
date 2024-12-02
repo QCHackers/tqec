@@ -295,10 +295,7 @@ def collapse_pauli_strings_at_moment(moment: stim.Circuit) -> list[PauliString]:
         if is_virtual_instruction(inst):  # type: ignore
             continue
         collapsing_operations = _collapsing_inst_to_pauli_strings(inst)  # type: ignore
-        collapsing_operations_sorted_by_qubit = sorted(
-            collapsing_operations, key=lambda ps: ps.qubit
-        )
-        pauli_strings.extend(collapsing_operations_sorted_by_qubit)
+        pauli_strings.extend(collapsing_operations)
     return pauli_strings
 
 
