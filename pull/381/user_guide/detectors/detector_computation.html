@@ -668,7 +668,7 @@
 <p>The package has an iterative approach to find detectors:</p>
 <ol class="arabic simple">
 <li><p>Try to find detectors fully contained within a single flow (the example of a destruction flow above is exactly in this case).</p></li>
-<li><p>For each adjacent flows <code class="docutils literal notranslate"><span class="pre">f1</span> <span class="pre">--</span> <span class="pre">f2</span></code>, try to find detectors spanning across these two flows:</p>
+<li><p>For each flows <code class="docutils literal notranslate"><span class="pre">f1</span> <span class="pre">--</span> <span class="pre">f2</span></code> such that the first flow <code class="docutils literal notranslate"><span class="pre">f1</span></code> is located in a fragment <code class="docutils literal notranslate"><span class="pre">F</span></code> and the second flow <code class="docutils literal notranslate"><span class="pre">f2</span></code> is located in the fragment just after <code class="docutils literal notranslate"><span class="pre">F</span></code>, try to find detectors spanning across these two flows:</p>
 <ol class="arabic simple">
 <li><p>First by trying to match <code class="docutils literal notranslate"><span class="pre">1</span></code> creation flow from <code class="docutils literal notranslate"><span class="pre">f1</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> destruction flow from <code class="docutils literal notranslate"><span class="pre">f2</span></code>.</p></li>
 <li><p>Then by trying to find:</p>
