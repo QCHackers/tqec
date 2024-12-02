@@ -1,3 +1,5 @@
+.. _installation:
+
 How to install ``tqec``
 =======================
 
