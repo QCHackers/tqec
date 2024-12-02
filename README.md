@@ -39,7 +39,7 @@ from tqec.noise_model import NoiseModel
 # 1. Construct the logical computation
 block_graph = BlockGraph.from_dae_file("assets/logical_cnot.dae")
 
-# 2. Get the logical observables of interests and compile the computation
+# 2. Get the logical observables of interest and compile the computation
 observables, _ = block_graph.get_abstract_observables()
 compiled_computation = compile_block_graph(block_graph, observables=[observables[1]])
 

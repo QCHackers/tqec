@@ -9,7 +9,7 @@ Also, we highlight and expand on some concepts that can not fit in the :ref:`API
 Block
 -----
 
-Represents a block of quantum operations that are local in spacetime.
+Represents quantum operations that encode some logical properties and are local in spacetime.
 The quantum operations within the block are carefully designed to map logical operators in spacetime correctly.
 At the same time, these operations generate syndrome information that protects the logical data, ensuring fault tolerance.
 
@@ -44,7 +44,7 @@ figure above has ``Z`` type faces along the X direction, ``X`` type faces along 
 
 A ``ZXCube`` occupies :math:`\approx d^3` spacetime volume, where :math:`d` is the code distance.
 
-Note that ``ZXZ``, ``XZZ``, ``ZXX`` and ``XZX`` cubes can represent a (trivial) logical computation by themselves, i.e. the logical memory experiment.
+Note that ``ZXZ``, ``XZZ``, ``ZXX`` and ``XZX`` cubes can represent a (trivial) logical computation by themselves, i.e. a logical memory experiment.
 For example, the ``XZX`` cube can be used to represent a logical qubit with ``Z``/``X`` boundaries parallel to the X/Y axes. And the time boundary
 is of ``X`` type, which means that the logical qubit is initialized and measured in the logical ``X`` basis.
 
