@@ -67,7 +67,7 @@ class LayoutTemplate(RectangularTemplate):
         if instantiate_indices is None:
             instantiate_indices = list(range(1, self.expected_plaquettes_number + 1))
         index_count = 0
-        indices_map = {}
+        indices_map: dict[Position2D, dict[int, int]] = {}
         for position, template in self._layout.items():
             indices_map[position] = {
                 i + 1: instantiate_indices[i + index_count]

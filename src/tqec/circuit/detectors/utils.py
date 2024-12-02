@@ -76,7 +76,7 @@ def is_annotation(instruction: stim.CircuitInstruction) -> bool:
 
 
 def is_virtual_instruction(inst: stim.CircuitInstruction) -> bool:
-    return is_annotation(inst) or is_noisy_gate(inst)  # type: ignore
+    return is_annotation(inst) or is_noisy_gate(inst)
 
 
 def is_combined_measurement_reset(instruction: stim.CircuitInstruction) -> bool:

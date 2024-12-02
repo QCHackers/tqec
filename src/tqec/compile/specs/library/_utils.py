@@ -1,4 +1,4 @@
-from typing import Literal, cast
+from typing import Literal
 
 from tqec.compile.block import CompiledBlock
 from tqec.compile.specs.base import CubeSpec, PipeSpec, Substitution
@@ -10,7 +10,7 @@ from tqec.plaquette.enums import (
     ResetBasis,
 )
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
-from tqec.plaquette.library import empty_square_plaquette, PlaquetteBuilder
+from tqec.plaquette.library import PlaquetteBuilder, empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes
 from tqec.position import Direction3D
 from tqec.scale import LinearFunction
@@ -64,9 +64,9 @@ def _build_plaquette_for_different_basis(
     tuple is the plaquette at the left top corner of the square bulk of
     surface code.
     """
+    b1: Literal["X", "Z"]
+    b2: Literal["X", "Z"]
     b1, b2 = ("X", "Z") if x_boundary_orientation == "HORIZONTAL" else ("Z", "X")
-    b1 = cast(Literal["X", "Z"], b1)
-    b2 = cast(Literal["X", "Z"], b2)
 
     def factory(b: Literal["X", "Z"]) -> Plaquette:
         return builder(

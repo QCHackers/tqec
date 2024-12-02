@@ -11,8 +11,6 @@ the qubits a plaquette is applied to and perform some operations on them (e.g.,
 get the qubits on a specific side of the plaquette).
 """
 
-from .plaquette import Plaquette
-from .qubit import (
-    PlaquetteQubits,
-    SquarePlaquetteQubits,
-)
+from .plaquette import Plaquette as Plaquette
+from .qubit import PlaquetteQubits as PlaquetteQubits
+from .qubit import SquarePlaquetteQubits as SquarePlaquetteQubits

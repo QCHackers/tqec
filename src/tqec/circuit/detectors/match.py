@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Iterator, Mapping
+from typing import Final, Iterator, Mapping
 
 import numpy
 import stim
@@ -291,7 +291,7 @@ def match_boundary_stabilizers(
     #     is repeated at least twice).
     #     Because the matching functions are modifying flows in-place, we pre-compute the
     #     detectors here on copies and will compare them before returning.
-    should_sanity_check = perform_sanity_check and (
+    should_sanity_check: Final[bool] = perform_sanity_check and (
         isinstance(right_flows, FragmentLoopFlows) and right_flows.repeat > 1
     )
     if should_sanity_check:
@@ -330,10 +330,16 @@ def match_boundary_stabilizers(
     matched_detectors.extend(
         _match_by_disjoint_cover(left_flows, right_flows, qubit_coordinates)
     )
-
     # Perform the sanity check if needed.
     if should_sanity_check:
-        if set(matched_detectors_within_loop) != set(matched_detectors):
+        # Notes about the following "type: ignore":
+        # - should_sanity_check is "constant" (annotated as Final) and so cannot
+        #   be changed.
+        # - matched_detectors_within_loop is unconditionally bound to a value if
+        #   should_sanity_check is True.
+        # - if we are here, then should_sanity_check is True, and so
+        #   matched_detectors_within_loop should be bound to a value.
+        if set(matched_detectors_within_loop) != set(matched_detectors):  # type: ignore[reportPossiblyUnboundVariable]
             raise TQECException(
                 f"The set of detectors computed from measurements in\n{left_flows}\n"
                 f"and\n{right_flows}\nis not the same as the set of detectors computed "

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import operator
 from collections.abc import Mapping
 from copy import deepcopy
-from typing import Callable, Generic, Iterable, Iterator, TypeVar
+from typing import Callable, Generic, Iterable, Iterator, TypeVar, cast
 
 from typing_extensions import override
 
@@ -79,18 +78,17 @@ class FrozenDefaultDict(Generic[K, V], Mapping[K, V]):
         return hash(tuple(sorted(self.items())))
 
     def __eq__(self, other: object) -> bool:
+        if not isinstance(other, FrozenDefaultDict):
+            return False
+        other = cast(FrozenDefaultDict[K, V], other)
         return (
-            isinstance(other, FrozenDefaultDict)
-            and (
-                (self._default_factory is None and other._default_factory is None)
-                or (
-                    self._default_factory is not None
-                    and other._default_factory is not None
-                    and (self._default_factory() == other._default_factory())
-                )
+            (self._default_factory is None and other._default_factory is None)
+            or (
+                self._default_factory is not None
+                and other._default_factory is not None
+                and (self._default_factory() == other._default_factory())
             )
-            and self._dict == other._dict
-        )
+        ) and self._dict == other._dict
 
     def has_default_factory(self) -> bool:
         return self._default_factory is not None

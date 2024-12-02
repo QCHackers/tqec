@@ -5,6 +5,7 @@ import warnings
 from dataclasses import dataclass
 
 import stim
+
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.circuit.detectors.predicates import is_valid_input_circuit
 from tqec.circuit.detectors.utils import (

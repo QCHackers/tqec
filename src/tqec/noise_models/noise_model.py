@@ -516,7 +516,7 @@ def _iter_split_op_moments(
                 yield cur_moment
                 cur_moment = []
             yield op
-        elif isinstance(op, stim.CircuitInstruction):
+        else:  # if isinstance(op, stim.CircuitInstruction):
             if op.name == "TICK":
                 yield cur_moment
                 cur_moment = []

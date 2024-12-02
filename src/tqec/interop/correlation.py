@@ -1,6 +1,6 @@
+import collada
 import numpy as np
 import numpy.typing as npt
-import collada
 
 from tqec.computation.block_graph import BlockGraph
 from tqec.computation.correlation import CorrelationSurface
@@ -45,7 +45,7 @@ def _get_transformations_for_surface_in_pipe(
     edge: ZXEdge,
     pipe_length: float,
 ) -> list[tuple[ZXKind, Transformation]]:
-    transformations = []
+    transformations: list[tuple[ZXKind, Transformation]] = []
     normal_direction = _surface_normal_direction(block_graph, edge)
     surface_position = (
         _scale_position(edge.u.position, pipe_length)
@@ -95,7 +95,7 @@ def _get_transformations_for_surface_in_cube(
     assert isinstance(cube.kind, ZXCube)
     cube_normal_direction = cube.kind.normal_direction
     node = cube.to_zx_node()
-    transformations = []
+    transformations: list[tuple[ZXKind, Transformation]] = []
     # Surfaces with even parity constraint
     if correlation == ZXKind.Y or node.kind == correlation:
         edges = {
