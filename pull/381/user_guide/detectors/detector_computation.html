@@ -497,8 +497,8 @@
 </div>
 </div>
 <p>We can explore the fragments built:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">fragment</span> <span class="ow">in</span> <span class="n">fragments</span><span class="p">:</span>
@@ -506,6 +506,44 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+================================================================================
+Fragment(circuit=stim.Circuit(&#39;&#39;&#39;
+    QUBIT_COORDS(0) 0
+    QUBIT_COORDS(1) 1
+    QUBIT_COORDS(2) 2
+    QUBIT_COORDS(3) 3
+    QUBIT_COORDS(4) 4
+    R 0 1 2 3 4
+    TICK
+    CX 0 1 2 3
+    TICK
+    CX 2 1 4 3
+    TICK
+    M 1 3
+    TICK
+&#39;&#39;&#39;))
+================================================================================
+FragmentLoop(repetitions=9, fragments=[Fragment(circuit=stim.Circuit(&#39;&#39;&#39;
+    R 1 3
+    TICK
+    CX 0 1 2 3
+    TICK
+    CX 2 1 4 3
+    TICK
+    M 1 3
+    TICK
+&#39;&#39;&#39;))])
+================================================================================
+Fragment(circuit=stim.Circuit(&#39;&#39;&#39;
+    M 0 2 4
+&#39;&#39;&#39;))
+</pre></div></div>
 </div>
 </section>
 <section id="Pre-computing-flows">
@@ -523,8 +561,8 @@
 </div>
 </div>
 <p>Just like fragments, it is interesting to explore and visualise the different flows computed.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="n">flows</span><span class="p">:</span>
@@ -542,6 +580,51 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+================================================================================
+Flow(
+  creation = [
+    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[Z1, Z3], measurements=[], resets={0}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[Z1, Z3], measurements=[], resets={2}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[Z1, Z3], measurements=[], resets={4}, is_forward=True)
+  ],
+  destruction = [
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z3, Z2, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={0, 1, 2}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z3, Z2, Z4, Z0, Z1], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={2, 3, 4}, is_forward=False)
+  ],
+total_number_of_measurements = 2
+)
+================================================================================
+Flow(
+  creation = [
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=True)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=True)
+  ],
+  destruction = [
+    BoundaryStabilizers(stabilizer=Z0*Z1*Z2, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=1)], resets={1}, is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2*Z3*Z4, collapsing_operations=[Z1, Z3], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=3)], resets={3}, is_forward=False)
+  ],
+total_number_of_measurements = 2
+)
+================================================================================
+Flow(
+  creation = [
+  ],
+  destruction = [
+    BoundaryStabilizers(stabilizer=Z0, collapsing_operations=[], measurements=[RelativeMeasurementLocation(offset=-3, qubit_index=0)], resets=set(), is_forward=False)
+    BoundaryStabilizers(stabilizer=Z2, collapsing_operations=[], measurements=[RelativeMeasurementLocation(offset=-2, qubit_index=2)], resets=set(), is_forward=False)
+    BoundaryStabilizers(stabilizer=Z4, collapsing_operations=[], measurements=[RelativeMeasurementLocation(offset=-1, qubit_index=4)], resets=set(), is_forward=False)
+  ],
+total_number_of_measurements = 3
+)
+</pre></div></div>
 </div>
 <p>Let’s use the first fragment and its associated flows as an example and illustrate using <a class="reference external" href="https://algassert.com/crumble">Crumble</a>, a nice tool that can be used to explore stabilizer propagation.</p>
 <p>The first “creation” stabilizer is</p>
@@ -774,47 +857,25 @@ Detectors found for fragment number 2:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec.circuit.detectors.construction</span> <span class="kn">import</span> <span class="n">annotate_detectors_automatically</span>
 <span class="kn">from</span> <span class="nn">tqec.circuit.detectors.utils</span> <span class="kn">import</span> <span class="n">remove_annotations</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">remove_annotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
-<span class="n">annotated_circuit</span> <span class="o">=</span> <span class="n">annotate_detectors_automatically</span><span class="p">(</span><span class="n">remove_annotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<span class="n">base_circuit</span> <span class="o">=</span> <span class="n">remove_annotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+<span class="n">base_circuit</span><span class="o">.</span><span class="n">diagram</span><span class="p">(</span><span class="s2">&quot;timeline-svg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-QUBIT_COORDS(0) 0
-QUBIT_COORDS(1) 1
-QUBIT_COORDS(2) 2
-QUBIT_COORDS(3) 3
-QUBIT_COORDS(4) 4
-R 0 1 2 3 4
-TICK
-CX 0 1 2 3
-TICK
-CX 2 1 4 3
-TICK
-M 1 3
-TICK
-REPEAT 9 {
-    R 1 3
-    TICK
-    CX 0 1 2 3
-    TICK
-    CX 2 1 4 3
-    TICK
-    M 1 3
-    TICK
-}
-M 0 2 4
-</pre></div></div>
+<img alt="../../_images/user_guide_detectors_detector_computation_27_0.svg" src="../../_images/user_guide_detectors_detector_computation_27_0.svg" />
+</div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">annotated_circuit</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">annotated_circuit</span> <span class="o">=</span> <span class="n">annotate_detectors_automatically</span><span class="p">(</span><span class="n">remove_annotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">annotated_circuit</span><span class="p">)</span>
 <span class="n">annotated_circuit</span><span class="o">.</span><span class="n">diagram</span><span class="p">(</span><span class="s2">&quot;timeline-svg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
