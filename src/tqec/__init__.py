@@ -1,9 +1,6 @@
 from ._version import __version__
 from .circuit import ScheduledCircuit as ScheduledCircuit
 from .circuit import ScheduleException as ScheduleException
-from .circuit import (
-    annotate_detectors_automatically as annotate_detectors_automatically,
-)
 from .circuit import generate_circuit as generate_circuit
 from .circuit import merge_scheduled_circuits as merge_scheduled_circuits
 from .compile import compile_block_graph as compile_block_graph
