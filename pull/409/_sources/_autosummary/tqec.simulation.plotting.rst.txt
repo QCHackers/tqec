@@ -1,0 +1,32 @@
+tqec.simulation.plotting
+========================
+
+.. automodule:: tqec.simulation.plotting
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   inset
+

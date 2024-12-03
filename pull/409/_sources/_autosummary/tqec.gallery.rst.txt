@@ -1,0 +1,39 @@
+tqec.gallery
+============
+
+.. automodule:: tqec.gallery
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+
+   logical_cnot
+
+
+   solo_node
+
+
+   three_cnots
+
+

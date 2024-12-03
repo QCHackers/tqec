@@ -1,0 +1,39 @@
+tqec.interop.geometry
+=====================
+
+.. automodule:: tqec.interop.geometry
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_correlation_surface_geometry
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockGeometries
+      Face
+      FaceKind
+   
+   
+
+   
+   
+   
+
+
+
