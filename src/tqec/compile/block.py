@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import dataclass
+from typing import Mapping
 
 from tqec.circuit.generation import generate_circuit
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.exceptions import TQECException
+from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.library.empty import empty_square_plaquette
 from tqec.plaquette.plaquette import Plaquette, Plaquettes, RepeatedPlaquettes
-from tqec.position import Position2D
+from tqec.position import Displacement, Position2D
 from tqec.scale import LinearFunction
 from tqec.templates.base import RectangularTemplate
 from tqec.templates.layout import LayoutTemplate
@@ -33,26 +34,30 @@ class CompiledBlock:
     def num_layers(self) -> int:
         return len(self.layers)
 
-    def with_updated_layer(
+    def update_layers(
         self,
-        plaquettes_to_update: dict[int, Plaquette],
-        layer_to_update: int,
-    ) -> CompiledBlock:
-        """Returns a new `CompiledBlock` with the specified layer updated.
+        substitution: Mapping[int, Plaquettes],
+    ) -> None:
+        """Update the plaquettes in a specific layer of the block.
+
+        Warning: This method modifies the `layers` attribute in place.
 
         Args:
-            plaquettes_to_update: a dictionary of plaquettes to update in the layer.
-            layer_to_update: the index of the layer to update.
+            substitution: a mapping from the layer index to the plaquettes that should
+                be used to update the layer. The index can be negative, which means the
+                layer is counted from the end of the layers list.
         """
-        new_plaquette_layers = []
-        for i, plaquettes in enumerate(self.layers):
-            if i == layer_to_update:
-                new_plaquette_layers.append(
-                    plaquettes.with_updated_plaquettes(plaquettes_to_update)
+        for layer, plaquettes_to_update in substitution.items():
+            if layer < 0:
+                layer = self.num_layers + layer
+            if layer not in range(self.num_layers):
+                raise TQECException(
+                    f"Layer index {layer} is out of range for the block with "
+                    f"{self.num_layers} layers."
                 )
-            else:
-                new_plaquette_layers.append(plaquettes)
-        return CompiledBlock(self.template, new_plaquette_layers)
+            self.layers[layer] = self.layers[layer].with_updated_plaquettes(
+                plaquettes_to_update.collection
+            )
 
 
 class BlockLayout:
@@ -93,9 +98,7 @@ class BlockLayout:
         indices_map = self._template.get_indices_map_for_instantiation()
         merged_layers: list[Plaquettes] = []
         for i in range(num_layers.pop()):
-            merged_plaquettes: defaultdict[int, Plaquette] = defaultdict(
-                empty_square_plaquette
-            )
+            merged_plaquettes: dict[int, Plaquette] = {}
             repetitions: LinearFunction | None = None
             for pos, layers in layers_layout.items():
                 layer = layers[i]
@@ -112,7 +115,11 @@ class BlockLayout:
                 merged_plaquettes.update(
                     {imap[i]: plaquette for i, plaquette in layer.collection.items()}
                 )
-            plaquettes = Plaquettes(merged_plaquettes)
+            plaquettes = Plaquettes(
+                FrozenDefaultDict(
+                    merged_plaquettes, default_factory=empty_square_plaquette
+                )
+            )
             if repetitions is not None:
                 plaquettes = plaquettes.repeat(repetitions)
             merged_layers.append(plaquettes)
@@ -122,11 +129,30 @@ class BlockLayout:
     def num_layers(self) -> int:
         return len(self._layers)
 
-    def instantiate_layer(self, layer_index: int, k: int) -> ScheduledCircuit:
-        """Instantiates the specified layer into a `ScheduledCircuit`.
+    def get_shifted_circuits(self, k: int) -> list[ScheduledCircuit]:
+        """Instantiate and shift the circuits for all the layers in `self`.
 
-        Note that this method does not shift the circuits based on the
-        layout template. And the circuits are not repeated based on the
-        repetitions in the layer.
+        The returned circuit are appropriately shifted to account for any shifts
+        due to the fact that the origin of the template stored in `self` might
+        not be the global origin.
+
+        Args:
+            k: scaling factor used to instantiate the template.
+
+        Returns:
+            as many circuits as there are layers in `self`, each circuit being
+            the instantiation of one layer (i.e., a set of :class:`Plaquette`
+            instances) and the :class:`Template` instance from `self`.
         """
-        return generate_circuit(self._template, k, self._layers[layer_index])
+        # We need to shift the circuit based on the shift of the layout template.
+        top_left_plaquette = self._template.instantiation_origin(k)
+        increments = self._template.get_increments()
+        offset = Displacement(
+            top_left_plaquette.x * increments.x, top_left_plaquette.y * increments.y
+        )
+        return [
+            generate_circuit(self._template, k, layer).map_to_qubits(
+                lambda q: q + offset, inplace_qubit_map=True
+            )
+            for layer in self._layers
+        ]

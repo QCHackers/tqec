@@ -6,9 +6,9 @@ import numpy.typing as npt
 from typing_extensions import override
 
 from tqec.exceptions import TQECException
-from tqec.position import Displacement, Shape2D
+from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D, round_or_fail
-from tqec.templates.enums import TemplateOrientation, TemplateSide
+from tqec.templates.enums import TemplateOrientation
 from tqec.templates.subtemplates import (
     UniqueSubTemplates,
     get_spatially_distinct_subtemplates,
@@ -105,18 +105,6 @@ class Template(ABC):
         """
         return self._default_increments
 
-    @abstractmethod
-    def get_plaquette_indices_on_sides(self, sides: list[TemplateSide]) -> list[int]:
-        """Get the indices of plaquettes that are located on the provided
-        sides.
-
-        Args:
-            sides: the sides to recover plaquettes from.
-
-        Returns:
-            a non-ordered list of plaquette numbers.
-        """
-
     def get_spatially_distinct_subtemplates(
         self, k: int, manhattan_radius: int = 1, avoid_zero_plaquettes: bool = True
     ) -> UniqueSubTemplates:
@@ -145,6 +133,29 @@ class Template(ABC):
         return get_spatially_distinct_subtemplates(
             self.instantiate(k), manhattan_radius, avoid_zero_plaquettes
         )
+
+    def instantiation_origin(self, k: int) -> Position2D:
+        """Coordinates of the top-left entry origin.
+
+        This property returns the coordinates of the origin of the plaquette
+        (:class:`Plaquette.origin`) that corresponds to the top-left entry of
+        the array returned by :meth:`Template.instantiate`.
+
+        Note:
+            the returned coordinates are in plaquette coordinates. That means
+            that, if you want to get the coordinates of the top-left plaquette
+            origin (which is a qubit), you should multiply the coordinates
+            returned by this method by the tiling increments.
+
+        Args:
+            k: scaling parameter used to instantiate the template.
+
+        Returns:
+            the coordinates of the origin of the plaquette
+            (:class:`Plaquette.origin`) that corresponds to the top-left entry
+            of the array returned by :meth:`Template.instantiate`.
+        """
+        return Position2D(0, 0)
 
 
 class RectangularTemplate(Template):

@@ -23,4 +23,4 @@ jobs:
           header: documentation-preview
           recreate: true
           message: |
-            🪓 PR closed, deleted preview at https://qchackers.github.io/tqec/pull/${{github.event.number}}/
+            🪓 PR closed, deleted preview at https://tqec.github.io/tqec/pull/${{github.event.number}}/

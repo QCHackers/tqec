@@ -4,7 +4,7 @@ const formattedInfoTabContent = (
     <p>Welcome to the TQEC app!</p>
     <a
       className="App-link"
-      href="https://github.com/QCHackers/tqec"
+      href="https://github.com/tqec/tqec"
       target="_blank"
       rel="noopener noreferrer"
     >

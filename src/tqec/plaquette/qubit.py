@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import typing as ty
 from dataclasses import dataclass
-from fractions import Fraction
 
 from tqec.circuit.qubit import GridQubit
-from tqec.plaquette.enums import PlaquetteOrientation, PlaquetteSide
+from tqec.plaquette.enums import PlaquetteSide
 from tqec.templates.enums import TemplateOrientation
 
 
@@ -22,11 +21,6 @@ class PlaquetteQubits:
     def all_qubits(self) -> list[GridQubit]:
         return list(self)
 
-    def permute_data_qubits(self, permutation: ty.Sequence[int]) -> PlaquetteQubits:
-        return PlaquetteQubits(
-            [self.data_qubits[i] for i in permutation], self.syndrome_qubits
-        )
-
     def get_edge_qubits(
         self,
         orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL,
@@ -41,7 +35,7 @@ class PlaquetteQubits:
             The qubits on the edge of the plaquette.
         """
 
-        def _get_relevant_value(qubit: GridQubit) -> Fraction:
+        def _get_relevant_value(qubit: GridQubit) -> int:
             return qubit.y if orientation == TemplateOrientation.HORIZONTAL else qubit.x
 
         max_index = max(_get_relevant_value(q) for q in self.data_qubits)
@@ -77,38 +71,20 @@ class PlaquetteQubits:
             max_y = max(q.y for q in self)
             return [q for q in self if q.y == max_y]
 
+    def __hash__(self) -> int:
+        return hash((tuple(self.syndrome_qubits), tuple(self.data_qubits)))
+
+    def __eq__(self, rhs: object) -> bool:
+        return (
+            isinstance(rhs, PlaquetteQubits)
+            and self.data_qubits == rhs.data_qubits
+            and self.syndrome_qubits == rhs.syndrome_qubits
+        )
+
 
 class SquarePlaquetteQubits(PlaquetteQubits):
     def __init__(self) -> None:
         super().__init__(
             [GridQubit(-1, -1), GridQubit(1, -1), GridQubit(-1, 1), GridQubit(1, 1)],
-            [GridQubit(0, 0)],
-        )
-
-
-class RoundedPlaquetteQubits(PlaquetteQubits):
-    _POTENTIAL_DATA_QUBITS: ty.Final[list[GridQubit]] = [
-        GridQubit(-1, -1),
-        GridQubit(1, -1),
-        GridQubit(-1, 1),
-        GridQubit(1, 1),
-    ]
-
-    @staticmethod
-    def _get_qubits_on_side(side: PlaquetteSide) -> list[GridQubit]:
-        data_indices: tuple[int, int]
-        if side == PlaquetteSide.LEFT:
-            data_indices = (0, 2)
-        elif side == PlaquetteSide.RIGHT:
-            data_indices = (1, 3)
-        elif side == PlaquetteSide.UP:
-            data_indices = (0, 1)
-        else:  # if orientation == PlaquetteSide.DOWN:
-            data_indices = (2, 3)
-        return [RoundedPlaquetteQubits._POTENTIAL_DATA_QUBITS[i] for i in data_indices]
-
-    def __init__(self, orientation: PlaquetteOrientation):
-        super().__init__(
-            RoundedPlaquetteQubits._get_qubits_on_side(orientation.to_plaquette_side()),
             [GridQubit(0, 0)],
         )

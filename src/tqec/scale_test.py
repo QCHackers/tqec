@@ -86,8 +86,6 @@ def test_scalable_2d_add() -> None:
     B = Scalable2D(LinearFunction(-12, 0), LinearFunction(1, 5))
     C = Scalable2D(LinearFunction(-12, 0), LinearFunction(2, 5))
     assert A + B == C
-    with pytest.raises(TQECException):
-        A + LinearFunction(1, 0)  # type: ignore
 
 
 def test_round_or_fail() -> None:

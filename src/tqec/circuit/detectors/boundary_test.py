@@ -154,6 +154,26 @@ def test_coordinates() -> None:
     )
 
 
+def test_coordinates_raises_error_if_invalid_qubit_mapping() -> None:
+    X0Z1 = PauliString({0: "X", 1: "Z"})
+    X0 = PauliString({0: "X"})
+    Z1 = PauliString({1: "Z"})
+
+    a = BoundaryStabilizer(
+        X0Z1,
+        [X0, Z1],
+        [RelativeMeasurementLocation(-28, 5), RelativeMeasurementLocation(-10, 3)],
+        frozenset([3, 5]),
+        True,
+    )
+    qubit_coordinates: dict[int, tuple[float | int, ...]] = {3: (0, 1)}
+    with pytest.raises(
+        TQECException,
+        match=r"^Qubit index 5 required for detector assignment, but it does not have a valid QUBIT_COORDS statement\.$",
+    ):
+        a.coordinates(qubit_coordinates=qubit_coordinates)
+
+
 def test_manhattan_distance() -> None:
     X0Z1 = PauliString({0: "X", 1: "Z"})
     Z0X1 = PauliString({0: "Z", 1: "X"})

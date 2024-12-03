@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import typing as ty
+from typing import Iterable, Mapping
 
 import numpy
+
 from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.circuit.detectors.pauli import PauliString
 from tqec.exceptions import TQECException
@@ -12,7 +13,7 @@ class BoundaryStabilizer:
     def __init__(
         self,
         stabilizer: PauliString,
-        collapsing_operations: ty.Iterable[PauliString],
+        collapsing_operations: Iterable[PauliString],
         measurements: list[RelativeMeasurementLocation],
         reset_qubits: frozenset[int],
         forward: bool,
@@ -91,7 +92,7 @@ class BoundaryStabilizer:
         return self._stabilizer
 
     @property
-    def collapsing_operations(self) -> ty.Iterable[PauliString]:
+    def collapsing_operations(self) -> Iterable[PauliString]:
         """Iterator on all the collapsing operations defining the boundary this
         stabilizer is applied to."""
         return self._collapsing_operations
@@ -190,7 +191,7 @@ class BoundaryStabilizer:
         return ret
 
     def coordinates(
-        self, qubit_coordinates: dict[int, tuple[float, ...]]
+        self, qubit_coordinates: Mapping[int, tuple[float, ...]]
     ) -> tuple[float, ...]:
         """Compute and return the coordinates of the boundary stabilizer.
 
@@ -200,13 +201,24 @@ class BoundaryStabilizer:
         Args:
             qubit_coordinates: mapping from qubit indices to coordinates
 
+        Raises:
+            TQECException: If a qubit in self.source_qubits is not contained
+            in the qubit_coordinates mapping.
+
         Returns:
             the boundary stabilizer coordinates.
         """
-        measurement_coordinates = [
-            qubit_coordinates[source] for source in self.source_qubits
-        ]
-        return tuple(numpy.mean(measurement_coordinates, axis=0))
+        try:
+            measurement_coordinates = [
+                qubit_coordinates[source] for source in self.source_qubits
+            ]
+        except KeyError as exc:
+            raise TQECException(
+                f"""Qubit index {exc.args[0]} required for detector assignment, but it does not have a valid QUBIT_COORDS statement."""
+            )
+        # Avoid returning numpy.float64 type returned by numpy.mean by
+        # explicitly calling float() on it.
+        return tuple(float(c) for c in numpy.mean(measurement_coordinates, axis=0))
 
     def with_measurement_offset(self, offset: int) -> BoundaryStabilizer:
         return BoundaryStabilizer(

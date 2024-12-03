@@ -9,60 +9,35 @@ from __future__ import annotations
 
 import typing as ty
 from collections import defaultdict
-from fractions import Fraction
 
 import stim
 
-from tqec.exceptions import TQECException
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.position import Displacement, Position2D
-
-NumericType = int | float | Fraction
-
-
-def _to_fraction(value: NumericType) -> Fraction:
-    if isinstance(value, int):
-        return Fraction(value, 1)
-    elif isinstance(value, float):
-        return Fraction.from_float(value)
-    return value
 
 
 class GridQubit:
-    """Represent a qubit placed on a 2-dimensional grid.
+    """Represent a qubit placed on a 2-dimensional grid."""
 
-    Internally, this class represents the qubit coordinates as fractions. This
-    design choice has been made for several reasons:
-
-    - the :class:`fractions.Fraction` type is hashable (and its hash is usable,
-      which is not the case for `float` for example).
-    - most of the qubit coordinates we manipulated since the beginning are
-      integers and so can be exactly represented by an instance of
-      :class:`fractions.Fraction`.
-    - it might make sense to have some qubits on "half-integer" (e.g., `0.5` or
-      `4.5`) as some Crumble or Stim pre-built circuits use such coordinates.
-
-    This means that the `x` and `y` coordinates will be returned as `Fraction`
-    instances to the user.
-    """
-
-    def __init__(self, x: NumericType, y: NumericType) -> None:
-        self._x = _to_fraction(x)
-        self._y = _to_fraction(y)
+    def __init__(self, x: int, y: int) -> None:
+        self._x = x
+        self._y = y
 
     @property
-    def x(self) -> Fraction:
+    def x(self) -> int:
         return self._x
 
     @property
-    def y(self) -> Fraction:
+    def y(self) -> int:
         return self._y
 
     def to_qubit_coords_instruction(self, index: int) -> stim.CircuitInstruction:
         """Return the `QUBIT_COORDS` `stim.CircuitInstruction` needed to define
         `self` in a `stim.Circuit`."""
-        # TODO: check ordering here.
         return stim.CircuitInstruction(
-            "QUBIT_COORDS", [index], [float(self.x), float(self.y)]
+            "QUBIT_COORDS",
+            [index],
+            StimCoordinates(self.x, self.y).to_stim_coordinates(),
         )
 
     def __add__(self, other: GridQubit | Position2D | Displacement) -> GridQubit:
@@ -71,10 +46,10 @@ class GridQubit:
     def __sub__(self, other: GridQubit | Position2D | Displacement) -> GridQubit:
         return GridQubit(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other: float) -> GridQubit:
+    def __mul__(self, other: int) -> GridQubit:
         return GridQubit(other * self.x, other * self.y)
 
-    def __rmul__(self, other: float) -> GridQubit:
+    def __rmul__(self, other: int) -> GridQubit:
         return GridQubit(other * self.x, other * self.y)
 
     def __hash__(self) -> int:
@@ -90,6 +65,9 @@ class GridQubit:
 
     def __repr__(self) -> str:
         return f"GridQubit({self.x}, {self.y})"
+
+    def __str__(self) -> str:
+        return f"Q[{self.x}, {self.y}]"
 
 
 """Names of the `stim` instructions that are considered as annotations."""
@@ -152,7 +130,7 @@ def count_qubit_accesses(circuit: stim.Circuit) -> dict[int, int]:
     return counter
 
 
-def get_used_qubit_indices(circuit: stim.Circuit) -> frozenset[int]:
+def get_used_qubit_indices(circuit: stim.Circuit) -> set[int]:
     """Returns the indices of qubits that are used by at least one non-
     annotation instruction.
 
@@ -163,35 +141,4 @@ def get_used_qubit_indices(circuit: stim.Circuit) -> frozenset[int]:
         the set of qubit indices that are used by at least one non-annotation
         instruction.
     """
-    return frozenset(count_qubit_accesses(circuit).keys())
-
-
-def get_final_qubits(circuit: stim.Circuit) -> dict[int, GridQubit]:
-    """Returns the existing qubits and their coordinates at the end of the
-    provided `circuit`.
-
-    Warning:
-        This function, just like
-        [`stim.Circuit.get_final_qubit_coordinates`](https://github.com/quantumlib/Stim/blob/main/doc/python_api_reference_vDev.md#stim.Circuit.get_final_qubit_coordinates),
-        returns the qubit coordinates **at the end** of the provided `circuit`.
-
-    Args:
-        circuit: instance to get qubit coordinates from.
-
-    Raises:
-        TQECException: if any of the final qubits is not defined with exactly 2
-            coordinates (we only consider qubits on a 2-dimensional grid).
-
-    Returns:
-        a mapping from qubit indices (keys) to qubit coordinates (values).
-    """
-    qubit_coordinates = circuit.get_final_qubit_coordinates()
-    qubits: dict[int, GridQubit] = {}
-    for qi, coords in qubit_coordinates.items():
-        if len(coords) != 2:
-            raise TQECException(
-                "Qubits should be defined on exactly 2 spatial dimensions. "
-                f"Found {qi} -> {coords} defined on {len(coords)} spatial dimensions."
-            )
-        qubits[qi] = GridQubit(*coords)
-    return qubits
+    return set(count_qubit_accesses(circuit).keys())

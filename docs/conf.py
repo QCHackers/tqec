@@ -67,15 +67,24 @@ add_module_names = False
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 
-# See https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
+# -- Options for PyData Sphinx Theme -----------------------------------------
 html_theme_options = {
-    "style_external_links": True,
-    "navigation_depth": 4,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/tqec/tqec",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "Google Group",
+            "url": "https://groups.google.com/g/tqec-design-automation",
+            "icon": "fa-solid fa-envelope",
+        },
+    ]
 }
-
 
 # -- Options for Napoleon extension ------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration

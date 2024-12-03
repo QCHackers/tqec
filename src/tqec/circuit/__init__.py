@@ -1,4 +1,5 @@
-"""Defines core classes and functions to represent and manipulate quantum circuits.
+"""Defines core classes and functions to represent and manipulate quantum
+circuits.
 
 This package defines the core class :class:`ScheduledCircuit` that is used to
 represent a quantum circuit in the `tqec` library. It also defines a few core
@@ -17,6 +18,10 @@ Functions from this package are really the backbone of the `tqec` library and ar
 re-used in higher-level packages (such as `tqec.compile`).
 """
 
-from .detectors.construction import annotate_detectors_automatically
-from .generation import generate_circuit
-from .schedule import ScheduledCircuit, ScheduleException, merge_scheduled_circuits
+from .detectors.construction import (
+    annotate_detectors_automatically as annotate_detectors_automatically,
+)
+from .generation import generate_circuit as generate_circuit
+from .schedule import ScheduledCircuit as ScheduledCircuit
+from .schedule import ScheduleException as ScheduleException
+from .schedule import merge_scheduled_circuits as merge_scheduled_circuits

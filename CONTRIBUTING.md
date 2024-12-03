@@ -2,18 +2,18 @@
 
 ## Open issues
 
-If you found a bug or would like a missing feature to be implemented, [create an issue](https://github.com/QCHackers/tqec/issues/new/choose). In order for your issue to be efficiently treated, please tag it with either of the `backend` or `frontend` tags and include as much information as possible.
+If you found a bug or would like a missing feature to be implemented, [create an issue](https://github.com/tqec/tqec/issues/new/choose). In order for your issue to be efficiently treated, please tag it with either of the `backend` or `frontend` tags and include as much information as possible.
 
 ## Asking a question
 
-If you only want to ask a question, go to the [issue panel](https://github.com/QCHackers/tqec/issues/new/choose) and click on the "Ask a question" template. Provide as much information as possible.
+If you only want to ask a question, go to the [issue panel](https://github.com/tqec/tqec/issues/new/choose) and click on the "Ask a question" template. Provide as much information as possible.
 
 ## Contributing code
 
 Code contribution follow a rigid but standard process:
 
-1. Check if there is an issue describing the problem you want to solve or the feature you want to implement in the [issues panel](https://github.com/QCHackers/tqec/issues).
-2. If there is no issue, [create an issue](https://github.com/QCHackers/tqec/issues/new/choose) describing what you want to do.
+1. Check if there is an issue describing the problem you want to solve or the feature you want to implement in the [issues panel](https://github.com/tqec/tqec/issues).
+2. If there is no issue, [create an issue](https://github.com/tqec/tqec/issues/new/choose) describing what you want to do.
 3. Assign yourself on the issue.
 4. Fork the repository and create a new branch.
 5. Write down the code and submit a pull request when you think you fixed the issue. If the changes start accumulating and the to-be-opened PR is large, open a draft PR to let other people look at your code, even if it still needs to be fully finished.

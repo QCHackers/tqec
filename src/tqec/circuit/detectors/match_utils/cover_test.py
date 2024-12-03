@@ -5,8 +5,9 @@ import typing as ty
 
 import pytest
 import stim
+
 from tqec.circuit.detectors.match_utils.cover import (
-    _all_pauli_string_combination_results,
+    _all_pauli_string_combination_results,  # pyright: ignore[reportPrivateUsage]
     find_commuting_cover_on_target_qubits_sat,
     find_exact_cover_sat,
 )

@@ -1,1 +1,2 @@
-"""Defines several helper methods to facilitate visualising QEC circuit simulation."""
+"""Defines several helper methods to facilitate visualising QEC circuit
+simulation."""

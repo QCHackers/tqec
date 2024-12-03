@@ -9,7 +9,6 @@ from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D
 from tqec.templates.base import RectangularTemplate
-from tqec.templates.enums import TemplateSide
 
 
 class LayoutTemplate(RectangularTemplate):
@@ -68,7 +67,7 @@ class LayoutTemplate(RectangularTemplate):
         if instantiate_indices is None:
             instantiate_indices = list(range(1, self.expected_plaquettes_number + 1))
         index_count = 0
-        indices_map = {}
+        indices_map: dict[Position2D, dict[int, int]] = {}
         for position, template in self._layout.items():
             indices_map[position] = {
                 i + 1: instantiate_indices[i + index_count]
@@ -108,19 +107,6 @@ class LayoutTemplate(RectangularTemplate):
         )
 
     @override
-    def get_plaquette_indices_on_sides(self, _: list[TemplateSide]) -> list[int]:
-        """Get the indices of plaquettes that are located on the provided
-        sides.
-
-        Args:
-            sides: the sides to recover plaquettes from.
-
-        Returns:
-            a non-ordered list of plaquette numbers.
-        """
-        raise NotImplementedError()
-
-    @override
     def instantiate(
         self, k: int, plaquette_indices: Sequence[int] | None = None
     ) -> npt.NDArray[numpy.int_]:
@@ -156,3 +142,11 @@ class LayoutTemplate(RectangularTemplate):
                 * element_shape[1],
             ] = element_instantiation
         return ret
+
+    @override
+    def instantiation_origin(self, k: int) -> Position2D:
+        origin_shift = self.origin_shift
+        element_shape = self.element_shape(k)
+        return Position2D(
+            origin_shift.x * element_shape.x, origin_shift.y * element_shape.y
+        )

@@ -1,5 +1,5 @@
 [lint]
 ignore-init-module-imports = true
 ignore = [
-    "F401", # see https://github.com/QCHackers/tqec/issues/164
+    "F401", # see https://github.com/tqec/tqec/issues/164
 ]
