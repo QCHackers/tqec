@@ -5,7 +5,9 @@ from pathlib import Path
 import pytest
 import stim
 
-from tqec.circuit.detectors.construction import annotate_detectors_automatically
+from tqecd.construction import annotate_detectors_automatically
+from tqecd.exceptions import TQECDException
+
 from tqec.circuit.detectors.utils import (
     detector_to_targets_tuple,
     push_all_detectors_to_the_end,
@@ -83,5 +85,5 @@ def test_invalid_circuits(name: str, circuit: stim.Circuit, error_message: str) 
     circuit_without_detectors = remove_annotations(
         circuit, frozenset(["DETECTOR", "SHIFT_COORDS"])
     )
-    with pytest.raises(TQECException, match=rf"^{error_message}$"):
+    with pytest.raises(TQECDException, match=rf"^{error_message}$"):
         annotate_detectors_automatically(circuit_without_detectors)
