@@ -89,7 +89,7 @@ generated.
 
 .. code-block:: python
 
-    from tqec import annotate_detectors_automatically
+    from tqecd.construction import annotate_detectors_automatically
 
     circuit_with_detectors = annotate_detectors_automatically(circuit)
 
