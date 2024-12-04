@@ -117,7 +117,6 @@ module = [
     "collada",
     "collada.source",
     "mpl_toolkits.mplot3d.axes3d",
-    "tqecd",
 ]
 ignore_missing_imports = true
 
