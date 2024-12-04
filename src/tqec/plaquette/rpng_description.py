@@ -16,7 +16,49 @@ def validate_rpng_string(
         debug_info: bool = True
     ) -> int:
     """Check the validity of a RPNG string
+
+    ----
+    Simplified RPNG format:
+
+    -z1- -z2- -z3- -z4-
+    rpng rpng rpng rpng
     
+    (r) data qubit reset basis or h or -  
+    (p) data basis for the controlled operation (x means CNOT controlled on the ancilla and targeting the data qubit, y means CY, z means CZ)  
+    (n) time step (positive integers, all distinct, typically in 1-5)  
+    (g) data qubit measure basis or h or -
+
+    Assumptions on the circuit:
+    - if not otherwise stated, a basis can be {x,y,z}
+    - the ancilla is always initialized in $\ket{+}$ and measured in the X basis
+    - the ancilla is always the control qubit for the CNOT and CZ gates
+    - time step of r same as ancilla reset (default 0)
+    - time step of g same as ancilla measurement (default 6)
+
+    ----
+    Extended RPNG format:
+
+    z0z5 -xz1- -xz2- -xz3- -xz4-
+    pnpn rppng rppng rppng rppng
+
+    (p) ancilla init basis  
+    (n) time step  
+    (p) ancilla measure basis  
+    (n) time step
+
+    (r) data qubit reset basis or h or -  
+    (pp) ancilla-data 2-qubit bases (xz means CNOT targeting the ancilla)
+    (n) time step (positive integers, all distinct)
+    (g) data qubit measure basis or h or -
+
+    Assumptions on the circuit:
+    - if not otherwise stated, a basis can be {x,y,z}
+    - at least one of the (pp) must be z, indicating the control qubit
+    - time step of r same as ancilla reset
+    - time step of g same as ancilla measurement
+    - the time step of every (pp) must be in [ancilla init time + 1, ancilla measure time -1]  
+
+    ----
     Return values:
     0 -- invalide rpng string
     1 -- valide rpng string in the simplified format 
