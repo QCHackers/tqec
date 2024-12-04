@@ -41,6 +41,14 @@
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/circuit/schedule/exception';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../api.html">
     API Reference
   </a>
@@ -376,11 +398,13 @@
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.schedule.exception</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines :class:`~tqec.circuit.schedule.exception.ScheduleException`.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">tqec.exceptions</span> <span class="kn">import</span> <span class="n">TQECException</span>
 
 
 <div class="viewcode-block" id="ScheduleException">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.exception.ScheduleException.html#tqec.circuit.schedule.exception.ScheduleException">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.ScheduleException.html#tqec.circuit.ScheduleException">[docs]</a>
 <span class="k">class</span> <span class="nc">ScheduleException</span><span class="p">(</span><span class="n">TQECException</span><span class="p">):</span>
     <span class="k">pass</span></div>
 

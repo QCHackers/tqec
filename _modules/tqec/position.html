@@ -41,6 +41,14 @@
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/position';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../api.html">
     API Reference
   </a>
@@ -376,7 +398,33 @@
                 <article class="bd-article">
                   
   <h1>Source code for tqec.position</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines 2D and 3D data-structures storing vectors of integers.</span>
+
+<span class="sd">This module defines several classes to store pairs (2D) or 3-tuples (3D) of</span>
+<span class="sd">integers representing coordinates. They are used all over the code base to avoid</span>
+<span class="sd">any coordinate system mess and to explicitly annotate each coordinate with its</span>
+<span class="sd">significance. Basically, instead of having</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    coords = (0, 4)  # Is it (y, x) or (x, y)?</span>
+<span class="sd">    # 0 used below, but if the coords tuple was obtained from a call to</span>
+<span class="sd">    # `.shape` from a numpy array it should rather be a 1.</span>
+<span class="sd">    x = coords[0]</span>
+
+<span class="sd">we have</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    coords = Position2D(0, 4)</span>
+<span class="sd">    x = coords.x</span>
+
+<span class="sd">This is particularly useful when we, as humans, are mostly used to always have</span>
+<span class="sd">(x, y) coordinates but some libraries (such as numpy) reverse that order for</span>
+<span class="sd">indexing.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
@@ -388,7 +436,7 @@
 
 
 <div class="viewcode-block" id="Position2D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.Position2D.html#tqec.position.Position2D">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.Position2D.html#tqec.Position2D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Position2D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
@@ -404,15 +452,18 @@
     <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">int</span>
 
+<div class="viewcode-block" id="Position2D.to_grid_qubit">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position2D.html#tqec.Position2D.to_grid_qubit">[docs]</a>
     <span class="k">def</span> <span class="nf">to_grid_qubit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the position as a tuple following the cirq.GridQubit</span>
 <span class="sd">        coordinate system.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="Shape2D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.Shape2D.html#tqec.position.Shape2D">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.Shape2D.html#tqec.Shape2D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Shape2D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
@@ -428,6 +479,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">int</span>
 
+<div class="viewcode-block" id="Shape2D.to_numpy_shape">
+<a class="viewcode-back" href="../../_autosummary/tqec.Shape2D.html#tqec.Shape2D.to_numpy_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">to_numpy_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the shape according to numpy indexing.</span>
 
@@ -437,11 +490,12 @@
 <span class="sd">        the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="Displacement">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.Displacement.html#tqec.position.Displacement">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.Displacement.html#tqec.Displacement">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Displacement</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper around tuple[int, int].</span>
@@ -466,7 +520,7 @@
 
 
 <div class="viewcode-block" id="Position3D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.Position3D.html#tqec.position.Position3D">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Position3D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A 3D integer position.&quot;&quot;&quot;</span>
@@ -479,10 +533,15 @@
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">TQECException</span><span class="p">(</span><span class="s2">&quot;Position must be an integer.&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Position3D.shift_by">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D.shift_by">[docs]</a>
     <span class="k">def</span> <span class="nf">shift_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the position by the given offset.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Position3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+</span> <span class="n">dz</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Position3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+</span> <span class="n">dz</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Position3D.shift_in_direction">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D.shift_in_direction">[docs]</a>
     <span class="k">def</span> <span class="nf">shift_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Direction3D</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift the position in the given direction by the given shift.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
@@ -490,30 +549,40 @@
         <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dy</span><span class="o">=</span><span class="n">shift</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=</span><span class="n">shift</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shift_by</span><span class="p">(</span><span class="n">dz</span><span class="o">=</span><span class="n">shift</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Position3D.is_neighbour">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D.is_neighbour">[docs]</a>
     <span class="k">def</span> <span class="nf">is_neighbour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Position3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the other position is near to this position, i.e. Manhattan</span>
 <span class="sd">        distance is 1.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">z</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Position3D.as_tuple">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D.as_tuple">[docs]</a>
     <span class="k">def</span> <span class="nf">as_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the position as a tuple.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">)&quot;</span>
 
+<div class="viewcode-block" id="Position3D.as_2d">
+<a class="viewcode-back" href="../../_autosummary/tqec.Position3D.html#tqec.Position3D.as_2d">[docs]</a>
     <span class="k">def</span> <span class="nf">as_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Position2D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the position as a 2D position.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Position2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="Direction3D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.Direction3D.html#tqec.position.Direction3D">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.Direction3D.html#tqec.Direction3D">[docs]</a>
 <span class="k">class</span> <span class="nc">Direction3D</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Axis directions in the 3D spacetime diagram.&quot;&quot;&quot;</span>
 
@@ -521,10 +590,13 @@
     <span class="n">Y</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="mi">2</span>
 
+<div class="viewcode-block" id="Direction3D.all_directions">
+<a class="viewcode-back" href="../../_autosummary/tqec.Direction3D.html#tqec.Direction3D.all_directions">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">all_directions</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Direction3D</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all the directions.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Direction3D</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">Direction3D</span><span class="o">.</span><span class="n">Z</span><span class="p">]</span></div>
+
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
@@ -532,7 +604,7 @@
 
 
 <div class="viewcode-block" id="SignedDirection3D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.SignedDirection3D.html#tqec.position.SignedDirection3D">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/tqec.SignedDirection3D.html#tqec.SignedDirection3D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SignedDirection3D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Signed directions in the 3D spacetime diagram.&quot;&quot;&quot;</span>
@@ -548,8 +620,6 @@
 
 
 
-<div class="viewcode-block" id="FloatPosition3D">
-<a class="viewcode-back" href="../../_autosummary/tqec.position.FloatPosition3D.html#tqec.position.FloatPosition3D">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">FloatPosition3D</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A 3D float position.&quot;&quot;&quot;</span>
@@ -575,8 +645,7 @@
 
     <span class="k">def</span> <span class="nf">as_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the position as a numpy array.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 
                 </article>

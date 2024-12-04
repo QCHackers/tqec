@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/simulation/simulation';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -386,12 +408,12 @@
 <span class="kn">from</span> <span class="nn">tqec.compile.specs.library.css</span> <span class="kn">import</span> <span class="n">CSS_BLOCK_BUILDER</span><span class="p">,</span> <span class="n">CSS_SUBSTITUTION_BUILDER</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.block_graph</span> <span class="kn">import</span> <span class="n">BlockGraph</span>
 <span class="kn">from</span> <span class="nn">tqec.computation.abstract_observable</span> <span class="kn">import</span> <span class="n">AbstractObservable</span>
-<span class="kn">from</span> <span class="nn">tqec.noise_models.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 <span class="kn">from</span> <span class="nn">tqec.simulation.generation</span> <span class="kn">import</span> <span class="n">generate_sinter_tasks</span>
 
 
 <div class="viewcode-block" id="start_simulation_using_sinter">
-<a class="viewcode-back" href="../../../_autosummary/tqec.simulation.simulation.start_simulation_using_sinter.html#tqec.simulation.simulation.start_simulation_using_sinter">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.simulation.start_simulation_using_sinter.html#tqec.simulation.start_simulation_using_sinter">[docs]</a>
 <span class="k">def</span> <span class="nf">start_simulation_using_sinter</span><span class="p">(</span>
     <span class="n">block_graph</span><span class="p">:</span> <span class="n">BlockGraph</span><span class="p">,</span>
     <span class="n">ks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>

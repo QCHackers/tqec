@@ -1,6 +1,0 @@
-tqec.computation.abstract\_observable.correlation\_surface\_to\_abstract\_observable
-====================================================================================
-
-.. currentmodule:: tqec.computation.abstract_observable
-
-.. autofunction:: correlation_surface_to_abstract_observable

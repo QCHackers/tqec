@@ -41,6 +41,14 @@
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/circuit/schedule/manipulation';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../api.html">
     API Reference
   </a>
@@ -376,20 +398,21 @@
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.schedule.manipulation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Defines functions to modify or merge :class:`ScheduledCircuit` instances.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines functions to modify or merge</span>
+<span class="sd">:class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` instances.</span>
 
-<span class="sd">This module implement a few central functions for the ``tqec`` library:</span>
+<span class="sd">This module implement a few central functions for the :mod:`tqec` library:</span>
 
 <span class="sd">- :func:`remove_duplicate_instructions` to remove some instructions appearing</span>
 <span class="sd">  twice in a single moment (most of the time due to data qubit</span>
 <span class="sd">  reset/measurements that are defined by each plaquette, even on qubits shared</span>
 <span class="sd">  with other plaquettes, leading to duplicates).</span>
-<span class="sd">- :func:`merge_scheduled_circuits` that merge several :class:`ScheduledCircuit`</span>
-<span class="sd">  instances into one.</span>
+<span class="sd">- :func:`merge_scheduled_circuits` that merge several</span>
+<span class="sd">  :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` instances into one.</span>
 <span class="sd">- :func:`relabel_circuits_qubit_indices` to prepare several</span>
-<span class="sd">  :class:`ScheduledCircuit` before merging them. This function is called</span>
-<span class="sd">  internally by :func:`merge_scheduled_circuits` but might be useful at other</span>
-<span class="sd">  places and so is kept public.</span>
+<span class="sd">  :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` before merging them.</span>
+<span class="sd">  This function is called internally by :func:`merge_scheduled_circuits` but</span>
+<span class="sd">  might be useful at other places and so is kept public.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
@@ -412,20 +435,22 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span> <span class="n">global_qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents a collection of :class`ScheduledCircuit` instances.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents a collection of</span>
+<span class="sd">        :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` instances.</span>
 
 <span class="sd">        This class aims at providing accessors for several compatible instances</span>
-<span class="sd">        of :class:`ScheduledCircuit`. It allows to iterate on gates globally, for</span>
-<span class="sd">        all the managed instances of :class:`ScheduledCircuit`, and implement a</span>
-<span class="sd">        few other accessor methods to help with the task of merging multiple</span>
-<span class="sd">        :class`ScheduledCircuit` together.</span>
+<span class="sd">        of :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit`. It allows</span>
+<span class="sd">        to iterate on gates globally, for all the managed instances of</span>
+<span class="sd">        :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit`, and implement</span>
+<span class="sd">        a few other accessor methods to help with the task of merging multiple</span>
+<span class="sd">        :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` together.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            circuits: the instances that should be managed. Note that the</span>
 <span class="sd">                instances provided here have to be &quot;compatible&quot; with each</span>
 <span class="sd">                other.</span>
 <span class="sd">            global_qubit_map: a unique qubit map that can be used to map qubits</span>
-<span class="sd">                to indices for all the provided `circuits`.</span>
+<span class="sd">                to indices for all the provided ``circuits``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We might need to remap qubits to avoid index collision on several</span>
         <span class="c1"># circuits.</span>
@@ -459,7 +484,7 @@
 <span class="sd">        the given index.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            AssertionError: if not self.has_pending_operation(index).</span>
+<span class="sd">            AssertionError: ``if not self.has_pending_operation(index)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_moments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -481,8 +506,8 @@
 <span class="sd">        be scheduled next.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            a list of :class:`Moment` instances that should be added next to</span>
-<span class="sd">            the QEC circuit.</span>
+<span class="sd">            a list of :class:`~tqec.circuit.moment.Moment` instances that should</span>
+<span class="sd">            be added next to the QEC circuit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_pending_moment</span><span class="p">()</span>
         <span class="n">circuit_indices_organised_by_schedule</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -515,8 +540,6 @@
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_sort_key</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="remove_duplicate_instructions">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.remove_duplicate_instructions.html#tqec.circuit.schedule.manipulation.remove_duplicate_instructions">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_duplicate_instructions</span><span class="p">(</span>
     <span class="n">instructions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">CircuitInstruction</span><span class="p">],</span>
     <span class="n">mergeable_instruction_names</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -527,18 +550,18 @@
 <span class="sd">        This function guarantees the following post-conditions on the returned</span>
 <span class="sd">        results:</span>
 
-<span class="sd">        - Instructions with a name that is not in `mergeable_instruction_names`</span>
+<span class="sd">        - Instructions with a name that is not in ``mergeable_instruction_names``</span>
 <span class="sd">          are returned at the front of the returned list, in the same relative</span>
-<span class="sd">          ordering as provided in `instructions` input.</span>
-<span class="sd">        - Instructions with a name that is in `mergeable_instruction_names` will</span>
-<span class="sd">          be returned after all the instructions with a name that does not</span>
-<span class="sd">          appear in `mergeable_instruction_names`. The order in which these</span>
+<span class="sd">          ordering as provided in ``instructions`` input.</span>
+<span class="sd">        - Instructions with a name that is in ``mergeable_instruction_names``</span>
+<span class="sd">          will be returned after all the instructions with a name that does not</span>
+<span class="sd">          appear in ``mergeable_instruction_names``. The order in which these</span>
 <span class="sd">          instructions are returned is not guaranteed and can change between</span>
 <span class="sd">          executions.</span>
 
 <span class="sd">    Warning:</span>
 <span class="sd">        this function **does not keep instruction ordering**. It is intended to</span>
-<span class="sd">        be used with input `instructions` that, once de-duplication has been</span>
+<span class="sd">        be used with input ``instructions`` that, once de-duplication has been</span>
 <span class="sd">        applied, form a valid moment, which means that each instruction can be</span>
 <span class="sd">        executed in parallel, and so their order in the returned list does not</span>
 <span class="sd">        matter.</span>
@@ -549,8 +572,8 @@
 <span class="sd">        a warning if it happens.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        a list containing a copy of the stim.CircuitInstruction instances from</span>
-<span class="sd">        the given instructions but without any duplicate.</span>
+<span class="sd">        a list containing a copy of the ``stim.CircuitInstruction`` instances</span>
+<span class="sd">        from the given instructions but without any duplicate.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Separate mergeable operations from non-mergeable ones.</span>
     <span class="n">mergeable_operations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span>
@@ -591,22 +614,23 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">circuit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">TQECWarning</span><span class="p">,</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">final_operations</span></div>
-
+    <span class="k">return</span> <span class="n">final_operations</span>
 
 
 <div class="viewcode-block" id="merge_scheduled_circuits">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.merge_scheduled_circuits.html#tqec.circuit.schedule.manipulation.merge_scheduled_circuits">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.merge_scheduled_circuits.html#tqec.circuit.merge_scheduled_circuits">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_scheduled_circuits</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
     <span class="n">global_qubit_map</span><span class="p">:</span> <span class="n">QubitMap</span><span class="p">,</span>
     <span class="n">mergeable_instructions</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge several ScheduledCircuit instances into one instance.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge several :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit`</span>
+<span class="sd">    instances into one instance.</span>
 
 <span class="sd">    This function takes several **compatible** scheduled circuits as input and</span>
-<span class="sd">    merge them, respecting their schedules, into a unique `ScheduledCircuit`</span>
-<span class="sd">    instance that will then be returned to the caller.</span>
+<span class="sd">    merge them, respecting their schedules, into a unique</span>
+<span class="sd">    :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` instance that will</span>
+<span class="sd">    then be returned to the caller.</span>
 
 <span class="sd">    The provided circuits should be compatible between each other. Compatible</span>
 <span class="sd">    circuits are circuits that can all be described with a unique global qubit</span>
@@ -617,7 +641,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuits: **compatible** circuits to merge.</span>
-<span class="sd">        qubit_map: global qubit map for all the provided `circuits`.</span>
+<span class="sd">        qubit_map: global qubit map for all the provided ``circuits``.</span>
 <span class="sd">        mergeable_instructions: a list of instruction names that are considered</span>
 <span class="sd">            mergeable. Duplicate instructions with a name in this list will be</span>
 <span class="sd">            merged into a single instruction.</span>
@@ -658,18 +682,16 @@
 
 
 
-<div class="viewcode-block" id="relabel_circuits_qubit_indices">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices.html#tqec.circuit.schedule.manipulation.relabel_circuits_qubit_indices">[docs]</a>
 <span class="k">def</span> <span class="nf">relabel_circuits_qubit_indices</span><span class="p">(</span>
     <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">],</span> <span class="n">QubitMap</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Relabel the qubit indices of the provided circuits to avoid collision.</span>
 
-<span class="sd">    When several :class:`ScheduledCircuit` are constructed without a global</span>
-<span class="sd">    knowledge of all the qubits, qubit indices used by each instance likely</span>
-<span class="sd">    overlap. This is an issue when we try to merge such circuits because one</span>
-<span class="sd">    index might represent a different qubit depending on the circuit it is used</span>
-<span class="sd">    in.</span>
+<span class="sd">    When several :class:`~tqec.circuit.schedule.circuit.ScheduledCircuit` are</span>
+<span class="sd">    constructed without a global knowledge of all the qubits, qubit indices used</span>
+<span class="sd">    by each instance likely overlap. This is an issue when we try to merge such</span>
+<span class="sd">    circuits because one index might represent a different qubit depending on</span>
+<span class="sd">    the circuit it is used in.</span>
 
 <span class="sd">    This function takes a sequence of circuits and relabel their qubits to avoid</span>
 <span class="sd">    such collisions.</span>
@@ -677,7 +699,7 @@
 <span class="sd">    Warning:</span>
 <span class="sd">        all the qubit targets used in each of the provided circuits should have</span>
 <span class="sd">        a corresponding entry in the circuit qubit map for this function to work</span>
-<span class="sd">        correctly. If that is not the case, a KeyError will be raised.</span>
+<span class="sd">        correctly. If that is not the case, a ``KeyError`` will be raised.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        KeyError: if any of the provided circuit contains a qubit target that is</span>
@@ -688,11 +710,11 @@
 <span class="sd">            this function and is only used in read-only mode.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        the same circuits with update qubit indices as well as the global qubit</span>
+<span class="sd">        the same circuits with updated qubit indices as well as the global qubit</span>
 <span class="sd">        indices map that has been used. Qubits in the returned global qubit map</span>
 <span class="sd">        are assigned to an index such that:</span>
 
-<span class="sd">        1. the sequence of indices is `range(0, len(qubit_map))`.</span>
+<span class="sd">        1. the sequence of indices is ``range(0, len(qubit_map))``.</span>
 <span class="sd">        2. qubits are assigned indices in sorted order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># First, get a global qubit index map.</span>
@@ -714,8 +736,7 @@
         <span class="n">relabeled_circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">circuit</span><span class="o">.</span><span class="n">map_qubit_indices</span><span class="p">(</span><span class="n">local_indices_to_global_indices</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">global_qubit_map</span></div>
-
+    <span class="k">return</span> <span class="n">relabeled_circuits</span><span class="p">,</span> <span class="n">global_qubit_map</span>
 </pre></div>
 
                 </article>

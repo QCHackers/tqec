@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/plaquette/enums';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -382,13 +404,15 @@
 
 
 <div class="viewcode-block" id="PlaquetteOrientation">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.PlaquetteOrientation.html#tqec.plaquette.enums.PlaquetteOrientation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.PlaquetteOrientation.html#tqec.plaquette.PlaquetteOrientation">[docs]</a>
 <span class="k">class</span> <span class="nc">PlaquetteOrientation</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">LEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">DOWN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
 
+<div class="viewcode-block" id="PlaquetteOrientation.to_plaquette_side">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.PlaquetteOrientation.html#tqec.plaquette.PlaquetteOrientation.to_plaquette_side">[docs]</a>
     <span class="k">def</span> <span class="nf">to_plaquette_side</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlaquetteSide</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteOrientation</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span>
@@ -398,17 +422,20 @@
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># if self == PlaquetteOrientation.UP:</span>
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="PlaquetteSide">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.PlaquetteSide.html#tqec.plaquette.enums.PlaquetteSide">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.PlaquetteSide.html#tqec.plaquette.PlaquetteSide">[docs]</a>
 <span class="k">class</span> <span class="nc">PlaquetteSide</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">LEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">DOWN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">UP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
 
+<div class="viewcode-block" id="PlaquetteSide.opposite">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.PlaquetteSide.html#tqec.plaquette.PlaquetteSide.opposite">[docs]</a>
     <span class="k">def</span> <span class="nf">opposite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlaquetteSide</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">LEFT</span>
@@ -418,11 +445,12 @@
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PlaquetteSide</span><span class="o">.</span><span class="n">DOWN</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="ResetBasis">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.ResetBasis.html#tqec.plaquette.enums.ResetBasis">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.ResetBasis.html#tqec.plaquette.ResetBasis">[docs]</a>
 <span class="k">class</span> <span class="nc">ResetBasis</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
@@ -434,7 +462,7 @@
 
 
 <div class="viewcode-block" id="MeasurementBasis">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.enums.MeasurementBasis.html#tqec.plaquette.enums.MeasurementBasis">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.MeasurementBasis.html#tqec.plaquette.MeasurementBasis">[docs]</a>
 <span class="k">class</span> <span class="nc">MeasurementBasis</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>

@@ -41,6 +41,14 @@
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/simulation/plotting/inset';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../api.html">
     API Reference
   </a>
@@ -387,8 +409,6 @@
 <span class="kn">from</span> <span class="nn">tqec.computation.zx_graph</span> <span class="kn">import</span> <span class="n">ZXGraph</span>
 
 
-<div class="viewcode-block" id="add_inset_axes3d">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.simulation.plotting.inset.add_inset_axes3d.html#tqec.simulation.plotting.inset.add_inset_axes3d">[docs]</a>
 <span class="k">def</span> <span class="nf">add_inset_axes3d</span><span class="p">(</span>
     <span class="n">ax_target</span><span class="p">:</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes3D</span><span class="p">:</span>
@@ -396,12 +416,11 @@
 <span class="sd">    that works also for insetting 3D plot on 2D ax/figures.&quot;&quot;&quot;</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">ax_target</span><span class="o">.</span><span class="n">inset_axes</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">Axes3D</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ax</span></div>
-
+    <span class="k">return</span> <span class="n">ax</span>
 
 
 <div class="viewcode-block" id="plot_observable_as_inset">
-<a class="viewcode-back" href="../../../../_autosummary/tqec.simulation.plotting.inset.plot_observable_as_inset.html#tqec.simulation.plotting.inset.plot_observable_as_inset">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/tqec.simulation.plot_observable_as_inset.html#tqec.simulation.plot_observable_as_inset">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_observable_as_inset</span><span class="p">(</span>
     <span class="n">ax_target</span><span class="p">:</span> <span class="n">Axes</span><span class="p">,</span>
     <span class="n">zx_graph</span><span class="p">:</span> <span class="n">ZXGraph</span><span class="p">,</span>

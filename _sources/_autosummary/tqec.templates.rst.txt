@@ -1,5 +1,7 @@
-tqec.templates
+﻿tqec.templates
 ==============
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.templates
 
@@ -9,36 +11,30 @@ tqec.templates
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      display_template
+      display_template_from_instantiation
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      LayoutTemplate
+      QubitTemplate
+      Template
+      TemplateOrientation
+   
    
 
    
    
    
-
-   
-   
-   
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   base
-
-   display
-
-   enums
-
-   layout
-
-   qubit
-
-
-   subtemplates
-
-

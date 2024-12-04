@@ -1,5 +1,7 @@
-tqec.gallery
+﻿tqec.gallery
 ============
+
+.. currentmodule:: tqec.gallery
 
 .. automodule:: tqec.gallery
 
@@ -9,6 +11,16 @@ tqec.gallery
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      logical_cnot_block_graph
+      logical_cnot_zx_graph
+      three_cnots_block_graph
+      three_cnots_zx_graph
+   
    
 
    
@@ -18,22 +30,3 @@ tqec.gallery
    
    
    
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   logical_cnot
-
-
-   solo_node
-
-
-   three_cnots
-
-

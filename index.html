@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>tqec &#8212; TQEC  documentation</title>
+    <title>TQEC &#8212; TQEC  documentation</title>
   
   
   
@@ -148,6 +148,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api.html">
     API Reference
   </a>
@@ -278,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api.html">
     API Reference
   </a>
@@ -357,57 +371,70 @@
                 <article class="bd-article">
                   
   <section id="tqec">
-<h1>tqec<a class="headerlink" href="#tqec" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://unitary.fund"><img alt="Unitary Fund" src="https://img.shields.io/badge/Supported%20By-UNITARY%20FUND-brightgreen.svg?style=for-the-badge" /></a></p>
-<p>Design automation software tools for Topological Quantum Error Correction</p>
+<h1>TQEC<a class="headerlink" href="#tqec" title="Link to this heading">#</a></h1>
+<p>TQEC(Topological Quantum Error Correction) is a design automation software for representing,
+constructing and compiling large-scale fault-tolerant quantum computations based on surface code and lattice surgery.</p>
+<p>In the past decade, there have been significant advancements in surface code quantum computation based on lattice surgery.
+However, the circuits required to implement these protocols are highly complex. To combine these protocols for constructing larger-scale computation,
+a substantial amount of effort is needed to manually encode the circuits, and it is extremely challenging to ensure their correctness.
+As a result, many complex logical computations have not been practically simulated.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tqec</span></code> provides numerous building blocks based on state-of-the-art protocols, with verified correct circuits implementation for each block.
+These blocks can then be combined to construct large-scale logical computations, enabling the automatic compilation of large-scale computational circuits.</p>
+<p><strong>Note:</strong> This project is under active development and provide no backwards compatibility at current stage.</p>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
+<p>Documentation is available at <a class="reference external" href="https://tqec.github.io/tqec/index.html">https://tqec.github.io/tqec/index.html</a></p>
+</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>Currently, you need to install <code class="docutils literal notranslate"><span class="pre">tqec</span></code> from source:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/tqec/tqec.git
 </pre></div>
 </div>
-<p>For a more in-depth explanation, see the <a class="reference external" href="https://tqec.github.io/tqec/installation.html">installation procedure</a>.</p>
+<p>For a more detailed installation guide and common troubleshooting tips, see the <a class="reference external" href="https://tqec.github.io/tqec/user_guide/installation.html">installation page</a> in the documentation.</p>
 </section>
-<section id="quick-start">
-<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
-<p>Download the example file <a class="reference external" href="https://github.com/tqec/tqec/tree/main/docs/media/quick_start/logical_cnot.dae">logical_cnot.dae</a>.</p>
-<p>You can generate <code class="docutils literal notranslate"><span class="pre">stim.Circuit</span></code> instances representing that computation using</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">compile_block_graph</span><span class="p">,</span> <span class="n">annotate_detectors_automatically</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tqec.noise_models</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h2>
+<p>Here we generate the circuits for a logical CNOT between two logical qubits to demonstrate how to use the tool.
+Refer to <a class="reference external" href="https://tqec.github.io/tqec/user_guide/quick_start.html">quick start</a> in the documentation for more detailed explanation.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqec</span> <span class="kn">import</span> <span class="n">BlockGraph</span><span class="p">,</span> <span class="n">compile_block_graph</span>
+<span class="kn">from</span> <span class="nn">tqec.noise_model</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
 
-<span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;logical_cnot.dae&quot;</span><span class="p">)</span>
+<span class="c1"># 1. Construct the logical computation</span>
+<span class="n">block_graph</span> <span class="o">=</span> <span class="n">BlockGraph</span><span class="o">.</span><span class="n">from_dae_file</span><span class="p">(</span><span class="s2">&quot;assets/logical_cnot.dae&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Get the logical observables of interest and compile the computation</span>
 <span class="n">observables</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">block_graph</span><span class="o">.</span><span class="n">get_abstract_observables</span><span class="p">()</span>
 <span class="n">compiled_computation</span> <span class="o">=</span> <span class="n">compile_block_graph</span><span class="p">(</span><span class="n">block_graph</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="n">observables</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
+<span class="c1"># 3. Generate the `stim.Circuit` of target code distance</span>
 <span class="n">circuit</span> <span class="o">=</span> <span class="n">compiled_computation</span><span class="o">.</span><span class="n">generate_stim_circuit</span><span class="p">(</span>
-    <span class="c1"># Can be changed to whatever value you want. Large values will</span>
-    <span class="c1"># take a lot of time.</span>
+    <span class="c1"># k = (d-1)/2 is the scale factor</span>
+    <span class="c1"># Large values will take a lot of time.</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="c1"># The noise applied and noise levels can be changed.</span>
     <span class="n">noise_model</span><span class="o">=</span><span class="n">NoiseModel</span><span class="o">.</span><span class="n">uniform_depolarizing</span><span class="p">(</span><span class="mf">0.001</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="n">circuit_with_detectors</span> <span class="o">=</span> <span class="n">annotate_detectors_automatically</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">circuit_with_detectors</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See the <a class="reference external" href="https://tqec.github.io/tqec/quick_start.html">quick start tutorial</a> for a
-more in-depth explanation.</p>
+<p>See the <a class="reference external" href="https://tqec.github.io/tqec/user_guide/index.html">user guide</a> for more tutorials.</p>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h2>
 <p>Pull requests and issues are more than welcomed!</p>
-<p>See the <a class="reference external" href="https://tqec.github.io/tqec/contributing.html">contributing page</a> for specific instructions to start contributing.</p>
+<p>See the <a class="reference external" href="https://tqec.github.io/tqec/contributor_guide.html">contributing page</a> for for specific instructions to start contributing.</p>
 </section>
-<section id="helpful-links">
-<h2>Helpful Links<a class="headerlink" href="#helpful-links" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="https://groups.google.com/g/tqec-design-automation">Google group</a></p></li>
-<li><p><a class="reference external" href="https://tqec.github.io/tqec/">Developer documentation for the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> project</a></p></li>
-<li><p><a class="reference external" href="https://docs.google.com/presentation/d/1RufCoTyPFE0EJfC7fbFMjAyhfNJJKNybaixTFh0Qnfg/edit?usp=sharing">Introduction to TQEC</a></p></li>
-<li><p><a class="reference external" href="https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing">Overview of state of the art 2D QEC</a></p></li>
-<li><p><a class="reference external" href="https://drive.google.com/file/d/1HQEQrln2uVBbs3zbBzrEBm24LDD7PE26/view">Backend deep dive</a></p></li>
-</ol>
+<section id="community">
+<h2>Community<a class="headerlink" href="#community" title="Link to this heading">#</a></h2>
+<p>Every Wednesday, we hold <a class="reference external" href="https://calendar.google.com/calendar/event?action=TEMPLATE&amp;amp;tmeid=Mmw3NHVqZjRvaWo0bzl2bWtpamE0cmV0NzJfMjAyNDEwMzBUMTUzMDAwWiBhdXN0aW5nZm93bGVyQG0&amp;amp;tmsrc=austingfowler%40gmail.com&amp;amp;scp=ALL">meetings</a> to discuss project progress and conduct educational talks related to TQEC.</p>
+<p>Here are some helpful links to learn more about the community:</p>
+<ul class="simple">
+<li><p>Overview of state of the art 2D QEC: <a class="reference external" href="https://docs.google.com/presentation/d/1xYBfkVMpA1YEVhpgTZpKvY8zeOO1VyHmRWvx_kDJEU8/edit?usp=sharing">Slides</a>/<a class="reference external" href="https://www.youtube.com/watch?v=aUtH7wdwBAM&amp;amp;t=2s">Video</a></p></li>
+<li><p>Community questions and answers: <a class="reference external" href="https://docs.google.com/document/d/1VRBPU5eMGVEcxzgHccd98Ooa7geHGRWJoN_fdB1VClM/edit?usp=sharing">Docs</a></p></li>
+<li><p>Introduction to surface code quantum computation: <a class="reference external" href="https://docs.google.com/presentation/d/1GxGD9kzDYJA6X47BXGII2qjDVVoub5BsSVrGHRZINO4/edit?usp=sharing">Slides</a></p></li>
+<li><p>Programming a quantum computer using SketchUp: <a class="reference external" href="https://docs.google.com/presentation/d/1MjFuODipnmF-jDstEnQrqbsOtbSKZyPsuTOMo8wpSJc/edit#slide=id.p">Slides</a>/<a class="reference external" href="https://drive.google.com/file/d/1o1LMiidtYDcVoEFZXsJPb7XdTkZ83VFX/view?usp=drive_link">Video</a></p></li>
+</ul>
+<p>Please join the <a class="reference external" href="https://groups.google.com/g/tqec-design-automation">Google group</a> to receive more updates and information!</p>
 </section>
 </section>
 <div class="toctree-wrapper compound">
@@ -451,10 +478,11 @@ more in-depth explanation.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpful-links">Helpful Links</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#community">Community</a></li>
 </ul>
   </nav></div>
 

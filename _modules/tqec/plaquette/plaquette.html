@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/plaquette/plaquette';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -395,7 +417,7 @@
 
 
 <div class="viewcode-block" id="Plaquette">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.plaquette.Plaquette.html#tqec.plaquette.plaquette.Plaquette">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Plaquette</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a QEC plaquette.</span>
@@ -454,6 +476,8 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
+<div class="viewcode-block" id="Plaquette.project_on_boundary">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette.project_on_boundary">[docs]</a>
     <span class="k">def</span> <span class="nf">project_on_boundary</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">projected_orientation</span><span class="p">:</span> <span class="n">PlaquetteOrientation</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plaquette</span><span class="p">:</span>
@@ -488,10 +512,14 @@
             <span class="n">new_plaquette_qubits</span><span class="p">,</span>
             <span class="n">new_scheduled_circuit</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mergeable_instructions</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Plaquette.reliable_hash">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette.reliable_hash">[docs]</a>
     <span class="k">def</span> <span class="nf">reliable_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -500,7 +528,7 @@
 
 
 <div class="viewcode-block" id="Plaquettes">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.plaquette.Plaquettes.html#tqec.plaquette.plaquette.Plaquettes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Plaquettes</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a collection of plaquettes that might be applied to a</span>
@@ -532,16 +560,25 @@
     <span class="k">def</span> <span class="nf">has_default</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="n">defaultdict</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Plaquettes.repeat">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.repeat">[docs]</a>
     <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">:</span> <span class="n">LinearFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RepeatedPlaquettes</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">RepeatedPlaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RepeatedPlaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Plaquettes.with_updated_plaquettes">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.with_updated_plaquettes">[docs]</a>
     <span class="k">def</span> <span class="nf">with_updated_plaquettes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquettes_to_update</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plaquettes</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Plaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">|</span> <span class="n">plaquettes_to_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Plaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">|</span> <span class="n">plaquettes_to_update</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Plaquettes.map_indices">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.map_indices">[docs]</a>
     <span class="k">def</span> <span class="nf">map_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Plaquettes</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Plaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">map_keys</span><span class="p">(</span><span class="nb">callable</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Plaquettes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">map_keys</span><span class="p">(</span><span class="nb">callable</span><span class="p">))</span></div>
+
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">collection</span>
@@ -561,6 +598,8 @@
             <span class="p">)</span>
         <span class="p">)</span>
 
+<div class="viewcode-block" id="Plaquettes.to_name_dict">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.to_name_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">to_name_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">k</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -568,20 +607,26 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">default_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">default_factory</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
         <span class="k">return</span> <span class="n">d</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="RepeatedPlaquettes">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.plaquette.RepeatedPlaquettes.html#tqec.plaquette.plaquette.RepeatedPlaquettes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.RepeatedPlaquettes.html#tqec.plaquette.RepeatedPlaquettes">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RepeatedPlaquettes</span><span class="p">(</span><span class="n">Plaquettes</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent plaquettes that should be repeated for several rounds.&quot;&quot;&quot;</span>
 
     <span class="n">repetitions</span><span class="p">:</span> <span class="n">LinearFunction</span>
 
+<div class="viewcode-block" id="RepeatedPlaquettes.num_rounds">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.RepeatedPlaquettes.html#tqec.plaquette.RepeatedPlaquettes.num_rounds">[docs]</a>
     <span class="k">def</span> <span class="nf">num_rounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">round_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repetitions</span><span class="p">(</span><span class="n">k</span><span class="p">))</span></div>
 
+
+<div class="viewcode-block" id="RepeatedPlaquettes.with_updated_plaquettes">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.RepeatedPlaquettes.html#tqec.plaquette.RepeatedPlaquettes.with_updated_plaquettes">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">with_updated_plaquettes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">plaquettes_to_update</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquette</span><span class="p">]</span>
@@ -589,7 +634,8 @@
         <span class="k">return</span> <span class="n">RepeatedPlaquettes</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">|</span> <span class="n">plaquettes_to_update</span><span class="p">,</span>
             <span class="n">repetitions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repetitions</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>

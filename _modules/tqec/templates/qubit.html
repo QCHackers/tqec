@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/templates/qubit';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -376,7 +398,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for tqec.templates.qubit</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines templates representing logical qubits and its constituent parts.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -389,7 +413,7 @@
 
 
 <div class="viewcode-block" id="QubitTemplate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitTemplate.html#tqec.templates.qubit.QubitTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.QubitTemplate.html#tqec.templates.QubitTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">QubitTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit.</span>
 
@@ -403,6 +427,8 @@
 <span class="sd">        3 13 14 13 14  4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="QubitTemplate.instantiate">
+<a class="viewcode-back" href="../../../_autosummary/tqec.templates.QubitTemplate.html#tqec.templates.QubitTemplate.instantiate">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -435,7 +461,8 @@
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
         <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
 
     <span class="nd">@property</span>
     <span class="nd">@override</span>
@@ -449,107 +476,6 @@
 
 
 
-<div class="viewcode-block" id="QubitVerticalBorders">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitVerticalBorders.html#tqec.templates.qubit.QubitVerticalBorders">[docs]</a>
-<span class="k">class</span> <span class="nc">QubitVerticalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Two vertical sides of neighbouring error-corrected qubits glued</span>
-<span class="sd">    together.</span>
-
-<span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
-
-<span class="sd">        1 2</span>
-<span class="sd">        5 7</span>
-<span class="sd">        6 8</span>
-<span class="sd">        5 7</span>
-<span class="sd">        6 8</span>
-<span class="sd">        3 4</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
-
-        <span class="c1"># The four corners</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="c1"># The left side</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-        <span class="c1"># The right side</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a scalable version of the template shape.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">8</span></div>
-
-
-
-<div class="viewcode-block" id="QubitHorizontalBorders">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.QubitHorizontalBorders.html#tqec.templates.qubit.QubitHorizontalBorders">[docs]</a>
-<span class="k">class</span> <span class="nc">QubitHorizontalBorders</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Two horizontal sides of neighbouring error-corrected qubits glued</span>
-<span class="sd">    together.</span>
-
-<span class="sd">    The below text represents this template for an input ``k == 2`` ::</span>
-
-<span class="sd">        1 5 6 5 6 2</span>
-<span class="sd">        3 7 8 7 8 4</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquette_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">plaquette_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">plaquette_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_plaquettes_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy_shape</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
-
-        <span class="c1"># The four corners</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="c1"># The up side</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-        <span class="c1"># The bottom side</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
-        <span class="n">ret</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">plaquette_indices</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">scalable_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scalable2D</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Scalable2D</span><span class="p">(</span><span class="n">LinearFunction</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">LinearFunction</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">8</span></div>
-
-
-
-<div class="viewcode-block" id="Qubit4WayJunctionTemplate">
-<a class="viewcode-back" href="../../../_autosummary/tqec.templates.qubit.Qubit4WayJunctionTemplate.html#tqec.templates.qubit.Qubit4WayJunctionTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">Qubit4WayJunctionTemplate</span><span class="p">(</span><span class="n">RectangularTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An error-corrected qubit that is making a 4-way junction with other</span>
 <span class="sd">    logical qubits.</span>
@@ -643,8 +569,7 @@
     <span class="nd">@property</span>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">expected_plaquettes_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">15</span></div>
-
+        <span class="k">return</span> <span class="mi">15</span>
 </pre></div>
 
                 </article>

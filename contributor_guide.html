@@ -45,8 +45,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'contributor_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="api.html" />
-    <link rel="prev" title="How to automatically find detectors?" href="media/detectors/detector_computation_illustration.html" />
+    <link rel="next" title="tqec architecture" href="architecture.html" />
+    <link rel="prev" title="How to automatically find detectors?" href="user_guide/detectors/detector_computation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -142,6 +142,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -275,6 +282,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api.html">
     API Reference
   </a>
@@ -335,7 +349,10 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html"><code class="docutils literal notranslate"><span class="pre">tqec</span></code> architecture</a></li>
+</ul>
+</div>
 </nav></div>
     </div>
   
@@ -388,6 +405,14 @@
                   
   <section id="how-to-contribute">
 <h1>How to contribute<a class="headerlink" href="#how-to-contribute" title="Link to this heading">#</a></h1>
+<section id="architecture-overview">
+<h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html"><code class="docutils literal notranslate"><span class="pre">tqec</span></code> architecture</a></li>
+</ul>
+</div>
+</section>
 <section id="installation-procedure-for-developers">
 <h2>Installation procedure (for developers)<a class="headerlink" href="#installation-procedure-for-developers" title="Link to this heading">#</a></h2>
 <p>If you want to help maintaining and improving the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package, you will need
@@ -402,6 +427,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 pre-commit<span class="w"> </span>install
 </pre></div>
 </div>
+<p>If you encounter any issue during the installation, please refer to <a class="reference internal" href="user_guide/installation.html#installation"><span class="std std-ref">How to install tqec</span></a> for more information.</p>
 <p>You can now start contributing, following the rules explained in the next sections.</p>
 </section>
 <section id="id1">
@@ -478,7 +504,7 @@ else to do it, you should send a clear comment asking for it.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="media/detectors/detector_computation_illustration.html"
+       href="user_guide/detectors/detector_computation.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
@@ -487,11 +513,11 @@ else to do it, you should send a clear comment asking for it.</p>
       </div>
     </a>
     <a class="right-next"
-       href="api.html"
+       href="architecture.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API Reference</p>
+        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">tqec</span></code> architecture</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -514,6 +540,7 @@ else to do it, you should send a clear comment asking for it.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-overview">Architecture Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-procedure-for-developers">Installation procedure (for developers)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">How to contribute</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#look-at-issues">1. Look at issues</a></li>

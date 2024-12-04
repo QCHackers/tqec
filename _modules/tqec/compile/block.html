@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/compile/block';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -394,38 +416,51 @@
 
 
 <div class="viewcode-block" id="CompiledBlock">
-<a class="viewcode-back" href="../../../_autosummary/tqec.compile.block.CompiledBlock.html#tqec.compile.block.CompiledBlock">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.CompiledBlock.html#tqec.compile.CompiledBlock">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">CompiledBlock</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a specific implementation of a cube in a `BlockGraph`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a specific implementation of a cube in a</span>
+<span class="sd">    :class:`~tqec.computation.block_graph.BlockGraph`.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        template: the template that defines the cube implementation.</span>
-<span class="sd">        layers: a list of `Plaquettes` that represent different functional layers of the</span>
-<span class="sd">            cube. When aligning two `CompiledBlock` instances, the layers are aligned in</span>
-<span class="sd">            order. Typically, there are three layers in most cube implementations:</span>
+<span class="sd">        layers: a list of :class:`~tqec.plaquette.plaquette.Plaquettes` that</span>
+<span class="sd">            represent different functional layers of the cube. When aligning two</span>
+<span class="sd">            :class:`CompiledBlock` instances, the layers are aligned in order.</span>
+<span class="sd">            Typically, there are three layers in most cube implementations:</span>
 <span class="sd">            Initialization, Repetitions, and Measurement.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">template</span><span class="p">:</span> <span class="n">RectangularTemplate</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Template representing the 2-dimensional footprint of the block.&quot;&quot;&quot;</span>
+
     <span class="n">layers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Different functional layers of the block.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of layers in the block.</span>
+
+<span class="sd">        Temporal pipes have 2 layers, spatial pipes and blocks have 3</span>
+<span class="sd">        layers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
+<div class="viewcode-block" id="CompiledBlock.update_layers">
+<a class="viewcode-back" href="../../../_autosummary/tqec.compile.CompiledBlock.html#tqec.compile.CompiledBlock.update_layers">[docs]</a>
     <span class="k">def</span> <span class="nf">update_layers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">substitution</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Plaquettes</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the plaquettes in a specific layer of the block.</span>
 
-<span class="sd">        Warning: This method modifies the `layers` attribute in place.</span>
+<span class="sd">        Warning:</span>
+<span class="sd">            This method modifies the :attr:`layers` attribute in place.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            substitution: a mapping from the layer index to the plaquettes that should</span>
-<span class="sd">                be used to update the layer. The index can be negative, which means the</span>
-<span class="sd">                layer is counted from the end of the layers list.</span>
+<span class="sd">            substitution: a mapping from the layer index to the plaquettes that</span>
+<span class="sd">                should be used to update the layer. The index can be negative,</span>
+<span class="sd">                which means the layer is counted from the end of the layers list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">plaquettes_to_update</span> <span class="ow">in</span> <span class="n">substitution</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">layer</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -438,16 +473,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">with_updated_plaquettes</span><span class="p">(</span>
                 <span class="n">plaquettes_to_update</span><span class="o">.</span><span class="n">collection</span>
             <span class="p">)</span></div>
+</div>
 
 
 
-<div class="viewcode-block" id="BlockLayout">
-<a class="viewcode-back" href="../../../_autosummary/tqec.compile.block.BlockLayout.html#tqec.compile.block.BlockLayout">[docs]</a>
 <span class="k">class</span> <span class="nc">BlockLayout</span><span class="p">:</span>
-<div class="viewcode-block" id="BlockLayout.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.compile.block.BlockLayout.html#tqec.compile.block.BlockLayout.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks_layout</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Position2D</span><span class="p">,</span> <span class="n">CompiledBlock</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a layout of `CompiledBlock` instances in the 2D grid.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a layout of :class:`CompiledBlock` instances in the 2D grid.</span>
 
 <span class="sd">        We require that all the blocks in the layout have the same</span>
 <span class="sd">        scalable shape.</span>
@@ -458,15 +490,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_template</span> <span class="o">=</span> <span class="n">LayoutTemplate</span><span class="p">(</span><span class="n">element_layout</span><span class="o">=</span><span class="n">template_layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_layers</span><span class="p">(</span>
             <span class="p">{</span><span class="n">pos</span><span class="p">:</span> <span class="n">block</span><span class="o">.</span><span class="n">layers</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks_layout</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="p">)</span></div>
-
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayoutTemplate</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Template representing the 2-dimensional footprint of the block.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_template</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Plaquettes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Different functional layers of the block.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span>
 
     <span class="k">def</span> <span class="nf">_merge_layers</span><span class="p">(</span>
@@ -513,22 +546,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of layers in the block.</span>
+
+<span class="sd">        Temporal pipes have 2 layers, spatial pipes and blocks have 3</span>
+<span class="sd">        layers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_shifted_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScheduledCircuit</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate and shift the circuits for all the layers in `self`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate and shift the circuits for all the layers in ``self``.</span>
 
 <span class="sd">        The returned circuit are appropriately shifted to account for any shifts</span>
-<span class="sd">        due to the fact that the origin of the template stored in `self` might</span>
+<span class="sd">        due to the fact that the origin of the template stored in ``self`` might</span>
 <span class="sd">        not be the global origin.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k: scaling factor used to instantiate the template.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            as many circuits as there are layers in `self`, each circuit being</span>
-<span class="sd">            the instantiation of one layer (i.e., a set of :class:`Plaquette`</span>
-<span class="sd">            instances) and the :class:`Template` instance from `self`.</span>
+<span class="sd">            as many circuits as there are layers in ``self``, each circuit being</span>
+<span class="sd">            the instantiation of one layer (i.e., a set of</span>
+<span class="sd">            :class:`~tqec.plaquette.plaquette.Plaquette` instances) and the</span>
+<span class="sd">            :class:`~tqec.templates.base.Template` instance from ``self``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We need to shift the circuit based on the shift of the layout template.</span>
         <span class="n">top_left_plaquette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_template</span><span class="o">.</span><span class="n">instantiation_origin</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -541,8 +580,7 @@
                 <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">inplace_qubit_map</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span>
-        <span class="p">]</span></div>
-
+        <span class="p">]</span>
 </pre></div>
 
                 </article>

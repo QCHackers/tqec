@@ -1,5 +1,7 @@
-tqec.compile
+﻿tqec.compile
 ============
+
+.. currentmodule:: tqec
 
 .. automodule:: tqec.compile
 
@@ -9,31 +11,30 @@ tqec.compile
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compile_block_graph
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+   
+      BlockBuilder
+      CompiledBlock
+      CubeSpec
+      PipeSpec
+      SubstitutionBuilder
+   
    
 
    
    
    
-
-   
-   
-   
-
-
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-
-   block
-
-   compile
-
-
-   observables
-
-   specs
-

@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/circuit/generation';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -376,22 +398,22 @@
                 <article class="bd-article">
                   
   <h1>Source code for tqec.circuit.generation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Defines :meth:`generate_circuit`, one of the core method of the `tqec`</span>
-<span class="sd">package.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Defines :meth:`~tqec.circuit.generation.generate_circuit`, one of the core</span>
+<span class="sd">method of the :mod:`tqec` package.</span>
 
-<span class="sd">This module defines two of core methods of the `tqec` package:</span>
+<span class="sd">This module defines two of core methods of the :mod:`tqec` package:</span>
 
 <span class="sd">- :meth:`generate_circuit` that is the most convenient method for external users.</span>
 <span class="sd">- :meth:`generate_circuit_from_instantiation` that gives more freedom to the</span>
 <span class="sd">  user (and is used internally by :meth:`generate_circuit`) at the expense of</span>
 <span class="sd">  often less convenient inputs.</span>
 
-<span class="sd">Both of these methods are used to generate the `stim.Circuit` instance</span>
+<span class="sd">Both of these methods are used to generate the ``stim.Circuit`` instance</span>
 <span class="sd">representing **one** time slice (often equivalent to &quot;one QEC round&quot;). Users are</span>
 <span class="sd">expected to call these methods several times and concatenate the output</span>
-<span class="sd">`stim.Circuit` instances in time to obtain a full QEC implementation.</span>
+<span class="sd">``stim.Circuit`` instances in time to obtain a full QEC implementation.</span>
 
-<span class="sd">Note that these methods do not work with `REPEAT` instructions.</span>
+<span class="sd">Note that these methods do not work with ``REPEAT`` instructions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
@@ -410,13 +432,13 @@
 
 
 <div class="viewcode-block" id="generate_circuit">
-<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.generation.generate_circuit.html#tqec.circuit.generation.generate_circuit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.generate_circuit.html#tqec.circuit.generate_circuit">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_circuit</span><span class="p">(</span>
     <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">plaquettes</span><span class="p">:</span> <span class="n">Plaquettes</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScheduledCircuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a quantum circuit from a template and its plaquettes.</span>
 
-<span class="sd">    This is one of the core methods of the `tqec` package. It generates a</span>
+<span class="sd">    This is one of the core methods of the :mod:`tqec` package. It generates a</span>
 <span class="sd">    quantum circuit from the description of the template that should be</span>
 <span class="sd">    implemented as well as the plaquettes that should be used to instantiate the</span>
 <span class="sd">    provided template.</span>
@@ -425,8 +447,8 @@
 
 <span class="sd">    1. the number of plaquettes provided should match the number of plaquettes</span>
 <span class="sd">       required by the provided template.</span>
-<span class="sd">    2. all the provided plaquettes should be implemented on :class:`GridQubit`</span>
-<span class="sd">       instances **only**.</span>
+<span class="sd">    2. all the provided plaquettes should be implemented on</span>
+<span class="sd">       :class:`~.qubit.GridQubit` instances **only**.</span>
 
 <span class="sd">    If any of the above pre-conditions is not met, the inputs are considered</span>
 <span class="sd">    invalid, in which case this function **might** raise an error.</span>
@@ -434,14 +456,15 @@
 <span class="sd">    Args:</span>
 <span class="sd">        template: spatial description of the quantum error correction experiment</span>
 <span class="sd">            we want to implement.</span>
-<span class="sd">        k: scaling parameter used to instantiate the provided `template`.</span>
+<span class="sd">        k: scaling parameter used to instantiate the provided ``template``.</span>
 <span class="sd">        plaquettes: description of the computation that should happen at</span>
 <span class="sd">            different time-slices of the quantum error correction experiment (or</span>
 <span class="sd">            at least part of it).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        a `ScheduledCircuit` instance implementing the (part of) quantum error</span>
-<span class="sd">        correction experiment represented by the provided inputs.</span>
+<span class="sd">        a :class:`~.schedule.circuit.ScheduledCircuit` instance implementing the</span>
+<span class="sd">        (part of) quantum error correction experiment represented by the</span>
+<span class="sd">        provided inputs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># instantiate the template with the appropriate plaquette indices.</span>
     <span class="c1"># Index 0 is &quot;no plaquette&quot; by convention and should not be included here.</span>
@@ -455,8 +478,6 @@
 
 
 
-<div class="viewcode-block" id="generate_circuit_from_instantiation">
-<a class="viewcode-back" href="../../../_autosummary/tqec.circuit.generation.generate_circuit_from_instantiation.html#tqec.circuit.generation.generate_circuit_from_instantiation">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_circuit_from_instantiation</span><span class="p">(</span>
     <span class="n">plaquette_array</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span>
     <span class="n">plaquettes</span><span class="p">:</span> <span class="n">Plaquettes</span><span class="p">,</span>
@@ -465,7 +486,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a quantum circuit from an array of plaquette indices and the</span>
 <span class="sd">    associated plaquettes.</span>
 
-<span class="sd">    This is one of the core methods of the `tqec` package. It generates a</span>
+<span class="sd">    This is one of the core methods of the :mod:`tqec` package. It generates a</span>
 <span class="sd">    quantum circuit from a spatial description of where the plaquettes should be</span>
 <span class="sd">    located as well as the actual plaquettes used.</span>
 
@@ -473,27 +494,29 @@
 
 <span class="sd">    1. the number of plaquettes provided should match the number of plaquettes</span>
 <span class="sd">       required by the provided template.</span>
-<span class="sd">    2. all the provided plaquettes should be implemented on :class:`GridQubit`</span>
-<span class="sd">       instances **only**.</span>
+<span class="sd">    2. all the provided plaquettes should be implemented on</span>
+<span class="sd">       :class:`~.qubit.GridQubit` instances **only**.</span>
 
 <span class="sd">    If any of the above pre-conditions is not met, the inputs are considered</span>
 <span class="sd">    invalid, in which case this function **might** raise an error.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        plaquette_array: an array of indices referencing Plaquette instances in</span>
-<span class="sd">            the `plaquettes` argument.</span>
+<span class="sd">        plaquette_array: an array of indices referencing</span>
+<span class="sd">            :class:`~tqec.plaquette.plaquette.Plaquette` instances in the</span>
+<span class="sd">            ``plaquettes`` argument.</span>
 <span class="sd">        plaquettes: description of the computation that should happen at</span>
 <span class="sd">            different time-slices of the quantum error correction experiment (or</span>
 <span class="sd">            at least part of it).</span>
 <span class="sd">        increments: the displacement between each plaquette origin.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        a `ScheduledCircuit` instance implementing the (part of) quantum error</span>
-<span class="sd">        correction experiment represented by the provided inputs.</span>
+<span class="sd">        a :class:`~.schedule.circuit.ScheduledCircuit` instance implementing the</span>
+<span class="sd">        (part of) quantum error correction experiment represented by the</span>
+<span class="sd">        provided inputs.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TQECException: if any index in `plaquette_array` is not correctly</span>
-<span class="sd">            associated to a plaquette in `plaquettes`.</span>
+<span class="sd">        TQECException: if any index in ``plaquette_array`` is not correctly</span>
+<span class="sd">            associated to a plaquette in ``plaquettes``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Collect all the used plaquette indices, removing 0 if present.</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">plaquette_array</span><span class="p">)</span>
@@ -542,8 +565,7 @@
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">merge_scheduled_circuits</span><span class="p">(</span>
         <span class="n">all_scheduled_circuits</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">,</span> <span class="n">additional_mergeable_instructions</span>
-    <span class="p">)</span></div>
-
+    <span class="p">)</span>
 </pre></div>
 
                 </article>

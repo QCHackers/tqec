@@ -41,6 +41,14 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../api.html">
     API Reference
   </a>
@@ -373,55 +395,32 @@
                 <article class="bd-article">
                   
   <h1>All modules for which code is available</h1>
-<ul><li><a href="tqec/circuit/coordinates.html">tqec.circuit.coordinates</a></li>
+<ul><li><a href="tqec/circuit/detectors/construction.html">tqec.circuit.detectors.construction</a></li>
 <li><a href="tqec/circuit/generation.html">tqec.circuit.generation</a></li>
-<li><a href="tqec/circuit/instructions.html">tqec.circuit.instructions</a></li>
-<li><a href="tqec/circuit/measurement.html">tqec.circuit.measurement</a></li>
-<li><a href="tqec/circuit/measurement_map.html">tqec.circuit.measurement_map</a></li>
-<li><a href="tqec/circuit/moment.html">tqec.circuit.moment</a></li>
-<li><a href="tqec/circuit/observable_qubits.html">tqec.circuit.observable_qubits</a></li>
-<li><a href="tqec/circuit/qubit.html">tqec.circuit.qubit</a></li>
-<li><a href="tqec/circuit/qubit_map.html">tqec.circuit.qubit_map</a></li>
 <li><a href="tqec/circuit/schedule/circuit.html">tqec.circuit.schedule.circuit</a></li>
 <li><a href="tqec/circuit/schedule/exception.html">tqec.circuit.schedule.exception</a></li>
 <li><a href="tqec/circuit/schedule/manipulation.html">tqec.circuit.schedule.manipulation</a></li>
-<li><a href="tqec/circuit/schedule/schedule.html">tqec.circuit.schedule.schedule</a></li>
 <li><a href="tqec/compile/block.html">tqec.compile.block</a></li>
 <li><a href="tqec/compile/compile.html">tqec.compile.compile</a></li>
-<li><a href="tqec/compile/observables.html">tqec.compile.observables</a></li>
 <li><a href="tqec/compile/specs/base.html">tqec.compile.specs.base</a></li>
-<li><a href="tqec/compile/specs/enums.html">tqec.compile.specs.enums</a></li>
-<li><a href="tqec/computation/abstract_observable.html">tqec.computation.abstract_observable</a></li>
-<li><a href="tqec/computation/base_graph.html">tqec.computation.base_graph</a></li>
 <li><a href="tqec/computation/block_graph.html">tqec.computation.block_graph</a></li>
-<li><a href="tqec/computation/conversion.html">tqec.computation.conversion</a></li>
-<li><a href="tqec/computation/correlation.html">tqec.computation.correlation</a></li>
 <li><a href="tqec/computation/cube.html">tqec.computation.cube</a></li>
 <li><a href="tqec/computation/pipe.html">tqec.computation.pipe</a></li>
 <li><a href="tqec/computation/zx_graph.html">tqec.computation.zx_graph</a></li>
-<li><a href="tqec/computation/zx_plot.html">tqec.computation.zx_plot</a></li>
 <li><a href="tqec/exceptions.html">tqec.exceptions</a></li>
 <li><a href="tqec/gallery/logical_cnot.html">tqec.gallery.logical_cnot</a></li>
-<li><a href="tqec/gallery/solo_node.html">tqec.gallery.solo_node</a></li>
 <li><a href="tqec/gallery/three_cnots.html">tqec.gallery.three_cnots</a></li>
-<li><a href="tqec/interop/collada.html">tqec.interop.collada</a></li>
-<li><a href="tqec/interop/collada_html_viewer.html">tqec.interop.collada_html_viewer</a></li>
+<li><a href="tqec/interop/collada/html_viewer.html">tqec.interop.collada.html_viewer</a></li>
+<li><a href="tqec/interop/collada/read_write.html">tqec.interop.collada.read_write</a></li>
 <li><a href="tqec/interop/color.html">tqec.interop.color</a></li>
-<li><a href="tqec/interop/correlation.html">tqec.interop.correlation</a></li>
-<li><a href="tqec/interop/geometry.html">tqec.interop.geometry</a></li>
 <li><a href="tqec/interval.html">tqec.interval</a></li>
-<li><a href="tqec/noise_models/noise_model.html">tqec.noise_models.noise_model</a></li>
+<li><a href="tqec/noise_model.html">tqec.noise_model</a></li>
 <li><a href="tqec/plaquette/enums.html">tqec.plaquette.enums</a></li>
 <li><a href="tqec/plaquette/frozendefaultdict.html">tqec.plaquette.frozendefaultdict</a></li>
-<li><a href="tqec/plaquette/library/builder.html">tqec.plaquette.library.builder</a></li>
-<li><a href="tqec/plaquette/library/css.html">tqec.plaquette.library.css</a></li>
-<li><a href="tqec/plaquette/library/empty.html">tqec.plaquette.library.empty</a></li>
-<li><a href="tqec/plaquette/library/zxxz.html">tqec.plaquette.library.zxxz</a></li>
 <li><a href="tqec/plaquette/plaquette.html">tqec.plaquette.plaquette</a></li>
 <li><a href="tqec/plaquette/qubit.html">tqec.plaquette.qubit</a></li>
 <li><a href="tqec/position.html">tqec.position</a></li>
 <li><a href="tqec/scale.html">tqec.scale</a></li>
-<li><a href="tqec/simulation/generation.html">tqec.simulation.generation</a></li>
 <li><a href="tqec/simulation/plotting/inset.html">tqec.simulation.plotting.inset</a></li>
 <li><a href="tqec/simulation/simulation.html">tqec.simulation.simulation</a></li>
 <li><a href="tqec/templates/base.html">tqec.templates.base</a></li>
@@ -429,7 +428,6 @@
 <li><a href="tqec/templates/enums.html">tqec.templates.enums</a></li>
 <li><a href="tqec/templates/layout.html">tqec.templates.layout</a></li>
 <li><a href="tqec/templates/qubit.html">tqec.templates.qubit</a></li>
-<li><a href="tqec/templates/subtemplates.html">tqec.templates.subtemplates</a></li>
 </ul>
 
                 </article>

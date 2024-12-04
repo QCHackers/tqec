@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Automatic detector computation &#8212; TQEC  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/detectors/index';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How to automatically find detectors?" href="detector_computation.html" />
+    <link rel="prev" title="COLLADA Interoperability" href="../collada_interop.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">TQEC  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributor_guide.html">
+    Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tqec/tqec" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://groups.google.com/g/tqec-design-automation" title="Google Group" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Google Group</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../current_limitations.html">Current limitations</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../build_computations.html">Build Computations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../collada_interop.html">COLLADA Interoperability</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Detectors Computation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="detector_computation.html">How to automatically find detectors?</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Automatic detector computation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="automatic-detector-computation">
+<h1>Automatic detector computation<a class="headerlink" href="#automatic-detector-computation" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package implements a method to automatically compute detectors from a
+given quantum circuit representing a quantum error corrected computation.</p>
+<section id="difference-from-the-main-tqec-package">
+<h2>Difference from the main <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package<a class="headerlink" href="#difference-from-the-main-tqec-package" title="Link to this heading">#</a></h2>
+<p>The implementation to automatically find detectors in a given quantum circuit representing
+a quantum error corrected computation is currently kept as isolated from the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package
+as possible and will very likely be outsourced into its own independent package in the future.
+The implementation can be found in <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code> and a few restrictions applies
+specifically to the code in this sub-module:</p>
+<ul class="simple">
+<li><p>it should be self-contained, or in other words it should not call code from the main
+<code class="docutils literal notranslate"><span class="pre">tqec</span></code> package, with the exception of code within <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code>,</p></li>
+<li><p>it should avoid unneeded dependencies. For that reason, the code in <code class="docutils literal notranslate"><span class="pre">tqec.circuit.detectors</span></code>
+does not use <code class="docutils literal notranslate"><span class="pre">cirq</span></code> as its intermediary representation but directly operates on
+<code class="docutils literal notranslate"><span class="pre">stim</span></code> data-structures.</p></li>
+</ul>
+</section>
+<section id="concepts-used-through-the-sub-module">
+<h2>Concepts used through the sub-module<a class="headerlink" href="#concepts-used-through-the-sub-module" title="Link to this heading">#</a></h2>
+<p>A few core concepts are re-used through the whole sub-module. This section aims at
+presenting these core concepts in an accessible manner.</p>
+<p>Terms that are conventionally used in quantum computing, such as “circuit”, will not
+be defined here.</p>
+<section id="moments">
+<span id="moments-section"></span><h3>Moments<a class="headerlink" href="#moments" title="Link to this heading">#</a></h3>
+<p>The concept of “moment” is central to the sub-module. A “moment” is a portion of a
+quantum circuit that is located between two <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instructions. Conventionally,
+moments may end with a <code class="docutils literal notranslate"><span class="pre">TICK</span></code> instruction, but do not start with one.</p>
+<p>This definition is close, but not equivalent, to the definition used by <code class="docutils literal notranslate"><span class="pre">cirq</span></code>. One of
+the main difference is that <code class="docutils literal notranslate"><span class="pre">cirq</span></code> defines a moment as a sub-circuit of depth 1: no
+instruction in the moment overlaps with another instruction in the same moment.
+In the definition given above, there is no notion of depth, and even though <code class="docutils literal notranslate"><span class="pre">TICK</span></code>
+instruction are generally used in <code class="docutils literal notranslate"><span class="pre">stim</span></code> such as the moment definition above
+is equivalent to the definition used by <code class="docutils literal notranslate"><span class="pre">cirq</span></code>, this is not required.</p>
+<p>For example, the circuit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span>
+<span class="n">TICK</span>
+<span class="n">CX</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>
+<span class="n">TICK</span>
+<span class="n">CX</span> <span class="mi">2</span> <span class="mi">1</span> <span class="mi">4</span> <span class="mi">3</span>
+<span class="n">TICK</span>
+<span class="n">M</span> <span class="mi">1</span> <span class="mi">3</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">M</span> <span class="mi">0</span> <span class="mi">2</span> <span class="mi">4</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">OBSERVABLE_INCLUDE</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>contains 4 moments.</p>
+</section>
+<section id="fragments">
+<h3>Fragments<a class="headerlink" href="#fragments" title="Link to this heading">#</a></h3>
+<p>Fragments are a collection of moments that check the following order:</p>
+<ol class="arabic simple">
+<li><p>zero or more moments exclusively composed of <cite>reset</cite>, annotation or
+noisy-gate instructions,</p></li>
+<li><p>zero or more moments composed of “computation” instructions (anything
+that is not a measurement, a reset, a noisy gate or an annotation),</p></li>
+<li><p>one or more moments exclusively composed of <cite>measurement</cite>, annotation
+or noisy-gate instructions.</p></li>
+</ol>
+<p>The circuit provided in <a class="reference internal" href="#moments-section"><span class="std std-ref">Moments</span></a> contains 4 moments that form
+a fragment.</p>
+<p>Note that the circuit</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">M</span> <span class="mi">1</span> <span class="mi">3</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">M</span> <span class="mi">0</span> <span class="mi">2</span> <span class="mi">4</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">DETECTOR</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">OBSERVABLE_INCLUDE</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">rec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>also form a fragment!</p>
+</section>
+<section id="flows">
+<h3>Flows<a class="headerlink" href="#flows" title="Link to this heading">#</a></h3>
+<p>Stabilizers can propagate through a fragment, but can also be created or destroyed by it.</p>
+<p>Let’s use the following quantum circuit to illustrate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="mi">1</span> <span class="mi">3</span>
+<span class="n">TICK</span>
+<span class="n">CX</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>
+<span class="n">TICK</span>
+<span class="n">CX</span> <span class="mi">2</span> <span class="mi">1</span> <span class="mi">4</span> <span class="mi">3</span>
+<span class="n">TICK</span>
+<span class="n">M</span> <span class="mi">1</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>You can also <a class="reference external" href="https://algassert.com/crumble#circuit=Q(0,0)0;Q(1,0)1;Q(2,0)2;Q(3,0)3;Q(4,0)4;R_1_3;TICK;CX_0_1_2_3;TICK;CX_2_1_4_3;TICK;M_1_3;DT(1,0,0)rec[-2];DT(3,0,0)rec[-1]_rec[-2];DT(3,0,1)rec[-1]/">check it interactively using crumble</a>.</p>
+<p>This quantum circuit can “propagate” a stabilizer, for example if a <code class="docutils literal notranslate"><span class="pre">Z</span></code> stabilizer
+on qubit <code class="docutils literal notranslate"><span class="pre">2</span></code> is given as input, a <code class="docutils literal notranslate"><span class="pre">Z</span></code> stabilizer on qubit <code class="docutils literal notranslate"><span class="pre">2</span></code> is propagated
+through:</p>
+<img alt="../../_images/stabilizer-propagation.png" src="../../_images/stabilizer-propagation.png" />
+<p>The quantum circuit also “creates” propagation of stabilizers with its resets, as
+shown in the illustration below:</p>
+<img alt="../../_images/stabilizer-creation.png" src="../../_images/stabilizer-creation.png" />
+<p>Here, the fragment is creating a <code class="docutils literal notranslate"><span class="pre">Z0Z2</span></code> stabilizer: the <code class="docutils literal notranslate"><span class="pre">Z</span></code> Pauli string
+comes out of the final moment of the fragment on qubits <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+<p>Quantum circuit can also “destroy” some incoming stabilizers with its measurements
+as shown below:</p>
+<img alt="../../_images/stabilizer-destruction.png" src="../../_images/stabilizer-destruction.png" />
+<p>Here, the fragment is destroying an incoming <code class="docutils literal notranslate"><span class="pre">Z0Z2</span></code> stabilizer.</p>
+<p>These three kinds of stabilizer propagation are “flows”. A “flow” is describing the
+way a stabilizer propagates through a fragment.</p>
+</section>
+<section id="collapsing-operations">
+<h3>Collapsing operations<a class="headerlink" href="#collapsing-operations" title="Link to this heading">#</a></h3>
+<p>Collapsing operations are operations that are involved in the collapsing
+(i.e., “destruction”) or “creation” of flows.</p>
+<p>Measurements and resets are the only collapsing operations.</p>
+<p>Note that, by construction, collapsing operations can only be encountered at the
+boundaries (beginning/end) of a fragment.</p>
+</section>
+<section id="boundary-stabilizers">
+<h3>Boundary stabilizers<a class="headerlink" href="#boundary-stabilizers" title="Link to this heading">#</a></h3>
+<p>An important data-structure used in the package is <code class="docutils literal notranslate"><span class="pre">BoundaryStabilizer</span></code>. This
+data-structure represents the state of a flow at the boundaries of a fragment.
+It stores:</p>
+<ol class="arabic simple">
+<li><p>a Pauli string, representing the state of a flow that propagated from one boundary,
+just before encountering the collapsing operations of the other boundary,</p></li>
+<li><p>a list of Pauli strings, each representing one of the collapsing operations that
+will be encountered by the propagated Pauli string,</p></li>
+<li><p>a list of measurements that are involved (either as sources for a destruction flow
+or as sinks for a creation flow) in the flow propagation and that will be used later
+to know which measurements to include in the detectors.</p></li>
+</ol>
+<p>Taking the above example, the following flow:</p>
+<img alt="../../_images/stabilizer-creation.png" src="../../_images/stabilizer-creation.png" />
+<p>can be represented by a <code class="docutils literal notranslate"><span class="pre">BoundaryStabilizer</span></code> instance with the following attributes:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Z0Z1Z2</span></code> for the stabilizer, as before encountering the measurement, the propagated
+stabilizer is <code class="docutils literal notranslate"><span class="pre">Z0Z1Z2</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[Z1,</span> <span class="pre">Z3]</span></code> as collapsing operations, as the measurements present in the above circuit
+are performed in the <code class="docutils literal notranslate"><span class="pre">Z</span></code> basis, and on qubits <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>.</p></li>
+<li><p>a data-structure that will represent the measurement performed on qubit <code class="docutils literal notranslate"><span class="pre">1</span></code>, as the
+only measurement that is taking part in the stabilizer propagation is this one.</p></li>
+</ol>
+<p>As another example, the following flow:</p>
+<img alt="../../_images/stabilizer-destruction.png" src="../../_images/stabilizer-destruction.png" />
+<p>can be represented by a <code class="docutils literal notranslate"><span class="pre">BoundaryStabilizer</span></code> instance that has exactly the same attributes
+as the one described above.</p>
+<p>To distinguish between these two <code class="docutils literal notranslate"><span class="pre">BoundaryStabilizer</span></code> (one representing a creation flow,
+the other representing a destruction flow), they will be stored in a data-structure that
+will differentiate creation and destruction flows: <code class="docutils literal notranslate"><span class="pre">FragmentFlow</span></code> (or <code class="docutils literal notranslate"><span class="pre">FragmentLoopFlow</span></code>).</p>
+</section>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h2>
+<p>See the accompanying notebook for an example of how to perform automatic detector computation:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="detector_computation.html">How to automatically find detectors?</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../collada_interop.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">COLLADA Interoperability</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="detector_computation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">How to automatically find detectors?</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-from-the-main-tqec-package">Difference from the main <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-used-through-the-sub-module">Concepts used through the sub-module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moments">Moments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fragments">Fragments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flows">Flows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#collapsing-operations">Collapsing operations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-stabilizers">Boundary stabilizers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/user_guide/detectors/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, TQEC Community.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

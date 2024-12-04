@@ -41,6 +41,14 @@
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tqec/plaquette/frozendefaultdict';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -139,6 +147,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../contributor_guide.html">
     Contributor Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
   </a>
 </li>
 
@@ -270,6 +285,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../gallery/index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
@@ -390,15 +412,12 @@
 <span class="n">V</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FrozenException">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.frozendefaultdict.FrozenException.html#tqec.plaquette.frozendefaultdict.FrozenException">[docs]</a>
 <span class="k">class</span> <span class="nc">FrozenException</span><span class="p">(</span><span class="n">TQECException</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
+    <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="FrozenDefaultDict">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.frozendefaultdict.FrozenDefaultDict.html#tqec.plaquette.frozendefaultdict.FrozenDefaultDict">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict">[docs]</a>
 <span class="k">class</span> <span class="nc">FrozenDefaultDict</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A defaultdict implementation that cannot be mutated.</span>
 
@@ -419,7 +438,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FrozenDefaultDict.__init__">
-<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.frozendefaultdict.FrozenDefaultDict.html#tqec.plaquette.frozendefaultdict.FrozenDefaultDict.__init__">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">arg</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -476,18 +495,24 @@
             <span class="p">)</span>
         <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_dict</span>
 
+<div class="viewcode-block" id="FrozenDefaultDict.has_default_factory">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict.has_default_factory">[docs]</a>
     <span class="k">def</span> <span class="nf">has_default_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span>
 
+<div class="viewcode-block" id="FrozenDefaultDict.map_keys">
+<a class="viewcode-back" href="../../../_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict.map_keys">[docs]</a>
     <span class="k">def</span> <span class="nf">map_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">K</span><span class="p">],</span> <span class="n">K</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FrozenDefaultDict</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">FrozenDefaultDict</span><span class="p">(</span>
             <span class="p">{</span><span class="nb">callable</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
             <span class="n">default_factory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_factory</span><span class="p">,</span>
         <span class="p">)</span></div>
+</div>
 
 </pre></div>
 
