@@ -4,15 +4,15 @@ from typing import Sequence
 import numpy
 import numpy.typing as npt
 import stim
-
-from tqec.circuit.coordinates import StimCoordinates
-from tqec.circuit.detectors.flow import build_flows_from_fragments
-from tqec.circuit.detectors.fragment import Fragment
-from tqec.circuit.detectors.match import (
+from tqecd.flow import build_flows_from_fragments
+from tqecd.fragment import Fragment
+from tqecd.match import (
     MatchedDetector,
     match_boundary_stabilizers,
     match_detectors_within_fragment,
 )
+
+from tqec.circuit.coordinates import StimCoordinates
 from tqec.circuit.generation import generate_circuit_from_instantiation
 from tqec.circuit.measurement import Measurement, get_measurements_from_circuit
 from tqec.circuit.qubit import GridQubit
@@ -32,7 +32,7 @@ from tqec.templates.subtemplates import (
 
 def _get_measurement_offset_mapping(circuit: stim.Circuit) -> dict[int, Measurement]:
     """Get a mapping from measurement offsets as used and returned by the
-    package `tqec.circuit.detectors` to a `Measurement` instance.
+    package `tqecd.detectors` to a `Measurement` instance.
 
     This function returns the mapping from negative offsets that are
     supposed to each represent a unique measurement in the circuit to
@@ -217,7 +217,7 @@ def _compute_detectors_at_end_of_situation(
         complete_circuit.append("TICK", [], [])
     complete_circuit += coordless_subcircuits[-1]
 
-    # Use tqec.circuit.detectors module to match the detectors. Note that, for
+    # Use tqecd.detectors module to match the detectors. Note that, for
     # the moment, only the last two time slices are taken into account.
     coordinates_by_index = {
         i: (float(q.x), float(q.y)) for i, q in global_qubit_map.items()
@@ -235,7 +235,7 @@ def _compute_detectors_at_end_of_situation(
     matched_detectors = [d.with_time_coordinate(0) for d in matched_detectors]
 
     # Get the detectors as Detector instances instead of the
-    # `tqec.circuit.detectors.MatchedDetector` class.
+    # `tqecd.MatchedDetector` class.
     measurements_by_offset = _get_measurement_offset_mapping(complete_circuit)
     detectors = _matched_detectors_to_detectors(
         matched_detectors, measurements_by_offset

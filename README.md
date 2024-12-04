@@ -20,8 +20,10 @@ Download the example file [logical_cnot.dae](https://github.com/tqec/tqec/tree/m
 You can generate `stim.Circuit` instances representing that computation using
 
 ```py
+from tqecd.construction import annotate_detectors_automatically
+
 from tqec import (
-    BlockGraph, compile_block_graph, annotate_detectors_automatically,
+    BlockGraph, compile_block_graph,
 )
 from tqec.noise_models import NoiseModel
 
