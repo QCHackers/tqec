@@ -86,6 +86,10 @@ From this compiled computation, the final ``stim.Circuit`` instance can be gener
 
 For the moment, detectors should be added once the full quantum circuit has been
 generated.
+The automatic detector computation is provided by a standalone package called ``tqecd``.
+The corresponding documentation can be found
+`here <https://tqec.github.io/tqecd/>`_.
+
 
 .. code-block:: python
 
