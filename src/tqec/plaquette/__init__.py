@@ -14,3 +14,5 @@ get the qubits on a specific side of the plaquette).
 from .plaquette import Plaquette as Plaquette
 from .qubit import PlaquetteQubits as PlaquetteQubits
 from .qubit import SquarePlaquetteQubits as SquarePlaquetteQubits
+from .rpng_description import validate_rpng_string as validate_rpng_string
+from .rpng_description import create_plaquette_from_rpng_string as create_plaquette_from_rpng_string

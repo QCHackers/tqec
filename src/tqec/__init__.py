@@ -30,6 +30,8 @@ from .noise_models import NoiseModel as NoiseModel
 from .plaquette import Plaquette as Plaquette
 from .plaquette import PlaquetteQubits as PlaquetteQubits
 from .plaquette import SquarePlaquetteQubits as SquarePlaquetteQubits
+from .plaquette import validate_rpng_string as validate_rpng_string
+from .plaquette import create_plaquette_from_rpng_string as create_plaquette_from_rpng_string
 from .plaquette.enums import PlaquetteOrientation as PlaquetteOrientation
 from .position import Direction3D as Direction3D
 from .position import Displacement as Displacement
