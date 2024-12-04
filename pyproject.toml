@@ -45,13 +45,12 @@ Issues = "https://github.com/tqec/tqec/issues"
 [project.optional-dependencies]
 test = ["pytest", "mypy", "pytest-cov", "types-networkx"]
 dev = [
-    "sinter>=1.14",
     "pymatching",
     "jupyterlab",
     "tqec[test, doc, bench]",
     "pre-commit",
 ]
-doc = ["sphinx", "myst-parser", "pydata-sphinx-theme", "nbsphinx", "pandoc"]
+doc = ["sphinx", "myst-parser", "pydata-sphinx-theme", "nbsphinx", "pandoc", "sphinxcontrib-mermaid", "docformatter", "sphinx-autobuild"]
 bench = ["pyinstrument"]
 all = ["tqec[test, dev, doc, bench]"]
 

@@ -1,5 +1,3 @@
-.. _user_guide:
-
 User Guide
 ==========
 
@@ -9,10 +7,13 @@ User Guide
 
    Installation <installation>
    Quick start <quick_start>
-
+   Terminology <terminology>
+   Current limitations <current_limitations>
 
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
 
-   Detectors Computation <detectors>
+   build_computations.ipynb
+   collada_interop.ipynb
+   Detectors Computation <detectors/index>
