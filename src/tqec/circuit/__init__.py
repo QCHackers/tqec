@@ -22,6 +22,7 @@ from .detectors.construction import (
     annotate_detectors_automatically as annotate_detectors_automatically,
 )
 from .generation import generate_circuit as generate_circuit
+from .qubit_map import QubitMap as QubitMap
 from .schedule import ScheduledCircuit as ScheduledCircuit
 from .schedule import ScheduleException as ScheduleException
 from .schedule import merge_scheduled_circuits as merge_scheduled_circuits

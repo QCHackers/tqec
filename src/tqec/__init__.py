@@ -6,6 +6,7 @@ from .circuit import (
 )
 from .circuit import generate_circuit as generate_circuit
 from .circuit import merge_scheduled_circuits as merge_scheduled_circuits
+from .circuit import QubitMap as QubitMap
 from .compile import compile_block_graph as compile_block_graph
 from .computation import BlockGraph as BlockGraph
 from .computation import BlockKind as BlockKind
