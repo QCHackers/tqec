@@ -30,7 +30,7 @@ def validate_rpng_string(
 
     Assumptions on the circuit:
     - if not otherwise stated, a basis can be {x,y,z}
-    - the ancilla is always initialized in $\ket{+}$ and measured in the X basis
+    - the ancilla is always initialized in |+> and measured in the X basis
     - the ancilla is always the control qubit for the CNOT and CZ gates
     - time step of r same as ancilla reset (default 0)
     - time step of g same as ancilla measurement (default 6)
@@ -78,33 +78,35 @@ def validate_rpng_string(
         times = []
         for i, v in enumerate(q_values):
             if len(v) != 4:
-                debug_info('Wrong number of RPNG values')
+                debug_print('Wrong number of RPNG values')
                 return 0
             # Collect times.
             if v[2] != '-':
                 if v[2].isdigit() and int(v[2]) > prep_time and int(v[2]) < meas_time:
                     times.append(int(v[2]))
                 else:
-                    debug_info(f'Wrong N field in value {v}')
+                    debug_print(f'Wrong N field in value {v}')
                     return 0
             # In absence of a time, we impose that RPNG must be '----'.
             elif v != '----':
-                debug_info('No reset or measurement without an operation')
+                debug_print('No reset or measurement without an operation')
                 return 0
+            else:
+                continue
             is_valid = v[0] in acceptable_r and \
                        v[1] in acceptable_p and \
                        v[3] in acceptable_g
             if not is_valid:
-                debug_info(f'Wrong basis for reset, gate or measurement in value {v}')
+                debug_print(f'Wrong basis for reset, gate or measurement in value {v}')
                 return 0
         # Confirm unique time and that either 0, 2, or 4 data are involved in 2Q ops.
         if len(times) != len(set(times)):
-            debug_info(f'Times are not unique')
+            debug_print(f'Times are not unique')
             return 0
         elif len(times) in [0,2,4]:
             return 1
         else:
-            debug_info(f'Number of 2Q gates different from {0,2,4}')
+            debug_print(f'Number of 2Q gates different from {0,2,4}')
             return 0
     elif len(q_values) == 5:
         # Value for the ancilla qubit.
@@ -125,42 +127,43 @@ def validate_rpng_string(
                    v[2] in acceptable_g_ancilla
         if not is_valid:
             return 0
-        #TBD: print(f'valid value for the ancilla (init={init_time}, meas={meas_time})')
         # values for the data qubits.
         times = []
         for i, v in enumerate(q_values[1:]):
             if len(v) != 5:
-                debug_info('Wrong number of RPNG values')
+                debug_print('Wrong number of RPNG values')
                 return 0
             # Collect times.
             if v[3] != '-':
                 if v[3].isdigit() and int(v[3]) > prep_time and int(v[3]) < meas_time:
                     times.append(int(v[3]))
                 else:
-                    debug_info(f'Wrong N field in value {v}')
+                    debug_print(f'Wrong N field in value {v}')
                     return 0
             # In absence of a time, we impose that RPNG must be '-----'.
             elif v != '-----':
-                debug_info('No reset or measurement without an operation')
+                debug_print('No reset or measurement without an operation')
                 return 0
+            else:
+                continue
             is_valid = v[0] in acceptable_r and \
                        v[1] in acceptable_p and \
                        v[2] in acceptable_p and \
                        v[4] in acceptable_g
             if not is_valid:
-                debug_info(f'Wrong basis for reset, gate or measurement in value {v}')
+                debug_print(f'Wrong basis for reset, gate or measurement in value {v}')
                 return 0
             if v[1] != 'z' and v[2] != 'z':
-                debug_info(f'At least one basis of (pp) should be z. Error in value {v}')
+                debug_print(f'At least one basis of (pp) should be z. Error in value {v}')
                 return 0
         # Confirm unique time and that either 0, 2, or 4 data are involved in 2Q ops.
         if len(times) != len(set(times)):
-            debug_info(f'Times are not unique')
+            debug_print(f'Times are not unique')
             return 0
         elif len(times) in [0,2,4]:
             return 2
         else:
-            debug_info(f'Number of 2Q gates different from {0,2,4}')
+            debug_print(f'Number of 2Q gates different from {0,2,4}')
             return 0
     else:
         return 0
@@ -178,11 +181,13 @@ def create_plaquette_from_rpng_string(
     - the ancilla qubit is the last among the PlaquetteQubits (thus has index 4)
     """
     format = validate_rpng_string(rpng_string, prep_time=prep_time, meas_time=meas_time)
+    circuit_as_list = []
     if format == 1:
         circuit_as_list = [''] * (meas_time - prep_time + 1)
         for q, v in enumerate(rpng_string.split(' ')):
             # 2Q gates.
-            circuit_as_list[int(v[2])] += f'C{v[1].upper()} 4 {q}\n'
+            if v[2] != '-':
+                circuit_as_list[int(v[2])] += f'C{v[1].upper()} 4 {q}\n'
             # Data reset or Hadamard.
             if v[0] == 'h':
                 circuit_as_list[0] += f'H {q}\n'
@@ -204,10 +209,11 @@ def create_plaquette_from_rpng_string(
         circuit_as_list = [''] * (meas_time - prep_time + 1)
         for q, v in enumerate(values[1:]):
             # 2Q gates.
-            if v[1] == 'z':
-                circuit_as_list[int(v[3])] += f'C{v[2].upper()} 4 {q}\n'
-            elif v[2] == 'z':
-                circuit_as_list[int(v[3])] += f'C{v[1].upper()} {q} 4\n'
+            if v[3] != '-':
+                if v[1] == 'z':
+                    circuit_as_list[int(v[3])] += f'C{v[2].upper()} 4 {q}\n'
+                elif v[2] == 'z':
+                    circuit_as_list[int(v[3])] += f'C{v[1].upper()} {q} 4\n'
             # Data reset or Hadamard.
             if v[0] == 'h':
                 circuit_as_list[0] += f'H {q}\n'
