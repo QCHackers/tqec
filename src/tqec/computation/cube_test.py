@@ -17,17 +17,11 @@ def test_zx_cube_kind() -> None:
 
     kind = ZXCube.from_str("ZXZ")
     assert str(kind) == "ZXZ"
-    assert kind.cube_basis == ZXBasis.X
     assert kind.to_zx_kind() == ZXKind.X
-    assert kind.normal_direction == Direction3D.Y
     assert not kind.is_spatial_junction
     assert kind.get_basis_along(Direction3D.X) == ZXBasis.Z
     assert kind.get_basis_along(Direction3D.Y) == ZXBasis.X
     assert kind.get_basis_along(Direction3D.Z) == ZXBasis.Z
-
-    kind = ZXCube.from_normal_basis(ZXBasis.Z, Direction3D.Z)
-    assert str(kind) == "XXZ"
-    assert kind.is_spatial_junction
 
     assert len(ZXCube.all_kinds()) == 6
 

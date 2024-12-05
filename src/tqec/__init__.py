@@ -22,11 +22,13 @@ from .computation import ZXGraph as ZXGraph
 from .computation import ZXKind as ZXKind
 from .computation import ZXNode as ZXNode
 from .exceptions import TQECException as TQECException
+from .interop import RGBA as RGBA
+from .interop import TQECColor as TQECColor
 from .interop import display_collada_model as display_collada_model
 from .interop import read_block_graph_from_dae_file as read_block_graph_from_dae_file
 from .interop import write_block_graph_to_dae_file as write_block_graph_to_dae_file
 from .interval import Interval as Interval
-from .noise_models import NoiseModel as NoiseModel
+from .noise_model import NoiseModel as NoiseModel
 from .plaquette import Plaquette as Plaquette
 from .plaquette import PlaquetteQubits as PlaquetteQubits
 from .plaquette import SquarePlaquetteQubits as SquarePlaquetteQubits
@@ -41,11 +43,6 @@ from .position import Shape2D as Shape2D
 from .position import SignedDirection3D as SignedDirection3D
 from .scale import LinearFunction as LinearFunction
 from .scale import Scalable2D as Scalable2D
-from .scale import ScalableInterval as ScalableInterval
 from .scale import round_or_fail as round_or_fail
 from .templates import Template as Template
-from .templates.enums import CornerPositionEnum as CornerPositionEnum
 from .templates.enums import TemplateOrientation as TemplateOrientation
-from .templates.enums import (
-    TemplateRelativePositionEnum as TemplateRelativePositionEnum,
-)

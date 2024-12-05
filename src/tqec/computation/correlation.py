@@ -1,3 +1,6 @@
+"""Defines the :py:class:`~tqec.computation.correlation.CorrelationSurface` and
+the functions to find the correlation surfaces in the ZX graph."""
+
 from __future__ import annotations
 
 import itertools
@@ -11,27 +14,36 @@ from tqec.position import Position3D
 
 @dataclass(frozen=True)
 class CorrelationSurface:
-    """A correlation surface in the logical computation.
+    """A correlation surface in a computation is a set of measurements whose
+    values determine the parity of the logical operators at the inputs and
+    outputs associated with the surface.
 
-    The correlation surface specifies the correlation between the logical operators in the
-    spacetime diagram. Logical observable can be derived from the boundaries of the correlation
-    surface.
+    Here we represent the correlation surface in terms of the ZX graph. The insight is that the spiders
+    pose parity constraints on the operators supported on the incident edges. The flow of the logical
+    operators through the ZX graph, respecting the parity constraints, forms the correlation between the
+    inputs and outputs. However, the sign of measurement outcomes is neglected in this representation.
+    And we need to recover the measurements when instantiating an explicit logical observable from the
+    correlation surface.
 
-    The correlation surface is defined by the set of edges in the ZX graph. Each edge represents
-    a X/Z surface within the pipe in the `BlockGraph` picture. A Y surface is represented by two
-    distinct edges, one for the X surface and one for the Z surface. Therefore, the nodes of the
-    edges in the correlation surface must be Z/X type nodes.
+    More specifically, we represent the correlation surface by the set edges it spans in the ZX graph.
+    Each edge establishes a correlation between the logical operators at the two ends of the edge. For
+    example, an edge connecting two Z nodes represents the correlation between the logical Z operators
+    at the two nodes. There is also a special kind of correlation surface that has no interior edges but
+    represented by a single node. It can be seen as applying spider fusion rule to a single edge ZX graph,
+    which results in a correlation surface totally compressed in a single node.
 
+    Additionally, the input/output logical operators at the boundary of the correlation surface are
+    represented as a mapping from the the input/output labels to the logical operator type there.
 
     Attributes:
-        nodes: A set of ``ZXNode`` representing the nodes in the correlation surface. The kind of
-            the node is determined by what kinds of correlation the node supports. If both X and
-            Z correlation are supported, the node is a Y type node.
-        span: A set of ``ZXEdge`` representing the correlation between logical operators spanning
-            in the 3D space. The edges in the span must be between Z/X type nodes.
-        external_stabilizer: A mapping from the port label to the Pauli operator at the port, which
-            represents the spacetime stabilizer for the correlation surface. Sign of the stabilizer
-            is neglected.
+        nodes: A set of ``ZXNode`` representing the logical operators appeared in the correlation surface.
+            For example, if either a logical X operator or Z operator has appeared at this node position in
+            the span, then the node is of X or Z kind. If both X and Z logical operators have appeared at
+            this node position in the span, then the node is of Y kind.
+        span: A set of ``ZXEdge`` representing the span of the correlation surface.
+        external_stabilizer: A mapping from the port label to the logical operator at the port. Sign of the
+            stabilizer is neglected. If the correlation surface is closed, i.e. the stabilizer is terminated
+            with the initialization or measurements, the mapping is empty.
     """
 
     nodes: frozenset[ZXNode]
@@ -52,76 +64,108 @@ class CorrelationSurface:
 
     @staticmethod
     def from_span(zx_graph: ZXGraph, span: Iterable[ZXEdge]) -> CorrelationSurface:
-        """Construct a correlation surface from the correlation span."""
+        """Construct a correlation surface from the set of edges representing
+        the span of the correlation surface.
+
+        Args:
+            zx_graph: The ZX graph where the correlation surface is extracted.
+            span: The set of edges representing the span of the correlation surface.
+
+        Returns:
+            A :py:class:`~tqec.computation.correlation.CorrelationSurface` object.
+        """
         span = frozenset(span)
 
-        correlation_types = CorrelationSurface.get_correlation_types(span)
-        nodes = frozenset(ZXNode(pos, kind) for pos, kind in correlation_types.items())
+        supported_observables = CorrelationSurface._get_supported_observable_at_nodes(
+            span
+        )
+        nodes = frozenset(
+            ZXNode(pos, kind) for pos, kind in supported_observables.items()
+        )
 
         external_stabilizer: dict[str, str] = {}
         for label, port in zx_graph.ports.items():
-            correlation_type = correlation_types.get(port)
-            if correlation_type is None:
+            observable_type = supported_observables.get(port)
+            if observable_type is None:
                 external_stabilizer[label] = "I"
             else:
-                external_stabilizer[label] = correlation_type.value
+                external_stabilizer[label] = observable_type.value
         return CorrelationSurface(nodes, span, external_stabilizer)
 
     @staticmethod
-    def get_correlation_types(span: Iterable[ZXEdge]) -> dict[Position3D, ZXKind]:
-        """Get the correlation types at the nodes in the correlation span.
-
-        The correlation type at the node is determined by the
-        correlation types of the edges connected to the node. If the
-        node is connected to both X and Z type edges, the correlation is
-        Y type. If the node is connected to only one type of edge, the
-        correlation is Z/X type.
-        """
-        correlations_at_position: dict[Position3D, set[ZXKind]] = {}
+    def _get_supported_observable_at_nodes(
+        span: Iterable[ZXEdge],
+    ) -> dict[Position3D, ZXKind]:
+        """Get the supported observable type at each node in the correlation
+        surface."""
+        observables_appeared: dict[Position3D, set[ZXKind]] = {}
         for edge in span:
             for node in edge:
-                correlations_at_position.setdefault(node.position, set()).add(node.kind)
+                observables_appeared.setdefault(node.position, set()).add(node.kind)
 
-        correlation_types: dict[Position3D, ZXKind] = {}
-        for pos, types in correlations_at_position.items():
+        supported_observables: dict[Position3D, ZXKind] = {}
+        for pos, types in observables_appeared.items():
             if len(types) == 1:
-                correlation_types[pos] = types.pop()
+                supported_observables[pos] = types.pop()
             else:
                 assert len(types) == 2
-                correlation_types[pos] = ZXKind.Y
-        return correlation_types
+                supported_observables[pos] = ZXKind.Y
+        return supported_observables
 
     @property
-    def node_correlation_types(self) -> dict[Position3D, ZXKind]:
-        """Return a mapping from the position of the node to the correlation
-        type supported at the node."""
+    def observables_at_nodes(self) -> dict[Position3D, ZXKind]:
+        """A mapping from the position of the node to the logical observable
+        type that the node supports in the correlation surface."""
         return {node.position: node.kind for node in self.nodes}
 
     @property
     def has_single_node(self) -> bool:
-        """Return True if the correlation surface contains only one node."""
+        """Whether the correlation surface contains only a single node."""
         return len(self.nodes) == 1
 
 
 def find_correlation_surfaces(
     zx_graph: ZXGraph,
 ) -> list[CorrelationSurface]:
-    """Find the correlation surfaces in the ZX graph.
+    """Find all the
+    :py:class:`~tqec.computation.correlation.CorrelationSurface` in a ZX graph.
 
-    The algorithm starts from each leaf node in the graph, and find the correlation surfaces
-    using the flood fill like algorithm.
+    Starting from each leaf node in the graph, the function explores how can the X/Z logical observable
+    move through the graph to form a correlation surface:
 
-    For Z/X type node, the correlation surface must start from the opposite type node. For the
-    Port, the correlation surface can start from both X/Z type node. For the Y type node, the
-    correlation surface must be the product of the X and Z type.
+    - For a X/Z kind leaf node, it can only support the logical observable with the opposite type. Only
+      a single type of logical observable is explored from the leaf node.
+    - For a Y kind leaf node, it can only support the Y logical observable, i.e. the presence of
+      both X and Z logical observable. Both X and Z type logical observable are explored from the leaf node.
+      And the two correlation surfaces are combined to form the Y type correlation surface.
+    - For the port node, it can support any type of logical observable. Both X and Z type logical observable
+      are explored from the port node.
+
+    The function uses a flood fill like recursive algorithm to find the correlation surface in the graph.
+    Firstly, we define two types of nodes in the graph:
+
+    - *broadcast node:* A node that has seen logical observable with basis opposite to its own basis.
+      A logical observable needs to be broadcasted to all the neighbors of the node.
+    - *passthrough node:* A node that has seen logical observable with the same basis as its own basis.
+      A logical observable needs to be only supported on an even number of edges connected to the node.
+
+    The algorithm starts from a set of frontier nodes and greedily expands the correlation
+    surface until no more broadcast nodes are in the frontier. Then it explore the
+    passthrough nodes, and select even number of edges to be included in the surface. If
+    no such selection can be made, the search is pruned. For different choices, the algorithm
+    recursively explores the next frontier until the search is completed. Finally, the branches
+    at different nodes are produced to form the correlation surface.
 
     Args:
         zx_graph: The ZX graph to find the correlation surfaces.
 
     Returns:
         A list of `CorrelationSurface` in the graph.
+
+    Raises:
+        TQECException: If the graph does not contain any leaf node.
     """
-    zx_graph.raise_if_cannot_be_valid_computation()
+    zx_graph.check_invariants()
     # Edge case: single node graph
     if zx_graph.num_nodes == 1:
         return [
@@ -135,12 +179,14 @@ def find_correlation_surfaces(
         )
     correlation_surfaces: set[CorrelationSurface] = set()
     for leaf in leaves:
-        correlation_surfaces.update(find_correlation_surfaces_from_leaf(zx_graph, leaf))
+        correlation_surfaces.update(
+            _find_correlation_surfaces_from_leaf(zx_graph, leaf)
+        )
     # sort the correlation surfaces to make the result deterministic
     return sorted(correlation_surfaces, key=lambda x: sorted(x.span))
 
 
-def find_correlation_surfaces_from_leaf(
+def _find_correlation_surfaces_from_leaf(
     zx_graph: ZXGraph,
     leaf: ZXNode,
 ) -> list[CorrelationSurface]:
@@ -174,32 +220,34 @@ def _construct_compatible_correlation_surfaces(
     zx_graph: ZXGraph,
     spans: Iterable[frozenset[ZXEdge]],
 ) -> list[CorrelationSurface]:
-    """From the correlation spans, construct the correlation surfaces that are
-    compatible with the ZX graph.
+    """From the spans, construct the correlation surfaces that are compatible
+    with the ZX graph.
 
-    The compatibility is determined by comparing the correlation type
-    and the node type of the leaf nodes in the graph. If the node type
-    is not P, the correlation type must be the same as the node type. If
-    the node type is P, the correlation type can be any type.
+    The compatibility is determined by comparing the logical observable basis
+    and the node kind for the leaf nodes in the graph:
+
+    - The Z/X observable must be supported on the opposite type node.
+    - The Y observable can only be supported on the Y type node.
+    - The port node can support any type of logical observable.
     """
     correlation_surfaces: list[CorrelationSurface] = []
 
     def _is_compatible(
-        correlation_types: dict[Position3D, ZXKind],
+        supported_observables: dict[Position3D, ZXKind],
     ) -> bool:
         # Check the leaf nodes compatibility.
         for leaf in zx_graph.leaf_nodes:
             # Port is compatible with any correlation type.
             if leaf.is_port:
                 continue
-            correlation_type = correlation_types.get(leaf.position)
-            if correlation_type is None:
+            observable_basis = supported_observables.get(leaf.position)
+            if observable_basis is None:
                 continue
             # Y correlation can only be supported on the Y type node.
-            if (correlation_type == ZXKind.Y) ^ (leaf.kind == ZXKind.Y):
+            if (observable_basis == ZXKind.Y) ^ (leaf.kind == ZXKind.Y):
                 return False
             # Z/X correlation must be supported on the opposite type node.
-            if correlation_type != ZXKind.Y and correlation_type == leaf.kind:
+            if observable_basis != ZXKind.Y and observable_basis == leaf.kind:
                 return False
         return True
 
@@ -207,7 +255,7 @@ def _construct_compatible_correlation_surfaces(
         if not span:
             continue
         correlation_surface = CorrelationSurface.from_span(zx_graph, span)
-        if not _is_compatible(correlation_surface.node_correlation_types):
+        if not _is_compatible(correlation_surface.observables_at_nodes):
             continue
         correlation_surfaces.append(correlation_surface)
     return correlation_surfaces
@@ -215,53 +263,32 @@ def _construct_compatible_correlation_surfaces(
 
 def _find_spans_with_flood_fill(
     zx_graph: ZXGraph,
-    correlation_frontier: set[ZXNode],
-    correlation_span: set[ZXEdge],
+    frontier: set[ZXNode],
+    current_span: set[ZXEdge],
 ) -> list[frozenset[ZXEdge]] | None:
     """Find the correlation spans in the ZX graph using the flood fill like
-    algorithm.
-
-    matched correlation node: Node at which the correlation type matches the node type.
-    mismatched correlation node: Node at which the correlation type mismatches the node type.
-
-    The algorithm starts from a set of correlation frontier and greedily expands the correlation
-    span until no more mismatched correlation nodes are in the frontier. Then it explore the
-    matched correlation nodes, and select even number of edges to be included in the span. If
-    no such selection can be made, the search is pruned. For different choices, the algorithm
-    recursively explores the next frontier until the search is completed. Finally, the branches
-    at different nodes are produced to form the correlation spans.
-
-    Args:
-        zx_graph: The ZX graph to find the correlation spans in.
-        correlation_frontier: The set of correlation nodes to be explored at this step.
-        correlation_span: The current correlation span.
-
-    Returns:
-        A list of correlation spans, or None if no correlation spans can be found.
-    """
-    # The ZX node type mismatches the correlation type, then we can flood
-    # through all the edges connected to the current node.
-    # Greedily flood through the edges until encountering the matched correlation type.
-    mismatched_correlation_nodes = {
-        n for n in correlation_frontier if not _match_at(zx_graph, n)
-    }
-    while mismatched_correlation_nodes:
-        correlation_node = mismatched_correlation_nodes.pop()
-        correlation_frontier.remove(correlation_node)
+    algorithm."""
+    # The ZX node kind mismatches the logical observable basis, then we can flood
+    # through(broadcast) all the edges connected to the current node.
+    # Greedily flood through the edges until encountering the passthrough node.
+    broadcast_nodes = {n for n in frontier if not _match_at(zx_graph, n)}
+    while broadcast_nodes:
+        correlation_node = broadcast_nodes.pop()
+        frontier.remove(correlation_node)
         for correlation_edge in _get_correlation_edges_at(zx_graph, correlation_node):
-            if correlation_edge in correlation_span:
+            if correlation_edge in current_span:
                 continue
             u, v = correlation_edge
             next_correlation_node = u if v == correlation_node else v
-            correlation_frontier.add(next_correlation_node)
-            correlation_span.add(correlation_edge)
+            frontier.add(next_correlation_node)
+            current_span.add(correlation_edge)
             if not _match_at(zx_graph, next_correlation_node):
-                mismatched_correlation_nodes.add(next_correlation_node)
+                broadcast_nodes.add(next_correlation_node)
 
-    if not correlation_frontier:
-        return [frozenset(correlation_span)]
+    if not frontier:
+        return [frozenset(current_span)]
 
-    # The node type matches the correlation type, enforce the parity to be even.
+    # The node kind matches the observable basis, enforce the parity to be even.
     # There are different choices of the edges to be included in the span.
 
     # Each list entry represents the possible branches at a node.
@@ -269,13 +296,13 @@ def _find_spans_with_flood_fill(
     # nodes to be included in the branch's frontier, and the second element is the edges
     # to be included in the branch's span.
     branches_at_different_nodes: list[list[tuple[set[ZXNode], set[ZXEdge]]]] = []
-    for correlation_node in set(correlation_frontier):
+    for correlation_node in set(frontier):
         assert _match_at(zx_graph, correlation_node)
-        correlation_frontier.remove(correlation_node)
+        frontier.remove(correlation_node)
 
         correlation_edges = _get_correlation_edges_at(zx_graph, correlation_node)
-        edges_in_span = correlation_edges & correlation_span
-        edges_left = correlation_edges - correlation_span
+        edges_in_span = correlation_edges & current_span
+        edges_left = correlation_edges - current_span
         parity = len(edges_in_span) % 2
         # Cannot fulfill the parity requirement, prune the search
         if parity == 1 and not edges_left:
@@ -299,8 +326,8 @@ def _find_spans_with_flood_fill(
     final_spans: list[frozenset[ZXEdge]] = []
     # Product of the branches at different nodes together
     for product in itertools.product(*branches_at_different_nodes):
-        product_frontier = set(correlation_frontier)
-        product_span = set(correlation_span)
+        product_frontier = set(frontier)
+        product_span = set(current_span)
         for nodes, edges in product:
             product_frontier.update(nodes)
             product_span.update(edges)
