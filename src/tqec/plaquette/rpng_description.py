@@ -63,19 +63,42 @@ class RPNG:
 
     @classmethod
     def from_string(cls, rpng_string: str) -> 'RPNG':
-        """Initialize the RPNG object from a 4-character string
+        """Initialize the RPNG object from a 4-character or 5-character string
         
+        4-character -> simplified format -> RPNG
+        5-character -> extended format -> RAPNG
+
+        Note that the ancilla basis(a) is the second character, just before (p).
+
         Note that any character different from a BasisEnum / ExtendedBasisEnum
         value would result in the corresponding field being None.
         """
-        if len(rpng_string) != 4:
-            raise ValueError('The rpng string must be exactly 4-character long.')
-        r_str, p_str, n_str, g_str = tuple(rpng_string)
+        a_str = 'z'
+        if len(rpng_string) == 4:
+            r_str, p_str, n_str, g_str = tuple(rpng_string)
+        elif len(rpng_string) == 5:
+            r_str, a_str, p_str, n_str, g_str = tuple(rpng_string)
+        else:
+            raise ValueError('The rpng string must be exactly 4- or 5-character long.')
+        # Convert the characters into the enum attributes (or raise error).
         r = ExtendedBasisEnum(r_str) if r_str in ExtendedBasisEnum._value2member_map_ else None
+        a = BasisEnum(a_str) if a_str in BasisEnum._value2member_map_ else None
         p = BasisEnum(p_str) if p_str in BasisEnum._value2member_map_ else None
         n = int(n_str) if n_str.isdigit() else None
         g = ExtendedBasisEnum(g_str) if g_str in ExtendedBasisEnum._value2member_map_ else None
-        return cls(r, p, n, g)
+        # Raise error if anythiong but '-' was used to indicate None.
+        if not r and r_str != '-':
+            raise ValueError('Unacceptable character for the R field.')
+        if not p and p_str != '-':
+            raise ValueError('Unacceptable character for the P field.')
+        if p and not a:
+            raise ValueError('Unacceptable ancilla basis in the extended format (i.e. rapng).')
+        if not n and n_str != '-':
+            raise ValueError('Unacceptable character for the N field.')
+        if not g and g_str != '-':
+            raise ValueError('Unacceptable character for the G field.')
+        return cls(r, p, n, g, a)
+
     
     def get_r_op(self) -> Optional[str]:
         """Get the reset operation or Hadamard"""
@@ -149,8 +172,8 @@ class RPNGDescription:
                 if rpng.n < 1 or rpng.n >= self.ancilla.n:
                     raise ValueError('The n values must be in ]0, ancilla meas time[.')
                 times.append(rpng.n)
-            # Confirm that at least one betwween fields a and p in every corner is z
-            if rpng.a != BasisEnum.Z and rpng.p != BasisEnum.Z:
+            # Confirm that at least one betwween fields a and p in every corner is z, if 2Q gate is present
+            if rpng.p and rpng.a != BasisEnum.Z and rpng.p != BasisEnum.Z:
                 raise ValueError('At least one between a and p must be "z" in every corner.')
         if len(times) != len(set(times)):
             raise ValueError('The n values for the corners must be unique.')
@@ -165,6 +188,18 @@ class RPNGDescription:
         if len(rpng_objs) != 4:
             raise ValueError('There must be 4 corners in the RPNG description.')
         return cls(rpng_objs)
+    
+
+    @classmethod
+    def from_extended_string(cls, ancilla_and_corners_rpng_string: str) -> 'RPNGDescription':
+        """Initialize the RPNGDescription object from a (16+3)-character string"""
+        values = ancilla_and_corners_rpng_string.split(' ')
+        ancilla_rgn = RGN.from_string(values[0])
+        rpng_objs = tuple([RPNG.from_string(s) for s in values[1:]])
+        if len(rpng_objs) != 4:
+            raise ValueError('There must be 4 corners in the RPNG description.')
+        return cls(rpng_objs, ancilla_rgn)
+
 
     def get_r_op(self, data_idx: int) -> Optional[str]:
         """Get the reset operation or Hadamard for the specific data qubit"""
