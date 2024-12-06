@@ -196,11 +196,9 @@ class RPNGDescription:
                     circuit_as_list[rpng.n] += f'C{rpng.a.value.upper()} {q} 4\n'
             # Data reset or Hadamard.
             if rpng.r:
-                print(f'{q}: has reset -> {rpng.r}')
                 circuit_as_list[0] += f'{rpng.get_r_op()} {q}\n'
             # Data measurement or Hadamard.
             if rpng.g:
-                print(f'{q}: has meas -> {rpng.g}')
                 circuit_as_list[-1] += f'{rpng.get_g_op()} {q}\n'
         # Ancilla reset and measurement.
         circuit_as_list[0] += f'R{self.ancilla.r.value.upper()} 4\n'

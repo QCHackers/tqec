@@ -26,5 +26,3 @@ from .qubit import SquarePlaquetteQubits as SquarePlaquetteQubits
 from .rpng_description import RPNG as RPNG
 from .rpng_description import RGN as RGN
 from .rpng_description import RPNGDescription as RPNGDescription
-from .OLD_rpng_description import validate_rpng_string as validate_rpng_string
-from .OLD_rpng_description import create_plaquette_from_rpng_string as create_plaquette_from_rpng_string
