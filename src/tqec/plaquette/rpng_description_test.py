@@ -66,7 +66,7 @@ MX 4
     assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
 
     # Usual plaquette corresponding to the ZXXZ stabilizer with partial initialization.
-    rpng = '-z1- zx2- zx4- -z5-'
+    corners_rpng_str = '-z1- zx2- zx4- -z5-'
     desc = RPNGDescription.from_string(corners_rpng_string = corners_rpng_str)
     plaquette = desc.get_plaquette()
     expected_circuit_str = '''
@@ -93,7 +93,7 @@ MX 4
 
     # Arbitrary plaquette.
     qubits = SquarePlaquetteQubits()
-    rpng = '-x5h -z2z -x3x hz1-'
+    corners_rpng_str = '-x5h -z2z -x3x hz1-'
     desc = RPNGDescription.from_string(corners_rpng_string = corners_rpng_str)
     plaquette = desc.get_plaquette(qubits = qubits)
     expected_circuit_str = '''

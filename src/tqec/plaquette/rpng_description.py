@@ -93,7 +93,7 @@ class RPNG:
         if op == None:
             return None
         elif op.value in BasisEnum._value2member_map_:
-            return f'R{op.value.upper()}'
+            return f'M{op.value.upper()}'
         else:
             return f'{op.value.upper()}'
 
@@ -118,7 +118,7 @@ class RGN:
         try:
             r = BasisEnum(r_str)
             g = BasisEnum(g_str)
-            n = BasisEnum(n_str)
+            n = int(n_str)
             return cls(r, g, n)
         except ValueError:
             raise ValueError('Invalid rgn string.')
@@ -141,17 +141,22 @@ class RPNGDescription:
         Constraints:
         - the n values for the corners must be unique
         - the n values for the corners must be in the interval ]0, ancilla.n[
+        - at least one betwween fields a and p in every corner is z
         """
         times = []
         for rpng in self.corners:
             if rpng.n:
                 if rpng.n < 1 or rpng.n >= self.ancilla.n:
-                    raise ValueError('The n values must be in ]0, ancilla meas time[')
+                    raise ValueError('The n values must be in ]0, ancilla meas time[.')
                 times.append(rpng.n)
+            # Confirm that at least one betwween fields a and p in every corner is z
+            if rpng.a != BasisEnum.Z and rpng.p != BasisEnum.Z:
+                raise ValueError('At least one between a and p must be "z" in every corner.')
         if len(times) != len(set(times)):
-            raise ValueError('The n values for the corners must be unique')
+            raise ValueError('The n values for the corners must be unique.')
         elif len(times) not in [0,2,4]:
-            raise ValueError('Each plaquette must have 0, 2, or 4 2Q gates')
+            raise ValueError('Each plaquette must have 0, 2, or 4 2Q gates.')
+
 
     @classmethod
     def from_string(cls, corners_rpng_string: str) -> 'RPNGDescription':
@@ -185,13 +190,18 @@ class RPNGDescription:
         for q, rpng in enumerate(self.corners):
             # 2Q gates.
             if rpng.n and rpng.p:
-                circuit_as_list[rpng.n] += f'C{rpng.p.value.upper()} 4 {q}\n'
+                if rpng.a == BasisEnum.Z:
+                    circuit_as_list[rpng.n] += f'C{rpng.p.value.upper()} 4 {q}\n'
+                else:
+                    circuit_as_list[rpng.n] += f'C{rpng.a.value.upper()} {q} 4\n'
             # Data reset or Hadamard.
             if rpng.r:
+                print(f'{q}: has reset -> {rpng.r}')
                 circuit_as_list[0] += f'{rpng.get_r_op()} {q}\n'
             # Data measurement or Hadamard.
             if rpng.g:
-                circuit_as_list[0] += f'{rpng.get_g_op()} {q}\n'
+                print(f'{q}: has meas -> {rpng.g}')
+                circuit_as_list[-1] += f'{rpng.get_g_op()} {q}\n'
         # Ancilla reset and measurement.
         circuit_as_list[0] += f'R{self.ancilla.r.value.upper()} 4\n'
         circuit_as_list[-1] += f'M{self.ancilla.g.value.upper()} 4\n'
