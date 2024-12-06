@@ -1,5 +1,5 @@
-from tqec.plaquette.rpng_description import validate_rpng_string
-from tqec.plaquette.rpng_description import create_plaquette_from_rpng_string
+from tqec.plaquette.rpng_description import RPNG, RGN
+from tqec.plaquette.rpng_description import RPNGDescription
 
 from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteSide
@@ -7,6 +7,7 @@ from tqec.plaquette.qubit import SquarePlaquetteQubits
 from tqec.templates.enums import TemplateOrientation
 
 from stim import Circuit as stim_Circuit
+import pytest
 
 def test_validate_plaquette_from_rpng_string() -> None:
     # Invalid plaquettes
@@ -32,17 +33,17 @@ def test_validate_plaquette_from_rpng_string() -> None:
         'z0z5 -xz1- -xz2- -xz3- -xz4-',
     ]
     for rpng in rpng_invalide_examples:
-        assert validate_rpng_string(rpng_string = rpng) == 0
+        with pytest.raises(ValueError):
+            RPNGDescription.from_string(corners_rpng_string = rpng)
     for rpng in rpng_simplified_examples:
-        assert validate_rpng_string(rpng_string = rpng) == 1
-    for rpng in rpng_extended_examples:
-        assert validate_rpng_string(rpng_string = rpng) == 2
+        RPNGDescription.from_string(corners_rpng_string = rpng)
 
 
 def test_create_plaquette_from_rpng_string() -> None:
     # Usual plaquette corresponding to the ZZZZ stabilizer.
-    rpng = '-z1- -z3- -z2- -z4-'
-    plaquette = create_plaquette_from_rpng_string(rpng_string = rpng)
+    corners_rpng_str = '-z1- -z3- -z2- -z4-'
+    desc = RPNGDescription.from_string(corners_rpng_string = corners_rpng_str)
+    plaquette = desc.get_plaquette()
     expected_circuit_str = '''
 QUBIT_COORDS(-1, -1) 0
 QUBIT_COORDS(1, -1) 1
@@ -66,7 +67,8 @@ MX 4
 
     # Usual plaquette corresponding to the ZXXZ stabilizer with partial initialization.
     rpng = '-z1- zx2- zx4- -z5-'
-    plaquette = create_plaquette_from_rpng_string(rpng_string = rpng)
+    desc = RPNGDescription.from_string(corners_rpng_string = corners_rpng_str)
+    plaquette = desc.get_plaquette()
     expected_circuit_str = '''
 QUBIT_COORDS(-1, -1) 0
 QUBIT_COORDS(1, -1) 1
@@ -92,7 +94,8 @@ MX 4
     # Arbitrary plaquette.
     qubits = SquarePlaquetteQubits()
     rpng = '-x5h -z2z -x3x hz1-'
-    plaquette = create_plaquette_from_rpng_string(rpng_string = rpng, qubits = qubits)
+    desc = RPNGDescription.from_string(corners_rpng_string = corners_rpng_str)
+    plaquette = desc.get_plaquette(qubits = qubits)
     expected_circuit_str = '''
 QUBIT_COORDS(-1, -1) 0
 QUBIT_COORDS(1, -1) 1

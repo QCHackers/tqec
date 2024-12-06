@@ -32,6 +32,9 @@ from .noise_model import NoiseModel as NoiseModel
 from .plaquette import Plaquette as Plaquette
 from .plaquette import PlaquetteQubits as PlaquetteQubits
 from .plaquette import SquarePlaquetteQubits as SquarePlaquetteQubits
+from .plaquette import RPNG as RPNG
+from .plaquette import RGN as RGN
+from .plaquette import RPNGDescription as RPNGDescription
 from .plaquette import validate_rpng_string as validate_rpng_string
 from .plaquette import create_plaquette_from_rpng_string as create_plaquette_from_rpng_string
 from .plaquette.enums import PlaquetteOrientation as PlaquetteOrientation
