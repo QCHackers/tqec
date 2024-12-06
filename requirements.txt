@@ -1,9 +1,4 @@
-matplotlib
-numpy
-networkx
+matplotlib ~= 3.5
+numpy ~= 1.22
 stim
-sinter>=1.14
-pycollada
-typing-extensions
-pycryptosat!=5.11.23
-python-sat[cryptosat]
+scipy ~= 1.9
