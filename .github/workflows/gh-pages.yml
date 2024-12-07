@@ -40,7 +40,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/
       - name: Deploy if PR
-        id: deploy_if_pr
         uses: peaceiris/actions-gh-pages@v4
         if: github.ref != 'refs/heads/main'
         with:
@@ -50,7 +49,7 @@ jobs:
         continue-on-error: true
       - name: Add comment if PR
         uses: marocchino/sticky-pull-request-comment@v2
-        if: steps.deploy_if_pr.conclusion == 'success'
+        if: github.event_name == 'pull_request'
         with:
           header: documentation-preview
           recreate: true
@@ -60,3 +59,4 @@ jobs:
             ✨ https://tqec.github.io/tqec/pull/${{github.event.number}}/ ✨
 
             Changes may take a few minutes to propagate.
+        continue-on-error: true
