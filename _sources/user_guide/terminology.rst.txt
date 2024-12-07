@@ -38,7 +38,7 @@ quantum operations that are applied within the cube. Currently we have the follo
 :py:class:`~tqec.computation.ZXCube`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A cube whose all faces are of ``X`` (red) or ``Z`` (blue) type. We assume each pair of opposite faces are of the same type.
+A cube whose faces are of ``X`` (red) or ``Z`` (blue) type. We assume each pair of opposite faces are of the same type.
 Then the kind can be specified by the type of the faces looking from the XYZ directions. For example, the `ZXZ` cube in the
 figure above has ``Z`` type faces along the X direction, ``X`` type faces along the Y direction, and ``Z`` type faces along the Z direction.
 

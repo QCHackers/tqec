@@ -124,7 +124,7 @@ The compilation of the block graph is done automatically based on the inputs.
 
     import numpy as np
 
-    from tqec.noise_models import NoiseModel
+    from tqec.noise_model import NoiseModel
     from tqec.simulation.simulation import start_simulation_using_sinter
 
     # returns a iterator
