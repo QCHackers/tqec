@@ -23,3 +23,6 @@ from .plaquette import Plaquettes as Plaquettes
 from .plaquette import RepeatedPlaquettes as RepeatedPlaquettes
 from .qubit import PlaquetteQubits as PlaquetteQubits
 from .qubit import SquarePlaquetteQubits as SquarePlaquetteQubits
+from .rpng_description import RPNG as RPNG
+from .rpng_description import RGN as RGN
+from .rpng_description import RPNGDescription as RPNGDescription
