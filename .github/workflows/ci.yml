@@ -93,3 +93,4 @@ jobs:
           header: code-coverage
           recreate: true
           path: code-coverage-results.md
+        continue-on-error: true

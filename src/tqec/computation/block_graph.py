@@ -1,13 +1,13 @@
-"""Graph representation of a 3D logical computation by explicit blocks."""
+"""Block graph representation of a logical computation."""
 
 from __future__ import annotations
 
 import pathlib
-from typing import Mapping, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from copy import deepcopy
 from io import BytesIO
 
-from tqec.computation.base_graph import ComputationGraph
+from tqec.computation._base_graph import ComputationGraph
 from tqec.exceptions import TQECException
 from tqec.position import Direction3D, SignedDirection3D
 from tqec.computation.cube import Cube, CubeKind
@@ -16,37 +16,45 @@ from tqec.computation.zx_graph import ZXGraph
 from tqec.computation.correlation import CorrelationSurface
 
 if TYPE_CHECKING:
-    from tqec.interop.collada_html_viewer import ColladaHTMLViewer
+    from tqec.interop.collada.html_viewer import _ColladaHTMLViewer
     from tqec.computation.abstract_observable import AbstractObservable
-    from tqec.interop.color import RGBA
-    from tqec.interop.geometry import FaceKind
 
 
 BlockKind = CubeKind | PipeKind
-"""Valid block types in the library."""
 
 
 class BlockGraph(ComputationGraph[Cube, Pipe]):
-    """An undirected graph representation of a logical computation.
+    """Block graph representation of a logical computation.
 
-    The block graph specifies the explicit block structures of the
-    spacetime diagram, including the layout of the code patches, the
-    boundary types and the connectivity of the patches across the
-    spacetime. The block graph can be compiled and used to generate the
-    concrete circuits that implement the logical computation.
+    A block graph consists of building blocks that fully define the boundary
+    conditions and topological structures of a logical computation. It corresponds
+    to the commonly used 3D spacetime diagram representation of a surface code
+    logical computation.
 
-    The nodes in the graph are the cubes that represent a unit of code
-    patch in the spacetime. The edges in the graph are the pipes that
-    connect the cubes. The pipes guide the logical computation and the
-    information flow between the code patches over spacetime.
+    The graph contains two categories of blocks:
+
+    1. :py:class:`~tqec.computation.cube.Cube`: The fundamental building blocks
+    of the computation. A cube represents a block of quantum operations within
+    a specific spacetime volume. These operations preserve or manipulate the
+    quantum information encoded in the logical qubits. Cubes are represented
+    as nodes in the graph.
+
+    2. :py:class:`~tqec.computation.pipe.Pipe`: Connects cubes to form the
+    topological structure representing the logical computation. A pipe occupies
+    no spacetime volume and only replaces the operations within the cubes it
+    connects. Pipes are represented as edges in the graph.
     """
 
     def add_edge(self, u: Cube, v: Cube, kind: PipeKind | None = None) -> None:
-        """Add an edge to the graph. If the nodes do not exist in the graph,
-        the nodes will be created and added to the graph.
+        """Add an edge to the graph. If the nodes of the edge do not exist in
+        the graph, the nodes will be created and added to the graph.
 
         Args:
-            edge: The edge to add to the graph.
+            u: The cube on one end of the edge.
+            v: The cube on the other end of the edge.
+            kind: The kind of the pipe connecting the cubes. If None, the kind will be
+                automatically determined based on the cubes it connects to make the
+                boundary conditions consistent. Default is None.
 
         Raises:
             TQECException: For each node in the edge, if there is already a node which is not
@@ -60,23 +68,22 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         self._add_edge_and_nodes_with_checks(u, v, pipe)
 
     def validate(self) -> None:
-        """Check the validity of the block structures represented by the graph.
+        """Check the validity of the block graph to represent a logical
+        computation.
 
         Refer to the Fig.9 in arXiv:2404.18369. Currently, we ignore the b) and e),
         only check the following conditions:
 
-        a) no fanout: ports can only have one pipe connected to them.
-        c) time-like Y: Y cubes can only have time-like pipes connected to them.
-        d) no 3D corner: a cube cannot have pipes in all three directions.
-        f) match color at passthrough: two pipes in a "pass-through" should have the same
-        color orientation.
-        g) match color at turn: two pipes in a "turn" should have the matching colors on
-        faces that are touching.
+        - **No fanout:** ports can only have one pipe connected to them.
+        - **Time-like Y:** Y cubes can only have time-like pipes connected to them.
+        - **No 3D corner:** a cube cannot have pipes in all three directions.
+        - **Match color at passthrough:** two pipes in a "pass-through" should have the same
+          color orientation.
+        - **Match color at turn:** two pipes in a "turn" should have the matching colors on
+          faces that are touching.
 
-        Args:
-            allow_virtual_node: Whether to allow the virtual node in the graph. A virtual node is an open
-                port of a pipe. It is not a physical cube but a placeholder for the pipe to connect to the
-                boundary of the graph. Default is True.
+        Raises:
+            TQECException: If the above conditions are not satisfied.
         """
         for cube in self.nodes:
             self._validate_locally_at_cube(cube)
@@ -109,31 +116,35 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipes_by_direction.setdefault(pipe.direction, []).append(pipe)
         # d), f), g). Match color
         for pipe in pipes:
-            pipe.validate()
+            pipe.check_compatible_with_cubes()
 
     def to_zx_graph(self, name: str | None = None) -> ZXGraph:
-        """Convert the block graph to a ZX graph."""
+        """Convert the block graph to a
+        :py:class:`~tqec.computation.zx_graph.ZXGraph`.
+
+        The conversion process is as follows:
+
+        1. For each cube in the block graph, convert it to a ZX node by calling :py:meth:`~tqec.computation.cube.Cube.to_zx_node`.
+        2. For each pipe in the block graph, add an edge to the ZX graph with the corresponding endpoints and Hadamard flag.
+
+        Args:
+            block_graph: The block graph to be converted to a ZX graph.
+            name: The name of the new ZX graph. If None, the name of the block graph will be used.
+
+        Returns:
+            The :py:class:`~tqec.computation.zx_graph.ZXGraph` object converted from the block graph.
+        """
         from tqec.computation.conversion import (
             convert_block_graph_to_zx_graph,
         )
 
         return convert_block_graph_to_zx_graph(self, name)
 
-    @staticmethod
-    def from_zx_graph(zx_graph: ZXGraph, name: str | None = None) -> BlockGraph:
-        """Construct the block graph from a ZX graph."""
-        from tqec.computation.conversion import (
-            convert_zx_graph_to_block_graph,
-        )
-
-        return convert_zx_graph_to_block_graph(zx_graph, name)
-
     def to_dae_file(
         self,
         file_path: str | pathlib.Path,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
-        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
     ) -> None:
         """Write the block graph to a Collada DAE file.
@@ -143,25 +154,30 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipe_length: The length of the pipes. Default is 2.0.
             pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
                 This is useful for visualizing the internal structure of the blocks. Default is None.
-            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
-                face colors.
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
         """
-        from tqec.interop.collada import write_block_graph_to_dae_file
+        from tqec.interop.collada.read_write import write_block_graph_to_dae_file
 
         write_block_graph_to_dae_file(
             self,
             file_path,
             pipe_length,
             pop_faces_at_direction,
-            custom_face_colors,
             show_correlation_surface,
         )
 
     @staticmethod
     def from_dae_file(filename: str | pathlib.Path, graph_name: str = "") -> BlockGraph:
-        """Construct a block graph from a DAE file."""
-        from tqec.interop.collada import read_block_graph_from_dae_file
+        """Construct a block graph from a COLLADA DAE file.
+
+        Args:
+            filename: The input ``.dae`` file path.
+            graph_name: The name of the block graph. Default is an empty string.
+
+        Returns:
+            The :py:class:`~tqec.computation.block_graph.BlockGraph` object constructed from the DAE file.
+        """
+        from tqec.interop.collada.read_write import read_block_graph_from_dae_file
 
         return read_block_graph_from_dae_file(filename, graph_name)
 
@@ -170,9 +186,8 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         write_html_filepath: str | pathlib.Path | None = None,
         pipe_length: float = 2.0,
         pop_faces_at_direction: SignedDirection3D | None = None,
-        custom_face_colors: Mapping[FaceKind, RGBA] | None = None,
         show_correlation_surface: CorrelationSurface | None = None,
-    ) -> ColladaHTMLViewer:
+    ) -> _ColladaHTMLViewer:
         """View COLLADA model in html with the help of ``three.js``.
 
         This can display a COLLADA model interactively in IPython compatible environments.
@@ -183,16 +198,14 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             pipe_length: The length of the pipes. Default is 2.0.
             pop_faces_at_direction: Remove the faces at the given direction for all the blocks.
                 This is useful for visualizing the internal structure of the blocks. Default is None.
-            custom_face_colors: A mapping from the face kind to the RGBA color to override the default
-                face colors.
             show_correlation_surface: The correlation surface to show in the block graph. Default is None.
 
         Returns:
             A helper class to display the 3D model, which implements the ``_repr_html_`` method and
             can be directly displayed in IPython compatible environments.
         """
-        from tqec.interop.collada import write_block_graph_to_dae_file
-        from tqec.interop.collada_html_viewer import display_collada_model
+        from tqec.interop.collada.read_write import write_block_graph_to_dae_file
+        from tqec.interop.collada.html_viewer import display_collada_model
 
         bytes_buffer = BytesIO()
         write_block_graph_to_dae_file(
@@ -200,7 +213,6 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
             bytes_buffer,
             pipe_length,
             pop_faces_at_direction,
-            custom_face_colors,
             show_correlation_surface,
         )
         return display_collada_model(
@@ -212,16 +224,19 @@ class BlockGraph(ComputationGraph[Cube, Pipe]):
         self,
         correlation_surfaces: list[CorrelationSurface] | None = None,
     ) -> tuple[list[AbstractObservable], list[CorrelationSurface]]:
-        """Get all the abstract observables from the block graph.
+        """Get the
+        :py:class:`~tqec.computation.abstract_observable.AbstractObservable` in
+        the graph.
 
         Args:
             correlation_surfaces: The correlation surfaces to convert to abstract observables. If not
-                provided, the correlation surfaces will be constructed from the corresponding ZX graph
-                of the block graph.
+                provided, all the possible correlation surfaces will be constructed from the corresponding ZX graph
+                of the block graph. Abstract observables will be created for each correlation surface.
+                Default is None.
 
         Returns:
-            The list of abstract observables and the list of correlation surfaces corresponding to the
-            observables.
+            A tuple containing the list of abstract observables and the list of correlation surfaces corresponding
+            to the observables.
         """
         from tqec.computation.abstract_observable import (
             correlation_surface_to_abstract_observable,

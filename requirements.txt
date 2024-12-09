@@ -2,6 +2,7 @@ matplotlib
 numpy
 networkx
 stim
+sinter>=1.14
 pycollada
 typing-extensions
 pycryptosat!=5.11.23

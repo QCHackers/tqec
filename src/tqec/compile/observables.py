@@ -1,3 +1,5 @@
+"""Provides helper functions to add observables to circuits."""
+
 import stim
 
 from tqec.circuit.measurement_map import MeasurementRecordsMap

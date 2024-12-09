@@ -2,6 +2,7 @@ import pytest
 
 from tqec.computation.cube import Cube, ZXBasis, ZXCube
 from tqec.computation.pipe import Pipe, PipeKind
+from tqec.exceptions import TQECException
 from tqec.position import Direction3D, Position3D
 
 
@@ -30,19 +31,19 @@ def test_pipe_kind() -> None:
 
 
 def test_pipe_kind_from_cube_kind() -> None:
-    assert PipeKind.from_cube_kind(
+    assert PipeKind._from_cube_kind(
         ZXCube.from_str("XXZ"), Direction3D.X, True
     ) == PipeKind.from_str("OXZ")
-    assert PipeKind.from_cube_kind(
+    assert PipeKind._from_cube_kind(
         ZXCube.from_str("XXZ"), Direction3D.Y, True
     ) == PipeKind.from_str("XOZ")
-    assert PipeKind.from_cube_kind(
+    assert PipeKind._from_cube_kind(
         ZXCube.from_str("XXZ"), Direction3D.Y, False
     ) == PipeKind.from_str("XOZ")
-    assert PipeKind.from_cube_kind(
+    assert PipeKind._from_cube_kind(
         ZXCube.from_str("ZXZ"), Direction3D.Z, True, True
     ) == PipeKind.from_str("ZXOH")
-    assert PipeKind.from_cube_kind(
+    assert PipeKind._from_cube_kind(
         ZXCube.from_str("ZXZ"), Direction3D.Z, False, True
     ) == PipeKind.from_str("XZOH")
 
@@ -64,18 +65,16 @@ def test_pipe() -> None:
     )
     assert pipe.direction == Direction3D.X
     assert pipe.u.position < pipe.v.position
-    pipe.validate()
+    pipe.check_compatible_with_cubes()
     assert list(iter(pipe)) == [pipe.u, pipe.v]
 
 
-def test_pipe_validate() -> None:
+def test_pipe_compatible() -> None:
     pipe = Pipe(
         Cube(Position3D(1, 0, 0), ZXCube.from_str("XXZ")),
         Cube(Position3D(0, 0, 0), ZXCube.from_str("XXZ")),
         PipeKind.from_str("OZX"),
     )
 
-    with pytest.raises(
-        Exception, match="The pipe has color does not match the cube XXZ"
-    ):
-        pipe.validate()
+    with pytest.raises(TQECException, match="The pipe is not compatible"):
+        pipe.check_compatible_with_cubes()

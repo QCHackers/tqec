@@ -1,5 +1,7 @@
 {{ fullname | escape | underline}}
 
+.. currentmodule:: {{ module }}
+
 .. automodule:: {{ fullname }}
 
    {% block attributes %}
@@ -49,18 +51,3 @@
    {%- endfor %}
    {% endif %}
    {% endblock %}
-
-{% block modules %}
-{% if modules %}
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-{% for item in modules %}
-{% if not item.endswith('_test') %}
-   {{ item }}
-{%- endif %}
-{%- endfor %}
-{% endif %}
-{% endblock %}
