@@ -1,0 +1,25 @@
+TemplateOrientation
+===================
+
+.. currentmodule:: tqec.templates
+
+.. autoclass:: TemplateOrientation
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TemplateOrientation.HORIZONTAL
+      ~TemplateOrientation.VERTICAL
+   
+   
+
+   
+   
+   
