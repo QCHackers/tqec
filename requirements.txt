@@ -7,4 +7,4 @@ pycollada
 typing-extensions
 pycryptosat!=5.11.23
 python-sat[cryptosat]
-tqecd @ git+https://github.com/tqec/tqecd.git
+tqecd~=0.1
