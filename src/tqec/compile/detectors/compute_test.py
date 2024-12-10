@@ -2,9 +2,10 @@ import numpy.testing
 import pytest
 import stim
 
+from tqecd.match import MatchedDetector
+from tqecd.measurement import RelativeMeasurementLocation
+
 from tqec.circuit.coordinates import StimCoordinates
-from tqec.circuit.detectors.match import MatchedDetector
-from tqec.circuit.detectors.measurement import RelativeMeasurementLocation
 from tqec.circuit.measurement import Measurement
 from tqec.circuit.qubit import GridQubit
 from tqec.compile.detectors.compute import (
