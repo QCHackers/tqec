@@ -360,10 +360,6 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="build_computations.html">Build Computations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="collada_interop.html">COLLADA Interoperability</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="detectors/index.html">Detectors Computation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="detectors/detector_computation.html">How to automatically find detectors?</a></li>
-</ul>
-</details></li>
 </ul>
 </div>
 </nav></div>
@@ -427,19 +423,6 @@
 <h3>Python version<a class="headerlink" href="#python-version" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package only supports Python 3.10 and later. If you have Python 3.9 or earlier,
 please update your Python installation.</p>
-</section>
-<section id="additional-toolchains">
-<h3>Additional toolchains<a class="headerlink" href="#additional-toolchains" title="Link to this heading">#</a></h3>
-<p>Some of the dependencies of <code class="docutils literal notranslate"><span class="pre">tqec</span></code> are implemented using compiled languages. This is for
-example the case of the <a class="reference external" href="https://pypi.org/project/pycryptosat/">pycryptosat</a> dependency.
-Pre-compiled Python packages that should be compatible with any GNU/Linux are provided
-by the author, but no pre-compiled package exist for Windows or MacOS.</p>
-<p>This means that if you try to install the <code class="docutils literal notranslate"><span class="pre">tqec</span></code> package on Windows or MacOS, a working
-C++ toolchain should also be installed on your system.</p>
-<p>Here are some potential issues you might encounter and their solutions:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/tqec/tqec/issues/311">Failed building wheel for pycryptosat</a></p></li>
-</ul>
 </section>
 </section>
 <section id="installation-procedure">
@@ -532,7 +515,6 @@ Else, a message like</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version">Python version</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-toolchains">Additional toolchains</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-procedure">Installation procedure</a><ul class="nav section-nav flex-column">
