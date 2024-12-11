@@ -6,7 +6,6 @@ from tqec.plaquette.qubit import SquarePlaquetteQubits
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from stim import Circuit as stim_Circuit
 
@@ -54,11 +53,18 @@ class RPNG:
     - a=z, p=z --> CZ   controlled by the ancilla and targeting the data
     - a=y, p=z --> CY   controlled by the data    and targeting the ancilla
     By default a=z.
+
+    Attributes:
+        r   data qubit reset basis or h or -  
+        p   data basis for the controlled operation (assuming a=z, x means CNOT controlled on the ancilla and targeting the data qubit, y means CY, z means CZ)  
+        n   time step (positive integers, all distinct, typically in 1-5)  
+        g   data qubit measure basis or h or -
+        a   ancilla basis for the controlled operation (x means that the controlled operation is applied if ancilla is in |+>, y if it is in |-y>, z if it is in |1>)
     """
-    r: Optional[ExtendedBasisEnum]
-    p: Optional[BasisEnum]
-    n: Optional[int]
-    g: Optional[ExtendedBasisEnum]
+    r: ExtendedBasisEnum | None
+    p: BasisEnum | None
+    n: int | None
+    g: ExtendedBasisEnum | None
     a: BasisEnum = BasisEnum.Z
 
     @classmethod
@@ -100,7 +106,7 @@ class RPNG:
         return cls(r, p, n, g, a)
 
     
-    def get_r_op(self) -> Optional[str]:
+    def get_r_op(self) -> str | None:
         """Get the reset operation or Hadamard"""
         op = self.r
         if op == None:
@@ -110,7 +116,7 @@ class RPNG:
         else:
             return f'{op.value.upper()}'
 
-    def get_g_op(self) -> Optional[str]:
+    def get_g_op(self) -> str | None:
         """Get the measurement operation or Hadamard"""
         op = self.g
         if op == None:
@@ -126,6 +132,11 @@ class RGN:
     """Organize the prep and meas bases for the ancilla, together with the meas time
     
     The init time is assumed to be 0.
+
+    Attributes:
+        r   ancillaqubit reset basis  
+        g   ancilla qubit measure basis
+        n   time step of ancilla measurement
     """
     r: BasisEnum = BasisEnum.X
     g: BasisEnum = BasisEnum.X
@@ -154,6 +165,10 @@ class RPNGDescription:
     The corners of the square plaquette are listed following the order:
     tl, tr, bl, br
     If the ancilla RGN description is not specified, it is assumed 'xx6'
+
+    Attributes:
+        corners RPNG description of the four corners of the plaquette
+        ancilla RGN description of the ancilla
     """
     corners: tuple[RPNG, RPNG, RPNG, RPNG]
     ancilla: RGN = RGN()
@@ -201,7 +216,7 @@ class RPNGDescription:
         return cls(rpng_objs, ancilla_rgn)
 
 
-    def get_r_op(self, data_idx: int) -> Optional[str]:
+    def get_r_op(self, data_idx: int) -> str | None:
         """Get the reset operation or Hadamard for the specific data qubit"""
         return self.corners[data_idx].get_r_op()
 
@@ -209,7 +224,7 @@ class RPNGDescription:
         """Get the time of the 2Q gate involving the specific data qubit"""
         return self.corners[data_idx].n
 
-    def get_g_op(self, data_idx: int) -> Optional[str]:
+    def get_g_op(self, data_idx: int) -> str | None:
         """Get the measurement operation or Hadamard for the specific data qubit"""
         return self.corners[data_idx].get_g_op()
     
@@ -225,10 +240,12 @@ class RPNGDescription:
         for q, rpng in enumerate(self.corners):
             # 2Q gates.
             if rpng.n and rpng.p:
-                if rpng.a == BasisEnum.Z:
+                if rpng.a.value == 'z':
                     circuit_as_list[rpng.n] += f'C{rpng.p.value.upper()} 4 {q}\n'
-                else:
+                elif rpng.p.value == 'z':
                     circuit_as_list[rpng.n] += f'C{rpng.a.value.upper()} {q} 4\n'
+                else:
+                    circuit_as_list[rpng.n] += f'{rpng.a.value.upper()}C{rpng.p.value.upper()} 4 {q}\n'
             # Data reset or Hadamard.
             if rpng.r:
                 circuit_as_list[0] += f'{rpng.get_r_op()} {q}\n'
