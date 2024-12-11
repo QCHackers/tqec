@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tqec.circuit.schedule import ScheduledCircuit
 from tqec.circuit.qubit_map import QubitMap
 from tqec.plaquette.plaquette import Plaquette
@@ -68,7 +70,7 @@ class RPNG:
     a: BasisEnum = BasisEnum.Z
 
     @classmethod
-    def from_string(cls, rpng_string: str) -> 'RPNG':
+    def from_string(cls, rpng_string: str) -> RPNG:
         """Initialize the RPNG object from a 4-character or 5-character string
         
         4-character -> simplified format -> RPNG
@@ -187,7 +189,7 @@ class RPNGDescription:
         Constraints:
         - the n values for the corners must be unique
         - the n values for the corners must be in the interval ]0, ancilla.n[
-        - at least one betwween fields a and p in every corner is z
+        - at least one between fields a and p in every corner is z
         """
         times = []
         for rpng in self.corners:
@@ -205,7 +207,7 @@ class RPNGDescription:
 
 
     @classmethod
-    def from_string(cls, corners_rpng_string: str) -> 'RPNGDescription':
+    def from_string(cls, corners_rpng_string: str) -> RPNGDescription:
         """Initialize the RPNGDescription object from a (16+3)-character string"""
         rpng_objs = tuple([RPNG.from_string(s) for s in corners_rpng_string.split(' ')])
         if len(rpng_objs) != 4:
@@ -214,7 +216,7 @@ class RPNGDescription:
     
 
     @classmethod
-    def from_extended_string(cls, ancilla_and_corners_rpng_string: str) -> 'RPNGDescription':
+    def from_extended_string(cls, ancilla_and_corners_rpng_string: str) -> RPNGDescription:
         """Initialize the RPNGDescription object from a (16+3)-character string"""
         values = ancilla_and_corners_rpng_string.split(' ')
         ancilla_rgn = RGN.from_string(values[0])

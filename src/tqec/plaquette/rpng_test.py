@@ -1,5 +1,5 @@
-from tqec.plaquette.rpng_description import RPNG, RGN
-from tqec.plaquette.rpng_description import RPNGDescription
+from tqec.plaquette.rpng import RPNG, RGN
+from tqec.plaquette.rpng import RPNGDescription
 
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 
