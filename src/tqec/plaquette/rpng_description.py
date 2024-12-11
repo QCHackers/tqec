@@ -23,7 +23,7 @@ class ExtendedBasisEnum(Enum):
     H = 'h'
 
 
-@dataclass
+@dataclass(frozen=True)
 class RPNG:
     """Organize a single RPNG value
 
