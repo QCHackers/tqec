@@ -127,7 +127,7 @@ class RPNG:
             return f'{op.value.upper()}'
 
 
-@dataclass
+@dataclass(frozen=True)
 class RGN:
     """Organize the prep and meas bases for the ancilla, together with the meas time
     
@@ -154,8 +154,8 @@ class RGN:
             g = BasisEnum(g_str)
             n = int(n_str)
             return cls(r, g, n)
-        except ValueError:
-            raise ValueError('Invalid rgn string.')
+        except ValueError as err:
+            raise ValueError('Invalid rgn string.') from err
 
 
 @dataclass
@@ -163,7 +163,15 @@ class RPNGDescription:
     """Organize the description of a plaquette in RPNG format
     
     The corners of the square plaquette are listed following the order:
-    tl, tr, bl, br
+    top-left, top-right, bottom-left, bottom-right. That is a Z-shaped path on the plaquette data-qubits:
+    
+        +------------+
+        | 1 -----> 2 |
+        |        /   |
+        |      /     |
+        |    ∟       |
+        | 3 -----> 4 |
+        +------------+
     If the ancilla RGN description is not specified, it is assumed 'xx6'
 
     Attributes:
