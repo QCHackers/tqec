@@ -11,8 +11,8 @@ from typing_extensions import override
 from tqec.exceptions import TQECException
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D, round_or_fail
-from tqec.templates.enums import TemplateOrientation
-from tqec.templates.subtemplates import (
+from tqec.templates.indices.enums import TemplateOrientation
+from tqec.templates.indices.subtemplates import (
     UniqueSubTemplates,
     get_spatially_distinct_subtemplates,
 )
@@ -132,7 +132,7 @@ class Template(ABC):
                 plaquettes will be considered.
             avoid_zero_plaquettes: ``True`` if sub-templates with an empty plaquette
                 (i.e., 0 value in the instantiation of the
-                :class:`~tqec.templates.base.Template` instance) at its center
+                :class:`~tqec.templates.indices.base.Template` instance) at its center
                 should be ignored. Default to ``True``.
 
         Returns:
@@ -148,7 +148,7 @@ class Template(ABC):
         This property returns the coordinates of the origin of the plaquette
         (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds
         to the top-left entry of the array returned by
-        :meth:`~tqec.templates.base.Template.instantiate`.
+        :meth:`~tqec.templates.indices.base.Template.instantiate`.
 
         Note:
             the returned coordinates are in plaquette coordinates. That means
@@ -163,7 +163,7 @@ class Template(ABC):
             the coordinates of the origin of the plaquette
             (:class:`~tqec.plaquette.plaquette.Plaquette.origin`) that corresponds
             to the top-left entry of the array returned by
-            :meth:`~tqec.templates.base.Template.instantiate`.
+            :meth:`~tqec.templates.indices.base.Template.instantiate`.
         """
         return Position2D(0, 0)
 

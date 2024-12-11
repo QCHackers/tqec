@@ -1,13 +1,13 @@
 """Defines several scalable arrays of numbers used to tile plaquettes.
 
-This module defines the :py:class:`~tqec.templates.base.Template` interface that
+This module defines the :py:class:`~tqec.templates.indices.base.Template` interface that
 should be implemented by subclasses implementing different templates.
 
 Terminology used
 ================
 
 The **template** terminology is used to describe an object (instance of a subclass
-of the :py:class:`~tqec.templates.base.Template` class) that can be
+of the :py:class:`~tqec.templates.indices.base.Template` class) that can be
 "instantiated" into an array of integers from an input integer scaling parameter
 :math:`k`.
 
@@ -24,18 +24,18 @@ As noted in the terminology section, a "template" is defined as something that
 can be "instantiated", i.e., that can generate an array of integer from a given
 scaling parameter :math:`k`.
 
-Templates should all inherit from the base :py:class:`~tqec.templates.base.Template`
+Templates should all inherit from the base :py:class:`~tqec.templates.indices.base.Template`
 class that defines a few abstract methods that have to be overridden by child
 classes. The most canonical example of a template is implemented by the
-:py:class:`~tqec.templates.qubit.QubitTemplate` class: it represents the
+:py:class:`~tqec.templates.indices.qubit.QubitTemplate` class: it represents the
 arrangement of plaquettes needed to make a logical qubit.
 
 The following code demonstrates quite well what a template is supposed to be.
 
 .. code-block:: python
 
-    from tqec.templates.display import display_template
-    from tqec.templates.qubit import QubitTemplate
+    from tqec.templates.indices.display import display_template
+    from tqec.templates.indices.qubit import QubitTemplate
 
     template = QubitTemplate()
     display_template(template, 2)
@@ -112,16 +112,16 @@ using a distance :math:`d = 2 k + 1 = 2 \\times 5 + 1 = 11` code:
 
 This ability to scale to arbitrarily large values of :math:`k` (as long as your
 computer can store a matrix of shape :math:`(2k+1, 2k+1)`) is exactly the reason
-of existence of the :py:class:`~tqec.templates.base.Template` class.
+of existence of the :py:class:`~tqec.templates.indices.base.Template` class.
 
 This module also includes a few sub-classes implementing the
-:py:class:`~tqec.templates.base.Template` interface:
+:py:class:`~tqec.templates.indices.base.Template` interface:
 
-1. :py:class:`~tqec.templates.qubit.QubitTemplate` that has already been used in
+1. :py:class:`~tqec.templates.indices.qubit.QubitTemplate` that has already been used in
    documentation and that represents a logical qubit.
-2. :py:class:`~tqec.templates.qubit.Qubit4WayJunctionTemplate` that represents a
+2. :py:class:`~tqec.templates.indices.qubit.Qubit4WayJunctionTemplate` that represents a
    logical qubit that has 4 junctions in space and is still a work in progress.
-3. :py:class:`~tqec.templates.layout.LayoutTemplate` that represent an arbitrary
+3. :py:class:`~tqec.templates.indices.layout.LayoutTemplate` that represent an arbitrary
    layout of other templates arranged on a regular grid.
 
 Sub-templates
@@ -133,7 +133,7 @@ Sub-templates are all of known constant size and cannot be scaled. Sub-templates
 are represented as an array of integers with a square shape (i.e., 2-dimensional
 with the same number of elements in each dimension) with odd-sized sides.
 
-The module :py:mod:`tqec.templates.subtemplates` provides functions to compute
+The module :py:mod:`tqec.templates.indices.subtemplates` provides functions to compute
 all the subtemplates for given template instantiation and subtemplate size along
 with some data-structure to represent efficiently this collection of
 sub-templates.
@@ -142,7 +142,7 @@ Displaying
 ==========
 
 Templates are basically scalable arrays of integers. The module
-:py:mod:`tqec.templates.display` provides a few functions to display a pretty and
+:py:mod:`tqec.templates.indices.display` provides a few functions to display a pretty and
 human readable representation of a given template instantiation. These functions
 are used in the documentation about templates above, and so their output can be
 observed above.

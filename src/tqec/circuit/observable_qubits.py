@@ -6,8 +6,8 @@ from tqec.circuit.qubit import GridQubit
 from tqec.exceptions import TQECException
 from tqec.plaquette.plaquette import Plaquette
 from tqec.position import Displacement
-from tqec.templates.base import Template
-from tqec.templates.enums import TemplateOrientation
+from tqec.templates.indices.base import Template
+from tqec.templates.indices.enums import TemplateOrientation
 
 
 def observable_qubits_from_template(

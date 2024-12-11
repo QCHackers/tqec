@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteSide
-from tqec.templates.enums import TemplateOrientation
+from tqec.templates.indices.enums import TemplateOrientation
 
 
 @dataclass(frozen=True)

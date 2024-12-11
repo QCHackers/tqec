@@ -1,7 +1,7 @@
 from tqec.circuit.qubit import GridQubit
 from tqec.plaquette.enums import PlaquetteSide
 from tqec.plaquette.qubit import SquarePlaquetteQubits
-from tqec.templates.enums import TemplateOrientation
+from tqec.templates.indices.enums import TemplateOrientation
 
 
 def test_creation() -> None:
