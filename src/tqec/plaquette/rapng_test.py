@@ -34,21 +34,21 @@ def test_get_plaquette_from_rapng_string() -> None:
     )
     plaquette = desc.get_plaquette(meas_time=5)
     expected_circuit_str = """
-QUBIT_COORDS(-1, -1) 0
-QUBIT_COORDS(1, -1) 1
-QUBIT_COORDS(-1, 1) 2
-QUBIT_COORDS(1, 1) 3
-QUBIT_COORDS(0, 0) 4
-RZ 4
+QUBIT_COORDS(0, 0) 0
+QUBIT_COORDS(-1, -1) 1
+QUBIT_COORDS(1, -1) 2
+QUBIT_COORDS(-1, 1) 3
+QUBIT_COORDS(1, 1) 4
+RZ 0
 TICK
-XCZ 4 0
+XCZ 0 1
 TICK
-XCZ 4 1
+XCZ 0 2
 TICK
-ZCZ 4 2
+ZCZ 0 3
 TICK
-ZCX 4 3
+ZCX 0 4
 TICK
-MZ 4
+MZ 0
 """
     assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()

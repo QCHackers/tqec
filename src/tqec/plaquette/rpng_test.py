@@ -43,23 +43,23 @@ def test_get_plaquette_from_rpng_string() -> None:
     desc = RPNGDescription.from_string(corners_rpng_string=corners_rpng_str)
     plaquette = desc.get_plaquette(meas_time=6)
     expected_circuit_str = """
-QUBIT_COORDS(-1, -1) 0
-QUBIT_COORDS(1, -1) 1
-QUBIT_COORDS(-1, 1) 2
-QUBIT_COORDS(1, 1) 3
-QUBIT_COORDS(0, 0) 4
-RX 4
+QUBIT_COORDS(0, 0) 0
+QUBIT_COORDS(-1, -1) 1
+QUBIT_COORDS(1, -1) 2
+QUBIT_COORDS(-1, 1) 3
+QUBIT_COORDS(1, 1) 4
+RX 0
 TICK
-CZ 4 0
+CZ 0 1
 TICK
-CZ 4 2
+CZ 0 3
 TICK
-CZ 4 1
+CZ 0 2
 TICK
-CZ 4 3
+CZ 0 4
 TICK
 TICK
-MX 4
+MX 0
 """
     assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
 
@@ -68,24 +68,24 @@ MX 4
     desc = RPNGDescription.from_string(corners_rpng_string=corners_rpng_str)
     plaquette = desc.get_plaquette(meas_time=6)
     expected_circuit_str = """
-QUBIT_COORDS(-1, -1) 0
-QUBIT_COORDS(1, -1) 1
-QUBIT_COORDS(-1, 1) 2
-QUBIT_COORDS(1, 1) 3
-QUBIT_COORDS(0, 0) 4
-RZ 1 2
-RX 4
+QUBIT_COORDS(0, 0) 0
+QUBIT_COORDS(-1, -1) 1
+QUBIT_COORDS(1, -1) 2
+QUBIT_COORDS(-1, 1) 3
+QUBIT_COORDS(1, 1) 4
+RZ 2 3
+RX 0
 TICK
-CZ 4 0
+CZ 0 1
 TICK
-CX 4 1
+CX 0 2
 TICK
 TICK
-CX 4 2
+CX 0 3
 TICK
-CZ 4 3
+CZ 0 4
 TICK
-MX 4
+MX 0
 """
     assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
 
@@ -95,25 +95,25 @@ MX 4
     desc = RPNGDescription.from_string(corners_rpng_string=corners_rpng_str)
     plaquette = desc.get_plaquette(meas_time=6, qubits=qubits)
     expected_circuit_str = """
-QUBIT_COORDS(-1, -1) 0
-QUBIT_COORDS(1, -1) 1
-QUBIT_COORDS(-1, 1) 2
-QUBIT_COORDS(1, 1) 3
-QUBIT_COORDS(0, 0) 4
-H 3
-RX 4
+QUBIT_COORDS(0, 0) 0
+QUBIT_COORDS(-1, -1) 1
+QUBIT_COORDS(1, -1) 2
+QUBIT_COORDS(-1, 1) 3
+QUBIT_COORDS(1, 1) 4
+H 4
+RX 0
 TICK
-CZ 4 3
+CZ 0 4
 TICK
-CZ 4 1
+CZ 0 2
 TICK
-CX 4 2
+CX 0 3
 TICK
 TICK
-CX 4 0
+CX 0 1
 TICK
-H 0
-M 1
-MX 2 4
+H 1
+M 2
+MX 3 0
 """
     assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()

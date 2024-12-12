@@ -188,12 +188,13 @@ class RAPNGDescription:
     ) -> Plaquette:
         """Get the plaquette corresponding to the RPNG description
 
-        Note that the ancilla qubit is the last among the PlaquetteQubits and thus
-        has index 4, while the data qubits have indices 0-3.
+        Note that the ancilla qubit is the first among the PlaquetteQubits and thus
+        has index 0, while the data qubits have indices 1-4.
         """
         prep_time = 0
         circuit_as_list = [""] * (meas_time - prep_time + 1)
-        for q, rapng in enumerate(self.corners):
+        for j, rapng in enumerate(self.corners):
+            q = j + 1
             # 2Q gates.
             if rapng.n and rapng.p and rapng.a:
                 if rapng.n >= meas_time:
@@ -201,7 +202,7 @@ class RAPNGDescription:
                         "The measurement time must be larger than the 2Q gate time."
                     )
                 circuit_as_list[rapng.n] += (
-                    f"{rapng.a.value.upper()}C{rapng.p.value.upper()} 4 {q}\n"
+                    f"{rapng.a.value.upper()}C{rapng.p.value.upper()} 0 {q}\n"
                 )
             # Data reset or Hadamard.
             if rapng.r:
@@ -210,8 +211,8 @@ class RAPNGDescription:
             if rapng.g:
                 circuit_as_list[-1] += f"{rapng.get_g_op()} {q}\n"
         # Ancilla reset and measurement.
-        circuit_as_list[0] += f"R{self.ancilla.r.value.upper()} 4\n"
-        circuit_as_list[-1] += f"M{self.ancilla.g.value.upper()} 4\n"
+        circuit_as_list[0] += f"R{self.ancilla.r.value.upper()} 0\n"
+        circuit_as_list[-1] += f"M{self.ancilla.g.value.upper()} 0\n"
         q_map = QubitMap.from_qubits(qubits)
         circuit_as_str = "TICK\n".join(circuit_as_list)
         circuit = stim_Circuit(circuit_as_str)
