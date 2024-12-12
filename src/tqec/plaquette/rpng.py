@@ -171,8 +171,7 @@ class RPNGDescription:
 
         Constraints:
         - the n values for the corners must be unique
-        - the n values for the corners must be in the interval ]0, ancilla.n[
-        - at least one between fields a and p in every corner is z
+        - the n values for the corners must be larger than 0
         """
         times = []
         for rpng in self.corners:
