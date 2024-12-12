@@ -32,6 +32,8 @@ from .plaquette import SquarePlaquetteQubits as SquarePlaquetteQubits
 from .plaquette import RPNG as RPNG
 from .plaquette import RGN as RGN
 from .plaquette import RPNGDescription as RPNGDescription
+from .plaquette import RAPNG as RAPNG
+from .plaquette import RAPNGDescription as RAPNGDescription
 from .plaquette.enums import PlaquetteOrientation as PlaquetteOrientation
 from .position import Direction3D as Direction3D
 from .position import Displacement as Displacement
