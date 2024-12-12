@@ -7,7 +7,7 @@ from tqec.plaquette.qubit import PlaquetteQubits
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 from tqec.plaquette.rpng import BasisEnum
 from tqec.plaquette.rpng import ExtendedBasisEnum
-from tqec.plaquette.rpng import RGN
+from tqec.plaquette.rpng import RG
 
 from dataclasses import dataclass
 
@@ -121,15 +121,15 @@ class RAPNGDescription:
         | 3 -----> 4 |
         +------------+
 
-    If the ancilla RGN description is not specified, it is assumed 'xx6'
+    If the ancilla RG description is not specified, it is assumed 'xx'
 
     Attributes:
         corners RAPNG description of the four corners of the plaquette
-        ancilla RGN description of the ancilla
+        ancilla RG description of the ancilla
     """
 
     corners: tuple[RAPNG, RAPNG, RAPNG, RAPNG]
-    ancilla: RGN = RGN()
+    ancilla: RG = RG()
 
     def __post_init__(self):
         """Validation of the initialization arguments
@@ -142,8 +142,8 @@ class RAPNGDescription:
         times = []
         for rpng in self.corners:
             if rpng.n:
-                if rpng.n < 1 or rpng.n >= self.ancilla.n:
-                    raise ValueError("The n values must be in ]0, ancilla meas time[.")
+                if rpng.n < 1:
+                    raise ValueError("The n values must be larger than 0")
                 times.append(rpng.n)
         if len(times) != len(set(times)):
             raise ValueError("The n values for the corners must be unique.")
@@ -166,7 +166,7 @@ class RAPNGDescription:
     ) -> RAPNGDescription:
         """Initialize the RAPNGDescription object from a (20+3)-character string"""
         values = ancilla_and_corners_rapng_string.split(" ")
-        ancilla_rgn = RGN.from_string(values[0])
+        ancilla_rgn = RG.from_string(values[0])
         rapng_objs = tuple([RAPNG.from_string(s) for s in values[1:]])
         if len(rapng_objs) != 4:
             raise ValueError("There must be 4 corners in the RAPNG description.")
@@ -185,7 +185,7 @@ class RAPNGDescription:
         return self.corners[data_idx].get_g_op()
 
     def get_plaquette(
-        self, qubits: PlaquetteQubits = SquarePlaquetteQubits()
+        self, meas_time: int = 6, qubits: PlaquetteQubits = SquarePlaquetteQubits()
     ) -> Plaquette:
         """Get the plaquette corresponding to the RPNG description
 
@@ -193,11 +193,14 @@ class RAPNGDescription:
         has index 4, while the data qubits have indices 0-3.
         """
         prep_time = 0
-        meas_time = self.ancilla.n
         circuit_as_list = [""] * (meas_time - prep_time + 1)
         for q, rapng in enumerate(self.corners):
             # 2Q gates.
             if rapng.n and rapng.p and rapng.a:
+                if rapng.n >= meas_time:
+                    raise ValueError(
+                        "The measurement time must be larger than the 2Q gate time."
+                    )
                 circuit_as_list[rapng.n] += (
                     f"{rapng.a.value.upper()}C{rapng.p.value.upper()} 4 {q}\n"
                 )

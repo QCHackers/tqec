@@ -111,35 +111,33 @@ class RPNG:
 
 
 @dataclass(frozen=True)
-class RGN:
+class RG:
     """Organize the prep and meas bases for the ancilla, together with the meas time
 
-    The init time is assumed to be 0.
+    The initialization time is assumed to be 0.
+    The measurement time is not provided explicitly but determined by the time of circuit creation.
 
     Attributes:
         r   ancillaqubit reset basis
         g   ancilla qubit measure basis
-        n   time step of ancilla measurement
     """
 
     r: BasisEnum = BasisEnum.X
     g: BasisEnum = BasisEnum.X
-    n: int = 6
 
     @classmethod
-    def from_string(cls, rgn_string: str) -> RGN:
+    def from_string(cls, rg_string: str) -> RG:
         """Initialize the RGN object from a 3-character string"""
-        if len(rgn_string) != 3:
-            raise ValueError("The rgn string must be exactly 3-character long.")
-        r_str, g_str, n_str = tuple(rgn_string)
+        if len(rg_string) != 2:
+            raise ValueError("The rg string must be exactly 2-character long.")
+        r_str, g_str = tuple(rg_string)
 
         try:
             r = BasisEnum(r_str)
             g = BasisEnum(g_str)
-            n = int(n_str)
-            return cls(r, g, n)
+            return cls(r, g)
         except ValueError as err:
-            raise ValueError("Invalid rgn string.") from err
+            raise ValueError("Invalid rg string.") from err
 
 
 @dataclass
@@ -158,15 +156,15 @@ class RPNGDescription:
         | 3 -----> 4 |
         +------------+
 
-    If the ancilla RGN description is not specified, it is assumed 'xx6'
+    If the ancilla RG description is not specified, it is assumed 'xx'
 
     Attributes:
         corners RPNG description of the four corners of the plaquette
-        ancilla RGN description of the ancilla
+        ancilla RG description of the ancilla
     """
 
     corners: tuple[RPNG, RPNG, RPNG, RPNG]
-    ancilla: RGN = RGN()
+    ancilla: RG = RG()
 
     def __post_init__(self):
         """Validation of the initialization arguments
@@ -179,8 +177,8 @@ class RPNGDescription:
         times = []
         for rpng in self.corners:
             if rpng.n:
-                if rpng.n < 1 or rpng.n >= self.ancilla.n:
-                    raise ValueError("The n values must be in ]0, ancilla meas time[.")
+                if rpng.n < 1:
+                    raise ValueError("All n values must be larger than 0.")
                 times.append(rpng.n)
         if len(times) != len(set(times)):
             raise ValueError("The n values for the corners must be unique.")
@@ -201,11 +199,11 @@ class RPNGDescription:
     ) -> RPNGDescription:
         """Initialize the RPNGDescription object from a (16+3)-character string"""
         values = ancilla_and_corners_rpng_string.split(" ")
-        ancilla_rgn = RGN.from_string(values[0])
+        ancilla_rg = RG.from_string(values[0])
         rpng_objs = tuple([RPNG.from_string(s) for s in values[1:]])
         if len(rpng_objs) != 4:
             raise ValueError("There must be 4 corners in the RPNG description.")
-        return cls(rpng_objs, ancilla_rgn)
+        return cls(rpng_objs, ancilla_rg)
 
     def get_r_op(self, data_idx: int) -> str | None:
         """Get the reset operation or Hadamard for the specific data qubit"""
@@ -220,7 +218,7 @@ class RPNGDescription:
         return self.corners[data_idx].get_g_op()
 
     def get_plaquette(
-        self, qubits: PlaquetteQubits = SquarePlaquetteQubits()
+        self, meas_time: int = 6, qubits: PlaquetteQubits = SquarePlaquetteQubits()
     ) -> Plaquette:
         """Get the plaquette corresponding to the RPNG description
 
@@ -228,11 +226,14 @@ class RPNGDescription:
         has index 4, while the data qubits have indices 0-3.
         """
         prep_time = 0
-        meas_time = self.ancilla.n
         circuit_as_list = [""] * (meas_time - prep_time + 1)
         for q, rpng in enumerate(self.corners):
             # 2Q gates.
             if rpng.n and rpng.p:
+                if rpng.n >= meas_time:
+                    raise ValueError(
+                        "The measurement time must be larger than the 2Q gate time."
+                    )
                 circuit_as_list[rpng.n] += f"C{rpng.p.value.upper()} 4 {q}\n"
             # Data reset or Hadamard.
             if rpng.r:

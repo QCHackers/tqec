@@ -7,15 +7,15 @@ import pytest
 def test_validate_plaquette_from_rapng_string() -> None:
     # Invalid plaquettes
     rapng_errors = [
-        "zz5 -xz1- -xz2- -xz5- -xz4-",  # wrong times for the 2Q gates
-        "zz5 -xz1- -xz2- -xz4- -xz4-",  # wrong times for the 2Q gates
-        "zz0 -xx1- ----- -xz2- ----",  # wrong meas time
+        "zz -xz1- -xz0- -xz5- -xz4-",  # wrong times for the 2Q gates
+        "zz -xz1- -xz2- -xz4- -xz4-",  # wrong times for the 2Q gates
+        "zz -xx1- ----- -xz2- ----",  # wrong length of last rapng
     ]
     # Correct plaquettes
     rapng_examples = [
-        "zz6 ----- ----- ----- -----",
-        "zz3 -xz1- ----- -xz2- -----",
-        "zz5 -xz1- -xz2- -xz3- -xz4-",
+        "zz ----- ----- ----- -----",
+        "zz -xz1- ----- -xz2- -----",
+        "zz -xz1- -xz2- -xz3- -xz4-",
     ]
     for rapng in rapng_errors:
         with pytest.raises(ValueError):
@@ -28,11 +28,11 @@ def test_validate_plaquette_from_rapng_string() -> None:
 
 def test_get_plaquette_from_rapng_string() -> None:
     # Usual plaquette corresponding to the ZZZZ stabilizer.
-    ancilla_and_corners = "zz5 -xz1- -xz2- -zz3- -zx4-"
+    ancilla_and_corners = "zz -xz1- -xz2- -zz3- -zx4-"
     desc = RAPNGDescription.from_extended_string(
         ancilla_and_corners_rapng_string=ancilla_and_corners
     )
-    plaquette = desc.get_plaquette()
+    plaquette = desc.get_plaquette(meas_time=5)
     expected_circuit_str = """
 QUBIT_COORDS(-1, -1) 0
 QUBIT_COORDS(1, -1) 1

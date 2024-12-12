@@ -30,7 +30,7 @@ from .plaquette import Plaquette as Plaquette
 from .plaquette import PlaquetteQubits as PlaquetteQubits
 from .plaquette import SquarePlaquetteQubits as SquarePlaquetteQubits
 from .plaquette import RPNG as RPNG
-from .plaquette import RGN as RGN
+from .plaquette import RG as RG
 from .plaquette import RPNGDescription as RPNGDescription
 from .plaquette import RAPNG as RAPNG
 from .plaquette import RAPNGDescription as RAPNGDescription
