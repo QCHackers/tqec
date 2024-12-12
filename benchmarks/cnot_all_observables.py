@@ -2,8 +2,8 @@ import argparse
 from pathlib import Path
 
 import stim
+from tqecd.construction import annotate_detectors_automatically
 
-from tqec.circuit.detectors.construction import annotate_detectors_automatically
 from tqec.compile.compile import CompiledGraph, compile_block_graph
 from tqec.compile.specs.library.css import CSS_BLOCK_BUILDER, CSS_SUBSTITUTION_BUILDER
 from tqec.noise_model import NoiseModel
@@ -25,7 +25,7 @@ def generate_stim_circuit(
     return annotate_detectors_automatically(circuit_without_detectors)
 
 
-def generate_cnot_circuits(*ks: int):
+def generate_cnot_circuits(*ks: int) -> None:
     # 1 Create `BlockGraph` representing the computation
     block_graph = logical_cnot_block_graph("X")
 
@@ -44,7 +44,7 @@ def generate_cnot_circuits(*ks: int):
         _ = generate_stim_circuit(compiled_graph, k, 0.001)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="")
     parser.add_argument(
         "-k",
