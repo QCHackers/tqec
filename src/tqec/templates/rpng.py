@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
-from tqec.plaquette.rpng_description import RPNGDescription
+from tqec.plaquette.rpng import RPNGDescription
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D
 from tqec.templates.indices.base import Template
