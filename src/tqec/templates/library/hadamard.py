@@ -97,7 +97,7 @@ def get_spatial_vertical_hadamard_template(
         mapping=FrozenDefaultDict(
             {
                 # BOTTOM_RIGHT, normal plaquette
-                2: RPNGDescription.from_string(f"---- ---- -x{b2}3- -{b2}4-"),
+                2: RPNGDescription.from_string(f"---- ---- x{b2}3- -{b2}4-"),
                 # BOTTOM_LEFT, where the Hadamard transition occurs
                 3: RPNGDescription.from_string(f"-{b1}1- x{b2}2- ---- ----"),
                 # LEFT bulk, where the Hadamard transition occurs
