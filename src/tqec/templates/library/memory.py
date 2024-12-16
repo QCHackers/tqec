@@ -191,9 +191,9 @@ def get_memory_horizontal_boundary_template(
         mapping=FrozenDefaultDict(
             {
                 # TOP_LEFT
-                1: RPNGDescription.from_string(f"---- ---- -{bh}3- {r}{bh}4{m}"),
+                1: RPNGDescription.from_string(f"---- -{bh}3- ---- {r}{bh}4{m}"),
                 # BOTTOM_RIGHT
-                3: RPNGDescription.from_string(f"{r}{bh}1{m} -{bh}2- ---- ----"),
+                4: RPNGDescription.from_string(f"{r}{bh}1{m} ---- -{bh}2- ----"),
                 # TOP bulk
                 5: RPNGDescription.from_string(
                     f"-{bv}1- -{bv}2- {r}{bv}3{m} {r}{bv}4{m}"
