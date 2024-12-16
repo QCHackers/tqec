@@ -26,12 +26,8 @@ def get_temporal_hadamard_template(
     Returns:
         an implementation of transversal Hadamard gate.
     """
-    bh: Literal["x", "z"]
-    bv: Literal["x", "z"]
-    if orientation == ZObservableOrientation.HORIZONTAL:
-        bh, bv = "z", "x"
-    else:
-        bh, bv = "x", "z"
+    bh = orientation.horizontal_basis()
+    bv = orientation.vertical_basis()
 
     return RPNGTemplate(
         template=QubitTemplate(),
@@ -86,12 +82,9 @@ def get_spatial_vertical_hadamard_template(
         top_left_is_z_stabilizer: if ``True``, the top-left physical qubit should
             be measuring a Z stabilizer. Else, it measures a X stabilizer.
     """
-    b1: Literal["x", "z"]
-    b2: Literal["x", "z"]
-    if top_left_is_z_stabilizer:
-        b1, b2 = "z", "x"
-    else:
-        b1, b2 = "x", "z"
+    b1: Literal["x", "z"] = "z" if top_left_is_z_stabilizer else "x"
+    b2: Literal["x", "z"] = "x" if top_left_is_z_stabilizer else "z"
+
     return RPNGTemplate(
         template=QubitVerticalBorders(),
         mapping=FrozenDefaultDict(
