@@ -153,6 +153,5 @@ from .display import display_template as display_template
 from .display import (
     display_template_from_instantiation as display_template_from_instantiation,
 )
-from .enums import TemplateOrientation as TemplateOrientation
 from .layout import LayoutTemplate as LayoutTemplate
 from .qubit import QubitTemplate as QubitTemplate

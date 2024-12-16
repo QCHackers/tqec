@@ -1,9 +1,8 @@
-from tqec.plaquette.rpng import RPNGDescription
+import pytest
+from stim import Circuit as stim_Circuit
 
 from tqec.plaquette.qubit import SquarePlaquetteQubits
-
-from stim import Circuit as stim_Circuit
-import pytest
+from tqec.plaquette.rpng import RPNGDescription
 
 
 def test_validate_plaquette_from_rpng_string() -> None:

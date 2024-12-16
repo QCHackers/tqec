@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
+from tqec.enums import Orientation
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.rpng import RPNGDescription
 from tqec.position import Displacement, Position2D, Shape2D
 from tqec.scale import Scalable2D
 from tqec.templates.indices.base import Template
-from tqec.templates.indices.enums import TemplateOrientation
 
 
 @dataclass
@@ -27,7 +27,7 @@ class RPNGTemplate:
         return self.template.scalable_shape
 
     def get_midline_plaquettes(
-        self, k: int, orientation: TemplateOrientation = TemplateOrientation.HORIZONTAL
+        self, k: int, orientation: Orientation = Orientation.HORIZONTAL
     ) -> list[tuple[int, int]]:
         """Returns the default observable qubits for the template.
 
