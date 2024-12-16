@@ -7,7 +7,7 @@ import numpy
 import numpy.typing as npt
 from typing_extensions import override
 
-from tqec.exceptions import TQECWarning
+from tqec.exceptions import TQECException, TQECWarning
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.indices.base import RectangularTemplate
 
@@ -118,21 +118,17 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
         ret[-1, 0] = plaquette_indices[2]
         ret[-1, -1] = plaquette_indices[3]
         # The up side
-        ret[0, 1:-1:2] = plaquette_indices[4]
-        ret[0, 2:-1:2] = plaquette_indices[5]
+        ret[0, 1:-1:2] = plaquette_indices[8]
+        ret[0, 2:-1:2] = plaquette_indices[9]
         # The left side
-        ret[1:-1:2, 0] = plaquette_indices[6]
-        ret[2:-1:2, 0] = plaquette_indices[7]
+        ret[1:-1:2, 0] = plaquette_indices[10]
+        ret[2:-1:2, 0] = plaquette_indices[11]
         # The center, which is the complex part.
         # Start by plaquette_indices[10] which is the plaquette that is
         # uniformly spread on the template
-        ret[1:-1:2, 2:-1:2] = plaquette_indices[10]
-        ret[2:-1:2, 1:-1:2] = plaquette_indices[10]
+        ret[1:-1:2, 2:-1:2] = plaquette_indices[16]
+        ret[2:-1:2, 1:-1:2] = plaquette_indices[16]
         # Now initialize the other plaquettes
-        # Start by writing plaquette_indices[9] everywhere and
-        # override with plaquette_indices[8] where needed.
-        ret[1:-1:2, 1:-1:2] = plaquette_indices[9]
-        ret[2:-1:2, 2:-1:2] = plaquette_indices[9]
         for i in range(1, size - 1):
             # We want (i + j) to be even, because that are the only places where
             # plaquette_indices[8] *might* be encountered. We do that directly
@@ -140,18 +136,32 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
             # We need to avoid 0 here because it is the border of the template.
             for j in range(1 if i % 2 == 1 else 2, size - 1, 2):
                 # If the cell represented by (i, j) is:
-                # - below the main diagonal and above the anti-diagonal
-                if i > j and (i + j) < (size - 1):
-                    ret[i, j] = plaquette_indices[8]
-                elif i < j and (i + j) > (size - 1):
-                    ret[i, j] = plaquette_indices[8]
-
+                # - on the top (above the main diagonal and above the anti-diagonal)
+                if i < j and i > (size - 1 - j):
+                    ret[i, j] = plaquette_indices[12]
+                # - on the right (above the main diagonal and below the anti-diagonal)
+                elif i < j and i < (size - 1 - j):
+                    ret[i, j] = plaquette_indices[13]
+                # - on the bottom (below the main diagonal and below the anti-diagonal)
+                elif i > j and i < (size - 1 - j):
+                    ret[i, j] = plaquette_indices[14]
+                # - on the left (below the main diagonal and above the anti-diagonal)
+                elif i > j and i > (size - 1 - j):
+                    ret[i, j] = plaquette_indices[15]
+                else:
+                    raise TQECException(
+                        "Plaquettes on diagonals should already be set."
+                    )
+        ret[1, 1] = plaquette_indices[4]
+        ret[1, -2] = plaquette_indices[5]
+        ret[-2, 1] = plaquette_indices[6]
+        ret[-2, -2] = plaquette_indices[7]
         # The right side
-        ret[1:-1:2, -1] = plaquette_indices[11]
-        ret[2:-1:2, -1] = plaquette_indices[12]
+        ret[1:-1:2, -1] = plaquette_indices[17]
+        ret[2:-1:2, -1] = plaquette_indices[18]
         # The bottom side
-        ret[-1, 1:-1:2] = plaquette_indices[13]
-        ret[-1, 2:-1:2] = plaquette_indices[14]
+        ret[-1, 1:-1:2] = plaquette_indices[19]
+        ret[-1, 2:-1:2] = plaquette_indices[20]
 
         return ret
 
@@ -163,7 +173,7 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
     @property
     @override
     def expected_plaquettes_number(self) -> int:
-        return 15
+        return 21
 
 
 class QubitVerticalBorders(RectangularTemplate):
