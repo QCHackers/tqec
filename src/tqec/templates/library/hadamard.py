@@ -1,5 +1,6 @@
 from typing import Literal
 
+from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.frozendefaultdict import FrozenDefaultDict
 from tqec.plaquette.rpng import RPNGDescription
 from tqec.templates.enums import ZObservableOrientation
@@ -33,17 +34,17 @@ def get_temporal_hadamard_template(
         template=QubitTemplate(),
         mapping=FrozenDefaultDict(
             {
-                # XX_UP
+                # UP
                 6: RPNGDescription.from_string(f"---- ---- -{bv}3h -{bv}4h"),
-                # ZZ_LEFT
+                # LEFT
                 7: RPNGDescription.from_string(f"---- -{bh}3h ---- -{bh}4h"),
-                # XXXX
+                # BULK_1
                 9: RPNGDescription.from_string(f"-{bv}1h -{bv}2h -{bv}3h -{bv}4h"),
-                # ZZZZ
+                # BULK_2
                 10: RPNGDescription.from_string(f"-{bh}1h -{bh}3h -{bh}2h -{bh}4h"),
-                # ZZ_RIGHT
+                # RIGHT
                 12: RPNGDescription.from_string(f"-{bh}1h ---- -{bh}2h ----"),
-                # XX_DOWN
+                # DOWN
                 13: RPNGDescription.from_string(f"-{bv}1h -{bv}2h ---- ----"),
             },
             default_factory=lambda: RPNGDescription.from_string("---- ---- ---- ----"),
@@ -53,9 +54,11 @@ def get_temporal_hadamard_template(
 
 def get_spatial_horizontal_hadamard_template(
     top_left_is_z_stabilizer: bool,
+    reset: ResetBasis | None = None,
+    measurement: MeasurementBasis | None = None,
 ) -> RPNGTemplate:
     """Returns a representation of a "transversal" Hadamard gate at the interface
-    between two logical qubits.
+    between two logical qubits aligned on the Y-axis
 
     Note:
         by convention, the hadamard-like transition is performed at the top-most
@@ -64,15 +67,27 @@ def get_spatial_horizontal_hadamard_template(
     Arguments:
         top_left_is_z_stabilizer: if ``True``, the top-left physical qubit should
             be measuring a Z stabilizer. Else, it measures a X stabilizer.
+        reset: basis of the reset operation performed on **internal**
+            data-qubits. Defaults to ``None`` that translates to no reset being
+            applied on data-qubits.
+        measurement: basis of the measurement operation performed on **internal**
+            data-qubits. Defaults to ``None`` that translates to no measurement
+            being applied on data-qubits.
+
+    Returns:
+        a description of a junction in the Y-axis and performing a logical
+        Hadamard operation.
     """
     raise NotImplementedError()
 
 
 def get_spatial_vertical_hadamard_template(
     top_left_is_z_stabilizer: bool,
+    reset: ResetBasis | None = None,
+    measurement: MeasurementBasis | None = None,
 ) -> RPNGTemplate:
     """Returns a representation of a "transversal" Hadamard gate at the interface
-    between two logical qubits.
+    between two logical qubits aligned on the X-axis.
 
     Note:
         by convention, the hadamard-like transition is performed at the left-most
@@ -81,7 +96,21 @@ def get_spatial_vertical_hadamard_template(
     Arguments:
         top_left_is_z_stabilizer: if ``True``, the top-left physical qubit should
             be measuring a Z stabilizer. Else, it measures a X stabilizer.
+        reset: basis of the reset operation performed on **internal**
+            data-qubits. Defaults to ``None`` that translates to no reset being
+            applied on data-qubits.
+        measurement: basis of the measurement operation performed on **internal**
+            data-qubits. Defaults to ``None`` that translates to no measurement
+            being applied on data-qubits.
+
+    Returns:
+        a description of a junction in the X-axis and performing a logical
+        Hadamard operation.
     """
+    # r/m: reset/measurement basis applied to each data-qubit
+    r = reset.value.lower() if reset is not None else "-"
+    m = measurement.value.lower() if measurement is not None else "-"
+    # b1: basis of top-left data-qubit, b2: the other basis
     b1: Literal["x", "z"] = "z" if top_left_is_z_stabilizer else "x"
     b2: Literal["x", "z"] = "x" if top_left_is_z_stabilizer else "z"
 
@@ -89,16 +118,24 @@ def get_spatial_vertical_hadamard_template(
         template=QubitVerticalBorders(),
         mapping=FrozenDefaultDict(
             {
-                # BOTTOM_RIGHT, normal plaquette
-                2: RPNGDescription.from_string(f"---- ---- x{b2}3- -{b2}4-"),
+                # TOP_RIGHT, normal plaquette
+                2: RPNGDescription.from_string(f"---- ---- {r}{b2}3{m} -{b2}4-"),
                 # BOTTOM_LEFT, where the Hadamard transition occurs
-                3: RPNGDescription.from_string(f"-{b1}1- x{b2}2- ---- ----"),
+                3: RPNGDescription.from_string(f"-{b1}1- {r}{b2}2{m} ---- ----"),
                 # LEFT bulk, where the Hadamard transition occurs
-                5: RPNGDescription.from_string(f"-{b1}1- x{b2}2- -{b1}3- x{b2}4-"),
-                6: RPNGDescription.from_string(f"-{b2}1- x{b1}3- -{b2}2- x{b1}4-"),
+                5: RPNGDescription.from_string(
+                    f"-{b1}1- {r}{b2}2{m} -{b1}3- {r}{b2}4{m}"
+                ),
+                6: RPNGDescription.from_string(
+                    f"-{b2}1- {r}{b1}3{m} -{b2}2- {r}{b1}4{m}"
+                ),
                 # RIGHT bulk, normal plaquettes
-                7: RPNGDescription.from_string(f"x{b1}1- -{b1}3- x{b1}2- -{b1}4-"),
-                8: RPNGDescription.from_string(f"x{b2}1- -{b2}2- x{b2}3- -{b2}4-"),
+                7: RPNGDescription.from_string(
+                    f"{r}{b1}1{m} -{b1}3- {r}{b1}2{m} -{b1}4-"
+                ),
+                8: RPNGDescription.from_string(
+                    f"{r}{b2}1{m} -{b2}2- {r}{b2}3{m} -{b2}4-"
+                ),
             },
             default_factory=lambda: RPNGDescription.from_string("---- ---- ---- ----"),
         ),
