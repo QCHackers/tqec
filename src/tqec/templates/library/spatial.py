@@ -53,6 +53,21 @@ def get_spatial_junction_qubit_template(
         a description of a logical qubit performing a memory operation while
         being enclosed by 2 or more spatial junctions.
     """
+    # In this function implementation, all the indices used are referring to the
+    # indices returned by the QubitSpatialJunctionTemplate template. They are
+    # copied below for convenience, but the only source of truth is in the
+    # QubitSpatialJunctionTemplate docstring!
+    #      1   9  10   9  10   9  10   9  10   2
+    #     11   5  17  13  17  13  17  13   6  18
+    #     12  17  13  17  13  17  13  17  14  19
+    #     11  16  17  13  17  13  17  14  17  18
+    #     12  17  16  17  13  17  14  17  14  19
+    #     11  16  17  16  17  15  17  14  17  18
+    #     12  17  16  17  15  17  15  17  14  19
+    #     11  16  17  15  17  15  17  15  17  18
+    #     12   7  15  17  15  17  15  17   8  19
+    #      3  20  21  20  21  20  21  20  21   4
+
     # When Python 3.10 support will be dropped:
     # assert len(arms) >= 2
 
@@ -64,6 +79,9 @@ def get_spatial_junction_qubit_template(
     bi = "x" if external_stabilizers == "z" else "z"
 
     mapping: dict[int, RPNGDescription] = {}
+    ####################
+    #     Corners      #
+    ####################
     # Corners 2 and 3 are always empty, but corners 1 and 4 might contain a 3-body
     # stabilizer measurement if both arms around are set.
     if JunctionArms.UP in arms and JunctionArms.LEFT in arms:
@@ -75,6 +93,9 @@ def get_spatial_junction_qubit_template(
             f"{r}{be}1{m} {r}{be}2{m} {r}{be}4{m} ----"
         )
 
+    ####################
+    #    Boundaries    #
+    ####################
     # Fill the boundaries that should be filled in the returned template because
     # they have no junction, and so will not be filled later.
     # Note that indices 1 and 4 **might** be set twice in the 4 ifs below. These
@@ -101,6 +122,9 @@ def get_spatial_junction_qubit_template(
     elif arms == JunctionArms.DOWN | JunctionArms.RIGHT:
         del mapping[1]
 
+    ####################
+    #       Bulk       #
+    ####################
     # Assigning plaquette description to the bulk, considering that the bulk
     # corners (i.e. indices {5, 6, 7, 8}) should be assigned "regular" plaquettes
     # (i.e. 6 and 7 have the same plaquette as 17, 5 has the same plaquette as
@@ -139,7 +163,10 @@ def get_spatial_junction_qubit_template(
             f"---- {r}{be}2{m} {r}{be}4{m} {r}{be}5{m}"
         )
 
-    # Sanity check: all the plaquettes in the bulk should be set.
+    ####################
+    #  Sanity checks   #
+    ####################
+    # All the plaquettes in the bulk should be set.
     bulk_plaquette_indices = {5, 6, 7, 8, 13, 14, 15, 16, 17}
     missing_bulk_plaquette_indices = bulk_plaquette_indices - mapping.keys()
     assert not missing_bulk_plaquette_indices, (
