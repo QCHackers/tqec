@@ -28,6 +28,15 @@ def get_spatial_junction_qubit_template(
         is possible to generate a description of a round that will both reset and
         measure the data-qubits.
 
+    Warning:
+        by convention, this function does not populate the plaquettes on the
+        boundaries where an arm (i.e. spatial junction) is present **BUT** do
+        populate the corners (that are part of the boundaries, so this is an
+        exception to the sentence just before).
+
+        Junctions should follow that convention and should not replace the
+        plaquette descriptions on the corners.
+
     Arguments:
         external_stabilizers: stabilizers that are measured at each boundaries
             of the spatial junction.
@@ -55,20 +64,42 @@ def get_spatial_junction_qubit_template(
     bi = "x" if external_stabilizers == "z" else "z"
 
     mapping: dict[int, RPNGDescription] = {}
-    # We do not care about the corners {1, 2, 3, 4} because the ones that should
-    # be set will be overwritten by the junctions anyway, so there is not need
-    # to set anything here.
+    # Corners 2 and 3 are always empty, but corners 1 and 4 might contain a 3-body
+    # stabilizer measurement if both arms around are set.
+    if JunctionArms.UP in arms and JunctionArms.LEFT in arms:
+        mapping[1] = RPNGDescription.from_string(
+            f"---- {r}{be}2{m} {r}{be}4{m} {r}{be}5{m}"
+        )
+    if JunctionArms.DOWN in arms and JunctionArms.RIGHT in arms:
+        mapping[4] = RPNGDescription.from_string(
+            f"{r}{be}1{m} {r}{be}2{m} {r}{be}4{m} ----"
+        )
 
     # Fill the boundaries that should be filled in the returned template because
     # they have no junction, and so will not be filled later.
+    # Note that indices 1 and 4 **might** be set twice in the 4 ifs below. These
+    # cases are handled later in the function and will overwrite the description
+    # on 1 and 4 if needed, so we do not have to account for those cases here.
     if JunctionArms.UP not in arms:
+        mapping[1] = RPNGDescription.from_string(f"---- ---- {r}{be}3{m} {r}{be}4{m}")
         mapping[10] = RPNGDescription.from_string(f"---- ---- {r}{be}3{m} {r}{be}4{m}")
     if JunctionArms.RIGHT not in arms:
+        mapping[4] = RPNGDescription.from_string(f"{r}{be}1{m} ---- {r}{be}2{m} ----")
         mapping[18] = RPNGDescription.from_string(f"{r}{be}1{m} ---- {r}{be}2{m} ----")
     if JunctionArms.DOWN not in arms:
+        mapping[4] = RPNGDescription.from_string(f"{r}{be}1{m} {r}{be}2{m} ---- ----")
         mapping[20] = RPNGDescription.from_string(f"{r}{be}1{m} {r}{be}2{m} ---- ----")
     if JunctionArms.LEFT not in arms:
+        mapping[1] = RPNGDescription.from_string(f"---- {r}{be}3{m} ---- {r}{be}4{m}")
         mapping[12] = RPNGDescription.from_string(f"---- {r}{be}3{m} ---- {r}{be}4{m}")
+
+    # If we have a down-right or top-left L-shaped junction, the opposite corner
+    # plaquette should be removed from the mapping (this is the case where it
+    # has been set twice in the ifs above).
+    if arms == JunctionArms.UP | JunctionArms.LEFT:
+        del mapping[4]
+    elif arms == JunctionArms.DOWN | JunctionArms.RIGHT:
+        del mapping[1]
 
     # Assigning plaquette description to the bulk, considering that the bulk
     # corners (i.e. indices {5, 6, 7, 8}) should be assigned "regular" plaquettes
@@ -82,33 +113,30 @@ def get_spatial_junction_qubit_template(
     mapping[7] = internal_basis_plaquette
     mapping[17] = internal_basis_plaquette
 
-    external_basis_horizontal_hook_plaquette = RPNGDescription.from_string(
+    # be{h,v}hp: basis external {horizontal,vertical} hook plaquette
+    behhp = RPNGDescription.from_string(
         f"{r}{be}1{m} {r}{be}2{m} {r}{be}3{m} {r}{be}4{m}"
     )
-    external_basis_vertical_hook_plaquette = RPNGDescription.from_string(
+    bevhp = RPNGDescription.from_string(
         f"{r}{be}1{m} {r}{be}4{m} {r}{be}3{m} {r}{be}5{m}"
     )
-    if JunctionArms.UP not in arms:
-        mapping[5] = external_basis_horizontal_hook_plaquette
-        mapping[13] = external_basis_horizontal_hook_plaquette
-    if JunctionArms.RIGHT not in arms:
-        mapping[14] = external_basis_vertical_hook_plaquette
-    if JunctionArms.DOWN not in arms:
-        mapping[8] = external_basis_horizontal_hook_plaquette
-        mapping[15] = external_basis_horizontal_hook_plaquette
-    if JunctionArms.LEFT not in arms:
-        mapping[16] = external_basis_vertical_hook_plaquette
+    mapping[5] = bevhp if JunctionArms.UP in arms else behhp
+    mapping[13] = bevhp if JunctionArms.UP in arms else behhp
+    mapping[14] = behhp if JunctionArms.RIGHT in arms else bevhp
+    mapping[8] = bevhp if JunctionArms.DOWN in arms else behhp
+    mapping[15] = bevhp if JunctionArms.DOWN in arms else behhp
+    mapping[16] = behhp if JunctionArms.LEFT in arms else bevhp
 
-    # Last but not least, if we have a down-right or top-left L-shaped junction,
-    # the corner plaquette of the bulk should be modified to measure a 3-body
-    # stabilizer.
+    # In the special cases of an L-shaped junction TOP/LEFT or DOWN/RIGHT, the
+    # opposite corner **within the bulk** should be overwritten to become a
+    # 3-body stabilizer measurement.
     if arms == JunctionArms.UP | JunctionArms.LEFT:
         mapping[8] = RPNGDescription.from_string(
-            f"{r}{bi}1{m} {r}{bi}2{m} {r}{bi}4{m} ----"
+            f"{r}{be}1{m} {r}{be}2{m} {r}{be}4{m} ----"
         )
     elif arms == JunctionArms.DOWN | JunctionArms.RIGHT:
         mapping[5] = RPNGDescription.from_string(
-            f"---- {r}{bi}2{m} {r}{bi}4{m} {r}{bi}5{m}"
+            f"---- {r}{be}2{m} {r}{be}4{m} {r}{be}5{m}"
         )
 
     # Sanity check: all the plaquettes in the bulk should be set.
