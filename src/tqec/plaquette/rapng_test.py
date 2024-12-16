@@ -1,7 +1,7 @@
-from tqec.plaquette.rapng import RAPNGDescription
-
-from stim import Circuit as stim_Circuit
 import pytest
+from stim import Circuit as stim_Circuit
+
+from tqec.plaquette.rapng import RAPNGDescription
 
 
 def test_validate_plaquette_from_rapng_string() -> None:
