@@ -4,8 +4,8 @@ import pytest
 from tqec.exceptions import TQECWarning
 from tqec.scale import LinearFunction, Scalable2D
 from tqec.templates.indices.qubit import (
-    Qubit4WayJunctionTemplate,
     QubitHorizontalBorders,
+    QubitSpatialJunctionTemplate,
     QubitTemplate,
     QubitVerticalBorders,
 )
@@ -15,14 +15,14 @@ def test_creation() -> None:
     QubitTemplate()
     QubitHorizontalBorders()
     QubitVerticalBorders()
-    Qubit4WayJunctionTemplate()
+    QubitSpatialJunctionTemplate()
 
 
 def test_expected_plaquettes_number() -> None:
     assert QubitTemplate().expected_plaquettes_number == 14
     assert QubitHorizontalBorders().expected_plaquettes_number == 8
     assert QubitVerticalBorders().expected_plaquettes_number == 8
-    assert Qubit4WayJunctionTemplate().expected_plaquettes_number == 15
+    assert QubitSpatialJunctionTemplate().expected_plaquettes_number == 15
 
 
 def test_scalable_shape() -> None:
@@ -35,7 +35,7 @@ def test_scalable_shape() -> None:
     assert QubitVerticalBorders().scalable_shape == Scalable2D(
         LinearFunction(0, 2), LinearFunction(2, 2)
     )
-    assert Qubit4WayJunctionTemplate().scalable_shape == Scalable2D(
+    assert QubitSpatialJunctionTemplate().scalable_shape == Scalable2D(
         LinearFunction(2, 2), LinearFunction(2, 2)
     )
 
@@ -119,7 +119,7 @@ def test_qubit_vertical_borders_template_instantiation() -> None:
 
 
 def test_qubit_4_way_junction_template_instantiation() -> None:
-    template = Qubit4WayJunctionTemplate()
+    template = QubitSpatialJunctionTemplate()
 
     expected_warning_message = (
         "Instantiating Qubit4WayJunctionTemplate with k=1. The "

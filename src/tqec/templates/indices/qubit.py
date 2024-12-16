@@ -70,22 +70,22 @@ class QubitTemplate(RectangularTemplate):
         return 14
 
 
-class Qubit4WayJunctionTemplate(RectangularTemplate):
+class QubitSpatialJunctionTemplate(RectangularTemplate):
     """An error-corrected qubit that is making a 4-way junction with other
     logical qubits.
 
     The below text represents this template for an input ``k == 4`` ::
 
-        1  5  6  5  6  5  6  5  6  2
-        7 10 11 10 11 10 11 10 11 12
-        8 11 10 11 10 11 10 11  9 13
-        7  9 11 10 11 10 11  9 11 12
-        8 11  9 11 10 11  9 11  9 13
-        7  9 11  9 11 10 11  9 11 12
-        8 11  9 11 10 11 10 11  9 13
-        7  9 11 10 11 10 11 10 11 12
-        8 11 10 11 10 11 10 11 10 13
-        3 14 15 14 15 14 15 14 15  4
+         1   9  10   9  10   9  10   9  10   2
+        11   5  17  13  17  13  17  13   6  18
+        12  17  13  17  13  17  13  17  14  19
+        11  16  17  13  17  13  17  14  17  18
+        12  17  16  17  13  17  14  17  14  19
+        11  16  17  16  17  15  17  14  17  18
+        12  17  16  17  15  17  15  17  14  19
+        11  16  17  15  17  15  17  15  17  18
+        12   7  15  17  15  17  15  17   8  19
+         3  20  21  20  21  20  21  20  21   4
 
     Warning:
         For `k == 1`, this template does not include any of the plaquette
