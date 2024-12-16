@@ -124,34 +124,30 @@ class Qubit4WayJunctionTemplate(RectangularTemplate):
         ret[1:-1:2, 0] = plaquette_indices[10]
         ret[2:-1:2, 0] = plaquette_indices[11]
         # The center, which is the complex part.
-        # Start by plaquette_indices[10] which is the plaquette that is
+        # Start by plaquette_indices[16] which is the plaquette that is
         # uniformly spread on the template
         ret[1:-1:2, 2:-1:2] = plaquette_indices[16]
         ret[2:-1:2, 1:-1:2] = plaquette_indices[16]
         # Now initialize the other plaquettes
         for i in range(1, size - 1):
             # We want (i + j) to be even, because that are the only places where
-            # plaquette_indices[8] *might* be encountered. We do that directly
-            # in the range expression.
+            # we should set plaquettes. We do that directly in the range expression.
             # We need to avoid 0 here because it is the border of the template.
             for j in range(1 if i % 2 == 1 else 2, size - 1, 2):
                 # If the cell represented by (i, j) is:
                 # - on the top (above the main diagonal and above the anti-diagonal)
-                if i < j and i > (size - 1 - j):
+                if i <= j and i < (size - 1 - j):
                     ret[i, j] = plaquette_indices[12]
                 # - on the right (above the main diagonal and below the anti-diagonal)
-                elif i < j and i < (size - 1 - j):
+                elif i < j and i > (size - 1 - j):
                     ret[i, j] = plaquette_indices[13]
                 # - on the bottom (below the main diagonal and below the anti-diagonal)
-                elif i > j and i < (size - 1 - j):
+                elif i >= j and i > (size - 1 - j):
                     ret[i, j] = plaquette_indices[14]
                 # - on the left (below the main diagonal and above the anti-diagonal)
-                elif i > j and i > (size - 1 - j):
+                elif i > j and i < (size - 1 - j):
                     ret[i, j] = plaquette_indices[15]
-                else:
-                    raise TQECException(
-                        "Plaquettes on diagonals should already be set."
-                    )
+
         ret[1, 1] = plaquette_indices[4]
         ret[1, -2] = plaquette_indices[5]
         ret[-2, 1] = plaquette_indices[6]
