@@ -22,7 +22,7 @@ def test_expected_plaquettes_number() -> None:
     assert QubitTemplate().expected_plaquettes_number == 14
     assert QubitHorizontalBorders().expected_plaquettes_number == 8
     assert QubitVerticalBorders().expected_plaquettes_number == 8
-    assert QubitSpatialJunctionTemplate().expected_plaquettes_number == 15
+    assert QubitSpatialJunctionTemplate().expected_plaquettes_number == 21
 
 
 def test_scalable_shape() -> None:
@@ -130,20 +130,20 @@ def test_qubit_4_way_junction_template_instantiation() -> None:
         numpy.testing.assert_array_equal(
             template.instantiate(1),
             [
-                [1, 5, 6, 2],
-                [7, 10, 11, 12],
-                [8, 11, 10, 13],
-                [3, 14, 15, 4],
+                [1, 9, 10, 2],
+                [11, 5, 6, 18],
+                [12, 7, 8, 19],
+                [3, 20, 21, 4],
             ],
         )
     numpy.testing.assert_array_equal(
         template.instantiate(2),
         [
-            [1, 5, 6, 5, 6, 2],
-            [7, 10, 11, 10, 11, 12],
-            [8, 11, 10, 11, 9, 13],
-            [7, 9, 11, 10, 11, 12],
-            [8, 11, 10, 11, 10, 13],
-            [3, 14, 15, 14, 15, 4],
+            [1, 9, 10, 9, 10, 2],
+            [11, 5, 17, 13, 6, 18],
+            [12, 17, 13, 17, 14, 19],
+            [11, 16, 17, 15, 17, 18],
+            [12, 7, 15, 17, 8, 19],
+            [3, 20, 21, 20, 21, 4],
         ],
     )

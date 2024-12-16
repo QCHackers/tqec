@@ -1,4 +1,4 @@
-from tqec.plaquette.enums import ResetBasis
+from tqec.plaquette.enums import MeasurementBasis, ResetBasis
 from tqec.plaquette.rpng import RPNGDescription
 from tqec.templates.enums import ZObservableOrientation
 from tqec.templates.indices.qubit import QubitTemplate
@@ -68,7 +68,9 @@ def test_memory_vertical_z_observable_reset_z() -> None:
 
 
 def test_memory_vertical_z_observable_measure_x() -> None:
-    memory_template = get_memory_qubit_template(ZObservableOrientation.VERTICAL)
+    memory_template = get_memory_qubit_template(
+        ZObservableOrientation.VERTICAL, measurement=MeasurementBasis.X
+    )
     assert isinstance(memory_template.template, QubitTemplate)
     plaquettes = memory_template.mapping
     assert plaquettes[1] == RPNGDescription.from_string("---- ---- ---- ----")
