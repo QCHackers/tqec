@@ -166,7 +166,7 @@ class RPNGDescription:
     corners: tuple[RPNG, RPNG, RPNG, RPNG]
     ancilla: RG = RG()
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validation of the initialization arguments
 
         Constraints:
@@ -208,7 +208,7 @@ class RPNGDescription:
         """Get the reset operation or Hadamard for the specific data qubit"""
         return self.corners[data_idx].get_r_op()
 
-    def get_n(self, data_idx: int):
+    def get_n(self, data_idx: int) -> int | None:
         """Get the time of the 2Q gate involving the specific data qubit"""
         return self.corners[data_idx].n
 
