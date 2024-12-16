@@ -166,7 +166,7 @@ class RPNGDescription:
     corners: tuple[RPNG, RPNG, RPNG, RPNG]
     ancilla: RG = RG()
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validation of the initialization arguments
 
         Constraints:
@@ -208,7 +208,7 @@ class RPNGDescription:
         """Get the reset operation or Hadamard for the specific data qubit"""
         return self.corners[data_idx].get_r_op()
 
-    def get_n(self, data_idx: int):
+    def get_n(self, data_idx: int) -> int | None:
         """Get the time of the 2Q gate involving the specific data qubit"""
         return self.corners[data_idx].n
 
@@ -221,20 +221,19 @@ class RPNGDescription:
     ) -> Plaquette:
         """Get the plaquette corresponding to the RPNG description
 
-        Note that the ancilla qubit is the first among the PlaquetteQubits and thus
-        has index 0, while the data qubits have indices 1-4.
+        Note that the ancilla qubit is the last among the PlaquetteQubits and thus
+        has index 4, while the data qubits have indices 0-3.
         """
         prep_time = 0
         circuit_as_list = [""] * (meas_time - prep_time + 1)
-        for j, rpng in enumerate(self.corners):
-            q = j + 1
+        for q, rpng in enumerate(self.corners):
             # 2Q gates.
             if rpng.n and rpng.p:
                 if rpng.n >= meas_time:
                     raise ValueError(
                         "The measurement time must be larger than the 2Q gate time."
                     )
-                circuit_as_list[rpng.n] += f"C{rpng.p.value.upper()} 0 {q}\n"
+                circuit_as_list[rpng.n] += f"C{rpng.p.value.upper()} 4 {q}\n"
             # Data reset or Hadamard.
             if rpng.r:
                 circuit_as_list[0] += f"{rpng.get_r_op()} {q}\n"
@@ -242,8 +241,8 @@ class RPNGDescription:
             if rpng.g:
                 circuit_as_list[-1] += f"{rpng.get_g_op()} {q}\n"
         # Ancilla reset and measurement.
-        circuit_as_list[0] += f"R{self.ancilla.r.value.upper()} 0\n"
-        circuit_as_list[-1] += f"M{self.ancilla.g.value.upper()} 0\n"
+        circuit_as_list[0] += f"R{self.ancilla.r.value.upper()} 4\n"
+        circuit_as_list[-1] += f"M{self.ancilla.g.value.upper()} 4\n"
         q_map = QubitMap.from_qubits(qubits)
         circuit_as_str = "TICK\n".join(circuit_as_list)
         circuit = stim_Circuit(circuit_as_str)

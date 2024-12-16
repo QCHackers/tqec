@@ -10,8 +10,8 @@ from tqec.templates.indices.enums import TemplateOrientation
 
 @dataclass(frozen=True)
 class PlaquetteQubits:
-    syndrome_qubits: list[GridQubit]
     data_qubits: list[GridQubit]
+    syndrome_qubits: list[GridQubit]
 
     def __iter__(self) -> ty.Iterator[GridQubit]:
         yield from self.data_qubits
@@ -77,8 +77,8 @@ class PlaquetteQubits:
     def __eq__(self, rhs: object) -> bool:
         return (
             isinstance(rhs, PlaquetteQubits)
-            and self.syndrome_qubits == rhs.syndrome_qubits
             and self.data_qubits == rhs.data_qubits
+            and self.syndrome_qubits == rhs.syndrome_qubits
         )
 
 
