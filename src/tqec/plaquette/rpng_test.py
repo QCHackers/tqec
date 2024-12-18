@@ -1,5 +1,5 @@
 import pytest
-from stim import Circuit as stim_Circuit
+from stim import Circuit
 
 from tqec.plaquette.qubit import SquarePlaquetteQubits
 from tqec.plaquette.rpng import RPNGDescription
@@ -60,7 +60,7 @@ TICK
 TICK
 MX 4
 """
-    assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
+    assert Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
 
     # Usual plaquette corresponding to the ZXXZ stabilizer with partial initialization.
     corners_rpng_str = "-z1- zx2- zx4- -z5-"
@@ -86,7 +86,7 @@ CZ 4 3
 TICK
 MX 4
 """
-    assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
+    assert Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
 
     # Arbitrary plaquette.
     qubits = SquarePlaquetteQubits()
@@ -115,4 +115,4 @@ H 0
 M 1
 MX 2 4
 """
-    assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
+    assert Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
