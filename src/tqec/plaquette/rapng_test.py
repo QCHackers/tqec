@@ -1,5 +1,5 @@
 import pytest
-from stim import Circuit as stim_Circuit
+from stim import Circuit
 
 from tqec.plaquette.rapng import RAPNGDescription
 
@@ -51,4 +51,4 @@ ZCX 4 3
 TICK
 MZ 4
 """
-    assert stim_Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
+    assert Circuit(expected_circuit_str) == plaquette.circuit.get_circuit()
