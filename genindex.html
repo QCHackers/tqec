@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,16 +26,16 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
   
   <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -349,9 +349,14 @@ window.addEventListener("load", () => mermaid.run());
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -406,9 +411,11 @@ window.addEventListener("load", () => mermaid.run());
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.__init__">__init__() (tqec.circuit.ScheduledCircuit method)</a>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.__init__">__init__() (tqec.circuit.QubitMap method)</a>
 
       <ul>
+        <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.__init__">(tqec.circuit.ScheduledCircuit method)</a>
+</li>
         <li><a href="_autosummary/tqec.compile.BlockBuilder.html#tqec.compile.BlockBuilder.__init__">(tqec.compile.BlockBuilder method)</a>
 </li>
         <li><a href="_autosummary/tqec.compile.CompiledBlock.html#tqec.compile.CompiledBlock.__init__">(tqec.compile.CompiledBlock method)</a>
@@ -459,7 +466,17 @@ window.addEventListener("load", () => mermaid.run());
 </li>
         <li><a href="_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.__init__">(tqec.plaquette.Plaquettes method)</a>
 </li>
+        <li><a href="_autosummary/tqec.plaquette.RAPNG.html#tqec.plaquette.RAPNG.__init__">(tqec.plaquette.RAPNG method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.__init__">(tqec.plaquette.RAPNGDescription method)</a>
+</li>
         <li><a href="_autosummary/tqec.plaquette.RepeatedPlaquettes.html#tqec.plaquette.RepeatedPlaquettes.__init__">(tqec.plaquette.RepeatedPlaquettes method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RG.html#tqec.plaquette.RG.__init__">(tqec.plaquette.RG method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNG.html#tqec.plaquette.RPNG.__init__">(tqec.plaquette.RPNG method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.__init__">(tqec.plaquette.RPNGDescription method)</a>
 </li>
         <li><a href="_autosummary/tqec.plaquette.SquarePlaquetteQubits.html#tqec.plaquette.SquarePlaquetteQubits.__init__">(tqec.plaquette.SquarePlaquetteQubits method)</a>
 </li>
@@ -616,24 +633,52 @@ window.addEventListener("load", () => mermaid.run());
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.computation.ZXGraph.html#tqec.computation.ZXGraph.fill_ports">fill_ports() (tqec.computation.ZXGraph method)</a>
 </li>
-      <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.filter_by_qubits">filter_by_qubits() (tqec.circuit.ScheduledCircuit method)</a>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.filter_by_qubits">filter_by_qubits() (tqec.circuit.QubitMap method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.filter_by_qubits">(tqec.circuit.ScheduledCircuit method)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/tqec.computation.ZXGraph.html#tqec.computation.ZXGraph.find_correration_surfaces">find_correration_surfaces() (tqec.computation.ZXGraph method)</a>
 </li>
-      <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.from_circuit">from_circuit() (tqec.circuit.ScheduledCircuit static method)</a>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.from_circuit">from_circuit() (tqec.circuit.QubitMap static method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.from_circuit">(tqec.circuit.ScheduledCircuit static method)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/tqec.compile.CubeSpec.html#tqec.compile.CubeSpec.from_cube">from_cube() (tqec.compile.CubeSpec static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.computation.Pipe.html#tqec.computation.Pipe.from_cubes">from_cubes() (tqec.computation.Pipe static method)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.BlockGraph.html#tqec.computation.BlockGraph.from_dae_file">from_dae_file() (tqec.computation.BlockGraph static method)</a>
+</li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.from_extended_string">from_extended_string() (tqec.plaquette.RAPNGDescription class method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.from_extended_string">(tqec.plaquette.RPNGDescription class method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.from_qubits">from_qubits() (tqec.circuit.QubitMap static method)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.PipeKind.html#tqec.computation.PipeKind.from_str">from_str() (tqec.computation.PipeKind static method)</a>
 
       <ul>
         <li><a href="_autosummary/tqec.computation.ZXCube.html#tqec.computation.ZXCube.from_str">(tqec.computation.ZXCube static method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNG.html#tqec.plaquette.RAPNG.from_string">from_string() (tqec.plaquette.RAPNG class method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.from_string">(tqec.plaquette.RAPNGDescription class method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RG.html#tqec.plaquette.RG.from_string">(tqec.plaquette.RG class method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNG.html#tqec.plaquette.RPNG.from_string">(tqec.plaquette.RPNG class method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.from_string">(tqec.plaquette.RPNGDescription class method)</a>
 </li>
       </ul></li>
       <li><a href="_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict">FrozenDefaultDict (class in tqec.plaquette)</a>
@@ -678,8 +723,16 @@ window.addEventListener("load", () => mermaid.run());
         <li><a href="_autosummary/tqec.plaquette.SquarePlaquetteQubits.html#tqec.plaquette.SquarePlaquetteQubits.get_edge_qubits">(tqec.plaquette.SquarePlaquetteQubits method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/tqec.plaquette.RAPNG.html#tqec.plaquette.RAPNG.get_g_op">get_g_op() (tqec.plaquette.RAPNG method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.get_g_op">(tqec.plaquette.RAPNGDescription method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNG.html#tqec.plaquette.RPNG.get_g_op">(tqec.plaquette.RPNG method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.get_g_op">(tqec.plaquette.RPNGDescription method)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.get_increments">get_increments() (tqec.templates.LayoutTemplate method)</a>
 
       <ul>
@@ -688,6 +741,8 @@ window.addEventListener("load", () => mermaid.run());
         <li><a href="_autosummary/tqec.templates.Template.html#tqec.templates.Template.get_increments">(tqec.templates.Template method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.get_indices_map_for_instantiation">get_indices_map_for_instantiation() (tqec.templates.LayoutTemplate method)</a>
 </li>
       <li><a href="_autosummary/tqec.templates.LayoutTemplate.html#tqec.templates.LayoutTemplate.get_midline_plaquettes">get_midline_plaquettes() (tqec.templates.LayoutTemplate method)</a>
@@ -698,12 +753,34 @@ window.addEventListener("load", () => mermaid.run());
         <li><a href="_autosummary/tqec.templates.Template.html#tqec.templates.Template.get_midline_plaquettes">(tqec.templates.Template method)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.get_n">get_n() (tqec.plaquette.RAPNGDescription method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.get_n">(tqec.plaquette.RPNGDescription method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.get_plaquette">get_plaquette() (tqec.plaquette.RAPNGDescription method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.get_plaquette">(tqec.plaquette.RPNGDescription method)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.get_qubit_coords_definition_preamble">get_qubit_coords_definition_preamble() (tqec.circuit.ScheduledCircuit method)</a>
 </li>
       <li><a href="_autosummary/tqec.plaquette.PlaquetteQubits.html#tqec.plaquette.PlaquetteQubits.get_qubits_on_side">get_qubits_on_side() (tqec.plaquette.PlaquetteQubits method)</a>
 
       <ul>
         <li><a href="_autosummary/tqec.plaquette.SquarePlaquetteQubits.html#tqec.plaquette.SquarePlaquetteQubits.get_qubits_on_side">(tqec.plaquette.SquarePlaquetteQubits method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNG.html#tqec.plaquette.RAPNG.get_r_op">get_r_op() (tqec.plaquette.RAPNG method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription.get_r_op">(tqec.plaquette.RAPNGDescription method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNG.html#tqec.plaquette.RPNG.get_r_op">(tqec.plaquette.RPNG method)</a>
+</li>
+        <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription.get_r_op">(tqec.plaquette.RPNGDescription method)</a>
 </li>
       </ul></li>
       <li><a href="_autosummary/tqec.circuit.ScheduledCircuit.html#tqec.circuit.ScheduledCircuit.get_repeated_circuit">get_repeated_circuit() (tqec.circuit.ScheduledCircuit method)</a>
@@ -776,8 +853,12 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       <li><a href="_autosummary/tqec.Position3D.html#tqec.Position3D.is_neighbour">is_neighbour() (tqec.Position3D method)</a>
 </li>
-      <li><a href="_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict.items">items() (tqec.plaquette.FrozenDefaultDict method)</a>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.items">items() (tqec.circuit.QubitMap method)</a>
+
+      <ul>
+        <li><a href="_autosummary/tqec.plaquette.FrozenDefaultDict.html#tqec.plaquette.FrozenDefaultDict.items">(tqec.plaquette.FrozenDefaultDict method)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/tqec.Interval.html#tqec.Interval.iter_integers">iter_integers() (tqec.Interval method)</a>
 </li>
   </ul></td>
@@ -955,10 +1036,12 @@ window.addEventListener("load", () => mermaid.run());
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette.qubits">qubits (tqec.plaquette.Plaquette attribute)</a>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap">QubitMap (class in tqec.circuit)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/tqec.plaquette.Plaquette.html#tqec.plaquette.Plaquette.qubits">qubits (tqec.plaquette.Plaquette attribute)</a>
+</li>
       <li><a href="_autosummary/tqec.templates.QubitTemplate.html#tqec.templates.QubitTemplate">QubitTemplate (class in tqec.templates)</a>
 </li>
   </ul></td>
@@ -968,6 +1051,10 @@ window.addEventListener("load", () => mermaid.run());
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.interop.RGBA.html#tqec.interop.RGBA.r">r (tqec.interop.RGBA attribute)</a>
+</li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNG.html#tqec.plaquette.RAPNG">RAPNG (class in tqec.plaquette)</a>
+</li>
+      <li><a href="_autosummary/tqec.plaquette.RAPNGDescription.html#tqec.plaquette.RAPNGDescription">RAPNGDescription (class in tqec.plaquette)</a>
 </li>
       <li><a href="_autosummary/tqec.interop.read_block_graph_from_dae_file.html#tqec.interop.read_block_graph_from_dae_file">read_block_graph_from_dae_file() (in module tqec.interop)</a>
 </li>
@@ -985,9 +1072,15 @@ window.addEventListener("load", () => mermaid.run());
 </li>
       <li><a href="_autosummary/tqec.plaquette.ResetBasis.html#tqec.plaquette.ResetBasis">ResetBasis (class in tqec.plaquette)</a>
 </li>
+      <li><a href="_autosummary/tqec.plaquette.RG.html#tqec.plaquette.RG">RG (class in tqec.plaquette)</a>
+</li>
       <li><a href="_autosummary/tqec.interop.RGBA.html#tqec.interop.RGBA">RGBA (class in tqec.interop)</a>
 </li>
       <li><a href="_autosummary/tqec.round_or_fail.html#tqec.round_or_fail">round_or_fail() (in module tqec)</a>
+</li>
+      <li><a href="_autosummary/tqec.plaquette.RPNG.html#tqec.plaquette.RPNG">RPNG (class in tqec.plaquette)</a>
+</li>
+      <li><a href="_autosummary/tqec.plaquette.RPNGDescription.html#tqec.plaquette.RPNGDescription">RPNGDescription (class in tqec.plaquette)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1054,6 +1147,8 @@ window.addEventListener("load", () => mermaid.run());
       <li><a href="_autosummary/tqec.gallery.three_cnots_zx_graph.html#tqec.gallery.three_cnots_zx_graph">three_cnots_zx_graph() (in module tqec.gallery)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.ZXGraph.html#tqec.computation.ZXGraph.to_block_graph">to_block_graph() (tqec.computation.ZXGraph method)</a>
+</li>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.to_circuit">to_circuit() (tqec.circuit.QubitMap method)</a>
 </li>
       <li><a href="_autosummary/tqec.computation.BlockGraph.html#tqec.computation.BlockGraph.to_dae_file">to_dae_file() (tqec.computation.BlockGraph method)</a>
 </li>
@@ -1206,6 +1301,8 @@ window.addEventListener("load", () => mermaid.run());
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/tqec.interop.RGBA.html#tqec.interop.RGBA.with_alpha">with_alpha() (tqec.interop.RGBA method)</a>
 </li>
+      <li><a href="_autosummary/tqec.circuit.QubitMap.html#tqec.circuit.QubitMap.with_mapped_qubits">with_mapped_qubits() (tqec.circuit.QubitMap method)</a>
+</li>
       <li><a href="_autosummary/tqec.plaquette.Plaquettes.html#tqec.plaquette.Plaquettes.with_updated_plaquettes">with_updated_plaquettes() (tqec.plaquette.Plaquettes method)</a>
 
       <ul>
@@ -1312,8 +1409,8 @@ window.addEventListener("load", () => mermaid.run());
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1346,7 +1443,8 @@ window.addEventListener("load", () => mermaid.run());
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

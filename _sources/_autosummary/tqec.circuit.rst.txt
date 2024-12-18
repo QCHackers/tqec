@@ -28,6 +28,7 @@
    .. autosummary::
       :toctree:
    
+      QubitMap
       ScheduledCircuit
    
    
