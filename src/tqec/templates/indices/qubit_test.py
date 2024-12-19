@@ -118,11 +118,11 @@ def test_qubit_vertical_borders_template_instantiation() -> None:
     )
 
 
-def test_qubit_4_way_junction_template_instantiation() -> None:
+def test_qubit_spatial_junction_template_instantiation() -> None:
     template = QubitSpatialJunctionTemplate()
 
     expected_warning_message = (
-        "Instantiating Qubit4WayJunctionTemplate with k=1. The "
+        "Instantiating SpatialJunctionTemplate with k=1. The "
         "instantiation array returned will not have any plaquette indexed "
         "9, which might break other parts of the library."
     )
