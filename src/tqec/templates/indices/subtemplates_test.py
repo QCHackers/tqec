@@ -8,7 +8,7 @@ from tqec.position import Position2D
 from tqec.templates.indices.base import Template
 from tqec.templates.indices.layout import LayoutTemplate
 from tqec.templates.indices.qubit import (
-    Qubit4WayJunctionTemplate,
+    QubitSpatialJunctionTemplate,
     QubitTemplate,
 )
 from tqec.templates.indices.subtemplates import (
@@ -18,7 +18,7 @@ from tqec.templates.indices.subtemplates import (
 
 _TEMPLATES_TO_TEST = [
     QubitTemplate(),
-    Qubit4WayJunctionTemplate(),
+    QubitSpatialJunctionTemplate(),
     LayoutTemplate(
         {Position2D(0, 0): QubitTemplate(), Position2D(1, 1): QubitTemplate()}
     ),
@@ -89,17 +89,17 @@ def test_get_spatially_distinct_subtemplates(
 
 
 _TEMPLATE_PAIRS_TO_TEST = [
-    (QubitTemplate(), Qubit4WayJunctionTemplate()),
+    (QubitTemplate(), QubitSpatialJunctionTemplate()),
     (
         LayoutTemplate(
             {
                 Position2D(0, 0): QubitTemplate(),
-                Position2D(1, 1): Qubit4WayJunctionTemplate(),
+                Position2D(1, 1): QubitSpatialJunctionTemplate(),
             }
         ),
         LayoutTemplate(
             {
-                Position2D(0, 0): Qubit4WayJunctionTemplate(),
+                Position2D(0, 0): QubitSpatialJunctionTemplate(),
                 Position2D(1, 1): QubitTemplate(),
             }
         ),
