@@ -180,8 +180,6 @@ class RPNGDescription:
                 times.append(rpng.n)
         if len(times) != len(set(times)):
             raise ValueError("The n values for the corners must be unique.")
-        elif len(times) not in [0, 2, 4]:
-            raise ValueError("Each plaquette must have 0, 2, or 4 2Q gates.")
 
     @classmethod
     def from_string(cls, corners_rpng_string: str) -> RPNGDescription:
