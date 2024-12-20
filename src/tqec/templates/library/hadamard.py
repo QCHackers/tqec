@@ -110,7 +110,7 @@ def get_spatial_horizontal_hadamard_template(
                 ),
                 # BOTTOM bulk, normal plaquettes
                 7: RPNGDescription.from_string(
-                    f"{r}{b1}1{m} {r}{b1}3{m} -{b1}2{m} -{b1}4-"
+                    f"{r}{b1}1{m} {r}{b1}3{m} -{b1}2- -{b1}4-"
                 ),
                 8: RPNGDescription.from_string(
                     f"{r}{b2}1{m} {r}{b2}2{m} -{b2}3- -{b2}4-"
