@@ -171,15 +171,22 @@ class ObservableBuilder:
                 )
         # The readouts that will be added to the end of the last layer of circuits at z.
         elif component == ObservableComponent.TOP_READOUTS:
+            # Compose readout contributions modulo 2 within each spatial cube.
+            # A measurement occurring twice cancels in a Pauli parity product.
+            # Readouts from distinct cubes and pipes keep their existing union.
+            cube_readouts: dict[Position3D, set[GridQubit]] = {}
             for cube in observable.top_readout_cubes:
-                obs_qubits.update(
-                    self.transform_coords_into_grid(
-                        k,
-                        template,
-                        self.cube_top_readouts_builder(shape, cube),
-                        cube.cube.position,
-                    )
+                qubits = self.transform_coords_into_grid(
+                    k,
+                    template,
+                    self.cube_top_readouts_builder(shape, cube),
+                    cube.cube.position,
                 )
+                cube_readouts.setdefault(cube.cube.position, set()).symmetric_difference_update(
+                    qubits
+                )
+            for qubits in cube_readouts.values():
+                obs_qubits.update(qubits)
             for pipe in observable.top_readout_pipes:
                 obs_qubits.update(
                     self.transform_coords_into_grid(
