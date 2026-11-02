@@ -1,5 +1,7 @@
+from unittest.mock import Mock, patch
+
 from tqec.circuit.qubit import GridQubit
-from tqec.compile.observables.builder import ObservableBuilder
+from tqec.compile.observables.builder import ObservableBuilder, ObservableComponent
 from tqec.templates.layout import LayoutTemplate
 from tqec.templates.qubit import QubitTemplate
 from tqec.utils.position import (
@@ -33,3 +35,53 @@ def test_transform_coords_into_grid() -> None:
     x = -1 + 3 * 2
     y = (12 * 2 + 2) * 2 - 1 + 1 * 2
     assert qubits == {GridQubit(x, y)}
+
+
+def test_top_readouts_use_same_cube_parity_and_different_cube_union() -> None:
+    """Cancel duplicates within a cube, then union results from distinct sources."""
+    center = Position3D(0, 0, 0)
+    neighbor = Position3D(1, 0, 0)
+
+    first, second, third, pipe = Mock(), Mock(), Mock(), Mock()
+    first.cube.position = second.cube.position = center
+    third.cube.position = neighbor
+    pipe.pipe.u.position = center
+    first.coords = ((1, 1), (3, 3))
+    second.coords = ((3, 3), (5, 5))
+    third.coords = ((3, 3), (7, 7))
+    pipe.coords = ((5, 5), (9, 9))
+
+    builder = ObservableBuilder(
+        cube_top_readouts_builder=lambda _shape, cube: cube.coords,
+        pipe_top_readouts_builder=lambda _shape, p: p.coords,
+        cube_bottom_stabilizers_builder=lambda _shape, _cube: (),
+        pipe_bottom_stabilizers_builder=lambda _shape, _pipe: (),
+        pipe_temporal_hadamard_builder=lambda _shape, _pipe: (),
+    )
+    template = Mock()
+
+    def to_grid(_k, _template, coords, _pos):
+        return {GridQubit(*xy) for xy in coords}
+
+    with patch.object(ObservableBuilder, "transform_coords_into_grid", side_effect=to_grid):
+        same_cube = builder.build(
+            1,
+            template,
+            Mock(top_readout_cubes=(first, second), top_readout_pipes=()),
+            ObservableComponent.TOP_READOUTS,
+        )
+        combined = builder.build(
+            1,
+            template,
+            Mock(top_readout_cubes=(first, second, third), top_readout_pipes=(pipe,)),
+            ObservableComponent.TOP_READOUTS,
+        )
+
+    assert same_cube == {GridQubit(1, 1), GridQubit(5, 5)}
+    assert combined == {
+        GridQubit(1, 1),
+        GridQubit(3, 3),
+        GridQubit(5, 5),
+        GridQubit(7, 7),
+        GridQubit(9, 9),
+    }
