@@ -25,6 +25,7 @@ from tqec.utils.position import (
     SignedDirection3D,
 )
 
+
 @pytest.mark.parametrize(
     "orientation, expected",
     [
