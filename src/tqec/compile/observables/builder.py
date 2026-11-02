@@ -171,7 +171,6 @@ class ObservableBuilder:
                 )
         # The readouts that will be added to the end of the last layer of circuits at z.
         elif component == ObservableComponent.TOP_READOUTS:
-            # Compose readout contributions modulo 2 within each spatial cube.
             # A measurement occurring twice cancels in a Pauli parity product.
             # Readouts from distinct cubes and pipes keep their existing union.
             cube_readouts: dict[Position3D, set[GridQubit]] = {}
