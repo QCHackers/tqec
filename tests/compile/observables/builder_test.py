@@ -52,11 +52,11 @@ def test_top_readouts_use_same_cube_parity_and_different_cube_union() -> None:
     pipe.coords = ((5, 5), (9, 9))
 
     builder = ObservableBuilder(
-        cube_top_readouts_builder=lambda _shape, cube: cube.coords,
-        pipe_top_readouts_builder=lambda _shape, p: p.coords,
-        cube_bottom_stabilizers_builder=lambda _shape, _cube: (),
-        pipe_bottom_stabilizers_builder=lambda _shape, _pipe: (),
-        pipe_temporal_hadamard_builder=lambda _shape, _pipe: (),
+        cube_top_readouts_builder=lambda shape, cube: cube.coords,
+        pipe_top_readouts_builder=lambda shape, pipe: pipe.coords,
+        cube_bottom_stabilizers_builder=lambda shape, cube: (),
+        pipe_bottom_stabilizers_builder=lambda shape, pipe: (),
+        pipe_temporal_hadamard_builder=lambda shape, pipe: (),
     )
     template = Mock()
 
