@@ -3,13 +3,8 @@ import pytest
 from tqec.circuit.qubit import GridQubit
 from tqec.compile.observables.abstract_observable import AbstractObservable, CubeWithArms
 from tqec.compile.observables.builder import ObservableComponent
-from tqec.compile.observables.fixed_bulk_builder import FIXED_BULK_OBSERVABLE_BUILDER
-from tqec.computation.cube import Cube, ZXCube
-from tqec.templates.layout import LayoutTemplate
-from tqec.templates.qubit import QubitTemplate
-from tqec.utils.position import BlockPosition2D, Position3D
-
 from tqec.compile.observables.fixed_bulk_builder import (
+    FIXED_BULK_OBSERVABLE_BUILDER,
     _build_pipe_temporal_hadamard_qubits_impl,
     build_pipe_top_readout_qubits,
     build_regular_cube_bottom_stabilizer_qubits,
@@ -18,13 +13,17 @@ from tqec.compile.observables.fixed_bulk_builder import (
     build_spatial_cube_top_readout_qubits,
 )
 from tqec.compile.specs.enums import SpatialArms
+from tqec.computation.cube import Cube, ZXCube
+from tqec.templates.layout import LayoutTemplate
+from tqec.templates.qubit import QubitTemplate
 from tqec.utils.enums import Basis, Orientation
 from tqec.utils.position import (
+    BlockPosition2D,
     Direction3D,
     PlaquetteShape2D,
+    Position3D,
     SignedDirection3D,
 )
-
 
 @pytest.mark.parametrize(
     "orientation, expected",
