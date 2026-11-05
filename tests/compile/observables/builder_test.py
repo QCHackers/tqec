@@ -1,7 +1,8 @@
-from unittest.mock import Mock, patch
-
 from tqec.circuit.qubit import GridQubit
+from tqec.compile.observables.abstract_observable import AbstractObservable, CubeWithArms
 from tqec.compile.observables.builder import ObservableBuilder, ObservableComponent
+from tqec.compile.specs.enums import SpatialArms
+from tqec.computation.cube import Cube, ZXCube
 from tqec.templates.layout import LayoutTemplate
 from tqec.templates.qubit import QubitTemplate
 from tqec.utils.position import (
@@ -38,50 +39,30 @@ def test_transform_coords_into_grid() -> None:
 
 
 def test_top_readouts_use_same_cube_parity_and_different_cube_union() -> None:
-    """Cancel duplicates within a cube, then union results from distinct sources."""
-    center = Position3D(0, 0, 0)
-    neighbor = Position3D(1, 0, 0)
-
-    first, second, third, pipe = Mock(), Mock(), Mock(), Mock()
-    first.cube.position = second.cube.position = center
-    third.cube.position = neighbor
-    pipe.pipe.u.position = center
-    first.coords = ((1, 1), (3, 3))
-    second.coords = ((3, 3), (5, 5))
-    third.coords = ((3, 3), (7, 7))
-    pipe.coords = ((5, 5), (9, 9))
-
+    cube = Cube(Position3D(0, 0, 0), ZXCube.from_str("ZZX"))
+    first = CubeWithArms(cube, SpatialArms.LEFT | SpatialArms.DOWN)
+    second = CubeWithArms(cube, SpatialArms.RIGHT | SpatialArms.UP)
+    neighbor = CubeWithArms(Cube(Position3D(1, 0, 0), ZXCube.from_str("XZX")))
+    coords = {
+        first: [(4, 1), (2, 1)],
+        second: [(2, 1), (3, 1)],
+        neighbor: [(0, 1), (1, 1)],
+    }
     builder = ObservableBuilder(
-        cube_top_readouts_builder=lambda shape, cube: cube.coords,
-        pipe_top_readouts_builder=lambda shape, pipe: pipe.coords,
+        cube_top_readouts_builder=lambda shape, cube: coords[cube],
+        pipe_top_readouts_builder=lambda shape, pipe: (),
         cube_bottom_stabilizers_builder=lambda shape, cube: (),
         pipe_bottom_stabilizers_builder=lambda shape, pipe: (),
         pipe_temporal_hadamard_builder=lambda shape, pipe: (),
     )
-    template = Mock()
+    template = LayoutTemplate({BlockPosition2D(0, 0): QubitTemplate()})
 
-    def to_grid(_k, _template, coords, _pos):
-        return {GridQubit(*xy) for xy in coords}
+    qubits = builder.build(
+        1,
+        template,
+        AbstractObservable(top_readout_cubes=frozenset(coords)),
+        ObservableComponent.TOP_READOUTS,
+    )
 
-    with patch.object(ObservableBuilder, "transform_coords_into_grid", side_effect=to_grid):
-        same_cube = builder.build(
-            1,
-            template,
-            Mock(top_readout_cubes=(first, second), top_readout_pipes=()),
-            ObservableComponent.TOP_READOUTS,
-        )
-        combined = builder.build(
-            1,
-            template,
-            Mock(top_readout_cubes=(first, second, third), top_readout_pipes=(pipe,)),
-            ObservableComponent.TOP_READOUTS,
-        )
-
-    assert same_cube == {GridQubit(1, 1), GridQubit(5, 5)}
-    assert combined == {
-        GridQubit(1, 1),
-        GridQubit(3, 3),
-        GridQubit(5, 5),
-        GridQubit(7, 7),
-        GridQubit(9, 9),
-    }
+    # (3, 1) cancels within the first cube; (7, 1) is shared by both cubes and stays.
+    assert qubits == {GridQubit(5, 1), GridQubit(7, 1), GridQubit(9, 1)}

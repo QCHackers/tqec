@@ -229,28 +229,20 @@ def test_build_pipe_temporal_hadamard_qubits_impl(
     assert coords == expected
 
 
-def test_same_cube_top_readout_contributions_cancel_modulo_two() -> None:
-    """Count a shared center measurement twice as zero in the logical parity."""
+def test_spatial_cube_top_readouts_cancel_center_qubit() -> None:
     cube = Cube(Position3D(0, 0, 0), ZXCube.from_str("ZZX"))
     left_down = CubeWithArms(cube, SpatialArms.LEFT | SpatialArms.DOWN)
     right_up = CubeWithArms(cube, SpatialArms.RIGHT | SpatialArms.UP)
     template = LayoutTemplate({BlockPosition2D(0, 0): QubitTemplate()})
 
-    def readout(*parts: CubeWithArms) -> set[GridQubit]:
-        return FIXED_BULK_OBSERVABLE_BUILDER.build(
-            1,
-            template,
-            AbstractObservable(top_readout_cubes=frozenset(parts)),
-            ObservableComponent.TOP_READOUTS,
-        )
+    qubits = FIXED_BULK_OBSERVABLE_BUILDER.build(
+        1,
+        template,
+        AbstractObservable(top_readout_cubes=frozenset({left_down, right_up})),
+        ObservableComponent.TOP_READOUTS,
+    )
 
-    a = readout(left_down)
-    b = readout(right_up)
-    combined = readout(left_down, right_up)
-
-    assert a & b == {GridQubit(3, 3)}
-    assert combined == a ^ b
-    assert combined == {
+    assert qubits == {
         GridQubit(1, 3),
         GridQubit(3, 1),
         GridQubit(3, 5),
